@@ -13,3 +13,9 @@ Source: `https://github.com/timini/rewire.it` at `5f7b8ce477cc7afabc36e02bd00222
 - Independent package manifest, lockfile, checks and gated Cloudflare workflow prevent dependency on another checkout or public PR previews.
 
 Unpublished omics features and private contributor services belong on a separate review branch. Restore this baseline from a clean checkout using `npm ci` and `npm run build`.
+
+## Local validation (2026-09-16)
+
+Fresh `npm ci` succeeded. All 12 benchmark catalogue/literature/search tests passed; lint, TypeScript checking, production build and extraction/export checks passed. The build generates 117 static pages, including explicit static icons. Cloudflare `_headers` supplies the MIME type for extensionless generated icons.
+
+Wrangler local checks returned HTTP 200 for the overview, literature query route, a paper detail, MFASS v2, both historical downloads, sitemap and icons. Unknown routes and the unpublished `/database/` and `/contribute/` paths returned HTTP 404. No live deployment was performed during extraction.

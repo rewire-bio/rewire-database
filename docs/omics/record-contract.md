@@ -15,7 +15,7 @@ Each record is an object:
 - `attributes`: kind-specific JSON object. Explicit unknown metadata uses null and `missing_metadata` reasons, never invented values.
 
 A `source` has attributes `url`, `version`, `retrieved_at`, optional `doi`, `publication_status`, `artifact_sha256`, `locator` and `licence`.
-A `model` has `entity_level` (`family`, `checkpoint`, `method`), `version`, `reported_name`, `missing_metadata`, and optional architecture/training/input/output/licence/access metadata. Do not collapse unidentified versions into a concrete checkpoint.
+A `model` has `entity_level` (`family`, `checkpoint`, `method`, `service`), `version`, `reported_name`, `missing_metadata`, and optional architecture/training/input/output/licence/access metadata. Do not collapse unidentified versions into a concrete checkpoint.
 A `benchmark` has `entity_level` (`suite`, `protocol`, `task`, `challenge`, `evaluator`), `version`, `task`, `scope_note`, `missing_metadata`.
 A `dataset` has `version`, `split`, `missing_metadata`, optional assay/context/accession metadata.
 A `baseline` has `baseline_type`, `applicability` (`proposed` or `source_supported`), `requirements`, `missing_metadata`.
@@ -43,6 +43,10 @@ Contribution operations are disabled unless the server explicitly enables `OMICS
 
 ## Explanatory profiles and supported associations
 
-Model and benchmark explanations are validated enrichment inputs merged into `attributes.profile`. They contain a summary, evidence-cited sections and facts, strengths, limitations, optional diagram steps, coverage, gaps and an explicit automated review note. Coverage `reviewed` describes the explanatory claims only; `limited` records a specific evidence limitation. Neither changes scientific result review status or establishes independent reproduction.
+Model and benchmark explanations are validated enrichment inputs merged into `attributes.profile`. They contain a summary, evidence-cited sections and facts, strengths, limitations, optional diagram steps, coverage, gaps and an explicit automated review note. Current summaries include `summary_source_ids` and `summary_source_locator`; both are optional for historical releases but must occur together. Current facts include an explicit `status`: `source_checked`, `unreported`, `unextracted`, `unavailable` or `inapplicable`. Coverage `reviewed` describes the explanatory claims only; `limited` records a specific evidence limitation. Neither changes scientific result review status or establishes independent reproduction.
 
-`variant_of`, `family` and `alias_of` describe supported model relationships. `part_of` links benchmark components to suites; `evaluates_task` connects a concrete resource to a task. These edges participate in result navigation only when backed by source-checked association claims. `uses_model` identifies a separately evaluated pipeline's dependency and does not assign its result to the base model. Retain exact configuration identity and legacy detail URLs.
+`variant_of`, `family` and `alias_of` describe supported model relationships. `part_of` links benchmark components to suites; `evaluates_task` connects a concrete resource to a task. These edges participate in result navigation only when backed by source-checked association claims. `uses_model` identifies a service or separately evaluated pipeline's dependency and does not assign its result to the base model. Retain exact configuration identity and legacy detail URLs.
+
+Hosted services retain their own operational limits and terms rather than inheriting a downloadable checkpoint’s licence or configuration. Source warnings under `attributes.evidence_concerns` preserve the original transcription status while preventing affected results from supporting automatic comparisons. Every warning has an artifact hash, precise locator and review date.
+
+When a model or benchmark receives reviewed profile content, the original discovery `missing_metadata` map is retained as `historical_missing_metadata`. Current field-level evidence states are in `profile.facts`. This prevents old extraction gaps from contradicting newly reviewed descriptive claims; archived releases remain byte-identical.

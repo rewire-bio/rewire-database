@@ -78,12 +78,34 @@ test("profile citations join sources and are validated even when nested", () => 
     model = source.records.find((r: any) => r.id === "model-one");
   model.source_ids = [];
   model.attributes.profile = {
-    sections: [{ body: "Summary", source_ids: ["source-one"] }],
+    summary: "A synthetic profile fixture",
+    sections: [
+      {
+        title: "Mechanism",
+        body: "Summary",
+        source_ids: ["source-one"],
+        source_locator: "Fixture section",
+      },
+    ],
+    facts: [],
+    strengths: [],
+    limitations: [],
+    coverage: "limited",
+    gaps: ["Synthetic fixture"],
+    review: {
+      method: "automated_source_review",
+      date: "2026-09-16",
+      note: "Synthetic fixture",
+    },
   };
   assert.equal(
     createCatalogueQuery(source).get({ id: "model-one" })?.sources[0].id,
     "source-one",
   );
+  model.attributes.profile.summary_source_ids = ["absent"];
+  model.attributes.profile.summary_source_locator = "Fixture summary";
+  assert.throws(() => validateSnapshot(source), /profile evidence/);
+  model.attributes.profile.summary_source_ids = ["source-one"];
   model.attributes.profile.sections[0].source_ids = ["absent"];
   assert.throws(() => validateSnapshot(source), /profile evidence/);
 });

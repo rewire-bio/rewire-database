@@ -126,7 +126,7 @@ export function createCatalogueQuery(snapshot: CatalogueSnapshot) {
   const profileSources = (value: unknown): string[] => {
     if (!value || typeof value !== "object") return [];
     return Object.entries(value).flatMap(([key, child]) =>
-      key === "source_ids" && Array.isArray(child)
+      ["source_ids", "summary_source_ids"].includes(key) && Array.isArray(child)
         ? child.filter((id): id is string => typeof id === "string")
         : profileSources(child),
     );
@@ -391,6 +391,16 @@ export function createCatalogueQuery(snapshot: CatalogueSnapshot) {
         reasons.add("A selected result is unavailable.");
       const valid = selected.filter((r): r is ResultRow => !!r);
       for (const row of valid) {
+        if (
+          row.sources.some(
+            (source) =>
+              Array.isArray(source.attributes.evidence_concerns) &&
+              source.attributes.evidence_concerns.length,
+          )
+        )
+          reasons.add(
+            "A source has unresolved evidence concerns; this result cannot support a comparison.",
+          );
         if (!["source_checked", "reproduced"].includes(row.result.status))
           reasons.add(
             "Only current, source-checked or reproduced results can be compared.",

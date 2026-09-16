@@ -11,7 +11,10 @@ import {
   type OmicsRecord,
 } from "@/lib/omics";
 import { profileSchema } from "@/lib/omics-profile";
-import Profile, { Evidence } from "@/components/catalogue/Profile";
+import Profile, {
+  Evidence,
+  EvidenceConcerns,
+} from "@/components/catalogue/Profile";
 import Results from "@/components/catalogue/Results";
 import { kindLabels } from "@/lib/omics-browse";
 import styles from "../../database.module.css";
@@ -99,11 +102,10 @@ export default function RecordPage({ params }: { params: Params }) {
     family && profileSchema.safeParse(family.record.attributes.profile).success
       ? query.get({ id: family.record.id })
       : null;
-  const profileOwner =
-    shared &&
-    (!localProfile.success || localProfile.data.coverage === "limited")
-      ? shared
-      : detail;
+  const profileOwner = shared && !localProfile.success ? shared : detail;
+  const profile = profileSchema.safeParse(
+    profileOwner.record.attributes.profile,
+  );
   const summary =
     (profileOwner.record.attributes.profile as { summary?: string } | undefined)
       ?.summary || record.description;
@@ -143,6 +145,11 @@ export default function RecordPage({ params }: { params: Params }) {
       ["family", "variant_of", "alias_of"].includes(item.relation) &&
       verifiedAssociation(item.record.id, item.relation, record.id),
   );
+  const usesModels = detail.direct.filter(
+    (item) =>
+      item.relation === "uses_model" &&
+      verifiedAssociation(record.id, item.relation, item.record.id),
+  );
   const downstream = detail.reverse.filter(
     (item) =>
       item.relation === "uses_model" &&
@@ -171,14 +178,26 @@ export default function RecordPage({ params }: { params: Params }) {
             )}
           </span>
           <h1>{finding}</h1>
+          <EvidenceConcerns
+            sources={record.kind === "source" ? [record] : detail.sources}
+          />
           <p className="intro">
             {record.kind === "result" ? record.name : summary}
           </p>
+          {profile.success && profile.data.summary_source_ids && (
+            <Evidence
+              ids={profile.data.summary_source_ids}
+              locator={profile.data.summary_source_locator || ""}
+              sources={profileOwner.sources}
+            />
+          )}
           {entity && (
             <p>
               <a href="#results" className={styles.resultCount}>
-                {results.evaluation_count} evaluations · {results.total} metric
-                rows
+                {results.evaluation_count}{" "}
+                {results.evaluation_count === 1 ? "evaluation" : "evaluations"}{" "}
+                · {results.total}{" "}
+                {results.total === 1 ? "metric row" : "metric rows"}
               </a>
             </p>
           )}
@@ -268,12 +287,20 @@ export default function RecordPage({ params }: { params: Params }) {
             <>
               {family && (
                 <p className={styles.notice}>
-                  Shared profile:{" "}
+                  Related family profile:{" "}
                   <Link href={recordHref(family.record)}>
                     {family.record.name}
                   </Link>
                   . This page retains the exact record and its evaluation
                   context.
+                </p>
+              )}
+              {usesModels.length > 0 && (
+                <p className={styles.notice}>
+                  Uses model:{" "}
+                  <Links records={usesModels.map((item) => item.record)} />.
+                  Results on this page belong to this service or pipeline
+                  configuration.
                 </p>
               )}
               <Profile
@@ -410,11 +437,11 @@ export default function RecordPage({ params }: { params: Params }) {
           )}
           {downstream.length > 0 && (
             <section className={styles.section}>
-              <h2>Pipelines using this model</h2>
+              <h2>Services and pipelines using this model</h2>
               <p>
-                These evaluated pipelines include additional processing or
-                trained components. Their results are not assigned to the
-                underlying model.
+                These services and pipelines use this model within their own
+                configurations. Their results, where available, are not assigned
+                to the underlying model.
               </p>
               <ul className={styles.list}>
                 {downstream.map((item) => (

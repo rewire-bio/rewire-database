@@ -4,6 +4,7 @@ import { createHash } from "node:crypto";
 import { enrichProfiles, profileSchema } from "../lib/omics-profile";
 import { enrichAssociations } from "../scripts/omics/enrich";
 import { buildRelease } from "../scripts/omics/release";
+import { currentCatalogueBase } from "../scripts/omics/inputs";
 import { publicRecords, type RecordEntry } from "../scripts/omics/schema";
 import { createCatalogueQuery } from "../services/omics/src/catalogue-query";
 
@@ -13,7 +14,8 @@ function jsonl<T>(file: string): T[] {
 const base = ["migrated", "discovery"].flatMap(name => jsonl<RecordEntry>(`data/omics/${name}.jsonl`));
 const profiles = ["model", "benchmark"].flatMap(name => jsonl<{id: string; profile: unknown}>(`data/omics/${name}-profiles.jsonl`));
 const associations = ["model", "benchmark"].flatMap(name => jsonl<unknown>(`data/omics/${name}-profile-associations.jsonl`));
-const enriched = enrichProfiles(enrichAssociations(base, associations), profiles);
+const currentBase = currentCatalogueBase(base);
+const enriched = enrichProfiles(enrichAssociations(currentBase, associations), profiles);
 const published = buildRelease(enriched, "2026-09-16T10:50:02Z").snapshot;
 const query = createCatalogueQuery(published);
 // Reconstruct the historical release from tracked inputs. CI runs tests before
@@ -63,6 +65,14 @@ describe("source-backed profile publication", () => {
       if (profile.coverage === "limited") expect(profile.gaps.length).toBeGreaterThan(0);
       if (profile.coverage === "reviewed") expect(profile.sections.length).toBeGreaterThan(0);
       expect(profile.review.method).toBe("automated_source_review");
+      expect(profile.summary_source_ids?.length).toBeGreaterThan(0);
+      expect(profile.summary_source_locator?.trim()).toBeTruthy();
+      for (const fact of profile.facts) expect(fact.status).toBeTruthy();
+      const claims = [profile, ...profile.facts, ...profile.sections, ...profile.strengths, ...profile.limitations, ...(profile.diagram ? [profile.diagram] : [])];
+      for (const claim of claims) {
+        const ids = "source_ids" in claim ? claim.source_ids : claim.summary_source_ids!;
+        for (const id of ids) expect(query.get({id})!.record.attributes.artifact_sha256).toMatch(/^[a-f0-9]{64}$/);
+      }
     }
   });
 
@@ -70,14 +80,14 @@ describe("source-backed profile publication", () => {
     const item = structuredClone(profiles.find(profile => profile.id === barcodeId)!);
     const profile = profileSchema.parse(item.profile);
     profile.sections[0].source_ids = ["missing-source"];
-    expect(() => enrichProfiles(base, [{...item, profile}])).toThrow("missing source");
+    expect(() => enrichProfiles(currentBase, [{...item, profile}])).toThrow("missing source");
     profile.sections[0].source_ids = [barcodeId];
-    expect(() => enrichProfiles(base, [{...item, profile}])).toThrow("missing source");
+    expect(() => enrichProfiles(currentBase, [{...item, profile}])).toThrow("missing source");
     profile.sections[0].source_ids = [sourceId];
     profile.sections[0].source_locator = " ";
-    expect(() => enrichProfiles(base, [{...item, profile}])).toThrow();
-    expect(() => enrichProfiles(base, [{...item, id: "b2-barcodebert-2026"}])).toThrow("no model or benchmark");
-    expect(() => enrichProfiles(base, [item, item])).toThrow("Duplicate profile");
+    expect(() => enrichProfiles(currentBase, [{...item, profile}])).toThrow();
+    expect(() => enrichProfiles(currentBase, [{...item, id: "b2-barcodebert-2026"}])).toThrow("no model or benchmark");
+    expect(() => enrichProfiles(currentBase, [item, item])).toThrow("Duplicate profile");
   });
 
   it("requires explicit gaps for limited profiles and cited explanation for reviewed coverage", () => {

@@ -65,6 +65,9 @@ export default function Profile({
     record.kind === "model"
       ? [
           ["Model type", /type|class|architecture|objective/i],
+          ["Inputs", /input/i],
+          ["Outputs", /output/i],
+          ["Parameters", /parameter|model size/i],
           [
             "Known versions",
             /version|configuration|checkpoint|released model/i,
@@ -121,8 +124,9 @@ export default function Profile({
             {profile.coverage === "reviewed"
               ? "source reviewed"
               : "limited source coverage"}{" "}
-            · Automated source review, {profile.review.date}. This does not
-            change the review status of its results.
+            · Automated source review, {profile.review.date}. Review applies to
+            the cited claims; unresolved fields are listed below. Numerical
+            results retain their own review status.
           </p>
           {profile.facts.length > 0 && (
             <div
@@ -149,6 +153,20 @@ export default function Profile({
                       <th scope="row">{fact.label}</th>
                       <td>
                         {fact.value}
+                        {fact.status && fact.status !== "source_checked" && (
+                          <span className={styles.muted}>
+                            {" "}
+                            ·{" "}
+                            {
+                              {
+                                unreported: "Not reported in inspected sources",
+                                unextracted: "Needs further source review",
+                                unavailable: "Source unavailable",
+                                inapplicable: "Not applicable",
+                              }[fact.status]
+                            }
+                          </span>
+                        )}
                         <Evidence
                           ids={fact.source_ids}
                           locator={fact.source_locator}
@@ -310,5 +328,38 @@ export default function Profile({
         </section>
       )}
     </>
+  );
+}
+
+export function EvidenceConcerns({ sources }: { sources: OmicsRecord[] }) {
+  const concerns = sources.flatMap((source) => {
+    const items = source.attributes.evidence_concerns;
+    return Array.isArray(items)
+      ? items
+          .filter(
+            (item): item is { message: string; source_locator: string } =>
+              !!item &&
+              typeof item === "object" &&
+              typeof item.message === "string" &&
+              typeof item.source_locator === "string",
+          )
+          .map((item) => ({ ...item, source }))
+      : [];
+  });
+  if (!concerns.length) return null;
+  return (
+    <aside className={styles.notice} aria-label="Evidence concerns">
+      <strong>Evidence concern: excluded from comparisons</strong>
+      {concerns.map((item, index) => (
+        <p key={index}>
+          {item.message}
+          <Evidence
+            ids={[item.source.id]}
+            locator={item.source_locator}
+            sources={sources}
+          />
+        </p>
+      ))}
+    </aside>
   );
 }

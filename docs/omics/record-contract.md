@@ -11,7 +11,7 @@ Each record is an object:
 - `status`: `discovered`, `needs_review`, `source_checked`, `reproduced`, `disputed`, `superseded`, or `excluded`. Source-checked is not reproduced.
 - `facets`: object mapping facet names (e.g. `areas`, `tasks`, `modalities`, `organisms`, `method_types`) to arrays of strings. No closed domain enum.
 - `source_ids`: IDs of source records supporting this entity.
-- `links`: array of `{ "relation": "model|benchmark|dataset|evaluation|baseline|family|parent|supersedes|original_evaluation|subject|source|applicable_to", "target_id": "..." }`. References resolve within a release.
+- `links`: array of `{ "relation": "model|benchmark|dataset|evaluation|baseline|family|variant_of|alias_of|uses_model|part_of|evaluates_task|parent|supersedes|original_evaluation|subject|source|applicable_to", "target_id": "..." }`. References resolve within a release.
 - `attributes`: kind-specific JSON object. Explicit unknown metadata uses null and `missing_metadata` reasons, never invented values.
 
 A `source` has attributes `url`, `version`, `retrieved_at`, optional `doi`, `publication_status`, `artifact_sha256`, `locator` and `licence`.
@@ -27,12 +27,22 @@ Snapshot JSON: `{ "schema_version": "1.0", "release_id": "...", "released_at": "
 
 ## Application service (revised architecture)
 
-The latest user instruction replaces PostgreSQL/FastAPI/public REST with TypeScript, tRPC, Zod, Firestore and Firebase email-link Authentication. Catalogue browsing and downloads use static release files, avoiding database reads per page view. Firestore stores a verified catalogue release mirror, private submissions, revisions and transactional email outbox. No Prisma, relational database, public REST API or paid provisioning is required.
+The application uses TypeScript, tRPC, Zod, Firestore and Firebase email-link Authentication. Public catalogue procedures serve published releases from Firestore; private procedures handle submissions, revisions and the transactional email outbox. There is no public REST platform, Prisma or relational database. Reviewed Git records remain authoritative; a database mirror does not replace immutable publication history.
+
+The catalogue interface is `catalogue.release`, `catalogue.list`, `catalogue.get`, `catalogue.results` and `catalogue.compare` under `/api/trpc`. Reads require no sign-in. Requests use a release ID, except when explicitly resolving the active release; result responses carry provenance and review status. Pagination is bounded and tied to the release and filters. See `services/omics/README.md` for procedure inputs and response behaviour.
+
+Static, indexable pages are generated through the same query engine against the selected Git release. Browser interactions call the service with that release pinned; downloads remain static CSV/JSONL exports. Imports remain private staging until complete and verified, and explicit activation atomically selects a published release. A partial import never becomes public. Re-activating a previous published release rolls back the active pointer without changing private contribution history.
 
 Firebase Auth verifies email before submission; the browser supplies its ID token as Bearer authentication. tRPC procedures: `submission.create` (type/title/summary/source_urls/target_id/optional attribution/details/idempotency key; email comes from verified token), `submission.list`, `submission.get({id})`, `submission.update({id,patch})`. Curator procedures and CLI require a curator claim or operator credentials. Submitted results require model, benchmark, protocol, metric, value and source_locator. Publication is gated on a validated released record ID.
 
-Contributions are disabled unless Firebase client configuration and NEXT_PUBLIC_OMICS_API_URL are set. The Firebase Auth emulator is used in local tests; production Functions/email deployment is deferred pending hosting approval. No marketing subscriptions or public accounts/profile directory.
+Contribution operations are disabled unless the server explicitly enables `OMICS_CONTRIBUTIONS_ENABLED=true`; the frontend independently requires `NEXT_PUBLIC_OMICS_CONTRIBUTIONS_ENABLED=true` and Firebase client configuration. The website uses same-origin `/api/trpc` by default. Disabling contributions must not disable catalogue browsing. Local tests use Firebase emulators; production backend and live email activation remain gated on deployment review. No marketing subscriptions or public contributor directory are introduced.
 
 ## Biological extensions
 
 `attributes.extensions` supports validated `genomics`, `protein`, `cellular`, `molecular_measurement`, `microbial` and `mechanistic` blocks. The contract is in `scripts/omics/extensions.ts`. Coordinates carry their assembly, convention, strand and window orientation; variant offsets are zero-based within the window. Protein identity thresholds are fractions, with MSA/template provenance separate. Cellular doses and times require units. Molecular measurements carry identifier namespace, platform, preprocessing and units; microbial references carry taxonomy/database versions. Mechanistic evaluations carry solver, constraints and conditions. Missing blocks are unextracted, not evidence that these factors are inapplicable; null records an explicitly unknown field. Extend the schema through a reviewed change when a new modality requires more fields.
+
+## Explanatory profiles and supported associations
+
+Model and benchmark explanations are validated enrichment inputs merged into `attributes.profile`. They contain a summary, evidence-cited sections and facts, strengths, limitations, optional diagram steps, coverage, gaps and an explicit automated review note. Coverage `reviewed` describes the explanatory claims only; `limited` records a specific evidence limitation. Neither changes scientific result review status or establishes independent reproduction.
+
+`variant_of`, `family` and `alias_of` describe supported model relationships. `part_of` links benchmark components to suites; `evaluates_task` connects a concrete resource to a task. These edges participate in result navigation only when backed by source-checked association claims. `uses_model` identifies a separately evaluated pipeline's dependency and does not assign its result to the base model. Retain exact configuration identity and legacy detail URLs.

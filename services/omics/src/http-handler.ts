@@ -9,9 +9,29 @@ type Request = IncomingMessage & {
   body?: unknown;
 };
 
+const catalogueProcedures = new Set([
+  "catalogue.release",
+  "catalogue.list",
+  "catalogue.get",
+  "catalogue.results",
+  "catalogue.compare",
+]);
+function catalogueRequest(req: Request): boolean {
+  if (req.method !== "GET") return false;
+  const path = /^\/(?:api\/)?trpc\/([^/]+)$/.exec(
+    (req.url || "").split("?", 1)[0],
+  )?.[1];
+  return !!path && path.split(",").every((p) => catalogueProcedures.has(p));
+}
 // A disabled form alone cannot prevent direct API calls. Production must opt in.
-export async function deployedContributionHttpHandler(req: Request, res: ServerResponse) {
-  if (process.env.OMICS_CONTRIBUTIONS_ENABLED !== "true") {
+export async function deployedContributionHttpHandler(
+  req: Request,
+  res: ServerResponse,
+) {
+  if (
+    !catalogueRequest(req) &&
+    process.env.OMICS_CONTRIBUTIONS_ENABLED !== "true"
+  ) {
     res.setHeader("Cache-Control", "no-store");
     res.setHeader("Content-Type", "application/json");
     res.statusCode = 503;
@@ -45,7 +65,18 @@ export async function contributionHttpHandler(
     res,
     path,
     router: appRouter,
-    createContext: () => context(req.headers.authorization),
+    createContext: () =>
+      catalogueRequest(req)
+        ? Promise.resolve({ user: null })
+        : context(req.headers.authorization),
+    responseMeta: ({ errors }) => {
+      // Public, successful read-only batches may be cached. Private and mixed batches never are.
+      if (catalogueRequest(req) && !errors.length)
+        return {
+          headers: { "Cache-Control": "public, max-age=30, s-maxage=60" },
+        };
+      return { headers: { "Cache-Control": "no-store" } };
+    },
     maxBodySize: MAX_REQUEST_BYTES,
   });
 }

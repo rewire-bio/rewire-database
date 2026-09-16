@@ -1,0 +1,66 @@
+{
+  "schema_version": "1.0",
+  "release_id": "2026-09-16-b5213be10a49",
+  "released_at": "2026-09-16T10:50:02Z",
+  "counts": {
+    "model": 226,
+    "benchmark": 170,
+    "dataset": 101,
+    "baseline": 27,
+    "evaluation": 159,
+    "result": 167,
+    "source": 199,
+    "claim": 143
+  },
+  "coverage": {
+    "research_lanes": 9,
+    "search_entries": 11,
+    "legacy_papers": 100,
+    "legacy_result_rows": 149,
+    "source_inputs": [
+      {
+        "file": "data/omics/migrated.jsonl",
+        "sha256": "3c2b88985f8419b9e5eb1b24a603b689891b969d30819e4a84d2af62a4760628"
+      },
+      {
+        "file": "data/omics/discovery.jsonl",
+        "sha256": "dbc2fe14ed474144442b6b8cc07147e2a23eb3a865a3324e9b8a958706ea65a0"
+      }
+    ],
+    "total_records": 1219,
+    "public_records": 1192,
+    "counts": {
+      "model": 226,
+      "benchmark": 170,
+      "dataset": 101,
+      "baseline": 27,
+      "evaluation": 159,
+      "result": 167,
+      "source": 199,
+      "claim": 143
+    },
+    "quarantined_results": 0,
+    "scope_excluded_records": 27,
+    "source_checked_results": 155,
+    "rewire_result_rows": 12,
+    "scope": "Specialist omics and molecular models; no clinical assistants or standalone medical imaging.",
+    "limitation": "A dated discovery and source-transcription review, not an exhaustive census or independent reproduction of external experiments."
+  },
+  "archive_sha256": "0076f6238b4c1ba934151d8b3cc8b249d546c7c9e3b46e0bc89ee25ee1d43169",
+  "catalogue_sha256": "537cfe23bf35cb860fd1c099b22f0f436b6c085ee4e5df91c2d6f01bc8cdfa4b",
+  "files": {
+    "catalogue.json": "537cfe23bf35cb860fd1c099b22f0f436b6c085ee4e5df91c2d6f01bc8cdfa4b",
+    "records.jsonl": "e0e843b3d79fc036a467a33b450e0048feb8e7f985832ec1945c6cbb3c166e63",
+    "records.csv": "5baa3bc36f44c4704e7e6f1f91617af8452b9e035175eed5fca646bab270e80f"
+  },
+  "changelog": [
+    "Initial omics-only linked catalogue; original literature identifiers and scores retained.",
+    "Only checked external numerical claims enter the catalogue; ambiguous values remain in the review queue.",
+    "Existing MFASS v2 runs remain separate from external literature."
+  ],
+  "compatibility": {
+    "papers": "/benchmark-literature/papers.json",
+    "results": "/benchmark-literature/results.csv",
+    "note": "Historical compatibility files retain the original collection, including out-of-scope and unreviewed records. Use this release for current scoped data."
+  }
+}

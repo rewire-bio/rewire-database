@@ -1,6 +1,8 @@
 import { createHash, randomUUID } from "node:crypto";
 import type { Firestore } from "firebase-admin/firestore";
 import { validateSnapshot } from "./validation.js";
+import { createCatalogueQuery } from "./catalogue-query.js";
+import { recordsDigest } from "./catalogue-integrity.js";
 
 export async function importRelease(
   db: Firestore,
@@ -26,6 +28,7 @@ export async function importRelease(
     throw new Error(
       'Manifest must contain the matching catalogue_sha256 or files["catalogue.json"] hash',
     );
+  createCatalogueQuery(snapshot); // Prepare and validate relationship indexes before accepting an import.
   const ref = db.collection("catalogueReleases").doc(snapshot.release_id);
   const owner = randomUUID();
   const proceed = await db.runTransaction(async (tx) => {
@@ -61,12 +64,45 @@ export async function importRelease(
       batch.set(ref.collection("records").doc(record.id), record);
     await batch.commit();
   }
+  // Compact immutable read snapshots avoid a Firestore read per record on cold requests.
+  const chunks: string[] = [];
+  let group: typeof snapshot.records = [];
+  let size = 2;
+  for (const record of snapshot.records) {
+    const bytes = Buffer.byteLength(JSON.stringify(record)) + 1;
+    if (bytes > 700_000)
+      throw new Error("Catalogue record exceeds serving limit");
+    if (size + bytes > 700_000 && group.length) {
+      chunks.push(JSON.stringify(group));
+      group = [];
+      size = 2;
+    }
+    group.push(record);
+    size += bytes;
+  }
+  if (group.length) chunks.push(JSON.stringify(group));
+  for (let offset = 0; offset < chunks.length; offset += 400) {
+    const batch = db.batch();
+    chunks
+      .slice(offset, offset + 400)
+      .forEach((records_json, i) =>
+        batch.set(
+          ref
+            .collection("queryChunks")
+            .doc(String(offset + i).padStart(6, "0")),
+          { index: offset + i, records_json },
+        ),
+      );
+    await batch.commit();
+  }
   await db.runTransaction(async (tx) => {
     const existing = await tx.get(ref);
     if (existing.data()?.owner !== owner)
       throw new Error("Import lease replaced; cannot publish");
     tx.update(ref, {
       state: "ready",
+      query_chunks: chunks.length,
+      records_digest: recordsDigest(snapshot.records),
       record_count: snapshot.records.length,
       imported_at: new Date().toISOString(),
     });

@@ -1,6 +1,6 @@
-# Omics contributions service
+# Omics catalogue and contributions service
 
-A small TypeScript service for private contributions to rewire.it. The public catalogue remains a versioned static export; readers do not cause Firestore requests. Firebase Authentication handles email-link sign-in. tRPC and Zod define the application's internal interface; this is not a public REST API.
+A TypeScript/tRPC service for published catalogue queries and private contributions. Reviewed Git releases remain the publication history. Firestore serves published releases to the website; static profile HTML is generated from the same pure query contract against a pinned release. CSV and JSONL remain downloadable exports. Firebase Authentication handles contributor email-link sign-in. This is the website's application API, not a separate public REST platform.
 
 No cloud project, billing account, database or email service is provisioned by these files. Firebase Functions deployment requires a billing-enabled project and is deliberately a separate decision.
 
@@ -29,11 +29,25 @@ FIRESTORE_EMULATOR_HOST=127.0.0.1:8085 \
 npm run dev
 ```
 
-The service listens at `http://localhost:8787/trpc`. Set the site's Firebase configuration to the same project, its Auth emulator URL to `http://127.0.0.1:9099`, and its contribution-service URL to `http://localhost:8787/trpc`. `PUBLIC_WEB_URL` and `ALLOWED_ORIGINS` default to localhost; configure them explicitly for other local ports. Firebase emulator email links appear in its console and OOB-code endpoint; they are never actual deliveries.
+The service accepts both `http://localhost:8787/trpc` and `http://localhost:8787/api/trpc`. The website uses same-origin `/api/trpc`; use the repository's combined preview script to proxy requests to this local service. Set the site's Firebase configuration to the same project, its Auth emulator URL to `http://127.0.0.1:9099`, and its contribution-service URL to `http://localhost:8787/trpc`. `PUBLIC_WEB_URL` and `ALLOWED_ORIGINS` default to localhost; configure them explicitly for other local ports. Firebase emulator email links appear in its console and OOB-code endpoint; they are never actual deliveries.
 
 The frontend calls Firebase `sendSignInLinkToEmail` / `signInWithEmailLink`, then sends an ID token using `Authorization: Bearer ...`. Server verification checks revocation and `email_verified`. Tokens remain Firebase-managed rather than stored by this service.
 
-## Internal interface
+## Catalogue queries
+
+Catalogue reads need no sign-in. The public procedures are:
+
+- `catalogue.release({release_id?})`: release metadata, coverage and browse facets; omitting the ID resolves the active published release.
+- `catalogue.list({release_id,kind?,q?,area?,status?,origin?,cursor?,limit?})`: stable, ID-ordered browsing. Limits are 1–100, default 25; cursors are tied to the release and filters.
+- `catalogue.get({release_id,id})`: record, direct/reverse relationships and source records, including profile citations. Missing records return null.
+- `catalogue.results({release_id,id,metric?,origin?,configuration_id?,cursor?,limit?})`: exact evaluated configurations, linked models/benchmarks/datasets, provenance, review status, evaluation counts and filter facets.
+- `catalogue.compare({release_id,ids})`: compatibility reasons for 2–20 result IDs. Missing conditions, copied evidence, different protocols, datasets or metrics prevent automatic comparison.
+
+The website pins every request to its generated release. The pure query contract lives in `src/catalogue-query.ts`; both the Firestore adapter and the build-time snapshot adapter use it. Family and task aggregation requires explicit source-checked association claims. Pipelines using a model remain separate, and aliases retain their historical detail URLs.
+
+Imports prepare compact serving chunks and record-integrity hashes. A warm service instance coalesces concurrent loads and caches at most three immutable releases, building reverse and evaluation indexes once per snapshot. A cold request reads release metadata and its compact chunks rather than one Firestore document per displayed row. The active pointer is resolved afresh; published historical releases remain addressable after rollback. Successful public GET batches have short public cache headers; private, mixed and error responses are `no-store`. There is no persistent third-party search service.
+
+## Contribution and curator interface
 
 - `submission.create({ contribution, idempotencyKey })`: verified user only; contribution follows `docs/omics/record-contract.md` except email comes from the verified identity. Returns `{id,status}`. Use a fresh UUID for each distinct contribution and retain it across network retries.
 - `submission.list()`: that user's contributions, newest first, currently capped at 200.
@@ -59,14 +73,15 @@ npm run curator -- proposal SUBMISSION_ID
 
 The proposal command is available only for accepted contributions. It produces a review proposal, not a catalogue record or automatic publication. Contributor identity fields are included only with explicit public-credit consent; email, UID and internal duplicate IDs are always omitted. Review user-entered prose for incidental personal data before moving it into the public Git release. Create public records and claims through the existing release workflow.
 
-Import an already-built public release into the private publication guard:
+Import a reviewed release, then explicitly activate it for public queries:
 
 ```sh
 npm run import-release -- ../../public/omics/catalogue.json ../../public/omics/manifest.json
+npm run import-release -- --activate RELEASE_ID
 npm run curator -- transition SUBMISSION_ID published 'Included in the reviewed release.' RELEASE_ID RECORD_ID
 ```
 
-The importer validates the schema, cross-record references and source/evaluation types, then verifies the manifest's `catalogue_sha256` or `files["catalogue.json"]` hash. Same-ID releases are immutable; identical reimports are safe. Partial imports remain in `staging`; the same import can resume after its 15-minute lease expires. A release becomes `ready` only after every record is written. Publication requires an accepted contribution and active record IDs of the submitted kind in a ready release. Submitted results must be source checked or reproduced; corrections must include their target record. Acceptance alone never marks a contribution published. The curator must import the released dataset and confirm its public availability before marking contributions published; the service does not probe the live website.
+The importer validates the schema, cross-record references and source/evaluation types, then verifies the manifest's `catalogue_sha256` or `files["catalogue.json"]` hash. Same-ID releases are immutable; identical reimports are safe. Partial imports remain in `staging`; the same import can resume after its 15-minute lease expires. A release becomes `ready` only after every record and serving chunk is written. Import completion alone does not publish it. Activation validates records and chunk integrity, then atomically records publication and switches `cataloguePublication/active`. Use the same `--activate PREVIOUS_RELEASE_ID` command to roll back; previously published pinned releases remain available. Private submissions are unaffected. Marking a contribution published requires an accepted contribution and active record IDs of the submitted kind in an explicitly published release. Submitted results must be source checked or reproduced; corrections must include their target record. Acceptance alone never marks a contribution published. The curator must import the released dataset and confirm its public availability before marking contributions published; the service does not probe the live website.
 
 Only server operators run release imports using Admin credentials. Source-reviewed JSONL in Git remains authoritative; Firestore mirrors are disposable and rebuildable. Preserve private submissions separately when restoring or changing the active public release. Do not roll back private contribution state when rolling back static catalogue files.
 
@@ -84,7 +99,7 @@ Before public activation, select the hosting and email provider, test real Fireb
 
 ## Deployment packaging
 
-`src/functions.ts` exports one Firebase HTTPS function in `europe-west2`, capped at two instances, with the tRPC endpoint under `/trpc`. `firebase.json` packages compiled `dist` files; run `npm run build` before any deployment. Deploy only after the separate hosting/billing decision. Do not deploy emulator environment variables. The service rejects emulator trust when `NODE_ENV=production`.
+`src/functions.ts` retains the existing Firebase HTTPS function named `contributions` in `europe-west2`, capped at two instances. That function serves both catalogue and contribution procedures under `/api/trpc` (and `/trpc` for direct callers); Firebase Hosting forwards `/api/**` to it. `firebase.json` packages compiled `dist` files; run `npm run build` before any deployment. Deploy only after the separate hosting/billing decision. Do not deploy emulator environment variables. The service rejects emulator trust when `NODE_ENV=production`.
 
 References: [Firebase email-link authentication](https://firebase.google.com/docs/auth/web/email-link-auth), [Admin token verification](https://firebase.google.com/docs/auth/admin/verify-id-tokens), [Firestore emulator](https://firebase.google.com/docs/emulator-suite/connect_firestore), [tRPC server adapters](https://trpc.io/docs/server/adapters).
 
@@ -92,4 +107,4 @@ References: [Firebase email-link authentication](https://firebase.google.com/doc
 
 This review branch uses `https://benchmarks.rewire.it/contribute/` for production email callbacks. Before separately authorised activation, add `benchmarks.rewire.it` to Firebase Authentication authorised domains, set `PUBLIC_WEB_URL=https://benchmarks.rewire.it`, and set `ALLOWED_ORIGINS=https://benchmarks.rewire.it` on the standalone server. The Firebase Functions CORS allowlist already uses that origin. These are configuration instructions, not changes to any live Firebase project.
 
-The frontend additionally requires `NEXT_PUBLIC_OMICS_CONTRIBUTIONS_ENABLED=true`; it defaults off even when Firebase keys are present. Set it only in local emulator testing for this migration. No analytics components are mounted anywhere in this extracted application.
+Catalogue GET procedures work independently of contribution activation. The deployed handler blocks submission/curator requests unless `OMICS_CONTRIBUTIONS_ENABLED=true`, and mixed public/private batches cannot bypass that gate. The frontend additionally requires `NEXT_PUBLIC_OMICS_CONTRIBUTIONS_ENABLED=true`; it defaults off even when Firebase keys are present. Set it only in local emulator testing for this migration. No analytics components are mounted anywhere in this extracted application.

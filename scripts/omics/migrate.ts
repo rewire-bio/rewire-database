@@ -8,8 +8,9 @@ import {
 } from "../../lib/benchmark-literature";
 import { MODELS, TESTS, MATCHES } from "../../lib/benchmark-catalog";
 import { validateRecords, type RecordEntry } from "./schema";
+// This migration reconstructs the historical import, not the latest release.
 const DATE = JSON.parse(
-  fs.readFileSync("data/omics/release-config.json", "utf8"),
+  fs.readFileSync("data/omics/releases/2026-09-16-b5213be10a49.json", "utf8"),
 ).released_at;
 const hash = (s: string) =>
   crypto.createHash("sha256").update(s).digest("hex").slice(0, 14);

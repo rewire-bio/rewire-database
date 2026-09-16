@@ -5,6 +5,7 @@ import { appRouter } from "../src/router.js";
 import { firebase } from "../src/firebase.js";
 import { context } from "../src/auth.js";
 import { importRelease } from "../src/catalogue.js";
+import { activateRelease } from "../src/catalogue-service.js";
 import { drainOutbox } from "../src/outbox.js";
 import { fixture, proposalInput } from "./fixtures.js";
 import { createAppServer } from "../src/server.js";
@@ -66,7 +67,7 @@ emulatorTest(
     const address = server.address() as { port: number };
     const client = createTRPCClient<AppRouter>({
       links: [
-      httpBatchLink({
+        httpBatchLink({
           url: `http://127.0.0.1:${address.port}/api/trpc`,
           headers: { authorization: `Bearer ${user.token}` },
         }),
@@ -85,15 +86,15 @@ emulatorTest(
         id: created.id,
         patch: { title: "Hosted API update" },
       });
-    assert.equal(
-      (await client.submission.get.query({ id: created.id })).title,
-      "Hosted API update",
-    );
-    const [listed, fetched] = await Promise.all([
-      client.submission.list.query(),
-      client.submission.get.query({ id: created.id }),
-    ]);
-    assert.equal(listed[0].id, fetched.id);
+      assert.equal(
+        (await client.submission.get.query({ id: created.id })).title,
+        "Hosted API update",
+      );
+      const [listed, fetched] = await Promise.all([
+        client.submission.list.query(),
+        client.submission.get.query({ id: created.id }),
+      ]);
+      assert.equal(listed[0].id, fetched.id);
     } finally {
       server.closeAllConnections();
       await new Promise<void>((resolve, reject) =>
@@ -253,6 +254,18 @@ emulatorTest(
       catalogue_sha256: createHash("sha256").update(snapshot).digest("hex"),
     };
     await importRelease(firebase().db, snapshot, manifest);
+    await assert.rejects(
+      () =>
+        curator.curator.transition({
+          id: created.id,
+          status: "published",
+          note: "Not activated",
+          releaseId: "test-release",
+          publishedIds: ["model-one"],
+        }),
+      /not published/,
+    );
+    await activateRelease(firebase().db, "test-release");
     await assert.rejects(
       () =>
         curator.curator.transition({
@@ -599,6 +612,7 @@ emulatorTest(
       schema_version: "1.0",
       catalogue_sha256: createHash("sha256").update(bytes).digest("hex"),
     });
+    await activateRelease(firebase().db, snapshot.release_id);
     await assert.rejects(
       () =>
         curator.curator.transition({
@@ -734,6 +748,153 @@ emulatorTest(
     assert.equal(queue[0].id, "copy-0000");
     assert.equal(
       queue.some((r) => r.id === original.id),
+      false,
+    );
+  },
+);
+
+emulatorTest(
+  "published catalogue HTTP queries remain public with contributions disabled and roll back atomically",
+  async () => {
+    const { activateRelease } = await import("../src/catalogue-service.js");
+    const { deployedContributionHttpHandler } =
+      await import("../src/http-handler.js");
+    const snapshot = fixture();
+    snapshot.release_id = "catalogue-public-one";
+    const bytes = Buffer.from(JSON.stringify(snapshot));
+    await importRelease(firebase().db, bytes, {
+      release_id: snapshot.release_id,
+      schema_version: snapshot.schema_version,
+      catalogue_sha256: createHash("sha256").update(bytes).digest("hex"),
+    });
+    const anonymous = appRouter.createCaller({ user: null });
+    await assert.rejects(
+      () => anonymous.catalogue.release({ release_id: snapshot.release_id }),
+      /not found/,
+    );
+    await activateRelease(firebase().db, snapshot.release_id);
+    assert.equal(
+      (await anonymous.catalogue.release()).release_id,
+      snapshot.release_id,
+    );
+    const server = createServer(deployedContributionHttpHandler);
+    await new Promise<void>((resolve) =>
+      server.listen(0, "127.0.0.1", resolve),
+    );
+    const base = `http://127.0.0.1:${(server.address() as { port: number }).port}/api/trpc`;
+    const previous = process.env.OMICS_CONTRIBUTIONS_ENABLED;
+    delete process.env.OMICS_CONTRIBUTIONS_ENABLED;
+    try {
+      const publicClient = createTRPCClient<AppRouter>({
+        links: [httpBatchLink({ url: base })],
+      });
+      const [detail, results] = await Promise.all([
+        publicClient.catalogue.get.query({
+          release_id: snapshot.release_id,
+          id: "model-one",
+        }),
+        publicClient.catalogue.results.query({
+          release_id: snapshot.release_id,
+          id: "model-one",
+        }),
+      ]);
+      assert.equal(detail?.record.id, "model-one");
+      assert.equal(results.items[0].sources[0].id, "source-one");
+      const response = await fetch(
+        `${base}/catalogue.release?input=${encodeURIComponent(JSON.stringify({ release_id: snapshot.release_id }))}`,
+      );
+      assert.equal(response.status, 200);
+      assert.match(response.headers.get("cache-control") || "", /^public/);
+      const privateResponse = await fetch(`${base}/submission.list`);
+      assert.equal(privateResponse.status, 503);
+      assert.equal(privateResponse.headers.get("cache-control"), "no-store");
+      const mixed = await fetch(
+        `${base}/catalogue.release,submission.list?batch=1&input=${encodeURIComponent(JSON.stringify({ 0: {}, 1: {} }))}`,
+      );
+      assert.equal(mixed.status, 503);
+      assert.equal(mixed.headers.get("cache-control"), "no-store");
+      snapshot.release_id = "catalogue-public-two";
+      const next = Buffer.from(JSON.stringify(snapshot));
+      await importRelease(firebase().db, next, {
+        release_id: snapshot.release_id,
+        schema_version: snapshot.schema_version,
+        catalogue_sha256: createHash("sha256").update(next).digest("hex"),
+      });
+      await activateRelease(firebase().db, snapshot.release_id);
+      assert.equal(
+        (await anonymous.catalogue.release()).release_id,
+        "catalogue-public-two",
+      );
+      assert.equal(
+        (
+          await anonymous.catalogue.release({
+            release_id: "catalogue-public-one",
+          })
+        ).release_id,
+        "catalogue-public-one",
+      );
+      await activateRelease(firebase().db, "catalogue-public-one");
+      assert.equal(
+        (await anonymous.catalogue.release()).release_id,
+        "catalogue-public-one",
+      );
+      await firebase()
+        .db.doc("catalogueReleases/incomplete-release")
+        .set({ state: "staging", record_count: 1 });
+      await assert.rejects(
+        () => activateRelease(firebase().db, "incomplete-release"),
+        /complete/,
+      );
+    } finally {
+      if (previous === undefined)
+        delete process.env.OMICS_CONTRIBUTIONS_ENABLED;
+      else process.env.OMICS_CONTRIBUTIONS_ENABLED = previous;
+      server.closeAllConnections();
+      await new Promise<void>((resolve, reject) =>
+        server.close((err) => (err ? reject(err) : resolve())),
+      );
+    }
+  },
+);
+
+emulatorTest(
+  "release publication refuses damaged records or incomplete serving snapshots",
+  async () => {
+    const { activateRelease } = await import("../src/catalogue-service.js");
+    const snapshot = fixture();
+    snapshot.release_id = "catalogue-damaged-release";
+    const bytes = Buffer.from(JSON.stringify(snapshot));
+    await importRelease(firebase().db, bytes, {
+      release_id: snapshot.release_id,
+      schema_version: snapshot.schema_version,
+      catalogue_sha256: createHash("sha256").update(bytes).digest("hex"),
+    });
+    const ref = firebase()
+      .db.collection("catalogueReleases")
+      .doc(snapshot.release_id);
+    await ref
+      .collection("records")
+      .doc("model-one")
+      .update({ name: "Unexpected change" });
+    await assert.rejects(
+      () => activateRelease(firebase().db, snapshot.release_id),
+      /integrity/,
+    );
+    assert.equal(
+      (await firebase().db.doc("cataloguePublication/active").get()).exists,
+      false,
+    );
+    await ref
+      .collection("records")
+      .doc("model-one")
+      .update({ name: "model-one" });
+    await ref.collection("queryChunks").doc("000000").delete();
+    await assert.rejects(
+      () => activateRelease(firebase().db, snapshot.release_id),
+      /Incomplete/,
+    );
+    assert.equal(
+      (await firebase().db.doc("cataloguePublication/active").get()).exists,
       false,
     );
   },

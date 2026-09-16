@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { isIP } from "node:net";
+import { assertPublicCatalogue } from "./catalogue-query.js";
 
 const short = z.string().trim().min(1).max(500);
 export const id = z.string().regex(/^[a-z0-9][a-z0-9-]{0,254}$/);
@@ -123,6 +124,11 @@ const link = z
       "subject",
       "source",
       "applicable_to",
+      "uses_model",
+      "variant_of",
+      "alias_of",
+      "part_of",
+      "evaluates_task",
     ]),
     target_id: id,
   })
@@ -237,6 +243,7 @@ export const snapshotSchema = z
   .strict();
 export type CatalogueRecord = z.infer<typeof recordSchema>;
 export function validateSnapshot(input: unknown) {
+  assertPublicCatalogue(input);
   const snapshot = snapshotSchema.parse(input);
   const records = new Map(
     snapshot.records.map((record) => [record.id, record]),
@@ -244,12 +251,46 @@ export function validateSnapshot(input: unknown) {
   if (records.size !== snapshot.records.length)
     throw new Error("Duplicate record IDs");
   for (const record of snapshot.records) {
+    const profile = record.attributes.profile;
+    function validateProfileEvidence(value: unknown): void {
+      if (!value || typeof value !== "object") return;
+      for (const [key, child] of Object.entries(value)) {
+        if (key === "source_ids") {
+          if (
+            !Array.isArray(child) ||
+            child.some(
+              (id) =>
+                typeof id !== "string" || records.get(id)?.kind !== "source",
+            )
+          )
+            throw new Error(`Invalid profile evidence on ${record.id}`);
+        } else validateProfileEvidence(child);
+      }
+    }
+    validateProfileEvidence(profile);
     for (const source of record.source_ids)
       if (records.get(source)?.kind !== "source")
         throw new Error(`Invalid source ${source} on ${record.id}`);
     for (const link of record.links) {
       const target = records.get(link.target_id);
       if (!target) throw new Error(`Unresolved link ${link.target_id}`);
+      if (
+        ["family", "variant_of", "alias_of"].includes(link.relation) &&
+        (record.kind !== "model" || target.kind !== "model")
+      )
+        throw new Error(`Invalid model identity relationship on ${record.id}`);
+      if (
+        link.relation === "uses_model" &&
+        (!["model", "evaluation"].includes(record.kind) ||
+          target.kind !== "model")
+      )
+        throw new Error(`Invalid pipeline model relationship on ${record.id}`);
+      if (
+        ["part_of", "evaluates_task"].includes(link.relation) &&
+        (!["benchmark", "evaluation"].includes(record.kind) ||
+          target.kind !== "benchmark")
+      )
+        throw new Error(`Invalid benchmark membership on ${record.id}`);
       if (
         [
           "model",

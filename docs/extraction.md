@@ -19,3 +19,7 @@ Unpublished omics features and private contributor services belong on a separate
 Fresh `npm ci` succeeded. All 12 benchmark catalogue/literature/search tests passed; lint, TypeScript checking, production build and extraction/export checks passed. The build generates 117 static pages, including explicit static icons. Cloudflare `_headers` supplies the MIME type for extensionless generated icons.
 
 Wrangler local checks returned HTTP 200 for the overview, literature query route, a paper detail, MFASS v2, both historical downloads, sitemap and icons. Unknown routes and the unpublished `/database/` and `/contribute/` paths returned HTTP 404. No live deployment was performed during extraction.
+
+## Hosting revision
+
+After extraction, the owner chose Firebase for the database website and API together, retaining Google DNS. The original Wrangler checks above are historical evidence. Current configuration and checks use Firebase Hosting; see [deployment instructions](hosting/firebase.md). Source and release hashes are unchanged.

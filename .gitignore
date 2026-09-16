@@ -71,3 +71,9 @@ __pycache__/
 # Cloudflare local state
 .wrangler/
 .dev.vars*
+
+# Firebase local state and credentials
+.firebase/
+firebase-debug*.log
+*-debug.log
+gha-creds-*.json

@@ -1,3 +1,8 @@
+import { assertNoPrivateFields } from "../../services/omics/src/private-fields";
+import {
+  createEvidenceIndex,
+  evidenceCsv,
+} from "../../services/omics/src/evidence-table";
 import fs from "node:fs";
 import { restoreReleaseBundles } from "./archives";
 import { currentCatalogueBase, reviewInputFiles } from "./inputs";
@@ -59,6 +64,7 @@ export function buildRelease(
     records: visible,
     coverage,
   };
+  assertNoPrivateFields(snapshot);
   const quote = (v: unknown) => '"' + String(v ?? "").replace(/"/g, '""') + '"';
   const csv =
     [
@@ -84,6 +90,12 @@ export function buildRelease(
     "records.jsonl": visible.map((r) => JSON.stringify(r)).join("\n") + "\n",
     "records.csv": csv,
   };
+  if (extraCoverage.evidence_table_version === "1.0") {
+    const evidence = createEvidenceIndex(snapshot).all();
+    files["evidence.jsonl"] =
+      evidence.map((row) => JSON.stringify(row)).join("\n") + "\n";
+    files["evidence.csv"] = evidenceCsv(evidence);
+  }
   const manifest = {
     schema_version: "1.0",
     release_id: releaseId,
@@ -221,6 +233,16 @@ function main() {
   ];
   const facts = profiles.flatMap((profile) => profile.facts);
   const output = buildRelease(records, audit.released_at, {
+    evidence_table_version: "1.0",
+    evidence_table_generator_sha256: sha(
+      [
+        "services/omics/src/evidence-table.ts",
+        "services/omics/src/profile-schema.ts",
+        "services/omics/src/private-fields.ts",
+      ]
+        .map((file) => fs.readFileSync(file, "utf8"))
+        .join("\n"),
+    ),
     ...(profiles.length
       ? {
           profile_coverage: {
@@ -242,6 +264,7 @@ function main() {
             ).length,
           },
           changelog: [
+            "Add release-pinned field-level evidence tables in CSV and JSONL, separating individual claims from context-only references and catalogue metadata.",
             "Expand model and benchmark explanations using pinned primary evidence; existing result values and IDs remain unchanged.",
             "Add field-level evidence status and summary citations; distinguish AlphaFold Server from the downloadable model.",
             "Preserve earlier release bytes and expose unresolved source concerns on result pages and comparisons.",

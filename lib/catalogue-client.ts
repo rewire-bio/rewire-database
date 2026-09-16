@@ -7,6 +7,7 @@ export type CatalogueRelease = ReturnType<Query["release"]>;
 export type CataloguePage = ReturnType<Query["list"]>;
 export type CatalogueDetail = NonNullable<ReturnType<Query["get"]>>;
 export type ResultsPage = ReturnType<Query["results"]>;
+export type EvidencePage = ReturnType<Query["evidence"]>;
 export type Comparison = ReturnType<Query["compare"]>;
 
 /** Browser traffic always pins one release. Never send contributor credentials. */
@@ -38,6 +39,8 @@ export function catalogueClient(releaseId: string) {
       read<CatalogueDetail | null>("get", input),
     results: (input: Parameters<Query["results"]>[0]) =>
       read<ResultsPage>("results", input),
+    evidence: (input: Parameters<Query["evidence"]>[0]) =>
+      read<EvidencePage>("evidence", input),
     compare: (input: Parameters<Query["compare"]>[0]) =>
       read<Comparison>("compare", input),
   };

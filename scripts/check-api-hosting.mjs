@@ -58,6 +58,14 @@ try {
   assert.ok(reciprocal.items.some(item=>item.result.id===result.record.id));
   const filtered = await query('results',{...pinned,id:model.record.id,configuration_id:row.evaluation.id,metric:row.result.attributes.metric});
   assert.equal(filtered.total,1);
+  const evidence = await query('evidence',{...pinned,id:model.record.id,scope:'individual_claim',limit:2});
+  assert.equal(evidence.items.length,2);
+  assert.ok(evidence.next_cursor);
+  const nextEvidence = await query('evidence',{...pinned,id:model.record.id,scope:'individual_claim',limit:2,cursor:evidence.next_cursor});
+  assert.equal(new Set([...evidence.items,...nextEvidence.items].map(item=>item.row_id)).size,4);
+  await query('evidence',{...pinned,id:model.record.id,scope:'record_context',cursor:evidence.next_cursor},400);
+  const resultEvidence = await query('evidence',{...pinned,id:result.record.id,scope:'individual_claim'});
+  assert.ok(resultEvidence.items.some(item=>item.value==='78.5' && item.source_locator.includes('Table 1')));
   const comparison = await query('compare',{...pinned,ids:[result.record.id,result.record.id]});
   assert.equal(comparison.compatible,false,'A result cannot count as independent evidence twice');
   const privateProbe=structuredClone(snapshot);

@@ -1,3 +1,4 @@
+import { assertNoPrivateFields } from "../services/omics/src/private-fields";
 export const omicsKinds = [
   "model",
   "benchmark",
@@ -27,27 +28,11 @@ export interface OmicsCatalogue {
   records: OmicsRecord[];
   coverage: Record<string, unknown>;
 }
-const privateKeys = new Set([
-  "email",
-  "session_token",
-  "access_token",
-  "token",
-  "token_hash",
-  "private_correspondence",
-  "contact_email",
-]);
-function rejectPrivateData(value: unknown): void {
-  if (!value || typeof value !== "object") return;
-  for (const [key, child] of Object.entries(value)) {
-    if (privateKeys.has(key.toLowerCase()))
-      throw new Error(
-        "Private contribution data cannot enter the public catalogue.",
-      );
-    rejectPrivateData(child);
-  }
-}
 export function parseCatalogue(value: unknown): OmicsCatalogue {
-  rejectPrivateData(value);
+  assertNoPrivateFields(
+    value,
+    "Private contribution data cannot enter the public catalogue.",
+  );
   const catalogue = value as OmicsCatalogue;
   if (
     catalogue?.schema_version !== "1.0" ||
@@ -221,8 +206,7 @@ export function compareResults(
       (evaluation) =>
         (
           evaluation?.attributes.comparison as
-            | Record<string, unknown>
-            | undefined
+            Record<string, unknown> | undefined
         )?.[field],
     );
     if (values.some((value) => !known(value)))

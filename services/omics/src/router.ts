@@ -105,6 +105,31 @@ export const appRouter = t.router({
           return q.results(query);
         }),
       ),
+    evidence: t.procedure
+      .input(
+        z
+          .object({
+            ...pinned,
+            ...pagination,
+            id,
+            q: z.string().max(300).optional(),
+            scope: z
+              .enum([
+                "individual_claim",
+                "record_context",
+                "catalogue_metadata",
+                "source_metadata",
+              ])
+              .optional(),
+          })
+          .strict(),
+      )
+      .query(({ input }) =>
+        readCatalogue(input.release_id, (q) => {
+          const { release_id, ...filters } = input;
+          return q.evidence(filters);
+        }),
+      ),
     compare: t.procedure
       .input(z.object({ ...pinned, ids: z.array(id).min(2).max(20) }).strict())
       .query(({ input }) =>

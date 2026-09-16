@@ -1,3 +1,5 @@
+import { assertNoPrivateFields as assertPublicCatalogue } from "./private-fields.js";
+import { createEvidenceIndex } from "./evidence-table.js";
 /** The public catalogue contract shared by Firestore and static-release adapters. */
 export interface CatalogueRecord {
   id: string;
@@ -52,23 +54,7 @@ export interface ResultRow {
   origin: string;
   review_status: string;
 }
-const privateKeys = new Set([
-  "email",
-  "contact_email",
-  "session_token",
-  "access_token",
-  "token",
-  "token_hash",
-  "private_correspondence",
-]);
-export function assertPublicCatalogue(value: unknown): void {
-  if (!value || typeof value !== "object") return;
-  for (const [key, child] of Object.entries(value)) {
-    if (privateKeys.has(key.toLowerCase()))
-      throw new Error("Private data cannot enter a public catalogue release.");
-    assertPublicCatalogue(child);
-  }
-}
+export { assertPublicCatalogue };
 function canonical(value: unknown): string {
   if (Array.isArray(value)) return JSON.stringify(value.map(canonical));
   if (value && typeof value === "object")
@@ -105,6 +91,7 @@ export function createCatalogueQuery(snapshot: CatalogueSnapshot) {
     .filter((r) => r.status !== "excluded")
     .sort((a, b) => a.id.localeCompare(b.id));
   const byId = new Map(records.map((r) => [r.id, r]));
+  const evidenceIndex = createEvidenceIndex(snapshot);
   if (byId.size !== records.length) throw new Error("Duplicate catalogue IDs");
   const reverse = new Map<
     string,
@@ -321,6 +308,39 @@ export function createCatalogueQuery(snapshot: CatalogueSnapshot) {
       );
       return page(selected, input, canonical(filters), (r) => r.id);
     },
+    evidence(input: {
+      id: string;
+      q?: string;
+      scope?: string;
+      cursor?: string;
+      limit?: number;
+    }) {
+      const { cursor, limit, ...filters } = input;
+      const q = input.q?.trim().toLowerCase();
+      const selected = evidenceIndex
+        .forRecord(input.id)
+        .filter(
+          (row) =>
+            (!input.scope || row.evidence_scope === input.scope) &&
+            (!q ||
+              [
+                row.property,
+                row.value,
+                row.source_title,
+                row.source_locator,
+                row.review_status,
+              ]
+                .join(" ")
+                .toLowerCase()
+                .includes(q)),
+        );
+      return page(
+        selected,
+        input,
+        `evidence:${canonical(filters)}`,
+        (row) => row.row_id,
+      );
+    },
     get({ id }: { id: string }) {
       const record = byId.get(id);
       if (!record) return null;
@@ -459,7 +479,8 @@ export function createCatalogueQuery(snapshot: CatalogueSnapshot) {
             (r) =>
               (
                 r.evaluation?.attributes.comparison as
-                  Record<string, unknown> | undefined
+                  | Record<string, unknown>
+                  | undefined
               )?.[field],
           ),
         );

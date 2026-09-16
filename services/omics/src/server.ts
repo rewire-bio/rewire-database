@@ -1,14 +1,6 @@
-import { createHTTPHandler } from "@trpc/server/adapters/standalone";
+import { contributionHttpHandler } from "./http-handler.js";
 import { createServer } from "node:http";
 import { pathToFileURL } from "node:url";
-import { appRouter } from "./router.js";
-import { context } from "./auth.js";
-const handler = createHTTPHandler({
-  router: appRouter,
-  basePath: "/trpc/",
-  createContext: ({ req }) => context(req.headers.authorization),
-  maxBodySize: 64 * 1024,
-});
 const origins = (
   process.env.ALLOWED_ORIGINS || "http://localhost:3000,http://localhost:3001"
 ).split(",");
@@ -36,7 +28,7 @@ export function createAppServer() {
       res.end(JSON.stringify({ status: "ok" }));
       return;
     }
-    handler(req, res);
+    void contributionHttpHandler(req, res);
   });
 }
 if (

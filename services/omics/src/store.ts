@@ -301,8 +301,11 @@ export async function transition(
         fail("CONFLICT", "Publication requires released record IDs.");
       const release = db.collection("catalogueReleases").doc(releaseId);
       const releaseDoc = await tx.get(release);
-      if (releaseDoc.data()?.state !== "ready")
-        fail("CONFLICT", "The release is not ready.");
+      if (
+        releaseDoc.data()?.state !== "ready" ||
+        !releaseDoc.data()?.published_at
+      )
+        fail("CONFLICT", "The release is not published.");
       const records = await Promise.all(
         publishedIds.map((recordId) =>
           tx.get(release.collection("records").doc(recordId)),

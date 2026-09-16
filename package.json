@@ -1,0 +1,40 @@
+{
+  "name": "rewire-database",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "npm run export:benchmark-literature && next dev",
+    "build": "npm run validate:benchmark-literature && npm run export:benchmark-literature && next build",
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit",
+    "validate:benchmark-literature": "node scripts/validate-benchmark-literature.mjs",
+    "export:benchmark-literature": "node scripts/export-benchmark-literature.mjs",
+    "test": "vitest run",
+    "check:export": "node scripts/check-export.mjs",
+    "preview": "wrangler dev",
+    "deploy": "wrangler deploy"
+  },
+  "dependencies": {
+    "lucide-react": "^0.473.0",
+    "next": "14.2.16",
+    "react": "^18",
+    "react-dom": "^18"
+  },
+  "devDependencies": {
+    "@tailwindcss/typography": "^0.5.16",
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "eslint": "^8",
+    "eslint-config-next": "14.2.16",
+    "postcss": "^8",
+    "tailwindcss": "^3.4.1",
+    "tailwindcss-animate": "^1.0.7",
+    "typescript": "^5",
+    "vitest": "^1.0.4",
+    "wrangler": "4.132.0"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

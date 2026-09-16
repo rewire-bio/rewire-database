@@ -1,0 +1,32 @@
+.section { padding: 36px 0 44px; border-bottom: 1px solid var(--line); }
+.section h2 { font-size: 24px; margin-bottom: 9px; }
+.section > div > p { color: var(--ink-2); margin: 0 0 20px; }
+.domainGrid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.domainCard { display: flex; flex-direction: column; min-width: 0; min-height: 190px; border: 1px solid var(--line); background: white; padding: 20px; border-radius: var(--radius-md); }
+.domainCard:hover { border-color: var(--accent); box-shadow: 0 6px 18px rgba(13, 148, 136, .08); }
+.domainCard h3 { font-size: 18px; margin-bottom: 8px; }
+.domainCard p { color: var(--ink-2); font-size: 14px; line-height: 1.5; margin: 0 0 13px; }
+.domainCard span { color: var(--ink-3); font-family: var(--mono); font-size: 11px; margin-top: auto; }
+.domainCard a { color: var(--accent-ink); font-size: 13px; font-weight: 600; margin-top: 12px; }
+.modelControls { display: grid; grid-template-columns: 2fr 1fr; gap: 14px; max-width: 700px; }
+.modelControls label { display: flex; flex-direction: column; gap: 5px; font-family: var(--mono); font-size: 11px; color: var(--ink-3); }
+.modelControls input, .modelControls select { border: 1px solid var(--line-2); border-radius: var(--radius-sm); background: white; color: var(--ink); padding: 9px 11px; font-family: var(--sans); font-size: 14px; min-height: 40px; }
+.modelControls input:focus, .modelControls select:focus { outline: 2px solid var(--accent); outline-offset: 2px; }
+.modelCount { font-family: var(--mono); font-size: 11px; color: var(--ink-3); margin: 14px 0 9px; }
+.modelList { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px 16px; list-style: none; padding: 0; margin: 0; }
+.modelList li { display: flex; flex-direction: column; border-bottom: 1px solid var(--line); padding: 8px 0; min-width: 0; }
+.modelList a { color: var(--ink); font-size: 14px; }
+.modelList a:hover { color: var(--accent-ink); }
+.modelList a span { color: var(--ink-3); font-family: var(--mono); font-size: 11px; }
+.modelList small { color: var(--ink-3); font-size: 11px; }
+.literatureCta { border: 1px solid var(--line); border-radius: var(--radius-md); background: var(--bg-subtle); padding: 24px; display: flex; justify-content: space-between; align-items: center; gap: 15px; }
+.literatureCta h2 { font-size: 20px; margin-bottom: 5px; }
+.literatureCta p { font-size: 14px; color: var(--ink-2); margin: 0; }
+.literatureCta a { color: var(--accent-ink); font-weight: 600; white-space: nowrap; }
+.literatureCta a:hover { text-decoration: underline; }
+.correction { background: #fff7ed; border-left: 3px solid #c2410c; color: #7c2d12; padding: 16px 18px; margin: 0 0 25px; max-width: 800px; }
+.correction strong { color: #7c2d12; }
+@media (max-width: 850px) { .domainGrid, .modelList { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 560px) { .domainGrid, .modelList, .modelControls { grid-template-columns: 1fr; } .literatureCta { flex-direction: column; align-items: flex-start; } }
+
+.historical { scroll-margin-top: 74px; }

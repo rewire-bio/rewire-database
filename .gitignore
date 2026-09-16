@@ -1,0 +1,73 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+.yarn/install-state.gz
+
+# testing
+/coverage
+
+# next.js
+/.next/
+/out/
+/public/benchmark-literature/results.csv
+/public/benchmark-literature/papers.json
+
+# production
+/build
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# local env files
+.env*.local
+.env
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+.qodo
+
+.early.coverage
+
+# Terraform
+.terraform/
+terraform.tfstate
+terraform.tfstate.backup
+*.tfvars
+.terraform.lock.hcl
+
+# Explicitly ignore problematic state file
+terraform/terraform.tfstate.backup
+
+# local Claude/Codex state
+.claude/settings.local.json
+
+# local blog-generation workspaces and legacy archive
+/workbench/**
+/outputs/
+/reports/
+/blog-post-*/
+/research-recommendations/
+
+# Python and generator caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Cloudflare local state
+.wrangler/
+.dev.vars*

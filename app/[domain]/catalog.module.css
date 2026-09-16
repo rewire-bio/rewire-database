@@ -1,0 +1,150 @@
+.intro {
+  max-width: 760px;
+}
+
+.breadcrumb {
+  display: inline-block;
+  margin-bottom: 14px;
+  color: var(--accent-ink);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.breadcrumb:hover,
+.source:hover,
+.jump:hover {
+  text-decoration: underline;
+}
+
+.explain {
+  max-width: 800px;
+  margin: 0 0 28px;
+  color: var(--ink-2);
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0 0 30px;
+  padding: 0;
+  list-style: none;
+}
+
+.legend li,
+.pill {
+  display: inline-block;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 3px 10px;
+  color: var(--ink-2);
+  background: var(--bg-subtle);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.card {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--card);
+  padding: 22px;
+  scroll-margin-top: 84px;
+}
+
+.card h3 {
+  margin-bottom: 5px;
+  font-size: 21px;
+}
+
+.card p {
+  margin: 10px 0 0;
+  color: var(--ink-2);
+  font-size: 14px;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  color: var(--ink-3);
+  font-size: 12px;
+}
+
+.source,
+.jump {
+  color: var(--accent-ink);
+  font-weight: 600;
+}
+
+.source {
+  display: inline-block;
+  margin-top: 12px;
+  font-size: 13px;
+}
+
+.paperLink {
+  display: block;
+  margin-top: 6px;
+  color: var(--accent-ink);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.paperLink:hover { text-decoration: underline; }
+
+.matches {
+  margin-top: 20px;
+  border-top: 1px solid var(--line);
+  padding-top: 15px;
+}
+
+.matches h4 {
+  margin-bottom: 10px;
+  font-size: 13px;
+  color: var(--ink-3);
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+
+.match {
+  margin: 0 0 14px;
+}
+
+.match:last-child {
+  margin-bottom: 0;
+}
+
+.match a {
+  display: inline-block;
+  margin-bottom: 4px;
+  font-size: 14px;
+}
+
+.match p {
+  margin-top: 4px;
+  font-size: 13px;
+}
+
+.status {
+  border-color: #f0d993;
+  color: #704e00;
+  background: #fff9e7;
+}
+
+.footnote {
+  margin-top: 24px;
+  color: var(--ink-3);
+  font-size: 13px;
+}
+
+@media (max-width: 760px) {
+  .grid { grid-template-columns: 1fr; }
+  .card { padding: 18px; }
+}

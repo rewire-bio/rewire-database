@@ -1,0 +1,287 @@
+{
+  "source_repository": "https://github.com/timini/rewire.it",
+  "source_revision": "5f7b8ce477cc7afabc36e02bd002222c931623e7",
+  "extracted_at": "2026-09-16",
+  "files": [
+    {
+      "source_path": ".eslintrc.json",
+      "destination_path": ".eslintrc.json",
+      "source_sha256": "8d4a8d81dab1c22bcb28635249606f2e59fa816e8e58c56eecf6d2430949847a"
+    },
+    {
+      "source_path": ".gitignore",
+      "destination_path": ".gitignore",
+      "source_sha256": "59a581653671ab4b90196dee1667e37d3eb2c083e1669fe8060297e8ffbc671b"
+    },
+    {
+      "source_path": "AGENTS.md",
+      "destination_path": "AGENTS.md",
+      "source_sha256": "2ec605620143fbf7c1e6d0ca41f486e83d92de2bdf63a0f1d6e1923aa81745b3"
+    },
+    {
+      "source_path": "README.md",
+      "destination_path": "README.md",
+      "source_sha256": "f4bd9465151e0f8596e827bc8fd06f51ffc13b798d0cfdf3474ea74dec122de5"
+    },
+    {
+      "source_path": "app/benchmarks/ModelIndex.tsx",
+      "destination_path": "app/ModelIndex.tsx",
+      "source_sha256": "1b8deaca3226c652f9f4eb9ecf138de5ecffd410d33f07797db233cc6e2c8723"
+    },
+    {
+      "source_path": "app/benchmarks/[domain]/catalog.module.css",
+      "destination_path": "app/[domain]/catalog.module.css",
+      "source_sha256": "3f18872e5668ba74dea8eec17543b0d42516d38218927d07556387688e6ffdf6"
+    },
+    {
+      "source_path": "app/benchmarks/[domain]/page.tsx",
+      "destination_path": "app/[domain]/page.tsx",
+      "source_sha256": "7f30be53d6ff96cf283c70eb096a9759db86601e0f328704b361dc253b3daec7"
+    },
+    {
+      "source_path": "app/apple-icon.tsx",
+      "destination_path": "app/apple-icon.tsx",
+      "source_sha256": "df69a4ad9849242202ebaa081aa0c03b53b08001ddb1abe5209432685ca26976"
+    },
+    {
+      "source_path": "app/fonts/GeistMonoVF.woff",
+      "destination_path": "app/fonts/GeistMonoVF.woff",
+      "source_sha256": "e8b65928f551b17e3d67c3f709721b952c39842d14b00701f9232057fde73608"
+    },
+    {
+      "source_path": "app/fonts/GeistVF.woff",
+      "destination_path": "app/fonts/GeistVF.woff",
+      "source_sha256": "296fafafd41304f7c992079054b8af914dbbd865f32de97c66d0f613b55755d6"
+    },
+    {
+      "source_path": "app/globals.css",
+      "destination_path": "app/globals.css",
+      "source_sha256": "96400d650a0eb92a7dca83672471ad5dd45b319ab761fd375566158c4574b0ac"
+    },
+    {
+      "source_path": "app/icon.svg",
+      "destination_path": "app/icon.svg",
+      "source_sha256": "7a342c19b850bfe8ba58d82f03c941c68ad33b1f6bae0e4ff67673e102743e81"
+    },
+    {
+      "source_path": "app/icon.tsx",
+      "destination_path": "app/icon.tsx",
+      "source_sha256": "c46a94e1f836acfa476a37784cbcd5a759bd93f368b7954ad00f268911779493"
+    },
+    {
+      "source_path": "app/layout.tsx",
+      "destination_path": "app/layout.tsx",
+      "source_sha256": "5eb70bb4fcc132efe87be312cccd1d5c51e55dcf8137a5dc15989f806c4b12d7"
+    },
+    {
+      "source_path": "app/benchmarks/literature/LiteratureExplorer.tsx",
+      "destination_path": "app/literature/LiteratureExplorer.tsx",
+      "source_sha256": "f2252495526bdfcadb3325905cf51a5e4936ddccf601af0486ee814cdfa4cfd1"
+    },
+    {
+      "source_path": "app/benchmarks/literature/literature.module.css",
+      "destination_path": "app/literature/literature.module.css",
+      "source_sha256": "2cddc672e067431fb082c03c18a4e595190f598ca48180ec830fafe8b60e7a56"
+    },
+    {
+      "source_path": "app/benchmarks/literature/page.tsx",
+      "destination_path": "app/literature/page.tsx",
+      "source_sha256": "26c4c7f09dc1e954dfb11095a97ba8cb7d9b0f172e4501826c8bac907ac5ce1b"
+    },
+    {
+      "source_path": "app/benchmarks/literature/papers/[id]/page.tsx",
+      "destination_path": "app/literature/papers/[id]/page.tsx",
+      "source_sha256": "7802a152f116c72a3d717b2cdd66354877f5f5f5d3a1c71cb201a939b5e1dc52"
+    },
+    {
+      "source_path": "app/benchmarks/overview.module.css",
+      "destination_path": "app/overview.module.css",
+      "source_sha256": "a15f444f1158ccd0b6bf4705c77f33bef81724bca158be35e8cb5ae97fb8e38b"
+    },
+    {
+      "source_path": "app/benchmarks/page.tsx",
+      "destination_path": "app/page.tsx",
+      "source_sha256": "aa3642478cf4016517885b760126dcf2a65941fe9857e899117c77540a9f4737"
+    },
+    {
+      "source_path": "app/robots.ts",
+      "destination_path": "app/robots.ts",
+      "source_sha256": "5b1f82d22869cb9c2215d3563778f245037cd4bc1063722ab4adb1af12024d11"
+    },
+    {
+      "source_path": "app/benchmarks/runs/mfass-v2/page.tsx",
+      "destination_path": "app/runs/mfass-v2/page.tsx",
+      "source_sha256": "65bdde78d84bee671f3d0eaed835f8e692724085131d20a6ceb28fe37064f2c9"
+    },
+    {
+      "source_path": "app/benchmarks/runs/mfass-v2/run.module.css",
+      "destination_path": "app/runs/mfass-v2/run.module.css",
+      "source_sha256": "49e6b031329fed278bd6cfcd580a7676c97ad6cb8801bf64d2e11054842a58f1"
+    },
+    {
+      "source_path": "app/sitemap.ts",
+      "destination_path": "app/sitemap.ts",
+      "source_sha256": "4cc63078ed19cd048d4820226159acc4abbe7d89f16d057f2b88f41e3b587d9b"
+    },
+    {
+      "source_path": "components/Footer.tsx",
+      "destination_path": "components/Footer.tsx",
+      "source_sha256": "d44e3a133a6b70f3f6f125a59fe88bf7486dfa572aaf33ab0a72070f5728edb7"
+    },
+    {
+      "source_path": "components/header.tsx",
+      "destination_path": "components/header.tsx",
+      "source_sha256": "e4b06517acf7111843cd787924909c382d63c2dcc2aefd30cb22f343eb9aea5c"
+    },
+    {
+      "source_path": "data/benchmark-literature/README.md",
+      "destination_path": "data/benchmark-literature/README.md",
+      "source_sha256": "5d4ef2f419fc0ff12ff815185a0a4d018dfeceb5089cfd1d0d7cee4de7818ff7"
+    },
+    {
+      "source_path": "data/benchmark-literature/batches/batch-2-papers.json",
+      "destination_path": "data/benchmark-literature/batches/batch-2-papers.json",
+      "source_sha256": "2994b250c36be16a02b6d1119f901605339a9377239ab362b6bcfaf112cb9c98"
+    },
+    {
+      "source_path": "data/benchmark-literature/batches/batch-2-results.csv",
+      "destination_path": "data/benchmark-literature/batches/batch-2-results.csv",
+      "source_sha256": "525157f326273543ff0329a24f28102758d58e4d7d427f8c1d05601b0633f67e"
+    },
+    {
+      "source_path": "data/benchmark-literature/batches/batch-2-review.md",
+      "destination_path": "data/benchmark-literature/batches/batch-2-review.md",
+      "source_sha256": "a082bd9486a5d7fdbcd062f921e86e13c9801fd948a530e6f983115d1db53c9d"
+    },
+    {
+      "source_path": "data/benchmark-literature/batches/batch-3-papers.json",
+      "destination_path": "data/benchmark-literature/batches/batch-3-papers.json",
+      "source_sha256": "8b55394573a8637ade70afe1eac754d42cc71bb510863f25f6d69334586539c5"
+    },
+    {
+      "source_path": "data/benchmark-literature/batches/batch-3-results.csv",
+      "destination_path": "data/benchmark-literature/batches/batch-3-results.csv",
+      "source_sha256": "4be9e8d956ca1c160ef05163f32403f1d55b8659d60786fdbe65e52df1254de5"
+    },
+    {
+      "source_path": "data/benchmark-literature/batches/batch-3-review.md",
+      "destination_path": "data/benchmark-literature/batches/batch-3-review.md",
+      "source_sha256": "3784713e5928d0e5806a547098222c68cd4b3f923a1b5c2596a08fe0a9893fb6"
+    },
+    {
+      "source_path": "data/benchmark-literature/batches/batch-4-papers.json",
+      "destination_path": "data/benchmark-literature/batches/batch-4-papers.json",
+      "source_sha256": "9aa3b0377dc5b1997538d3f268b40e82a1a397c0d1a4e7630c92099dabcdb933"
+    },
+    {
+      "source_path": "data/benchmark-literature/batches/batch-4-results.csv",
+      "destination_path": "data/benchmark-literature/batches/batch-4-results.csv",
+      "source_sha256": "b099fe28713104a1f965fc2cddc7a60e67aa2fc3ceafa121a21e1bc5686e247d"
+    },
+    {
+      "source_path": "data/benchmark-literature/batches/batch-4-review.md",
+      "destination_path": "data/benchmark-literature/batches/batch-4-review.md",
+      "source_sha256": "de1fa274525c1a4928e13a200a93e3a91564a3a119df777f107bf8d9e8e6aa4b"
+    },
+    {
+      "source_path": "data/benchmark-literature/papers.json",
+      "destination_path": "data/benchmark-literature/papers.json",
+      "source_sha256": "4b1a9385b89d3adfe7f20487c4c235f5f108bef95e5d8254bf4df16426483bab"
+    },
+    {
+      "source_path": "data/benchmark-literature/results.csv",
+      "destination_path": "data/benchmark-literature/results.csv",
+      "source_sha256": "138ce6413988a18b4f5f264b4032ef4eab157cbab6447dee6bafc4f4ccf17747"
+    },
+    {
+      "source_path": "data/benchmark-literature/review-2026-09-16.md",
+      "destination_path": "data/benchmark-literature/review-2026-09-16.md",
+      "source_sha256": "8517ad1ffb5bce2f15d52f010f8ff31da10d42b6cb47dbc95b8e2abefc0ee7fd"
+    },
+    {
+      "source_path": "data/benchmark-runs/mfass-v2.json",
+      "destination_path": "data/benchmark-runs/mfass-v2.json",
+      "source_sha256": "a3af693afc070b39b334e359beed7f9affd76f7456a4f9264e2d1e9dab26111d"
+    },
+    {
+      "source_path": "lib/benchmark-catalog.ts",
+      "destination_path": "lib/benchmark-catalog.ts",
+      "source_sha256": "cbf8f8a580a4d9db74860337b110b30f1ed4ddbb49f4fd97d3dc1153006dceb2"
+    },
+    {
+      "source_path": "lib/benchmark-literature.ts",
+      "destination_path": "lib/benchmark-literature.ts",
+      "source_sha256": "fa00bf3fb15bc889ba0c2a449a7a948aa45ec67dd0d69ddbacc6212252df36b5"
+    },
+    {
+      "source_path": "lib/benchmark-model-aliases.ts",
+      "destination_path": "lib/benchmark-model-aliases.ts",
+      "source_sha256": "10d8259855aa5054a5fc8bc68afec1323c67c9d1fb455be5ba6f0a7185a641d8"
+    },
+    {
+      "source_path": "next.config.mjs",
+      "destination_path": "next.config.mjs",
+      "source_sha256": "04f9ffd8b2395ef8fb2c58dae0d98416639a6908f3a269344e5a62f54a952218"
+    },
+    {
+      "source_path": "package-lock.json",
+      "destination_path": "package-lock.json",
+      "source_sha256": "69fa86367e755d3931f4b625560afa1be65d34cec1549b4f838f79ec7aed7683"
+    },
+    {
+      "source_path": "package.json",
+      "destination_path": "package.json",
+      "source_sha256": "5dc8720c980a15d7285585d34c60ec923f3c58a740dc8355e9a2e987b1b4ee37"
+    },
+    {
+      "source_path": "postcss.config.mjs",
+      "destination_path": "postcss.config.mjs",
+      "source_sha256": "ac31e2a95ef64fe27ceb4124e101675273107aae2e33bc490b01d919e7f03646"
+    },
+    {
+      "source_path": "scripts/export-benchmark-literature.mjs",
+      "destination_path": "scripts/export-benchmark-literature.mjs",
+      "source_sha256": "f3e42e69c3349c14e8fead173ef40c25f875e091da854da1b9e61c0cbd8f8e32"
+    },
+    {
+      "source_path": "scripts/merge-benchmark-literature-batches.py",
+      "destination_path": "scripts/merge-benchmark-literature-batches.py",
+      "source_sha256": "0fe6e61006427efaa7fd6a195214717b26bd3561a6d57975769f8a18bf8ac763"
+    },
+    {
+      "source_path": "scripts/validate-benchmark-literature.mjs",
+      "destination_path": "scripts/validate-benchmark-literature.mjs",
+      "source_sha256": "c8021e989301fb1fd4a8c82bd57ab84812000c8c9440adb731a782ec78ba0bc9"
+    },
+    {
+      "source_path": "tailwind.config.ts",
+      "destination_path": "tailwind.config.ts",
+      "source_sha256": "278c9a7407e117c074bbd2bd94182c4cc358f3522ec6c7c3112c5206f802a06a"
+    },
+    {
+      "source_path": "tests/benchmark-catalog.test.ts",
+      "destination_path": "tests/benchmark-catalog.test.ts",
+      "source_sha256": "0d6296538f32176977094f2aa53f84963a234827f472c706e1e6099dd597378e"
+    },
+    {
+      "source_path": "tests/benchmark-literature.test.ts",
+      "destination_path": "tests/benchmark-literature.test.ts",
+      "source_sha256": "447d7719ad76b7d3b2882b3343ffff745d17a3fc8e3e26a93b1c94ab9fd7e03a"
+    },
+    {
+      "source_path": "tests/benchmark-model-search.test.ts",
+      "destination_path": "tests/benchmark-model-search.test.ts",
+      "source_sha256": "697e66937aefe9951b23011449820e505f15e79d1241d6f123523d4496c13000"
+    },
+    {
+      "source_path": "tsconfig.json",
+      "destination_path": "tsconfig.json",
+      "source_sha256": "54202f1d6d35ba51c3daea32bf67e8da24568ec0cb0c341fa0b5ed2ceb174f2d"
+    },
+    {
+      "source_path": "vitest.config.ts",
+      "destination_path": "vitest.config.ts",
+      "source_sha256": "d284916f975adda9e9310bcd87b513acc2941676d0bffbe768ed988381d9fa83"
+    }
+  ]
+}

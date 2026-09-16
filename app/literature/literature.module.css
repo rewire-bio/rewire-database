@@ -1,0 +1,42 @@
+.breadcrumb { display: flex; align-items: center; gap: 10px; margin-bottom: 22px; color: var(--ink-3); font-size: 13px; }
+.breadcrumb a { color: var(--accent-ink); }
+.breadcrumb a:hover { text-decoration: underline; }
+.notice { max-width: 900px; background: var(--accent-soft); color: var(--ink-2); border-left: 3px solid var(--accent); padding: 14px 18px; line-height: 1.55; margin-bottom: 26px; }
+.notice strong { color: var(--ink); }
+.summary { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; border-bottom: 1px solid var(--line); padding-bottom: 18px; margin-bottom: 26px; }
+.summary p { margin: 0; color: var(--ink-2); }
+.summary strong { color: var(--ink); }
+.summary a { color: var(--accent-ink); font-weight: 600; }
+.summary a:hover { text-decoration: underline; }
+.downloads { display: flex; flex-wrap: wrap; gap: 8px 22px; }
+.controls { background: var(--bg-subtle); border: 1px solid var(--line); border-radius: var(--radius-md); padding: 18px; }
+.search, .filter { display: flex; flex-direction: column; gap: 5px; color: var(--ink-3); font-family: var(--mono); font-size: 11px; }
+.search input, .filter select { width: 100%; min-height: 40px; padding: 8px 11px; border: 1px solid var(--line-2); border-radius: var(--radius-sm); background: white; color: var(--ink); font-family: var(--sans); font-size: 14px; }
+.search input:focus, .filter select:focus { outline: 2px solid var(--accent); outline-offset: 2px; }
+.filters { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; margin-top: 15px; }
+.count { color: var(--ink-3); font-family: var(--mono); font-size: 12px; margin: 22px 0 15px; }
+.empty { padding: 30px; background: var(--bg-subtle); color: var(--ink-2); }
+.results { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+.result { border: 1px solid var(--line); background: var(--card); border-radius: var(--radius-md); padding: 20px; min-width: 0; }
+.resultTop { display: flex; flex-wrap: wrap; align-items: center; gap: 7px 12px; font-family: var(--mono); font-size: 10px; color: var(--ink-3); margin-bottom: 13px; }
+.badge { background: var(--accent-soft); color: var(--accent-ink); border: 1px solid rgba(13, 148, 136, .24); border-radius: 999px; padding: 2px 8px; font-weight: 600; }
+.result h2 { font-size: 17px; line-height: 1.35; margin: 0 0 12px; }
+.result h2 a:hover { color: var(--accent-ink); }
+.identity { margin: 0 0 14px; color: var(--ink-2); font-size: 14px; }
+.identity strong { color: var(--ink); }
+.fields { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 12px 0; margin: 0; }
+.fields div { min-width: 0; }
+.fields dt { color: var(--ink-3); font-family: var(--mono); font-size: 10px; margin-bottom: 4px; }
+.fields dd { margin: 0; color: var(--ink-2); font-size: 13px; overflow-wrap: anywhere; }
+.fields .score { color: var(--ink); font-family: var(--mono); font-weight: 600; }
+.score small { display: block; color: var(--ink-3); font-weight: 400; }
+.protocol { margin: 13px 0; color: var(--ink-2); font-size: 13px; line-height: 1.5; }
+.source { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; color: var(--ink-3); font-family: var(--mono); font-size: 10px; }
+.source a { color: var(--accent-ink); font-weight: 600; }
+.source a:hover { text-decoration: underline; }
+.more { display: block; margin: 24px auto 0; padding: 11px 18px; border: 1px solid var(--line-2); border-radius: var(--radius-sm); background: var(--card); color: var(--accent-ink); font-family: var(--sans); font-size: 14px; font-weight: 600; cursor: pointer; }
+.more:hover { background: var(--accent-soft); }
+.more:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+@media (max-width: 900px) { .filters { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 690px) { .results { grid-template-columns: 1fr; } .fields { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 520px) { .filters { grid-template-columns: 1fr; } .fields { grid-template-columns: 1fr; } }

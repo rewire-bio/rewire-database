@@ -1,0 +1,8 @@
+.breadcrumb { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-bottom: 24px; color: var(--ink-3); font-family: var(--mono); font-size: 12px; }
+.breadcrumb a, .back a { color: var(--accent-ink); }
+.breadcrumb a:hover, .back a:hover { text-decoration: underline; }
+.notice { max-width: 900px; margin: 0 0 28px; padding: 15px 19px; border-left: 3px solid var(--accent); background: var(--accent-soft); color: var(--ink-2); line-height: 1.55; }
+.notice strong { color: var(--ink); }
+.tableScroll { overflow-x: auto; margin: 16px 0 23px; }
+.tableScroll table { min-width: 760px; }
+.back { margin-top: 22px; }

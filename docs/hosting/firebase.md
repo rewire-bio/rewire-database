@@ -58,3 +58,13 @@ If API verification fails after activation, stop before Hosting deployment and r
 Keep the previous GCP blog origin until the separately verified blog cutover has completed its seven-day observation period. The GCP project now permanently owns the database: do not destroy Google DNS, Firestore, Functions, Auth, email records, backups or Terraform state while retiring obsolete blog resources.
 
 References checked 16 September 2026: [Firebase runtime configuration](https://firebase.google.com/docs/functions/manage-functions), [HTTP Functions](https://firebase.google.com/docs/functions/http-events), [Hosting configuration](https://firebase.google.com/docs/hosting/full-config), [custom domains with external DNS](https://firebase.google.com/docs/hosting/custom-domain).
+
+## Infrastructure bootstrap and initial baseline
+
+The first production baseline used Hosting version `d1fa1c852d315578` (CI run `35113876867`). This remains the pre-catalogue rollback reference; the earlier initial fallback version was `90cf2cc20527e03f`.
+
+The dedicated CI account is `rewire-database-hosting@rewire-it.iam.gserviceaccount.com`; the WIF provider is `projects/380052249319/locations/global/workloadIdentityPools/rewire-database-ci/providers/github`, restricted to repository ID `1373095654`, owner ID `330016617`, main and the Firebase workflow. Firebase CLI also checks act-as permission on the existing App Engine service account, even though this function uses the explicit read-only runtime identity.
+
+Firestore Native Standard is in `europe-west2`, with deletion protection. Enable Firestore, Functions, Cloud Run, Cloud Build, Artifact Registry, Firebase Rules, Eventarc and Pub/Sub APIs before running CI. Firebase requires the last two during HTTP Gen2 provisioning. Create their service identities during infrastructure bootstrap.
+
+The `europe-west2/gcf-artifacts` repository has a cleanup policy deleting build images older than 14 days while retaining the latest three versions. Configure this before first noninteractive deployment, or Firebase CLI may stop after deploying the function because no cleanup policy exists. These policies concern build images only; reviewed data releases are retained.

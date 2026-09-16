@@ -1,5 +1,6 @@
 {
   "hosting": {
+    "site": "rewire-it",
     "public": "out",
     "ignore": [
       "firebase.json",
@@ -62,8 +63,7 @@
           "region": "europe-west2"
         }
       }
-    ],
-    "site": "rewire-it"
+    ]
   },
   "emulators": {
     "hosting": {

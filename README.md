@@ -21,13 +21,15 @@ npm run check:export
 npm run preview
 ```
 
-Next.js exports to `out/`. Wrangler preview serves the static site locally without publication.
+Next.js exports to `out/`. The Firebase Hosting emulator serves the static site locally without publication.
 
 ## Deployment
 
-Checks run on pull requests without public previews. Main deployments require repository variable `CLOUDFLARE_DEPLOY_ENABLED=true` and secrets `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID`. Configure them only when DNS and organisation migration are ready. Wrangler binds only `benchmarks.rewire.it`; workers.dev and preview URLs are disabled. No GCP workflow is included.
+The database website targets Firebase Hosting. Its API, Firebase Auth and Firestore belong to the same Firebase project and this repository; the unpublished review branch contains that service. DNS remains on Google Cloud DNS. The blog has its own Cloudflare deployment.
 
-Record the deployed version before each release. Roll back with `npx wrangler rollback <version-id>`. Keep GCP available for the migration's seven-day rollback period.
+Checks run on private pull requests without publishing previews. Production deployment is disabled until `FIREBASE_DEPLOY_ENABLED=true`, an explicit `FIREBASE_PROJECT_ID`, and repository-specific Google Workload Identity Federation are configured. No long-lived service account keys or Cloudflare tokens are required for this repository. Deployment never applies Terraform or enables billing.
+
+See [Firebase deployment and rollback](docs/hosting/firebase.md). No backend or submission activation is included in this production-baseline migration.
 
 The blog owns permanent redirects from `/benchmarks/…` to equivalent paths here. Downloads retain `/benchmark-literature/papers.json` and `/benchmark-literature/results.csv`; the overview retains `#mfass-v1`.
 

@@ -11,3 +11,7 @@ Validated locally on 16 September 2026. This branch must not be deployed as part
 Production submissions require a separate hosting/email decision, authorised Firebase domains, configured service origins and the explicit `NEXT_PUBLIC_OMICS_CONTRIBUTIONS_ENABLED=true` flag. All remain disabled during migration. The new website itself mounts no analytics.
 
 The deferred profile plan is saved under `docs/plans/model-benchmark-profiles.md`. No profile rewrite, new scientific run, numerical claim changes or release-schema changes were introduced.
+
+## Firebase integration, 16 September 2026
+
+The hosting target was changed to Firebase after the owner confirmed that website and API should stay together. A fresh install, all 41 frontend tests, lint, TypeScript, 1,312-page production build and all release/extraction hash checks passed. The combined Firebase Hosting, Functions, Auth and Firestore emulators passed real HTTP checks for static routes, contribution privacy headers and same-origin API forwarding. All 23 service tests passed, including full /api/trpc paths, batching and a default-off server gate. No production deployment, live email, billing activation or scientific data change was performed.

@@ -11,15 +11,18 @@
     "export:benchmark-literature": "node scripts/export-benchmark-literature.mjs",
     "test": "vitest run",
     "check:export": "node scripts/check-export.mjs && tsx scripts/omics/check-export.ts",
-    "preview": "wrangler dev",
-    "deploy": "wrangler deploy",
+    "preview": "firebase emulators:start --only hosting --project demo-rewire-omics",
+    "deploy": "firebase deploy --only hosting",
     "omics:migrate": "tsx scripts/omics/migrate.ts",
     "omics:release": "tsx scripts/omics/release.ts",
     "omics:check-sources": "tsx scripts/omics/check-literature.ts",
     "test:omics": "vitest run tests/omics-*.test.ts",
     "omics:service:test": "npm --prefix services/omics run test:emulator",
     "omics:check-updates": "tsx scripts/omics/check-updates.ts",
-    "omics:check-export": "tsx scripts/omics/check-export.ts"
+    "omics:check-export": "tsx scripts/omics/check-export.ts",
+    "preview:stack": "npm --prefix services/omics run build && firebase emulators:start --project demo-rewire-omics --only hosting,functions,auth,firestore",
+    "deploy:stack": "firebase deploy --only hosting,functions:omics,firestore",
+    "check:http": "node scripts/check-hosting-http.mjs"
   },
   "dependencies": {
     "@trpc/client": "^11.18.0",
@@ -44,7 +47,7 @@
     "tsx": "^4.23.13",
     "typescript": "^5",
     "vitest": "^1.0.4",
-    "wrangler": "4.132.0"
+    "firebase-tools": "15.30.1"
   },
   "engines": {
     "node": ">=22"

@@ -2,6 +2,19 @@
 
 Status: implementation started 2026-09-16. Model/benchmark profile work is deferred; see `model-benchmark-profiles.md`.
 
+## Revised hosting decision, 16 September 2026
+
+This decision supersedes the Cloudflare database and DNS portions of the original plan below. The three-repository split is unchanged.
+
+- Google Cloud DNS remains authoritative; no nameserver change or Gandi access is needed.
+- The benchmark website, API, Firebase Auth and Firestore target one Firebase project, with all application and deployment code in rewire-database.
+- Firebase Hosting serves benchmarks.rewire.it and forwards /api/trpc requests to the project's Firebase Function after backend activation is approved.
+- The blog retains its separate Cloudflare target. Its apex-versus-www decision remains pending; do not change the live blog hostname implicitly.
+- Production submissions, unpublished catalogue features and billing activation remain excluded from this migration. No new paid infrastructure is provisioned.
+- Do not retire the GCP project: only dedicated obsolete blog-hosting resources may eventually be retired after the retention window.
+
+The initial Cloudflare database upload is unused and must not be activated. Database CI now targets Firebase and remains gated off until project setup is verified. See ../hosting/firebase.md for current deployment instructions. The remainder records the original agreed migration for history.
+
 ## Agreed ownership
 
 | Repository | Responsibility | Visibility |

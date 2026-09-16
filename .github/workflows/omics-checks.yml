@@ -12,6 +12,8 @@ on:
       - 'components/SiteAnalytics.tsx'
       - 'tests/omics-*.test.ts'
       - 'package*.json'
+      - 'firebase.json'
+      - 'scripts/check-hosting-http.mjs'
       - 'tsconfig.json'
       - '.github/workflows/omics-checks.yml'
   workflow_dispatch:

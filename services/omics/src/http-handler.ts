@@ -9,6 +9,18 @@ type Request = IncomingMessage & {
   body?: unknown;
 };
 
+// A disabled form alone cannot prevent direct API calls. Production must opt in.
+export async function deployedContributionHttpHandler(req: Request, res: ServerResponse) {
+  if (process.env.OMICS_CONTRIBUTIONS_ENABLED !== "true") {
+    res.setHeader("Cache-Control", "no-store");
+    res.setHeader("Content-Type", "application/json");
+    res.statusCode = 503;
+    res.end(JSON.stringify({ error: "Contributions are not enabled." }));
+    return;
+  }
+  await contributionHttpHandler(req, res);
+}
+
 // Hosting forwards the original path. Retain /trpc for direct service callers.
 export async function contributionHttpHandler(
   req: Request,

@@ -17,8 +17,14 @@ for (const paper of JSON.parse(read('data/benchmark-literature/papers.json'))) {
 for (const filename of ['papers.json', 'results.csv']) {
   assert.deepEqual(fs.readFileSync(`data/benchmark-literature/${filename}`), fs.readFileSync(`out/benchmark-literature/${filename}`));
 }
-for (const excluded of ['blog', 'benchmarks', 'database', 'contribute', 'omics']) {
+for (const excluded of ['blog', 'benchmarks']) {
   assert.equal(fs.existsSync(path.join('out', excluded)), false, `Unexpected content: ${excluded}`);
 }
 assert.equal(read('out/sitemap.xml').includes('https://rewire.it/'), false, 'Blog URL in database sitemap');
-console.log('Extraction hashes, historical paper routes, MFASS, downloads and production-only export verified.');
+console.log('Extraction hashes, historical paper routes, MFASS, downloads and review-branch export verified.');
+
+const review = JSON.parse(read('docs/review-extraction-manifest.json'));
+for (const row of review.files.filter(row => /^(data\/|public\/omics\/)/.test(row.destination_path))) {
+  assert.equal(createHash('sha256').update(fs.readFileSync(row.destination_path)).digest('hex'), row.source_sha256, `Preserved review data changed: ${row.destination_path}`);
+}
+console.log('Unpublished data and release bytes match their extraction receipt.');

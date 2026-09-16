@@ -71,3 +71,9 @@ __pycache__/
 # Cloudflare local state
 .wrangler/
 .dev.vars*
+
+/public/omics/
+/services/omics/node_modules/
+/services/omics/dist/
+/services/omics/.firebase/
+/services/omics/*-debug.log

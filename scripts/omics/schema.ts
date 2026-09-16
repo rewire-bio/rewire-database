@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { extensionsSchema } from "./extensions";
+import { profileSchema, validateProfileSources } from "../../lib/omics-profile";
 export const kinds = [
   "model",
   "benchmark",
@@ -74,6 +75,8 @@ export function validateRecords(input: unknown[]): RecordEntry[] {
       if (!byId.has(l.target_id))
         throw new Error(`Dangling ${r.id} -> ${l.target_id}`);
     const a = r.attributes;
+    if (a.profile !== undefined)
+      validateProfileSources(profileSchema.parse(a.profile), byId);
     if (a.extensions !== undefined) extensionsSchema.parse(a.extensions);
     if (r.kind === "source") {
       const u = new URL(String(a.url));

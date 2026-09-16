@@ -1,6 +1,8 @@
 import fs from "node:fs";
 import path from "node:path";
 import crypto from "node:crypto";
+import { enrichProfiles } from "../../lib/omics-profile";
+import { enrichAssociations } from "./enrich";
 import {
   validateRecords,
   publicRecords,
@@ -91,11 +93,13 @@ export function buildRelease(
     files: Object.fromEntries(
       Object.entries(files).map(([name, data]) => [name, sha(data)]),
     ),
-    changelog: [
-      "Initial omics-only linked catalogue; original literature identifiers and scores retained.",
-      "Only checked external numerical claims enter the catalogue; ambiguous values remain in the review queue.",
-      "Existing MFASS v2 runs remain separate from external literature.",
-    ],
+    changelog: Array.isArray(extraCoverage.changelog)
+      ? extraCoverage.changelog
+      : [
+          "Initial omics-only linked catalogue; original literature identifiers and scores retained.",
+          "Only checked external numerical claims enter the catalogue; ambiguous values remain in the review queue.",
+          "Existing MFASS v2 runs remain separate from external literature.",
+        ],
     compatibility: {
       papers: "/benchmark-literature/papers.json",
       results: "/benchmark-literature/results.csv",
@@ -104,9 +108,48 @@ export function buildRelease(
   };
   return { snapshot, manifest, files };
 }
+/** Reconstruct archived bytes from preserved inputs and reject any historical drift. */
+function restoreArchivedRelease(records: RecordEntry[]) {
+  const manifest = JSON.parse(
+    fs.readFileSync("data/omics/releases/2026-09-16-b5213be10a49.json", "utf8"),
+  );
+  const {
+    research_lanes,
+    search_entries,
+    legacy_papers,
+    legacy_result_rows,
+    source_inputs,
+  } = manifest.coverage;
+  const old = buildRelease(records, manifest.released_at, {
+    research_lanes,
+    search_entries,
+    legacy_papers,
+    legacy_result_rows,
+    source_inputs,
+  });
+  if (JSON.stringify(old.manifest) !== JSON.stringify(manifest))
+    throw new Error(
+      "Historical release reconstruction differs from its immutable receipt",
+    );
+  writeArchive(old);
+}
+function writeArchive(output: ReturnType<typeof buildRelease>) {
+  const dir = path.join("public/omics/releases", output.snapshot.release_id);
+  fs.mkdirSync(dir, { recursive: true });
+  const files = {
+    ...output.files,
+    "manifest.json": JSON.stringify(output.manifest, null, 2) + "\n",
+  };
+  for (const [name, data] of Object.entries(files)) {
+    const file = path.join(dir, name);
+    if (fs.existsSync(file) && fs.readFileSync(file, "utf8") !== data)
+      throw new Error("Attempt to overwrite immutable release " + file);
+    fs.writeFileSync(file, data);
+  }
+}
 function main() {
   const inputs = ["data/omics/migrated.jsonl", "data/omics/discovery.jsonl"];
-  const records = inputs.flatMap((file) =>
+  const baseRecords = inputs.flatMap((file) =>
     fs.existsSync(file)
       ? fs
           .readFileSync(file, "utf8")
@@ -116,7 +159,8 @@ function main() {
           .map((l) => JSON.parse(l))
       : [],
   );
-  if (!records.length) throw new Error("No reviewed catalogue inputs");
+  if (!baseRecords.length) throw new Error("No reviewed catalogue inputs");
+  restoreArchivedRelease(baseRecords);
   const ledger = fs.existsSync("data/omics/search-ledger.jsonl")
     ? fs
         .readFileSync("data/omics/search-ledger.jsonl", "utf8")
@@ -128,28 +172,73 @@ function main() {
   const audit = JSON.parse(
     fs.readFileSync("data/omics/release-config.json", "utf8"),
   );
+  const profileInputs = [
+    "data/omics/model-profiles.jsonl",
+    "data/omics/benchmark-profiles.jsonl",
+  ];
+  const associationInputs = [
+    "data/omics/model-profile-associations.jsonl",
+    "data/omics/benchmark-profile-associations.jsonl",
+  ];
+  const associated = enrichAssociations(
+    baseRecords,
+    associationInputs.flatMap((file) =>
+      fs.existsSync(file)
+        ? fs
+            .readFileSync(file, "utf8")
+            .split("\n")
+            .filter(Boolean)
+            .map((line) => JSON.parse(line))
+        : [],
+    ),
+  );
+  const records = enrichProfiles(
+    associated,
+    profileInputs.flatMap((file) =>
+      fs.existsSync(file)
+        ? fs
+            .readFileSync(file, "utf8")
+            .split("\n")
+            .filter(Boolean)
+            .map((line) => JSON.parse(line))
+        : [],
+    ),
+  );
+  const profiles = records
+    .filter((record) => record.attributes.profile)
+    .map((record) => record.attributes.profile as { coverage: string });
   const output = buildRelease(records, audit.released_at, {
+    ...(profiles.length
+      ? {
+          profile_coverage: {
+            total: profiles.length,
+            reviewed: profiles.filter(
+              (profile) => profile.coverage === "reviewed",
+            ).length,
+            limited: profiles.filter(
+              (profile) => profile.coverage === "limited",
+            ).length,
+          },
+          changelog: [
+            "Add sourced explanatory model and benchmark profiles and API query support; existing result values and IDs remain unchanged.",
+            "Profile review status is independent of numerical-result review; unresolved scientific metadata remains explicit.",
+          ],
+        }
+      : {}),
     research_lanes: 9,
     search_entries: ledger.length,
     legacy_papers: 100,
     legacy_result_rows: 149,
-    source_inputs: inputs.map((file) => ({
+    source_inputs: [
+      ...inputs,
+      ...profileInputs.filter((file) => fs.existsSync(file)),
+      ...associationInputs.filter((file) => fs.existsSync(file)),
+    ].map((file) => ({
       file,
       sha256: fs.existsSync(file) ? sha(fs.readFileSync(file)) : null,
     })),
   });
-  const dir = path.join("public/omics/releases", output.snapshot.release_id);
-  fs.mkdirSync(dir, { recursive: true });
-  for (const [name, data] of Object.entries(output.files)) {
-    const file = path.join(dir, name);
-    if (fs.existsSync(file) && fs.readFileSync(file, "utf8") !== data)
-      throw new Error("Attempt to overwrite immutable release " + file);
-    fs.writeFileSync(file, data);
-  }
-  fs.writeFileSync(
-    path.join(dir, "manifest.json"),
-    JSON.stringify(output.manifest, null, 2) + "\n",
-  );
+  writeArchive(output);
   fs.writeFileSync(
     "public/omics/catalogue.json",
     output.files["catalogue.json"],

@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { readFileSync } from "node:fs";
-import { parseCatalogue } from "@/lib/omics";
+import { buildCatalogue } from "@/lib/catalogue-build";
 import Explorer from "./database/Explorer";
 import styles from "./database/database.module.css";
 
@@ -13,9 +12,7 @@ export const metadata: Metadata = {
 };
 
 export default function BenchmarksPage() {
-  const catalogue = parseCatalogue(
-    JSON.parse(readFileSync("public/omics/catalogue.json", "utf8")),
-  );
+  const { catalogue, query } = buildCatalogue();
   const release = `/omics/releases/${catalogue.release_id}`;
   const external = catalogue.records.filter(
     (record) => record.kind === "result" && record.status === "source_checked",
@@ -48,7 +45,10 @@ export default function BenchmarksPage() {
             className={styles.browse}
             aria-label="Browse benchmark database"
           >
-            <Explorer records={catalogue.records} />
+            <Explorer
+              initial={query.list({ kind: "model", limit: 20 })}
+              release={query.release()}
+            />
           </section>
           <section id="evidence" className={styles.information}>
             <h2>About the evidence</h2>
@@ -72,9 +72,7 @@ export default function BenchmarksPage() {
                   Read the protocol, coverage and limitations behind our
                   corrected splice-variant evaluation.
                 </p>
-                <Link href="/runs/mfass-v2/">
-                  MFASS v2 evaluation →
-                </Link>
+                <Link href="/runs/mfass-v2/">MFASS v2 evaluation →</Link>
               </article>
               <article id="mfass-v1">
                 <h3>Correction history</h3>
@@ -82,9 +80,7 @@ export default function BenchmarksPage() {
                   MFASS v1 is superseded. Its original tables and methods remain
                   available as an archived report.
                 </p>
-                <Link href="/runs/mfass-v1/">
-                  Archived MFASS v1 report →
-                </Link>
+                <Link href="/runs/mfass-v1/">Archived MFASS v1 report →</Link>
               </article>
             </div>
             <details className={styles.section}>

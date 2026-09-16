@@ -1,3 +1,4 @@
+import { assertNoPrivateFields } from "../../services/omics/src/private-fields";
 import { z } from "zod";
 import { extensionsSchema } from "./extensions";
 import { profileSchema, validateProfileSources } from "../../lib/omics-profile";
@@ -36,37 +37,15 @@ export const recordSchema = z
   })
   .strict();
 export type RecordEntry = z.infer<typeof recordSchema>;
-const forbidden = new Set([
-  "email",
-  "email_address",
-  "contact_email",
-  "token",
-  "token_hash",
-  "private_correspondence",
-  "owner_uid",
-  "id_token",
-  "session_token",
-  "access_token",
-  "private_notes",
-  "password",
-  "verification_token",
-]);
-function privacy(value: unknown, location: string) {
-  if (Array.isArray(value))
-    return value.forEach((v, i) => privacy(v, `${location}[${i}]`));
-  if (value && typeof value === "object")
-    for (const [key, v] of Object.entries(value)) {
-      if (forbidden.has(key.toLowerCase()))
-        throw new Error(`Private field ${location}.${key}`);
-      privacy(v, `${location}.${key}`);
-    }
-}
 export function validateRecords(input: unknown[]): RecordEntry[] {
   const records = input.map((x) => recordSchema.parse(x));
   const byId = new Map(records.map((r) => [r.id, r]));
   if (byId.size !== records.length) throw new Error("Duplicate record ID");
   for (const r of records) {
-    privacy(r, r.id);
+    assertNoPrivateFields(
+      r,
+      "Private field cannot enter a public catalogue release.",
+    );
     for (const id of r.source_ids) {
       if (byId.get(id)?.kind !== "source")
         throw new Error(`Missing source ${id} for ${r.id}`);

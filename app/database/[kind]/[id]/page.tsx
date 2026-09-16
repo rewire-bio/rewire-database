@@ -15,6 +15,7 @@ import Profile, {
   Evidence,
   EvidenceConcerns,
 } from "@/components/catalogue/Profile";
+import EvidenceTable from "@/components/catalogue/EvidenceTable";
 import Results from "@/components/catalogue/Results";
 import { kindLabels } from "@/lib/omics-browse";
 import styles from "../../database.module.css";
@@ -73,6 +74,16 @@ export default function RecordPage({ params }: { params: Params }) {
   const { record } = detail;
   const results = query.results({ id: record.id, limit: 25 });
   const first = results.items[0];
+  const evidenceScope = ["model", "benchmark", "result"].includes(record.kind)
+    ? "individual_claim"
+    : record.kind === "source"
+      ? "source_metadata"
+      : "record_context";
+  const evidence = query.evidence({
+    id: record.id,
+    scope: evidenceScope,
+    limit: 10,
+  });
   const evaluated = record.kind === "evaluation" ? record : first?.evaluation;
   const entity = record.kind === "model" || record.kind === "benchmark";
   const verifiedAssociation = (
@@ -217,6 +228,7 @@ export default function RecordPage({ params }: { params: Params }) {
               <a href="#how-it-works">How it works</a>
               <a href="#results">Results</a>
               <a href="#strengths-limitations">Strengths and limitations</a>
+              <a href="#evidence">Evidence table</a>
               <a href="#sources">Sources and history</a>
             </nav>
           )}
@@ -474,6 +486,12 @@ export default function RecordPage({ params }: { params: Params }) {
               </ul>
             </section>
           )}
+          <EvidenceTable
+            key={`${catalogue.release_id}:${record.id}:evidence`}
+            id={record.id}
+            initial={evidence}
+            initialScope={evidenceScope}
+          />
           <section id="sources" className={styles.section}>
             <h2>Sources and history</h2>
             <p className={styles.muted}>

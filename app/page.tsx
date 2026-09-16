@@ -108,6 +108,13 @@ export default function BenchmarksPage() {
               <a href={`${release}/records.csv`} download>
                 CSV
               </a>
+              <a href={`${release}/evidence.csv`} download>
+                Evidence table (CSV)
+              </a>
+              <a href={`${release}/evidence.jsonl`} download>
+                Evidence table (JSONL)
+              </a>
+              <a href="/evidence/">Evidence and review methods</a>
               <a href={`${release}/manifest.json`}>
                 Checksums and release manifest
               </a>

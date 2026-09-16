@@ -21,7 +21,14 @@ export function restoreReleaseBundles(
     const manifest = JSON.parse(receipt);
     if (files["manifest.json"] !== receipt || manifest.release_id !== id)
       throw new Error("Archived manifest mismatch");
-    const expected = ["catalogue.json", "records.csv", "records.jsonl"].sort();
+    const expected = [
+      "catalogue.json",
+      "records.csv",
+      "records.jsonl",
+      ...(manifest.coverage?.evidence_table_version === "1.0"
+        ? ["evidence.csv", "evidence.jsonl"]
+        : []),
+    ].sort();
     if (
       JSON.stringify(Object.keys(manifest.files).sort()) !==
         JSON.stringify(expected) ||

@@ -7,6 +7,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   return [
     { url: `${base}/`, lastModified: catalogue.released_at },
     { url: `${base}/runs/mfass-v2/` },
+    { url: `${base}/evidence/`, lastModified: catalogue.released_at },
     ...catalogue.records.filter(record => record.kind !== "claim").map(record => ({ url: base + recordHref(record), lastModified: catalogue.released_at })),
   ];
 }

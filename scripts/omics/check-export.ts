@@ -1,3 +1,7 @@
+import {
+  createEvidenceIndex,
+  evidenceCsv,
+} from "../../services/omics/src/evidence-table";
 import fs from "node:fs";
 import path from "node:path";
 import crypto from "node:crypto";
@@ -14,6 +18,8 @@ function page(url: string) {
 }
 for (const record of records) {
   const html = page(`/database/${record.kind}/${record.id}/`);
+  if (!html.includes('id="evidence"'))
+    failures.push(`Missing evidence table: ${record.id}`);
   for (const match of html.matchAll(/<a\b[^>]*\bhref="([^"]+)"/g)) {
     const href = match[1];
     if (!href.startsWith("/database/") && !href.startsWith("/omics/")) continue;
@@ -24,6 +30,7 @@ for (const record of records) {
   }
 }
 for (const url of [
+  "/evidence/",
   "/literature/",
   "/runs/mfass-v1/",
   "/runs/mfass-v2/",
@@ -39,6 +46,15 @@ for (const paper of papers) page(`/literature/papers/${paper.id}/`);
 const currentManifest = JSON.parse(
   fs.readFileSync("out/omics/manifest.json", "utf8"),
 );
+const evidenceRows = createEvidenceIndex(catalogue).all();
+const evidenceRoot = path.join("out/omics/releases", catalogue.release_id);
+if (
+  fs.readFileSync(path.join(evidenceRoot, "evidence.jsonl"), "utf8") !==
+    evidenceRows.map((row) => JSON.stringify(row)).join("\n") + "\n" ||
+  fs.readFileSync(path.join(evidenceRoot, "evidence.csv"), "utf8") !==
+    evidenceCsv(evidenceRows)
+)
+  failures.push("Evidence exports do not match their release records");
 const archiveRoot = "out/omics/releases";
 const archivedIds = fs.readdirSync(archiveRoot);
 if (!archivedIds.includes(currentManifest.release_id))

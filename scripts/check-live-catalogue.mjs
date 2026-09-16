@@ -33,6 +33,8 @@ assert.ok(row.evaluation && row.benchmarks.length && row.datasets.length && row.
 assert.equal(row.review_status,'source_checked');
 const modelResults=await query('results',{...pinned,id:row.models[0].id});
 assert.ok(modelResults.items.some(item=>item.result.id===result.record.id),'The model must link back to its exact evaluation');
+const evidence=await query('evidence',{...pinned,id:result.record.id,scope:'individual_claim',limit:10});
+assert.ok(evidence.items.some(item=>item.field_path==='attributes.printed_value' && item.value==='78.5' && item.source_locator.includes('Table 1') && item.review_status==='source_checked'));
 const disabled=await fetch(`${origin}/api/trpc/submission.list?verify=${probe}`,{redirect:'manual',signal:AbortSignal.timeout(30_000)});
 assert.equal(disabled.status,503,'Production submissions must remain disabled');
 assert.equal(disabled.headers.get('cache-control'),'no-store');

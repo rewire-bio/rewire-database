@@ -427,3 +427,26 @@
   overflow-wrap: anywhere;
   min-width: 0;
 }
+
+.evidenceTable {
+  table-layout: fixed;
+  width: 100%;
+  min-width: 800px;
+}
+.evidenceTable th,
+.evidenceTable td {
+  overflow-wrap: anywhere;
+  vertical-align: top;
+}
+.evidenceTable th {
+  width: 36%;
+}
+.evidenceTable p {
+  margin: 8px 0;
+}
+.evidenceTable code {
+  font-size: 11px;
+}
+.evidenceValue {
+  font-weight: normal;
+}

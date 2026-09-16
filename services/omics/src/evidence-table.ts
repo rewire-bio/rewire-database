@@ -142,9 +142,10 @@ export function createEvidenceIndex(snapshot: CatalogueSnapshot) {
           record_status: record!.status,
           evidence_origin: origin,
           claim_id: input.claimId || "",
-          claimed_value_json: input.claimId
-            ? JSON.stringify(input.claimedValue ?? null)
-            : "",
+          claimed_value_json:
+            input.claimId && input.claimedValue !== undefined
+              ? JSON.stringify(input.claimedValue)
+              : "",
           claim_record_status: input.claimStatus || "",
           source_id: sourceId,
           source_title: source?.name || "",
@@ -183,7 +184,11 @@ export function createEvidenceIndex(snapshot: CatalogueSnapshot) {
           const claimed = Object.hasOwn(claim.attributes, "value")
             ? claim.attributes.value
             : claim.attributes.target_id;
-          const matches = canonical(claimed) === canonical(value);
+          const resolved =
+            claimed !== undefined &&
+            claim.source_ids.length > 0 &&
+            !!text(claim.attributes.source_locator);
+          const matches = resolved && canonical(claimed) === canonical(value);
           add({
             field,
             label,
@@ -191,7 +196,11 @@ export function createEvidenceIndex(snapshot: CatalogueSnapshot) {
             ids: claim.source_ids,
             locator: text(claim.attributes.source_locator),
             scope: "individual_claim",
-            status: matches ? claim.status : "conflicting_claim",
+            status: !resolved
+              ? "unresolved_claim"
+              : matches
+                ? claim.status
+                : "conflicting_claim",
             review: {
               ...(matches &&
               record!.kind === "result" &&

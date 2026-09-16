@@ -165,6 +165,16 @@ describe("evidence conflicts, values and reproducibility", () => {
     }
   });
 
+  it("never treats an absent claim value or citation as verified null", () => {
+    const subject = record("subject", "model", {answer: null});
+    const absent = claim("absent", null); delete absent.attributes.value;
+    const uncited = {...claim("uncited", null), source_ids: []};
+    const table = createEvidenceIndex(fixture([subject, absent, uncited])).forRecord("subject").filter(row => row.field_path === "attributes.answer");
+    expect(table).toHaveLength(2);
+    expect(table.every(row => row.review_status === "unresolved_claim")).toBe(true);
+    expect(table.find(row => row.claim_id === "absent")?.claimed_value_json).toBe("");
+  });
+
   it("distinguishes null, zero, false and empty arrays without dropping values", () => {
     const table = createEvidenceIndex(fixture([record("subject", "model", {null_value: null, zero: 0, flag: false, empty_array: []})])).forRecord("subject");
     for (const [field, expected] of Object.entries({null_value: "null", zero: "0", flag: "false", empty_array: "[]"})) {

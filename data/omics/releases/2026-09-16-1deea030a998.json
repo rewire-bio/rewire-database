@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "release_id": "2026-09-16-0cd1ec08033d",
+  "release_id": "2026-09-16-1deea030a998",
   "released_at": "2026-09-16T21:49:51Z",
   "counts": {
     "model": 226,
@@ -14,7 +14,7 @@
   },
   "coverage": {
     "evidence_table_version": "1.0",
-    "evidence_table_generator_sha256": "5658fcba5e099f244acf9b50e4a0dd00066c5d8477ae4dfa2d76da7b804d2303",
+    "evidence_table_generator_sha256": "357a5b68b3b09bceda13165f7f9eb75906950fb7d7d8aa4c8e2380c9b75cfe1f",
     "profile_coverage": {
       "total": 396,
       "fact_status_counts": {
@@ -106,13 +106,13 @@
     "limitation": "A dated discovery and source-transcription review, not an exhaustive census or independent reproduction of external experiments."
   },
   "archive_sha256": "e521014d71553c5fd0d34c9484811f9f06630c2a03d8d6d621d1337c9cfbe719",
-  "catalogue_sha256": "776e2a913d504e3e99e5de7b8c6e8ae3f5c2a9649951c16c7a42883b6086e7f6",
+  "catalogue_sha256": "cedadd8d0dbf1a94f2336ead2435a36d9542a504353e336ac7173a6be0a9aeec",
   "files": {
-    "catalogue.json": "776e2a913d504e3e99e5de7b8c6e8ae3f5c2a9649951c16c7a42883b6086e7f6",
+    "catalogue.json": "cedadd8d0dbf1a94f2336ead2435a36d9542a504353e336ac7173a6be0a9aeec",
     "records.jsonl": "2bc708c128ca428ae071dcca42ca19312f500e3b52956add4830f3d738a3314a",
     "records.csv": "0131fce3ccc2123b86c678921ed875d1d416a70c4e46162c4049bb68a273df3d",
-    "evidence.jsonl": "9bf3ad6925edf3ec0636e9823980c7252845f4df79da0bf7db5e6df0bdc6a032",
-    "evidence.csv": "29cdf278a6cd84b3c159cb93bb7e1836a22ee24ae36331f77114ee30b62c2b2c"
+    "evidence.jsonl": "f9dc318afa60f80394f0c6c689a211206fbd5f6ac61fbf54bb689cfc01cc62a4",
+    "evidence.csv": "ddf57b89ba3331e804c100c8c726e26f8973e222560eba0bfa5045bddfeb1b1e"
   },
   "changelog": [
     "Add release-pinned field-level evidence tables in CSV and JSONL, separating individual claims from context-only references and catalogue metadata.",

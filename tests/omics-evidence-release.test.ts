@@ -1,3 +1,6 @@
+import { privateFieldNames } from "../services/omics/src/private-fields";
+import { parseCatalogue } from "../lib/omics";
+import { validateRecords } from "../scripts/omics/schema";
 import { afterEach, describe, expect, it } from "vitest";
 import fs from "node:fs";
 import os from "node:os";
@@ -108,4 +111,15 @@ it("does not silently add evidence exports to a legacy archive", () => {
   archive.write();
   expect(() => restoreReleaseBundles(archive.input, archive.destination)).toThrow(/Unexpected archived files/);
   expect(fs.existsSync(archive.destination)).toBe(false);
+});
+
+it("static boundaries reject every private field without requiring frontend dependencies in service tests", () => {
+  for (const key of privateFieldNames) for (const spelling of [key, key.toUpperCase()]) {
+    const records = [{id: "privacy-fixture", kind: "model", name: "Fixture", status: "discovered", description: "", facets: {}, source_ids: [], links: [], attributes: {nested: [{[spelling]: "PRIVATE_SENTINEL"}]}}];
+    const snapshot = {schema_version: "1.0", release_id: "fixture", records, coverage: {}};
+    for (const invoke of [() => validateRecords(records), () => parseCatalogue(snapshot)]) {
+      expect(invoke).toThrow(/Private/);
+      try { invoke(); } catch (error) { expect(String(error)).not.toContain("PRIVATE_SENTINEL"); }
+    }
+  }
 });

@@ -1,6 +1,6 @@
 # Evidence-table release validation
 
-Release: `2026-09-16-0cd1ec08033d`. Prior production release: `2026-09-16-e13bae63c156`.
+Release: `2026-09-16-1deea030a998`. Prior production release: `2026-09-16-e13bae63c156`.
 
 ## Delivered
 
@@ -14,7 +14,7 @@ Release: `2026-09-16-0cd1ec08033d`. Prior production release: `2026-09-16-e13bae
 
 | Check | Result |
 | --- | --- |
-| Frontend/data suites | 89 tests pass |
+| Frontend/data suites | 91 tests pass |
 | Service/emulator suites | 49 tests pass |
 | Lint and TypeScript | Pass, root and service |
 | Production build and static export | Pass; all 1,669 record pages include evidence tables |

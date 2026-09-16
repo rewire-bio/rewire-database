@@ -4,15 +4,12 @@ import { privateFieldNames } from "../src/private-fields.js";
 import { createCatalogueQuery } from "../src/catalogue-query.js";
 import { createEvidenceIndex } from "../src/evidence-table.js";
 import { validateSnapshot } from "../src/validation.js";
-import { parseCatalogue } from "../../../lib/omics.js";
-import { validateRecords } from "../../../scripts/omics/schema.js";
 import { fixture } from "./fixtures.js";
 
 const boundaries = [
   ["service import", validateSnapshot],
   ["public queries", createCatalogueQuery],
   ["direct evidence export", createEvidenceIndex],
-  ["static rendering", parseCatalogue],
 ] as const;
 
 for (const key of privateFieldNames) {
@@ -28,7 +25,6 @@ for (const key of privateFieldNames) {
           return true;
         });
       }
-      assert.throws(() => validateRecords(snapshot.records), /Private field/);
     }
   });
 }
@@ -49,6 +45,5 @@ test("public scientific metadata remains available through every boundary", () =
   const snapshot = fixture();
   snapshot.records[0].attributes.tokenizer = { name: "Example", token_count: 1024 };
   for (const [, validate] of boundaries) assert.doesNotThrow(() => validate(snapshot));
-  assert.doesNotThrow(() => validateRecords(snapshot.records));
   assert.ok(createEvidenceIndex(snapshot).forRecord(snapshot.records[0].id).length);
 });

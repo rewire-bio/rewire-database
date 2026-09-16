@@ -46,7 +46,7 @@ interface Submission extends Draft {
   created_at?: unknown;
   updated_at?: unknown;
 }
-const apiUrl = process.env.NEXT_PUBLIC_OMICS_API_URL;
+const apiUrl = process.env.NEXT_PUBLIC_OMICS_API_URL || "/api/trpc";
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
   authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,

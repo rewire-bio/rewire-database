@@ -8,7 +8,9 @@ import { importRelease } from "../src/catalogue.js";
 import { drainOutbox } from "../src/outbox.js";
 import { fixture, proposalInput } from "./fixtures.js";
 import { createAppServer } from "../src/server.js";
-import { createTRPCClient, httpLink } from "@trpc/client";
+import { createServer } from "node:http";
+import { contributionHttpHandler } from "../src/http-handler.js";
+import { createTRPCClient, httpLink, httpBatchLink } from "@trpc/client";
 import type { AppRouter } from "../src/router.js";
 const enabled = Boolean(
   process.env.FIRESTORE_EMULATOR_HOST &&
@@ -53,6 +55,53 @@ async function signIn(email = `${randomUUID()}@example.org`) {
 }
 const emulatorTest = (name: string, run: () => Promise<void>) =>
   test(name, { skip: !enabled }, run);
+emulatorTest(
+  "Hosting API paths retain authenticated JSON queries and mutations",
+  async () => {
+    const user = await signIn();
+    const server = createServer(contributionHttpHandler);
+    await new Promise<void>((resolve) =>
+      server.listen(0, "127.0.0.1", resolve),
+    );
+    const address = server.address() as { port: number };
+    const client = createTRPCClient<AppRouter>({
+      links: [
+      httpBatchLink({
+          url: `http://127.0.0.1:${address.port}/api/trpc`,
+          headers: { authorization: `Bearer ${user.token}` },
+        }),
+      ],
+    });
+    try {
+      const created = await client.submission.create.mutate({
+        contribution: proposalInput,
+        idempotencyKey: randomUUID(),
+      });
+      assert.equal(
+        (await client.submission.get.query({ id: created.id })).title,
+        proposalInput.title,
+      );
+      await client.submission.update.mutate({
+        id: created.id,
+        patch: { title: "Hosted API update" },
+      });
+    assert.equal(
+      (await client.submission.get.query({ id: created.id })).title,
+      "Hosted API update",
+    );
+    const [listed, fetched] = await Promise.all([
+      client.submission.list.query(),
+      client.submission.get.query({ id: created.id }),
+    ]);
+    assert.equal(listed[0].id, fetched.id);
+    } finally {
+      server.closeAllConnections();
+      await new Promise<void>((resolve, reject) =>
+        server.close((error) => (error ? reject(error) : resolve())),
+      );
+    }
+  },
+);
 beforeEach(async () => {
   if (enabled)
     await fetch(

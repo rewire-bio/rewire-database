@@ -13,7 +13,7 @@ This decision supersedes the Cloudflare database and DNS portions of the origina
 - Production submissions, unpublished catalogue features and billing activation remain excluded from this migration. No new paid infrastructure is provisioned.
 - Do not retire the GCP project: only dedicated obsolete blog-hosting resources may eventually be retired after the retention window.
 
-The initial Cloudflare database upload is unused and must not be activated. Database CI now targets Firebase and remains gated off until project setup is verified. See ../hosting/firebase.md for current deployment instructions. The remainder records the original agreed migration for history.
+The initial Cloudflare database upload is unused and must not be activated. Database CI now deploys the published baseline to Firebase site `rewire-it`; its first keyless main-branch deployment passed. Backend and Cloudflare deployment remain disabled. The `benchmarks.rewire.it` custom-domain certificate is pending. See [Firebase rollout and deployment](../hosting/firebase.md) for the configuration and release record. The remainder records the original agreed migration for history.
 
 ## Agreed ownership
 

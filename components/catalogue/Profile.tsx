@@ -241,7 +241,9 @@ export default function Profile({
           )}
           {profile.sections.map((section, i) => (
             <section key={i} className={styles.section}>
-              <h2>{section.title}</h2>
+              {section.title.trim().toLowerCase() !== "how it works" && (
+                <h3>{section.title}</h3>
+              )}
               <p>{section.body}</p>
               <Evidence
                 ids={section.source_ids}

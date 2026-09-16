@@ -62,7 +62,8 @@
           "region": "europe-west2"
         }
       }
-    ]
+    ],
+    "site": "rewire-it"
   },
   "emulators": {
     "hosting": {

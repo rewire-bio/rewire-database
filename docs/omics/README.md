@@ -2,7 +2,7 @@
 
 ## Stack and scope
 
-The implemented stack follows the user's revised choice: the existing Next.js/TypeScript site, tRPC/Zod for private contribution procedures, and managed Firestore with Firebase email-link authentication. There is no PostgreSQL, Python web service, public REST API or new hosting resource. Scientific collection helpers can be scripts; the application and release pipeline use TypeScript.
+The implemented stack follows the user's revised choice: the existing Next.js/TypeScript site, tRPC/Zod for release-pinned catalogue reads and private contribution procedures, and managed Firestore with Firebase email-link authentication. There is no PostgreSQL, Python web service, public REST API or new hosting resource. Scientific collection helpers can be scripts; the application and release pipeline use TypeScript.
 
 The scope is specialist omics and molecular models, including DNA/RNA language models, proteins, interactions, cells, microbes, metabolic measurements and relevant mechanistic systems. Clinical assistants, general medical QA and standalone medical imaging are excluded. Imaging must have an in-scope molecular/omics endpoint. The current 100-paper scope audit excludes kidney pathology segmentation and two general-purpose prompted annotation studies; it retains biological representation pipelines and protein-localisation imaging. Each decision is recorded in `data/omics/scope-audit.jsonl`.
 
@@ -22,7 +22,7 @@ npm run build
 
 `npm run omics:check-sources` fetches primary Europe PMC XML into ignored workbench storage and records exact row/header matches. It deliberately leaves ambiguous tables for review. A new source hash invalidates previous overrides, requiring renewed inspection. Some publishers prevent automated retrieval; such rows remain in the review queue rather than inheriting a verified badge. Never fix a score silently: retain the historical record and add a corrected/superseding record with evidence.
 
-The release command validates IDs, references, privacy boundaries and result provenance, removes excluded/quarantined claims from the public snapshot, and creates deterministic content-addressed releases under `public/omics/releases/`. Its manifest records checksums and coverage. Static pages read the same snapshot as downloadable JSONL/CSV. Unknown model versions stay unknown; source-specific method entries are not silently merged into exact checkpoints.
+The release command validates IDs, references, privacy boundaries and result provenance, removes excluded/quarantined claims from the public snapshot, and creates deterministic content-addressed releases under `public/omics/releases/`. Its manifest records checksums and coverage. Static initial pages and the Firestore service use the same query engine over the reviewed release. Browser search, filters, result pagination and comparisons read the same-origin tRPC API, pinned to that release. JSONL/CSV downloads preserve the release bytes. Profile and association enrichment is validated separately from numerical review. Unknown model versions stay unknown; source-specific method entries are not silently merged into exact checkpoints.
 
 The database has one home at `/`. The former `/database/` entry and domain pages redirect into this view. `/literature/` selects published evaluations in the same result collection. Included historical paper URLs redirect to source records; excluded papers retain noindex citations without score tables. Original CSV/JSON downloads remain available under an archive disclosure for citation compatibility. The MFASS v1 supersession and existing v2 run remain intact; no model computation is performed here.
 
@@ -32,7 +32,7 @@ The database has one home at `/`. The former `/database/` entry and domain pages
 npm run dev -- --port 3000
 ```
 
-Visit `/` and `/contribute/`. The latter offers a downloadable draft when the service is unconfigured; it never claims to have sent anything. With Firebase emulators configured it supports verification, submission, private status, revisions and sign-out. Source/data/protocol pages link to one another. A comparison is blocked if any necessary protocol information is missing, mismatched or superseded.
+This command shows the initial pages; interactive catalogue reads need the full emulator stack. Use the [profile preview instructions](stage-1-profile-delivery.md) for Hosting → Functions → Firestore on port5055. Visit `/` and `/contribute/`. The latter offers a downloadable draft when the service is unconfigured; it never claims to have sent anything. With Firebase emulators configured it supports verification, submission, private status, revisions and sign-out. Source/data/protocol pages link to one another. A comparison is blocked if any necessary protocol information is missing, mismatched or superseded.
 
 Contribution pages disable site analytics and set no-referrer/noindex metadata. Public attribution is opt-in and excludes email. No newsletter, marketing consent or public profile is created.
 
@@ -46,9 +46,9 @@ npm --prefix services/omics run build
 npm --prefix services/omics run test:emulator
 ```
 
-Firebase email links are exchanged by the browser SDK; the service accepts verified Firebase ID tokens. Direct Firestore client reads/writes are denied. The Admin service mediates owner access and curator transitions. Import a validated static release into the private Firestore mirror before assigning a contribution's published record IDs. Publication of a submission does not auto-deploy the website.
+Firebase email links are exchanged by the browser SDK; the service accepts verified Firebase ID tokens. Direct Firestore client reads/writes are denied. The Admin service mediates owner access and curator transitions. Import a validated release into Firestore and explicitly activate it before assigning a contribution's published record IDs. Ready imports without publication are not public. Publication of a submission does not auto-deploy the website.
 
-Restore/rollback: check out the desired reviewed input revision, rebuild its deterministic release, verify its manifest and publish the static site through the normal reviewed deployment. Reimport the release into Firestore if needed. Do not restore or overwrite private submissions as part of public-data rollback. Configure managed private backups before activation; retain versioned public releases separately.
+Restore/rollback: check out the desired reviewed input revision, rebuild its deterministic release, verify its manifest and publish the static site through the normal reviewed deployment. Reimport the release into Firestore if needed and activate its release ID through the authenticated curator/import CLI. Restore the matching static export; in-flight clients continue to pin their original published release. Do not restore or overwrite private submissions as part of public-data rollback. Configure managed private backups before activation; retain versioned public releases separately.
 
 ## Maintenance
 
@@ -60,4 +60,4 @@ These commands are prepared but no recurring automation, paid service or product
 
 ## Extracted review branch
 
-This work is preserved on `codex/omics-evidence-database`, separate from the currently published baseline on main. Root routes now use the database hostname. No live service, email or public submission is enabled. For local emulator use, explicitly set `NEXT_PUBLIC_OMICS_CONTRIBUTIONS_ENABLED=true` alongside the documented Firebase emulator configuration. The original release bytes remain unchanged; do not run migration scripts to alter historical URLs merely for presentation.
+The database foundation is preserved on `codex/omics-evidence-database`; profile work is on `codex/api-backed-benchmark-profiles`, separate from the currently published baseline on main. Root routes now use the database hostname. No live service, email or public submission is enabled. For local emulator use, explicitly set `NEXT_PUBLIC_OMICS_CONTRIBUTIONS_ENABLED=true` alongside the documented Firebase emulator configuration. The original release bytes remain unchanged; do not run migration scripts to alter historical URLs merely for presentation.

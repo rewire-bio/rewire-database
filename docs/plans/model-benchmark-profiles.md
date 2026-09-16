@@ -1,12 +1,12 @@
 # Explanatory model and benchmark pages with visible results
 
-Status: **Deferred until migration is complete.** Saved 2026-09-16.
+Status: **Implementation resumed by explicit user instruction, 2026-09-16.** Kept on a review branch; public deployment remains separate. See [delivery and validation](../omics/stage-1-profile-delivery.md).
 
 ## Purpose and completion boundary
 
 Improve every model and benchmark page in the current catalogue: 226 model records and 170 benchmark/task records at planning time. Explain architectures and procedures, provide accessible diagrams, describe sourced strengths and limitations, and expose evaluated results directly. Shared profiles require verified identity relationships; editorial topic grouping alone is not evidence of equivalence.
 
-No composite rankings, new benchmark runs, speed measurements or paid compute in this stage. The repository and Cloudflare migration takes priority.
+No composite rankings, new benchmark runs, speed measurements or paid compute in this stage. Hosting migration remains separate from this review build.
 
 ## Model pages
 
@@ -36,7 +36,7 @@ Separate families, checkpoints, adapters and complete pipelines. A frozen DNABER
 
 Add a validated enrichment input to the existing JSONL release pipeline. Merge profiles, supported associations and evidence claims by stable ID. Store typed profile content under `attributes.profile` in the existing extensible record envelope. Include summaries, explanation sections, diagram references, sourced facts, strengths, limitations and precise source locations.
 
-Configuration pages may reuse a verified shared profile while retaining their own methodology and results. Validate profile and relationship inputs. Keep the existing API/service and schema envelope; no new database is required. Publish enrichment through a new immutable release, preserving old releases, result values, downloads and MFASS history.
+Configuration pages may reuse a verified shared profile while retaining their own methodology and results. Validate profile and relationship inputs. Keep the existing Firebase/tRPC service and schema envelope; no new database is required. Catalogue browsing, filters, pagination and comparisons use release-pinned read procedures on that service. Static pages use the same query engine at build time for initial rendering and require no live database credentials. Publish enrichment through a new immutable release, preserving old releases, result values, downloads and MFASS history.
 
 Research primary papers, supplements, official repositories and model cards. Cite individual factual claims and record source versions, review method and date; automated review must not imply human review. Missing architecture or protocol details must remain explicit. Use accessible native SVG diagrams with equivalent text descriptions. Reuse diagrams only when the underlying mechanism is verified as shared.
 

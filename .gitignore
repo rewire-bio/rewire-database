@@ -72,6 +72,11 @@ __pycache__/
 .wrangler/
 .dev.vars*
 
+/public/omics/
+/services/omics/node_modules/
+/services/omics/dist/
+/services/omics/.firebase/
+/services/omics/*-debug.log
 # Firebase local state and credentials
 .firebase/
 firebase-debug*.log

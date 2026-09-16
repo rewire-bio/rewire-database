@@ -1,0 +1,61 @@
+name: Omics catalogue and contributions
+
+on:
+  pull_request:
+    paths:
+      - 'data/omics/**'
+      - 'scripts/omics/**'
+      - 'services/omics/**'
+      - 'app/**'
+      - 'app/sitemap.ts'
+      - 'lib/omics*.ts'
+      - 'lib/catalogue*.ts'
+      - 'components/catalogue/**'
+      - 'components/SiteAnalytics.tsx'
+      - 'tests/omics-*.test.ts'
+      - 'tests/omics-*.test.tsx'
+      - 'package*.json'
+      - 'firebase.json'
+      - 'scripts/check-hosting-http.mjs'
+      - 'tsconfig.json'
+      - '.github/workflows/omics-checks.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  catalogue:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npm run omics:migrate
+      - name: Verify reproducible migration
+        run: git diff --exit-code -- data/omics/migrated.jsonl data/omics/scope-audit.jsonl
+      - run: npm run test:omics
+      - run: npm run build
+      - run: npm run omics:check-export
+  contributions:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: services/omics
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: services/omics/package-lock.json
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - run: npm ci
+      - run: npm run build
+      - run: npm run test:emulator

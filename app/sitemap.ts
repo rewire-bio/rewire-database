@@ -1,7 +1,12 @@
-import { MetadataRoute } from "next";
-import { DOMAINS } from "@/lib/benchmark-catalog";
-import { getLiterature } from "@/lib/benchmark-literature";
+import type { MetadataRoute } from "next";
+import { readFileSync } from "node:fs";
+import { parseCatalogue, recordHref } from "@/lib/omics";
 export default function sitemap(): MetadataRoute.Sitemap {
-  const routes = ["/", "/literature/", "/runs/mfass-v2/", ...DOMAINS.map((domain) => `/${domain.id}/`), ...getLiterature().papers.map((paper) => `/literature/papers/${paper.id}/`)];
-  return routes.map((route) => ({ url: `https://benchmarks.rewire.it${route}` }));
+  const base = "https://benchmarks.rewire.it";
+  const catalogue = parseCatalogue(JSON.parse(readFileSync("public/omics/catalogue.json", "utf8")));
+  return [
+    { url: `${base}/`, lastModified: catalogue.released_at },
+    { url: `${base}/runs/mfass-v2/` },
+    ...catalogue.records.filter(record => record.kind !== "claim").map(record => ({ url: base + recordHref(record), lastModified: catalogue.released_at })),
+  ];
 }

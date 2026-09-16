@@ -1,0 +1,8 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // All private contribution access is mediated by the authenticated tRPC service.
+    // Admin SDK bypasses these rules; do not grant clients direct Firestore access.
+    match /{document=**} { allow read, write: if false; }
+  }
+}

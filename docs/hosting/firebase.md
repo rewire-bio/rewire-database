@@ -1,59 +1,70 @@
 # Firebase deployment
 
-Hosting direction updated on 16 September 2026: keep the benchmark website, API, Auth and Firestore in one Firebase project, owned by `rewire-bio/rewire-database`. Keep DNS on Google Cloud DNS. The blog remains a separate Cloudflare project; benchmark runners remain separate from publication.
+The benchmark website and its catalogue API use Firebase project `rewire-it`. DNS stays on Google Cloud DNS. The blog and benchmark runners remain separate repositories. Publication of the reviewed catalogue and API was authorised on 16 September 2026; contribution submissions remain disabled.
 
-## Publication boundary
+## Application and credentials
 
-Main contains the published static benchmark baseline. The newer catalogue and contribution API remain on the unpublished review branch. This hosting change does not approve those features or enable submissions. Historical records, downloads and release hashes must stay unchanged.
+Firebase Hosting site **`rewire-it`** serves the Next.js static export at `https://benchmarks.rewire.it`. The explicit site prevents database deployment from touching the separate `rewire-blog-redirect` site. Hosting forwards `/api/**` to the existing function name `contributions` in `europe-west2`. That function serves public catalogue queries and guarded private contribution procedures under `/api/trpc`.
 
-Use Firebase Hosting for the Next.js static export, not Firebase App Hosting. The API uses Firebase Functions in europe-west2 and Firestore, with Firebase Auth for private contribution access. When reviewed, Hosting forwards `/api/trpc/**` to the `contributions` function in the same project. Hosting forwards the original path, so the handler must parse that prefix explicitly. The browser uses `/api/trpc`; no separate API hostname is required.
+The Function uses `rewire-catalogue-runtime@rewire-it.iam.gserviceaccount.com`. Give this runtime identity read-only Firestore access for catalogue serving; it does not need Firebase Auth administration, SMTP credentials or publication write permissions while contributions are disabled. Public HTTP invocation is deliberate: procedure-level guards deny private traffic. Firestore rules deny direct browser access to every collection.
 
-## Local checks
+Runtime options are explicit: zero minimum instances, at most two instances, 256 MiB memory and a 30-second request timeout. Public release snapshots are cached per warm instance and successful public queries carry short CDN cache headers. These limits reduce idle cost and constrain scaling; they are not a billing cap.
 
-Use Node 22 or newer. Run `npm ci`, `npm test`, `npm run lint`, `npm run build`, `npm run typecheck`, and `npm run check:export`.
+GitHub Actions uses repository-scoped Workload Identity Federation, restricted to this repository, main branch and deployment workflow. Keep runtime and deployment identities separate. The deployment/import identity needs Hosting deployment, Functions deployment and invocation-policy configuration, permission to act as the runtime service account, Firestore rules/index deployment, and Firestore writes for release import/activation. Provision these roles and required APIs separately; never use static service-account keys or broad project Owner/Editor grants. All deployment commands explicitly use `--project rewire-it`; the import process explicitly uses `GCLOUD_PROJECT=rewire-it` and production ADC from the WIF action.
 
-Run `npx firebase emulators:exec --project demo-rewire-omics --only hosting 'npm run check:http'` to verify real HTTP status, preserved downloads, icons, MFASS and unknown-page handling. The demo project makes this a local check, without production resources. `npm run preview` leaves the Hosting emulator running on port 5055. There is no SPA fallback: unknown routes return 404.
+Configure repository variables `FIREBASE_PROJECT_ID=rewire-it`, `GCP_WORKLOAD_IDENTITY_PROVIDER`, `GCP_DEPLOY_SERVICE_ACCOUNT`, `FIREBASE_DEPLOY_ENABLED=true` and `FIREBASE_BACKEND_DEPLOY_ENABLED=true` only after backend infrastructure is ready. Both deployment flags are required. Pull requests run checks without publishing previews. Main deployments are not cancelled mid-publication by newer runs.
 
-## Production configuration
+## Ordered publication
 
-Firebase is enabled on the existing GCP project `rewire-it` (project number `380052249319`). Hosting site `rewire-it` serves the published baseline at https://rewire-it.web.app. `firebase.json` names this site explicitly. The same project also contains the blog-owned `rewire-blog-redirect` site; database deployments must never target that site. Do not infer a project from the current gcloud default. Use `--project rewire-it` for every production command. Future database components must use this same project.
+The main workflow runs checks, then performs these steps:
 
-GitHub Actions uses repository-scoped Workload Identity Federation, with no user-managed service-account key. The repository variables are configured as follows:
+1. Deploy Functions and private Firestore rules/indexes. Existing website files remain in place.
+2. Import the checked `public/omics/catalogue.json` using its manifest checksum. Only complete, validated imports become ready.
+3. Activate that release atomically. Existing published releases remain queryable by ID, so the previous website continues working.
+4. Run `scripts/check-live-catalogue.mjs` against the direct Function URL. It checks the active release, record count, BarcodeBERT result/model relationships and disabled submissions. This probe does not write data.
+5. Deploy Hosting site `rewire-it` only after API verification succeeds.
+6. Repeat the read-only probe through `https://benchmarks.rewire.it`.
 
-| Variable | Value |
-| --- | --- |
-| `FIREBASE_PROJECT_ID` | `rewire-it` |
-| `GCP_WORKLOAD_IDENTITY_PROVIDER` | `projects/380052249319/locations/global/workloadIdentityPools/rewire-database-ci/providers/github` |
-| `GCP_DEPLOY_SERVICE_ACCOUNT` | `rewire-database-hosting@rewire-it.iam.gserviceaccount.com` |
-| `FIREBASE_DEPLOY_ENABLED` | `true` |
-| `FIREBASE_BACKEND_DEPLOY_ENABLED` | `false` |
-| `CLOUDFLARE_DEPLOY_ENABLED` | `false` |
+Use the same order for an operator-led deployment. The convenience `deploy:stack` command alone does not import or activate catalogue data and is insufficient for a release. Import and activation commands, run from the repository root with production ADC configured, are:
 
-The dedicated service account has `roles/firebasehosting.admin` and `roles/serviceusage.serviceUsageConsumer` in `rewire-it`. The dedicated provider accepts GitHub's issuer only when repository ID is `1373095654`, owner ID is `330016617`, ref is `refs/heads/main`, workflow is `rewire-bio/rewire-database/.github/workflows/firebase.yml@refs/heads/main`, and the event is `push` or `workflow_dispatch`. Its repository-ID principal set has `roles/iam.workloadIdentityUser` on the service account. These are Hosting deployment permissions, not backend deployment permissions. PRs run checks without public previews or deployment access. No credentials belong in Git.
+```sh
+GCLOUD_PROJECT=rewire-it NODE_ENV=production npm --prefix services/omics run import-release -- ../../public/omics/catalogue.json ../../public/omics/manifest.json
+GCLOUD_PROJECT=rewire-it NODE_ENV=production npm --prefix services/omics run import-release -- --activate RELEASE_ID
+node scripts/check-live-catalogue.mjs https://europe-west2-rewire-it.cloudfunctions.net/contributions
+```
 
-The first [keyless CI deployment](https://github.com/rewire-bio/rewire-database/actions/runs/35113056085) succeeded. Main contains only the published baseline; enabling Hosting does not publish the review branch.
+Keep `OMICS_CONTRIBUTIONS_ENABLED` and `NEXT_PUBLIC_OMICS_CONTRIBUTIONS_ENABLED` unset or false. Public catalogue reads are independent of these flags; submissions, curator endpoints and mixed public/private batches return 503 while the backend flag is off. Auth email configuration, SMTP delivery and private contribution access are outside this deployment. No analytics is mounted on contribution pages.
 
-Main currently deploys only Hosting. Enabling Functions requires billing and is a separate activation step under the existing no-new-paid-infrastructure constraint. Do not enable billing, activate production submissions, deploy unpublished review features or grant broad project administration automatically.
+## Local and live checks
 
-`benchmarks.rewire.it` is staged as a Firebase custom domain. Its CNAME points to `rewire-it.web.app` and the Firebase-supplied ACME TXT record is staged in Google Cloud DNS. TLS issuance is still pending as of this rollout record: do not treat the custom hostname as live until HTTPS succeeds. Preserve all unrelated mail and verification values. There is no nameserver change and no Gandi login requirement. Verify HTTPS, downloads, canonical links and true 404 responses before activating blog redirects.
+Use Node 22 or 24 and Java 21+. Run `npm ci`, `npm test`, `npm run lint`, `npm run build`, `npm run typecheck`, and `npm run check:export`. Service checks run with `npm --prefix services/omics run test:emulator`.
 
-After the API is approved, deploy reviewed Hosting, Functions and Firestore rules/indexes together. Keep contributor records private; Firestore browser access stays denied. Email, authorised domains, release import and end-to-end verification are prerequisites for the explicit submission feature flag. Do not use an automatic SPA rewrite or publish private source/configuration as static content.
+After building the API, run:
+
+```sh
+npx firebase emulators:exec --project demo-rewire-omics --only hosting,functions,auth,firestore 'node scripts/check-api-hosting.mjs'
+```
+
+This local-only check seeds and activates the generated release in a demo Firestore emulator, then tests actual Hosting rewrites, pagination, release pinning, cache headers, linked results and private-data gates. It refuses production projects and nonlocal seed destinations. `check-live-catalogue.mjs` instead performs only read-only queries and can safely verify the deployed service.
+
+Hosting keeps real 404 responses for unknown pages; there is no SPA fallback. Check historical MFASS routes, preserved downloads and hashes, canonical metadata and mobile browser behaviour as part of website acceptance. Keep API cache control in the Function handler rather than a blanket Hosting `no-store` rule, which would override public catalogue caching.
 
 ## Rollback and cleanup
 
-Initial Hosting rollout on 16 September 2026:
+Record the source commit, Function revision, Hosting release and catalogue release ID for each deployment. To roll back data, activate the prior published release with the same CLI command. To roll back the website, restore the previous Hosting release; its release-pinned queries continue working. Restore a compatible reviewed Function revision when needed. Do not delete historical catalogue releases or roll back private contribution records.
 
-| Record | Value |
-| --- | --- |
-| Initial fallback version | `90cf2cc20527e03f` |
-| Verified CI-deployed version | `370ef25c988680d0` |
-| Release ID | `1789571252583000` |
-| Release time (UTC) | `2026-09-16T15:07:32.583Z` |
-| Site | `rewire-it` |
-| Backend | Not deployed |
+If API verification fails after activation, stop before Hosting deployment and reactivate the previous catalogue release. If the post-Hosting check fails, restore the previous Hosting release and active pointer, then investigate. Preserve rollout receipts and immutable Git releases.
 
-These identify the initial rollout, not necessarily the latest release after later main-branch changes. Record the Firebase Hosting release and function revision for each deployment. Restore a prior Hosting release using Firebase's release history; redeploy the corresponding reviewed function revision where necessary. Preserve Firestore data and immutable releases when rolling back application code.
+Keep the previous GCP blog origin until the separately verified blog cutover has completed its seven-day observation period. The GCP project now permanently owns the database: do not destroy Google DNS, Firestore, Functions, Auth, email records, backups or Terraform state while retiring obsolete blog resources.
 
-Keep the existing GCP blog origin until a verified blog cutover and its seven-day observation period have completed. GCP now also owns the permanent database service: never treat the whole project as obsolete or destroy its DNS, Auth, Firestore, Functions or shared resources. The unused Cloudflare database upload is not the production target and its CI deployment remains disabled.
+References checked 16 September 2026: [Firebase runtime configuration](https://firebase.google.com/docs/functions/manage-functions), [HTTP Functions](https://firebase.google.com/docs/functions/http-events), [Hosting configuration](https://firebase.google.com/docs/hosting/full-config), [custom domains with external DNS](https://firebase.google.com/docs/hosting/custom-domain).
 
-References checked 16 September 2026: [Hosting configuration](https://firebase.google.com/docs/hosting/full-config), [custom domains with external DNS](https://firebase.google.com/docs/hosting/custom-domain).
+## Infrastructure bootstrap and initial baseline
+
+The first production baseline used Hosting version `d1fa1c852d315578` (CI run `35113876867`). This remains the pre-catalogue rollback reference; the earlier initial fallback version was `90cf2cc20527e03f`.
+
+The dedicated CI account is `rewire-database-hosting@rewire-it.iam.gserviceaccount.com`; the WIF provider is `projects/380052249319/locations/global/workloadIdentityPools/rewire-database-ci/providers/github`, restricted to repository ID `1373095654`, owner ID `330016617`, main and the Firebase workflow. Firebase CLI also checks act-as permission on the existing App Engine service account, even though this function uses the explicit read-only runtime identity.
+
+Firestore Native Standard is in `europe-west2`, with deletion protection. Enable Firestore, Functions, Cloud Run, Cloud Build, Artifact Registry, Firebase Rules, Eventarc and Pub/Sub APIs before running CI. Firebase requires the last two during HTTP Gen2 provisioning. Create their service identities during infrastructure bootstrap.
+
+The `europe-west2/gcf-artifacts` repository has a cleanup policy deleting build images older than 14 days while retaining the latest three versions. Configure this before first noninteractive deployment, or Firebase CLI may stop after deploying the function because no cleanup policy exists. These policies concern build images only; reviewed data releases are retained.

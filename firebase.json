@@ -53,15 +53,15 @@
             "value": "noindex, nofollow"
           }
         ]
-      },
+      }
+    ],
+    "rewrites": [
       {
-        "source": "/api{,/**}",
-        "headers": [
-          {
-            "key": "Cache-Control",
-            "value": "no-store"
-          }
-        ]
+        "source": "/api/**",
+        "function": {
+          "functionId": "contributions",
+          "region": "europe-west2"
+        }
       }
     ]
   },
@@ -73,6 +73,41 @@
     "ui": {
       "enabled": false
     },
-    "singleProjectMode": true
+    "singleProjectMode": true,
+    "functions": {
+      "host": "127.0.0.1",
+      "port": 5001
+    },
+    "auth": {
+      "host": "127.0.0.1",
+      "port": 9099
+    },
+    "firestore": {
+      "host": "127.0.0.1",
+      "port": 8085
+    }
+  },
+  "functions": [
+    {
+      "source": "services/omics",
+      "codebase": "omics",
+      "runtime": "nodejs22",
+      "predeploy": [
+        "npm --prefix \"$RESOURCE_DIR\" run build"
+      ],
+      "ignore": [
+        "node_modules",
+        "test",
+        "*debug.log",
+        ".env",
+        ".env.*",
+        ".git",
+        ".firebase"
+      ]
+    }
+  ],
+  "firestore": {
+    "rules": "services/omics/firestore.rules",
+    "indexes": "services/omics/firestore.indexes.json"
   }
 }

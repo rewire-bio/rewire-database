@@ -9,7 +9,7 @@ permissions:
   id-token: write
 concurrency:
   group: database-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 jobs:
   checks:
     runs-on: ubuntu-latest
@@ -27,14 +27,43 @@ jobs:
       - run: npm run check:export
       - name: Verify Firebase HTTP routing
         run: npx firebase emulators:exec --project demo-rewire-omics --only hosting 'npm run check:http'
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - name: Install and build the API
+        run: npm ci --prefix services/omics && npm --prefix services/omics run build
+      - name: Verify Hosting and API integration
+        run: npx firebase emulators:exec --project demo-rewire-omics --only hosting,functions,auth,firestore 'node scripts/check-api-hosting.mjs'
       - name: Authenticate to Google
-        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && vars.FIREBASE_DEPLOY_ENABLED == 'true'
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && vars.FIREBASE_DEPLOY_ENABLED == 'true' && vars.FIREBASE_BACKEND_DEPLOY_ENABLED == 'true'
         uses: google-github-actions/auth@v2
         with:
           workload_identity_provider: ${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER }}
           service_account: ${{ vars.GCP_DEPLOY_SERVICE_ACCOUNT }}
-      - name: Deploy database website
-        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && vars.FIREBASE_DEPLOY_ENABLED == 'true'
-        run: npm run deploy -- --project "$FIREBASE_PROJECT_ID" --non-interactive
+      - name: Deploy reviewed API and private Firestore rules
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && vars.FIREBASE_DEPLOY_ENABLED == 'true' && vars.FIREBASE_BACKEND_DEPLOY_ENABLED == 'true'
+        run: npx firebase deploy --only functions:omics,firestore --project "$FIREBASE_PROJECT_ID" --non-interactive
         env:
           FIREBASE_PROJECT_ID: ${{ vars.FIREBASE_PROJECT_ID }}
+      - name: Import and activate the reviewed catalogue release
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && vars.FIREBASE_DEPLOY_ENABLED == 'true' && vars.FIREBASE_BACKEND_DEPLOY_ENABLED == 'true'
+        run: |
+          test "$GCLOUD_PROJECT" = "rewire-it"
+          npm --prefix services/omics run import-release -- ../../public/omics/catalogue.json ../../public/omics/manifest.json
+          RELEASE_ID=$(node -p "require('./public/omics/manifest.json').release_id")
+          npm --prefix services/omics run import-release -- --activate "$RELEASE_ID"
+        env:
+          GCLOUD_PROJECT: ${{ vars.FIREBASE_PROJECT_ID }}
+          NODE_ENV: production
+      - name: Verify the published API before updating the website
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && vars.FIREBASE_DEPLOY_ENABLED == 'true' && vars.FIREBASE_BACKEND_DEPLOY_ENABLED == 'true'
+        run: node scripts/check-live-catalogue.mjs https://europe-west2-rewire-it.cloudfunctions.net/contributions
+      - name: Deploy the database website
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && vars.FIREBASE_DEPLOY_ENABLED == 'true' && vars.FIREBASE_BACKEND_DEPLOY_ENABLED == 'true'
+        run: npx firebase deploy --only hosting --project "$FIREBASE_PROJECT_ID" --non-interactive
+        env:
+          FIREBASE_PROJECT_ID: ${{ vars.FIREBASE_PROJECT_ID }}
+      - name: Verify the live website API
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && vars.FIREBASE_DEPLOY_ENABLED == 'true' && vars.FIREBASE_BACKEND_DEPLOY_ENABLED == 'true'
+        run: node scripts/check-live-catalogue.mjs https://benchmarks.rewire.it

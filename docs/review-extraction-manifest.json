@@ -1,0 +1,548 @@
+{
+  "source_revision": "5f7b8ce477cc7afabc36e02bd002222c931623e7",
+  "source_branch": "codex/omics-evidence-database",
+  "source_state": "uncommitted working tree preserved before repository split",
+  "baseline_revision": "33a38663c69f83268e10549b69c3c6f0f5d557d3",
+  "excluded": [
+    "credentials",
+    "node_modules",
+    "emulator state",
+    "dist",
+    "scratch",
+    "workbench"
+  ],
+  "files": [
+    {
+      "source_path": ".github/workflows/omics-checks.yml",
+      "destination_path": ".github/workflows/omics-checks.yml",
+      "source_sha256": "4176c02cd21eb75393eeddfe032bcc4312c059427b3d43a77fe6e2c74a5b967b",
+      "extracted_sha256": "7afc3ee6191bf2b00a0c34002899816cbb266cc5fcc172a3b613dbaefdc75f29"
+    },
+    {
+      "source_path": ".gitignore",
+      "destination_path": ".gitignore",
+      "source_sha256": "51bef4140fb26f0f18f4331a18e5036607da48d4d3421123e50124daa2974284",
+      "extracted_sha256": "901a3eb6d222a79fe46d0b6dc3a6688fd605f2d69e20e76e673d09b708856f9f"
+    },
+    {
+      "source_path": "app/benchmarks/LegacyCatalogueRedirect.tsx",
+      "destination_path": "app/LegacyCatalogueRedirect.tsx",
+      "source_sha256": "05d592eaa0009d198d89fc95900215be10f86dc54b415f5207b0979545d6413c",
+      "extracted_sha256": "05d592eaa0009d198d89fc95900215be10f86dc54b415f5207b0979545d6413c"
+    },
+    {
+      "source_path": "app/benchmarks/[domain]/page.tsx",
+      "destination_path": "app/[domain]/page.tsx",
+      "source_sha256": "1d957dedb09a50ba8e48cce2d95298c14c8f8f87a5dfd07990ec6b3a84c72507",
+      "extracted_sha256": "427e7705fc88e24c61d9794ae88763f4dbfcc65821f257263cf56dde6ee9b19c"
+    },
+    {
+      "source_path": "app/benchmarks/contribute/ContributionForm.tsx",
+      "destination_path": "app/contribute/ContributionForm.tsx",
+      "source_sha256": "89d840d7afac267584239f445e7157cbd8c2a5202b044548d6a251236e22fa89",
+      "extracted_sha256": "c5e31062ac34cc281630e8b3b9cdb36e771e64c833de9c6a677729d53cb971b5"
+    },
+    {
+      "source_path": "app/benchmarks/contribute/page.tsx",
+      "destination_path": "app/contribute/page.tsx",
+      "source_sha256": "9c4602a4854f6568ff3c816ee1664f58ecc07ea370a167f59e1e7dc7ef48d53e",
+      "extracted_sha256": "55ee7dec6c9347c56abfec1787f8eea8be2c0b0fda4456aea44c90960f5f00ed"
+    },
+    {
+      "source_path": "app/benchmarks/database/Explorer.tsx",
+      "destination_path": "app/database/Explorer.tsx",
+      "source_sha256": "51dc3ba6ce70fe615a7eae0d9021dc9c333b57db349f95084f76a5dc38ba0d89",
+      "extracted_sha256": "51dc3ba6ce70fe615a7eae0d9021dc9c333b57db349f95084f76a5dc38ba0d89"
+    },
+    {
+      "source_path": "app/benchmarks/database/[kind]/[id]/page.tsx",
+      "destination_path": "app/database/[kind]/[id]/page.tsx",
+      "source_sha256": "ff599991467d74faf28217a2a8e13229b198854ccb968b3fba46e58fbd867e18",
+      "extracted_sha256": "7e1898034ce42aa4a2f1d4bf5bec2bef43f8ca3c769cda177b041b072ca383f7"
+    },
+    {
+      "source_path": "app/benchmarks/database/database.module.css",
+      "destination_path": "app/database/database.module.css",
+      "source_sha256": "37c71e88e8c9c049756e20e5259b64197f8dbc543a01dfca8f847b0166774a67",
+      "extracted_sha256": "37c71e88e8c9c049756e20e5259b64197f8dbc543a01dfca8f847b0166774a67"
+    },
+    {
+      "source_path": "app/benchmarks/database/page.tsx",
+      "destination_path": "app/database/page.tsx",
+      "source_sha256": "8d7a020fdb9b1c7a068a2644ef6e8f3b872526e0ddd320c24f3397805adce39a",
+      "extracted_sha256": "80227ebc9466d2510d283f77997442479587b91d577f203a4ca9e21cf6245c44"
+    },
+    {
+      "source_path": "app/benchmarks/literature/page.tsx",
+      "destination_path": "app/literature/page.tsx",
+      "source_sha256": "d3217271f28f5efd14a631f2ff157b9cdfb1e5c5306e575fb0e2558f53a16c63",
+      "extracted_sha256": "6c24c124bb0c20cbbdb06c51aee684d412f2bafdbab82f7a58502ddc677ab1ed"
+    },
+    {
+      "source_path": "app/benchmarks/literature/papers/[id]/page.tsx",
+      "destination_path": "app/literature/papers/[id]/page.tsx",
+      "source_sha256": "a7d0c4fbb76172af9066f53bf0575d6b64c7818ffd30dd44fd9b34ad175bbdd1",
+      "extracted_sha256": "821d4426439a522a353c9e9485a33587685fb527ff82df4b3326918176a0667b"
+    },
+    {
+      "source_path": "app/benchmarks/overview.module.css",
+      "destination_path": "app/overview.module.css",
+      "source_sha256": "a15f444f1158ccd0b6bf4705c77f33bef81724bca158be35e8cb5ae97fb8e38b",
+      "extracted_sha256": "a15f444f1158ccd0b6bf4705c77f33bef81724bca158be35e8cb5ae97fb8e38b"
+    },
+    {
+      "source_path": "app/benchmarks/page.tsx",
+      "destination_path": "app/page.tsx",
+      "source_sha256": "813803bd2915a920000e4960349ff03a23ea8fc12351ac5cb47093af0553302a",
+      "extracted_sha256": "e0d2fdf3a24e67ad5b228a706c09576598f4c2fcd71fe6667d3af7d8b0df1877"
+    },
+    {
+      "source_path": "app/benchmarks/runs/mfass-v1/page.tsx",
+      "destination_path": "app/runs/mfass-v1/page.tsx",
+      "source_sha256": "69f8cf53b6eb1b07f516ae6224a153dfb617f9946d792432ae214b39b70ae996",
+      "extracted_sha256": "7fc7e755cc45a115811397bfa173555f8ad01894defdda21e2d76c09138f5342"
+    },
+    {
+      "source_path": "app/benchmarks/runs/mfass-v2/page.tsx",
+      "destination_path": "app/runs/mfass-v2/page.tsx",
+      "source_sha256": "70a224aa20e3323a350fe2fc1032f91c4ec6def5c263066b4bed072c59d097ba",
+      "extracted_sha256": "540356307e1be75a58c086c9a569a252c88bcd8f3244c11008e28609be5cbea4"
+    },
+    {
+      "source_path": "app/benchmarks/runs/mfass-v2/run.module.css",
+      "destination_path": "app/runs/mfass-v2/run.module.css",
+      "source_sha256": "49e6b031329fed278bd6cfcd580a7676c97ad6cb8801bf64d2e11054842a58f1",
+      "extracted_sha256": "49e6b031329fed278bd6cfcd580a7676c97ad6cb8801bf64d2e11054842a58f1"
+    },
+    {
+      "source_path": "app/layout.tsx",
+      "destination_path": "app/layout.tsx",
+      "source_sha256": "cd4e5b08338009d6ff2399cc208abb0d404e8f359a0fd60c4d09a62d1d0404ad",
+      "extracted_sha256": "5d00a5a82e4212f2d9d77b725fc935e6d7a537dd97a71a780fc3eb1c5b27740a"
+    },
+    {
+      "source_path": "app/sitemap.ts",
+      "destination_path": "app/sitemap.ts",
+      "source_sha256": "b8f689fd4d17affe75f2bf4e01e2ed11b51672caa80ac159d4f6b68a78d4257c",
+      "extracted_sha256": "458c5a3ac13d0766f246fb77c20cd984a7e8d67697a242abcac14fbbfb435a44"
+    },
+    {
+      "source_path": "data/omics/discovery.jsonl",
+      "destination_path": "data/omics/discovery.jsonl",
+      "source_sha256": "dbc2fe14ed474144442b6b8cc07147e2a23eb3a865a3324e9b8a958706ea65a0",
+      "extracted_sha256": "dbc2fe14ed474144442b6b8cc07147e2a23eb3a865a3324e9b8a958706ea65a0"
+    },
+    {
+      "source_path": "data/omics/legacy-manual-b3.jsonl",
+      "destination_path": "data/omics/legacy-manual-b3.jsonl",
+      "source_sha256": "1e3b65b197ccc5b1f7839eda357d43457bf2737b0992f84a5cd7ed7c758e0654",
+      "extracted_sha256": "1e3b65b197ccc5b1f7839eda357d43457bf2737b0992f84a5cd7ed7c758e0654"
+    },
+    {
+      "source_path": "data/omics/legacy-manual-b4.jsonl",
+      "destination_path": "data/omics/legacy-manual-b4.jsonl",
+      "source_sha256": "e5066c3560a43f58784165e99dd7b167d6142423f1ec0764669bd0b9729e8c72",
+      "extracted_sha256": "e5066c3560a43f58784165e99dd7b167d6142423f1ec0764669bd0b9729e8c72"
+    },
+    {
+      "source_path": "data/omics/legacy-manual-batches.jsonl",
+      "destination_path": "data/omics/legacy-manual-batches.jsonl",
+      "source_sha256": "ace2267a12d817652c778349cdc8f41c5c5a262d2aa4b320c248a8674ce768b4",
+      "extracted_sha256": "ace2267a12d817652c778349cdc8f41c5c5a262d2aa4b320c248a8674ce768b4"
+    },
+    {
+      "source_path": "data/omics/legacy-manual-initial.jsonl",
+      "destination_path": "data/omics/legacy-manual-initial.jsonl",
+      "source_sha256": "52d4b68b671679df3ed6569c26c80abfec50846439a2886db5a13bc090a13d91",
+      "extracted_sha256": "52d4b68b671679df3ed6569c26c80abfec50846439a2886db5a13bc090a13d91"
+    },
+    {
+      "source_path": "data/omics/legacy-review.jsonl",
+      "destination_path": "data/omics/legacy-review.jsonl",
+      "source_sha256": "b6fed525d84b5eb5b8f48d9303c2938307935d324bceff085c6ad20e5ea071fd",
+      "extracted_sha256": "b6fed525d84b5eb5b8f48d9303c2938307935d324bceff085c6ad20e5ea071fd"
+    },
+    {
+      "source_path": "data/omics/migrated.jsonl",
+      "destination_path": "data/omics/migrated.jsonl",
+      "source_sha256": "3c2b88985f8419b9e5eb1b24a603b689891b969d30819e4a84d2af62a4760628",
+      "extracted_sha256": "3c2b88985f8419b9e5eb1b24a603b689891b969d30819e4a84d2af62a4760628"
+    },
+    {
+      "source_path": "data/omics/release-config.json",
+      "destination_path": "data/omics/release-config.json",
+      "source_sha256": "0923e33ecaf3f98b8d19c8bdcea7c07ce3c0b2fa6becbedfaac0872c9282d4ee",
+      "extracted_sha256": "0923e33ecaf3f98b8d19c8bdcea7c07ce3c0b2fa6becbedfaac0872c9282d4ee"
+    },
+    {
+      "source_path": "data/omics/research.md",
+      "destination_path": "data/omics/research.md",
+      "source_sha256": "acf38a11f177d0a8bd3f1fbb02f3f074d9d27782bb827222e88ae94d3ebb8a9e",
+      "extracted_sha256": "acf38a11f177d0a8bd3f1fbb02f3f074d9d27782bb827222e88ae94d3ebb8a9e"
+    },
+    {
+      "source_path": "data/omics/scope-audit.jsonl",
+      "destination_path": "data/omics/scope-audit.jsonl",
+      "source_sha256": "d88a7320f71f05adf5e43ed90ed0243a4a221ca8289d1aa1b03d8b3d03ca7e5c",
+      "extracted_sha256": "d88a7320f71f05adf5e43ed90ed0243a4a221ca8289d1aa1b03d8b3d03ca7e5c"
+    },
+    {
+      "source_path": "data/omics/search-ledger.jsonl",
+      "destination_path": "data/omics/search-ledger.jsonl",
+      "source_sha256": "008223faf1d5823e8be5325594d19c8f4fbe6ba9ca38f5f377e29eac8f728ce2",
+      "extracted_sha256": "008223faf1d5823e8be5325594d19c8f4fbe6ba9ca38f5f377e29eac8f728ce2"
+    },
+    {
+      "source_path": "data/omics/source-reviews.jsonl",
+      "destination_path": "data/omics/source-reviews.jsonl",
+      "source_sha256": "02faa9f1f85d1c22d3d7842a17508490a365565edff226108f45b499b31b3b49",
+      "extracted_sha256": "02faa9f1f85d1c22d3d7842a17508490a365565edff226108f45b499b31b3b49"
+    },
+    {
+      "source_path": "docs/omics/README.md",
+      "destination_path": "docs/omics/README.md",
+      "source_sha256": "fbfed3cebe58de7bef2e65415b9b770d101d8dd4d237a607eef102eb78ad02e7",
+      "extracted_sha256": "5dc5aae47a57cd2b4372fd6c129fa9541923619e0e63ac92cdadad99f8bbae86"
+    },
+    {
+      "source_path": "docs/omics/hosting.md",
+      "destination_path": "docs/omics/hosting.md",
+      "source_sha256": "9714228ad5069922bc36c69ab5cc786e5fae4aac2ffc741f4a0b388272e48668",
+      "extracted_sha256": "9714228ad5069922bc36c69ab5cc786e5fae4aac2ffc741f4a0b388272e48668"
+    },
+    {
+      "source_path": "docs/omics/record-contract.md",
+      "destination_path": "docs/omics/record-contract.md",
+      "source_sha256": "405c2e7ab24ac613cf29a2135c8105068bbf5e013a20bd6f90f1e2a68c97cc9e",
+      "extracted_sha256": "405c2e7ab24ac613cf29a2135c8105068bbf5e013a20bd6f90f1e2a68c97cc9e"
+    },
+    {
+      "source_path": "docs/omics/validation.md",
+      "destination_path": "docs/omics/validation.md",
+      "source_sha256": "60e6828102b7953099bc79d10be75854caebbc1b19c74f94f33e73c930d222a9",
+      "extracted_sha256": "60e6828102b7953099bc79d10be75854caebbc1b19c74f94f33e73c930d222a9"
+    },
+    {
+      "source_path": "docs/plans/cloudflare-repository-migration.md",
+      "destination_path": "docs/plans/cloudflare-repository-migration.md",
+      "source_sha256": "271b9758312de57b241afbe9b1d6eff8d6667a610594d363182ba281648989b6",
+      "extracted_sha256": "271b9758312de57b241afbe9b1d6eff8d6667a610594d363182ba281648989b6"
+    },
+    {
+      "source_path": "docs/plans/model-benchmark-profiles.md",
+      "destination_path": "docs/plans/model-benchmark-profiles.md",
+      "source_sha256": "663ef47b3eb422f774ba88a3978693ca85aeb1155b5e5424236266825e4b707e",
+      "extracted_sha256": "663ef47b3eb422f774ba88a3978693ca85aeb1155b5e5424236266825e4b707e"
+    },
+    {
+      "source_path": "lib/omics-browse.ts",
+      "destination_path": "lib/omics-browse.ts",
+      "source_sha256": "05dae57495132bee6fc1addfc96fcd4ca28050c79cd00773b9f5e0640c9ba7cf",
+      "extracted_sha256": "05dae57495132bee6fc1addfc96fcd4ca28050c79cd00773b9f5e0640c9ba7cf"
+    },
+    {
+      "source_path": "lib/omics-contributions.ts",
+      "destination_path": "lib/omics-contributions.ts",
+      "source_sha256": "8cbc44579225d2d0100dc0e6119f68ac3a0dabb9437a3e83ebfe5eb72d8c84ae",
+      "extracted_sha256": "8cbc44579225d2d0100dc0e6119f68ac3a0dabb9437a3e83ebfe5eb72d8c84ae"
+    },
+    {
+      "source_path": "lib/omics-navigation.ts",
+      "destination_path": "lib/omics-navigation.ts",
+      "source_sha256": "e00555cc9788a15e0aa1451c945bfad3d67c37342c1d78f43dec0d8bf17d2a90",
+      "extracted_sha256": "86ac32e9260f595a495b3a2d1ca7cd0dab057aac8fa6f5c63adaf38a6273c471"
+    },
+    {
+      "source_path": "lib/omics.ts",
+      "destination_path": "lib/omics.ts",
+      "source_sha256": "1905a627b7ccdbb4e452e5d44d25f6ba0cbf7e7dc3d4a9734ede8d1350d012ef",
+      "extracted_sha256": "f2ded550be3a0f86ec6274a20e6113f613df1fb31c3376c6f5278d510b5b173d"
+    },
+    {
+      "source_path": "package-lock.json",
+      "destination_path": "package-lock.json",
+      "source_sha256": "2629f684a20168f7bbca31ef02b2671cc5314abc56465d64fe612cbbde4fb075",
+      "extracted_sha256": "c6a9f71b3854b4c1d1a265f3dc43831c26af7f0e8cb39b014b547308be2fa4e8"
+    },
+    {
+      "source_path": "package.json",
+      "destination_path": "package.json",
+      "source_sha256": "ec1de6f8fa1eede1b5f212f83fb4e9597d9a6a8e77fcc665e0ace4112f0e0ed6",
+      "extracted_sha256": "3a235d028a94d68dd103dc7bd25e7dfa311ef367c441b1851fa1301c04d89d3f"
+    },
+    {
+      "source_path": "public/omics/catalogue.json",
+      "destination_path": "public/omics/catalogue.json",
+      "source_sha256": "537cfe23bf35cb860fd1c099b22f0f436b6c085ee4e5df91c2d6f01bc8cdfa4b",
+      "extracted_sha256": "537cfe23bf35cb860fd1c099b22f0f436b6c085ee4e5df91c2d6f01bc8cdfa4b"
+    },
+    {
+      "source_path": "public/omics/manifest.json",
+      "destination_path": "public/omics/manifest.json",
+      "source_sha256": "996ce9f9b7ea8688a6778790b073b34ad1b42b6906332c3c85f24708165a05f6",
+      "extracted_sha256": "996ce9f9b7ea8688a6778790b073b34ad1b42b6906332c3c85f24708165a05f6"
+    },
+    {
+      "source_path": "public/omics/releases/2026-09-16-b5213be10a49/catalogue.json",
+      "destination_path": "public/omics/releases/2026-09-16-b5213be10a49/catalogue.json",
+      "source_sha256": "537cfe23bf35cb860fd1c099b22f0f436b6c085ee4e5df91c2d6f01bc8cdfa4b",
+      "extracted_sha256": "537cfe23bf35cb860fd1c099b22f0f436b6c085ee4e5df91c2d6f01bc8cdfa4b"
+    },
+    {
+      "source_path": "public/omics/releases/2026-09-16-b5213be10a49/manifest.json",
+      "destination_path": "public/omics/releases/2026-09-16-b5213be10a49/manifest.json",
+      "source_sha256": "996ce9f9b7ea8688a6778790b073b34ad1b42b6906332c3c85f24708165a05f6",
+      "extracted_sha256": "996ce9f9b7ea8688a6778790b073b34ad1b42b6906332c3c85f24708165a05f6"
+    },
+    {
+      "source_path": "public/omics/releases/2026-09-16-b5213be10a49/records.csv",
+      "destination_path": "public/omics/releases/2026-09-16-b5213be10a49/records.csv",
+      "source_sha256": "5baa3bc36f44c4704e7e6f1f91617af8452b9e035175eed5fca646bab270e80f",
+      "extracted_sha256": "5baa3bc36f44c4704e7e6f1f91617af8452b9e035175eed5fca646bab270e80f"
+    },
+    {
+      "source_path": "public/omics/releases/2026-09-16-b5213be10a49/records.jsonl",
+      "destination_path": "public/omics/releases/2026-09-16-b5213be10a49/records.jsonl",
+      "source_sha256": "e0e843b3d79fc036a467a33b450e0048feb8e7f985832ec1945c6cbb3c166e63",
+      "extracted_sha256": "e0e843b3d79fc036a467a33b450e0048feb8e7f985832ec1945c6cbb3c166e63"
+    },
+    {
+      "source_path": "scripts/omics-research-verify.py",
+      "destination_path": "scripts/omics-research-verify.py",
+      "source_sha256": "34ee9b898e7c7e40b016cb44ec7b74579bf6299d116e78be403ce7d32126fe62",
+      "extracted_sha256": "34ee9b898e7c7e40b016cb44ec7b74579bf6299d116e78be403ce7d32126fe62"
+    },
+    {
+      "source_path": "scripts/omics/check-export.ts",
+      "destination_path": "scripts/omics/check-export.ts",
+      "source_sha256": "58289f29b513f275d732895e7424b9cff6cdf001fe69c3e23fcf6997b144f88d",
+      "extracted_sha256": "ae8558ee8ac76d0b3fefcc9dffc30308bf26074f4a5363f6117043a21a94fff7"
+    },
+    {
+      "source_path": "scripts/omics/check-literature.ts",
+      "destination_path": "scripts/omics/check-literature.ts",
+      "source_sha256": "a2ccabd0950dc38ca8e902b82c91e91d4c7c372e95a43f21de1acc87b84aa8eb",
+      "extracted_sha256": "a2ccabd0950dc38ca8e902b82c91e91d4c7c372e95a43f21de1acc87b84aa8eb"
+    },
+    {
+      "source_path": "scripts/omics/check-updates.ts",
+      "destination_path": "scripts/omics/check-updates.ts",
+      "source_sha256": "f41138748aa273bf09a1db2755b26d6ffc728da1b9244457819b96a88c0440e7",
+      "extracted_sha256": "f41138748aa273bf09a1db2755b26d6ffc728da1b9244457819b96a88c0440e7"
+    },
+    {
+      "source_path": "scripts/omics/extensions.ts",
+      "destination_path": "scripts/omics/extensions.ts",
+      "source_sha256": "22be8b6450799aa775a847e6989346c549818485983912736febbace24fc96e6",
+      "extracted_sha256": "22be8b6450799aa775a847e6989346c549818485983912736febbace24fc96e6"
+    },
+    {
+      "source_path": "scripts/omics/migrate.ts",
+      "destination_path": "scripts/omics/migrate.ts",
+      "source_sha256": "5769695ffa590660be83396bffb17330d8035d06e0e635af7064500ea55f44f9",
+      "extracted_sha256": "5769695ffa590660be83396bffb17330d8035d06e0e635af7064500ea55f44f9"
+    },
+    {
+      "source_path": "scripts/omics/release.ts",
+      "destination_path": "scripts/omics/release.ts",
+      "source_sha256": "5282933b57422b6e78ad6a103977be6cce5b93a9f0b1ee0755c2611047af33ca",
+      "extracted_sha256": "5282933b57422b6e78ad6a103977be6cce5b93a9f0b1ee0755c2611047af33ca"
+    },
+    {
+      "source_path": "scripts/omics/schema.ts",
+      "destination_path": "scripts/omics/schema.ts",
+      "source_sha256": "aeb2f7c11faf5092ca9b2c36d5ee490bd366239b969c82a6f30744e98a6b0e0d",
+      "extracted_sha256": "aeb2f7c11faf5092ca9b2c36d5ee490bd366239b969c82a6f30744e98a6b0e0d"
+    },
+    {
+      "source_path": "services/omics/.gitignore",
+      "destination_path": "services/omics/.gitignore",
+      "source_sha256": "05d579a81799f6379ee03167068afadc2de1b74c54bfbc19e504e25ab9d31f3b",
+      "extracted_sha256": "05d579a81799f6379ee03167068afadc2de1b74c54bfbc19e504e25ab9d31f3b"
+    },
+    {
+      "source_path": "services/omics/README.md",
+      "destination_path": "services/omics/README.md",
+      "source_sha256": "2778fcfad22a9779a551c36ca21d6997078c4eb603ac56e51034b12cc6e0bfaa",
+      "extracted_sha256": "6d406f34ad0e9f39247b4ea66f7ede3b65a9b967c1e0b52b75ddea53c951d1a5"
+    },
+    {
+      "source_path": "services/omics/firebase.json",
+      "destination_path": "services/omics/firebase.json",
+      "source_sha256": "2009a3d99ffb555191113329d8f291a5af41ff55210bf58803d5f9833a1a2c96",
+      "extracted_sha256": "2009a3d99ffb555191113329d8f291a5af41ff55210bf58803d5f9833a1a2c96"
+    },
+    {
+      "source_path": "services/omics/firestore.indexes.json",
+      "destination_path": "services/omics/firestore.indexes.json",
+      "source_sha256": "5a1bc0645aae2d905f5486c45f2a614a4b3e0cb8419c0196642ef690c235af0c",
+      "extracted_sha256": "5a1bc0645aae2d905f5486c45f2a614a4b3e0cb8419c0196642ef690c235af0c"
+    },
+    {
+      "source_path": "services/omics/firestore.rules",
+      "destination_path": "services/omics/firestore.rules",
+      "source_sha256": "f5c7b6112813925209261298ffd76f10eae64a8b1f62fbb3a3122cae531decfc",
+      "extracted_sha256": "f5c7b6112813925209261298ffd76f10eae64a8b1f62fbb3a3122cae531decfc"
+    },
+    {
+      "source_path": "services/omics/package-lock.json",
+      "destination_path": "services/omics/package-lock.json",
+      "source_sha256": "185f296f29c144e4cc87e2c1a239fcf786f4cb4f10819efd0a86c3148a0ccb2b",
+      "extracted_sha256": "185f296f29c144e4cc87e2c1a239fcf786f4cb4f10819efd0a86c3148a0ccb2b"
+    },
+    {
+      "source_path": "services/omics/package.json",
+      "destination_path": "services/omics/package.json",
+      "source_sha256": "4c7c1e4e070b19233806696dd175be3ed12a3c15b834e85a4a93d1c169d74aad",
+      "extracted_sha256": "4c7c1e4e070b19233806696dd175be3ed12a3c15b834e85a4a93d1c169d74aad"
+    },
+    {
+      "source_path": "services/omics/src/auth.ts",
+      "destination_path": "services/omics/src/auth.ts",
+      "source_sha256": "6cfc860a2c673a87febe8bbe8df5f868deb410fad8320bdcc3961d335bb8b1ca",
+      "extracted_sha256": "6cfc860a2c673a87febe8bbe8df5f868deb410fad8320bdcc3961d335bb8b1ca"
+    },
+    {
+      "source_path": "services/omics/src/catalogue.ts",
+      "destination_path": "services/omics/src/catalogue.ts",
+      "source_sha256": "2747cd5adeab49633a94ba535090582ca63e34474d8f98bc6d05b906cdce6d5c",
+      "extracted_sha256": "2747cd5adeab49633a94ba535090582ca63e34474d8f98bc6d05b906cdce6d5c"
+    },
+    {
+      "source_path": "services/omics/src/cli.ts",
+      "destination_path": "services/omics/src/cli.ts",
+      "source_sha256": "b18a7df0d3774e2c09ea526f6f0a1fc02260928814ff39b1614d42c819284f39",
+      "extracted_sha256": "b18a7df0d3774e2c09ea526f6f0a1fc02260928814ff39b1614d42c819284f39"
+    },
+    {
+      "source_path": "services/omics/src/firebase.ts",
+      "destination_path": "services/omics/src/firebase.ts",
+      "source_sha256": "8e8fddde1944327cbd688f36675396ac2736fbc484dcd23949a8ca20490d6ce9",
+      "extracted_sha256": "8e8fddde1944327cbd688f36675396ac2736fbc484dcd23949a8ca20490d6ce9"
+    },
+    {
+      "source_path": "services/omics/src/functions.ts",
+      "destination_path": "services/omics/src/functions.ts",
+      "source_sha256": "1fab29c025212e35aa114762e6db49de8406b0d7901271436378e810363c45c7",
+      "extracted_sha256": "f277c8f654472b102f53c79c863c1039929f4a0ac3411736ca6373e5db4611bd"
+    },
+    {
+      "source_path": "services/omics/src/import-cli.ts",
+      "destination_path": "services/omics/src/import-cli.ts",
+      "source_sha256": "7b94d56e0c88a782f842297a010d285a8b4612ac61cc842a25977dde243ec5a3",
+      "extracted_sha256": "7b94d56e0c88a782f842297a010d285a8b4612ac61cc842a25977dde243ec5a3"
+    },
+    {
+      "source_path": "services/omics/src/mail-worker.ts",
+      "destination_path": "services/omics/src/mail-worker.ts",
+      "source_sha256": "b05f89d3efb720e2315c42e04b748c683f8114260912aca1bb032e5cd9016615",
+      "extracted_sha256": "b05f89d3efb720e2315c42e04b748c683f8114260912aca1bb032e5cd9016615"
+    },
+    {
+      "source_path": "services/omics/src/outbox.ts",
+      "destination_path": "services/omics/src/outbox.ts",
+      "source_sha256": "287c65be28646a85bca9b58fe0c714c7a55e340492fdc2c993a12e7042a879eb",
+      "extracted_sha256": "287c65be28646a85bca9b58fe0c714c7a55e340492fdc2c993a12e7042a879eb"
+    },
+    {
+      "source_path": "services/omics/src/request-limits.ts",
+      "destination_path": "services/omics/src/request-limits.ts",
+      "source_sha256": "573d733951ff2dceada7ce96dd8ffc3cc43b3972583a9f65affe1bc33ff70b0c",
+      "extracted_sha256": "573d733951ff2dceada7ce96dd8ffc3cc43b3972583a9f65affe1bc33ff70b0c"
+    },
+    {
+      "source_path": "services/omics/src/router.ts",
+      "destination_path": "services/omics/src/router.ts",
+      "source_sha256": "4d379d7484961bf8570ac9e621101b74c7715705d5bdca6d8bd1f55317bec249",
+      "extracted_sha256": "4d379d7484961bf8570ac9e621101b74c7715705d5bdca6d8bd1f55317bec249"
+    },
+    {
+      "source_path": "services/omics/src/server.ts",
+      "destination_path": "services/omics/src/server.ts",
+      "source_sha256": "6e5dc4bb06523e32a2d5799fb424373931a2e551328e3c5b2be436b4e24a1611",
+      "extracted_sha256": "6e5dc4bb06523e32a2d5799fb424373931a2e551328e3c5b2be436b4e24a1611"
+    },
+    {
+      "source_path": "services/omics/src/store.ts",
+      "destination_path": "services/omics/src/store.ts",
+      "source_sha256": "2fe15d4b02bf6be4a72209490c84df40235fbc6eb9bdc9e2adecaab935bfae72",
+      "extracted_sha256": "2ced66c9d0a630fb1f9afc255fc4d39a6c974fdb6a0ba399f1adb2aae74a1b73"
+    },
+    {
+      "source_path": "services/omics/src/validation.ts",
+      "destination_path": "services/omics/src/validation.ts",
+      "source_sha256": "5b0389954021c819d8165178d004beebf25313054240bf4ff59eed6912b01235",
+      "extracted_sha256": "5b0389954021c819d8165178d004beebf25313054240bf4ff59eed6912b01235"
+    },
+    {
+      "source_path": "services/omics/test/emulator.test.ts",
+      "destination_path": "services/omics/test/emulator.test.ts",
+      "source_sha256": "1251126cbdd7c54719dbaa8440cdfb903910cc70532eec7230ea4bca51395330",
+      "extracted_sha256": "6b9d9efe49f26991355d3e4cf2180a7958935e9173b09f91ff87101dd7c61549"
+    },
+    {
+      "source_path": "services/omics/test/fixtures.ts",
+      "destination_path": "services/omics/test/fixtures.ts",
+      "source_sha256": "707f1c26b03831fdae5c78cc763c01459571f955196a38dec99afed55bbf81de",
+      "extracted_sha256": "707f1c26b03831fdae5c78cc763c01459571f955196a38dec99afed55bbf81de"
+    },
+    {
+      "source_path": "services/omics/test/validation.test.ts",
+      "destination_path": "services/omics/test/validation.test.ts",
+      "source_sha256": "ae63c73ef3d049e285d0b95dfcc52eccc1203971b01097ee4e8bdde1a39a28b8",
+      "extracted_sha256": "ae63c73ef3d049e285d0b95dfcc52eccc1203971b01097ee4e8bdde1a39a28b8"
+    },
+    {
+      "source_path": "services/omics/tsconfig.json",
+      "destination_path": "services/omics/tsconfig.json",
+      "source_sha256": "36e1df109677bbbdf382dadfe19dbeaa8d4841f34636f31238c0967854f3363d",
+      "extracted_sha256": "36e1df109677bbbdf382dadfe19dbeaa8d4841f34636f31238c0967854f3363d"
+    },
+    {
+      "source_path": "tests/omics-browse.test.ts",
+      "destination_path": "tests/omics-browse.test.ts",
+      "source_sha256": "a7e4541d8df9ef6ce7166763e612c1cb9918e9cc5c1aa614ffcbce03254539db",
+      "extracted_sha256": "a7e4541d8df9ef6ce7166763e612c1cb9918e9cc5c1aa614ffcbce03254539db"
+    },
+    {
+      "source_path": "tests/omics-data.test.ts",
+      "destination_path": "tests/omics-data.test.ts",
+      "source_sha256": "7add943d71150ff9611cbaf75c347531e59b5cc54ab6dde29bc08613fb8cd38e",
+      "extracted_sha256": "7add943d71150ff9611cbaf75c347531e59b5cc54ab6dde29bc08613fb8cd38e"
+    },
+    {
+      "source_path": "tests/omics-navigation.test.ts",
+      "destination_path": "tests/omics-navigation.test.ts",
+      "source_sha256": "ae74f368760dd86f3f2a5c26c7e854a3eff17be6d4f13c560021231dccc89d0e",
+      "extracted_sha256": "d300cb94760620a06386d450af9f6d695022a23f707fe34f8012a40aec6a47a5"
+    },
+    {
+      "source_path": "tests/omics-ui.test.ts",
+      "destination_path": "tests/omics-ui.test.ts",
+      "source_sha256": "a71e4f702ba0f6e59f3f15521203f29f5a2032e4bb7cc47b980214f512fe4135",
+      "extracted_sha256": "cd3d7699ef68a3b4928427cf6a056b4e059f5f0b94ae46f24b4e84808ed19856"
+    },
+    {
+      "source_path": "tsconfig.json",
+      "destination_path": "tsconfig.json",
+      "source_sha256": "38cb110aa7422e9ca388d5e3c0b156ae210fe4300cd4d21cde5d89ea84e239af",
+      "extracted_sha256": "38cb110aa7422e9ca388d5e3c0b156ae210fe4300cd4d21cde5d89ea84e239af"
+    },
+    {
+      "source_path": "vitest.config.ts",
+      "destination_path": "vitest.config.ts",
+      "source_sha256": "b304b1899381ff6a0ad05409ce5b1be3a4f1e9f545f50560c89e16c89c077225",
+      "extracted_sha256": "b304b1899381ff6a0ad05409ce5b1be3a4f1e9f545f50560c89e16c89c077225"
+    }
+  ],
+  "review_branch": "codex/omics-evidence-database",
+  "release_id": "2026-09-16-b5213be10a49",
+  "notes": [
+    "Generated public/omics bytes were copied and reverified, but remain ignored and regenerated from byte-identical source inputs.",
+    "The shared root layout/header/footer use the independently extracted database shell; no analytics scripts are mounted, replacing the original SiteAnalytics guard.",
+    "Original app/benchmarks removals of ModelIndex.tsx, domain CSS and LiteratureExplorer/CSS are reflected on this branch.",
+    "Package manifests merge baseline static hosting dependencies with original database dependencies; no blog generator dependencies are needed.",
+    "Source migration code retains historical URLs in record fields to reproduce original release bytes. Presentation URLs use the new hostname and routes.",
+    "Contributor private state, environment files, logs, dependencies and build artifacts are excluded."
+  ]
+}

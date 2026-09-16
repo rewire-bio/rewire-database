@@ -1,7 +1,9 @@
 import fs from "node:fs";
+import { restoreReleaseBundles } from "./archives";
+import { currentCatalogueBase, reviewInputFiles } from "./inputs";
 import path from "node:path";
 import crypto from "node:crypto";
-import { enrichProfiles } from "../../lib/omics-profile";
+import { enrichProfiles, type OmicsProfile } from "../../lib/omics-profile";
 import { enrichAssociations } from "./enrich";
 import {
   validateRecords,
@@ -161,6 +163,7 @@ function main() {
   );
   if (!baseRecords.length) throw new Error("No reviewed catalogue inputs");
   restoreArchivedRelease(baseRecords);
+  restoreReleaseBundles();
   const ledger = fs.existsSync("data/omics/search-ledger.jsonl")
     ? fs
         .readFileSync("data/omics/search-ledger.jsonl", "utf8")
@@ -180,8 +183,9 @@ function main() {
     "data/omics/model-profile-associations.jsonl",
     "data/omics/benchmark-profile-associations.jsonl",
   ];
+  const corrected = currentCatalogueBase(baseRecords);
   const associated = enrichAssociations(
-    baseRecords,
+    corrected,
     associationInputs.flatMap((file) =>
       fs.existsSync(file)
         ? fs
@@ -206,12 +210,30 @@ function main() {
   );
   const profiles = records
     .filter((record) => record.attributes.profile)
-    .map((record) => record.attributes.profile as { coverage: string });
+    .map((record) => record.attributes.profile as OmicsProfile);
+  const factStates = [
+    "source_checked",
+    "unreported",
+    "unextracted",
+    "unavailable",
+    "inapplicable",
+    "unclassified",
+  ];
+  const facts = profiles.flatMap((profile) => profile.facts);
   const output = buildRelease(records, audit.released_at, {
     ...(profiles.length
       ? {
           profile_coverage: {
             total: profiles.length,
+            fact_status_counts: Object.fromEntries(
+              factStates.map((state) => [
+                state,
+                facts.filter(
+                  (fact) => (fact.status || "unclassified") === state,
+                ).length,
+              ]),
+            ),
+            note: "Source review applies to individual cited claims. Missing fields and inaccessible evidence remain explicit; profile coverage is not independent experimental verification.",
             reviewed: profiles.filter(
               (profile) => profile.coverage === "reviewed",
             ).length,
@@ -220,7 +242,9 @@ function main() {
             ).length,
           },
           changelog: [
-            "Add sourced explanatory model and benchmark profiles and API query support; existing result values and IDs remain unchanged.",
+            "Expand model and benchmark explanations using pinned primary evidence; existing result values and IDs remain unchanged.",
+            "Add field-level evidence status and summary citations; distinguish AlphaFold Server from the downloadable model.",
+            "Preserve earlier release bytes and expose unresolved source concerns on result pages and comparisons.",
             "Profile review status is independent of numerical-result review; unresolved scientific metadata remains explicit.",
           ],
         }
@@ -231,6 +255,7 @@ function main() {
     legacy_result_rows: 149,
     source_inputs: [
       ...inputs,
+      ...reviewInputFiles.filter((file) => fs.existsSync(file)),
       ...profileInputs.filter((file) => fs.existsSync(file)),
       ...associationInputs.filter((file) => fs.existsSync(file)),
     ].map((file) => ({

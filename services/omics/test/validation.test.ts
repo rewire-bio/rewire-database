@@ -112,3 +112,53 @@ test("contribution details bound Firestore depth, nested arrays and actual UTF-8
     false,
   );
 });
+
+test("hosted services retain a distinct identity and unknown entity types remain invalid", () => {
+  const snapshot = fixture();
+  const model = snapshot.records.find((record) => record.kind === "model")!;
+  model.attributes.entity_level = "service";
+  assert.equal(
+    validateSnapshot(snapshot).records.find((record) => record.id === model.id)!
+      .attributes.entity_level,
+    "service",
+  );
+  model.attributes.entity_level = "unidentified";
+  assert.throws(
+    () => validateSnapshot(snapshot),
+    /Model needs explicit entity_level/,
+  );
+});
+
+test("service imports use the same profile structure as static rendering", () => {
+  const snapshot = fixture();
+  const model = snapshot.records.find((record) => record.kind === "model")!;
+  const profile: any = {
+    summary: "Fixture",
+    sections: [],
+    facts: [],
+    strengths: [],
+    limitations: [],
+    coverage: "limited",
+    gaps: ["Fixture"],
+    review: {
+      method: "automated_source_review",
+      date: "2026-09-16",
+      note: "Fixture",
+    },
+  };
+  model.attributes.profile = profile;
+  assert.doesNotThrow(() => validateSnapshot(snapshot));
+  profile.summary_source_ids = ["source-one"];
+  assert.throws(() => validateSnapshot(snapshot), /Summary evidence/);
+  profile.summary_source_locator = "Fixture summary";
+  profile.facts.push({
+    label: "Context",
+    value: "Fixture",
+    status: "independently_verified",
+    source_ids: ["source-one"],
+    source_locator: "Fixture section",
+  });
+  assert.throws(() => validateSnapshot(snapshot));
+  profile.facts[0].status = "unreported";
+  assert.doesNotThrow(() => validateSnapshot(snapshot));
+});

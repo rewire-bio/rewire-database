@@ -7,6 +7,7 @@ import { createCatalogueQuery } from "../services/omics/src/catalogue-query";
 import { enrichProfiles } from "../lib/omics-profile";
 import { enrichAssociations } from "../scripts/omics/enrich";
 import { buildRelease } from "../scripts/omics/release";
+import { currentCatalogueBase } from "../scripts/omics/inputs";
 const read = (name: string) =>
   fs
     .readFileSync(`data/omics/${name}.jsonl`, "utf8")
@@ -15,7 +16,7 @@ const read = (name: string) =>
     .map((line) => JSON.parse(line));
 const records = enrichProfiles(
   enrichAssociations(
-    [...read("migrated"), ...read("discovery")],
+    currentCatalogueBase([...read("migrated"), ...read("discovery")]),
     [
       ...read("model-profile-associations"),
       ...read("benchmark-profile-associations"),

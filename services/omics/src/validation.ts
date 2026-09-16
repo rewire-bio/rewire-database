@@ -1,3 +1,4 @@
+import { profileSchema } from "./profile-schema.js";
 import { z } from "zod";
 import { isIP } from "node:net";
 import { assertPublicCatalogue } from "./catalogue-query.js";
@@ -177,7 +178,9 @@ export const recordSchema = z
     }
     if (
       record.kind === "model" &&
-      !["family", "checkpoint", "method"].includes(String(a.entity_level))
+      !["family", "checkpoint", "method", "service"].includes(
+        String(a.entity_level),
+      )
     )
       issue("Model needs explicit entity_level");
     if (
@@ -252,10 +255,11 @@ export function validateSnapshot(input: unknown) {
     throw new Error("Duplicate record IDs");
   for (const record of snapshot.records) {
     const profile = record.attributes.profile;
+    if (profile !== undefined) profileSchema.parse(profile);
     function validateProfileEvidence(value: unknown): void {
       if (!value || typeof value !== "object") return;
       for (const [key, child] of Object.entries(value)) {
-        if (key === "source_ids") {
+        if (["source_ids", "summary_source_ids"].includes(key)) {
           if (
             !Array.isArray(child) ||
             child.some(

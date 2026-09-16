@@ -34,7 +34,7 @@ jobs:
       - name: Install and build the API
         run: npm ci --prefix services/omics && npm --prefix services/omics run build
       - name: Verify Hosting and API integration
-        run: npx firebase emulators:exec --project demo-rewire-omics --only hosting,functions,auth,firestore 'node scripts/check-api-hosting.mjs'
+        run: npx firebase emulators:exec --project demo-rewire-omics --only hosting,functions,auth,firestore 'npm --prefix services/omics test && node scripts/check-api-hosting.mjs'
       - name: Authenticate to Google
         if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && vars.FIREBASE_DEPLOY_ENABLED == 'true' && vars.FIREBASE_BACKEND_DEPLOY_ENABLED == 'true'
         uses: google-github-actions/auth@v2

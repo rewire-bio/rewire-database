@@ -8,7 +8,7 @@ import {
   recordHref,
   type OmicsRecord,
 } from "@/lib/omics";
-import { Evidence } from "./Profile";
+import { Evidence, EvidenceConcerns } from "./Profile";
 import styles from "@/app/database/database.module.css";
 
 function RecordLinks({ records }: { records: OmicsRecord[] }) {
@@ -274,6 +274,7 @@ export default function Results({
                         <span className={styles.tag}>
                           {review_status.replace(/_/g, " ")}
                         </span>
+                        <EvidenceConcerns sources={sources} />
                         <Evidence
                           ids={result.source_ids}
                           locator={String(

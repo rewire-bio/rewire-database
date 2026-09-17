@@ -18,6 +18,8 @@ import Profile, {
   ProfileEvidence,
 } from "@/components/catalogue/Profile";
 import EvidenceTable from "@/components/catalogue/EvidenceTable";
+import RunRecipes from "@/components/catalogue/RunRecipes";
+import Reproduction from "@/components/catalogue/Reproduction";
 import RunGuide from "@/components/catalogue/RunGuide";
 import Results from "@/components/catalogue/Results";
 import BenchmarkCharts from "@/components/catalogue/BenchmarkCharts";
@@ -114,7 +116,9 @@ export default function RecordPage({ params }: { params: Params }) {
   const predictive = predictiveKinds.includes(record.kind);
   const evaluationDesign = evaluationKinds.includes(record.kind);
   const hasRunInstructions = Boolean(
-    record.attributes.run_guide || record.attributes.run_documentation,
+    evaluationDesign ||
+    record.attributes.run_guide ||
+    record.attributes.run_documentation,
   );
   const verifiedAssociation = (
     subject: string,
@@ -312,7 +316,13 @@ export default function RecordPage({ params }: { params: Params }) {
               <a href="#overview">At a glance</a>
               {predictive && <a href="#results">Results</a>}
               <a href="#how-it-works">How it works</a>
-              {hasRunInstructions && <a href="#run">How to run</a>}
+              {hasRunInstructions && (
+                <a
+                  href={record.attributes.run_recipes ? "#run-recipes" : "#run"}
+                >
+                  How to run
+                </a>
+              )}
               {!predictive && <a href="#results">Results</a>}
               {detail.published_comparisons.length > 0 && (
                 <a href="#charts">Charts</a>
@@ -594,9 +604,27 @@ export default function RecordPage({ params }: { params: Params }) {
               )}
             </section>
           )}
-          {hasRunInstructions && (
-            <RunGuide record={record} sources={detail.sources} />
+          {evaluationDesign && (
+            <RunRecipes
+              record={record}
+              sources={detail.sources}
+              protocols={protocolLinks.filter(
+                (item) => item.kind === "protocol",
+              )}
+            />
           )}
+          {["result", "evaluation"].includes(record.kind) && (
+            <Reproduction evaluation={evaluated} records={catalogue.records} />
+          )}
+          {hasRunInstructions &&
+            (record.attributes.run_recipes ? (
+              <details className={styles.section}>
+                <summary>Original repository instructions</summary>
+                <RunGuide record={record} sources={detail.sources} />
+              </details>
+            ) : (
+              <RunGuide record={record} sources={detail.sources} />
+            ))}
           {record.kind === "evaluation" && (
             <section id="protocol" className={styles.section}>
               <h2>Evaluation procedure</h2>

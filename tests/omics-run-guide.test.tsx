@@ -74,7 +74,7 @@ describe("reviewed run instructions", () => {
       <RunGuide record={benchmark} sources={[source]} />,
     );
     expect(html).toContain('id="run"');
-    expect(html).toContain("Running this benchmark");
+    expect(html).toContain("Run this benchmark");
     expect(html).toContain("README: Installation and Evaluation");
     expect(html).toContain(String(source.attributes.url));
     expect(html).not.toContain("Copy commands");
@@ -87,7 +87,7 @@ describe("reviewed run instructions", () => {
     const html = renderToStaticMarkup(
       <RunGuide record={benchmark} sources={[source]} />,
     );
-    expect(html).toContain("How to run");
+    expect(html).toContain("Official run instructions");
     expect(html).toContain("python score.py --input predictions.csv");
     expect(html).toContain("README: Evaluate predictions");
     expect(html).toContain(String(source.attributes.url));
@@ -98,7 +98,7 @@ describe("reviewed run instructions", () => {
     );
     expect(html).toContain('aria-label="Copy commands: Score predictions"');
     expect(html).toContain('tabindex="0"');
-    expect(html).not.toContain("Running this benchmark");
+    expect(html).not.toContain("Run this benchmark");
   });
   it("does not render arbitrary malformed instructions", () => {
     const { source, benchmark } = fixture();
@@ -108,7 +108,7 @@ describe("reviewed run instructions", () => {
     };
     expect(
       renderToStaticMarkup(<RunGuide record={benchmark} sources={[source]} />),
-    ).toBe("");
+    ).toContain("No runnable recipe has been reviewed");
   });
   it("rejects documentation assigned to a different record", () => {
     const { benchmark, byId } = fixture();

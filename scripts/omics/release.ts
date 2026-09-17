@@ -264,11 +264,11 @@ function main() {
             ).length,
           },
           changelog: [
-            "Add release-pinned field-level evidence tables in CSV and JSONL, separating individual claims from context-only references and catalogue metadata.",
-            "Expand model and benchmark explanations using pinned primary evidence; existing result values and IDs remain unchanged.",
-            "Add field-level evidence status and summary citations; distinguish AlphaFold Server from the downloadable model.",
-            "Preserve earlier release bytes and expose unresolved source concerns on result pages and comparisons.",
-            "Profile review status is independent of numerical-result review; unresolved scientific metadata remains explicit.",
+            "Add the complete AlphaGenome supplementary Tables 3 and 4 transcription: 130 published absolute result rows, with six disputed rows retained in the review input.",
+            "Link paper-evaluated AlphaGenome configurations to the family profile; keep four supervised downstream pipelines separate.",
+            "Preserve all 154 source score-cell occurrences, spreadsheet formats, exact stored values and deduplicated result identities across 77 comparison rows.",
+            "Add source-backed protocol explanations and diagrams; retain unknown manifests, uncertainty and scoring counts explicitly.",
+            "Preserve all 167 earlier numerical results and every previously published release byte for byte. No new model computation.",
           ],
         }
       : {}),

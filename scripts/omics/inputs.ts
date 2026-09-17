@@ -1,4 +1,5 @@
 import fs from "node:fs";
+import { createHash } from "node:crypto";
 import { enrichMetadata } from "./metadata";
 import { addEvidenceConcerns } from "./evidence-concerns";
 import { type RecordEntry, recordSchema } from "./schema";
@@ -24,18 +25,56 @@ export function evidenceSources(): RecordEntry[] {
 }
 
 export const reviewInputFiles = [
+  "data/omics/reviewed/alphagenome-2026.jsonl",
+  "data/omics/reviews/2026-09-17-alphagenome-results.json",
+  "data/omics/reviews/2026-09-17-alphagenome-independent-review.json",
+  "data/omics/reviews/alphagenome-2026/tables.json",
+  "data/omics/reviews/alphagenome-2026/protocol-map.json",
+  "data/omics/reviews/alphagenome-2026/methods-source.json",
+  "data/omics/reviews/alphagenome-2026/retrieval.json",
   "data/omics/evidence-sources.jsonl",
   "data/omics/metadata-corrections.jsonl",
   "data/omics/evidence-concerns.jsonl",
   "data/omics/reviews/2026-09-16-profile-review.jsonl",
   "data/omics/reviews/2026-09-16-numerical-integrity.json",
 ];
+/** New numerical batches are additive: historical reconstruction uses only its
+ * original inputs. Disputed rows stay in Git but publicRecords quarantines them. */
+export function reviewedResults(): RecordEntry[] {
+  const file = "data/omics/reviewed/alphagenome-2026.jsonl";
+  const digest = createHash("sha256")
+    .update(fs.readFileSync(file))
+    .digest("hex");
+  const receipt = JSON.parse(
+    fs.readFileSync(
+      "data/omics/reviews/2026-09-17-alphagenome-results.json",
+      "utf8",
+    ),
+  );
+  const review = JSON.parse(
+    fs.readFileSync(
+      "data/omics/reviews/2026-09-17-alphagenome-independent-review.json",
+      "utf8",
+    ),
+  );
+  if (
+    receipt.records_sha256 !== digest ||
+    review.input_sha256 !== digest ||
+    !Array.isArray(review.errors) ||
+    review.errors.length
+  ) {
+    throw new Error(
+      "AlphaGenome batch lacks a matching, successful independent transcription review",
+    );
+  }
+  return readJsonl(file).map((value) => recordSchema.parse(value));
+}
 export function currentCatalogueBase(base: RecordEntry[]): RecordEntry[] {
   const optional = (file: string) =>
     fs.existsSync(file) ? readJsonl(file) : [];
   return enrichMetadata(
     addEvidenceConcerns(
-      [...base, ...evidenceSources()],
+      [...base, ...evidenceSources(), ...reviewedResults()],
       optional("data/omics/evidence-concerns.jsonl"),
     ),
     optional("data/omics/metadata-corrections.jsonl"),

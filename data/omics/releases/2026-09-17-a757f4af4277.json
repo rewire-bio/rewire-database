@@ -1,0 +1,157 @@
+{
+  "schema_version": "1.0",
+  "release_id": "2026-09-17-a757f4af4277",
+  "released_at": "2026-09-17T06:43:49Z",
+  "counts": {
+    "model": 273,
+    "benchmark": 221,
+    "dataset": 152,
+    "baseline": 27,
+    "evaluation": 279,
+    "result": 297,
+    "source": 642,
+    "claim": 210
+  },
+  "coverage": {
+    "evidence_table_version": "1.0",
+    "evidence_table_generator_sha256": "357a5b68b3b09bceda13165f7f9eb75906950fb7d7d8aa4c8e2380c9b75cfe1f",
+    "profile_coverage": {
+      "total": 494,
+      "fact_status_counts": {
+        "source_checked": 3826,
+        "unreported": 698,
+        "unextracted": 47,
+        "unavailable": 0,
+        "inapplicable": 250,
+        "unclassified": 0
+      },
+      "note": "Source review applies to individual cited claims. Missing fields and inaccessible evidence remain explicit; profile coverage is not independent experimental verification.",
+      "reviewed": 96,
+      "limited": 398
+    },
+    "changelog": [
+      "Add the complete AlphaGenome supplementary Tables 3 and 4 transcription: 130 published absolute result rows, with six disputed rows retained in the review input.",
+      "Link paper-evaluated AlphaGenome configurations to the family profile; keep four supervised downstream pipelines separate.",
+      "Preserve all 154 source score-cell occurrences, spreadsheet formats, exact stored values and deduplicated result identities across 77 comparison rows.",
+      "Add source-backed protocol explanations and diagrams; retain unknown manifests, uncertainty and scoring counts explicitly.",
+      "Preserve all 167 earlier numerical results and every previously published release byte for byte. No new model computation."
+    ],
+    "research_lanes": 9,
+    "search_entries": 11,
+    "legacy_papers": 100,
+    "legacy_result_rows": 149,
+    "source_inputs": [
+      {
+        "file": "data/omics/migrated.jsonl",
+        "sha256": "3c2b88985f8419b9e5eb1b24a603b689891b969d30819e4a84d2af62a4760628"
+      },
+      {
+        "file": "data/omics/discovery.jsonl",
+        "sha256": "dbc2fe14ed474144442b6b8cc07147e2a23eb3a865a3324e9b8a958706ea65a0"
+      },
+      {
+        "file": "data/omics/reviewed/alphagenome-2026.jsonl",
+        "sha256": "920ee2aa93bea6cf05cb7321c3669a0533b6d4a4f769496208573c30b04b139b"
+      },
+      {
+        "file": "data/omics/reviews/2026-09-17-alphagenome-results.json",
+        "sha256": "b7114564c575a9dc84110d6f8f7cdef8fa02322c983f6b11ffebe0e5d8012c03"
+      },
+      {
+        "file": "data/omics/reviews/2026-09-17-alphagenome-independent-review.json",
+        "sha256": "ff1902678cfba8d8b0f4df2547c63271928d583e927e1a2c26befcae125e7181"
+      },
+      {
+        "file": "data/omics/reviews/alphagenome-2026/tables.json",
+        "sha256": "40d55fbf8047ef881fca2f3de4fb2fca3b60959d26d1dd138dfe37f5a57a1c56"
+      },
+      {
+        "file": "data/omics/reviews/alphagenome-2026/protocol-map.json",
+        "sha256": "f3353fecdcb1a472a5be59588993d8684b104b3b0ff9bd8075727fb9c091a944"
+      },
+      {
+        "file": "data/omics/reviews/alphagenome-2026/methods-source.json",
+        "sha256": "30a62af3aa555485a19c865777210a60400120dc671e7c6362cfb485aca5581d"
+      },
+      {
+        "file": "data/omics/reviews/alphagenome-2026/retrieval.json",
+        "sha256": "a72fd002c8b830b08ed4e4617783564392acdbb2d80fb24f79c383cbc62fe2cf"
+      },
+      {
+        "file": "data/omics/evidence-sources.jsonl",
+        "sha256": "8a6929db81fc7cf74114c18e4ebefdab0bb7444de460a3d6e71e3a1816afbe9c"
+      },
+      {
+        "file": "data/omics/metadata-corrections.jsonl",
+        "sha256": "bc00fc3c10239981723b63c6feb8e0d40897a4f556d542acdad7d04c0c1debd3"
+      },
+      {
+        "file": "data/omics/evidence-concerns.jsonl",
+        "sha256": "b87e3c35b2706ba2a9af575d2843c73edef096c108ae0efd94c3fef99da8d67b"
+      },
+      {
+        "file": "data/omics/reviews/2026-09-16-profile-review.jsonl",
+        "sha256": "395ac3574749200a37661af70f6022619b93b38f591afe2a9c6e848ec890c7a5"
+      },
+      {
+        "file": "data/omics/reviews/2026-09-16-numerical-integrity.json",
+        "sha256": "f97900bcb8ee6c5ebeb73d0669120b27f963b93bb0d19bb1989fb8dbf2e55390"
+      },
+      {
+        "file": "data/omics/model-profiles.jsonl",
+        "sha256": "77932a2b5f1c3af9840755a4d7364111ba5fc1f390dade7a1a29cb40bf434b92"
+      },
+      {
+        "file": "data/omics/benchmark-profiles.jsonl",
+        "sha256": "e3428c0149b3b7f72a6bdf0799efd1c63ad654d27903237dd15c053c76f0e876"
+      },
+      {
+        "file": "data/omics/model-profile-associations.jsonl",
+        "sha256": "f16b44414e8e368434cfe2975e018fc87be0c7cb375fcc13795ee8d24458038b"
+      },
+      {
+        "file": "data/omics/benchmark-profile-associations.jsonl",
+        "sha256": "1d5338137bf6ec14b7a059298648f1aeef58e346cc5b8f0bee0e539568a608ff"
+      }
+    ],
+    "total_records": 2134,
+    "public_records": 2101,
+    "counts": {
+      "model": 273,
+      "benchmark": 221,
+      "dataset": 152,
+      "baseline": 27,
+      "evaluation": 279,
+      "result": 297,
+      "source": 642,
+      "claim": 210
+    },
+    "quarantined_results": 6,
+    "scope_excluded_records": 27,
+    "source_checked_results": 285,
+    "rewire_result_rows": 12,
+    "scope": "Specialist omics and molecular models; no clinical assistants or standalone medical imaging.",
+    "limitation": "A dated discovery and source-transcription review, not an exhaustive census or independent reproduction of external experiments."
+  },
+  "archive_sha256": "fada36d8d11f57b7aed79ff1364422114ddf5af7dbd352a35501ad916738c14d",
+  "catalogue_sha256": "718af99cc15aef26c1fe4261cdd291e109c576ef7b1ab7604a7bfc02aef347e2",
+  "files": {
+    "catalogue.json": "718af99cc15aef26c1fe4261cdd291e109c576ef7b1ab7604a7bfc02aef347e2",
+    "records.jsonl": "eba698686863db456f4fe276e3c568e0a8a9b77b6e595821cabe4e11b82845bf",
+    "records.csv": "132adf762bc3917c7ddc997e281ec01d3fb7f70ad8ae81a9e61e1ac08ee7a5ae",
+    "evidence.jsonl": "d86b1b878fc4557d8d4f0afe74b4fff4760348daf094cc0b002fc3f39f74d238",
+    "evidence.csv": "cb5fb1798b4032bcc4592a4b236e2d86438243be5cd2d99aad98dd1dc63847ba"
+  },
+  "changelog": [
+    "Add the complete AlphaGenome supplementary Tables 3 and 4 transcription: 130 published absolute result rows, with six disputed rows retained in the review input.",
+    "Link paper-evaluated AlphaGenome configurations to the family profile; keep four supervised downstream pipelines separate.",
+    "Preserve all 154 source score-cell occurrences, spreadsheet formats, exact stored values and deduplicated result identities across 77 comparison rows.",
+    "Add source-backed protocol explanations and diagrams; retain unknown manifests, uncertainty and scoring counts explicitly.",
+    "Preserve all 167 earlier numerical results and every previously published release byte for byte. No new model computation."
+  ],
+  "compatibility": {
+    "papers": "/benchmark-literature/papers.json",
+    "results": "/benchmark-literature/results.csv",
+    "note": "Historical compatibility files retain the original collection, including out-of-scope and unreviewed records. Use this release for current scoped data."
+  }
+}

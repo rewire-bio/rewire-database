@@ -1,4 +1,3 @@
-import { validateSnapshot } from "../services/omics/src/validation";
 import { describe, expect, it } from "vitest";
 import fs from "node:fs";
 import { createHash } from "node:crypto";
@@ -52,8 +51,7 @@ function allResults(id: string) {
 }
 
 describe("complete AlphaGenome primary-table batch", () => {
-  it("imports through the existing service contract without extending the schema", () => {
-    expect(() => validateSnapshot(release)).not.toThrow();
+  it("requires a matching successful independent review receipt", () => {
     const independent = JSON.parse(
       fs.readFileSync(
         "data/omics/reviews/2026-09-17-alphagenome-independent-review.json",

@@ -14,6 +14,7 @@ export default function RunGuide({
   record: OmicsRecord;
   sources: OmicsRecord[];
 }) {
+  const sectionId = record.attributes.run_recipes ? "run-upstream" : "run";
   const [copied, setCopied] = useState<number | null>(null);
   const [error, setError] = useState("");
   const parsed = runGuideSchema.safeParse(record.attributes.run_guide);
@@ -21,15 +22,44 @@ export default function RunGuide({
     const documentation = runDocumentationSchema.safeParse(
       record.attributes.run_documentation,
     );
-    if (!documentation.success) return null;
+    if (!documentation.success) {
+      if (!["benchmark", "task", "protocol", "evaluator"].includes(record.kind))
+        return null;
+      return (
+        <section
+          id={sectionId}
+          className={`${styles.section} ${styles.runGuide}`}
+          aria-labelledby="run-title"
+        >
+          <h2 id="run-title">Run instructions</h2>
+          <p>
+            No runnable recipe has been reviewed for this {record.kind}. Dataset
+            access, model requirements, licences and compute requirements must
+            be checked against its sources before execution.
+          </p>
+          {record.kind === "task" && (
+            <p>
+              A task describes a biological question. Choose a linked protocol
+              to obtain concrete split and scoring instructions.
+            </p>
+          )}
+        </section>
+      );
+    }
     return (
       <section
-        id="run"
+        id={sectionId}
         className={`${styles.section} ${styles.runGuide}`}
         aria-labelledby="run-title"
       >
-        <h2 id="run-title">Running this benchmark</h2>
+        <h2 id="run-title">Run this benchmark</h2>
         <p>{documentation.data.summary}</p>
+        <p className={styles.muted}>
+          A maintained rewire runner has not been verified for this benchmark.
+          Check data access, weights, licences, dependencies and hardware in the
+          linked official documentation; requirements have not been fully
+          extracted.
+        </p>
         <Evidence
           ids={documentation.data.source_ids}
           locator={documentation.data.source_locator}
@@ -52,11 +82,11 @@ export default function RunGuide({
   }
   return (
     <section
-      id="run"
+      id={sectionId}
       className={`${styles.section} ${styles.runGuide}`}
       aria-labelledby="run-title"
     >
-      <h2 id="run-title">How to run</h2>
+      <h2 id="run-title">Official run instructions</h2>
       <p>{guide.summary}</p>
       <p className={styles.muted}>
         Checked against the official instructions on {guide.review.date}. These

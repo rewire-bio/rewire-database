@@ -899,3 +899,83 @@ emulatorTest(
     );
   },
 );
+
+emulatorTest(
+  "raw Python-compatible SDK POST is private, idempotent and owned by verified email",
+  async () => {
+    const { sdkBundle: bundle } = await import("./fixtures.js");
+    const user = await signIn();
+    const other = await signIn();
+    const server = createServer(contributionHttpHandler);
+    await new Promise<void>((resolve) =>
+      server.listen(0, "127.0.0.1", resolve),
+    );
+    const base = `http://127.0.0.1:${(server.address() as { port: number }).port}/api/trpc`;
+    const payload = {
+      contribution: {
+        type: "result",
+        title: "Locally evaluated private model",
+        summary: "Prepared locally and submitted for review.",
+        source_urls: ["https://example.org/results"],
+        public_credit: false,
+        details: {
+          model: "Private model",
+          benchmark: "MFASS",
+          protocol: "mfass-v2",
+          metric: "AUROC",
+          value: "0.77",
+          source_locator: "Table 1",
+          rewire_bundle: bundle,
+        },
+      },
+      idempotencyKey: randomUUID(),
+    };
+    const post = (token?: string, body = payload) =>
+      fetch(`${base}/submission.create`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify(body),
+      });
+    try {
+      assert.equal((await post()).status, 401);
+      const created = await post(user.token);
+      assert.equal(created.status, 200);
+      const first = (await created.json()) as any;
+      assert.equal(first.result.data.status, "submitted");
+      assert.deepEqual(await (await post(user.token)).json(), first);
+      const foreign = await fetch(
+        `${base}/submission.get?input=${encodeURIComponent(JSON.stringify({ id: first.result.data.id }))}`,
+        { headers: { Authorization: `Bearer ${other.token}` } },
+      );
+      assert.equal(foreign.status, 404);
+      const original = await fetch(
+        `${base}/submission.get?input=${encodeURIComponent(JSON.stringify({ id: first.result.data.id }))}`,
+        { headers: { Authorization: `Bearer ${user.token}` } },
+      );
+      const own = (await original.json()) as any;
+      assert.equal(
+        own.result.data.details.rewire_bundle.review_status,
+        "unreviewed_contribution",
+      );
+      assert.equal(original.headers.get("cache-control"), "no-store");
+      const rejected = await post(user.token, {
+        ...payload,
+        idempotencyKey: randomUUID(),
+        contribution: {
+          ...payload.contribution,
+          details: {
+            ...payload.contribution.details,
+            rewire_bundle: { ...bundle, independently_reproduced: true },
+          },
+        },
+      });
+      assert.equal(rejected.status, 400);
+    } finally {
+      server.closeAllConnections();
+      await new Promise<void>((resolve) => server.close(() => resolve()));
+    }
+  },
+);

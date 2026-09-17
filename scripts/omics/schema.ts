@@ -1,3 +1,4 @@
+import { validateRunRecipes } from "../../services/omics/src/run-recipe";
 import { validateRunGuide } from "../../services/omics/src/run-guide";
 import { assertNoPrivateFields } from "../../services/omics/src/private-fields";
 import { z } from "zod";
@@ -64,6 +65,7 @@ export function validateRecords(input: unknown[]): RecordEntry[] {
     const a = r.attributes;
     validateBenchmarkResearch(r, byId);
     validateRunGuide(r, byId);
+    validateRunRecipes(r, byId);
     if (a.profile !== undefined)
       validateProfileSources(profileSchema.parse(a.profile), byId);
     if (a.extensions !== undefined) extensionsSchema.parse(a.extensions);

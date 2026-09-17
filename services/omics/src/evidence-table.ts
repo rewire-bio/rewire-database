@@ -1,3 +1,4 @@
+import { runRecipeSchema, reproductionSchema } from "./run-recipe.js";
 import { runGuideSchema } from "./run-guide.js";
 import { assertNoPrivateFields } from "./private-fields.js";
 import type { CatalogueRecord, CatalogueSnapshot } from "./catalogue-query.js";
@@ -314,6 +315,66 @@ export function createEvidenceIndex(snapshot: CatalogueSnapshot) {
           },
         }),
       );
+    if (Array.isArray(record.attributes.run_recipes)) {
+      record.attributes.run_recipes.forEach((value, recipeIndex) => {
+        const parsedRecipe = runRecipeSchema.safeParse(value);
+        if (!parsedRecipe.success) return;
+        const recipe = parsedRecipe.data;
+        for (const [key, value] of Object.entries({
+          summary: recipe.summary,
+          inputs: recipe.inputs,
+          outputs: recipe.outputs,
+          requirements: recipe.requirements,
+          limitations: recipe.limitations,
+        })) {
+          add({
+            field: `attributes.run_recipes.${recipeIndex}.${key}`,
+            label: `Run recipe: ${key}`,
+            value,
+            ids: recipe.source_ids,
+            locator: recipe.source_locator,
+            scope: "individual_claim",
+            status: "source_checked",
+            review: {
+              method: "implementation_review",
+              note: "Recipe metadata reviewed against pinned sources; not experimental reproduction.",
+            },
+          });
+        }
+        recipe.instructions.forEach((instruction, i) =>
+          add({
+            field: `attributes.run_recipes.${recipeIndex}.instructions.${i}.code`,
+            label: `Run recipe: ${instruction.title}`,
+            value: instruction.code,
+            ids: instruction.source_ids,
+            locator: instruction.source_locator,
+            scope: "individual_claim",
+            status: "source_checked",
+            review: {
+              method: "implementation_review",
+              note: `Execution status: ${instruction.status}. Execution receipts apply only to their stated scope; not experimental reproduction.`,
+            },
+          }),
+        );
+      });
+    }
+    const reproduction = reproductionSchema.safeParse(
+      record.attributes.reproduction,
+    );
+    if (reproduction.success)
+      add({
+        field: "attributes.reproduction",
+        label: "Recipe applicability",
+        value: reproduction.data,
+        ids: reproduction.data.source_ids,
+        locator: reproduction.data.source_locator,
+        scope: "individual_claim",
+        status: "source_checked",
+        review: {
+          method: "implementation_review",
+          note: "Exact protocol applicability review only; no scientific status upgrade.",
+        },
+      });
     const parsed = profileSchema.safeParse(record.attributes.profile);
     if (parsed.success) {
       const profile = parsed.data;

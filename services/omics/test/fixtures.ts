@@ -88,3 +88,22 @@ export const proposalInput = {
   public_credit: false,
   details: {},
 };
+
+export const sdkBundle = {
+  schema_version: "1.0",
+  kind: "rewire_benchmark_submission",
+  protocol_id: "mfass-v2",
+  protocol_version: "bee9133b83f3aedaf2bbb9013f1875515845607e",
+  dataset_id: "mfass-v2",
+  scope: "full",
+  completion: "complete",
+  model: { name: "Private model", training_overlap: "Not established" },
+  metrics: { auroc: 0.77, average_precision_sklearn: 0.28 },
+  coverage: { denominator: 100, scored: 100, unscored: 0 },
+  provenance: { protocol_revision: "a".repeat(40) },
+  execution_status: "local_adapter",
+  review_status: "unreviewed_contribution",
+  independently_reproduced: false,
+  prepared_sha256: "b".repeat(64),
+  predictions_sha256: "c".repeat(64),
+};

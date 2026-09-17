@@ -53,13 +53,15 @@ const firebaseConfig = {
   projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
-const configured = process.env.NEXT_PUBLIC_OMICS_CONTRIBUTIONS_ENABLED === "true" && !!(
-  apiUrl &&
-  firebaseConfig.apiKey &&
-  firebaseConfig.authDomain &&
-  firebaseConfig.projectId &&
-  firebaseConfig.appId
-);
+const configured =
+  process.env.NEXT_PUBLIC_OMICS_CONTRIBUTIONS_ENABLED === "true" &&
+  !!(
+    apiUrl &&
+    firebaseConfig.apiKey &&
+    firebaseConfig.authDomain &&
+    firebaseConfig.projectId &&
+    firebaseConfig.appId
+  );
 const emailStorageKey = "rewire-omics-signin-email";
 const emptyDraft: Draft = {
   type: "model",
@@ -341,7 +343,8 @@ export default function ContributionForm() {
         <div className={styles.notice}>
           <strong>Submissions are not open yet.</strong> You can prepare and
           download a draft below. Nothing is sent from this form while the
-          contribution service is unconfigured.
+          contribution service is unconfigured. Library submissions are also
+          disabled; export a local bundle for later review.
         </div>
       )}
       <p>
@@ -377,6 +380,43 @@ export default function ContributionForm() {
             Signed in as {user.email}. Your contributions are visible only to
             you and the review team until publication.
           </p>
+          <details>
+            <summary>Submit from the Python library</summary>
+            <p>
+              Copy a short-lived access token after verifying your email. It
+              authorises access to your private contributions. Pass it to
+              rewirebench.submit in your local environment; never put it in a
+              script, notebook, log or public issue.
+            </p>
+            <button
+              type="button"
+              className={styles.button}
+              onClick={async () => {
+                try {
+                  const signedIn = authRef.current?.currentUser;
+                  if (
+                    !signedIn ||
+                    signedIn.uid !== user.uid ||
+                    !signedIn.emailVerified
+                  )
+                    throw new Error("Sign in again");
+                  const token = await signedIn.getIdToken(true);
+                  if (authRef.current?.currentUser?.uid !== signedIn.uid)
+                    return;
+                  await navigator.clipboard.writeText(token);
+                  setMessage(
+                    "Short-lived library access token copied. Clear your clipboard after use. Every submitted result requires review before publication.",
+                  );
+                } catch {
+                  setError(
+                    "Could not copy an access token. Check your verified sign-in and clipboard permissions.",
+                  );
+                }
+              }}
+            >
+              Copy library access token
+            </button>
+          </details>
           <button
             className={styles.button}
             onClick={() => {

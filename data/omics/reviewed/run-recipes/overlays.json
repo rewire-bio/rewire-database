@@ -1,0 +1,313 @@
+[
+  {
+    "id": "rewire-mfass-v2",
+    "source_ids": [
+      "runner-recipe-docs-sdk-md-f80cef7f",
+      "runner-recipe-docs-mfass-md-f80cef7f",
+      "runner-recipe-packages-rewirebench-src-rewirebench-protocols-mfass-py-f80cef7f",
+      "runner-recipe-packages-rewirebench-src-rewirebench-adapters-mfass-py-f80cef7f",
+      "runner-recipe-docs-hpc-md-f80cef7f"
+    ],
+    "run_recipes": [
+      {
+        "id": "mfass-v2-rescore",
+        "protocol_id": "mfass-v2",
+        "version": "f80cef7f818bec33e51b7f43ad499eb5078c8d87",
+        "title": "MFASS v2: score existing predictions",
+        "purpose": "rescore_predictions",
+        "summary": "Evaluate keyed splice-disruption scores on the fixed MFASS v2 test split. Higher scores mean greater splice disruption.",
+        "inputs": [
+          "Validated cohort.tsv; the canonical split is packaged with the library.",
+          "CSV/TSV columns id, score and optional reason; every test variant needs a score or an explicit unscored reason."
+        ],
+        "outputs": [
+          "Local report.json with metrics, coverage, protocol and artifact hashes.",
+          "Local predictions.json and unscored.json; neither is submitted automatically."
+        ],
+        "requirements": {
+          "data": "Obtain the validated MFASS v2 cohort.tsv. Preparation checks its SHA-256 and the canonical 27,733-variant split from bee9133b83f3aedaf2bbb9013f1875515845607e.",
+          "weights": "No model or weights are required to rescore supplied predictions.",
+          "licence": "Runner code is MIT. The upstream MFASS data reuse licence is unreported; original data are not bundled.",
+          "software": "Python 3.11 with the pinned rewirebench environment. Container runtimes are optional.",
+          "hardware": "CPU scoring; minimum memory and runtime have not been established for this recipe."
+        },
+        "instructions": [
+          {
+            "runtime": "python",
+            "title": "Prepare and score local predictions",
+            "code": "import rewirebench\nprepared = rewirebench.prepare(\n    \"mfass-v2\", source=\"data/mfass\", output=\"prepared\"\n)\nreport = rewirebench.evaluate(\n    prepared, \"predictions/predictions.tsv\", output=\"runs/mfass-rescore\",\n    model={\"name\": \"My model\", \"training_overlap\": \"Unreported\"},\n)",
+            "status": "source_reviewed_not_executed",
+            "source_ids": [
+              "runner-recipe-docs-sdk-md-f80cef7f",
+              "runner-recipe-docs-mfass-md-f80cef7f",
+              "runner-recipe-packages-rewirebench-src-rewirebench-protocols-mfass-py-f80cef7f",
+              "runner-recipe-packages-rewirebench-src-rewirebench-adapters-mfass-py-f80cef7f"
+            ],
+            "source_locator": "docs/sdk.md: prepare/evaluate; docs/mfass.md: canonical cohort and keyed predictions"
+          },
+          {
+            "runtime": "command_line",
+            "title": "Prepare and score local predictions",
+            "code": "git clone https://github.com/rewire-bio/rewire-benchmarks.git\ncd rewire-benchmarks\ngit checkout --detach f80cef7f818bec33e51b7f43ad499eb5078c8d87\nuv sync --locked --package rewirebench --python 3.11\nuv run --package rewirebench rewirebench prepare mfass-v2 \\\n  --source data/mfass --output prepared\nuv run --package rewirebench rewirebench evaluate \\\n  --prepared prepared --predictions predictions/predictions.tsv \\\n  --output runs/mfass-rescore --model-name \"My model\"",
+            "status": "source_reviewed_not_executed",
+            "source_ids": [
+              "runner-recipe-docs-sdk-md-f80cef7f",
+              "runner-recipe-docs-mfass-md-f80cef7f",
+              "runner-recipe-packages-rewirebench-src-rewirebench-protocols-mfass-py-f80cef7f",
+              "runner-recipe-packages-rewirebench-src-rewirebench-adapters-mfass-py-f80cef7f"
+            ],
+            "source_locator": "docs/sdk.md: command-line interface; docs/mfass.md: input preparation"
+          },
+          {
+            "runtime": "podman",
+            "title": "Score in a local Podman image",
+            "code": "# Build the pinned core image as described in the linked HPC guide first.\nmkdir -p runs\npodman run --rm --userns=keep-id --network=none \\\n  -v \"$PWD/prepared:/prepared:ro\" \\\n  -v \"$PWD/predictions:/predictions:ro\" \\\n  -v \"$PWD/runs:/outputs:rw\" \\\n  localhost/rewirebench:core evaluate \\\n  --prepared /prepared --predictions /predictions/predictions.tsv \\\n  --output /outputs/mfass-v2-rescore",
+            "status": "source_reviewed_not_executed",
+            "source_ids": [
+              "runner-recipe-docs-hpc-md-f80cef7f",
+              "runner-recipe-docs-sdk-md-f80cef7f"
+            ],
+            "source_locator": "docs/hpc.md: Podman build, read-only input mounts and offline execution; docs/sdk.md: evaluate"
+          },
+          {
+            "runtime": "apptainer",
+            "title": "Score in an Apptainer image",
+            "code": "# Build or obtain the pinned SIF as described in the linked HPC guide first.\nmkdir -p runs\napptainer run --cleanenv --containall \\\n  --bind \"$PWD/prepared:/prepared:ro\" \\\n  --bind \"$PWD/predictions:/predictions:ro\" \\\n  --bind \"$PWD/runs:/outputs:rw\" \\\n  rewirebench-core.sif evaluate \\\n  --prepared /prepared --predictions /predictions/predictions.tsv \\\n  --output /outputs/mfass-v2-rescore",
+            "status": "source_reviewed_not_executed",
+            "source_ids": [
+              "runner-recipe-docs-hpc-md-f80cef7f",
+              "runner-recipe-docs-sdk-md-f80cef7f"
+            ],
+            "source_locator": "docs/hpc.md: Apptainer execution and source image identity; docs/sdk.md: evaluate"
+          },
+          {
+            "runtime": "slurm",
+            "title": "Submit the prepared scoring job to Slurm",
+            "code": "#!/bin/bash\nset -euo pipefail\n# Set these for your cluster; no performance or resource estimate is implied.\n: \"${REWIRE_ACCOUNT:?Set your Slurm account}\"\n: \"${REWIRE_PARTITION:?Set your Slurm partition}\"\n: \"${REWIRE_CPUS:?Set the requested CPU count}\"\n: \"${REWIRE_MEMORY:?Set the requested memory}\"\n: \"${REWIRE_WALLTIME:?Set the requested time limit}\"\n: \"${REWIRE_JOB_ROOT:?Set a shared absolute directory with prepared data and SIF}\"\nexport REWIRE_JOB_ROOT\nsbatch --account=\"$REWIRE_ACCOUNT\" --partition=\"$REWIRE_PARTITION\" \\\n  --cpus-per-task=\"$REWIRE_CPUS\" --mem=\"$REWIRE_MEMORY\" \\\n  --time=\"$REWIRE_WALLTIME\" --export=ALL <<'REWIRE_JOB'\n#!/bin/bash\nset -euo pipefail\ncd \"$REWIRE_JOB_ROOT\"\nmkdir -p runs\napptainer run --cleanenv --containall \\\n  --bind \"$PWD/prepared:/prepared:ro\" \\\n  --bind \"$PWD/predictions:/predictions:ro\" \\\n  --bind \"$PWD/runs:/outputs:rw\" \\\n  rewirebench-core.sif evaluate \\\n  --prepared /prepared --predictions /predictions/predictions.tsv \\\n  --output /outputs/mfass-v2-rescore\nREWIRE_JOB",
+            "status": "source_reviewed_not_executed",
+            "source_ids": [
+              "runner-recipe-docs-hpc-md-f80cef7f",
+              "runner-recipe-docs-sdk-md-f80cef7f"
+            ],
+            "source_locator": "docs/hpc.md: Slurm template, preparation outside compute nodes and site-specific resources"
+          }
+        ],
+        "limitations": [
+          "This preserves the corrected assay-oriented variant placement and canonical train/test identities.",
+          "Scores use held-out variants; missing predictions retain the original denominator.",
+          "Rescoring supplied SpliceAI or Pangolin predictions does not recreate their genomic-context inference.",
+          "Smoke inputs and partial coverage do not establish a full benchmark or reproduce a published result."
+        ],
+        "source_ids": [
+          "runner-recipe-docs-sdk-md-f80cef7f",
+          "runner-recipe-docs-mfass-md-f80cef7f",
+          "runner-recipe-packages-rewirebench-src-rewirebench-protocols-mfass-py-f80cef7f",
+          "runner-recipe-packages-rewirebench-src-rewirebench-adapters-mfass-py-f80cef7f"
+        ],
+        "source_locator": "Pinned runner documentation, protocol implementation and adapter implementation"
+      },
+      {
+        "id": "mfass-v2-baseline",
+        "protocol_id": "mfass-v2",
+        "version": "f80cef7f818bec33e51b7f43ad499eb5078c8d87",
+        "title": "MFASS v2: corrected k-mer baseline",
+        "purpose": "generate_and_evaluate",
+        "summary": "Fit the corrected positional and k-mer baseline using training labels only, then score held-out variants.",
+        "inputs": [
+          "Validated MFASS v2 cohort.tsv."
+        ],
+        "outputs": [
+          "Local report.json with metrics, coverage, protocol and artifact hashes.",
+          "Local predictions.json and unscored.json; neither is submitted automatically."
+        ],
+        "requirements": {
+          "data": "Obtain the validated MFASS v2 cohort.tsv. Preparation checks its SHA-256 and the canonical 27,733-variant split from bee9133b83f3aedaf2bbb9013f1875515845607e.",
+          "weights": "No pretrained weights; the baseline is fitted on the fixed training split.",
+          "licence": "Runner code is MIT. The upstream MFASS data reuse licence is unreported; original data are not bundled.",
+          "software": "Python 3.11 with the pinned rewirebench environment. Container runtimes are optional.",
+          "hardware": "CPU execution; a full baseline fit is a separate computation from score-only evaluation."
+        },
+        "instructions": [
+          {
+            "runtime": "python",
+            "title": "Fit the baseline and evaluate",
+            "code": "import rewirebench\nfrom rewirebench.adapters.mfass import KmerBaseline\nprepared = rewirebench.prepare(\"mfass-v2\", source=\"data/mfass\", output=\"prepared\")\nreport = rewirebench.run(\n    prepared, KmerBaseline(), output=\"runs/mfass-baseline\",\n    model={\"name\": \"Corrected k-mer baseline\", \"training_overlap\": \"Canonical training split only\"},\n)",
+            "status": "source_reviewed_not_executed",
+            "source_ids": [
+              "runner-recipe-docs-sdk-md-f80cef7f",
+              "runner-recipe-docs-mfass-md-f80cef7f",
+              "runner-recipe-packages-rewirebench-src-rewirebench-protocols-mfass-py-f80cef7f",
+              "runner-recipe-packages-rewirebench-src-rewirebench-adapters-mfass-py-f80cef7f"
+            ],
+            "source_locator": "docs/mfass.md: baseline; adapters/mfass.py: KmerBaseline"
+          },
+          {
+            "runtime": "command_line",
+            "title": "Run the local baseline",
+            "code": "git clone https://github.com/rewire-bio/rewire-benchmarks.git\ncd rewire-benchmarks\ngit checkout --detach f80cef7f818bec33e51b7f43ad499eb5078c8d87\nuv sync --locked --package rewirebench --python 3.11\nuv run --package rewirebench rewirebench prepare mfass-v2 --source data/mfass --output prepared\nuv run --package rewirebench rewirebench run --prepared prepared \\\n  --adapter rewirebench.adapters.mfass:KmerBaseline \\\n  --model-name \"Corrected k-mer baseline\" --output runs/mfass-baseline",
+            "status": "source_reviewed_not_executed",
+            "source_ids": [
+              "runner-recipe-docs-sdk-md-f80cef7f",
+              "runner-recipe-docs-mfass-md-f80cef7f",
+              "runner-recipe-packages-rewirebench-src-rewirebench-protocols-mfass-py-f80cef7f",
+              "runner-recipe-packages-rewirebench-src-rewirebench-adapters-mfass-py-f80cef7f"
+            ],
+            "source_locator": "docs/sdk.md: run; docs/mfass.md: baseline"
+          }
+        ],
+        "limitations": [
+          "This preserves the corrected assay-oriented variant placement and canonical train/test identities.",
+          "Scores use held-out variants; missing predictions retain the original denominator.",
+          "Rescoring supplied SpliceAI or Pangolin predictions does not recreate their genomic-context inference.",
+          "Smoke inputs and partial coverage do not establish a full benchmark or reproduce a published result.",
+          "The input includes positional and conservation features, not sequence alone."
+        ],
+        "source_ids": [
+          "runner-recipe-docs-sdk-md-f80cef7f",
+          "runner-recipe-docs-mfass-md-f80cef7f",
+          "runner-recipe-packages-rewirebench-src-rewirebench-protocols-mfass-py-f80cef7f",
+          "runner-recipe-packages-rewirebench-src-rewirebench-adapters-mfass-py-f80cef7f"
+        ],
+        "source_locator": "Pinned runner documentation, protocol implementation and adapter implementation"
+      },
+      {
+        "id": "mfass-v2-dnabert2",
+        "protocol_id": "mfass-v2-frozen-encoder",
+        "version": "f80cef7f818bec33e51b7f43ad499eb5078c8d87",
+        "title": "MFASS v2: frozen DNABERT-2 example",
+        "purpose": "generate_and_evaluate",
+        "summary": "Embed validated reference/mutant assay pairs, then fit the fixed logistic-regression head on training rows only.",
+        "inputs": [
+          "Validated MFASS v2 cohort.tsv.",
+          "A local DNABERT-2 checkpoint with the exact model and executable-code hashes documented by the adapter."
+        ],
+        "outputs": [
+          "Local report.json with metrics, coverage, protocol and artifact hashes.",
+          "Local predictions.json and unscored.json; neither is submitted automatically."
+        ],
+        "requirements": {
+          "data": "Obtain the validated MFASS v2 cohort.tsv. Preparation checks its SHA-256 and the canonical 27,733-variant split from bee9133b83f3aedaf2bbb9013f1875515845607e.",
+          "weights": "Obtain the pinned DNABERT-2 117M weights and reviewed code before execution. The adapter verifies hashes and loads local files only.",
+          "licence": "Runner code is MIT. Check upstream DNABERT-2 code/weight terms and MFASS data conditions; weights and data are not bundled.",
+          "software": "Python 3.11 with rewirebench[dnabert2]; use a separate environment from ESM.",
+          "hardware": "CPU adapter. Full encoder execution can be expensive; start with an explicitly limited smoke input."
+        },
+        "instructions": [
+          {
+            "runtime": "python",
+            "title": "Run a limited frozen-encoder example",
+            "code": "import rewirebench\nfrom rewirebench.adapters.mfass import DNABERT2\nprepared = rewirebench.prepare(\n    \"mfass-v2-frozen-encoder\", source=\"data/mfass\",\n    output=\"prepared-smoke\", limit=200,\n)\nreport = rewirebench.run(\n    prepared, DNABERT2(checkpoint=\"weights/dnabert2\"),\n    output=\"runs/dnabert2-smoke\",\n    model={\"name\": \"DNABERT-2 frozen pair + logistic regression\", \"training_overlap\": \"Unreported\"},\n)",
+            "status": "source_reviewed_not_executed",
+            "source_ids": [
+              "runner-recipe-docs-sdk-md-f80cef7f",
+              "runner-recipe-docs-mfass-md-f80cef7f",
+              "runner-recipe-packages-rewirebench-src-rewirebench-protocols-mfass-py-f80cef7f",
+              "runner-recipe-packages-rewirebench-src-rewirebench-adapters-mfass-py-f80cef7f"
+            ],
+            "source_locator": "docs/mfass.md: frozen encoder example; adapters/mfass.py: DNABERT2; protocols/mfass.py: fit_embeddings"
+          },
+          {
+            "runtime": "command_line",
+            "title": "Run a limited frozen-encoder example",
+            "code": "git clone https://github.com/rewire-bio/rewire-benchmarks.git\ncd rewire-benchmarks\ngit checkout --detach f80cef7f818bec33e51b7f43ad499eb5078c8d87\nuv sync --locked --package rewirebench --extra dnabert2 --python 3.11\nuv run --package rewirebench --extra dnabert2 rewirebench prepare \\\n  mfass-v2-frozen-encoder --source data/mfass --output prepared-smoke \\\n  --options '{\"limit\":200}'\nuv run --package rewirebench --extra dnabert2 rewirebench run \\\n  --prepared prepared-smoke --adapter rewirebench.adapters.mfass:DNABERT2 \\\n  --adapter-options '{\"checkpoint\":\"weights/dnabert2\"}' \\\n  --output runs/dnabert2-smoke --model-name \"DNABERT-2 frozen pair + logistic regression\"",
+            "status": "source_reviewed_not_executed",
+            "source_ids": [
+              "runner-recipe-docs-sdk-md-f80cef7f",
+              "runner-recipe-docs-mfass-md-f80cef7f",
+              "runner-recipe-packages-rewirebench-src-rewirebench-protocols-mfass-py-f80cef7f",
+              "runner-recipe-packages-rewirebench-src-rewirebench-adapters-mfass-py-f80cef7f"
+            ],
+            "source_locator": "docs/sdk.md: CLI; docs/mfass.md: local checkpoint and smoke example"
+          }
+        ],
+        "limitations": [
+          "This preserves the corrected assay-oriented variant placement and canonical train/test identities.",
+          "Scores use held-out variants; missing predictions retain the original denominator.",
+          "Rescoring supplied SpliceAI or Pangolin predictions does not recreate their genomic-context inference.",
+          "Smoke inputs and partial coverage do not establish a full benchmark or reproduce a published result.",
+          "The frozen-pair head is a evaluated pipeline, distinct from the bare DNABERT-2 model.",
+          "A smoke input may not contain both training classes; increase its size without selecting on test labels."
+        ],
+        "source_ids": [
+          "runner-recipe-docs-sdk-md-f80cef7f",
+          "runner-recipe-docs-mfass-md-f80cef7f",
+          "runner-recipe-packages-rewirebench-src-rewirebench-protocols-mfass-py-f80cef7f",
+          "runner-recipe-packages-rewirebench-src-rewirebench-adapters-mfass-py-f80cef7f"
+        ],
+        "source_locator": "Pinned runner documentation, protocol implementation and adapter implementation"
+      }
+    ]
+  },
+  {
+    "id": "rewire-evaluation-baseline-kmer-position-v2",
+    "source_ids": [
+      "runner-recipe-docs-mfass-md-f80cef7f",
+      "runner-recipe-packages-rewirebench-src-rewirebench-protocols-mfass-py-f80cef7f"
+    ],
+    "reproduction": {
+      "recipe_owner_id": "rewire-mfass-v2",
+      "recipe_id": "mfass-v2-rescore",
+      "applicability": "rescore_predictions",
+      "explanation": "This mapping supports rescoring the original held-out prediction IDs under the corrected MFASS v2 protocol. It does not regenerate model predictions or establish reproduction of the published score. Preserve the reported missing-prediction coverage.",
+      "source_ids": [
+        "runner-recipe-docs-mfass-md-f80cef7f",
+        "runner-recipe-packages-rewirebench-src-rewirebench-protocols-mfass-py-f80cef7f"
+      ],
+      "source_locator": "docs/mfass.md: archived predictions; protocols/mfass.py: canonical split, score and coverage"
+    }
+  },
+  {
+    "id": "rewire-evaluation-dnabert2-117m-frozen-pair-logreg",
+    "source_ids": [
+      "runner-recipe-docs-mfass-md-f80cef7f",
+      "runner-recipe-packages-rewirebench-src-rewirebench-protocols-mfass-py-f80cef7f"
+    ],
+    "reproduction": {
+      "recipe_owner_id": "rewire-mfass-v2",
+      "recipe_id": "mfass-v2-rescore",
+      "applicability": "rescore_predictions",
+      "explanation": "This mapping supports rescoring the original held-out prediction IDs under the corrected MFASS v2 protocol. It does not regenerate model predictions or establish reproduction of the published score. Preserve the reported missing-prediction coverage.",
+      "source_ids": [
+        "runner-recipe-docs-mfass-md-f80cef7f",
+        "runner-recipe-packages-rewirebench-src-rewirebench-protocols-mfass-py-f80cef7f"
+      ],
+      "source_locator": "docs/mfass.md: archived predictions; protocols/mfass.py: canonical split, score and coverage"
+    }
+  },
+  {
+    "id": "rewire-evaluation-spliceai-1-3-1",
+    "source_ids": [
+      "runner-recipe-docs-mfass-md-f80cef7f",
+      "runner-recipe-packages-rewirebench-src-rewirebench-protocols-mfass-py-f80cef7f"
+    ],
+    "reproduction": {
+      "recipe_owner_id": "rewire-mfass-v2",
+      "recipe_id": "mfass-v2-rescore",
+      "applicability": "rescore_predictions",
+      "explanation": "This mapping supports rescoring the original held-out prediction IDs under the corrected MFASS v2 protocol. It does not regenerate model predictions or establish reproduction of the published score. Preserve the reported missing-prediction coverage.",
+      "source_ids": [
+        "runner-recipe-docs-mfass-md-f80cef7f",
+        "runner-recipe-packages-rewirebench-src-rewirebench-protocols-mfass-py-f80cef7f"
+      ],
+      "source_locator": "docs/mfass.md: archived predictions; protocols/mfass.py: canonical split, score and coverage"
+    }
+  },
+  {
+    "id": "rewire-evaluation-pangolin-maskfalse",
+    "source_ids": [
+      "runner-recipe-docs-mfass-md-f80cef7f",
+      "runner-recipe-packages-rewirebench-src-rewirebench-protocols-mfass-py-f80cef7f"
+    ],
+    "reproduction": {
+      "recipe_owner_id": "rewire-mfass-v2",
+      "recipe_id": "mfass-v2-rescore",
+      "applicability": "rescore_predictions",
+      "explanation": "This mapping supports rescoring the original held-out prediction IDs under the corrected MFASS v2 protocol. It does not regenerate model predictions or establish reproduction of the published score. Preserve the reported missing-prediction coverage.",
+      "source_ids": [
+        "runner-recipe-docs-mfass-md-f80cef7f",
+        "runner-recipe-packages-rewirebench-src-rewirebench-protocols-mfass-py-f80cef7f"
+      ],
+      "source_locator": "docs/mfass.md: archived predictions; protocols/mfass.py: canonical split, score and coverage"
+    }
+  }
+]

@@ -1,3 +1,5 @@
+import { sdkSubmissionSchema } from "./sdk-submission.js";
+import { validateRunRecipes } from "./run-recipe.js";
 import { validateRunGuide } from "./run-guide.js";
 import {
   entityKinds,
@@ -91,6 +93,21 @@ export const contribution = z
   })
   .strict()
   .superRefine((value, ctx) => {
+    if (value.details.rewire_bundle !== undefined) {
+      if (value.type !== "result")
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["details", "rewire_bundle"],
+          message: "Runner bundles are result contributions",
+        });
+      const parsed = sdkSubmissionSchema.safeParse(value.details.rewire_bundle);
+      if (!parsed.success)
+        for (const issue of parsed.error.issues)
+          ctx.addIssue({
+            ...issue,
+            path: ["details", "rewire_bundle", ...issue.path],
+          });
+    }
     if (value.type === "result") {
       for (const field of [
         "model",
@@ -307,6 +324,7 @@ export function validateSnapshot(input: unknown) {
       throw new Error("Invalid legacy entity route");
     validateBenchmarkResearch(record, records);
     validateRunGuide(record, records);
+    validateRunRecipes(record, records);
     const profile = record.attributes.profile;
     if (profile !== undefined) profileSchema.parse(profile);
     function validateProfileEvidence(value: unknown): void {

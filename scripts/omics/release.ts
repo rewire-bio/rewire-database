@@ -1,3 +1,4 @@
+import { addRunRecipes, runRecipeInputs } from "./run-recipes";
 import { legacyKinds } from "../../services/omics/src/entity-kinds";
 import { separateEntities, entityInputFiles } from "./entity-migration";
 import { assertNoPrivateFields } from "../../services/omics/src/private-fields";
@@ -234,7 +235,7 @@ function main() {
         : [],
     ),
   );
-  const records = separateEntities(profiled);
+  const records = addRunRecipes(separateEntities(profiled));
   const profiles = records
     .filter((record) => record.attributes.profile)
     .map((record) => record.attributes.profile as OmicsProfile);
@@ -260,10 +261,32 @@ function main() {
         (r) => r.attributes.run_documentation,
       ).length,
     },
+    run_recipe_coverage: {
+      recipes: records.reduce(
+        (total, record) =>
+          total +
+          (Array.isArray(record.attributes.run_recipes)
+            ? record.attributes.run_recipes.length
+            : 0),
+        0,
+      ),
+      evaluations_with_verified_recipe_links: records.filter(
+        (record) => record.attributes.reproduction,
+      ).length,
+      top_level_benchmarks: publicRecords(records).filter(
+        (record) => record.kind === "benchmark",
+      ).length,
+      official_documentation_or_gap: publicRecords(records).filter(
+        (record) =>
+          record.kind === "benchmark" && record.attributes.run_documentation,
+      ).length,
+      note: "Source-reviewed instructions and exact applicability links; execution receipts do not establish reproduction of published scores. Production contributions remain disabled.",
+    },
     evidence_table_version: "1.0",
     evidence_table_generator_sha256: sha(
       [
         "services/omics/src/evidence-table.ts",
+        "services/omics/src/run-recipe.ts",
         "services/omics/src/profile-schema.ts",
         "services/omics/src/private-fields.ts",
       ]
@@ -303,6 +326,9 @@ function main() {
               "Dated primary-paper search across the existing catalogue; complete selected source tables, not exhaustive numerical extraction of every paper.",
           },
           changelog: [
+            "Add versioned local runner recipes for MFASS v2 and ProteinGym v1.3 DMS substitutions, with access requirements and explicit execution status.",
+            "Link reviewed exact evaluations to applicable recipes without relabelling paper evidence as independent reproduction.",
+            "Add private verified-email SDK contribution validation; production submissions remain disabled.",
             "Separate entity categories in the catalogue and API; benchmarks contain top-level suites and challenges, with tasks, protocols and evaluators separately browsable.",
             "Preserve stable IDs and historical URLs through canonical entity pages and explicit legacy route aliases.",
             "Add pinned official benchmark run instructions with prerequisites, copyable shell commands and explicit source-review-only status. No new model computation.",
@@ -317,6 +343,7 @@ function main() {
     source_inputs: [
       ...inputs,
       ...entityInputFiles,
+      ...runRecipeInputs,
       ...reviewInputFiles.filter((file) => fs.existsSync(file)),
       ...profileInputs.filter((file) => fs.existsSync(file)),
       ...associationInputs.filter((file) => fs.existsSync(file)),

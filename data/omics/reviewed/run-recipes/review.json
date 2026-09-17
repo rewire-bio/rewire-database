@@ -1,0 +1,11 @@
+{
+  "status": "reviewed",
+  "method": "AI-assisted source/implementation inspection; schema, rendering and contract tests (no human review implied)",
+  "date": "2026-09-17",
+  "runner_revision": "f80cef7f818bec33e51b7f43ad499eb5078c8d87",
+  "execution_claims": "Source review only. Runtime instruction snippets are not claimed executed. Local scoring receipts are maintained in the runner repository.",
+  "files": {
+    "data/omics/reviewed/run-recipes/records.jsonl": "cb8fcc98bc24e6bd4eeba290aafb652b5b1cb06991d5043f9e73daac0cd4f6ab",
+    "data/omics/reviewed/run-recipes/overlays.json": "90dd2d870529f3cb122f9764915d9895eedd03d7331262343110dde407ff13f6"
+  }
+}

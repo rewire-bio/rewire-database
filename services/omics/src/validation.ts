@@ -57,7 +57,7 @@ function safeDetails(value: unknown, depth = 0, parentArray = false): boolean {
   if (typeof value !== "object" || value === undefined) return false;
   return Object.values(value).every((item) => safeDetails(item, depth + 1));
 }
-const details = z.record(z.unknown()).superRefine((value, ctx) => {
+const details = z.record(z.string(), z.unknown()).superRefine((value, ctx) => {
   if (!safeDetails(value)) {
     ctx.addIssue({
       code: z.ZodIssueCode.custom,
@@ -187,10 +187,10 @@ export const recordSchema = z
       "superseded",
       "excluded",
     ]),
-    facets: z.record(z.array(z.string())),
+    facets: z.record(z.string(), z.array(z.string())),
     source_ids: z.array(id),
     links: z.array(link),
-    attributes: z.record(z.unknown()),
+    attributes: z.record(z.string(), z.unknown()),
   })
   .strict()
   .superRefine((record, ctx) => {
@@ -270,7 +270,7 @@ export const snapshotSchema = z
     release_id: id,
     released_at: z.string().datetime(),
     records: z.array(recordSchema),
-    coverage: z.record(z.unknown()),
+    coverage: z.record(z.string(), z.unknown()),
   })
   .strict();
 export type CatalogueRecord = z.infer<typeof recordSchema>;

@@ -60,7 +60,7 @@ export const sdkSubmissionSchema = z
         unscored: z.number().int().nonnegative(),
       })
       .strict(),
-    provenance: z.record(z.string()).superRefine((value, ctx) => {
+    provenance: z.record(z.string(), z.string()).superRefine((value, ctx) => {
       for (const [key, digest] of Object.entries(value)) {
         if (!(
           (key.endsWith("_sha256") && /^[a-f0-9]{64}$/.test(digest)) ||

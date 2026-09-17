@@ -58,7 +58,7 @@ describe("scientific profile rendering", () => {
     );
     expect(html).toContain('role="img"');
     expect(html).toContain("<desc");
-    expect(html).toContain("Read the diagram as text");
+    expect(html).not.toContain("Read the diagram as text");
     expect(html.toLowerCase()).toContain("conceptual");
     const results = renderToStaticMarkup(
       <Results

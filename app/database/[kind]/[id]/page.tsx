@@ -17,6 +17,10 @@ import Profile, {
 } from "@/components/catalogue/Profile";
 import EvidenceTable from "@/components/catalogue/EvidenceTable";
 import Results from "@/components/catalogue/Results";
+import BenchmarkCharts from "@/components/catalogue/BenchmarkCharts";
+import BenchmarkResearch, {
+  type BenchmarkResearchData,
+} from "@/components/catalogue/BenchmarkResearch";
 import { kindLabels } from "@/lib/omics-browse";
 import styles from "../../database.module.css";
 
@@ -227,6 +231,12 @@ export default function RecordPage({ params }: { params: Params }) {
               <a href="#overview">At a glance</a>
               <a href="#how-it-works">How it works</a>
               <a href="#results">Results</a>
+              {detail.published_comparisons.length > 0 && (
+                <a href="#charts">Charts</a>
+              )}
+              {record.attributes.benchmark_research ? (
+                <a href="#papers">Papers</a>
+              ) : null}
               <a href="#strengths-limitations">Strengths and limitations</a>
               <a href="#evidence">Evidence table</a>
               <a href="#sources">Sources and history</a>
@@ -419,6 +429,9 @@ export default function RecordPage({ params }: { params: Params }) {
               </p>
             </section>
           )}
+          {record.kind === "benchmark" && (
+            <BenchmarkCharts panels={detail.published_comparisons} />
+          )}
           {[
             "model",
             "benchmark",
@@ -440,6 +453,15 @@ export default function RecordPage({ params }: { params: Params }) {
               }
             />
           )}
+          {record.kind === "benchmark" &&
+          record.attributes.benchmark_research ? (
+            <BenchmarkResearch
+              research={
+                record.attributes.benchmark_research as BenchmarkResearchData
+              }
+              sources={detail.sources}
+            />
+          ) : null}
           {entity && (
             <Profile
               record={profileOwner.record}

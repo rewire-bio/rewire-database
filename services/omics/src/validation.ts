@@ -1,5 +1,7 @@
 import { profileSchema } from "./profile-schema.js";
 import { z } from "zod";
+import { createCatalogueQuery } from "./catalogue-query.js";
+import { validateBenchmarkResearch } from "./benchmark-research.js";
 import { isIP } from "node:net";
 import { assertPublicCatalogue } from "./catalogue-query.js";
 
@@ -254,6 +256,7 @@ export function validateSnapshot(input: unknown) {
   if (records.size !== snapshot.records.length)
     throw new Error("Duplicate record IDs");
   for (const record of snapshot.records) {
+    validateBenchmarkResearch(record, records);
     const profile = record.attributes.profile;
     if (profile !== undefined) profileSchema.parse(profile);
     function validateProfileEvidence(value: unknown): void {
@@ -308,6 +311,13 @@ export function validateSnapshot(input: unknown) {
       )
         throw new Error(`Incorrect relationship type on ${record.id}`);
     }
+  }
+  if (snapshot.records.some((record) => record.attributes.comparison_panels)) {
+    const query = createCatalogueQuery(snapshot);
+    for (const record of snapshot.records.filter(
+      (record) => record.attributes.comparison_panels,
+    ))
+      query.get({ id: record.id });
   }
   return snapshot;
 }

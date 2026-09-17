@@ -1,5 +1,6 @@
 import { assertNoPrivateFields as assertPublicCatalogue } from "./private-fields.js";
 import { createEvidenceIndex } from "./evidence-table.js";
+import { resolveComparisons } from "./published-comparisons.js";
 /** The public catalogue contract shared by Firestore and static-release adapters. */
 export interface CatalogueRecord {
   id: string;
@@ -160,6 +161,7 @@ export function createCatalogueQuery(snapshot: CatalogueSnapshot) {
           .map((l) => `${l.target_id}|${String(r.attributes.field)}`),
       ),
   );
+  const rowsById = new Map(rows.map((row) => [row.result.id, row]));
   function verifiedAssociation(
     record: CatalogueRecord,
     link: { relation: string; target_id: string },
@@ -353,6 +355,7 @@ export function createCatalogueQuery(snapshot: CatalogueSnapshot) {
         }),
         reverse: reverse.get(id) || [],
         sources: sources(record, ...linked(record, "evaluation")),
+        published_comparisons: resolveComparisons(record, byId, rowsById),
       };
     },
     results(input: ResultsInput) {
@@ -411,6 +414,13 @@ export function createCatalogueQuery(snapshot: CatalogueSnapshot) {
         reasons.add("A selected result is unavailable.");
       const valid = selected.filter((r): r is ResultRow => !!r);
       for (const row of valid) {
+        const numeric = row.result.attributes.numeric_value;
+        if (
+          typeof numeric !== "string" ||
+          !numeric.trim() ||
+          !Number.isFinite(Number(numeric))
+        )
+          reasons.add("A selected result has no finite numerical value.");
         if (
           row.sources.some(
             (source) =>
@@ -479,11 +489,19 @@ export function createCatalogueQuery(snapshot: CatalogueSnapshot) {
             (r) =>
               (
                 r.evaluation?.attributes.comparison as
-                  | Record<string, unknown>
-                  | undefined
+                  Record<string, unknown> | undefined
               )?.[field],
           ),
         );
+      const subsets = valid.map(
+        (row) =>
+          (
+            row.evaluation?.attributes.comparison as
+              Record<string, unknown> | undefined
+          )?.subset,
+      );
+      if (subsets.some((value) => value !== undefined && value !== null))
+        check("subset", subsets);
       return {
         release_id,
         compatible: reasons.size === 0,

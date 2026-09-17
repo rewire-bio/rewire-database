@@ -450,3 +450,82 @@
 .evidenceValue {
   font-weight: normal;
 }
+.chartSelect {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  padding: 12px;
+  margin: 10px 0 24px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--card);
+  color: var(--ink);
+  font: inherit;
+  text-overflow: ellipsis;
+}
+.comparisonFigure {
+  margin: 0 0 36px;
+  padding: 24px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--card);
+}
+.comparisonFigure h3 {
+  margin-top: 0;
+}
+.comparisonFigure details {
+  margin-top: 18px;
+}
+.chartAxis {
+  height: 30px;
+  position: relative;
+  margin-top: 30px;
+  color: var(--ink-3);
+  font-size: 12px;
+}
+.chartAxis span {
+  position: absolute;
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+.chartRows {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.chartRows li {
+  margin: 0 0 18px;
+  padding: 0;
+}
+.chartRows svg {
+  width: 100%;
+  height: 24px;
+  display: block;
+}
+.chartLabel {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+  font-size: 14px;
+}
+.chartLabel > span {
+  min-width: 0;
+  max-width: 100%;
+}
+.chartLabel small {
+  white-space: normal;
+}
+.chartValue {
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+}
+@media (max-width: 720px) {
+  .comparisonFigure {
+    padding: 14px;
+  }
+  .chartLabel {
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+}

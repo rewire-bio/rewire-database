@@ -190,7 +190,25 @@ describe("complete AlphaGenome primary-table batch", () => {
         ["source_checked", "reproduced", "superseded"].includes(r.status),
     )) {
       const current = query.get({ id: record.id });
-      if (current) expect(current.record).toEqual(record);
+      if (current) {
+        // Later source reviews may add citations and fill an unknown metric
+        // direction; scientific values and all other historical fields persist.
+        expect(current.record.source_ids).toEqual(
+          expect.arrayContaining(record.source_ids),
+        );
+        if (record.attributes.metric_direction !== "unknown")
+          expect(current.record.attributes.metric_direction).toBe(
+            record.attributes.metric_direction,
+          );
+        expect(current.record).toEqual({
+          ...record,
+          source_ids: current.record.source_ids,
+          attributes: {
+            ...record.attributes,
+            metric_direction: current.record.attributes.metric_direction,
+          },
+        });
+      }
     }
   });
 });

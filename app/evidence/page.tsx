@@ -147,8 +147,18 @@ export default function EvidenceGuide() {
           <section className={styles.section}>
             <h2>Coverage and remaining gaps</h2>
             <p>
-              All 226 model records and 170 benchmark/task records have
-              explanatory profiles. Their{" "}
+              This release contains{" "}
+              {
+                catalogue.records.filter((record) => record.kind === "model")
+                  .length
+              }{" "}
+              model records and{" "}
+              {
+                catalogue.records.filter(
+                  (record) => record.kind === "benchmark",
+                ).length
+              }{" "}
+              benchmark/task records. Their explanatory profiles contain{" "}
               {uniqueFacts.size.toLocaleString("en-GB")} structured facts
               include{" "}
               {Array.from(uniqueFacts.values())

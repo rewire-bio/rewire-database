@@ -37,7 +37,8 @@ describe("catalogue evidence coverage and review boundaries", () => {
   });
 
   it("preserves all 167 printed values, including the 24 inline-reviewed results", () => {
-    const results = snapshot.records.filter(record => record.kind === "result");
+    const historicalIds = new Set(base.filter(record => record.kind === "result").map(record => record.id));
+    const results = snapshot.records.filter(record => record.kind === "result" && historicalIds.has(record.id));
     expect(results).toHaveLength(167);
     let inline = 0;
     for (const result of results) {

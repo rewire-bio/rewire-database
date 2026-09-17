@@ -1,4 +1,5 @@
 import fs from "node:fs";
+import { gunzipSync } from "node:zlib";
 import { describe, expect, it, vi } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
 import {
@@ -19,7 +20,13 @@ vi.mock("../lib/catalogue-build", () => ({
   }),
 }));
 fixture.snapshot = JSON.parse(
-  fs.readFileSync("public/omics/catalogue.json", "utf8"),
+  JSON.parse(
+    gunzipSync(
+      fs.readFileSync(
+        "data/omics/releases/2026-09-17-d277315f7d76.bundle.json.gz",
+      ),
+    ).toString(),
+  )["catalogue.json"],
 );
 const query = createCatalogueQuery(fixture.snapshot!);
 const render = (id: string) =>

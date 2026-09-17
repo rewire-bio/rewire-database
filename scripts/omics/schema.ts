@@ -2,6 +2,8 @@ import { assertNoPrivateFields } from "../../services/omics/src/private-fields";
 import { z } from "zod";
 import { extensionsSchema } from "./extensions";
 import { profileSchema, validateProfileSources } from "../../lib/omics-profile";
+import { createCatalogueQuery } from "../../services/omics/src/catalogue-query";
+import { validateBenchmarkResearch } from "../../services/omics/src/benchmark-research";
 export const kinds = [
   "model",
   "benchmark",
@@ -54,6 +56,7 @@ export function validateRecords(input: unknown[]): RecordEntry[] {
       if (!byId.has(l.target_id))
         throw new Error(`Dangling ${r.id} -> ${l.target_id}`);
     const a = r.attributes;
+    validateBenchmarkResearch(r, byId);
     if (a.profile !== undefined)
       validateProfileSources(profileSchema.parse(a.profile), byId);
     if (a.extensions !== undefined) extensionsSchema.parse(a.extensions);
@@ -108,6 +111,21 @@ export function validateRecords(input: unknown[]): RecordEntry[] {
       }
     if (r.kind === "claim" && !r.links.some((l) => l.relation === "subject"))
       throw new Error(`Claim has no subject ${r.id}`);
+  }
+  // Resolve every curated panel against the same graph used by the API. This
+  // rejects stale IDs, mixed protocols and unreviewed results before release.
+  if (records.some((record) => record.attributes.comparison_panels)) {
+    const query = createCatalogueQuery({
+      schema_version: "1.0",
+      release_id: "validation",
+      released_at: "",
+      coverage: {},
+      records,
+    });
+    for (const record of records.filter(
+      (record) => record.attributes.comparison_panels,
+    ))
+      query.get({ id: record.id });
   }
   return records;
 }

@@ -1,0 +1,47 @@
+{
+  "review_date": "2026-09-17",
+  "review_method": "Separate automated primary-source table reviews plus independent occurrence/identity integration review; no human review or independent experimental reproduction.",
+  "baseline_release": "2026-09-17-a757f4af4277",
+  "errors": [],
+  "files": {
+    "data/omics/reviewed/benchmark-evidence-2026.jsonl": "7afc20bf29f3f49ce46016dadbf5cda54b788d470f97662eb13ad693494dc6e1",
+    "data/omics/reviewed/benchmark-evidence-overlays-2026.jsonl": "ae3b08011bcfb9416e0ee33b5259301b2e4734b4bbe232e2b347e6db4445f6f1",
+    "data/omics/reviews/benchmark-evidence-2026/code-review.json": "8f02a094ca413457840ab9bce4304baaaf104389e015ecabe595e573a9c44bae",
+    "data/omics/reviews/benchmark-evidence-2026/inputs/part-1/audit-sources.json": "98fb2eff637f7603351e374aa9595027949408f2f27031c398d9fdb02651590d",
+    "data/omics/reviews/benchmark-evidence-2026/inputs/part-1/audit.jsonl": "cb30ac0da1e0018ca6ce3b4cc6f5271f1d015892d63a7d70478ed3c082b75caf",
+    "data/omics/reviews/benchmark-evidence-2026/inputs/part-1/extracted-batches.json": "5a6cc87688ab3bbfc01a2c9502f8af252253f7def577b1dfef7684d05b58a942",
+    "data/omics/reviews/benchmark-evidence-2026/inputs/part-2/audit-sources.json": "82a11335688d5f04a47d26de867ecf53405e225a5abebe9f56f69d4399166f2e",
+    "data/omics/reviews/benchmark-evidence-2026/inputs/part-2/audit.jsonl": "7809849b56a15a66933d791c07f0b94d08c142381e9f968f39d9ec09da86819d",
+    "data/omics/reviews/benchmark-evidence-2026/inputs/part-2/extracted-batches.json": "e71e83c111e1d5c91670cfa4a6511a59b1a9573a42babbdb7b72059d12f00a64",
+    "data/omics/reviews/benchmark-evidence-2026/inputs/part-3/audit.jsonl": "e26fe989ad005e428822b9ded1193c1b3339062534fd506e520bd1d9a311ec31",
+    "data/omics/reviews/benchmark-evidence-2026/inputs/part-3/extracted-batches.json": "82de7afe2177aef1b79602b183536c1ead7c0fc6a042cbace590e04d69643e77",
+    "data/omics/reviews/benchmark-evidence-2026/inputs/root-audit.jsonl": "3342bd7481937d59b1c742d949d268a123ca8afea990d63f30c2d1548c78cdfb",
+    "data/omics/reviews/benchmark-evidence-2026/inputs/root-discovery.json": "3f0a53f8602bfa08f6d96e9000b428bd30c8e780276cfa4d19e92820fff7b1eb",
+    "data/omics/reviews/benchmark-evidence-2026/integration-review.json": "d8b21af64865247f26b73ab52679f11d8a8150ca9351ca76e919f7ebb56ea45b",
+    "data/omics/reviews/benchmark-evidence-2026/occurrences.json": "77cf91571d120376b7c8d7d1215c081619ee6cbe10aea15337e72b83c33e4686",
+    "data/omics/reviews/benchmark-evidence-2026/part-1-independent-review.json": "39976528494f86c673b157ef67e107acd4982cd01e088fbfdc521d3568036959",
+    "data/omics/reviews/benchmark-evidence-2026/part-2-independent-review.json": "82cd2ca9c8f0fe77db3d8469e9f54b313c9caff2f0700737464e8262a6665389",
+    "data/omics/reviews/benchmark-evidence-2026/part-3-independent-review.json": "ca68f415519bf5022d43bfe9b9aafd1770706fc578255a290b144e4f5e5bff7a",
+    "data/omics/reviews/benchmark-evidence-2026/search-audit.jsonl": "2704187f6faed15b236e7f647f9de88fc74c43cd0f76381e8d24e059466bfcd7",
+    "data/omics/reviews/benchmark-evidence-2026/summary.json": "a96a0fd9104df57df13ac1d2e05ce8bba36da32286393f53be00549d3e629363",
+    "scripts/omics/research/normalize-benchmark-evidence.py": "9e59ba88a25eb86f14d51b7733ab5e70ed79b640437b56bf3d2306982e3a0ff1",
+    "scripts/omics/research/integrate-benchmark-evidence.py": "77220928dba5da13baf75de8efb3bec8b8817ab60e9da89110449ca77bef4846"
+  },
+  "counts": {
+    "records": {
+      "source": 143,
+      "dataset": 36,
+      "claim": 83,
+      "model": 154,
+      "evaluation": 450,
+      "result": 1145,
+      "benchmark": 42
+    },
+    "panels": 223,
+    "occurrences": 1187,
+    "old_observations_reused": 26,
+    "blocked_groups": [],
+    "audited_benchmarks": 221
+  },
+  "preservation": "Every prior printed value, numeric value, unit, metric and result ID is preserved. Reviewed citation, direction and evaluation-context corrections are recorded as overlays; archived releases are unchanged."
+}

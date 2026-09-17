@@ -1,0 +1,16 @@
+{
+  "records": {
+    "source": 143,
+    "dataset": 36,
+    "claim": 83,
+    "model": 154,
+    "evaluation": 450,
+    "result": 1145,
+    "benchmark": 42
+  },
+  "panels": 223,
+  "occurrences": 1187,
+  "old_observations_reused": 26,
+  "blocked_groups": [],
+  "audited_benchmarks": 221
+}

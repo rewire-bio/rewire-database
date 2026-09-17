@@ -1,0 +1,141 @@
+{
+  "review_date": "2026-09-17",
+  "input_path": "workbench/benchmark-evidence-expansion/part-1/extracted-batches.json",
+  "input_sha256": "5a6cc87688ab3bbfc01a2c9502f8af252253f7def577b1dfef7684d05b58a942",
+  "canonical_hash_definition": "SHA-256 of UTF-8 JSON with recursively sorted object keys, no extra whitespace (separators comma/colon), ensure_ascii=False; array order preserved.",
+  "review_method": "Independent primary PDF/JATS table reads, row/column numeric comparison against original artifacts, method-context inspection and existing-result/group checks. No experiment reproduction.",
+  "reviewed_sources": {
+    "tape": "Original PDF Table 2, Section 4, Table S1 and Appendix A.1/A.2. All 50 cells manually enumerated; 12 existing references checked. Negative correlations and N/A preserved.",
+    "2ome": "Original JATS Tables 1–2, Methods dataset construction, Results 3.1–3.2. Five-fold training CV and independent held-out test separated; web-server versus retrained baselines explicit. Exact test count not inferred from 8:2 ratio.",
+    "bpfold": "Original JATS Tables 1–2 and Datasets/evaluation. Canonical-pair macro metrics verified. Sequence-wise/family-wise describe evaluation generalization settings. RNA population counts 1305,3966,10791,116 match captions; they are not base-pair denominators. SPOT-RNA training differs and some baselines use defaults.",
+    "clape": "Original JATS Tables 2–4, SJC/UniProtSMB dataset preparation and repeated-seed paragraph. Four seeds verified for CLAPE-SMB. Printed ± preserved with unidentified type, avoiding unsupported SD claim. P2Rank N/A AUROC preserved. Structure-input differences retained.",
+    "akscore": "Original JATS Tables 1–2 and Methods dataset/training/CASF sections. kcal/mol errors lower-is-better; 285-complex scoring set and 3772 training set verified. Learning rates remain distinct configurations. Ranking and docking denominators not borrowed from scoring. Figure3 larger ensemble is not confused with Table2 ensemble."
+  },
+  "batches": [
+    {
+      "batch_id": "tape-2019-table2",
+      "canonical_batch_sha256": "6acc3d6e68df9b50ef2ec151dd6d274c5b0a8dc9bee80683661787f8a2c2d710",
+      "checked_cells": 50,
+      "numeric_cells": 48,
+      "missing_cells": 2,
+      "existing_result_references": 12,
+      "errors": [],
+      "warnings": [],
+      "verdict": "no_blockers",
+      "reinspection_note": "Readability-only spacing and count-description completion checked; numerical cells and task/population meaning unchanged."
+    },
+    {
+      "batch_id": "2ome-lm-2025-btaf417-t1",
+      "canonical_batch_sha256": "6bdc881476f5f601c1323a4bdb7794454459745035be76fb27b644bced45c27f",
+      "checked_cells": 49,
+      "numeric_cells": 49,
+      "missing_cells": 0,
+      "existing_result_references": 1,
+      "errors": [],
+      "warnings": [],
+      "verdict": "no_blockers"
+    },
+    {
+      "batch_id": "2ome-lm-2025-btaf417-t2",
+      "canonical_batch_sha256": "a5b247419c91fa7e5757f7c9493d65bd10f659eae5175a4381a1d260d02c3f7e",
+      "checked_cells": 35,
+      "numeric_cells": 35,
+      "missing_cells": 0,
+      "existing_result_references": 0,
+      "errors": [],
+      "warnings": [],
+      "verdict": "no_blockers"
+    },
+    {
+      "batch_id": "bpfold-2025-tab1",
+      "canonical_batch_sha256": "cabb3fa93b75c2ff410315c56b49eadc2b899716f9a4f253593eb80f326400a2",
+      "checked_cells": 80,
+      "numeric_cells": 80,
+      "missing_cells": 0,
+      "existing_result_references": 0,
+      "errors": [],
+      "warnings": [],
+      "verdict": "no_blockers"
+    },
+    {
+      "batch_id": "bpfold-2025-tab2",
+      "canonical_batch_sha256": "dbae87791af5c0f575d672db10e42847213698fb2a78f5061addbad29baccdcc",
+      "checked_cells": 80,
+      "numeric_cells": 80,
+      "missing_cells": 0,
+      "existing_result_references": 2,
+      "errors": [],
+      "warnings": [],
+      "verdict": "no_blockers"
+    },
+    {
+      "batch_id": "clape-smb-2024-tab2",
+      "canonical_batch_sha256": "57cf9251661b7f9dad414e46af4c77b4c3a10f9894840ddd96132c8b2d68123d",
+      "checked_cells": 12,
+      "numeric_cells": 11,
+      "missing_cells": 1,
+      "existing_result_references": 0,
+      "errors": [],
+      "warnings": [],
+      "verdict": "no_blockers"
+    },
+    {
+      "batch_id": "clape-smb-2024-tab3",
+      "canonical_batch_sha256": "bce73d6dedb5154a73d8eebc0ca7a1143f24179c6fa08f05fa5c2a390d4cc1c9",
+      "checked_cells": 16,
+      "numeric_cells": 15,
+      "missing_cells": 1,
+      "existing_result_references": 0,
+      "errors": [],
+      "warnings": [],
+      "verdict": "no_blockers"
+    },
+    {
+      "batch_id": "clape-smb-2024-tab4",
+      "canonical_batch_sha256": "8bf7e12b60614fdbbf8d9319745c7ff087cddd07510a6ec9c90bb5e389eb11b4",
+      "checked_cells": 16,
+      "numeric_cells": 15,
+      "missing_cells": 1,
+      "existing_result_references": 0,
+      "errors": [],
+      "warnings": [],
+      "verdict": "no_blockers",
+      "resolved_warnings": [
+        {
+          "severity": "metadata_completion",
+          "finding": "UniProtSMB Methods states 496 test proteins, 5,568 binding residues and 200,280 non-binding residues. The current eligible_count is null; this can be completed as eligible population with explicit units, without inferring successful scored count.",
+          "locator": "Methods: UniProtSMB dataset preparation; Table 1"
+        }
+      ],
+      "reinspection_note": "Verified eligible population completion against the inspected Methods/Table 1: 5,568 + 200,280 = 205,848 labelled residues in 496 proteins; derived sum labelled and scored_count remains null. Numeric score cells unchanged."
+    },
+    {
+      "batch_id": "akscore-2020-ijms-21-08424-t001",
+      "canonical_batch_sha256": "f68fbee20dd826488e3736e95dfe8e25143cbded03a6d77fd8fde32b3ff70d10",
+      "checked_cells": 18,
+      "numeric_cells": 18,
+      "missing_cells": 0,
+      "existing_result_references": 0,
+      "errors": [],
+      "warnings": [],
+      "verdict": "no_blockers"
+    },
+    {
+      "batch_id": "akscore-2020-ijms-21-08424-t002",
+      "canonical_batch_sha256": "990a5c35f217c87fbeadf85ff7b3a1c345c7db57dee3ce26979b69714551d34e",
+      "checked_cells": 63,
+      "numeric_cells": 63,
+      "missing_cells": 0,
+      "existing_result_references": 1,
+      "errors": [],
+      "warnings": [],
+      "verdict": "no_blockers"
+    }
+  ],
+  "errors": 0,
+  "warnings": 0,
+  "total_cells": 419,
+  "total_numeric": 414,
+  "verdict": "no_blockers",
+  "reinspection_date": "2026-09-17"
+}

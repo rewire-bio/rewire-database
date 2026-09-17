@@ -3,6 +3,10 @@ import { createHash } from "node:crypto";
 import { enrichMetadata } from "./metadata";
 import { addEvidenceConcerns } from "./evidence-concerns";
 import { type RecordEntry, recordSchema } from "./schema";
+import {
+  addBenchmarkEvidence,
+  benchmarkEvidenceFiles,
+} from "./benchmark-evidence";
 export function readJsonl<T = unknown>(file: string): T[] {
   return fs
     .readFileSync(file, "utf8")
@@ -25,6 +29,7 @@ export function evidenceSources(): RecordEntry[] {
 }
 
 export const reviewInputFiles = [
+  ...benchmarkEvidenceFiles,
   "data/omics/reviewed/alphagenome-2026.jsonl",
   "data/omics/reviews/2026-09-17-alphagenome-results.json",
   "data/omics/reviews/2026-09-17-alphagenome-independent-review.json",
@@ -72,11 +77,13 @@ export function reviewedResults(): RecordEntry[] {
 export function currentCatalogueBase(base: RecordEntry[]): RecordEntry[] {
   const optional = (file: string) =>
     fs.existsSync(file) ? readJsonl(file) : [];
-  return enrichMetadata(
-    addEvidenceConcerns(
-      [...base, ...evidenceSources(), ...reviewedResults()],
-      optional("data/omics/evidence-concerns.jsonl"),
+  return addBenchmarkEvidence(
+    enrichMetadata(
+      addEvidenceConcerns(
+        [...base, ...evidenceSources(), ...reviewedResults()],
+        optional("data/omics/evidence-concerns.jsonl"),
+      ),
+      optional("data/omics/metadata-corrections.jsonl"),
     ),
-    optional("data/omics/metadata-corrections.jsonl"),
   );
 }

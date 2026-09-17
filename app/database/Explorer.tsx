@@ -13,6 +13,9 @@ import {
   readCatalogueFilters,
   kindLabels,
   kindDescriptions,
+  primaryKinds,
+  secondaryKinds,
+  singularKindLabels,
   type CatalogueFilters,
 } from "@/lib/omics-browse";
 import styles from "./database.module.css";
@@ -122,29 +125,29 @@ export default function Explorer({
         role="group"
         aria-label="Browse the database"
       >
-        {(["model", "benchmark", "dataset", "baseline", "result"] as const).map(
-          (kind) => (
-            <button
-              key={kind}
-              className={styles.button}
-              aria-pressed={filters.kind === kind}
-              onClick={() => change("kind", kind)}
-            >
-              {kindLabels[kind]}{" "}
-              <span className={styles.tabCount}>
-                {release.facets.counts[kind] || 0}
-              </span>
-            </button>
-          ),
-        )}
+        {primaryKinds.map((kind) => (
+          <button
+            key={kind}
+            className={styles.button}
+            aria-pressed={filters.kind === kind}
+            onClick={() => change("kind", kind)}
+          >
+            {kindLabels[kind]}{" "}
+            <span className={styles.tabCount}>
+              {release.facets.counts[kind] || 0}
+            </span>
+          </button>
+        ))}
       </div>
       <div
         className={styles.supporting}
         role="group"
-        aria-label="Supporting records"
+        aria-label="Methods, evaluation design and supporting records"
       >
-        <span>Supporting records</span>
-        {(["source", "evaluation", "claim"] as const).map((kind) => (
+        <span className={styles.browseGroupLabel}>
+          Methods and evaluation records
+        </span>
+        {secondaryKinds.map((kind) => (
           <button
             key={kind}
             aria-pressed={filters.kind === kind}
@@ -272,7 +275,8 @@ export default function Explorer({
         {data.items.map((record) => (
           <article className={styles.card} key={record.id}>
             <span className={styles.tag}>
-              {record.kind} · {record.status.replace(/_/g, " ")}
+              {singularKindLabels[record.kind]} ·{" "}
+              {record.status.replace(/_/g, " ")}
             </span>
             <h2>
               <Link href={recordHref(record)}>{record.name}</Link>

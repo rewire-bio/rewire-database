@@ -1,19 +1,18 @@
+import { validateRunGuide } from "../../services/omics/src/run-guide";
 import { assertNoPrivateFields } from "../../services/omics/src/private-fields";
 import { z } from "zod";
 import { extensionsSchema } from "./extensions";
 import { profileSchema, validateProfileSources } from "../../lib/omics-profile";
 import { createCatalogueQuery } from "../../services/omics/src/catalogue-query";
 import { validateBenchmarkResearch } from "../../services/omics/src/benchmark-research";
-export const kinds = [
-  "model",
-  "benchmark",
-  "dataset",
-  "baseline",
-  "evaluation",
-  "result",
-  "source",
-  "claim",
-] as const;
+import {
+  entityKinds,
+  modelSubjectKinds,
+  benchmarkSubjectKinds,
+  datasetSubjectKinds,
+  relationAcceptsKind,
+} from "../../services/omics/src/entity-kinds";
+export const kinds = entityKinds;
 export const statuses = [
   "discovered",
   "needs_review",
@@ -52,11 +51,19 @@ export function validateRecords(input: unknown[]): RecordEntry[] {
       if (byId.get(id)?.kind !== "source")
         throw new Error(`Missing source ${id} for ${r.id}`);
     }
-    for (const l of r.links)
+    for (const l of r.links) {
       if (!byId.has(l.target_id))
         throw new Error(`Dangling ${r.id} -> ${l.target_id}`);
+      if (
+        !(r.kind === "result" && l.relation === "evaluation") &&
+        (entityKinds as readonly string[]).includes(l.relation) &&
+        !relationAcceptsKind(l.relation, byId.get(l.target_id)!.kind)
+      )
+        throw new Error(`Wrong entity kind ${r.id} -> ${l.target_id}`);
+    }
     const a = r.attributes;
     validateBenchmarkResearch(r, byId);
+    validateRunGuide(r, byId);
     if (a.profile !== undefined)
       validateProfileSources(profileSchema.parse(a.profile), byId);
     if (a.extensions !== undefined) extensionsSchema.parse(a.extensions);
@@ -102,10 +109,21 @@ export function validateRecords(input: unknown[]): RecordEntry[] {
     }
     if (r.kind === "evaluation")
       for (const relation of ["model", "benchmark", "dataset"]) {
-        const links = r.links.filter((l) => l.relation === relation);
+        const roles: readonly string[] =
+          relation === "model"
+            ? modelSubjectKinds
+            : relation === "benchmark"
+              ? benchmarkSubjectKinds
+              : relation === "dataset"
+                ? datasetSubjectKinds
+                : [relation];
+        const links = r.links.filter((l) => roles.includes(l.relation));
         if (
           links.length !== 1 ||
-          byId.get(links[0].target_id)?.kind !== relation
+          !relationAcceptsKind(
+            relation,
+            byId.get(links[0].target_id)?.kind || "",
+          )
         )
           throw new Error(`Invalid evaluation ${relation} ${r.id}`);
       }

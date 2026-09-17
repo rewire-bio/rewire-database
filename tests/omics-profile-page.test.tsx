@@ -64,7 +64,10 @@ describe("configuration profile ownership", () => {
     );
     expect(html).toContain("This exact configuration has its own evidence.");
     expect(html).toContain("Do not replace me with family metadata.");
-    expect(html).toContain("Related family profile:");
+    expect(html).toContain("Related profile:");
+    expect(html).toContain(
+      `/database/model/${configured.links.find((link) => link.relation === "family")!.target_id}`,
+    );
     expect(html).toContain("Configuration-specific fact");
   });
 });

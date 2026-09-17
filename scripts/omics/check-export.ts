@@ -1,3 +1,4 @@
+import { recordHref, recordRouteKinds } from "../../lib/omics";
 import {
   createEvidenceIndex,
   evidenceCsv,
@@ -17,7 +18,12 @@ function page(url: string) {
   return fs.existsSync(file) ? fs.readFileSync(file, "utf8") : "";
 }
 for (const record of records) {
-  const html = page(`/database/${record.kind}/${record.id}/`);
+  const html = page(recordHref(record));
+  for (const kind of recordRouteKinds(record)) {
+    const alias = page(`/database/${kind}/${record.id}/`);
+    if (!alias.includes(`https://benchmarks.rewire.it${recordHref(record)}`))
+      failures.push(`Missing canonical alias ${kind}/${record.id}`);
+  }
   if (!html.includes('id="evidence"'))
     failures.push(`Missing evidence table: ${record.id}`);
   for (const match of html.matchAll(/<a\b[^>]*\bhref="([^"]+)"/g)) {

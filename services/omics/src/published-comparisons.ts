@@ -1,3 +1,4 @@
+import { isBenchmarkSubject, isDatasetSubject } from "./entity-kinds.js";
 import type { CatalogueRecord, ResultRow } from "./catalogue-query.js";
 
 /** A curated figure reproduces one source table, not a cross-study ranking.
@@ -32,7 +33,7 @@ export function comparisonPanels(
   const fail = () => {
     throw new Error(`Invalid published comparison on ${record.id}`);
   };
-  if (record.kind !== "benchmark" || !Array.isArray(input)) return fail();
+  if (!isBenchmarkSubject(record.kind) || !Array.isArray(input)) return fail();
   const ids = new Set<string>();
   for (const raw of input) {
     if (!raw || typeof raw !== "object") return fail();
@@ -83,7 +84,12 @@ export function resolveComparisons(
     };
     const protocol = byId.get(panel.protocol_id);
     const dataset = byId.get(panel.dataset_id);
-    if (protocol?.kind !== "benchmark" || dataset?.kind !== "dataset")
+    if (
+      !protocol ||
+      !isBenchmarkSubject(protocol.kind) ||
+      !dataset ||
+      !isDatasetSubject(dataset.kind)
+    )
       return fail("missing protocol or dataset");
     if (
       [protocol, dataset].some((record) =>
@@ -115,7 +121,7 @@ export function resolveComparisons(
             ),
         );
         const target = byId.get(link.target_id);
-        if (verified && target?.kind === "benchmark") {
+        if (verified && target && isBenchmarkSubject(target.kind)) {
           ancestors.add(target.id);
           pending.push(target);
         }
@@ -191,7 +197,8 @@ export function resolveComparisons(
         JSON.stringify(
           (
             row.evaluation?.attributes.comparison as
-              Record<string, unknown> | undefined
+              | Record<string, unknown>
+              | undefined
           )?.[field] ?? null,
         ),
       );

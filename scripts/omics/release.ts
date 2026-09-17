@@ -1,3 +1,5 @@
+import { legacyKinds } from "../../services/omics/src/entity-kinds";
+import { separateEntities, entityInputFiles } from "./entity-migration";
 import { assertNoPrivateFields } from "../../services/omics/src/private-fields";
 import {
   createEvidenceIndex,
@@ -24,6 +26,18 @@ export function buildRelease(
   extraCoverage: Record<string, unknown> = {},
 ) {
   validateRecords(records);
+  const schemaVersion =
+    extraCoverage.entity_schema_version === "1.1" ? "1.1" : "1.0";
+  if (
+    schemaVersion === "1.0" &&
+    records.some(
+      (record) => !(legacyKinds as readonly string[]).includes(record.kind),
+    )
+  )
+    throw new Error(
+      "Entity kinds introduced in 1.1 require schema version 1.1",
+    );
+  const releaseKinds = schemaVersion === "1.0" ? legacyKinds : kinds;
   const ordered = [...records].sort((a, b) => a.id.localeCompare(b.id));
   const all = ordered.map((r) => JSON.stringify(r)).join("\n") + "\n";
   const visible = publicRecords(ordered);
@@ -33,7 +47,7 @@ export function buildRelease(
     "-" +
     sha(all + releasedAt + JSON.stringify(extraCoverage)).slice(0, 12);
   const counts = Object.fromEntries(
-    kinds.map((k) => [k, visible.filter((r) => r.kind === k).length]),
+    releaseKinds.map((k) => [k, visible.filter((r) => r.kind === k).length]),
   );
   const coverage = {
     ...extraCoverage,
@@ -58,7 +72,7 @@ export function buildRelease(
       "A dated discovery and source-transcription review, not an exhaustive census or independent reproduction of external experiments.",
   };
   const snapshot = {
-    schema_version: "1.0",
+    schema_version: schemaVersion,
     release_id: releaseId,
     released_at: releasedAt,
     records: visible,
@@ -97,7 +111,7 @@ export function buildRelease(
     files["evidence.csv"] = evidenceCsv(evidence);
   }
   const manifest = {
-    schema_version: "1.0",
+    schema_version: schemaVersion,
     release_id: releaseId,
     released_at: releasedAt,
     counts,
@@ -208,7 +222,7 @@ function main() {
         : [],
     ),
   );
-  const records = enrichProfiles(
+  const profiled = enrichProfiles(
     associated,
     profileInputs.flatMap((file) =>
       fs.existsSync(file)
@@ -220,6 +234,7 @@ function main() {
         : [],
     ),
   );
+  const records = separateEntities(profiled);
   const profiles = records
     .filter((record) => record.attributes.profile)
     .map((record) => record.attributes.profile as OmicsProfile);
@@ -233,6 +248,18 @@ function main() {
   ];
   const facts = profiles.flatMap((profile) => profile.facts);
   const output = buildRelease(records, audit.released_at, {
+    entity_schema_version: "1.1",
+    entity_migration: {
+      baseline_release: "2026-09-17-5054ddf2a281",
+      note: "Separate models, methods, configurations, pipelines, hosted services, benchmarks, tasks, protocols and evaluators. IDs, printed scores and archived releases remain unchanged.",
+    },
+    run_instructions: {
+      review: "Official source instructions; not executed by rewire",
+      guides: records.filter((r) => r.attributes.run_guide).length,
+      documentation_audits: records.filter(
+        (r) => r.attributes.run_documentation,
+      ).length,
+    },
     evidence_table_version: "1.0",
     evidence_table_generator_sha256: sha(
       [
@@ -276,11 +303,10 @@ function main() {
               "Dated primary-paper search across the existing catalogue; complete selected source tables, not exhaustive numerical extraction of every paper.",
           },
           changelog: [
-            "Record primary-paper searches, references, evidence locations and extraction gaps for all 221 existing benchmark and task records.",
-            "Add 1,122 source-checked numerical results from 26 complete comparison tables; retain 15 explicit unavailable values and quarantine eight unresolved unit conflicts.",
-            "Reuse 26 historical result identities and 16 repeated GlycanML observations; preserve every previous printed value, numeric value and result ID.",
-            "Add 223 source-scoped comparison figures across 120 benchmark pages, with configurations, input conditions, evidence origins and original uncertainty kept visible.",
-            "Preserve all earlier releases, MFASS history and source artifacts. No model computation or independent experimental reproduction.",
+            "Separate entity categories in the catalogue and API; benchmarks contain top-level suites and challenges, with tasks, protocols and evaluators separately browsable.",
+            "Preserve stable IDs and historical URLs through canonical entity pages and explicit legacy route aliases.",
+            "Add pinned official benchmark run instructions with prerequisites, copyable shell commands and explicit source-review-only status. No new model computation.",
+            "Preserve every previous result value, scientific association, source artifact and archived release; submissions remain disabled.",
           ],
         }
       : {}),
@@ -290,6 +316,7 @@ function main() {
     legacy_result_rows: 149,
     source_inputs: [
       ...inputs,
+      ...entityInputFiles,
       ...reviewInputFiles.filter((file) => fs.existsSync(file)),
       ...profileInputs.filter((file) => fs.existsSync(file)),
       ...associationInputs.filter((file) => fs.existsSync(file)),

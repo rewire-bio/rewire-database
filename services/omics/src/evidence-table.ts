@@ -1,3 +1,4 @@
+import { runGuideSchema } from "./run-guide.js";
 import { assertNoPrivateFields } from "./private-fields.js";
 import type { CatalogueRecord, CatalogueSnapshot } from "./catalogue-query.js";
 import { profileSchema } from "./profile-schema.js";
@@ -234,7 +235,7 @@ export function createEvidenceIndex(snapshot: CatalogueSnapshot) {
       }
       const administrative =
         /^(id|kind|status|facets|source_ids)(\.|$)/.test(field) ||
-        /^attributes\.(legacy_|historical_|missing_metadata|metadata_review_scope|review|scope_decision)/.test(
+        /^attributes\.(legacy_|historical_|missing_metadata|metadata_review_scope|review|scope_decision|entity_classification)/.test(
           field,
         );
       const sourceMeta = record!.kind === "source";
@@ -296,6 +297,23 @@ export function createEvidenceIndex(snapshot: CatalogueSnapshot) {
     )) {
       if (key !== "profile") flatten(value, `attributes.${key}`);
     }
+    const guide = runGuideSchema.safeParse(record.attributes.run_guide);
+    if (guide.success)
+      guide.data.steps.forEach((step, i) =>
+        add({
+          field: `attributes.run_guide.steps.${i}.shell`,
+          label: `Run commands: ${step.title}`,
+          value: step.shell,
+          ids: step.source_ids,
+          locator: step.source_locator,
+          scope: "individual_claim",
+          status: "source_checked",
+          review: {
+            ...guide.data.review,
+            note: "Official instructions checked; commands have not been executed and do not establish reproduction.",
+          },
+        }),
+      );
     const parsed = profileSchema.safeParse(record.attributes.profile);
     if (parsed.success) {
       const profile = parsed.data;

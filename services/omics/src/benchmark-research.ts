@@ -1,3 +1,4 @@
+import { isBenchmarkSubject } from "./entity-kinds.js";
 import { z } from "zod";
 import type { CatalogueRecord } from "./catalogue-query.js";
 export const benchmarkResearchSchema = z
@@ -17,7 +18,7 @@ export function validateBenchmarkResearch(
   byId: Map<string, CatalogueRecord>,
 ) {
   if (record.attributes.benchmark_research === undefined) return;
-  if (record.kind !== "benchmark")
+  if (!isBenchmarkSubject(record.kind))
     throw new Error("Literature audit must belong to a benchmark");
   const audit = benchmarkResearchSchema.parse(
     record.attributes.benchmark_research,

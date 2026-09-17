@@ -7,7 +7,13 @@ import {
   type CatalogueSnapshot,
 } from "../services/omics/src/catalogue-query";
 const current = JSON.parse(
-  fs.readFileSync("public/omics/catalogue.json", "utf8"),
+  JSON.parse(
+    gunzipSync(
+      fs.readFileSync(
+        "data/omics/releases/2026-09-17-b9bc163c8ab1.bundle.json.gz",
+      ),
+    ).toString(),
+  )["catalogue.json"],
 ) as CatalogueSnapshot;
 const oldFiles = JSON.parse(
   gunzipSync(

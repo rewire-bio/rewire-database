@@ -15,6 +15,7 @@ import { profileSchema } from "@/lib/omics-profile";
 import Profile, {
   Evidence,
   EvidenceConcerns,
+  ProfileEvidence,
 } from "@/components/catalogue/Profile";
 import EvidenceTable from "@/components/catalogue/EvidenceTable";
 import RunGuide from "@/components/catalogue/RunGuide";
@@ -242,47 +243,77 @@ export default function RecordPage({ params }: { params: Params }) {
     <>
       <header className="page-head">
         <div className="wrap">
-          <span className="kick">{singularKindLabels[record.kind]}</span>
-          <h1>{finding}</h1>
-          <EvidenceConcerns
-            sources={record.kind === "source" ? [record] : detail.sources}
-          />
-          <p className="intro">
-            {record.kind === "result" ? record.name : summary}
-          </p>
-          {profile.success && profile.data.summary_source_ids && (
-            <Evidence
-              ids={profile.data.summary_source_ids}
-              locator={profile.data.summary_source_locator || ""}
-              sources={profileOwner.sources}
-            />
+          {predictive && (
+            <nav className={styles.nav} aria-label="Breadcrumb">
+              <Link href="/">Benchmark database</Link>
+              <Link href={`/?kind=${record.kind}#browse`}>
+                {kindLabels[record.kind]}
+              </Link>
+            </nav>
           )}
-          {entity && (
-            <p>
-              <a href="#results" className={styles.resultCount}>
-                {results.evaluation_count}{" "}
-                {results.evaluation_count === 1 ? "evaluation" : "evaluations"}{" "}
-                · {results.total}{" "}
-                {results.total === 1 ? "metric row" : "metric rows"}
-              </a>
-            </p>
-          )}
+          <div
+            className={
+              predictive && profile.success && profile.data.diagram
+                ? styles.profileHero
+                : undefined
+            }
+          >
+            <div>
+              <span className="kick">{singularKindLabels[record.kind]}</span>
+              <h1>{finding}</h1>
+              <EvidenceConcerns
+                sources={record.kind === "source" ? [record] : detail.sources}
+              />
+              <p className="intro">
+                {record.kind === "result" ? record.name : summary}
+              </p>
+              {profile.success && profile.data.summary_source_ids && (
+                <ProfileEvidence
+                  ids={profile.data.summary_source_ids}
+                  locator={profile.data.summary_source_locator || ""}
+                  sources={profileOwner.sources}
+                />
+              )}
+              {entity && (
+                <p>
+                  <a href="#results" className={styles.resultCount}>
+                    {results.evaluation_count}{" "}
+                    {results.evaluation_count === 1
+                      ? "evaluation"
+                      : "evaluations"}{" "}
+                    · {results.total}{" "}
+                    {results.total === 1 ? "metric row" : "metric rows"}
+                  </a>
+                </p>
+              )}
+            </div>
+            {predictive && (
+              <Profile
+                record={profileOwner.record}
+                sources={profileOwner.sources}
+                part="visual"
+              />
+            )}
+          </div>
         </div>
       </header>
       <section className="block first">
         <div className="wrap">
-          <nav className={styles.nav} aria-label="Breadcrumb">
-            <Link href="/">Benchmark database</Link>
-            <Link href={`/?kind=${record.kind}#browse`}>
-              {kindLabels[record.kind]}
-            </Link>
-          </nav>
+          {!predictive && (
+            <nav className={styles.nav} aria-label="Breadcrumb">
+              <Link href="/">Benchmark database</Link>
+              <Link href={`/?kind=${record.kind}#browse`}>
+                {kindLabels[record.kind]}
+              </Link>
+            </nav>
+          )}
           {entity && (
             <nav className={styles.sectionNav} aria-label="On this page">
               <a href="#overview">At a glance</a>
+              {predictive && <a href="#results">Results</a>}
               <a href="#how-it-works">How it works</a>
               {hasRunInstructions && <a href="#run">How to run</a>}
-              <a href="#results">Results</a>
+              {!predictive && <a href="#results">Results</a>}
               {detail.published_comparisons.length > 0 && (
                 <a href="#charts">Charts</a>
               )}
@@ -290,8 +321,11 @@ export default function RecordPage({ params }: { params: Params }) {
                 <a href="#papers">Papers</a>
               ) : null}
               <a href="#strengths-limitations">Strengths and limitations</a>
-              <a href="#evidence">Evidence table</a>
-              <a href="#sources">Sources and history</a>
+              {predictive && <a href="#specifications">Specifications</a>}
+              {!predictive && <a href="#evidence">Evidence table</a>}
+              <a href={predictive ? "#evidence" : "#sources"}>
+                {predictive ? "Sources and evidence" : "Sources and history"}
+              </a>
             </nav>
           )}
           {record.status === "superseded" && (
@@ -384,6 +418,56 @@ export default function RecordPage({ params }: { params: Params }) {
                 sources={profileOwner.sources}
                 part="overview"
               />
+              {predictive &&
+                [
+                  ...profileKinds,
+                  "dataset",
+                  "dataset_subset",
+                  "evaluation",
+                  "result",
+                  "baseline",
+                ].includes(record.kind) && (
+                  <Results
+                    key={`${catalogue.release_id}:${record.id}`}
+                    id={record.id}
+                    initial={results}
+                    title={
+                      evaluationDesign
+                        ? "Tested entities and results"
+                        : predictive
+                          ? "Evaluations and results"
+                          : "Evaluation results"
+                    }
+                  />
+                )}
+              {downstream.length > 0 && (
+                <section id="configurations" className={styles.section}>
+                  <h2>Configurations, pipelines and services</h2>
+                  <p>
+                    These services and pipelines use this model within their own
+                    configurations. Their results, where available, are not
+                    assigned to the underlying model.
+                  </p>
+                  <ul className={styles.configurationList}>
+                    {downstream.map((item) => (
+                      <li key={item.record.id}>
+                        <Link href={recordHref(item.record)}>
+                          {item.record.name}
+                        </Link>{" "}
+                        <span>
+                          {singularKindLabels[item.record.kind]} ·{" "}
+                          {
+                            query.results({ id: item.record.id, limit: 1 })
+                              .total
+                          }{" "}
+                          metric rows
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+              )}
+
               {profileOwner.record.id !== record.id && (
                 <section className={styles.section}>
                   <h2>This configuration</h2>
@@ -546,27 +630,28 @@ export default function RecordPage({ params }: { params: Params }) {
           {evaluationDesign && (
             <BenchmarkCharts panels={detail.published_comparisons} />
           )}
-          {[
-            ...profileKinds,
-            "dataset",
-            "dataset_subset",
-            "evaluation",
-            "result",
-            "baseline",
-          ].includes(record.kind) && (
-            <Results
-              key={`${catalogue.release_id}:${record.id}`}
-              id={record.id}
-              initial={results}
-              title={
-                evaluationDesign
-                  ? "Tested entities and results"
-                  : predictive
-                    ? "Evaluations and results"
-                    : "Evaluation results"
-              }
-            />
-          )}
+          {!predictive &&
+            [
+              ...profileKinds,
+              "dataset",
+              "dataset_subset",
+              "evaluation",
+              "result",
+              "baseline",
+            ].includes(record.kind) && (
+              <Results
+                key={`${catalogue.release_id}:${record.id}`}
+                id={record.id}
+                initial={results}
+                title={
+                  evaluationDesign
+                    ? "Tested entities and results"
+                    : predictive
+                      ? "Evaluations and results"
+                      : "Evaluation results"
+                }
+              />
+            )}
           {evaluationDesign && record.attributes.benchmark_research ? (
             <BenchmarkResearch
               research={
@@ -582,25 +667,12 @@ export default function RecordPage({ params }: { params: Params }) {
               part="limitations"
             />
           )}
-          {downstream.length > 0 && (
-            <section className={styles.section}>
-              <h2>Configurations, pipelines and services</h2>
-              <p>
-                These services and pipelines use this model within their own
-                configurations. Their results, where available, are not assigned
-                to the underlying model.
-              </p>
-              <ul className={styles.list}>
-                {downstream.map((item) => (
-                  <li key={item.record.id}>
-                    <Link href={recordHref(item.record)}>
-                      {item.record.name}
-                    </Link>{" "}
-                    · {singularKindLabels[item.record.kind]}
-                  </li>
-                ))}
-              </ul>
-            </section>
+          {predictive && (
+            <Profile
+              record={profileOwner.record}
+              sources={profileOwner.sources}
+              part="specifications"
+            />
           )}
           {proposals.length > 0 && (
             <section className={styles.section}>
@@ -627,6 +699,7 @@ export default function RecordPage({ params }: { params: Params }) {
             id={record.id}
             initial={evidence}
             initialScope={evidenceScope}
+            collapsed={predictive}
           />
           <section id="sources" className={styles.section}>
             <h2>Sources and history</h2>
@@ -634,57 +707,66 @@ export default function RecordPage({ params }: { params: Params }) {
               Release {catalogue.release_id} · Record review:{" "}
               {record.status.replace(/_/g, " ")}
             </p>
-            {detail.sources.length ? (
-              <ul className={styles.list}>
-                {detail.sources.map((source) => (
-                  <li key={source.id}>
-                    <Link href={recordHref(source)}>{source.name}</Link>
-                    {safeSourceUrl(source.attributes.url) && (
-                      <>
-                        {" "}
-                        ·{" "}
-                        <a href={safeSourceUrl(source.attributes.url)}>
-                          Original source
-                        </a>
-                      </>
-                    )}{" "}
-                    · {displayValue(source.attributes.version)}
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p>No supporting source is linked yet.</p>
-            )}
-            {detail.direct
-              .filter((item) => item.relation === "supersedes")
-              .map((item) => (
-                <p key={item.record.id}>
-                  Supersedes{" "}
-                  <Link href={recordHref(item.record)}>{item.record.name}</Link>
-                </p>
-              ))}
-            {detail.reverse
-              .filter((item) => item.relation === "supersedes")
-              .map((item) => (
-                <p key={item.record.id}>
-                  Superseded by{" "}
-                  <Link href={recordHref(item.record)}>{item.record.name}</Link>
-                </p>
-              ))}
-            {record.kind === "source" &&
-              safeSourceUrl(record.attributes.url) && (
-                <p>
-                  <a href={safeSourceUrl(record.attributes.url)}>
-                    Read original source
-                  </a>
-                </p>
+            <details className={styles.profileDisclosure} open={!predictive}>
+              <summary>
+                {detail.sources.length} source records and release history
+              </summary>
+              {detail.sources.length ? (
+                <ul className={styles.list}>
+                  {detail.sources.map((source) => (
+                    <li key={source.id}>
+                      <Link href={recordHref(source)}>{source.name}</Link>
+                      {safeSourceUrl(source.attributes.url) && (
+                        <>
+                          {" "}
+                          ·{" "}
+                          <a href={safeSourceUrl(source.attributes.url)}>
+                            Original source
+                          </a>
+                        </>
+                      )}{" "}
+                      · {displayValue(source.attributes.version)}
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p>No supporting source is linked yet.</p>
               )}
-            <a
-              href={`/omics/releases/${catalogue.release_id}/records.jsonl`}
-              download
-            >
-              Download this release
-            </a>
+              {detail.direct
+                .filter((item) => item.relation === "supersedes")
+                .map((item) => (
+                  <p key={item.record.id}>
+                    Supersedes{" "}
+                    <Link href={recordHref(item.record)}>
+                      {item.record.name}
+                    </Link>
+                  </p>
+                ))}
+              {detail.reverse
+                .filter((item) => item.relation === "supersedes")
+                .map((item) => (
+                  <p key={item.record.id}>
+                    Superseded by{" "}
+                    <Link href={recordHref(item.record)}>
+                      {item.record.name}
+                    </Link>
+                  </p>
+                ))}
+              {record.kind === "source" &&
+                safeSourceUrl(record.attributes.url) && (
+                  <p>
+                    <a href={safeSourceUrl(record.attributes.url)}>
+                      Read original source
+                    </a>
+                  </p>
+                )}
+              <a
+                href={`/omics/releases/${catalogue.release_id}/records.jsonl`}
+                download
+              >
+                Download this release
+              </a>
+            </details>
           </section>
           <details className={styles.section}>
             <summary>Technical metadata and extraction receipts</summary>

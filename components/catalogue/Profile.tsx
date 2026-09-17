@@ -4,6 +4,7 @@ import {
 } from "@/services/omics/src/entity-kinds";
 import Link from "next/link";
 import { profileSchema } from "@/lib/omics-profile";
+import ProfileDiagram from "./ProfileDiagram";
 import { recordHref, safeSourceUrl, type OmicsRecord } from "@/lib/omics";
 import styles from "@/app/database/database.module.css";
 
@@ -40,6 +41,18 @@ export function Evidence({
   );
 }
 
+/** Keep precise citations one keyboard-accessible disclosure away. */
+export function ProfileEvidence(props: Parameters<typeof Evidence>[0]) {
+  return (
+    <details className={styles.profileCitation}>
+      <summary>
+        Sources{props.ids.length > 1 ? ` (${props.ids.length})` : ""}
+      </summary>
+      <Evidence {...props} />
+    </details>
+  );
+}
+
 export default function Profile({
   record,
   sources,
@@ -47,7 +60,7 @@ export default function Profile({
 }: {
   record: OmicsRecord;
   sources: OmicsRecord[];
-  part: "overview" | "mechanism" | "limitations";
+  part: "overview" | "mechanism" | "limitations" | "visual" | "specifications";
 }) {
   const parsed = profileSchema.safeParse(record.attributes.profile);
   if (!parsed.success)
@@ -65,6 +78,7 @@ export default function Profile({
       </section>
     );
   const profile = parsed.data;
+  const predictive = isModelSubject(record.kind);
   const expected: [string, RegExp][] =
     record.kind === "method"
       ? [
@@ -139,170 +153,173 @@ export default function Profile({
     )
     .map(([label]) => label);
 
-  let diagramHeight = 0;
-  const diagramSteps =
-    profile.diagram?.steps.map((step) => {
-      const lines: string[] = [];
-      let line = "";
-      for (const word of step.split(/\s+/)) {
-        if (line && `${line} ${word}`.length > 32) {
-          lines.push(line);
-          line = word;
-        } else line += `${line ? " " : ""}${word}`;
-      }
-      if (line) lines.push(line);
-      const height = Math.max(72, lines.length * 18 + 28);
-      const y = diagramHeight;
-      diagramHeight += height + 24;
-      return { lines, height, y };
-    }) || [];
+  const keyFacts = [
+    /^(model type|method or algorithm|method type|architecture|components|model class|algorithm)$/i,
+    /^(biological inputs|inputs|required inputs|input)$/i,
+    /^(biological outputs|outputs|output)$/i,
+  ].flatMap((pattern) => {
+    const fact = profile.facts.find((item) => pattern.test(item.label));
+    return fact ? [fact] : [];
+  });
+  const diagram = profile.diagram && (
+    <figure className={styles.profileVisual}>
+      <div className={styles.visualHeading}>
+        <span>How it works</span>
+        <strong>{profile.diagram.title}</strong>
+      </div>
+      <ProfileDiagram diagram={profile.diagram} id={record.id} />
+      <figcaption>
+        <p>{profile.diagram.caption}</p>
+        <ProfileEvidence
+          ids={profile.diagram.source_ids}
+          locator={profile.diagram.source_locator}
+          sources={sources}
+        />
+      </figcaption>
+    </figure>
+  );
 
   return (
     <>
-      {part === "overview" && (
+      {part === "visual" && diagram}
+      {part === "overview" && predictive && (
         <section id="overview" className={styles.section}>
           <h2>At a glance</h2>
-
-          <p className={styles.muted}>
-            Explanatory profile:{" "}
-            {profile.coverage === "reviewed"
-              ? "source reviewed"
-              : "limited source coverage"}{" "}
-            · Automated source review, {profile.review.date}. Review applies to
-            the cited claims; unresolved fields are listed below. Numerical
-            results retain their own review status.
-          </p>
-          {profile.facts.length > 0 && (
-            <div
-              className={styles.tableScroll}
-              tabIndex={0}
-              role="region"
-              aria-label="Key facts"
-            >
-              <table className={styles.resultTable}>
-                <caption>
-                  {isModelSubject(record.kind)
-                    ? "Inputs, outputs and configuration"
-                    : "Data, procedure and scoring"}
-                </caption>
-                <thead>
-                  <tr>
-                    <th scope="col">Property</th>
-                    <th scope="col">Description and evidence</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {profile.facts.map((fact, i) => (
-                    <tr key={i}>
-                      <th scope="row">{fact.label}</th>
-                      <td>
-                        {fact.value}
-                        {fact.status && fact.status !== "source_checked" && (
-                          <span className={styles.muted}>
-                            {" "}
-                            ·{" "}
-                            {
-                              {
-                                unreported: "Not reported in inspected sources",
-                                unextracted: "Needs further source review",
-                                unavailable: "Source unavailable",
-                                inapplicable: "Not applicable",
-                              }[fact.status]
-                            }
-                          </span>
-                        )}
-                        <Evidence
-                          ids={fact.source_ids}
-                          locator={fact.source_locator}
-                          sources={sources}
-                        />
-                      </td>
-                    </tr>
-                  ))}
-                  {unmatched.map((label) => (
-                    <tr key={label}>
-                      <th scope="row">{label}</th>
-                      <td>
-                        {label === "Entity type"
-                          ? entityKindLabel(record.kind)
-                          : "Not extracted or verified for this record."}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+          {keyFacts.length > 0 && (
+            <div className={styles.keyFacts}>
+              {keyFacts.map((fact) => (
+                <article key={fact.label}>
+                  <h3>{fact.label}</h3>
+                  <p>{fact.value}</p>
+                  {fact.status && fact.status !== "source_checked" && (
+                    <p className={styles.muted}>
+                      {fact.status.replace(/_/g, " ")}
+                    </p>
+                  )}
+                  <ProfileEvidence
+                    ids={fact.source_ids}
+                    locator={fact.source_locator}
+                    sources={sources}
+                  />
+                </article>
+              ))}
             </div>
           )}
+          {keyFacts.length === 0 && (
+            <p>
+              Key specifications have not been extracted for this record. See
+              the linked evaluation and sources for the reported setup.
+            </p>
+          )}
+          <p className={styles.muted}>
+            {profile.coverage === "reviewed"
+              ? "Source reviewed"
+              : "limited source coverage"}
+            {" · "}Automated source review, {profile.review.date}.{" "}
+            <a href="#specifications">All specifications and missing details</a>
+          </p>
+        </section>
+      )}
+      {(part === "specifications" || (part === "overview" && !predictive)) && (
+        <section
+          id={predictive ? "specifications" : "overview"}
+          className={styles.section}
+        >
+          <h2>{predictive ? "Specifications" : "At a glance"}</h2>
+          <details className={styles.profileDisclosure} open={!predictive}>
+            <summary>Inputs, training, access and other details</summary>
+            <p className={styles.muted}>
+              Explanatory profile:{" "}
+              {profile.coverage === "reviewed"
+                ? "source reviewed"
+                : "limited source coverage"}{" "}
+              · Automated source review, {profile.review.date}. Review applies
+              to the cited claims; unresolved fields are listed below. Numerical
+              results retain their own review status.
+            </p>
+            {(profile.facts.length > 0 || unmatched.length > 0) && (
+              <div
+                className={styles.tableScroll}
+                tabIndex={0}
+                role="region"
+                aria-label="Key facts"
+              >
+                <table className={styles.resultTable}>
+                  <caption>
+                    {isModelSubject(record.kind)
+                      ? "Inputs, outputs and configuration"
+                      : "Data, procedure and scoring"}
+                  </caption>
+                  <thead>
+                    <tr>
+                      <th scope="col">Property</th>
+                      <th scope="col">Description and evidence</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {profile.facts.map((fact, i) => (
+                      <tr key={i}>
+                        <th scope="row">{fact.label}</th>
+                        <td>
+                          {fact.value}
+                          {fact.status && fact.status !== "source_checked" && (
+                            <span className={styles.muted}>
+                              {" "}
+                              ·{" "}
+                              {
+                                {
+                                  unreported:
+                                    "Not reported in inspected sources",
+                                  unextracted: "Needs further source review",
+                                  unavailable: "Source unavailable",
+                                  inapplicable: "Not applicable",
+                                }[fact.status]
+                              }
+                            </span>
+                          )}
+                          <ProfileEvidence
+                            ids={fact.source_ids}
+                            locator={fact.source_locator}
+                            sources={sources}
+                          />
+                        </td>
+                      </tr>
+                    ))}
+                    {unmatched.map((label) => (
+                      <tr key={label}>
+                        <th scope="row">{label}</th>
+                        <td>
+                          {label === "Entity type"
+                            ? entityKindLabel(record.kind)
+                            : "Not extracted or verified for this record."}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </details>
         </section>
       )}
       {part === "mechanism" && (
         <section id="how-it-works" className={styles.section}>
           <h2>How it works</h2>
-          {profile.diagram && (
-            <figure className={styles.diagram}>
-              <figcaption>
-                <strong>{profile.diagram.title}</strong>
-                <p>{profile.diagram.caption}</p>
-              </figcaption>
-              <svg
-                role="img"
-                aria-labelledby={`diagram-title-${record.id} diagram-desc-${record.id}`}
-                viewBox={`0 0 360 ${diagramHeight}`}
-              >
-                <title id={`diagram-title-${record.id}`}>
-                  {profile.diagram.title}
-                </title>
-                <desc id={`diagram-desc-${record.id}`}>
-                  {profile.diagram.steps.join(". Then: ")}
-                </desc>
-                {diagramSteps.map(({ lines, height, y }, i) => (
-                  <g key={i}>
-                    <rect
-                      x="16"
-                      y={y + 8}
-                      width="328"
-                      height={height}
-                      rx="8"
-                      fill="var(--accent-soft)"
-                      stroke="var(--line-2)"
-                    />
-                    <text x="32" y={y + 35} fill="var(--ink)" fontSize="16">
-                      {lines.map((text, j) => (
-                        <tspan key={j} x="32" dy={j ? 18 : 0}>
-                          {text}
-                        </tspan>
-                      ))}
-                    </text>
-                    {i < diagramSteps.length - 1 && (
-                      <path
-                        d={`M180 ${y + height + 9}v13m-5 -5l5 5 5 -5`}
-                        fill="none"
-                        stroke="var(--accent-ink)"
-                        strokeWidth="2"
-                      />
-                    )}
-                  </g>
-                ))}
-              </svg>
-              <Evidence
-                ids={profile.diagram.source_ids}
-                locator={profile.diagram.source_locator}
-                sources={sources}
-              />
-            </figure>
-          )}
+          {!predictive && diagram}
           {profile.sections.map((section, i) => (
-            <section key={i} className={styles.section}>
-              {section.title.trim().toLowerCase() !== "how it works" && (
-                <h3>{section.title}</h3>
-              )}
+            <details
+              key={i}
+              className={styles.profileDisclosure}
+              open={!predictive}
+            >
+              <summary>{section.title}</summary>
               <p>{section.body}</p>
-              <Evidence
+              <ProfileEvidence
                 ids={section.source_ids}
                 locator={section.source_locator}
                 sources={sources}
               />
-            </section>
+            </details>
           ))}
         </section>
       )}
@@ -328,7 +345,7 @@ export default function Profile({
                     {claims.map((claim, i) => (
                       <li key={i}>
                         {claim.text}
-                        <Evidence
+                        <ProfileEvidence
                           ids={claim.source_ids}
                           locator={claim.source_locator}
                           sources={sources}

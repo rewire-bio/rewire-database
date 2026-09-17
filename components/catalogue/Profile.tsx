@@ -284,14 +284,6 @@ export default function Profile({
                   </g>
                 ))}
               </svg>
-              <details>
-                <summary>Read the diagram as text</summary>
-                <ol className={styles.list}>
-                  {profile.diagram.steps.map((step, i) => (
-                    <li key={i}>{step}</li>
-                  ))}
-                </ol>
-              </details>
               <Evidence
                 ids={profile.diagram.source_ids}
                 locator={profile.diagram.source_locator}

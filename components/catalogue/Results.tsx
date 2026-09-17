@@ -99,60 +99,62 @@ export default function Results({
         {data.total} {data.total === 1 ? "metric row" : "metric rows"}.
         Different protocols are not a single leaderboard.
       </p>
-      <div className={styles.filters}>
-        <label className={styles.label}>
-          Evaluation setup
-          <select
-            aria-label="Evaluation setup"
-            value={configuration}
-            onChange={(event) => {
-              setConfiguration(event.target.value);
-              setCursor(undefined);
-            }}
-          >
-            <option value="">All evaluation setups</option>
-            {initial.facets.configurations.map((item) => (
-              <option value={item.id} key={item.id}>
-                {item.name}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label className={styles.label}>
-          Metric
-          <select
-            aria-label="Metric"
-            value={metric}
-            onChange={(event) => {
-              setMetric(event.target.value);
-              setCursor(undefined);
-            }}
-          >
-            <option value="">All metrics</option>
-            {initial.facets.metrics.map((item) => (
-              <option key={item}>{item}</option>
-            ))}
-          </select>
-        </label>
-        <label className={styles.label}>
-          Evidence origin
-          <select
-            aria-label="Evidence origin"
-            value={origin}
-            onChange={(event) => {
-              setOrigin(event.target.value);
-              setCursor(undefined);
-            }}
-          >
-            <option value="">All origins</option>
-            {initial.facets.origins.map((item) => (
-              <option value={item} key={item}>
-                {originLabel(item)}
-              </option>
-            ))}
-          </select>
-        </label>
-      </div>
+      {initial.total > 0 && (
+        <div className={styles.filters}>
+          <label className={styles.label}>
+            Evaluation setup
+            <select
+              aria-label="Evaluation setup"
+              value={configuration}
+              onChange={(event) => {
+                setConfiguration(event.target.value);
+                setCursor(undefined);
+              }}
+            >
+              <option value="">All evaluation setups</option>
+              {initial.facets.configurations.map((item) => (
+                <option value={item.id} key={item.id}>
+                  {item.name}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className={styles.label}>
+            Metric
+            <select
+              aria-label="Metric"
+              value={metric}
+              onChange={(event) => {
+                setMetric(event.target.value);
+                setCursor(undefined);
+              }}
+            >
+              <option value="">All metrics</option>
+              {initial.facets.metrics.map((item) => (
+                <option key={item}>{item}</option>
+              ))}
+            </select>
+          </label>
+          <label className={styles.label}>
+            Evidence origin
+            <select
+              aria-label="Evidence origin"
+              value={origin}
+              onChange={(event) => {
+                setOrigin(event.target.value);
+                setCursor(undefined);
+              }}
+            >
+              <option value="">All origins</option>
+              {initial.facets.origins.map((item) => (
+                <option value={item} key={item}>
+                  {originLabel(item)}
+                </option>
+              ))}
+            </select>
+          </label>
+        </div>
+      )}
       <div aria-live="polite">
         {loading && <p>Loading results…</p>}
         {error && (

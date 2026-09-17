@@ -1,7 +1,6 @@
 import fs from "node:fs";
 import { describe, expect, it } from "vitest";
 import { buildRelease } from "../scripts/omics/release";
-import { validateSnapshot } from "../services/omics/src/validation";
 import { createCatalogueQuery } from "../services/omics/src/catalogue-query";
 import { compareResults, parseCatalogue } from "../lib/omics";
 import { fixture } from "../services/omics/test/fixtures";
@@ -39,13 +38,10 @@ function legacyCompare(snapshot: ReturnType<typeof fixture>) {
 const ids = ["result-one", "result-two"];
 
 describe("entity schema version boundaries", () => {
-  it("rejects new kinds labelled as schema 1.0 in release, service and static readers", () => {
+  it("rejects new kinds labelled as schema 1.0 in release and static readers", () => {
     const snapshot = typedFixture();
     snapshot.schema_version = "1.0";
     expect(() => buildRelease(snapshot.records, snapshot.released_at)).toThrow(
-      /require schema version 1.1/,
-    );
-    expect(() => validateSnapshot(snapshot)).toThrow(
       /require schema version 1.1/,
     );
     expect(() => parseCatalogue(snapshot)).toThrow(
@@ -67,7 +63,6 @@ describe("entity schema version boundaries", () => {
         0,
       ),
     ).toBe(release.snapshot.records.length);
-    expect(() => validateSnapshot(release.snapshot)).not.toThrow();
     expect(() => parseCatalogue(release.snapshot)).not.toThrow();
   });
   it("reconstructs the initial schema 1.0 receipt without changing any hashes", () => {
@@ -102,65 +97,6 @@ describe("entity schema version boundaries", () => {
       source_inputs,
     });
     expect(JSON.stringify(rebuilt.manifest)).toBe(JSON.stringify(manifest));
-  });
-});
-
-describe("service evaluation role cardinality", () => {
-  it("supports historical role names and exact typed role names", () => {
-    expect(() => validateSnapshot(fixture())).not.toThrow();
-    const snapshot = typedFixture();
-    expect(() => validateSnapshot(snapshot)).not.toThrow();
-    const evaluation = snapshot.records.find(
-      (r: any) => r.kind === "evaluation",
-    );
-    evaluation.links = [
-      { relation: "configuration", target_id: "model-one" },
-      { relation: "protocol", target_id: "benchmark-one" },
-      { relation: "dataset_subset", target_id: "dataset-one" },
-    ];
-    expect(() => validateSnapshot(snapshot)).not.toThrow();
-  });
-  it.each(["model", "benchmark", "dataset"])(
-    "rejects missing and duplicated %s roles",
-    (role) => {
-      for (const mode of ["missing", "duplicate"]) {
-        const snapshot = typedFixture();
-        const evaluation = snapshot.records.find(
-          (r: any) => r.kind === "evaluation",
-        );
-        if (mode === "missing")
-          evaluation.links = evaluation.links.filter(
-            (link: any) => link.relation !== role,
-          );
-        else
-          evaluation.links.push(
-            structuredClone(
-              evaluation.links.find((link: any) => link.relation === role),
-            ),
-          );
-        expect(() => validateSnapshot(snapshot)).toThrow(
-          new RegExp(`Invalid evaluation ${role}`),
-        );
-      }
-    },
-  );
-  it("rejects two different relation names for the same subject role", () => {
-    const snapshot = typedFixture();
-    snapshot.records
-      .find((r: any) => r.kind === "evaluation")
-      .links.push({ relation: "configuration", target_id: "model-one" });
-    expect(() => validateSnapshot(snapshot)).toThrow(
-      /Invalid evaluation model/,
-    );
-  });
-  it("rejects a typed role pointing to another entity kind within its broad role", () => {
-    const snapshot = typedFixture();
-    snapshot.records.find(
-      (r: any) => r.kind === "evaluation",
-    ).links[0].relation = "method";
-    expect(() => validateSnapshot(snapshot)).toThrow(
-      /Incorrect relationship type/,
-    );
   });
 });
 

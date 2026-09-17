@@ -1,0 +1,23 @@
+{
+  "status": "approved",
+  "review_date": "2026-09-17",
+  "review_method": "Independent agent identity and run-documentation reviews plus root source inspection, artifact hashes and integration validation. No human review or new model run claimed.",
+  "baseline_release": "2026-09-17-5054ddf2a281",
+  "files": {
+    "data/omics/reviewed/entity-separation/run-review.json": "9f05e8a090481d8cfec9ffebf65007c54142b34075200cbaad981953f78b8cd2",
+    "data/omics/reviewed/entity-separation/run-audit.jsonl": "5c049a06e3a44d3e8ff12c2fcfc6134f18c75c449293a44b4e14bc7c763d3619",
+    "data/omics/reviewed/entity-separation/sources.jsonl": "868b5030df831e5032c3dca7294f7fce13688d126c0921e4b1b67d019aa369ec",
+    "data/omics/reviewed/entity-separation/receipts.json": "51100c3bbbf3f458c87ed2251931b18dfe6d76d7cd5a637e1983773a69c7b0b7",
+    "data/omics/reviewed/entity-separation/classification-audit.md": "5cac7862d2d5077b16951517e458c83eb5ee9bdd0629677b809220d52ed419fa",
+    "data/omics/reviewed/entity-separation/run-guides.json": "57092c03c00d4ba2f594fe80fb8b09ff45b7df9e03bb319394765343c1e32968",
+    "data/omics/reviewed/entity-separation/classification.json": "b3ae487bbf720092536cf31a72ce6d4b3aad50854b2752fcfffc42b21c86e272",
+    "data/omics/reviewed/entity-separation/profile-corrections.json": "e0f91d20378b37b5c675f326737ca84a1f9c22a3c3a617460847c0057cb23024",
+    "data/omics/reviewed/entity-separation/classification-review.json": "99b2ae01c065e6411ad28084ac5f2eac17b2ec54b407dd82555366ddcbf9a6d7"
+  },
+  "resolutions": [
+    "All 12 pipeline findings resolved in final classification.",
+    "The separately required ESM-2 explanation correction is included in the hashed profile-corrections input and applied during migration.",
+    "Baseline LipidBlast model-role link corrected to dataset with historical link retained.",
+    "Benchmark run instructions remain explicitly source-reviewed and unexecuted."
+  ]
+}

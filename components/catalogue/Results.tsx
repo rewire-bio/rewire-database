@@ -9,6 +9,12 @@ import {
   type OmicsRecord,
 } from "@/lib/omics";
 import { Evidence, EvidenceConcerns } from "./Profile";
+import {
+  testedEntities,
+  evaluationEntities,
+  datasetEntities,
+  groupEntities,
+} from "@/lib/omics-browse";
 import styles from "@/app/database/database.module.css";
 
 function RecordLinks({ records }: { records: OmicsRecord[] }) {
@@ -95,16 +101,16 @@ export default function Results({
       </p>
       <div className={styles.filters}>
         <label className={styles.label}>
-          Evaluated configuration
+          Evaluation setup
           <select
-            aria-label="Evaluated configuration"
+            aria-label="Evaluation setup"
             value={configuration}
             onChange={(event) => {
               setConfiguration(event.target.value);
               setCursor(undefined);
             }}
           >
-            <option value="">All configurations</option>
+            <option value="">All evaluation setups</option>
             {initial.facets.configurations.map((item) => (
               <option value={item.id} key={item.id}>
                 {item.name}
@@ -198,9 +204,19 @@ export default function Results({
                         "Evaluation not linked"
                       )}
                       <div className={styles.evaluationLinks}>
-                        Model: <RecordLinks records={first.models} /> ·
-                        Benchmark: <RecordLinks records={first.benchmarks} /> ·
-                        Dataset: <RecordLinks records={first.datasets} />
+                        {groupEntities([
+                          ...testedEntities(first),
+                          ...evaluationEntities(first),
+                          ...datasetEntities(first),
+                        ]).map((group) => (
+                          <span
+                            key={group.kind}
+                            className={styles.typedContext}
+                          >
+                            {group.label}:{" "}
+                            <RecordLinks records={group.records} />
+                          </span>
+                        ))}
                       </div>
                       <p>
                         {displayValue(first.evaluation?.attributes.protocol)}
@@ -241,7 +257,8 @@ export default function Results({
                             result.attributes.uncertainty ??
                               (
                                 result.attributes.missing_metadata as
-                                  Record<string, unknown> | undefined
+                                  | Record<string, unknown>
+                                  | undefined
                               )?.uncertainty,
                           ).replace(/_/g, " ")}
                         </p>
@@ -255,7 +272,8 @@ export default function Results({
                                 result.attributes.scored_count ??
                                   (
                                     result.attributes.coverage as
-                                      Record<string, unknown> | undefined
+                                      | Record<string, unknown>
+                                      | undefined
                                   )?.scored,
                               )}{" "}
                               · Eligible:{" "}
@@ -263,7 +281,8 @@ export default function Results({
                                 result.attributes.eligible_count ??
                                   (
                                     result.attributes.coverage as
-                                      Record<string, unknown> | undefined
+                                      | Record<string, unknown>
+                                      | undefined
                                   )?.denominator,
                               )}
                             </>

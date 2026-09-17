@@ -1,0 +1,79 @@
+[
+  {
+    "id": "reported-model-4c73500c39e9d0",
+    "source_ids": [
+      "viral-immune-mimicry-2025"
+    ],
+    "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12474240/",
+    "artifact_sha256": "15250af2f75f70e2b6a3725d00bc7e276ed9d2d4a54f0ae9d6eaabf6be13e4a1",
+    "locator": "Section 2.3 Human-Virus Model Training and Implementation, paragraphs 1\u20133; Section 2.4 Finding and Analyzing Model Mistakes, paragraphs 1\u20132; Table 1, ESM2 650M row",
+    "patch": [
+      {
+        "op": "replace",
+        "path": "/attributes/profile/summary",
+        "value": "This ESM-2 650M configuration is fine-tuned with LoRA to distinguish human from viral protein sequences."
+      },
+      {
+        "op": "replace",
+        "path": "/attributes/profile/summary_source_locator",
+        "value": "Section 2.3 Human-Virus Model Training and Implementation, paragraphs 1\u20133; Section 2.4 Finding and Analyzing Model Mistakes, paragraphs 1\u20132; Table 1, ESM2 650M row"
+      },
+      {
+        "op": "replace",
+        "path": "/attributes/profile/sections/0/body",
+        "value": "The ESM-2 650M model is fine-tuned with LoRA on protein sequences to classify human versus viral origin. The separate embedding-based linear/tree comparisons use T5; the paper\u2019s immune-mimicry error analysis uses Linear-T5, not this ESM-2 configuration."
+      },
+      {
+        "op": "replace",
+        "path": "/attributes/profile/sections/0/source_locator",
+        "value": "Section 2.3 Human-Virus Model Training and Implementation, paragraphs 1\u20133; Section 2.4 Finding and Analyzing Model Mistakes, paragraphs 1\u20132; Table 1, ESM2 650M row"
+      },
+      {
+        "op": "replace",
+        "path": "/attributes/profile/facts/1/value",
+        "value": "The ESM-2 650M model is fine-tuned with LoRA on protein sequences to classify human versus viral origin. The separate embedding-based linear/tree comparisons use T5; the paper\u2019s immune-mimicry error analysis uses Linear-T5, not this ESM-2 configuration."
+      },
+      {
+        "op": "replace",
+        "path": "/attributes/profile/facts/1/source_locator",
+        "value": "Section 2.3 Human-Virus Model Training and Implementation, paragraphs 1\u20133; Section 2.4 Finding and Analyzing Model Mistakes, paragraphs 1\u20132; Table 1, ESM2 650M row"
+      },
+      {
+        "op": "replace",
+        "path": "/attributes/profile/facts/4/value",
+        "value": "The ESM-2 backbone is labelled 650M parameters. The paper uses LoRA with rank 8 and scaling factor 8; it does not report an aggregate trained-configuration parameter count."
+      },
+      {
+        "op": "replace",
+        "path": "/attributes/profile/facts/4/source_locator",
+        "value": "Section 2.3 Human-Virus Model Training and Implementation, paragraphs 1\u20133; Section 2.4 Finding and Analyzing Model Mistakes, paragraphs 1\u20132; Table 1, ESM2 650M row"
+      },
+      {
+        "op": "replace",
+        "path": "/attributes/profile/diagram/steps",
+        "value": [
+          "Protein sequences",
+          "ESM-2 650M fine-tuned with LoRA",
+          "Human-versus-viral classification scores"
+        ]
+      },
+      {
+        "op": "replace",
+        "path": "/attributes/profile/diagram/source_locator",
+        "value": "Section 2.3 Human-Virus Model Training and Implementation, paragraphs 1\u20133; Section 2.4 Finding and Analyzing Model Mistakes, paragraphs 1\u20132; Table 1, ESM2 650M row"
+      },
+      {
+        "op": "replace",
+        "path": "/attributes/profile/review",
+        "value": {
+          "method": "automated_source_review",
+          "date": "2026-09-17",
+          "note": "Previous profile source review retained. On 2026-09-17, an independent agent and root agent checked Methods 2.3\u20132.4 and corrected the ESM-2 LoRA mechanism, diagram and parameter wording. This correction does not constitute human review or benchmark reproduction."
+        }
+      }
+    ],
+    "rationale": "The current mechanism and diagram conflate the ESM2 Table 1 fine-tuning configuration with T5 static-embedding classifiers and the separate Linear-T5 error analysis. Sections2.3\u20132.4 explicitly distinguish these. Preserve configuration kind and all numerical results; correct only explanatory content.",
+    "review_method": "Independent agent inspection of cached complete primary article Methods2.3\u20132.4 and Table1, cross-checked against preserved evaluation-lit-b4-009",
+    "review_date": "2026-09-17"
+  }
+]

@@ -5,6 +5,7 @@ import { Fragment } from "react";
 import { buildCatalogue } from "@/lib/catalogue-build";
 import {
   recordHref,
+  recordRouteKinds,
   displayValue,
   safeSourceUrl,
   originLabel,
@@ -16,24 +17,39 @@ import Profile, {
   EvidenceConcerns,
 } from "@/components/catalogue/Profile";
 import EvidenceTable from "@/components/catalogue/EvidenceTable";
+import RunGuide from "@/components/catalogue/RunGuide";
 import Results from "@/components/catalogue/Results";
 import BenchmarkCharts from "@/components/catalogue/BenchmarkCharts";
 import BenchmarkResearch, {
   type BenchmarkResearchData,
 } from "@/components/catalogue/BenchmarkResearch";
-import { kindLabels } from "@/lib/omics-browse";
+import {
+  kindLabels,
+  singularKindLabels,
+  profileKinds,
+  predictiveKinds,
+  evaluationKinds,
+  testedEntities,
+  evaluationEntities,
+  datasetEntities,
+  groupEntities,
+  uniqueRecords,
+} from "@/lib/omics-browse";
 import styles from "../../database.module.css";
 
 type Params = { kind: string; id: string };
 export function generateStaticParams() {
-  return buildCatalogue().catalogue.records.map((record) => ({
-    kind: record.kind,
-    id: record.id,
-  }));
+  return buildCatalogue().catalogue.records.flatMap((record) =>
+    recordRouteKinds(record).map((kind) => ({ kind, id: record.id })),
+  );
 }
 export function generateMetadata({ params }: { params: Params }): Metadata {
   const item = buildCatalogue().query.get({ id: params.id });
-  if (!item || item.record.kind !== params.kind) return {};
+  if (
+    !item ||
+    !recordRouteKinds(item.record).some((kind) => kind === params.kind)
+  )
+    return {};
   return {
     title: item.record.name,
     description:
@@ -74,11 +90,15 @@ function Fields({ fields }: { fields: Record<string, unknown> }) {
 export default function RecordPage({ params }: { params: Params }) {
   const { query, catalogue } = buildCatalogue();
   const detail = query.get({ id: params.id });
-  if (!detail || detail.record.kind !== params.kind) notFound();
+  if (
+    !detail ||
+    !recordRouteKinds(detail.record).some((kind) => kind === params.kind)
+  )
+    notFound();
   const { record } = detail;
   const results = query.results({ id: record.id, limit: 25 });
   const first = results.items[0];
-  const evidenceScope = ["model", "benchmark", "result"].includes(record.kind)
+  const evidenceScope = [...profileKinds, "result"].includes(record.kind)
     ? "individual_claim"
     : record.kind === "source"
       ? "source_metadata"
@@ -89,7 +109,12 @@ export default function RecordPage({ params }: { params: Params }) {
     limit: 10,
   });
   const evaluated = record.kind === "evaluation" ? record : first?.evaluation;
-  const entity = record.kind === "model" || record.kind === "benchmark";
+  const entity = profileKinds.includes(record.kind);
+  const predictive = predictiveKinds.includes(record.kind);
+  const evaluationDesign = evaluationKinds.includes(record.kind);
+  const hasRunInstructions = Boolean(
+    record.attributes.run_guide || record.attributes.run_documentation,
+  );
   const verifiedAssociation = (
     subject: string,
     relation: string,
@@ -109,7 +134,7 @@ export default function RecordPage({ params }: { params: Params }) {
   const family = detail.direct.find(
     (item) =>
       ["family", "variant_of", "alias_of"].includes(item.relation) &&
-      item.record.kind === record.kind &&
+      predictiveKinds.includes(item.record.kind) &&
       verifiedAssociation(record.id, item.relation, item.record.id),
   );
   const localProfile = profileSchema.safeParse(record.attributes.profile);
@@ -128,11 +153,15 @@ export default function RecordPage({ params }: { params: Params }) {
     record.kind === "result"
       ? `${displayValue(record.attributes.printed_value)}${record.attributes.unit === "percent" ? "%" : ""} ${displayValue(record.attributes.metric)}`
       : record.name;
-  const modelLinks =
-    first?.models ||
-    detail.direct
-      .filter((item) => item.relation === "model")
-      .map((item) => item.record);
+  const modelLinks = first
+    ? testedEntities(first)
+    : detail.direct
+        .filter((item) =>
+          ["model", "method", "configuration", "pipeline", "service"].includes(
+            item.relation,
+          ),
+        )
+        .map((item) => item.record);
   const modelFamilies = modelLinks.flatMap((model) =>
     model.links
       .filter(
@@ -145,16 +174,20 @@ export default function RecordPage({ params }: { params: Params }) {
         return target ? [target.record] : [];
       }),
   );
-  const benchmarkLinks =
-    first?.benchmarks ||
-    detail.direct
-      .filter((item) => item.relation === "benchmark")
-      .map((item) => item.record);
-  const datasetLinks =
-    first?.datasets ||
-    detail.direct
-      .filter((item) => item.relation === "dataset")
-      .map((item) => item.record);
+  const benchmarkLinks = first
+    ? evaluationEntities(first)
+    : detail.direct
+        .filter((item) =>
+          ["benchmark", "task", "protocol", "evaluator"].includes(
+            item.relation,
+          ),
+        )
+        .map((item) => item.record);
+  const datasetLinks = first
+    ? datasetEntities(first)
+    : detail.direct
+        .filter((item) => ["dataset", "dataset_subset"].includes(item.relation))
+        .map((item) => item.record);
   const memberLinks = detail.reverse.filter(
     (item) =>
       ["family", "variant_of", "alias_of"].includes(item.relation) &&
@@ -170,14 +203,38 @@ export default function RecordPage({ params }: { params: Params }) {
       item.relation === "uses_model" &&
       verifiedAssociation(item.record.id, item.relation, record.id),
   );
-  const protocolLinks = [
-    ...detail.direct.filter((item) =>
-      verifiedAssociation(record.id, item.relation, item.record.id),
-    ),
-    ...detail.reverse.filter((item) =>
-      verifiedAssociation(item.record.id, item.relation, record.id),
-    ),
-  ].filter((item) => ["part_of", "evaluates_task"].includes(item.relation));
+  const protocolLinks = uniqueRecords([
+    ...detail.direct
+      .filter(
+        (item) =>
+          ["part_of", "evaluates_task"].includes(item.relation) &&
+          verifiedAssociation(record.id, item.relation, item.record.id),
+      )
+      .map((item) => item.record),
+    ...detail.reverse
+      .filter(
+        (item) =>
+          ["part_of", "evaluates_task"].includes(item.relation) &&
+          verifiedAssociation(item.record.id, item.relation, record.id),
+      )
+      .map((item) => item.record),
+  ]);
+  const linkedEvaluations = uniqueRecords(
+    detail.reverse
+      .filter(
+        (item) =>
+          item.record.kind === "evaluation" &&
+          ["benchmark", "task", "protocol", "evaluator"].includes(
+            item.relation,
+          ),
+      )
+      .map((item) => item.record),
+  );
+  const contextGroups = groupEntities([
+    ...modelLinks,
+    ...benchmarkLinks,
+    ...datasetLinks,
+  ]);
   const proposals = [...detail.direct, ...detail.reverse].filter(
     (item) => item.relation === "applicable_to",
   );
@@ -185,13 +242,7 @@ export default function RecordPage({ params }: { params: Params }) {
     <>
       <header className="page-head">
         <div className="wrap">
-          <span className="kick">
-            {record.kind} ·{" "}
-            {String(record.attributes.entity_level || record.status).replace(
-              /_/g,
-              " ",
-            )}
-          </span>
+          <span className="kick">{singularKindLabels[record.kind]}</span>
           <h1>{finding}</h1>
           <EvidenceConcerns
             sources={record.kind === "source" ? [record] : detail.sources}
@@ -230,6 +281,7 @@ export default function RecordPage({ params }: { params: Params }) {
             <nav className={styles.sectionNav} aria-label="On this page">
               <a href="#overview">At a glance</a>
               <a href="#how-it-works">How it works</a>
+              {hasRunInstructions && <a href="#run">How to run</a>}
               <a href="#results">Results</a>
               {detail.published_comparisons.length > 0 && (
                 <a href="#charts">Charts</a>
@@ -254,26 +306,27 @@ export default function RecordPage({ params }: { params: Params }) {
               aria-label="Finding and evaluation context"
             >
               <dl className={styles.details}>
-                <dt>Tested model</dt>
-                <dd>
-                  <Links records={modelLinks} />
-                </dd>
+                {contextGroups.map((group) => (
+                  <Fragment key={group.kind}>
+                    <dt>
+                      {predictiveKinds.includes(group.kind)
+                        ? `Tested ${group.label.toLowerCase()}`
+                        : group.label}
+                    </dt>
+                    <dd>
+                      <Links records={group.records} />
+                    </dd>
+                  </Fragment>
+                ))}
                 {modelFamilies.length > 0 && (
                   <>
-                    <dt>Model family</dt>
+                    <dt>Related family profiles</dt>
                     <dd>
                       <Links records={modelFamilies} />
                     </dd>
                   </>
                 )}
-                <dt>Task or benchmark</dt>
-                <dd>
-                  <Links records={benchmarkLinks} />
-                </dd>
-                <dt>Dataset</dt>
-                <dd>
-                  <Links records={datasetLinks} />
-                </dd>
+
                 <dt>Procedure</dt>
                 <dd>{displayValue(evaluated?.attributes.protocol)}</dd>
                 <dt>Evaluation</dt>
@@ -309,7 +362,7 @@ export default function RecordPage({ params }: { params: Params }) {
             <>
               {family && (
                 <p className={styles.notice}>
-                  Related family profile:{" "}
+                  Related profile:{" "}
                   <Link href={recordHref(family.record)}>
                     {family.record.name}
                   </Link>
@@ -319,10 +372,11 @@ export default function RecordPage({ params }: { params: Params }) {
               )}
               {usesModels.length > 0 && (
                 <p className={styles.notice}>
-                  Uses model:{" "}
+                  Underlying model:{" "}
                   <Links records={usesModels.map((item) => item.record)} />.
-                  Results on this page belong to this service or pipeline
-                  configuration.
+                  Results on this page belong to this{" "}
+                  {singularKindLabels[record.kind].toLowerCase()} and its
+                  evaluated settings.
                 </p>
               )}
               <Profile
@@ -344,7 +398,7 @@ export default function RecordPage({ params }: { params: Params }) {
                       configuration:
                         record.attributes.version ||
                         record.attributes.checkpoint,
-                      entity_type: record.attributes.entity_level,
+                      entity_type: singularKindLabels[record.kind],
                     }}
                   />
                 </section>
@@ -370,48 +424,108 @@ export default function RecordPage({ params }: { params: Params }) {
                 part="mechanism"
               />
               {protocolLinks.length > 0 && (
-                <section className={styles.section}>
-                  <h2>Connected tasks and protocols</h2>
-                  <ul className={styles.list}>
-                    {protocolLinks.map((item, i) => (
-                      <li key={i}>
-                        <Link href={recordHref(item.record)}>
-                          {item.record.name}
-                        </Link>{" "}
-                        ·{" "}
-                        {String(
-                          item.record.attributes.entity_level ||
-                            item.record.kind,
-                        )}{" "}
-                        · {item.relation.replace(/_/g, " ")}
-                      </li>
+                <section id="evaluation-design" className={styles.section}>
+                  <h2>Evaluation design</h2>
+                  <p>
+                    Benchmarks bring together tasks and protocols. A task
+                    describes the biological question; a protocol defines a
+                    particular test.
+                  </p>
+                  <div className={styles.relationshipGrid}>
+                    {groupEntities(protocolLinks).map((group) => (
+                      <section
+                        key={group.kind}
+                        className={styles.relationshipCard}
+                      >
+                        <h3>{kindLabels[group.kind]}</h3>
+                        <ul className={styles.list}>
+                          {group.records.map((item) => (
+                            <li key={item.id}>
+                              <Link href={recordHref(item)}>{item.name}</Link>
+                            </li>
+                          ))}
+                        </ul>
+                      </section>
                     ))}
-                  </ul>
+                  </div>
                   <p className={styles.muted}>
-                    These associations do not imply identical protocols or
-                    interchangeable scores.
+                    These source-backed links do not make different protocols or
+                    scores interchangeable.
                   </p>
                 </section>
               )}
+              {evaluationDesign && linkedEvaluations.length > 0 && (
+                <section className={styles.section}>
+                  <h2>Recorded evaluations</h2>
+                  <p>
+                    Each evaluation records what was tested and under which
+                    conditions.
+                  </p>
+                  <ul className={styles.list}>
+                    {linkedEvaluations.slice(0, 12).map((item) => (
+                      <li key={item.id}>
+                        <Link href={recordHref(item)}>{item.name}</Link>
+                      </li>
+                    ))}
+                  </ul>
+                  {linkedEvaluations.length > 12 && (
+                    <p>
+                      <a href="#results">Explore all linked results</a>
+                    </p>
+                  )}
+                </section>
+              )}
             </>
+          )}
+          {["dataset", "dataset_subset"].includes(record.kind) && (
+            <section className={styles.section} aria-label="Dataset context">
+              <h2>
+                {record.kind === "dataset_subset"
+                  ? "Subset and evaluation context"
+                  : "Dataset and evaluation context"}
+              </h2>
+              <p>
+                {record.kind === "dataset_subset"
+                  ? "This record describes a particular subset or cohort used in an evaluation. Its results do not describe the full dataset."
+                  : "A dataset supplies biological observations. The evaluation protocol defines how those observations are split, used and scored."}
+              </p>
+              {protocolLinks.length > 0 && (
+                <div className={styles.relationshipGrid}>
+                  {groupEntities(protocolLinks).map((group) => (
+                    <section
+                      key={group.kind}
+                      className={styles.relationshipCard}
+                    >
+                      <h3>{kindLabels[group.kind]}</h3>
+                      <ul className={styles.list}>
+                        {group.records.map((item) => (
+                          <li key={item.id}>
+                            <Link href={recordHref(item)}>{item.name}</Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </section>
+                  ))}
+                </div>
+              )}
+            </section>
+          )}
+          {hasRunInstructions && (
+            <RunGuide record={record} sources={detail.sources} />
           )}
           {record.kind === "evaluation" && (
             <section id="protocol" className={styles.section}>
               <h2>Evaluation procedure</h2>
               <p>{displayValue(record.attributes.protocol)}</p>
               <dl className={styles.details}>
-                <dt>Model</dt>
-                <dd>
-                  <Links records={modelLinks} />
-                </dd>
-                <dt>Benchmark</dt>
-                <dd>
-                  <Links records={benchmarkLinks} />
-                </dd>
-                <dt>Dataset</dt>
-                <dd>
-                  <Links records={datasetLinks} />
-                </dd>
+                {contextGroups.map((group) => (
+                  <Fragment key={group.kind}>
+                    <dt>{group.label}</dt>
+                    <dd>
+                      <Links records={group.records} />
+                    </dd>
+                  </Fragment>
+                ))}
               </dl>
               <Fields
                 fields={{
@@ -429,13 +543,13 @@ export default function RecordPage({ params }: { params: Params }) {
               </p>
             </section>
           )}
-          {record.kind === "benchmark" && (
+          {evaluationDesign && (
             <BenchmarkCharts panels={detail.published_comparisons} />
           )}
           {[
-            "model",
-            "benchmark",
+            ...profileKinds,
             "dataset",
+            "dataset_subset",
             "evaluation",
             "result",
             "baseline",
@@ -445,16 +559,15 @@ export default function RecordPage({ params }: { params: Params }) {
               id={record.id}
               initial={results}
               title={
-                record.kind === "benchmark"
-                  ? "Tested models and results"
-                  : record.kind === "model"
-                    ? "Benchmarks and results"
+                evaluationDesign
+                  ? "Tested entities and results"
+                  : predictive
+                    ? "Evaluations and results"
                     : "Evaluation results"
               }
             />
           )}
-          {record.kind === "benchmark" &&
-          record.attributes.benchmark_research ? (
+          {evaluationDesign && record.attributes.benchmark_research ? (
             <BenchmarkResearch
               research={
                 record.attributes.benchmark_research as BenchmarkResearchData
@@ -471,7 +584,7 @@ export default function RecordPage({ params }: { params: Params }) {
           )}
           {downstream.length > 0 && (
             <section className={styles.section}>
-              <h2>Services and pipelines using this model</h2>
+              <h2>Configurations, pipelines and services</h2>
               <p>
                 These services and pipelines use this model within their own
                 configurations. Their results, where available, are not assigned
@@ -482,7 +595,8 @@ export default function RecordPage({ params }: { params: Params }) {
                   <li key={item.record.id}>
                     <Link href={recordHref(item.record)}>
                       {item.record.name}
-                    </Link>
+                    </Link>{" "}
+                    · {singularKindLabels[item.record.kind]}
                   </li>
                 ))}
               </ul>

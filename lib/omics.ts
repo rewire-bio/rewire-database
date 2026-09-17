@@ -1,14 +1,13 @@
 import { assertNoPrivateFields } from "../services/omics/src/private-fields";
-export const omicsKinds = [
-  "model",
-  "benchmark",
-  "dataset",
-  "baseline",
-  "evaluation",
-  "result",
-  "source",
-  "claim",
-] as const;
+import {
+  entityKinds,
+  legacyKinds,
+  benchmarkSubjectKinds,
+  datasetSubjectKinds,
+  isDatasetSubject,
+} from "../services/omics/src/entity-kinds";
+export { entityKindLabel } from "../services/omics/src/entity-kinds";
+export const omicsKinds = entityKinds;
 export type OmicsKind = (typeof omicsKinds)[number];
 export interface OmicsRecord {
   id: string;
@@ -35,13 +34,20 @@ export function parseCatalogue(value: unknown): OmicsCatalogue {
   );
   const catalogue = value as OmicsCatalogue;
   if (
-    catalogue?.schema_version !== "1.0" ||
+    !["1.0", "1.1"].includes(catalogue?.schema_version) ||
     !catalogue.release_id ||
     !Array.isArray(catalogue.records)
   )
     throw new Error("Unsupported omics catalogue.");
   const ids = new Set<string>();
   for (const record of catalogue.records) {
+    if (
+      catalogue.schema_version === "1.0" &&
+      !(legacyKinds as readonly string[]).includes(record.kind)
+    )
+      throw new Error(
+        "Entity kinds introduced in 1.1 require schema version 1.1",
+      );
     if (
       !/^[a-z0-9][a-z0-9-]*$/.test(record.id) ||
       ids.has(record.id) ||
@@ -61,6 +67,20 @@ export function parseCatalogue(value: unknown): OmicsCatalogue {
 }
 export const recordHref = (record: Pick<OmicsRecord, "kind" | "id">) =>
   `/database/${record.kind}/${record.id}/`;
+/** Alias routes preserve published links; metadata always uses recordHref. */
+export function recordRouteKinds(
+  record: Pick<OmicsRecord, "kind" | "attributes">,
+): OmicsKind[] {
+  const aliases = record.attributes.legacy_kinds;
+  return [
+    ...new Set([
+      record.kind,
+      ...(Array.isArray(aliases)
+        ? aliases.filter((kind): kind is OmicsKind => omicsKinds.includes(kind))
+        : []),
+    ]),
+  ];
+}
 export function safeSourceUrl(value: unknown): string | undefined {
   if (typeof value !== "string") return;
   try {
@@ -156,6 +176,27 @@ export function compareResults(
       );
     if (!evaluations[index] || evaluations[index]?.kind !== "evaluation")
       reasons.add("An evaluation record is missing.");
+    const subjects =
+      evaluations[index]?.links
+        .filter((link) =>
+          (
+            [
+              ...benchmarkSubjectKinds,
+              ...datasetSubjectKinds,
+            ] as readonly string[]
+          ).includes(link.relation),
+        )
+        .flatMap((link) =>
+          records.filter((record) => record.id === link.target_id),
+        ) || [];
+    if (
+      subjects.some((record) =>
+        ["superseded", "disputed", "excluded"].includes(record.status),
+      )
+    )
+      reasons.add(
+        "A linked assessment or dataset is disputed, superseded or excluded.",
+      );
     if (
       ["superseded", "disputed", "excluded"].includes(
         evaluations[index]?.status || "",
@@ -175,7 +216,9 @@ export function compareResults(
   const datasetIds = evaluations.map(
     (evaluation) =>
       evaluation?.links
-        .filter((link) => link.relation === "dataset")
+        .filter((link) =>
+          (datasetSubjectKinds as readonly string[]).includes(link.relation),
+        )
         .map((link) => link.target_id)
         .sort() || [],
   );
@@ -185,7 +228,9 @@ export function compareResults(
         ids.length === 0 ||
         ids.some(
           (id) =>
-            records.find((record) => record.id === id)?.kind !== "dataset",
+            !isDatasetSubject(
+              records.find((record) => record.id === id)?.kind || "",
+            ),
         ),
     )
   )
@@ -206,7 +251,8 @@ export function compareResults(
       (evaluation) =>
         (
           evaluation?.attributes.comparison as
-            Record<string, unknown> | undefined
+            | Record<string, unknown>
+            | undefined
         )?.[field],
     );
     if (values.some((value) => !known(value)))

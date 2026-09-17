@@ -158,7 +158,9 @@ export default function EvidenceGuide() {
                   (record) => record.kind === "benchmark",
                 ).length
               }{" "}
-              benchmark/task records. Their explanatory profiles contain{" "}
+              top-level benchmarks, with methods, configurations, tasks,
+              protocols and datasets listed separately. The catalogue’s
+              explanatory profiles contain{" "}
               {uniqueFacts.size.toLocaleString("en-GB")} structured facts
               include{" "}
               {Array.from(uniqueFacts.values())

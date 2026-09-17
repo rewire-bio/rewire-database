@@ -1,18 +1,19 @@
+import {
+  type EntityKind,
+  isModelSubject,
+  isBenchmarkSubject,
+  isDatasetSubject,
+  modelSubjectKinds,
+  benchmarkSubjectKinds,
+  datasetSubjectKinds,
+} from "./entity-kinds.js";
 import { assertNoPrivateFields as assertPublicCatalogue } from "./private-fields.js";
 import { createEvidenceIndex } from "./evidence-table.js";
 import { resolveComparisons } from "./published-comparisons.js";
 /** The public catalogue contract shared by Firestore and static-release adapters. */
 export interface CatalogueRecord {
   id: string;
-  kind:
-    | "model"
-    | "benchmark"
-    | "dataset"
-    | "baseline"
-    | "evaluation"
-    | "result"
-    | "source"
-    | "claim";
+  kind: EntityKind;
   name: string;
   description: string;
   status: string;
@@ -50,7 +51,15 @@ export interface ResultRow {
   evaluation: CatalogueRecord | null;
   models: CatalogueRecord[];
   benchmarks: CatalogueRecord[];
+  methods: CatalogueRecord[];
+  configurations: CatalogueRecord[];
+  pipelines: CatalogueRecord[];
+  services: CatalogueRecord[];
+  tasks: CatalogueRecord[];
+  protocols: CatalogueRecord[];
+  evaluators: CatalogueRecord[];
   datasets: CatalogueRecord[];
+  dataset_subsets: CatalogueRecord[];
   sources: CatalogueRecord[];
   origin: string;
   review_status: string;
@@ -92,6 +101,16 @@ export function createCatalogueQuery(snapshot: CatalogueSnapshot) {
     .filter((r) => r.status !== "excluded")
     .sort((a, b) => a.id.localeCompare(b.id));
   const byId = new Map(records.map((r) => [r.id, r]));
+  // Retain only IDs for this gate: excluded records must never become API rows.
+  const inactiveAssessmentDatasetIds = new Set(
+    snapshot.records
+      .filter(
+        (record) =>
+          (isBenchmarkSubject(record.kind) || isDatasetSubject(record.kind)) &&
+          ["superseded", "disputed", "excluded"].includes(record.status),
+      )
+      .map((record) => record.id),
+  );
   const evidenceIndex = createEvidenceIndex(snapshot);
   if (byId.size !== records.length) throw new Error("Duplicate catalogue IDs");
   const reverse = new Map<
@@ -125,6 +144,7 @@ export function createCatalogueQuery(snapshot: CatalogueSnapshot) {
         items.flatMap((r) => [
           ...(r?.source_ids || []),
           ...profileSources(r?.attributes.profile),
+          ...profileSources(r?.attributes.run_guide),
         ]),
       ),
     ].flatMap((id) => {
@@ -135,12 +155,42 @@ export function createCatalogueQuery(snapshot: CatalogueSnapshot) {
     .filter((r) => r.kind === "result")
     .map((result) => {
       const evaluation = linked(result, "evaluation")[0] || null;
+      const subjects = [
+        ...new Map(
+          modelSubjectKinds
+            .flatMap((kind) => linked(evaluation, kind))
+            .map((r) => [r.id, r]),
+        ).values(),
+      ];
+      const assessments = [
+        ...new Map(
+          benchmarkSubjectKinds
+            .flatMap((kind) => linked(evaluation, kind))
+            .map((r) => [r.id, r]),
+        ).values(),
+      ];
+      const datasets = [
+        ...new Map(
+          datasetSubjectKinds
+            .flatMap((kind) => linked(evaluation, kind))
+            .map((r) => [r.id, r]),
+        ).values(),
+      ];
       return {
         result,
         evaluation,
-        models: linked(evaluation, "model"),
-        benchmarks: linked(evaluation, "benchmark"),
-        datasets: linked(evaluation, "dataset"),
+        // Compatibility role arrays retain exact targets, including old releases.
+        models: subjects,
+        benchmarks: assessments,
+        methods: subjects.filter((r) => r.kind === "method"),
+        configurations: subjects.filter((r) => r.kind === "configuration"),
+        pipelines: subjects.filter((r) => r.kind === "pipeline"),
+        services: subjects.filter((r) => r.kind === "service"),
+        tasks: assessments.filter((r) => r.kind === "task"),
+        protocols: assessments.filter((r) => r.kind === "protocol"),
+        evaluators: assessments.filter((r) => r.kind === "evaluator"),
+        datasets,
+        dataset_subsets: datasets.filter((r) => r.kind === "dataset_subset"),
         sources: sources(result, evaluation),
         origin: String(evaluation?.attributes.origin || "unreported"),
         review_status: result.status,
@@ -175,11 +225,11 @@ export function createCatalogueQuery(snapshot: CatalogueSnapshot) {
     )
       return false;
     if (["family", "variant_of", "alias_of"].includes(link.relation))
-      return record.kind === "model" && target.kind === "model";
+      return isModelSubject(record.kind) && isModelSubject(target.kind);
     if (["part_of", "evaluates_task"].includes(link.relation))
       return (
-        ["benchmark", "evaluation"].includes(record.kind) &&
-        target.kind === "benchmark"
+        (isBenchmarkSubject(record.kind) || record.kind === "evaluation") &&
+        isBenchmarkSubject(target.kind)
       );
     return false;
   }
@@ -437,6 +487,21 @@ export function createCatalogueQuery(snapshot: CatalogueSnapshot) {
           );
         if (!row.evaluation) reasons.add("An evaluation record is missing.");
         if (
+          row.evaluation?.links.some(
+            (link) =>
+              (
+                [
+                  ...benchmarkSubjectKinds,
+                  ...datasetSubjectKinds,
+                ] as readonly string[]
+              ).includes(link.relation) &&
+              inactiveAssessmentDatasetIds.has(link.target_id),
+          )
+        )
+          reasons.add(
+            "A linked assessment or dataset is disputed, superseded or excluded.",
+          );
+        if (
           ["superseded", "disputed", "excluded"].includes(
             row.evaluation?.status || "",
           )
@@ -489,7 +554,8 @@ export function createCatalogueQuery(snapshot: CatalogueSnapshot) {
             (r) =>
               (
                 r.evaluation?.attributes.comparison as
-                  Record<string, unknown> | undefined
+                  | Record<string, unknown>
+                  | undefined
               )?.[field],
           ),
         );
@@ -497,7 +563,8 @@ export function createCatalogueQuery(snapshot: CatalogueSnapshot) {
         (row) =>
           (
             row.evaluation?.attributes.comparison as
-              Record<string, unknown> | undefined
+              | Record<string, unknown>
+              | undefined
           )?.subset,
       );
       if (subsets.some((value) => value !== undefined && value !== null))

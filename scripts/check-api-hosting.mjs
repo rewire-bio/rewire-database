@@ -35,6 +35,17 @@ try {
   const release = await query('release',{});
   assert.equal(release.record_count,snapshot.records.filter(record=>record.status!=='excluded').length);
   const pinned = {release_id:snapshot.release_id};
+  if (snapshot.schema_version==='1.1') {
+    for (const kind of ['model','method','configuration','pipeline','service','benchmark','task','protocol','evaluator','dataset','dataset_subset']) {
+      const page=await query('list',{...pinned,kind,limit:2});
+      assert.equal(page.total,release.facets.counts[kind] || 0);
+      assert.ok(page.items.every(record=>record.kind===kind),`Exact entity filter: ${kind}`);
+    }
+    const example=await query('get',{...pinned,id:'alphagenome-2026-comparator-008ec353f70606c2'});
+    assert.equal(example.record.kind,'configuration');
+    const examples=await query('results',{...pinned,id:example.record.id});
+    assert.ok(examples.items.length && examples.items.every(row=>row.configurations.some(record=>record.id===example.record.id)));
+  }
   const first = await query('list',{...pinned,kind:'model',limit:2});
   assert.equal(first.items.length,2);
   assert.ok(first.next_cursor);

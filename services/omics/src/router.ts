@@ -1,3 +1,4 @@
+import { entityKinds } from "./entity-kinds.js";
 import { initTRPC, TRPCError } from "@trpc/server";
 import { z } from "zod";
 import type { Context } from "./auth.js";
@@ -56,18 +57,7 @@ export const appRouter = t.router({
           .object({
             ...pinned,
             ...pagination,
-            kind: z
-              .enum([
-                "model",
-                "benchmark",
-                "dataset",
-                "baseline",
-                "evaluation",
-                "result",
-                "source",
-                "claim",
-              ])
-              .optional(),
+            kind: z.enum([...entityKinds]).optional(),
             q: z.string().max(300).optional(),
             area: z.string().max(100).optional(),
             status: z.string().max(100).optional(),

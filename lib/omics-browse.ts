@@ -16,7 +16,15 @@ export const defaultFilters: CatalogueFilters = {
 export const kindLabels: Record<OmicsKind, string> = {
   model: "Models",
   benchmark: "Benchmarks",
+  method: "Methods",
+  configuration: "Configurations",
+  pipeline: "Pipelines",
+  service: "Services",
+  task: "Tasks",
+  protocol: "Protocols",
+  evaluator: "Evaluators",
   dataset: "Datasets",
+  dataset_subset: "Dataset subsets",
   baseline: "Baselines",
   result: "Results",
   source: "Sources",
@@ -25,11 +33,26 @@ export const kindLabels: Record<OmicsKind, string> = {
 };
 export const kindDescriptions: Record<OmicsKind, string> = {
   model:
-    "Model families and reported methods, linked to their evaluations and sources. Versions are kept distinct where known.",
+    "Biological models and model families. Evaluated versions, configurations and pipelines are linked separately.",
   benchmark:
-    "Tasks, suites and protocols that define how a biological capability is evaluated.",
+    "Benchmark suites and challenges. Explore their tasks, protocols, datasets and published results.",
+  method:
+    "Algorithms and scientific procedures, including conventional statistical and mechanistic methods.",
+  configuration:
+    "Specific checkpoints, settings and adaptations evaluated in a study.",
+  pipeline:
+    "Complete workflows combining models, preprocessing and prediction or scoring steps.",
+  service:
+    "Hosted interfaces and software services that expose biological models or workflows.",
+  task: "Biological questions and capabilities. A task may have several distinct evaluation protocols.",
+  protocol:
+    "Concrete evaluation procedures: data, splits, allowed inputs, adaptation and metrics.",
+  evaluator:
+    "Scoring software and assessment procedures used to measure predictions.",
   dataset:
     "Biological observations used in evaluations. One dataset can support several benchmarks.",
+  dataset_subset:
+    "Defined cohorts, splits and subsets of a dataset used in particular evaluations.",
   baseline:
     "Reference methods and controls. Proposed baselines have no measured performance unless a result is linked.",
   result:
@@ -87,5 +110,117 @@ export function filterCatalogue(
           .toLowerCase()
           .includes(query))
     );
+  });
+}
+
+export const primaryKinds = [
+  "model",
+  "benchmark",
+  "dataset",
+  "result",
+] as const;
+export const secondaryKinds = [
+  "method",
+  "configuration",
+  "pipeline",
+  "service",
+  "task",
+  "protocol",
+  "evaluator",
+  "dataset_subset",
+  "baseline",
+  "evaluation",
+  "source",
+  "claim",
+] as const;
+export const predictiveKinds: readonly OmicsKind[] = [
+  "model",
+  "method",
+  "configuration",
+  "pipeline",
+  "service",
+];
+export const evaluationKinds: readonly OmicsKind[] = [
+  "benchmark",
+  "task",
+  "protocol",
+  "evaluator",
+];
+export const profileKinds: readonly OmicsKind[] = [
+  ...predictiveKinds,
+  ...evaluationKinds,
+];
+export const singularKindLabels: Record<OmicsKind, string> = {
+  model: "Model",
+  method: "Method",
+  configuration: "Configuration",
+  pipeline: "Pipeline",
+  service: "Service",
+  benchmark: "Benchmark",
+  task: "Task",
+  protocol: "Protocol",
+  evaluator: "Evaluator",
+  dataset: "Dataset",
+  dataset_subset: "Dataset subset",
+  baseline: "Baseline",
+  evaluation: "Evaluation",
+  result: "Result",
+  source: "Source",
+  claim: "Evidence claim",
+};
+/** Older releases used model/benchmark links for several entity types. Read
+ * the target's actual kind; never infer a scientific identity from its name. */
+export function uniqueRecords(records: OmicsRecord[]): OmicsRecord[] {
+  return [...new Map(records.map((record) => [record.id, record])).values()];
+}
+export type EntityResultRow = {
+  models: OmicsRecord[];
+  benchmarks: OmicsRecord[];
+  methods?: OmicsRecord[];
+  configurations?: OmicsRecord[];
+  pipelines?: OmicsRecord[];
+  services?: OmicsRecord[];
+  tasks?: OmicsRecord[];
+  protocols?: OmicsRecord[];
+  evaluators?: OmicsRecord[];
+  datasets?: OmicsRecord[];
+  dataset_subsets?: OmicsRecord[];
+};
+export function testedEntities(row: EntityResultRow): OmicsRecord[] {
+  return uniqueRecords([
+    ...row.models,
+    ...(row.methods || []),
+    ...(row.configurations || []),
+    ...(row.pipelines || []),
+    ...(row.services || []),
+  ]);
+}
+export function evaluationEntities(row: EntityResultRow): OmicsRecord[] {
+  return uniqueRecords([
+    ...row.benchmarks,
+    ...(row.tasks || []),
+    ...(row.protocols || []),
+    ...(row.evaluators || []),
+  ]);
+}
+export function datasetEntities(row: EntityResultRow): OmicsRecord[] {
+  return uniqueRecords([
+    ...(row.datasets || []),
+    ...(row.dataset_subsets || []),
+  ]);
+}
+export function groupEntities(records: OmicsRecord[]) {
+  return [
+    ...predictiveKinds,
+    ...evaluationKinds,
+    "dataset" as const,
+    "dataset_subset" as const,
+  ].flatMap((kind) => {
+    const items = uniqueRecords(records).filter(
+      (record) => record.kind === kind,
+    );
+    return items.length
+      ? [{ kind, label: singularKindLabels[kind], records: items }]
+      : [];
   });
 }

@@ -1,3 +1,14 @@
+import { validateRunGuide } from "./run-guide.js";
+import {
+  entityKinds,
+  legacyKinds,
+  modelSubjectKinds,
+  benchmarkSubjectKinds,
+  datasetSubjectKinds,
+  isModelSubject,
+  isBenchmarkSubject,
+  relationAcceptsKind,
+} from "./entity-kinds.js";
 import { profileSchema } from "./profile-schema.js";
 import { z } from "zod";
 import { createCatalogueQuery } from "./catalogue-query.js";
@@ -115,6 +126,14 @@ export type Contribution = z.infer<typeof contribution>;
 const link = z
   .object({
     relation: z.enum([
+      "method",
+      "configuration",
+      "pipeline",
+      "service",
+      "task",
+      "protocol",
+      "evaluator",
+      "dataset_subset",
       "model",
       "benchmark",
       "dataset",
@@ -139,16 +158,7 @@ const link = z
 export const recordSchema = z
   .object({
     id,
-    kind: z.enum([
-      "model",
-      "benchmark",
-      "dataset",
-      "baseline",
-      "evaluation",
-      "result",
-      "source",
-      "claim",
-    ]),
+    kind: z.enum(entityKinds),
     name: short,
     description: z.string(),
     status: z.enum([
@@ -239,7 +249,7 @@ export const recordSchema = z
   });
 export const snapshotSchema = z
   .object({
-    schema_version: z.literal("1.0"),
+    schema_version: z.enum(["1.0", "1.1"]),
     release_id: id,
     released_at: z.string().datetime(),
     records: z.array(recordSchema),
@@ -256,7 +266,47 @@ export function validateSnapshot(input: unknown) {
   if (records.size !== snapshot.records.length)
     throw new Error("Duplicate record IDs");
   for (const record of snapshot.records) {
+    if (
+      snapshot.schema_version === "1.0" &&
+      !(legacyKinds as readonly string[]).includes(record.kind)
+    )
+      throw new Error(
+        "Entity kinds introduced in 1.1 require schema version 1.1",
+      );
+    if (
+      snapshot.schema_version === "1.1" &&
+      record.kind === "benchmark" &&
+      !["suite", "challenge"].includes(String(record.attributes.entity_level))
+    )
+      throw new Error("Benchmarks must be top-level suites or challenges");
+    if (record.kind === "evaluation") {
+      for (const [role, kinds] of [
+        ["model", modelSubjectKinds],
+        ["benchmark", benchmarkSubjectKinds],
+        ["dataset", datasetSubjectKinds],
+      ] as const) {
+        const links = record.links.filter((link) =>
+          (kinds as readonly string[]).includes(link.relation),
+        );
+        if (
+          links.length !== 1 ||
+          !relationAcceptsKind(
+            role,
+            records.get(links[0].target_id)?.kind || "",
+          )
+        )
+          throw new Error(`Invalid evaluation ${role} ${record.id}`);
+      }
+    }
+    const aliases = record.attributes.legacy_kinds;
+    if (
+      aliases !== undefined &&
+      (!Array.isArray(aliases) ||
+        aliases.some((kind) => !entityKinds.includes(kind)))
+    )
+      throw new Error("Invalid legacy entity route");
     validateBenchmarkResearch(record, records);
+    validateRunGuide(record, records);
     const profile = record.attributes.profile;
     if (profile !== undefined) profileSchema.parse(profile);
     function validateProfileEvidence(value: unknown): void {
@@ -283,31 +333,24 @@ export function validateSnapshot(input: unknown) {
       if (!target) throw new Error(`Unresolved link ${link.target_id}`);
       if (
         ["family", "variant_of", "alias_of"].includes(link.relation) &&
-        (record.kind !== "model" || target.kind !== "model")
+        (!isModelSubject(record.kind) || !isModelSubject(target.kind))
       )
         throw new Error(`Invalid model identity relationship on ${record.id}`);
       if (
         link.relation === "uses_model" &&
-        (!["model", "evaluation"].includes(record.kind) ||
-          target.kind !== "model")
+        (!(isModelSubject(record.kind) || record.kind === "evaluation") ||
+          !isModelSubject(target.kind))
       )
         throw new Error(`Invalid pipeline model relationship on ${record.id}`);
       if (
         ["part_of", "evaluates_task"].includes(link.relation) &&
-        (!["benchmark", "evaluation"].includes(record.kind) ||
-          target.kind !== "benchmark")
+        (!(isBenchmarkSubject(record.kind) || record.kind === "evaluation") ||
+          !isBenchmarkSubject(target.kind))
       )
         throw new Error(`Invalid benchmark membership on ${record.id}`);
       if (
-        [
-          "model",
-          "benchmark",
-          "dataset",
-          "evaluation",
-          "baseline",
-          "source",
-        ].includes(link.relation) &&
-        target.kind !== link.relation
+        (entityKinds as readonly string[]).includes(link.relation) &&
+        !relationAcceptsKind(link.relation, target.kind)
       )
         throw new Error(`Incorrect relationship type on ${record.id}`);
     }

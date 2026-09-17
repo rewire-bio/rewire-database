@@ -3,6 +3,7 @@ import { useId, useState } from "react";
 import Link from "next/link";
 import type { ResolvedComparison } from "@/services/omics/src/published-comparisons";
 import { displayValue, originLabel, recordHref } from "@/lib/omics";
+import { testedEntities, singularKindLabels } from "@/lib/omics-browse";
 import { Evidence } from "./Profile";
 import styles from "@/app/database/database.module.css";
 
@@ -80,9 +81,13 @@ export default function BenchmarkCharts({
               <li key={row.result.id}>
                 <div className={styles.chartLabel}>
                   <span>
-                    {row.models.map((model) => (
+                    {testedEntities(row).map((model) => (
                       <Link key={model.id} href={recordHref(model)}>
                         {model.name}
+                        <small className={styles.entityType}>
+                          {" "}
+                          · {singularKindLabels[model.kind]}
+                        </small>
                       </Link>
                     ))}{" "}
                     <small>· {originLabel(row.origin)}</small>
@@ -98,7 +103,11 @@ export default function BenchmarkCharts({
                   viewBox="0 0 100 4"
                   preserveAspectRatio="none"
                   role="img"
-                  aria-label={`${row.models.map((model) => model.name).join(", ")}: ${String(a.printed_value)} ${panel.unit}; ${panel.metric}.`}
+                  aria-label={`${testedEntities(row)
+                    .map((model) => model.name)
+                    .join(
+                      ", ",
+                    )}: ${String(a.printed_value)} ${panel.unit}; ${panel.metric}.`}
                 >
                   <line
                     x1="2"
@@ -155,7 +164,7 @@ export default function BenchmarkCharts({
               <caption>{panel.metric}: original source values</caption>
               <thead>
                 <tr>
-                  <th scope="col">Tested configuration</th>
+                  <th scope="col">Tested entity</th>
                   <th scope="col">Printed value</th>
                   <th scope="col">Uncertainty</th>
                   <th scope="col">Evidence</th>
@@ -165,9 +174,13 @@ export default function BenchmarkCharts({
                 {panel.rows.map((row) => (
                   <tr key={row.result.id}>
                     <th scope="row">
-                      {row.models.map((model) => (
+                      {testedEntities(row).map((model) => (
                         <Link key={model.id} href={recordHref(model)}>
                           {model.name}
+                          <small className={styles.entityType}>
+                            {" "}
+                            · {singularKindLabels[model.kind]}
+                          </small>
                         </Link>
                       ))}
                     </th>

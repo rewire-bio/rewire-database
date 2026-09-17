@@ -87,8 +87,9 @@ export default function BenchmarksPage() {
               <summary>Collection coverage and remaining gaps</summary>
               <p>
                 This is a dated collection, not an exhaustive model census.
-                Model records include families and paper-specific methods;
-                counts do not represent unique checkpoints.
+                Models, methods, evaluated configurations and pipelines are
+                listed separately. Counts describe records, not unique
+                checkpoints or independent experiments.
               </p>
               <pre className={styles.pre}>
                 {JSON.stringify(catalogue.coverage, null, 2)}

@@ -1,3 +1,7 @@
+import {
+  isModelSubject,
+  entityKindLabel,
+} from "@/services/omics/src/entity-kinds";
 import Link from "next/link";
 import { profileSchema } from "@/lib/omics-profile";
 import { recordHref, safeSourceUrl, type OmicsRecord } from "@/lib/omics";
@@ -62,33 +66,73 @@ export default function Profile({
     );
   const profile = parsed.data;
   const expected: [string, RegExp][] =
-    record.kind === "model"
+    record.kind === "method"
       ? [
-          ["Model type", /type|class|architecture|objective/i],
+          ["Method or algorithm", /type|class|algorithm|procedure/i],
           ["Inputs", /input/i],
           ["Outputs", /output/i],
-          ["Parameters", /parameter|model size/i],
-          [
-            "Known versions",
-            /version|configuration|checkpoint|released model/i,
-          ],
-          ["Training data", /training/i],
-          ["Context limits", /context|length/i],
-          ["Access", /access/i],
-          ["Code licence", /code.*licen[cs]/i],
-          ["Weights licence", /weights?.*licen[cs]/i],
+          ["Implementation", /implementation|code|version/i],
+          ["Assumptions", /assumption|condition|limitation/i],
+          ["Code licence", /licen[cs]/i],
         ]
-      : [
-          ["Entity type", /record type|entity/i],
-          ["Datasets", /dataset|cohort/i],
-          ["Organisms", /organism|species/i],
-          ["Assays", /assay/i],
-          ["Splits", /split/i],
-          ["Allowed inputs", /inputs/i],
-          ["Adaptation", /adaptation|training/i],
-          ["Metrics", /metric|assessment/i],
-          ["Baselines", /baseline|comparator/i],
-        ];
+      : record.kind === "pipeline"
+        ? [
+            [
+              "Components",
+              /component|feature|encoder|classifier|method|architecture/i,
+            ],
+            ["Inputs", /input/i],
+            ["Outputs", /output/i],
+            ["Adaptation", /adaptation|training|fitting/i],
+            ["Implementation", /implementation|code|version/i],
+          ]
+        : record.kind === "service"
+          ? [
+              ["Inputs", /input/i],
+              ["Outputs", /output/i],
+              ["Service version", /version|release/i],
+              ["Access and terms", /access|terms|licen[cs]/i],
+            ]
+          : isModelSubject(record.kind)
+            ? [
+                ["Model type", /type|class|architecture|objective/i],
+                ["Inputs", /input/i],
+                ["Outputs", /output/i],
+                ["Parameters", /parameter|model size/i],
+                [
+                  "Known versions",
+                  /version|configuration|checkpoint|released model/i,
+                ],
+                ["Training data", /training/i],
+                ["Context limits", /context|length/i],
+                ["Access", /access/i],
+                ["Code licence", /code.*licen[cs]/i],
+                ["Weights licence", /weights?.*licen[cs]/i],
+              ]
+            : record.kind === "dataset" || record.kind === "dataset_subset"
+              ? [
+                  ["Data and labels", /data|label|reference|library/i],
+                  ["Organisms", /organism|species/i],
+                  ["Assays", /assay/i],
+                  ["Version and access", /version|access|release/i],
+                  ["Splits", /split|subset/i],
+                ]
+              : record.kind === "evaluator"
+                ? [
+                    ["Required inputs", /input|prediction|ground.truth/i],
+                    ["Metrics", /metric|assessment|scor/i],
+                    ["Implementation", /implementation|code|version/i],
+                  ]
+                : [
+                    ["Datasets", /dataset|cohort/i],
+                    ["Organisms", /organism|species/i],
+                    ["Assays", /assay/i],
+                    ["Splits", /split/i],
+                    ["Allowed inputs", /inputs/i],
+                    ["Adaptation", /adaptation|training/i],
+                    ["Metrics", /metric|assessment/i],
+                    ["Baselines", /baseline|comparator/i],
+                  ];
   const unmatched = expected
     .filter(
       ([, pattern]) => !profile.facts.some((fact) => pattern.test(fact.label)),
@@ -137,7 +181,7 @@ export default function Profile({
             >
               <table className={styles.resultTable}>
                 <caption>
-                  {record.kind === "model"
+                  {isModelSubject(record.kind)
                     ? "Inputs, outputs and configuration"
                     : "Data, procedure and scoring"}
                 </caption>
@@ -180,9 +224,7 @@ export default function Profile({
                       <th scope="row">{label}</th>
                       <td>
                         {label === "Entity type"
-                          ? String(
-                              record.attributes.entity_level || "Not reported",
-                            )
+                          ? entityKindLabel(record.kind)
                           : "Not extracted or verified for this record."}
                       </td>
                     </tr>

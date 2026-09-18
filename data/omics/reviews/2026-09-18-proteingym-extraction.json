@@ -1,0 +1,11 @@
+{
+  "batch": "proteingym-2026",
+  "benchmark": "discovery-benchmark-proteingym",
+  "source": "https://papers.nips.cc/paper/2023/file/cac723e5ff29f65e3fcbb0739ae91bee-Paper-Datasets_and_Benchmarks.pdf",
+  "artifact_sha256": "a3b08cc4a6befd64620cf0f287d78d55a36dc2639955f52c5655f83833c50104",
+  "records_sha256": "634094eab3670b8e9a6523cd0cfb5fa87009254e183c08515c3bfdc595f7b45d",
+  "method": "Deterministic parse of the pinned PDF text layer, reading each table from its heading row down to its own caption",
+  "reviewer": "Codex research agent; no human review claimed",
+  "reviewed_at": "2026-09-18",
+  "errors": []
+}

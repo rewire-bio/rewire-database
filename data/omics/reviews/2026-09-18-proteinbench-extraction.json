@@ -1,0 +1,11 @@
+{
+  "batch": "proteinbench-2026",
+  "benchmark": "discovery-benchmark-proteinbench",
+  "source": "https://arxiv.org/html/2409.06744v1",
+  "artifact_sha256": "4334d636223ad42bfb9ae68aae03f5a255c29ba1cebe7b8f9588fb3b9b5453b2",
+  "records_sha256": "008186635124d2004497b2f6d5147ba65e7eeefed6650bb168235f20a7b6ced5",
+  "method": "Deterministic parse of the pinned HTML tables, with the direction of every metric read from the arrow the paper prints in its header",
+  "reviewer": "Codex research agent; no human review claimed",
+  "reviewed_at": "2026-09-18",
+  "errors": []
+}

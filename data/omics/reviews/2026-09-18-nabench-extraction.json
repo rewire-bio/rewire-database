@@ -1,0 +1,11 @@
+{
+  "batch": "nabench-2026",
+  "benchmark": "discovery-benchmark-nabench",
+  "source": "https://arxiv.org/html/2511.02888v1",
+  "artifact_sha256": "fefd48d53b1a7eadf9e14db96adacc8e646304c1b592562d9f136f4508941350",
+  "records_sha256": "15c531810d2bdcfbc2a0351c4f5597ea023627dc74012a6e73fa684fe3801a5e",
+  "method": "Deterministic parse of the pinned HTML tables, with row and column counts asserted",
+  "reviewer": "Codex research agent; no human review claimed",
+  "reviewed_at": "2026-09-18",
+  "errors": []
+}

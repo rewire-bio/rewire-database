@@ -1,0 +1,11 @@
+{
+  "batch": "geneb-2026",
+  "benchmark": "discovery-benchmark-geneb",
+  "source": "https://arxiv.org/html/2606.04525v1",
+  "artifact_sha256": "47975089c0ca738d5e2d6e6ea91cd4e7b80498c3f175803d8ec39ca77aa41629",
+  "records_sha256": "b463a9523175db1229e8b2a9057947f081a776d8ded0e02f84ea73a51fece827",
+  "method": "Deterministic parse of the pinned HTML table, with row and column counts asserted",
+  "reviewer": "Codex research agent; no human review claimed",
+  "reviewed_at": "2026-09-18",
+  "errors": []
+}

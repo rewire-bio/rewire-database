@@ -1,0 +1,11 @@
+{
+  "batch": "gue-2026",
+  "benchmark": "discovery-benchmark-gue",
+  "source": "https://arxiv.org/pdf/2306.15006",
+  "artifact_sha256": "49300acee3e4afd44bebc3de9893c3bc310d331bd4805374e0952fdfbf366f06",
+  "records_sha256": "58201ecaf45a97db7848240ecaf4db371748c2723547622a8cd035231062fcee",
+  "method": "Deterministic parse of the pinned PDF text layer, with every column heading asserted against the expected list",
+  "reviewer": "Codex research agent; no human review claimed",
+  "reviewed_at": "2026-09-18",
+  "errors": []
+}

@@ -234,6 +234,24 @@ export function createCatalogueQuery(snapshot: CatalogueSnapshot) {
       );
     return false;
   }
+  /**
+   * Whether an edge carries results from one record up to another.
+   *
+   * Containment does: a task's results are the suite's results. Navigation does
+   * not. The reviewed evaluates_task edges say so in their own notes, calling
+   * themselves "platform task membership, not protocol equivalence": a suite
+   * listed against a catalogue task has not necessarily run that task in the
+   * evaluation being rolled up. Following one puts a suite's results for one
+   * task on a different task's page.
+   */
+  function rollsUp(
+    record: CatalogueRecord,
+    link: { relation: string; target_id: string },
+  ): boolean {
+    return (
+      link.relation !== "evaluates_task" && verifiedAssociation(record, link)
+    );
+  }
   const visibleRecords = records.filter(
     (r) =>
       !r.links.some(
@@ -246,7 +264,7 @@ export function createCatalogueQuery(snapshot: CatalogueSnapshot) {
     seen.add(id);
     const record = byId.get(id);
     for (const link of record?.links || [])
-      if (verifiedAssociation(record!, link)) ancestors(link.target_id, seen);
+      if (rollsUp(record!, link)) ancestors(link.target_id, seen);
     return seen;
   }
   const rowIndex = new Map<string, ResultRow[]>();

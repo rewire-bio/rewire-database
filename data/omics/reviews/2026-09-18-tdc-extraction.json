@@ -1,0 +1,11 @@
+{
+  "batch": "tdc-2026",
+  "benchmark": "discovery-benchmark-tdc-molecular-tasks",
+  "source": "https://arxiv.org/pdf/2102.09548v1",
+  "artifact_sha256": "aaa5526f6f100093bc06c9921a8564ad08cfd5332270d614d7681051c2dd66bc",
+  "records_sha256": "f9954112b851a3b59e88cdc7211767e856888df3943c7d7cd5b15116363b53f3",
+  "method": "Deterministic parse of the pinned PDF text layer, with each dataset's direction cross-checked between Table 3 and the arrow in Table 4",
+  "reviewer": "Codex research agent; no human review claimed",
+  "reviewed_at": "2026-09-18",
+  "errors": []
+}

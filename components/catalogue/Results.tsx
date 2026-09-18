@@ -97,7 +97,9 @@ export default function Results({
         Release {initial.release_id} · {data.evaluation_count}{" "}
         {data.evaluation_count === 1 ? "evaluation" : "evaluations"} ·{" "}
         {data.total} {data.total === 1 ? "metric row" : "metric rows"}.
-        Different protocols are not a single leaderboard.
+        Different protocols are not a single leaderboard. Where several
+        source tables report the same metric, the published comparisons above
+        offer a pooled view that names what it does not hold constant.
       </p>
       {initial.total > 0 && (
         <div className={styles.filters}>

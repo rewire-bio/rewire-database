@@ -6,7 +6,7 @@ Status: **Implementation resumed by explicit user instruction, 2026-09-16.** Kep
 
 Improve every model and benchmark page in the current catalogue: 226 model records and 170 benchmark/task records at planning time. Explain architectures and procedures, provide accessible diagrams, describe sourced strengths and limitations, and expose evaluated results directly. Shared profiles require verified identity relationships; editorial topic grouping alone is not evidence of equivalence.
 
-No composite rankings, new benchmark runs, speed measurements or paid compute in this stage. Hosting migration remains separate from this review build.
+No new benchmark runs, speed measurements or paid compute in this stage. Ranking is confined to the opt-in pooled view over source-scoped comparison figures, which discloses every field it does not hold constant; no composite score is computed across metrics. Hosting migration remains separate from this review build.
 
 ## Model pages
 

@@ -520,6 +520,42 @@
   font-variant-numeric: tabular-nums;
   flex-shrink: 0;
 }
+.chartModes {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 20px;
+  margin: 10px 0 0;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  font-size: 14px;
+}
+.chartModes legend {
+  padding: 0 6px;
+  color: var(--ink-3);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.chartModes label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.chartNote {
+  display: block;
+  color: var(--ink-3);
+}
+.pooledWarning {
+  margin: 12px 0;
+  padding: 12px 14px;
+  border-left: 3px solid var(--accent-ink);
+  background: var(--accent-soft);
+  color: var(--ink-2);
+  font-size: 14px;
+}
+
 @media (max-width: 720px) {
   .comparisonFigure {
     padding: 14px;

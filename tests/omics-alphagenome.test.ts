@@ -27,6 +27,9 @@ const base = ["migrated", "discovery"].flatMap((name) =>
 const release = buildRelease(
   currentCatalogueBase(base),
   "2026-09-17T00:00:00Z",
+  {
+    entity_schema_version: "1.1",
+  },
 ).snapshot;
 const query = createCatalogueQuery(release);
 const evidence = createEvidenceIndex(release);

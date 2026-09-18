@@ -31,6 +31,7 @@ const snapshot = buildRelease(
     profiles,
   ),
   "2026-09-16T21:00:00Z",
+  { entity_schema_version: "1.1" },
 ).snapshot;
 const index = createEvidenceIndex(snapshot);
 const rows = index.all();

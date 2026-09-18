@@ -25,7 +25,9 @@ const records = enrichProfiles(
   [...read("model-profiles"), ...read("benchmark-profiles")],
 );
 const query = createCatalogueQuery(
-  buildRelease(records, "2026-09-16T17:14:09Z").snapshot,
+  buildRelease(records, "2026-09-16T17:14:09Z", {
+    entity_schema_version: "1.1",
+  }).snapshot,
 );
 describe("scientific profile rendering", () => {
   it("renders BarcodeBERT's exact result with direct model, task, dataset and source links", () => {

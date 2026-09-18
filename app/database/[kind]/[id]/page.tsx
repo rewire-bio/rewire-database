@@ -689,6 +689,7 @@ export default function RecordPage({ params }: { params: Params }) {
                 record.attributes.benchmark_research as BenchmarkResearchData
               }
               sources={detail.sources}
+              results={results.total}
             />
           ) : null}
           {entity && (

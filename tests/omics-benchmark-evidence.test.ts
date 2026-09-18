@@ -92,13 +92,16 @@ describe("reviewed benchmark paper expansion", () => {
       expect(record.status === "disputed").toBe(cell.quarantined);
     }
   });
-  it("publishes 223 complete source-scoped panels on 120 pages without quarantined values or pagination truncation", () => {
+  it("publishes 236 complete source-scoped panels on 133 pages without quarantined values or pagination truncation", () => {
+    // A census of the whole catalogue, not just the reviewed expansion: 120
+    // pages and 223 panels from that batch, plus 13 BEACON task pages carrying
+    // one Table 3 column each.
     const pages = visible.filter((r) => r.attributes.comparison_panels);
-    expect(pages).toHaveLength(120);
+    expect(pages).toHaveLength(133);
     const panels = pages.flatMap(
       (r) => query.get({ id: r.id })!.published_comparisons,
     );
-    expect(new Set(panels.map((p) => p.id)).size).toBe(223);
+    expect(new Set(panels.map((p) => p.id)).size).toBe(236);
     for (const panel of panels)
       for (const row of panel.rows)
         expect(["source_checked", "reproduced"]).toContain(row.result.status);

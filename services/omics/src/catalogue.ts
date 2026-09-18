@@ -1,8 +1,42 @@
 import { createHash, randomUUID } from "node:crypto";
-import type { Firestore } from "firebase-admin/firestore";
+import type { DocumentReference, Firestore } from "firebase-admin/firestore";
 import { validateSnapshot } from "./validation.js";
 import { createCatalogueQuery } from "./catalogue-query.js";
 import { recordsDigest } from "./catalogue-integrity.js";
+
+/**
+ * Commit writes in batches bounded by bytes as well as by count.
+ *
+ * Firestore caps a batch at 500 writes and a request at about 11 MB, and the
+ * second limit is the one a growing catalogue reaches first: a query chunk
+ * holds up to 700 KB, so a few dozen of them in one batch is already over. A
+ * fixed document count cannot express that, and the failure arrives as an
+ * opaque INVALID_ARGUMENT partway through an import.
+ */
+export const BATCH_LIMITS = { writes: 400, bytes: 8_000_000 } as const;
+
+export async function commitInBatches(
+  db: Firestore,
+  writes: { ref: DocumentReference; data: Record<string, unknown> }[],
+) {
+  const { writes: maxWrites, bytes: maxBytes } = BATCH_LIMITS;
+  let batch = db.batch();
+  let count = 0;
+  let bytes = 0;
+  for (const write of writes) {
+    const size = Buffer.byteLength(JSON.stringify(write.data));
+    if (count && (count >= maxWrites || bytes + size > maxBytes)) {
+      await batch.commit();
+      batch = db.batch();
+      count = 0;
+      bytes = 0;
+    }
+    batch.set(write.ref, write.data);
+    count += 1;
+    bytes += size;
+  }
+  if (count) await batch.commit();
+}
 
 export async function importRelease(
   db: Firestore,
@@ -58,12 +92,13 @@ export async function importRelease(
       imported: false,
       records: snapshot.records.length,
     };
-  for (let offset = 0; offset < snapshot.records.length; offset += 400) {
-    const batch = db.batch();
-    for (const record of snapshot.records.slice(offset, offset + 400))
-      batch.set(ref.collection("records").doc(record.id), record);
-    await batch.commit();
-  }
+  await commitInBatches(
+    db,
+    snapshot.records.map((record) => ({
+      ref: ref.collection("records").doc(record.id),
+      data: record as Record<string, unknown>,
+    })),
+  );
   // Compact immutable read snapshots avoid a Firestore read per record on cold requests.
   const chunks: string[] = [];
   let group: typeof snapshot.records = [];
@@ -81,20 +116,13 @@ export async function importRelease(
     size += bytes;
   }
   if (group.length) chunks.push(JSON.stringify(group));
-  for (let offset = 0; offset < chunks.length; offset += 400) {
-    const batch = db.batch();
-    chunks
-      .slice(offset, offset + 400)
-      .forEach((records_json, i) =>
-        batch.set(
-          ref
-            .collection("queryChunks")
-            .doc(String(offset + i).padStart(6, "0")),
-          { index: offset + i, records_json },
-        ),
-      );
-    await batch.commit();
-  }
+  await commitInBatches(
+    db,
+    chunks.map((records_json, index) => ({
+      ref: ref.collection("queryChunks").doc(String(index).padStart(6, "0")),
+      data: { index, records_json },
+    })),
+  );
   await db.runTransaction(async (tx) => {
     const existing = await tx.get(ref);
     if (existing.data()?.owner !== owner)

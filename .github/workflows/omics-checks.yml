@@ -38,7 +38,12 @@ jobs:
       - name: Verify reproducible migration
         run: git diff --exit-code -- data/omics/migrated.jsonl data/omics/scope-audit.jsonl
       - run: npm run test:omics
+      # The static export prerenders a page per catalogue record and writes the
+      # release bundles, which together need more heap than Node allows itself
+      # by default on a runner.
       - run: npm run build
+        env:
+          NODE_OPTIONS: --max-old-space-size=8192
       - run: npm run omics:check-export
   contributions:
     runs-on: ubuntu-latest

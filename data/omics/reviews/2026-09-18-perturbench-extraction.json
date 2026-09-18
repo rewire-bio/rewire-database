@@ -1,0 +1,11 @@
+{
+  "batch": "perturbench-2026",
+  "benchmark": "discovery-benchmark-perturbench",
+  "source": "https://arxiv.org/html/2408.10609v1",
+  "artifact_sha256": "5c4804565dd9faa17a11853a79e9847dcb6da73715b4c91f62e5b274cc79f186",
+  "records_sha256": "2e4396928b8b5eaf4abdd15df11da2b0e84c4ff907b2a5e8b608d335a77f0818",
+  "method": "Deterministic parse of the pinned HTML tables, with row and column counts asserted",
+  "reviewer": "Codex research agent; no human review claimed",
+  "reviewed_at": "2026-09-18",
+  "errors": []
+}

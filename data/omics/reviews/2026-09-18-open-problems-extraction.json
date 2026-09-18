@@ -1,0 +1,11 @@
+{
+  "batch": "open-problems-2026",
+  "benchmark": "discovery-benchmark-open-problems",
+  "source": "https://www.openproblems.bio/benchmarks/label_projection/v1.0.0/",
+  "artifact_sha256": "e223ab712ff55997a3abe659f280d4ea2952700e767b87e02c434701da9833c1",
+  "records_sha256": "effa5a7871c876608e239d437a9ed03d0dbda834affc0095de39438ed1b4b943",
+  "method": "Deterministic parse of the run records embedded in the pinned page, with the direction of each metric taken from the page's own maximize flag",
+  "reviewer": "Codex research agent; no human review claimed",
+  "reviewed_at": "2026-09-18",
+  "errors": []
+}

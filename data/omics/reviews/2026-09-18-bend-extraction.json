@@ -1,0 +1,11 @@
+{
+  "batch": "bend-2026",
+  "benchmark": "discovery-benchmark-bend",
+  "source": "https://proceedings.iclr.cc/paper_files/paper/2024/file/429e7b31625a8b7839f9e4d6e2aa9bb9-Paper-Conference.pdf",
+  "artifact_sha256": "f709b6bef3120eb979c0a0e02d2582475c49410f29850ed7601ba7a700ca379d",
+  "records_sha256": "6afff55bd53f98b74a27e21c606e81877479a03a9646955af55ee007949f9fc1",
+  "method": "Deterministic parse of the pinned PDF text layer, with row and column counts asserted",
+  "reviewer": "Codex research agent; no human review claimed",
+  "reviewed_at": "2026-09-18",
+  "errors": []
+}

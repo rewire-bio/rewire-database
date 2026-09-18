@@ -1,0 +1,11 @@
+{
+  "batch": "hest-2026",
+  "benchmark": "discovery-benchmark-hest-benchmark",
+  "source": "https://arxiv.org/pdf/2406.16192v1",
+  "artifact_sha256": "636099a73dee8337f60e6e9120230b914605b35553872ddf76e4661bbe14be9b",
+  "records_sha256": "d175e3337800c17be930080d0437f8f113ef3fd24c783ff535b64fee1295013f",
+  "method": "Deterministic parse of the pinned PDF text layer, stitching each cohort's value and spread lines with both counts asserted",
+  "reviewer": "Codex research agent; no human review claimed",
+  "reviewed_at": "2026-09-18",
+  "errors": []
+}

@@ -27,6 +27,11 @@ permissions:
 jobs:
   catalogue:
     runs-on: ubuntu-latest
+    # Several steps load the whole catalogue into memory: the static export
+    # prerenders a page per record, and the export checks read the release
+    # bundles. That needs more heap than Node allows itself by default.
+    env:
+      NODE_OPTIONS: --max-old-space-size=8192
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4

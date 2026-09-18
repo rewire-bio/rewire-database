@@ -234,6 +234,29 @@ export function createCatalogueQuery(snapshot: CatalogueSnapshot) {
       );
     return false;
   }
+  /**
+   * Whether an edge carries results up from the record an evaluation ran on.
+   *
+   * A sourced evaluates_task claim says this benchmark evaluates that task, so
+   * a result measured on the benchmark is a result on the task. It says nothing
+   * about a result measured on some other member of the same suite: those
+   * claims are reviewed as navigation, and say so themselves, "platform task
+   * membership, not protocol equivalence".
+   *
+   * So evaluates_task is followed only from where the evaluation actually ran,
+   * never after a containment hop. Without that, Open Problems label projection
+   * results climbed to the suite through part_of and came back down a suite
+   * level evaluates_task edge onto the batch integration task, which those runs
+   * never touched.
+   */
+  function rollsUp(
+    record: CatalogueRecord,
+    link: { relation: string; target_id: string },
+    depth: number,
+  ): boolean {
+    if (link.relation === "evaluates_task" && depth > 0) return false;
+    return verifiedAssociation(record, link);
+  }
   const visibleRecords = records.filter(
     (r) =>
       !r.links.some(
@@ -241,12 +264,17 @@ export function createCatalogueQuery(snapshot: CatalogueSnapshot) {
       ),
   );
   // Roll up only sourced identity/membership edges. A pipeline using a model is not that model.
-  function ancestors(id: string, seen = new Set<string>()): Set<string> {
+  function ancestors(
+    id: string,
+    seen = new Set<string>(),
+    depth = 0,
+  ): Set<string> {
     if (seen.has(id)) return seen;
     seen.add(id);
     const record = byId.get(id);
     for (const link of record?.links || [])
-      if (verifiedAssociation(record!, link)) ancestors(link.target_id, seen);
+      if (rollsUp(record!, link, depth))
+        ancestors(link.target_id, seen, depth + 1);
     return seen;
   }
   const rowIndex = new Map<string, ResultRow[]>();

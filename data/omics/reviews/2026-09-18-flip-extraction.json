@@ -1,0 +1,11 @@
+{
+  "batch": "flip-2026",
+  "benchmark": "discovery-benchmark-flip",
+  "source": "https://flip.protein.properties/assets/FLIP_2021_manuscript.pdf",
+  "artifact_sha256": "afcf360c88a7a4ae153b3c2d8d4fa6d4ac0abe84f2131b94409abff6447ce363",
+  "records_sha256": "0f42544b21781effb106be98b93a5301fb4abadc78f24a96e8fd7ee48896d5c0",
+  "method": "Deterministic parse of the pinned PDF text layer, with row counts asserted per table",
+  "reviewer": "Codex research agent; no human review claimed",
+  "reviewed_at": "2026-09-18",
+  "errors": []
+}

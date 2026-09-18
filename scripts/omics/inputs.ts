@@ -28,11 +28,36 @@ export function evidenceSources(): RecordEntry[] {
   });
 }
 
+/** Benchmark comparison tables extracted by scripts/omics/extract/*.ts. Each
+ * batch is one paper's table, pinned to a receipt that records the artifact
+ * hash and the digest of the records built from it. */
+export const extractedBatches = [
+  "atom3d",
+  "beacon",
+  "bend",
+  "dart-eval",
+  "flip",
+  "geneb",
+  "genomic-benchmarks",
+  "gue",
+  "hest",
+  "mrnabench",
+  "open-problems",
+  "nabench",
+  "perturbench",
+  "pfmbench",
+  "proteinbench",
+  "proteingym",
+  "tdc",
+] as const;
+const batchFile = (key: string) => `data/omics/reviewed/${key}-2026.jsonl`;
+const batchReceipt = (key: string) =>
+  `data/omics/reviews/2026-09-18-${key}-extraction.json`;
+
 export const reviewInputFiles = [
   ...benchmarkEvidenceFiles,
+  ...extractedBatches.flatMap((key) => [batchFile(key), batchReceipt(key)]),
   "data/omics/reviewed/alphagenome-2026.jsonl",
-  "data/omics/reviewed/beacon-2026.jsonl",
-  "data/omics/reviews/2026-09-18-beacon-extraction.json",
   "data/omics/reviews/2026-09-17-alphagenome-results.json",
   "data/omics/reviews/2026-09-17-alphagenome-independent-review.json",
   "data/omics/reviews/alphagenome-2026/tables.json",
@@ -76,25 +101,24 @@ export function reviewedResults(): RecordEntry[] {
   }
   return readJsonl(file).map((value) => recordSchema.parse(value));
 }
-/** BEACON Table 3, extracted by scripts/omics/extract-beacon.ts. Additive, like
- * the AlphaGenome batch: the archived releases keep their original inputs. */
-export function beaconResults(): RecordEntry[] {
-  const file = "data/omics/reviewed/beacon-2026.jsonl";
-  if (!fs.existsSync(file)) return [];
-  const receipt = JSON.parse(
-    fs.readFileSync(
-      "data/omics/reviews/2026-09-18-beacon-extraction.json",
-      "utf8",
-    ),
-  );
-  const digest = createHash("sha256")
-    .update(fs.readFileSync(file))
-    .digest("hex");
-  if (receipt.records_sha256 !== digest)
-    throw new Error("BEACON batch does not match its extraction receipt");
-  if (!Array.isArray(receipt.errors) || receipt.errors.length)
-    throw new Error("BEACON extraction receipt has unresolved errors");
-  return readJsonl(file).map((value) => recordSchema.parse(value));
+/** Extracted comparison tables. Additive, like the AlphaGenome batch: the
+ * archived releases keep their original inputs. A batch is published only if it
+ * still matches the receipt written when it was extracted, so a hand-edited
+ * jsonl fails the release rather than reaching the site. */
+export function extractedResults(): RecordEntry[] {
+  return extractedBatches.flatMap((key) => {
+    const file = batchFile(key);
+    if (!fs.existsSync(file)) return [];
+    const receipt = JSON.parse(fs.readFileSync(batchReceipt(key), "utf8"));
+    const digest = createHash("sha256")
+      .update(fs.readFileSync(file))
+      .digest("hex");
+    if (receipt.records_sha256 !== digest)
+      throw new Error(`${key} batch does not match its extraction receipt`);
+    if (!Array.isArray(receipt.errors) || receipt.errors.length)
+      throw new Error(`${key} extraction receipt has unresolved errors`);
+    return readJsonl(file).map((value) => recordSchema.parse(value));
+  });
 }
 export function currentCatalogueBase(base: RecordEntry[]): RecordEntry[] {
   const optional = (file: string) =>
@@ -106,7 +130,7 @@ export function currentCatalogueBase(base: RecordEntry[]): RecordEntry[] {
           ...base,
           ...evidenceSources(),
           ...reviewedResults(),
-          ...beaconResults(),
+          ...extractedResults(),
         ],
         optional("data/omics/evidence-concerns.jsonl"),
       ),

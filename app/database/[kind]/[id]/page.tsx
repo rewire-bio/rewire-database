@@ -656,7 +656,10 @@ export default function RecordPage({ params }: { params: Params }) {
             </section>
           )}
           {evaluationDesign && (
-            <BenchmarkCharts panels={detail.published_comparisons} />
+            <BenchmarkCharts
+              panels={detail.published_comparisons}
+              aggregates={detail.aggregate_comparisons}
+            />
           )}
           {!predictive &&
             [

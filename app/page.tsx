@@ -3,6 +3,11 @@ import Link from "next/link";
 import { buildCatalogue } from "@/lib/catalogue-build";
 import Explorer from "./database/Explorer";
 import styles from "./database/database.module.css";
+import {
+  CompositionCharts,
+  CoverageChart,
+} from "@/components/catalogue/CatalogueCharts";
+import { benchmarkCoverage } from "@/scripts/omics/audit-benchmark-evidence";
 
 export const metadata: Metadata = {
   title: "Biological model benchmark database",
@@ -20,6 +25,25 @@ export default function BenchmarksPage() {
   const own = catalogue.records.filter(
     (record) => record.kind === "result" && record.status === "reproduced",
   ).length;
+  const tally = (pick: (r: (typeof catalogue.records)[number]) => string[]) => {
+    const counts = new Map<string, number>();
+    for (const record of catalogue.records)
+      for (const key of pick(record))
+        counts.set(key, (counts.get(key) || 0) + 1);
+    return [...counts.entries()]
+      .sort((a, b) => b[1] - a[1])
+      .map(([label, value]) => ({ label: label.replace(/[-_]/g, " "), value }));
+  };
+  const kindRows = tally((record) => [record.kind]);
+  const areaRows = tally((record) => record.facets.areas || []).slice(0, 10);
+  const coverage = benchmarkCoverage(catalogue.records);
+  const coverageRows = coverage.map((entry) => ({
+    label: entry.name,
+    value: entry.evaluations,
+    muted: entry.evaluations === 0,
+  }));
+  const covered = coverage.filter((entry) => entry.evaluations > 0).length;
+
   return (
     <>
       <header className="page-head">
@@ -51,6 +75,18 @@ export default function BenchmarksPage() {
             />
           </section>
           <section id="evidence" className={styles.information}>
+            <h2>What is in the database</h2>
+            <p>
+              {catalogue.records.length.toLocaleString()} records across{" "}
+              {kindRows.length} kinds. Every bar is a filter you can apply above.
+            </p>
+            <CompositionCharts kinds={kindRows} areas={areaRows} />
+            <h3>Benchmark evidence coverage</h3>
+            <CoverageChart
+              covered={covered}
+              total={coverage.length}
+              rows={coverageRows}
+            />
             <h2>About the evidence</h2>
             <p>
               Published evaluations and rewire evaluations are records in the

@@ -10,6 +10,7 @@ import {
 import { assertNoPrivateFields as assertPublicCatalogue } from "./private-fields.js";
 import { createEvidenceIndex } from "./evidence-table.js";
 import { resolveComparisons } from "./published-comparisons.js";
+import { resolveAggregates } from "./aggregate-comparisons.js";
 /** The public catalogue contract shared by Firestore and static-release adapters. */
 export interface CatalogueRecord {
   id: string;
@@ -338,6 +339,46 @@ export function createCatalogueQuery(snapshot: CatalogueSnapshot) {
           : input.origin === "rewire"
             ? origin === "rewire_run"
             : origin === input.origin;
+      // Facet options must be counted against the records that survive the OTHER
+      // active filters. Offering every value in the release regardless of the
+      // selected kind sent roughly half of all kind-and-facet pairs to an empty
+      // result, with no way for a reader to tell which choices led anywhere.
+      const matches = (
+        r: (typeof visibleRecords)[number],
+        skip: "status" | "area" | null,
+      ) =>
+        (!input.kind || r.kind === input.kind) &&
+        (skip === "status" || !input.status || r.status === input.status) &&
+        (skip === "area" ||
+          !input.area ||
+          Object.values(r.facets).some((values) =>
+            values.includes(input.area!),
+          )) &&
+        (!q ||
+          [r.id, r.name, r.description, ...Object.values(r.facets).flat()]
+            .join(" ")
+            .toLowerCase()
+            .includes(q)) &&
+        (!input.origin ||
+          !["result", "evaluation"].includes(r.kind) ||
+          originMatches(r.attributes.origin) ||
+          (rowIndex.get(r.id) || []).some((row) => originMatches(row.origin)));
+
+      const tally = (
+        skip: "status" | "area",
+        pick: (r: (typeof visibleRecords)[number]) => string[],
+      ) => {
+        const counts: Record<string, number> = {};
+        for (const r of visibleRecords)
+          if (matches(r, skip))
+            for (const key of pick(r)) counts[key] = (counts[key] || 0) + 1;
+        return counts;
+      };
+      const available = {
+        areas: tally("area", (r) => r.facets.areas || []),
+        statuses: tally("status", (r) => [r.status]),
+      };
+
       const selected = visibleRecords.filter(
         (r) =>
           (!input.kind || r.kind === input.kind) &&
@@ -358,7 +399,10 @@ export function createCatalogueQuery(snapshot: CatalogueSnapshot) {
               originMatches(row.origin),
             )),
       );
-      return page(selected, input, canonical(filters), (r) => r.id);
+      return {
+        ...page(selected, input, canonical(filters), (r) => r.id),
+        available,
+      };
     },
     evidence(input: {
       id: string;
@@ -396,6 +440,7 @@ export function createCatalogueQuery(snapshot: CatalogueSnapshot) {
     get({ id }: { id: string }) {
       const record = byId.get(id);
       if (!record) return null;
+      const published = resolveComparisons(record, byId, rowsById);
       return {
         release_id,
         record,
@@ -405,7 +450,8 @@ export function createCatalogueQuery(snapshot: CatalogueSnapshot) {
         }),
         reverse: reverse.get(id) || [],
         sources: sources(record, ...linked(record, "evaluation")),
-        published_comparisons: resolveComparisons(record, byId, rowsById),
+        published_comparisons: published,
+        aggregate_comparisons: resolveAggregates(published),
       };
     },
     results(input: ResultsInput) {

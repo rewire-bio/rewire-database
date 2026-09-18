@@ -56,7 +56,7 @@ export const kindDescriptions: Record<OmicsKind, string> = {
   baseline:
     "Reference methods and controls. Proposed baselines have no measured performance unless a result is linked.",
   result:
-    "Measurements linked to a model, evaluation protocol and source. Different protocols do not form a single leaderboard.",
+    "Measurements linked to a model, evaluation protocol and source. Different protocols do not form a single leaderboard; pooled views state what differs between the rows they gather.",
   source:
     "Papers, repositories and artifacts supporting the records in this database.",
   evaluation:

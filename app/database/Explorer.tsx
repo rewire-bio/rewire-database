@@ -35,6 +35,25 @@ export default function Explorer({
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [retry, setRetry] = useState(0);
+  // Scoped facet counts come back with each page of results, so an option that is
+  // offered always leads somewhere. Fall back to the release-wide lists only
+  // before the first response has arrived.
+  const entries = (
+    counts: Record<string, number> | undefined,
+    fallback: string[],
+  ): [string, number][] =>
+    counts
+      ? Object.entries(counts).sort((a, b) => a[0].localeCompare(b[0]))
+      : fallback.map((value) => [value, 0] as [string, number]);
+  const availableAreas = entries(
+    (data as { available?: { areas: Record<string, number> } }).available?.areas,
+    release.facets.areas,
+  );
+  const availableStatuses = entries(
+    (data as { available?: { statuses: Record<string, number> } }).available
+      ?.statuses,
+    release.facets.statuses,
+  );
   const client = useMemo(
     () => catalogueClient(release.release_id),
     [release.release_id],
@@ -175,9 +194,9 @@ export default function Explorer({
             onChange={(event) => change("area", event.target.value)}
           >
             <option value="">All areas</option>
-            {release.facets.areas.map((area) => (
+            {availableAreas.map(([area, count]) => (
               <option key={area} value={area}>
-                {area.replace(/-/g, " ")}
+                {area.replace(/-/g, " ")} ({count})
               </option>
             ))}
           </select>
@@ -189,9 +208,9 @@ export default function Explorer({
             onChange={(event) => change("status", event.target.value)}
           >
             <option value="">All statuses</option>
-            {release.facets.statuses.map((status) => (
+            {availableStatuses.map(([status, count]) => (
               <option key={status} value={status}>
-                {status.replace(/_/g, " ")}
+                {status.replace(/_/g, " ")} ({count})
               </option>
             ))}
           </select>

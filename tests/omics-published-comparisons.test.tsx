@@ -6,7 +6,9 @@ import {
   type CatalogueSnapshot,
 } from "../services/omics/src/catalogue-query";
 import { type PublishedComparison } from "../services/omics/src/published-comparisons";
-import BenchmarkCharts from "../components/catalogue/BenchmarkCharts";
+import BenchmarkCharts, {
+  PooledFigure,
+} from "../components/catalogue/BenchmarkCharts";
 
 const record = (
   id: string,
@@ -269,5 +271,245 @@ describe("comparison missingness and evidence safeguards", () => {
       createCatalogueQuery(snapshot).compare({ ids: ["result-0", "result-1"] })
         .compatible,
     ).toBe(false);
+  });
+});
+
+function pooledFixture(): CatalogueSnapshot {
+  const records: CatalogueRecord[] = [
+    record("source", "source", {
+      url: "https://example.org/paper",
+      version: "v1",
+      retrieved_at: "2026-09-17",
+      artifact_sha256: "a".repeat(64),
+    }),
+    record("dataset-a", "dataset"),
+    record("dataset-b", "dataset"),
+  ];
+  // Two tables of the same metric on different datasets and splits, plus a
+  // third table whose metric appears only once.
+  const tables = [
+    { dataset: "dataset-a", split: "test", values: ["0.1", "0.5", "0.9"] },
+    { dataset: "dataset-b", split: "validation", values: ["0.3", "0.7", "0.2"] },
+  ];
+  const panels: PublishedComparison[] = [];
+  let index = 0;
+  for (const [table, { dataset, split, values }] of tables.entries()) {
+    const ids: string[] = [];
+    for (const value of values) {
+      const id = `result-${index}`;
+      ids.push(id);
+      records.push(
+        record(`model-${index}`, "model"),
+        record(
+          `evaluation-${index}`,
+          "evaluation",
+          { origin: "author_reported", comparison: { split } },
+          [
+            { relation: "model", target_id: `model-${index}` },
+            { relation: "benchmark", target_id: "benchmark" },
+            { relation: "dataset", target_id: dataset },
+          ],
+        ),
+        record(
+          id,
+          "result",
+          {
+            metric: "correlation",
+            unit: "dimensionless",
+            metric_direction: "higher",
+            numeric_value: value,
+            printed_value: value,
+            source_locator: `Table ${table + 1} row ${ids.length}`,
+          },
+          [{ relation: "evaluation", target_id: `evaluation-${index}` }],
+        ),
+      );
+      index++;
+    }
+    panels.push({
+      id: `comparison-${table}`,
+      title: `Table ${table + 1}`,
+      protocol_id: "benchmark",
+      dataset_id: dataset,
+      metric: "correlation",
+      unit: "dimensionless",
+      direction: "higher",
+      result_ids: ids,
+      source_ids: ["source"],
+      source_locator: `Table ${table + 1}`,
+      context: "One paper, one reported table.",
+      caveats: [`Table ${table + 1} caveat.`],
+      review: { method: "automated_source_review", date: "2026-09-17" },
+    });
+  }
+  const loneIds: string[] = [];
+  for (const value of ["0.4", "0.6"]) {
+    const id = `result-${index}`;
+    loneIds.push(id);
+    records.push(
+      record(`model-${index}`, "model"),
+      record(
+        `evaluation-${index}`,
+        "evaluation",
+        { origin: "author_reported", comparison: { split: "test" } },
+        [
+          { relation: "model", target_id: `model-${index}` },
+          { relation: "benchmark", target_id: "benchmark" },
+          { relation: "dataset", target_id: "dataset-a" },
+        ],
+      ),
+      record(
+        id,
+        "result",
+        {
+          metric: "accuracy",
+          unit: "fraction",
+          metric_direction: "higher",
+          numeric_value: value,
+          printed_value: value,
+          source_locator: `Table 3 row ${loneIds.length}`,
+        },
+        [{ relation: "evaluation", target_id: `evaluation-${index}` }],
+      ),
+    );
+    index++;
+  }
+  panels.push({
+    id: "comparison-accuracy",
+    title: "Table 3",
+    protocol_id: "benchmark",
+    dataset_id: "dataset-a",
+    metric: "accuracy",
+    unit: "fraction",
+    direction: "higher",
+    result_ids: loneIds,
+    source_ids: ["source"],
+    source_locator: "Table 3",
+    context: "One paper, one reported table.",
+    caveats: ["Table 3 caveat."],
+    review: { method: "automated_source_review", date: "2026-09-17" },
+  });
+  records.push(record("benchmark", "benchmark", { comparison_panels: panels }));
+  return {
+    schema_version: "1.0",
+    release_id: "release",
+    released_at: "2026-09-17T00:00:00Z",
+    coverage: {},
+    records,
+  };
+}
+
+describe("pooled comparison view", () => {
+  it("pools only the metrics reported by more than one source table", () => {
+    const detail = createCatalogueQuery(pooledFixture()).get({
+      id: "benchmark",
+    })!;
+    expect(detail.published_comparisons).toHaveLength(3);
+    expect(detail.aggregate_comparisons).toHaveLength(1);
+    const [group] = detail.aggregate_comparisons;
+    expect(group.metric).toBe("correlation");
+    expect(group.panels).toHaveLength(2);
+    expect(group.rows).toHaveLength(6);
+    expect(group.datasets.map((d) => d.id)).toEqual([
+      "dataset-a",
+      "dataset-b",
+    ]);
+  });
+  it("leaves a single-table metric out of the pooled view", () => {
+    const groups = createCatalogueQuery(pooledFixture()).get({
+      id: "benchmark",
+    })!.aggregate_comparisons;
+    expect(groups.some((group) => group.metric === "accuracy")).toBe(false);
+  });
+  it("never pools across a differing metric, unit or direction", () => {
+    const snapshot = pooledFixture();
+    // Same metric spelled differently is a different metric.
+    const panels = snapshot.records.find((r) => r.id === "benchmark")!.attributes
+      .comparison_panels as PublishedComparison[];
+    panels[1].metric = "Correlation";
+    for (const id of panels[1].result_ids)
+      snapshot.records.find((r) => r.id === id)!.attributes.metric =
+        "Correlation";
+    expect(
+      createCatalogueQuery(snapshot).get({ id: "benchmark" })!
+        .aggregate_comparisons,
+    ).toHaveLength(0);
+  });
+  it("ranks pooled rows by value and names every field it does not hold constant", () => {
+    const [group] = createCatalogueQuery(pooledFixture()).get({
+      id: "benchmark",
+    })!.aggregate_comparisons;
+    expect(group.rows.map(({ row }) => row.result.attributes.printed_value)).
+      toEqual(["0.9", "0.7", "0.5", "0.3", "0.2", "0.1"]);
+    expect(group.divergent).toEqual(["dataset", "split"]);
+  });
+  it("reverses the order when lower values are better", () => {
+    const snapshot = pooledFixture();
+    const panels = snapshot.records.find((r) => r.id === "benchmark")!.attributes
+      .comparison_panels as PublishedComparison[];
+    for (const panel of panels.slice(0, 2)) {
+      panel.direction = "lower";
+      for (const id of panel.result_ids)
+        snapshot.records.find((r) => r.id === id)!.attributes.metric_direction =
+          "lower";
+    }
+    const [group] = createCatalogueQuery(snapshot).get({ id: "benchmark" })!
+      .aggregate_comparisons;
+    expect(group.rows.map(({ row }) => row.result.attributes.printed_value)).
+      toEqual(["0.1", "0.2", "0.3", "0.5", "0.7", "0.9"]);
+  });
+  it("keeps unavailable pooled values in the table, unplotted and unranked", () => {
+    const snapshot = pooledFixture();
+    const missing = snapshot.records.find((r) => r.id === "result-4")!;
+    missing.attributes.numeric_value = null;
+    missing.attributes.printed_value = "N/A";
+    const [group] = createCatalogueQuery(snapshot).get({ id: "benchmark" })!
+      .aggregate_comparisons;
+    expect(group.rows).toHaveLength(6);
+    expect(
+      group.rows[group.rows.length - 1].row.result.attributes.printed_value,
+    ).toBe("N/A");
+  });
+  it("keeps the source-scoped figure as the rendered default and offers the pooled view", () => {
+    const detail = createCatalogueQuery(pooledFixture()).get({
+      id: "benchmark",
+    })!;
+    const html = renderToStaticMarkup(
+      <BenchmarkCharts
+        panels={detail.published_comparisons}
+        aggregates={detail.aggregate_comparisons}
+      />,
+    );
+    expect(html).toContain("Source order is preserved");
+    expect(html).toContain("Pooled by metric");
+    // Pooling is opt-in, so the static page ships the per-table figure.
+    expect(html).not.toContain("source tables pooled");
+  });
+  it("renders the pooled figure with its divergence warning and per-row protocol", () => {
+    const [group] = createCatalogueQuery(pooledFixture()).get({
+      id: "benchmark",
+    })!.aggregate_comparisons;
+    const html = renderToStaticMarkup(<PooledFigure group={group} />);
+    expect(html).toContain("2 source tables pooled");
+    expect(html).toContain(
+      "These rows do not hold the following constant: dataset, split",
+    );
+    expect(html).toContain("not evidence that one entity is better");
+    expect(html).toContain("benchmark · dataset-b");
+    expect(html.match(/role="img"/g)).toHaveLength(6);
+    // Ranked order, not source order.
+    expect(html.indexOf("result-2")).toBeLessThan(html.indexOf("result-4"));
+  });
+  it("offers no pooled control when nothing can be pooled", () => {
+    const query = createCatalogueQuery(fixture());
+    const detail = query.get({ id: "benchmark" })!;
+    expect(detail.aggregate_comparisons).toHaveLength(0);
+    const html = renderToStaticMarkup(
+      <BenchmarkCharts
+        panels={detail.published_comparisons}
+        aggregates={detail.aggregate_comparisons}
+      />,
+    );
+    expect(html).not.toContain("Pooled by metric");
   });
 });

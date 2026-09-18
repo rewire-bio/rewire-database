@@ -189,7 +189,9 @@ describe("unresolved primary-source concerns", () => {
       readJsonl<RecordEntry>(`data/omics/${name}.jsonl`),
     );
     const query = createCatalogueQuery(
-      buildRelease(currentCatalogueBase(base), "2026-09-16T21:00:00Z").snapshot,
+      buildRelease(currentCatalogueBase(base), "2026-09-16T21:00:00Z", {
+        entity_schema_version: "1.1",
+      }).snapshot,
     );
     const row = query.results({ id: "lit-b4-017" }).items[0];
     expect(row.result).toEqual(

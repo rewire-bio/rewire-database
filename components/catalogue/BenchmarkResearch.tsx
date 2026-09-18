@@ -6,9 +6,13 @@ export type { BenchmarkResearchData };
 export default function BenchmarkResearch({
   research,
   sources,
+  results = 0,
 }: {
   research: BenchmarkResearchData;
   sources: OmicsRecord[];
+  /** Result rows the catalogue holds for this benchmark now, which may post-date
+   * the literature check below. */
+  results?: number;
 }) {
   const papers = research.primary_sources.flatMap((id) =>
     sources.filter((source) => source.id === id),
@@ -61,7 +65,16 @@ export default function BenchmarkResearch({
       )}
       {research.gaps.length > 0 && (
         <>
-          <h3>What is still missing</h3>
+          <h3>What was missing at that check</h3>
+          {results > 0 && (
+            <p>
+              The catalogue now holds {results.toLocaleString()} result rows for
+              this benchmark. A note below about pending extraction describes
+              the state on {research.review_date} and may since have been
+              answered by a later batch. The result rows and their sources are
+              the current record.
+            </p>
+          )}
           <ul>
             {research.gaps.map((gap, i) => (
               <li key={i}>{gap}</li>

@@ -440,7 +440,28 @@ export function createCatalogueQuery(snapshot: CatalogueSnapshot) {
     get({ id }: { id: string }) {
       const record = byId.get(id);
       if (!record) return null;
-      const published = resolveComparisons(record, byId, rowsById);
+      // A suite carries no figures of its own. Its tasks do, and each of those
+      // panels has already had to prove a reviewed path up to the suite, so
+      // showing them here is the same claim the task page makes.
+      const childPanels = isBenchmarkSubject(record.kind)
+        ? visibleRecords
+            .filter(
+              (r) =>
+                r.id !== id &&
+                isBenchmarkSubject(r.kind) &&
+                r.attributes.comparison_panels !== undefined &&
+                ancestors(r.id).has(id),
+            )
+            .sort((a, b) => a.id.localeCompare(b.id))
+            .flatMap((r) => resolveComparisons(r, byId, rowsById))
+        : [];
+      const published = [
+        ...new Map(
+          [...resolveComparisons(record, byId, rowsById), ...childPanels].map(
+            (panel) => [panel.id, panel],
+          ),
+        ).values(),
+      ];
       return {
         release_id,
         record,
@@ -600,8 +621,7 @@ export function createCatalogueQuery(snapshot: CatalogueSnapshot) {
             (r) =>
               (
                 r.evaluation?.attributes.comparison as
-                  | Record<string, unknown>
-                  | undefined
+                  Record<string, unknown> | undefined
               )?.[field],
           ),
         );
@@ -609,8 +629,7 @@ export function createCatalogueQuery(snapshot: CatalogueSnapshot) {
         (row) =>
           (
             row.evaluation?.attributes.comparison as
-              | Record<string, unknown>
-              | undefined
+              Record<string, unknown> | undefined
           )?.subset,
       );
       if (subsets.some((value) => value !== undefined && value !== null))

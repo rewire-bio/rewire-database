@@ -1,8 +1,5 @@
 import { describe, expect, it } from "vitest";
-import {
-  currentCatalogueBase,
-  readJsonl,
-} from "../scripts/omics/inputs";
+import { currentCatalogueBase, readJsonl } from "../scripts/omics/inputs";
 import { buildRelease } from "../scripts/omics/release";
 import { type RecordEntry } from "../scripts/omics/schema";
 import { createCatalogueQuery } from "../services/omics/src/catalogue-query";
@@ -13,11 +10,17 @@ const base = ["migrated", "discovery"].flatMap((name) =>
 const release = buildRelease(
   currentCatalogueBase(base),
   "2026-09-17T00:00:00Z",
+  {
+    entity_schema_version: "1.1",
+  },
 ).snapshot;
 const query = createCatalogueQuery(release);
 
 type Listed = ReturnType<typeof query.list> & {
-  available: { areas: Record<string, number>; statuses: Record<string, number> };
+  available: {
+    areas: Record<string, number>;
+    statuses: Record<string, number>;
+  };
 };
 const list = (input: Parameters<typeof query.list>[0] = {}) =>
   query.list(input) as Listed;

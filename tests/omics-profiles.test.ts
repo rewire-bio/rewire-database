@@ -29,7 +29,9 @@ const enriched = enrichProfiles(
   enrichAssociations(currentBase, associations),
   profiles,
 );
-const published = buildRelease(enriched, "2026-09-16T10:50:02Z").snapshot;
+const published = buildRelease(enriched, "2026-09-16T10:50:02Z", {
+  entity_schema_version: "1.1",
+}).snapshot;
 const query = createCatalogueQuery(published);
 // Reconstruct the historical release from tracked inputs. CI runs tests before
 // any public exports exist, so ignored build products cannot serve as fixtures.

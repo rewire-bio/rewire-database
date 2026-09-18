@@ -58,6 +58,9 @@ describe("configuration profile ownership", () => {
     fixture.snapshot = buildRelease(
       patched as RecordEntry[],
       "2026-09-16T20:00:00Z",
+      {
+        entity_schema_version: "1.1",
+      },
     ).snapshot;
     const html = renderToStaticMarkup(
       <RecordPage params={{ kind: "model", id: configured.id }} />,

@@ -31,6 +31,8 @@ export function evidenceSources(): RecordEntry[] {
 export const reviewInputFiles = [
   ...benchmarkEvidenceFiles,
   "data/omics/reviewed/alphagenome-2026.jsonl",
+  "data/omics/reviewed/beacon-2026.jsonl",
+  "data/omics/reviews/2026-09-18-beacon-extraction.json",
   "data/omics/reviews/2026-09-17-alphagenome-results.json",
   "data/omics/reviews/2026-09-17-alphagenome-independent-review.json",
   "data/omics/reviews/alphagenome-2026/tables.json",
@@ -74,13 +76,38 @@ export function reviewedResults(): RecordEntry[] {
   }
   return readJsonl(file).map((value) => recordSchema.parse(value));
 }
+/** BEACON Table 3, extracted by scripts/omics/extract-beacon.ts. Additive, like
+ * the AlphaGenome batch: the archived releases keep their original inputs. */
+export function beaconResults(): RecordEntry[] {
+  const file = "data/omics/reviewed/beacon-2026.jsonl";
+  if (!fs.existsSync(file)) return [];
+  const receipt = JSON.parse(
+    fs.readFileSync(
+      "data/omics/reviews/2026-09-18-beacon-extraction.json",
+      "utf8",
+    ),
+  );
+  const digest = createHash("sha256")
+    .update(fs.readFileSync(file))
+    .digest("hex");
+  if (receipt.records_sha256 !== digest)
+    throw new Error("BEACON batch does not match its extraction receipt");
+  if (!Array.isArray(receipt.errors) || receipt.errors.length)
+    throw new Error("BEACON extraction receipt has unresolved errors");
+  return readJsonl(file).map((value) => recordSchema.parse(value));
+}
 export function currentCatalogueBase(base: RecordEntry[]): RecordEntry[] {
   const optional = (file: string) =>
     fs.existsSync(file) ? readJsonl(file) : [];
   return addBenchmarkEvidence(
     enrichMetadata(
       addEvidenceConcerns(
-        [...base, ...evidenceSources(), ...reviewedResults()],
+        [
+          ...base,
+          ...evidenceSources(),
+          ...reviewedResults(),
+          ...beaconResults(),
+        ],
         optional("data/omics/evidence-concerns.jsonl"),
       ),
       optional("data/omics/metadata-corrections.jsonl"),

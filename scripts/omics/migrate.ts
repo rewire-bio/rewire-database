@@ -25,7 +25,22 @@ const results = csv.map((r) =>
   Object.fromEntries(columns.map((k, i) => [k, r[i]])),
 ) as unknown as LiteratureResult[];
 validateLiterature(papers, results);
-const reviews = new Map<string, any>(
+type Review = {
+  status?: string;
+  printed_value?: string;
+  source_locator?: string;
+  source_url?: string;
+  method?: string;
+  reviewer?: string;
+  reviewed_at?: string;
+  notes?: string;
+  paper_id?: string;
+  artifact_sha256?: string;
+  retrieval_url?: string;
+  evidence?: string;
+  table_rows?: string[][];
+};
+const reviews = new Map<string, Review>(
   fs.existsSync("data/omics/legacy-review.jsonl")
     ? fs
         .readFileSync("data/omics/legacy-review.jsonl", "utf8")
@@ -152,9 +167,9 @@ for (const r of results) {
   const status = exclusions[r.paper_id]
     ? "excluded"
     : ["source_checked", "disputed", "superseded"].includes(
-          reviews.get(r.id)?.status,
+          reviews.get(r.id)?.status ?? "",
         )
-      ? reviews.get(r.id).status
+      ? (reviews.get(r.id)!.status as string)
       : "needs_review";
   const f = { areas: [r.domain_id], tasks: [r.task] };
   const mid =
@@ -311,10 +326,10 @@ for (const r of results) {
         value: rev?.printed_value ?? r.value,
         source_locator: rev?.source_locator ?? r.source_locator,
         review: {
-          method: rev.method,
-          reviewer: rev.reviewer,
-          reviewed_at: rev.reviewed_at,
-          notes: rev.notes,
+          method: rev?.method,
+          reviewer: rev?.reviewer,
+          reviewed_at: rev?.reviewed_at,
+          notes: rev?.notes,
         },
       },
       [{ relation: "subject", target_id: r.id }],

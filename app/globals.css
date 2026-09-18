@@ -736,3 +736,11 @@ details.qa .qa-body { font-family: var(--sans); font-size: 15px; line-height: 1.
 .hljs-strong { color: #e2e8f0; font-weight: 700; }
 .hljs-addition { color: #4ade80; background-color: #052e16; }
 .hljs-deletion { color: #f43f5e; background-color: #4c0519; }
+
+/* ---------------- catalogue figures ---------------- */
+.chartGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 26px; margin: 18px 0 30px; }
+.chartGrid figure { margin: 0; }
+.chartGrid figcaption,
+.coverageFig figcaption { font-size: 13px; color: var(--ink-3); margin-bottom: 8px; line-height: 1.5; }
+.coverageFig { margin: 14px 0 30px; }
+@media (max-width: 860px) { .chartGrid { grid-template-columns: 1fr; } }

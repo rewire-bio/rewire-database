@@ -23,7 +23,7 @@ const parser = new XMLParser({
   trimValues: false,
   parseTagValue: false,
 });
-function text(v: any): string {
+function text(v: unknown): string {
   if (v == null) return "";
   if (typeof v !== "object") return String(v);
   if (Array.isArray(v)) return v.map(text).join(" ");
@@ -32,12 +32,16 @@ function text(v: any): string {
     .map(([, x]) => text(x))
     .join(" ");
 }
-function find(v: any, key: string): any[] {
+const isRecord = (v: unknown): v is Record<string, unknown> =>
+  !!v && typeof v === "object" && !Array.isArray(v);
+
+function find(v: unknown, key: string): unknown[] {
   if (!v || typeof v !== "object") return [];
   if (Array.isArray(v)) return v.flatMap((x) => find(x, key));
+  const rec = v as Record<string, unknown>;
   return [
-    ...(key in v ? (Array.isArray(v[key]) ? v[key] : [v[key]]) : []),
-    ...Object.entries(v)
+    ...(key in rec ? (Array.isArray(rec[key]) ? rec[key] : [rec[key]]) : []),
+    ...Object.entries(rec)
       .filter(([k]) => k !== key)
       .flatMap(([, x]) => find(x, key)),
   ];
@@ -51,7 +55,7 @@ const numberMatch = (s: string, n: string) =>
   (s.match(/[-+−]?\d+(?:\.\d+)?(?:[eE][-+]?\d+)?/g) || []).some(
     (x) => Number(x.replace("−", "-")) === Number(n),
   );
-function grid(table: any): string[][] {
+function grid(table: unknown): string[][] {
   return find(table, "tr")
     .map((tr) =>
       [...find(tr, "th"), ...find(tr, "td")]
@@ -60,7 +64,23 @@ function grid(table: any): string[][] {
     )
     .filter((r) => r.length);
 }
-const receipts: any[] = [];
+type Receipt = {
+  id: string;
+  paper_id: string;
+  status: "source_checked" | "needs_review";
+  method: string;
+  reviewer: string;
+  reviewed_at: string;
+  source_url: string;
+  source_locator: string;
+  printed_value: string;
+  notes: string;
+  retrieval_url?: string;
+  artifact_sha256?: string;
+  evidence?: string;
+  table_rows?: string[][];
+};
+const receipts: Receipt[] = [];
 let cursor = 0;
 async function worker() {
   while (cursor < papers.length) {
@@ -90,7 +110,8 @@ async function worker() {
       for (const row of related) {
         const tn = row.source_locator.match(/^Table\s+([\w.]+)/i)?.[1];
         const table = tables.find(
-          (t) => norm(text(t.label)) === norm("Table " + tn),
+          (t) => norm(text(isRecord(t) ? t.label : undefined)) ===
+            norm("Table " + tn),
         );
         const cells = table ? grid(table) : [];
         const rowLabel = row.source_locator.match(/,\s*(.+?)\s+row\s*,/i)?.[1];

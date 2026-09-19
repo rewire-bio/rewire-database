@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { readFileSync } from "node:fs";
 import { renderToStaticMarkup } from "react-dom/server";
 import RunRecipes from "../components/catalogue/RunRecipes";
 import Reproduction from "../components/catalogue/Reproduction";
@@ -89,6 +90,31 @@ describe("reviewed local execution recipes", () => {
     expect(html).toContain("production submissions remain disabled");
     expect(html).toContain("sdk.py: evaluate");
   });
+  it("offers every step of a recipe, including repeats of one runtime", () => {
+    // A project's instructions are usually several command line steps in order.
+    // Keying the picker on the runtime made all but the first unreachable.
+    const { owner, source } = fixture();
+    const steps = ["Generate the dataset", "Train a probe", "Evaluate"];
+    owner.attributes.run_recipes = [
+      {
+        ...recipe(),
+        instructions: steps.map((title, i) => ({
+          runtime: "command_line",
+          title,
+          code: `python -m step_${i}`,
+          status: "source_reviewed_not_executed",
+          source_ids: ["source"],
+          source_locator: `README.md, lines ${i + 1}-${i + 1}`,
+        })),
+      },
+    ];
+    const html = renderToStaticMarkup(
+      <RunRecipes record={owner} sources={[source]} />,
+    );
+    for (const [i, title] of steps.entries())
+      expect(html).toContain(`${i + 1}. ${title} (Command line)`);
+  });
+
   it("allows precise evaluation links without inferring score reproduction", () => {
     const { owner, evaluation, source, byId } = fixture();
     expect(() => validateRunRecipes(owner, byId)).not.toThrow();
@@ -131,5 +157,68 @@ describe("reviewed local execution recipes", () => {
     const untested = recipe();
     untested.instructions[0].status = "executed";
     expect(runRecipeSchema.safeParse(untested).success).toBe(false);
+  });
+});
+
+describe("recipes quoted from each project's own instructions", () => {
+  const overlays: {
+    id: string;
+    source_ids?: string[];
+    run_recipes?: {
+      id: string;
+      instructions: {
+        code: string;
+        status: string;
+        source_ids: string[];
+        source_locator: string;
+      }[];
+    }[];
+  }[] = JSON.parse(
+    readFileSync("data/omics/reviewed/run-recipes/overlays.json", "utf8"),
+  );
+  const sources = new Map(
+    readFileSync("data/omics/reviewed/run-recipes/records.jsonl", "utf8")
+      .split("\n")
+      .filter(Boolean)
+      .map((line) => JSON.parse(line))
+      .map((r) => [r.id, r]),
+  );
+  const quoted = overlays.filter((overlay) =>
+    overlay.run_recipes?.some((recipe) => recipe.id.endsWith("-official")),
+  );
+
+  it("covers the benchmarks whose projects publish commands", () => {
+    expect(quoted.length).toBeGreaterThanOrEqual(14);
+  });
+
+  it("pins every quoted instruction to a line range in a hashed file", () => {
+    for (const overlay of quoted)
+      for (const recipe of overlay.run_recipes!)
+        for (const instruction of recipe.instructions) {
+          expect(instruction.status).toBe("source_reviewed_not_executed");
+          expect(instruction.source_locator).toMatch(
+            /^README\.md at [0-9a-f]{8}, .+, lines \d+-\d+$/,
+          );
+          for (const id of instruction.source_ids) {
+            const source = sources.get(id);
+            expect(source, `${overlay.id} cites ${id}`).toBeDefined();
+            expect(String(source.attributes.artifact_sha256)).toMatch(
+              /^[a-f0-9]{64}$/,
+            );
+          }
+          // A quote is code, not the prose around it.
+          expect(instruction.code).not.toMatch(/^\s*(```|~~~)/m);
+          expect(instruction.code.trim().length).toBeGreaterThan(0);
+        }
+  });
+
+  it("says plainly that nothing here was executed", () => {
+    for (const overlay of quoted)
+      for (const recipe of overlay.run_recipes!)
+        expect(
+          (recipe as unknown as { limitations: string[] }).limitations.join(
+            " ",
+          ),
+        ).toContain("not executed by rewire");
   });
 });

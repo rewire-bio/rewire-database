@@ -11,11 +11,13 @@ function canonical(value: unknown): unknown {
   return value;
 }
 export function recordsDigest(records: { id: string }[]): string {
-  return createHash("sha256")
-    .update(
-      JSON.stringify(
-        canonical([...records].sort((a, b) => a.id.localeCompare(b.id))),
-      ),
-    )
-    .digest("hex");
+  // Preserve the exact canonical JSON array bytes while processing one record
+  // at a time. Cloning/stringifying the whole release creates a large peak.
+  const hash = createHash("sha256").update("[");
+  const ordered = [...records].sort((a, b) => a.id.localeCompare(b.id));
+  ordered.forEach((record, index) => {
+    if (index) hash.update(",");
+    hash.update(JSON.stringify(canonical(record)));
+  });
+  return hash.update("]").digest("hex");
 }

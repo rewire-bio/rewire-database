@@ -1,4 +1,7 @@
-import type { Firestore } from "firebase-admin/firestore";
+import type {
+  Firestore,
+  QueryDocumentSnapshot,
+} from "firebase-admin/firestore";
 import { TRPCError } from "@trpc/server";
 import {
   createCatalogueQuery,
@@ -40,16 +43,25 @@ export async function catalogueQuery(
       });
     let records: unknown[];
     if (meta.query_chunks) {
-      const chunks = await ref.collection("queryChunks").orderBy("index").get();
-      if (chunks.size !== meta.query_chunks)
+      records = [];
+      let chunkCount = 0;
+      // Do not retain the complete raw Firestore response alongside its parsed
+      // catalogue: expanded releases exceed the function's memory budget.
+      for await (const doc of ref
+        .collection("queryChunks")
+        .orderBy("index")
+        .stream() as unknown as AsyncIterable<QueryDocumentSnapshot>) {
+        records.push(...JSON.parse(doc.data().records_json));
+        chunkCount++;
+      }
+      if (chunkCount !== meta.query_chunks)
         throw new Error("Incomplete catalogue query snapshot");
-      records = chunks.docs.flatMap((doc) =>
-        JSON.parse(doc.data().records_json),
-      );
     } else {
-      records = (await ref.collection("records").get()).docs.map((doc) =>
-        doc.data(),
-      );
+      records = [];
+      for await (const doc of ref
+        .collection("records")
+        .stream() as unknown as AsyncIterable<QueryDocumentSnapshot>)
+        records.push(doc.data());
     }
     if (records.length !== meta.record_count)
       throw new Error("Catalogue record count mismatch");
@@ -85,7 +97,8 @@ export async function activateRelease(db: Firestore, releaseId: string) {
   const meta = (await ref.get()).data();
   if (meta?.state !== "ready")
     throw new Error("Only complete, ready releases can be published");
-  if (meta.coverage?.audit_history && !meta.audit_manifest) throw new Error("Audit import must complete before publication");
+  if (meta.coverage?.audit_history && !meta.audit_manifest)
+    throw new Error("Audit import must complete before publication");
   const records = (await ref.collection("records").get()).docs.map((d) =>
     d.data(),
   );

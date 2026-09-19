@@ -1,5 +1,8 @@
 import { createHash } from "node:crypto";
-import type { Firestore } from "firebase-admin/firestore";
+import type {
+  Firestore,
+  QueryDocumentSnapshot,
+} from "firebase-admin/firestore";
 import { TRPCError } from "@trpc/server";
 import {
   applicableChecks,
@@ -9,14 +12,19 @@ import {
   type AuditRun,
   type AuditResolution,
 } from "./audit.js";
+type AuditTable = {
+  index: AuditIndexRow[];
+  runs: AuditRun[];
+  resolutions: AuditResolution[];
+};
+// One release per instance and one in-flight read per release. Concurrent
+// requests must not each materialise another full audit index.
 const cache = new WeakMap<
   Firestore,
   {
     release: string;
     digest: string;
-    index: AuditIndexRow[];
-    runs: AuditRun[];
-    resolutions: AuditResolution[];
+    pending: Promise<AuditTable>;
   }
 >();
 async function readTable(db: Firestore, release: string) {
@@ -31,31 +39,42 @@ async function readTable(db: Firestore, release: string) {
     return { index: [], runs: [], resolutions: [], ref, manifest: {} };
   const found = cache.get(db);
   if (found?.release === release && found.digest === meta.digest)
-    return { ...found, ref, manifest: meta.audit_manifest };
-  const docs = await ref.collection("auditIndexChunks").orderBy("index").get();
-  const index: AuditIndexRow[] = docs.docs.flatMap((doc) => {
-    const d = doc.data();
+    return { ...(await found.pending), ref, manifest: meta.audit_manifest };
+  const pending = (async (): Promise<AuditTable> => {
+    const index: AuditIndexRow[] = [];
+    let chunkCount = 0;
+    for await (const doc of ref
+      .collection("auditIndexChunks")
+      .orderBy("index")
+      .stream() as unknown as AsyncIterable<QueryDocumentSnapshot>) {
+      const d = doc.data();
+      if (
+        createHash("sha256").update(d.rows_json).digest("hex") !==
+        meta.audit_manifest.index_chunks[d.index]
+      )
+        throw Error("Audit index integrity failure");
+      index.push(...JSON.parse(d.rows_json));
+      chunkCount++;
+    }
     if (
-      createHash("sha256").update(d.rows_json).digest("hex") !==
-      meta.audit_manifest.index_chunks[d.index]
+      chunkCount !== meta.audit_manifest.index_chunks.length ||
+      index.length !== meta.audit_manifest.records
     )
-      throw Error("Audit index integrity failure");
-    return JSON.parse(d.rows_json);
-  });
-  if (
-    docs.size !== meta.audit_manifest.index_chunks.length ||
-    index.length !== meta.audit_manifest.records
-  )
-    throw Error("Incomplete audit index");
-  const data = {
-    release,
-    digest: meta.digest,
-    index,
-    runs: meta.audit_manifest.runs,
-    resolutions: meta.audit_manifest.resolutions,
-  };
-  cache.set(db, data);
-  return { ...data, ref, manifest: meta.audit_manifest };
+      throw Error("Incomplete audit index");
+    return {
+      index,
+      runs: meta.audit_manifest.runs,
+      resolutions: meta.audit_manifest.resolutions,
+    };
+  })();
+  const entry = { release, digest: meta.digest, pending };
+  cache.set(db, entry);
+  try {
+    return { ...(await pending), ref, manifest: meta.audit_manifest };
+  } catch (error) {
+    if (cache.get(db) === entry) cache.delete(db);
+    throw error;
+  }
 }
 export async function auditRuns(
   db: Firestore,
@@ -105,11 +124,10 @@ export async function auditRecords(
   );
   return {
     release_id: input.release_id,
-    ...auditPage(
-      items.map(({ chunk_ids, ...r }) => r),
-      input,
-      scope,
-    ),
+    ...(() => {
+      const page = auditPage(items, input, scope);
+      return { ...page, items: page.items.map(({ chunk_ids, ...row }) => row) };
+    })(),
   };
 }
 export async function auditChecks(

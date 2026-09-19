@@ -68,7 +68,9 @@ export async function catalogueQuery(
     return createCatalogueQuery(snapshot);
   })();
   cache.set(releaseId, pending);
-  while (cache.size > 3) cache.delete(cache.keys().next().value!);
+  // One full release per instance; historical requests remain supported but do
+  // not retain several complete catalogues alongside the current release.
+  while (cache.size > 1) cache.delete(cache.keys().next().value!);
   try {
     return await pending;
   } catch (error) {

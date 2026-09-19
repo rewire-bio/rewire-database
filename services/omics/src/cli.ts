@@ -15,17 +15,21 @@ const client = createTRPCClient<AppRouter>({
   ],
 });
 const [command, id, ...args] = process.argv.slice(2);
-if (command === "list")
-  console.log(
-    JSON.stringify(
-      await client.curator.list.query(
-        id ? { status: id as (typeof statuses)[number] } : {},
-      ),
-      null,
-      2,
-    ),
-  );
-else if (command === "proposal" && id)
+if (command === "list") {
+  // Drain cursor pages so CLI exports never silently omit a queue's tail.
+  const items = [];
+  let cursor: string | undefined;
+  do {
+    const page = await client.curator.list.query({
+      ...(id ? { status: id as (typeof statuses)[number] } : {}),
+      cursor,
+      limit: 200,
+    });
+    items.push(...page.items);
+    cursor = page.next_cursor || undefined;
+  } while (cursor);
+  console.log(JSON.stringify(items, null, 2));
+} else if (command === "proposal" && id)
   console.log(
     JSON.stringify(await client.curator.proposal.query({ id }), null, 2),
   );

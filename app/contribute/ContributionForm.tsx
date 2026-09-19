@@ -103,6 +103,8 @@ export default function ContributionForm() {
   const [authReady, setAuthReady] = useState(false);
   const [pendingLink, setPendingLink] = useState("");
   const [submissions, setSubmissions] = useState<Submission[]>([]);
+  const [nextCursor, setNextCursor] = useState<string | null>(null);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [active, setActive] = useState<Submission | null>(null);
   const authRef = useRef<Auth | null>(null);
   const sessionEpoch = useRef(0);
@@ -190,14 +192,26 @@ export default function ContributionForm() {
   function client(current: User) {
     return createContributionClient(apiUrl!, () => current.getIdToken());
   }
-  async function refresh(current: User) {
+  async function refresh(current: User, cursor?: string) {
     const epoch = sessionEpoch.current;
-    const records = await client(current).submission.list.query();
+    const page = await client(current).submission.list.query({ cursor });
     if (
       epoch === sessionEpoch.current &&
       authRef.current?.currentUser?.uid === current.uid
-    )
-      setSubmissions(records as unknown as Submission[]);
+    ) {
+      const records = page.items as unknown as Submission[];
+      setSubmissions((previous) =>
+        cursor
+          ? [
+              ...previous,
+              ...records.filter(
+                (record) => !previous.some((item) => item.id === record.id),
+              ),
+            ]
+          : records,
+      );
+      setNextCursor(page.next_cursor);
+    }
   }
   useEffect(() => {
     if (user)
@@ -208,6 +222,7 @@ export default function ContributionForm() {
       );
     else {
       setSubmissions([]);
+      setNextCursor(null);
       setActive(null);
     }
   }, [user]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -462,6 +477,25 @@ export default function ContributionForm() {
               </li>
             ))}
           </ul>
+          {nextCursor && (
+            <button
+              className={styles.button}
+              disabled={busy || loadingMore}
+              onClick={() => {
+                if (!user) return;
+                setLoadingMore(true);
+                void refresh(user, nextCursor)
+                  .catch(() =>
+                    setError(
+                      "More contributions could not be loaded. Try again.",
+                    ),
+                  )
+                  .finally(() => setLoadingMore(false));
+              }}
+            >
+              {loadingMore ? "Loading…" : "Load more contributions"}
+            </button>
+          )}
         </section>
       )}
       {active && (

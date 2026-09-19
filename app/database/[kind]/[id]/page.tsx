@@ -47,7 +47,7 @@ export function generateStaticParams() {
   );
 }
 export function generateMetadata({ params }: { params: Params }): Metadata {
-  const item = buildCatalogue().query.get({ id: params.id });
+  const item = buildCatalogue().query.get({ id: params.id, include_comparisons: false });
   if (
     !item ||
     !recordRouteKinds(item.record).some((kind) => kind === params.kind)
@@ -92,7 +92,7 @@ function Fields({ fields }: { fields: Record<string, unknown> }) {
 
 export default function RecordPage({ params }: { params: Params }) {
   const { query, catalogue } = buildCatalogue();
-  const detail = query.get({ id: params.id });
+  const detail = query.get({ id: params.id, include_comparisons: false });
   if (
     !detail ||
     !recordRouteKinds(detail.record).some((kind) => kind === params.kind)
@@ -144,7 +144,7 @@ export default function RecordPage({ params }: { params: Params }) {
   );
   const localProfile = profileSchema.safeParse(record.attributes.profile);
   const shared =
-    family && profileSchema.safeParse(family.record.attributes.profile).success
+    family && profileSchema.safeParse(query.get({ id: family.record.id })?.record.attributes.profile).success
       ? query.get({ id: family.record.id })
       : null;
   const profileOwner = shared && !localProfile.success ? shared : detail;
@@ -156,7 +156,7 @@ export default function RecordPage({ params }: { params: Params }) {
       ?.summary || record.description;
   const finding =
     record.kind === "result"
-      ? `${displayValue(record.attributes.printed_value)}${record.attributes.unit === "percent" ? "%" : ""} ${displayValue(record.attributes.metric)}`
+      ? `${displayValue(record.attributes.printed_value)}${record.attributes.unit === "percent" && !/%\s*$/.test(String(record.attributes.printed_value)) ? "%" : ""} ${displayValue(record.attributes.metric)}`
       : record.name;
   const modelLinks = first
     ? testedEntities(first)
@@ -313,6 +313,8 @@ export default function RecordPage({ params }: { params: Params }) {
           )}
           {entity && (
             <nav className={styles.sectionNav} aria-label="On this page">
+              {detail.comparison_options.length > 0 && <a href="#charts">Charts</a>}
+              {!predictive && <a href="#results">Results</a>}
               <a href="#overview">At a glance</a>
               {predictive && <a href="#results">Results</a>}
               <a href="#how-it-works">How it works</a>
@@ -322,10 +324,6 @@ export default function RecordPage({ params }: { params: Params }) {
                 >
                   How to run
                 </a>
-              )}
-              {!predictive && <a href="#results">Results</a>}
-              {detail.published_comparisons.length > 0 && (
-                <a href="#charts">Charts</a>
               )}
               {record.attributes.benchmark_research ? (
                 <a href="#papers">Papers</a>
@@ -402,6 +400,36 @@ export default function RecordPage({ params }: { params: Params }) {
               </p>
             </section>
           )}
+          {evaluationDesign && (
+            <BenchmarkCharts
+              panels={detail.published_comparisons}
+              options={detail.comparison_options}
+              recordId={record.id}
+              releaseId={catalogue.release_id}
+            />
+          )}
+          {!predictive &&
+            [
+              ...profileKinds,
+              "dataset",
+              "dataset_subset",
+              "evaluation",
+              "result",
+              "baseline",
+            ].includes(record.kind) && (
+              <Results
+                key={`${catalogue.release_id}:${record.id}`}
+                id={record.id}
+                initial={results}
+                title={
+                  evaluationDesign
+                    ? "Tested entities and results"
+                    : predictive
+                      ? "Evaluations and results"
+                      : "Evaluation results"
+                }
+              />
+            )}
           {entity && (
             <>
               {family && (
@@ -655,34 +683,6 @@ export default function RecordPage({ params }: { params: Params }) {
               </p>
             </section>
           )}
-          {evaluationDesign && (
-            <BenchmarkCharts
-              panels={detail.published_comparisons}
-              aggregates={detail.aggregate_comparisons}
-            />
-          )}
-          {!predictive &&
-            [
-              ...profileKinds,
-              "dataset",
-              "dataset_subset",
-              "evaluation",
-              "result",
-              "baseline",
-            ].includes(record.kind) && (
-              <Results
-                key={`${catalogue.release_id}:${record.id}`}
-                id={record.id}
-                initial={results}
-                title={
-                  evaluationDesign
-                    ? "Tested entities and results"
-                    : predictive
-                      ? "Evaluations and results"
-                      : "Evaluation results"
-                }
-              />
-            )}
           {evaluationDesign && record.attributes.benchmark_research ? (
             <BenchmarkResearch
               research={

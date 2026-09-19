@@ -1,0 +1,481 @@
+{
+  "schema_version": "1.1",
+  "release_id": "2026-09-17-26ec7db1590e",
+  "released_at": "2026-09-17T14:55:00Z",
+  "counts": {
+    "model": 59,
+    "method": 41,
+    "configuration": 559,
+    "pipeline": 50,
+    "service": 1,
+    "benchmark": 30,
+    "task": 495,
+    "protocol": 96,
+    "evaluator": 4,
+    "dataset": 138,
+    "dataset_subset": 214,
+    "baseline": 27,
+    "evaluation": 4760,
+    "result": 5465,
+    "source": 855,
+    "claim": 655
+  },
+  "coverage": {
+    "entity_schema_version": "1.1",
+    "entity_migration": {
+      "baseline_release": "2026-09-17-5054ddf2a281",
+      "note": "Separate models, methods, configurations, pipelines, hosted services, benchmarks, tasks, protocols and evaluators. IDs, printed scores and archived releases remain unchanged."
+    },
+    "run_instructions": {
+      "review": "Official source instructions; not executed by rewire",
+      "guides": 7,
+      "documentation_audits": 31
+    },
+    "run_recipe_coverage": {
+      "recipes": 21,
+      "evaluations_with_verified_recipe_links": 4,
+      "top_level_benchmarks": 30,
+      "official_documentation_or_gap": 30,
+      "note": "Source-reviewed instructions and exact applicability links; execution receipts do not establish reproduction of published scores. Production contributions remain disabled."
+    },
+    "evidence_table_version": "1.0",
+    "evidence_table_generator_sha256": "97bb0fe7ac7cba1783174e883a6ee161991b86fad5c5d337eadb65afa5895c5d",
+    "profile_coverage": {
+      "total": 690,
+      "fact_status_counts": {
+        "source_checked": 3826,
+        "unreported": 698,
+        "unextracted": 47,
+        "unavailable": 0,
+        "inapplicable": 250,
+        "unclassified": 0
+      },
+      "note": "Source review applies to individual cited claims. Missing fields and inaccessible evidence remain explicit; profile coverage is not independent experimental verification.",
+      "reviewed": 96,
+      "limited": 594
+    },
+    "benchmark_paper_review": {
+      "searched_existing_benchmarks": 221,
+      "reviewed_source_cells": 1187,
+      "additional_numeric_results": 1122,
+      "additional_unavailable_results": 15,
+      "additional_quarantined_results": 8,
+      "published_comparison_figures": 223,
+      "benchmark_pages_with_figures": 120,
+      "date": "2026-09-17",
+      "scope": "Dated primary-paper search across the existing catalogue; complete selected source tables, not exhaustive numerical extraction of every paper."
+    },
+    "changelog": [
+      "Add versioned local runner recipes for MFASS v2 and ProteinGym v1.3 DMS substitutions, with access requirements and explicit execution status.",
+      "Link reviewed exact evaluations to applicable recipes without relabelling paper evidence as independent reproduction.",
+      "Add private verified-email SDK contribution validation; production submissions remain disabled.",
+      "Separate entity categories in the catalogue and API; benchmarks contain top-level suites and challenges, with tasks, protocols and evaluators separately browsable.",
+      "Preserve stable IDs and historical URLs through canonical entity pages and explicit legacy route aliases.",
+      "Add pinned official benchmark run instructions with prerequisites, copyable shell commands and explicit source-review-only status. No new model computation.",
+      "Preserve every previous result value, scientific association, source artifact and archived release; submissions remain disabled."
+    ],
+    "research_lanes": 9,
+    "search_entries": 11,
+    "legacy_papers": 100,
+    "legacy_result_rows": 149,
+    "source_inputs": [
+      {
+        "file": "data/omics/migrated.jsonl",
+        "sha256": "3c2b88985f8419b9e5eb1b24a603b689891b969d30819e4a84d2af62a4760628"
+      },
+      {
+        "file": "data/omics/discovery.jsonl",
+        "sha256": "dbc2fe14ed474144442b6b8cc07147e2a23eb3a865a3324e9b8a958706ea65a0"
+      },
+      {
+        "file": "data/omics/reviewed/entity-separation/classification.json",
+        "sha256": "b3ae487bbf720092536cf31a72ce6d4b3aad50854b2752fcfffc42b21c86e272"
+      },
+      {
+        "file": "data/omics/reviewed/entity-separation/run-guides.json",
+        "sha256": "57092c03c00d4ba2f594fe80fb8b09ff45b7df9e03bb319394765343c1e32968"
+      },
+      {
+        "file": "data/omics/reviewed/entity-separation/sources.jsonl",
+        "sha256": "868b5030df831e5032c3dca7294f7fce13688d126c0921e4b1b67d019aa369ec"
+      },
+      {
+        "file": "data/omics/reviewed/entity-separation/run-audit.jsonl",
+        "sha256": "5c049a06e3a44d3e8ff12c2fcfc6134f18c75c449293a44b4e14bc7c763d3619"
+      },
+      {
+        "file": "data/omics/reviewed/entity-separation/review.json",
+        "sha256": "51f59b0034a0a0b8a2246627e21145c52abd1345af8e732cda48c8b29d75d2f7"
+      },
+      {
+        "file": "data/omics/reviewed/entity-separation/profile-corrections.json",
+        "sha256": "e0f91d20378b37b5c675f326737ca84a1f9c22a3c3a617460847c0057cb23024"
+      },
+      {
+        "file": "data/omics/reviewed/entity-separation/classification-review.json",
+        "sha256": "99b2ae01c065e6411ad28084ac5f2eac17b2ec54b407dd82555366ddcbf9a6d7"
+      },
+      {
+        "file": "data/omics/reviewed/entity-separation/run-review.json",
+        "sha256": "9f05e8a090481d8cfec9ffebf65007c54142b34075200cbaad981953f78b8cd2"
+      },
+      {
+        "file": "data/omics/reviewed/entity-separation/receipts.json",
+        "sha256": "51100c3bbbf3f458c87ed2251931b18dfe6d76d7cd5a637e1983773a69c7b0b7"
+      },
+      {
+        "file": "data/omics/reviewed/run-recipes/records.jsonl",
+        "sha256": "1b4f9419dce1de6d0627a59b8cbb48d0ecccb276f259528478b8d4fb0c0baddc"
+      },
+      {
+        "file": "data/omics/reviewed/run-recipes/overlays.json",
+        "sha256": "ea5ca8bb10a3dbe5efd9af410cac6a0bfeb83e9aa24c977553a6beaf32324a3b"
+      },
+      {
+        "file": "data/omics/reviewed/run-recipes/review.json",
+        "sha256": "0eff5582185253b04bd23f854edb64a6abc8732d65f2df357d4c7002c0f0f153"
+      },
+      {
+        "file": "data/omics/reviewed/benchmark-evidence-2026.jsonl",
+        "sha256": "7afc20bf29f3f49ce46016dadbf5cda54b788d470f97662eb13ad693494dc6e1"
+      },
+      {
+        "file": "data/omics/reviewed/benchmark-evidence-overlays-2026.jsonl",
+        "sha256": "ae3b08011bcfb9416e0ee33b5259301b2e4734b4bbe232e2b347e6db4445f6f1"
+      },
+      {
+        "file": "data/omics/reviews/benchmark-evidence-2026/review.json",
+        "sha256": "e1d9b84ae4d642d9dae7663d168b5bde133d3ec1fe0752dfc09771ce7c759534"
+      },
+      {
+        "file": "data/omics/reviews/benchmark-evidence-2026/occurrences.json",
+        "sha256": "77cf91571d120376b7c8d7d1215c081619ee6cbe10aea15337e72b83c33e4686"
+      },
+      {
+        "file": "data/omics/reviews/benchmark-evidence-2026/search-audit.jsonl",
+        "sha256": "2704187f6faed15b236e7f647f9de88fc74c43cd0f76381e8d24e059466bfcd7"
+      },
+      {
+        "file": "data/omics/reviews/benchmark-evidence-2026/code-review.json",
+        "sha256": "8f02a094ca413457840ab9bce4304baaaf104389e015ecabe595e573a9c44bae"
+      },
+      {
+        "file": "data/omics/reviews/benchmark-evidence-2026/inputs/part-1/audit-sources.json",
+        "sha256": "98fb2eff637f7603351e374aa9595027949408f2f27031c398d9fdb02651590d"
+      },
+      {
+        "file": "data/omics/reviews/benchmark-evidence-2026/inputs/part-1/audit.jsonl",
+        "sha256": "cb30ac0da1e0018ca6ce3b4cc6f5271f1d015892d63a7d70478ed3c082b75caf"
+      },
+      {
+        "file": "data/omics/reviews/benchmark-evidence-2026/inputs/part-1/extracted-batches.json",
+        "sha256": "5a6cc87688ab3bbfc01a2c9502f8af252253f7def577b1dfef7684d05b58a942"
+      },
+      {
+        "file": "data/omics/reviews/benchmark-evidence-2026/inputs/part-2/audit-sources.json",
+        "sha256": "82a11335688d5f04a47d26de867ecf53405e225a5abebe9f56f69d4399166f2e"
+      },
+      {
+        "file": "data/omics/reviews/benchmark-evidence-2026/inputs/part-2/audit.jsonl",
+        "sha256": "7809849b56a15a66933d791c07f0b94d08c142381e9f968f39d9ec09da86819d"
+      },
+      {
+        "file": "data/omics/reviews/benchmark-evidence-2026/inputs/part-2/extracted-batches.json",
+        "sha256": "e71e83c111e1d5c91670cfa4a6511a59b1a9573a42babbdb7b72059d12f00a64"
+      },
+      {
+        "file": "data/omics/reviews/benchmark-evidence-2026/inputs/part-3/audit.jsonl",
+        "sha256": "e26fe989ad005e428822b9ded1193c1b3339062534fd506e520bd1d9a311ec31"
+      },
+      {
+        "file": "data/omics/reviews/benchmark-evidence-2026/inputs/part-3/extracted-batches.json",
+        "sha256": "82de7afe2177aef1b79602b183536c1ead7c0fc6a042cbace590e04d69643e77"
+      },
+      {
+        "file": "data/omics/reviews/benchmark-evidence-2026/inputs/root-audit.jsonl",
+        "sha256": "3342bd7481937d59b1c742d949d268a123ca8afea990d63f30c2d1548c78cdfb"
+      },
+      {
+        "file": "data/omics/reviews/benchmark-evidence-2026/inputs/root-discovery.json",
+        "sha256": "3f0a53f8602bfa08f6d96e9000b428bd30c8e780276cfa4d19e92820fff7b1eb"
+      },
+      {
+        "file": "data/omics/reviews/benchmark-evidence-2026/integration-review.json",
+        "sha256": "d8b21af64865247f26b73ab52679f11d8a8150ca9351ca76e919f7ebb56ea45b"
+      },
+      {
+        "file": "data/omics/reviews/benchmark-evidence-2026/part-1-independent-review.json",
+        "sha256": "39976528494f86c673b157ef67e107acd4982cd01e088fbfdc521d3568036959"
+      },
+      {
+        "file": "data/omics/reviews/benchmark-evidence-2026/part-2-independent-review.json",
+        "sha256": "82cd2ca9c8f0fe77db3d8469e9f54b313c9caff2f0700737464e8262a6665389"
+      },
+      {
+        "file": "data/omics/reviews/benchmark-evidence-2026/part-3-independent-review.json",
+        "sha256": "ca68f415519bf5022d43bfe9b9aafd1770706fc578255a290b144e4f5e5bff7a"
+      },
+      {
+        "file": "data/omics/reviews/benchmark-evidence-2026/summary.json",
+        "sha256": "a96a0fd9104df57df13ac1d2e05ce8bba36da32286393f53be00549d3e629363"
+      },
+      {
+        "file": "scripts/omics/research/normalize-benchmark-evidence.py",
+        "sha256": "9e59ba88a25eb86f14d51b7733ab5e70ed79b640437b56bf3d2306982e3a0ff1"
+      },
+      {
+        "file": "scripts/omics/research/integrate-benchmark-evidence.py",
+        "sha256": "77220928dba5da13baf75de8efb3bec8b8817ab60e9da89110449ca77bef4846"
+      },
+      {
+        "file": "data/omics/reviewed/atom3d-2026.jsonl",
+        "sha256": "468fd0d2819fdbb97c787d316f2d97fa5b6ffb2b411f731e7e3fa57c4c06cae0"
+      },
+      {
+        "file": "data/omics/reviews/2026-09-18-atom3d-extraction.json",
+        "sha256": "c20164f051bc3a8cba83b5209a4fbf889775f11f310c67f8e1b50d5deae0853f"
+      },
+      {
+        "file": "data/omics/reviewed/beacon-2026.jsonl",
+        "sha256": "5f5fe44da5bd7de87d4819f935fe5a861f00ac0aefd64efd44357f774d32fcb7"
+      },
+      {
+        "file": "data/omics/reviews/2026-09-18-beacon-extraction.json",
+        "sha256": "061c505f2b1aa9063608e52a55a6ad9ff3b2e6f2900e65161f2a09cbb16c66a7"
+      },
+      {
+        "file": "data/omics/reviewed/bend-2026.jsonl",
+        "sha256": "6afff55bd53f98b74a27e21c606e81877479a03a9646955af55ee007949f9fc1"
+      },
+      {
+        "file": "data/omics/reviews/2026-09-18-bend-extraction.json",
+        "sha256": "f58f614b5a8ab69b0a6dba54c54ad4287a1ff2c15f815ccabade1498071447cd"
+      },
+      {
+        "file": "data/omics/reviewed/dart-eval-2026.jsonl",
+        "sha256": "3731a6e16f9a27df9da514d3ff2fdb1bef172f3a3552159ac9c8b7246aac1bcf"
+      },
+      {
+        "file": "data/omics/reviews/2026-09-18-dart-eval-extraction.json",
+        "sha256": "2dad90458910e629d34ea16eea80f58065049de8a064429cf98d1c950ea8b3db"
+      },
+      {
+        "file": "data/omics/reviewed/flip-2026.jsonl",
+        "sha256": "0f42544b21781effb106be98b93a5301fb4abadc78f24a96e8fd7ee48896d5c0"
+      },
+      {
+        "file": "data/omics/reviews/2026-09-18-flip-extraction.json",
+        "sha256": "c69543fdbaffdd601313a32b1bcb6f1e4d643ee9428476e94cb57aff693250bb"
+      },
+      {
+        "file": "data/omics/reviewed/geneb-2026.jsonl",
+        "sha256": "b463a9523175db1229e8b2a9057947f081a776d8ded0e02f84ea73a51fece827"
+      },
+      {
+        "file": "data/omics/reviews/2026-09-18-geneb-extraction.json",
+        "sha256": "96c2e34d0203265ecd98fe8dcfbae10a293af8968f021d39949f074dfb6ce495"
+      },
+      {
+        "file": "data/omics/reviewed/genomic-benchmarks-2026.jsonl",
+        "sha256": "71deceaaa7edf8b852c5c1f664169ecaec637e639758f8f514f78f5e857a45c0"
+      },
+      {
+        "file": "data/omics/reviews/2026-09-18-genomic-benchmarks-extraction.json",
+        "sha256": "a79387a4bb8aebcca02e59246bec565e5296f8d8a72edd843a258927db7c48aa"
+      },
+      {
+        "file": "data/omics/reviewed/gue-2026.jsonl",
+        "sha256": "58201ecaf45a97db7848240ecaf4db371748c2723547622a8cd035231062fcee"
+      },
+      {
+        "file": "data/omics/reviews/2026-09-18-gue-extraction.json",
+        "sha256": "bd5dc54a514e1d0231b5d8e6efb1bedb798f17f22dbb5eb80250bcf46cf36313"
+      },
+      {
+        "file": "data/omics/reviewed/hest-2026.jsonl",
+        "sha256": "d175e3337800c17be930080d0437f8f113ef3fd24c783ff535b64fee1295013f"
+      },
+      {
+        "file": "data/omics/reviews/2026-09-18-hest-extraction.json",
+        "sha256": "72f5fca6e8d52236f187d38a16c7ecb8ac0013d6bdc04423f68a1f1eff0beee0"
+      },
+      {
+        "file": "data/omics/reviewed/mrnabench-2026.jsonl",
+        "sha256": "b778653032191ef1078ffddda3ef0f17752163ffa25b25a143387395defc4c87"
+      },
+      {
+        "file": "data/omics/reviews/2026-09-18-mrnabench-extraction.json",
+        "sha256": "a66bf16f259ce5af723215a2fe6456491d8934475f6a57b686a307f327170185"
+      },
+      {
+        "file": "data/omics/reviewed/open-problems-2026.jsonl",
+        "sha256": "effa5a7871c876608e239d437a9ed03d0dbda834affc0095de39438ed1b4b943"
+      },
+      {
+        "file": "data/omics/reviews/2026-09-18-open-problems-extraction.json",
+        "sha256": "5c77eac24f8119c35a76ea0cbe2ada5d0ad765c61dd5fcbb87cf233ac8fba7f0"
+      },
+      {
+        "file": "data/omics/reviewed/nabench-2026.jsonl",
+        "sha256": "15c531810d2bdcfbc2a0351c4f5597ea023627dc74012a6e73fa684fe3801a5e"
+      },
+      {
+        "file": "data/omics/reviews/2026-09-18-nabench-extraction.json",
+        "sha256": "e511e56add9f39398ec8da709e4229f4173431bc461252a13b15c8ef813f72e9"
+      },
+      {
+        "file": "data/omics/reviewed/perturbench-2026.jsonl",
+        "sha256": "2e4396928b8b5eaf4abdd15df11da2b0e84c4ff907b2a5e8b608d335a77f0818"
+      },
+      {
+        "file": "data/omics/reviews/2026-09-18-perturbench-extraction.json",
+        "sha256": "e13acf7b83173bc9bdc566479b3729cea1f9560a47e1abb1d470481edd9ebf11"
+      },
+      {
+        "file": "data/omics/reviewed/pfmbench-2026.jsonl",
+        "sha256": "43b6d22210ae52b80f876f93d858e95316fbf0375e7ad69c26377f5eb57a6790"
+      },
+      {
+        "file": "data/omics/reviews/2026-09-18-pfmbench-extraction.json",
+        "sha256": "3433e1ebfa4a6a1e3c9c3826a32729a5951ea6c24a177a70c7e92c482c7c620c"
+      },
+      {
+        "file": "data/omics/reviewed/proteinbench-2026.jsonl",
+        "sha256": "008186635124d2004497b2f6d5147ba65e7eeefed6650bb168235f20a7b6ced5"
+      },
+      {
+        "file": "data/omics/reviews/2026-09-18-proteinbench-extraction.json",
+        "sha256": "04de01e39b99be3b5ad13b43606ad79d85bb16fef5931cea427465cc25dea4d7"
+      },
+      {
+        "file": "data/omics/reviewed/proteingym-2026.jsonl",
+        "sha256": "634094eab3670b8e9a6523cd0cfb5fa87009254e183c08515c3bfdc595f7b45d"
+      },
+      {
+        "file": "data/omics/reviews/2026-09-18-proteingym-extraction.json",
+        "sha256": "437fb5b8c8c1614bfdc7cbf6b4f8ec3990d54996e25659a385b90b0cdf98e165"
+      },
+      {
+        "file": "data/omics/reviewed/tdc-2026.jsonl",
+        "sha256": "f9954112b851a3b59e88cdc7211767e856888df3943c7d7cd5b15116363b53f3"
+      },
+      {
+        "file": "data/omics/reviews/2026-09-18-tdc-extraction.json",
+        "sha256": "394161d87c1b23e76c8606ad742409f14de1caf7efcdadcaa8ca63d87549b96a"
+      },
+      {
+        "file": "data/omics/reviewed/alphagenome-2026.jsonl",
+        "sha256": "920ee2aa93bea6cf05cb7321c3669a0533b6d4a4f769496208573c30b04b139b"
+      },
+      {
+        "file": "data/omics/reviews/2026-09-17-alphagenome-results.json",
+        "sha256": "b7114564c575a9dc84110d6f8f7cdef8fa02322c983f6b11ffebe0e5d8012c03"
+      },
+      {
+        "file": "data/omics/reviews/2026-09-17-alphagenome-independent-review.json",
+        "sha256": "ff1902678cfba8d8b0f4df2547c63271928d583e927e1a2c26befcae125e7181"
+      },
+      {
+        "file": "data/omics/reviews/alphagenome-2026/tables.json",
+        "sha256": "40d55fbf8047ef881fca2f3de4fb2fca3b60959d26d1dd138dfe37f5a57a1c56"
+      },
+      {
+        "file": "data/omics/reviews/alphagenome-2026/protocol-map.json",
+        "sha256": "f3353fecdcb1a472a5be59588993d8684b104b3b0ff9bd8075727fb9c091a944"
+      },
+      {
+        "file": "data/omics/reviews/alphagenome-2026/methods-source.json",
+        "sha256": "30a62af3aa555485a19c865777210a60400120dc671e7c6362cfb485aca5581d"
+      },
+      {
+        "file": "data/omics/reviews/alphagenome-2026/retrieval.json",
+        "sha256": "a72fd002c8b830b08ed4e4617783564392acdbb2d80fb24f79c383cbc62fe2cf"
+      },
+      {
+        "file": "data/omics/evidence-sources.jsonl",
+        "sha256": "8a6929db81fc7cf74114c18e4ebefdab0bb7444de460a3d6e71e3a1816afbe9c"
+      },
+      {
+        "file": "data/omics/metadata-corrections.jsonl",
+        "sha256": "bc00fc3c10239981723b63c6feb8e0d40897a4f556d542acdad7d04c0c1debd3"
+      },
+      {
+        "file": "data/omics/evidence-concerns.jsonl",
+        "sha256": "b87e3c35b2706ba2a9af575d2843c73edef096c108ae0efd94c3fef99da8d67b"
+      },
+      {
+        "file": "data/omics/reviews/2026-09-16-profile-review.jsonl",
+        "sha256": "395ac3574749200a37661af70f6022619b93b38f591afe2a9c6e848ec890c7a5"
+      },
+      {
+        "file": "data/omics/reviews/2026-09-16-numerical-integrity.json",
+        "sha256": "f97900bcb8ee6c5ebeb73d0669120b27f963b93bb0d19bb1989fb8dbf2e55390"
+      },
+      {
+        "file": "data/omics/model-profiles.jsonl",
+        "sha256": "77932a2b5f1c3af9840755a4d7364111ba5fc1f390dade7a1a29cb40bf434b92"
+      },
+      {
+        "file": "data/omics/benchmark-profiles.jsonl",
+        "sha256": "e3428c0149b3b7f72a6bdf0799efd1c63ad654d27903237dd15c053c76f0e876"
+      },
+      {
+        "file": "data/omics/model-profile-associations.jsonl",
+        "sha256": "f16b44414e8e368434cfe2975e018fc87be0c7cb375fcc13795ee8d24458038b"
+      },
+      {
+        "file": "data/omics/benchmark-profile-associations.jsonl",
+        "sha256": "1d5338137bf6ec14b7a059298648f1aeef58e346cc5b8f0bee0e539568a608ff"
+      }
+    ],
+    "total_records": 13490,
+    "public_records": 13449,
+    "counts": {
+      "model": 59,
+      "method": 41,
+      "configuration": 559,
+      "pipeline": 50,
+      "service": 1,
+      "benchmark": 30,
+      "task": 495,
+      "protocol": 96,
+      "evaluator": 4,
+      "dataset": 138,
+      "dataset_subset": 214,
+      "baseline": 27,
+      "evaluation": 4760,
+      "result": 5465,
+      "source": 855,
+      "claim": 655
+    },
+    "quarantined_results": 14,
+    "scope_excluded_records": 27,
+    "source_checked_results": 5453,
+    "rewire_result_rows": 12,
+    "scope": "Specialist omics and molecular models; no clinical assistants or standalone medical imaging.",
+    "limitation": "A dated discovery and source-transcription review, not an exhaustive census or independent reproduction of external experiments."
+  },
+  "archive_sha256": "d13615e8873f4b3d6a51b36d0b20a2d50075f590d6ff4d9c2cc906962709f9c4",
+  "catalogue_sha256": "ad8c1cee68938a6d4bd9129dda555030cf7f3e770bb18cbc1e116dcf8e63f7e4",
+  "files": {
+    "catalogue.json": "ad8c1cee68938a6d4bd9129dda555030cf7f3e770bb18cbc1e116dcf8e63f7e4",
+    "records.jsonl": "c030c18e1ec7eeee3ef3f94807dc8779c6481a79b1e3cef0ef1333cab91c1ddd",
+    "records.csv": "5ba2b5d58856f2a69710c479c05fb461f96c4cb7c0f08d000bcbd1d35a06cd1e",
+    "evidence.jsonl": "f09f010a924c9968db7ac2e35c0c52f5750e442de55b1796b51fb187a3c1763f",
+    "evidence.csv": "d4005ff20d05f98e3dfc2da783f4e3a23dfff11ac8a65805d1ea35b055786fc1"
+  },
+  "changelog": [
+    "Add versioned local runner recipes for MFASS v2 and ProteinGym v1.3 DMS substitutions, with access requirements and explicit execution status.",
+    "Link reviewed exact evaluations to applicable recipes without relabelling paper evidence as independent reproduction.",
+    "Add private verified-email SDK contribution validation; production submissions remain disabled.",
+    "Separate entity categories in the catalogue and API; benchmarks contain top-level suites and challenges, with tasks, protocols and evaluators separately browsable.",
+    "Preserve stable IDs and historical URLs through canonical entity pages and explicit legacy route aliases.",
+    "Add pinned official benchmark run instructions with prerequisites, copyable shell commands and explicit source-review-only status. No new model computation.",
+    "Preserve every previous result value, scientific association, source artifact and archived release; submissions remain disabled."
+  ],
+  "compatibility": {
+    "papers": "/benchmark-literature/papers.json",
+    "results": "/benchmark-literature/results.csv",
+    "note": "Historical compatibility files retain the original collection, including out-of-scope and unreviewed records. Use this release for current scoped data."
+  }
+}

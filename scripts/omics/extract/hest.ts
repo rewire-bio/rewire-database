@@ -14,8 +14,7 @@
  * The Average row is the authors' mean over the ten cohorts, not a measurement
  * on a dataset, so it is not recorded as a result.
  */
-import { createHash } from "node:crypto";
-import fs from "node:fs";
+import { readPinnedPdfText } from "./pdf";
 import { parseCell } from "./tables";
 import {
   writeBatch,
@@ -56,12 +55,7 @@ const COHORTS: Record<string, string> = {
 };
 
 function run(file: string) {
-  const text = fs.readFileSync(file, "utf8");
-  const sha = createHash("sha256")
-    .update(fs.readFileSync(process.argv[3]))
-    .digest("hex");
-  if (sha !== SHA256)
-    throw new Error(`Artifact hash ${sha} does not match the pinned ${SHA256}`);
+  const { text, transformation } = readPinnedPdfText(file, SHA256, process.argv[3]);
 
   const lines = text.split("\n").map((line) => line.trim());
   const from = lines.findIndex((line) =>
@@ -120,6 +114,9 @@ function run(file: string) {
   }
 
   const spec: BatchSpec = {
+    transformation,
+    // Table 2 caption: mean ± standard deviation over folds (or patients).
+    uncertaintyType: "standard_deviation",
     key: "hest",
     benchmarkId: "discovery-benchmark-hest-benchmark",
     benchmarkName: "HEST-Benchmark",

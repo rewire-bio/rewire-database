@@ -145,6 +145,8 @@ function run(file: string) {
   }
 
   const spec: BatchSpec = {
+    // Both extracted table captions explicitly state one standard deviation.
+    uncertaintyType: "standard_deviation",
     key: "perturbench",
     benchmarkId: "discovery-benchmark-perturbench",
     benchmarkName: NAME,

@@ -94,7 +94,7 @@ emulatorTest(
         client.submission.list.query(),
         client.submission.get.query({ id: created.id }),
       ]);
-      assert.equal(listed[0].id, fetched.id);
+      assert.equal(listed.items[0].id, fetched.id);
     } finally {
       server.closeAllConnections();
       await new Promise<void>((resolve, reject) =>
@@ -158,8 +158,8 @@ emulatorTest(
         }),
       /idempotency/,
     );
-    assert.equal((await first.submission.list()).length, 1);
-    assert.equal((await second.submission.list()).length, 0);
+    assert.equal((await first.submission.list()).items.length, 1);
+    assert.equal((await second.submission.list()).items.length, 0);
     await assert.rejects(
       () => second.submission.get({ id: submitted.id }),
       /not found/,
@@ -395,7 +395,7 @@ emulatorTest(
         }),
       /hour/,
     );
-    assert.equal((await caller.submission.list()).length, 20);
+    assert.equal((await caller.submission.list()).items.length, 20);
   },
 );
 
@@ -707,7 +707,7 @@ emulatorTest(
 );
 
 emulatorTest(
-  "bounded queues select newest contributor records and oldest curator records before limiting",
+  "submission cursor pages cover queues beyond 200, including timestamp ties and changed membership",
   async () => {
     const user = await signIn();
     const ctx = await context(`Bearer ${user.token}`);
@@ -731,24 +731,76 @@ emulatorTest(
       batch.set(firebase().db.collection("privateSubmissions").doc(id), {
         ...base,
         id,
-        created_at: new Date(Date.UTC(2000, 0, 1) + i * 1000).toISOString(),
+        created_at: new Date(
+          Date.UTC(2000, 0, 1) + Math.floor(i / 5) * 1000,
+        ).toISOString(),
       });
     }
     await batch.commit();
-    const personal = await author.submission.list();
-    assert.equal(personal.length, 200);
-    assert.equal(personal[0].id, original.id);
-    assert.equal(personal[1].id, "copy-0200");
+    const personal = await author.submission.list({ limit: 200 });
+    assert.equal(personal.items.length, 200);
+    assert.equal(personal.items[0].id, original.id);
+    assert.equal(personal.items[1].id, "copy-0200");
+    assert.ok(personal.next_cursor);
+    const remaining = await author.submission.list({
+      cursor: personal.next_cursor,
+    });
+    assert.equal(remaining.items.length, 2);
+    assert.equal(remaining.next_cursor, null);
     assert.equal(
-      personal.some((r) => r.id === "copy-0000"),
-      false,
+      new Set([...personal.items, ...remaining.items].map((r) => r.id)).size,
+      202,
     );
-    const queue = await curator.curator.list({ status: "submitted" });
-    assert.equal(queue.length, 200);
-    assert.equal(queue[0].id, "copy-0000");
+    assert.ok(
+      [...personal.items, ...remaining.items].every(
+        (r) => !("email" in r) && !("uid" in r),
+      ),
+    );
+    const other = appRouter.createCaller(
+      await context(`Bearer ${(await signIn()).token}`),
+    );
+    await assert.rejects(
+      () => other.submission.list({ cursor: personal.next_cursor! }),
+      /Cursor/,
+    );
+    await assert.rejects(
+      () => author.submission.list({ cursor: "broken" }),
+      /Cursor/,
+    );
+    const queue = await curator.curator.list({
+      status: "submitted",
+      limit: 200,
+    });
+    assert.equal(queue.items.length, 200);
+    assert.equal(queue.items[0].id, "copy-0000");
+    assert.ok(queue.next_cursor);
+    // A value cursor keeps working if its boundary row leaves the filtered queue.
+    await firebase()
+      .db.collection("privateSubmissions")
+      .doc(queue.items.at(-1)!.id)
+      .update({ status: "in_review" });
+    const tail = await curator.curator.list({
+      status: "submitted",
+      cursor: queue.next_cursor,
+    });
+    assert.equal(tail.items.length, 2);
+    assert.equal(tail.items.at(-1)!.id, original.id);
+    assert.equal(tail.next_cursor, null);
     assert.equal(
-      queue.some((r) => r.id === original.id),
-      false,
+      new Set([...queue.items, ...tail.items].map((r) => r.id)).size,
+      202,
+    );
+    await assert.rejects(
+      () =>
+        curator.curator.list({
+          status: "in_review",
+          cursor: queue.next_cursor!,
+        }),
+      /Cursor/,
+    );
+    await assert.rejects(
+      () => author.submission.list({ cursor: queue.next_cursor! }),
+      /Cursor/,
     );
   },
 );
@@ -800,6 +852,11 @@ emulatorTest(
       ]);
       assert.equal(detail?.record.id, "model-one");
       assert.equal(results.items[0].sources[0].id, "source-one");
+      const chart = await publicClient.catalogue.comparison.query({
+        release_id: snapshot.release_id, id: "model-one", panel_id: "unknown",
+      });
+      assert.equal(chart.release_id, snapshot.release_id);
+      assert.equal(chart.panel, null);
       const response = await fetch(
         `${base}/catalogue.release?input=${encodeURIComponent(JSON.stringify({ release_id: snapshot.release_id }))}`,
       );

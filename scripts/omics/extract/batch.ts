@@ -23,6 +23,7 @@
 import { createHash } from "node:crypto";
 import fs from "node:fs";
 import type { RecordEntry } from "../schema";
+import type { PdfTransformation } from "./pdf";
 
 /**
  * An id fragment.
@@ -102,6 +103,10 @@ export type BatchSpec = {
   date: string;
   /** How the numbers were read, recorded on every result. */
   method: string;
+  /** Recorded when text is derived from a verified PDF during this run. */
+  transformation?: PdfTransformation;
+  /** Meaning of a printed ± spread, only when stated by the inspected source. */
+  uncertaintyType?: "standard_deviation" | "standard_error";
   /** What the batch does not claim, recorded on every figure. */
   caveats: string[];
   tasks: TaskSpec[];
@@ -311,7 +316,7 @@ export function buildBatch(spec: BatchSpec): RecordEntry[] {
         printed_value: cell.printed,
         numeric_value: cell.value,
         uncertainty: cell.sd
-          ? { type: "standard_deviation", value: cell.sd }
+          ? { type: spec.uncertaintyType ?? "reported_plus_minus_type_unresolved", value: cell.sd }
           : null,
         source_locator: cell.locator,
         missing_metadata: {
@@ -353,6 +358,7 @@ export function writeBatch(spec: BatchSpec): RecordEntry[] {
         records_sha256: createHash("sha256")
           .update(fs.readFileSync(file))
           .digest("hex"),
+        ...(spec.transformation ? { transformation: spec.transformation } : {}),
         method: spec.method,
         reviewer: spec.reviewer,
         reviewed_at: spec.date,

@@ -35,6 +35,12 @@ try {
   const release = await query('release',{});
   assert.equal(release.record_count,snapshot.records.filter(record=>record.status!=='excluded').length);
   const pinned = {release_id:snapshot.release_id};
+  const benchmark = await query('get', {...pinned, id:'discovery-benchmark-nabench'});
+  assert.equal(benchmark.published_comparisons.length,1);
+  assert.ok(benchmark.comparison_options.length>40);
+  assert.ok(Buffer.byteLength(JSON.stringify(benchmark))<500_000);
+  const figure = await query('comparison', {...pinned, id:benchmark.record.id, panel_id:benchmark.comparison_options.at(-1).id});
+  assert.ok(figure.panel.rows.length>1);
   if (snapshot.schema_version==='1.1') {
     for (const kind of ['model','method','configuration','pipeline','service','benchmark','task','protocol','evaluator','dataset','dataset_subset']) {
       const page=await query('list',{...pinned,kind,limit:2});

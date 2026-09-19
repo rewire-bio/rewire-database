@@ -40,7 +40,8 @@ const methods = new Map<string, MethodSpec>();
 const cells: CellSpec[] = [];
 
 const task = (t: Omit<TaskSpec, "unit"> & { unit?: string }) => {
-  tasks.push({ unit: t.unit ?? "fraction", ...t } as TaskSpec);
+  const correlation = ["pearson_r", "spearman_r"].includes(t.metricKey);
+  tasks.push({ unit: t.unit ?? (correlation ? "correlation" : "fraction"), ...t } as TaskSpec);
 };
 
 /**
@@ -281,7 +282,7 @@ function run(file: string) {
       retrievedAt: DATE,
     },
     reviewer: REVIEWER,
-    date: DATE,
+    date: "2026-09-19",
     method:
       "Deterministic parse of the pinned HTML tables, with row and column counts asserted",
     caveats: [

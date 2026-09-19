@@ -146,9 +146,14 @@ export function tableMatching(source: string, pattern: RegExp): Table {
 }
 
 /** A printed cell, split into the number and its spread, or nothing at all. */
+/** `sd` is the historical field name for the printed spread. Its statistical
+ * meaning must be supplied from source evidence, never inferred from ±. */
 export type Cell = { printed: string; value: string | null; sd: string | null };
 
 const NOT_REPORTED = /^(|-|--|–|—|n\/?a|na|nan|\.|\/)$/i;
+
+export const isMissingCell = (printed: string): boolean =>
+  NOT_REPORTED.test(printed.trim());
 
 /** "1×10−2" and "4.03e-04" are the same number written two ways. */
 /**
@@ -169,7 +174,10 @@ function numberFrom(text: string): string | null {
   // Parse as one decimal literal rather than multiplying: 9 * 10 ** -4 is
   // 0.0009000000000000001 in binary floating point, and that noise would be
   // published as the paper's reported spread.
-  if (sci) return String(Number(`${sci[1]}e${sci[2]}`));
+  if (sci) {
+    const value = Number(`${sci[1]}e${sci[2]}`);
+    return Number.isFinite(value) ? String(value) : null;
+  }
   const plain = /^(-?\d*\.?\d+(?:[eE][-+]?\d+)?)$/.exec(clean);
   if (!plain) return null;
   return Number.isFinite(Number(plain[1])) ? plain[1] : null;
@@ -183,20 +191,32 @@ function numberFrom(text: string): string | null {
  * means the method was not run, and inventing a number there would be a
  * fabrication rather than a gap.
  */
-export function parseCell(printed: string): Cell {
+export function parseCell(
+  printed: string,
+  options: { unit?: string } = {},
+): Cell {
   // Bold marks the paper's best result. It is emphasis, not data, so the
   // recorded printed value keeps the digits and drops the styling.
   const stripped = asciiDigits(printed)
     .replace(/±plus-or-minus±/g, "±")
     .replace(/\s+/g, " ")
     .trim();
-  if (NOT_REPORTED.test(stripped)) return { printed, value: null, sd: null };
+  if (isMissingCell(stripped)) return { printed, value: null, sd: null };
   const spread = /^([^±(]+?)\s*(?:±|\()\s*([^)]+?)\)?$/.exec(stripped);
   const head = spread ? spread[1] : stripped;
   const tail = spread ? spread[2] : null;
-  const value = numberFrom(head);
-  if (value === null) return { printed, value: null, sd: null };
-  return { printed: stripped, value, sd: tail ? numberFrom(tail) : null };
+  // Keep the paper's percentage scale. Only the caller that explicitly labels
+  // this column "percent" may strip the percent sign; do not silently turn a
+  // percent into a fraction or a generic score.
+  const numeric = (part: string) =>
+    numberFrom(options.unit === "percent" ? part.replace(/%\s*$/, "") : part);
+  const value = numeric(head);
+  if (value === null)
+    throw new Error(`Unrecognised numeric cell: ${JSON.stringify(printed)}`);
+  const sd = tail ? numeric(tail) : null;
+  if (tail && (sd === null || Number(sd) < 0))
+    throw new Error(`Unrecognised uncertainty in cell: ${JSON.stringify(printed)}`);
+  return { printed: stripped, value, sd };
 }
 
 /**

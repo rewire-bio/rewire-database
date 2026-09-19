@@ -15,8 +15,7 @@
  * TDC.VDss and TDC.Half Life are written TDC.VD and TDC.Half_Life in Table 4.
  * They are the same datasets, and the mapping is spelled out below.
  */
-import { createHash } from "node:crypto";
-import fs from "node:fs";
+import { readPinnedPdfText } from "./pdf";
 import { parseCell } from "./tables";
 import {
   writeBatch,
@@ -93,12 +92,7 @@ const BLOCKS: [string, string[], string[]][] = [
 ];
 
 function run(file: string) {
-  const text = fs.readFileSync(file, "utf8");
-  const sha = createHash("sha256")
-    .update(fs.readFileSync(process.argv[3]))
-    .digest("hex");
-  if (sha !== SHA256)
-    throw new Error(`Artifact hash ${sha} does not match the pinned ${SHA256}`);
+  const { text, transformation } = readPinnedPdfText(file, SHA256, process.argv[3]);
 
   const byColumn = new Map(DATASETS.map((row) => [row[0], row]));
   const tasks: TaskSpec[] = DATASETS.map(
@@ -111,7 +105,7 @@ function run(file: string) {
       direction,
       dataset,
       protocol:
-        "Scaffold split, as the ADMET benchmark group defines it. Values are the mean and standard deviation over repeated runs.",
+        "Scaffold split, as the ADMET benchmark group defines it. Table 4 reports a value and a plus-or-minus spread but does not identify the spread's statistical meaning.",
       locator: `Table 3, row(${dataset})`,
     }),
   );
@@ -185,6 +179,7 @@ function run(file: string) {
   }
 
   const spec: BatchSpec = {
+    transformation,
     key: "tdc",
     benchmarkId: "discovery-benchmark-tdc-molecular-tasks",
     benchmarkName: "TDC ADMET benchmark group",
@@ -201,13 +196,14 @@ function run(file: string) {
       retrievedAt: DATE,
     },
     reviewer: "Codex research agent; no human review claimed",
-    date: DATE,
+    date: "2026-09-19",
     method:
       "Deterministic parse of the pinned PDF text layer, with each dataset's direction cross-checked between Table 3 and the arrow in Table 4",
     caveats: [
       "Author-reported numbers, source checked but not independently reproduced.",
       "MAE datasets are better when lower. The metric comes from Table 3 and differs by dataset.",
       "These are the paper's own simple baselines, not the current leaderboard for the ADMET group.",
+      "The pinned v1 source does not identify whether its plus-or-minus spreads are standard deviations, standard errors or another measure.",
     ],
     tasks,
     methods: [...methods.values()],

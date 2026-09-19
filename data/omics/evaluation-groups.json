@@ -1,0 +1,2018 @@
+{
+  "schema_version": "1.0",
+  "scope": "Counts identify source-reported evaluation scopes, not individual experimental runs or assays. Only enumerated metrics of the same reviewed setup are grouped. Record IDs, links, metrics, numbers and source evidence remain unchanged. Separate frameworks, datasets, model/input representations, training regimes, CV splits, summary averages and indel subsets are never collapsed.",
+  "groups": [
+    {
+      "id": "evaluation-group-genomic-benchmarks-table-2-baseline-cnn-pytorch-demo-coding-vs-intergenomic-seqs",
+      "model_id": "genomic-benchmarks-method-baseline-cnn-pytorch",
+      "dataset_id": "genomic-benchmarks-dataset-demo-coding-vs-intergenomic-seqs",
+      "source_id": "expansion-p3-genomic-benchmarks",
+      "artifact_sha256": "bda6fe51e3363a5d2fc8d265ca536897d3e83eb76458fc95066c21933e3bd0c0",
+      "source_locator": "Table 2, same dataset row and framework column group; Results, baseline CNN training paragraph (10 epochs, batch size 64)",
+      "rationale": "Table 2 reports accuracy and F1 for the same trained CNN on each dataset within each framework. Frameworks and datasets remain separate.",
+      "members": [
+        {
+          "evaluation_id": "genomic-benchmarks-evaluation-baseline-cnn-pytorch-demo-coding-vs-intergenomic-seqs-accuracy",
+          "record_sha256": "a3bf7ebef9091c80b7d29cd8757bfabce605ee673f5531353e61d892637f38da"
+        },
+        {
+          "evaluation_id": "genomic-benchmarks-evaluation-baseline-cnn-pytorch-demo-coding-vs-intergenomic-seqs-f1",
+          "record_sha256": "466034e2714dc037c967b3881b41ce49f9384cf5ab3e85d63b6520bc34cbab2d"
+        }
+      ],
+      "name": "Baseline CNN (PyTorch) · demo_coding_vs_intergenomic_seqs"
+    },
+    {
+      "id": "evaluation-group-genomic-benchmarks-table-2-baseline-cnn-pytorch-demo-human-or-worm",
+      "model_id": "genomic-benchmarks-method-baseline-cnn-pytorch",
+      "dataset_id": "genomic-benchmarks-dataset-demo-human-or-worm",
+      "source_id": "expansion-p3-genomic-benchmarks",
+      "artifact_sha256": "bda6fe51e3363a5d2fc8d265ca536897d3e83eb76458fc95066c21933e3bd0c0",
+      "source_locator": "Table 2, same dataset row and framework column group; Results, baseline CNN training paragraph (10 epochs, batch size 64)",
+      "rationale": "Table 2 reports accuracy and F1 for the same trained CNN on each dataset within each framework. Frameworks and datasets remain separate.",
+      "members": [
+        {
+          "evaluation_id": "genomic-benchmarks-evaluation-baseline-cnn-pytorch-demo-human-or-worm-accuracy",
+          "record_sha256": "940665c1c8a286a07a3d93dcb825ce9445d7af6a797af51e674f81dee5a0fa54"
+        },
+        {
+          "evaluation_id": "genomic-benchmarks-evaluation-baseline-cnn-pytorch-demo-human-or-worm-f1",
+          "record_sha256": "af327a760096235538711bca5810b03a6f7ce98504a46c47731a5f2ce21de3d7"
+        }
+      ],
+      "name": "Baseline CNN (PyTorch) · demo_human_or_worm"
+    },
+    {
+      "id": "evaluation-group-genomic-benchmarks-table-2-baseline-cnn-pytorch-drosophila-enhancers-stark",
+      "model_id": "genomic-benchmarks-method-baseline-cnn-pytorch",
+      "dataset_id": "genomic-benchmarks-dataset-drosophila-enhancers-stark",
+      "source_id": "expansion-p3-genomic-benchmarks",
+      "artifact_sha256": "bda6fe51e3363a5d2fc8d265ca536897d3e83eb76458fc95066c21933e3bd0c0",
+      "source_locator": "Table 2, same dataset row and framework column group; Results, baseline CNN training paragraph (10 epochs, batch size 64)",
+      "rationale": "Table 2 reports accuracy and F1 for the same trained CNN on each dataset within each framework. Frameworks and datasets remain separate.",
+      "members": [
+        {
+          "evaluation_id": "genomic-benchmarks-evaluation-baseline-cnn-pytorch-drosophila-enhancers-stark-accuracy",
+          "record_sha256": "5343f1bdc3126a9bdcfd2971ed2080afa380d82c94d5d4e424fb8c2b0c22abaf"
+        },
+        {
+          "evaluation_id": "genomic-benchmarks-evaluation-baseline-cnn-pytorch-drosophila-enhancers-stark-f1",
+          "record_sha256": "d3e7556650436e069cccf9491796d6123a1c0146a738b1d7047d40a7c0ee9d6f"
+        }
+      ],
+      "name": "Baseline CNN (PyTorch) · drosophila_enhancers_stark"
+    },
+    {
+      "id": "evaluation-group-genomic-benchmarks-table-2-baseline-cnn-pytorch-dummy-mouse-enhancers-ensembl",
+      "model_id": "genomic-benchmarks-method-baseline-cnn-pytorch",
+      "dataset_id": "genomic-benchmarks-dataset-dummy-mouse-enhancers-ensembl",
+      "source_id": "expansion-p3-genomic-benchmarks",
+      "artifact_sha256": "bda6fe51e3363a5d2fc8d265ca536897d3e83eb76458fc95066c21933e3bd0c0",
+      "source_locator": "Table 2, same dataset row and framework column group; Results, baseline CNN training paragraph (10 epochs, batch size 64)",
+      "rationale": "Table 2 reports accuracy and F1 for the same trained CNN on each dataset within each framework. Frameworks and datasets remain separate.",
+      "members": [
+        {
+          "evaluation_id": "genomic-benchmarks-evaluation-baseline-cnn-pytorch-dummy-mouse-enhancers-ensembl-accuracy",
+          "record_sha256": "c734d99bd1e4c21bc8af45c03c83cdea315a5af2775a16e1385f4ea2c66571e2"
+        },
+        {
+          "evaluation_id": "genomic-benchmarks-evaluation-baseline-cnn-pytorch-dummy-mouse-enhancers-ensembl-f1",
+          "record_sha256": "37913488fce5c91087d7a31702510e05f3f2228b051e2cb7b10b57e495ff7280"
+        }
+      ],
+      "name": "Baseline CNN (PyTorch) · dummy_mouse_enhancers_ensembl"
+    },
+    {
+      "id": "evaluation-group-genomic-benchmarks-table-2-baseline-cnn-pytorch-human-enhancers-cohn",
+      "model_id": "genomic-benchmarks-method-baseline-cnn-pytorch",
+      "dataset_id": "genomic-benchmarks-dataset-human-enhancers-cohn",
+      "source_id": "expansion-p3-genomic-benchmarks",
+      "artifact_sha256": "bda6fe51e3363a5d2fc8d265ca536897d3e83eb76458fc95066c21933e3bd0c0",
+      "source_locator": "Table 2, same dataset row and framework column group; Results, baseline CNN training paragraph (10 epochs, batch size 64)",
+      "rationale": "Table 2 reports accuracy and F1 for the same trained CNN on each dataset within each framework. Frameworks and datasets remain separate.",
+      "members": [
+        {
+          "evaluation_id": "genomic-benchmarks-evaluation-baseline-cnn-pytorch-human-enhancers-cohn-accuracy",
+          "record_sha256": "c2467c422175d810b70512eb0772a74e31fe87087f44d719021a02d741492608"
+        },
+        {
+          "evaluation_id": "genomic-benchmarks-evaluation-baseline-cnn-pytorch-human-enhancers-cohn-f1",
+          "record_sha256": "1d060b2e172122c35a350c0319321acafdd9b84500b729ab14f1fe1a149cb001"
+        }
+      ],
+      "name": "Baseline CNN (PyTorch) · human_enhancers_cohn"
+    },
+    {
+      "id": "evaluation-group-genomic-benchmarks-table-2-baseline-cnn-pytorch-human-enhancers-ensembl",
+      "model_id": "genomic-benchmarks-method-baseline-cnn-pytorch",
+      "dataset_id": "genomic-benchmarks-dataset-human-enhancers-ensembl",
+      "source_id": "expansion-p3-genomic-benchmarks",
+      "artifact_sha256": "bda6fe51e3363a5d2fc8d265ca536897d3e83eb76458fc95066c21933e3bd0c0",
+      "source_locator": "Table 2, same dataset row and framework column group; Results, baseline CNN training paragraph (10 epochs, batch size 64)",
+      "rationale": "Table 2 reports accuracy and F1 for the same trained CNN on each dataset within each framework. Frameworks and datasets remain separate.",
+      "members": [
+        {
+          "evaluation_id": "genomic-benchmarks-evaluation-baseline-cnn-pytorch-human-enhancers-ensembl-accuracy",
+          "record_sha256": "45a80c683f18b063e227d6d03edec6212e0731a7e4a8c0cfead1f7f6590f7bf1"
+        },
+        {
+          "evaluation_id": "genomic-benchmarks-evaluation-baseline-cnn-pytorch-human-enhancers-ensembl-f1",
+          "record_sha256": "08e3489e97a6ca032daeefac4e1304a86d2ac21bce58d66c67445be9347a8a9f"
+        }
+      ],
+      "name": "Baseline CNN (PyTorch) · human_enhancers_ensembl"
+    },
+    {
+      "id": "evaluation-group-genomic-benchmarks-table-2-baseline-cnn-pytorch-human-ensembl-regulatory",
+      "model_id": "genomic-benchmarks-method-baseline-cnn-pytorch",
+      "dataset_id": "genomic-benchmarks-dataset-human-ensembl-regulatory",
+      "source_id": "expansion-p3-genomic-benchmarks",
+      "artifact_sha256": "bda6fe51e3363a5d2fc8d265ca536897d3e83eb76458fc95066c21933e3bd0c0",
+      "source_locator": "Table 2, same dataset row and framework column group; Results, baseline CNN training paragraph (10 epochs, batch size 64)",
+      "rationale": "Table 2 reports accuracy and F1 for the same trained CNN on each dataset within each framework. Frameworks and datasets remain separate.",
+      "members": [
+        {
+          "evaluation_id": "genomic-benchmarks-evaluation-baseline-cnn-pytorch-human-ensembl-regulatory-accuracy",
+          "record_sha256": "964333b392e8902fdb649a3843174525fd1f3eb4e922532ebb178f263b8666a8"
+        },
+        {
+          "evaluation_id": "genomic-benchmarks-evaluation-baseline-cnn-pytorch-human-ensembl-regulatory-f1",
+          "record_sha256": "358ad88f53de385cc53716d02b16748e7817ff680d1c46a70b59e293694e79eb"
+        }
+      ],
+      "name": "Baseline CNN (PyTorch) · human_ensembl_regulatory"
+    },
+    {
+      "id": "evaluation-group-genomic-benchmarks-table-2-baseline-cnn-pytorch-human-nontata-promoters",
+      "model_id": "genomic-benchmarks-method-baseline-cnn-pytorch",
+      "dataset_id": "genomic-benchmarks-dataset-human-nontata-promoters",
+      "source_id": "expansion-p3-genomic-benchmarks",
+      "artifact_sha256": "bda6fe51e3363a5d2fc8d265ca536897d3e83eb76458fc95066c21933e3bd0c0",
+      "source_locator": "Table 2, same dataset row and framework column group; Results, baseline CNN training paragraph (10 epochs, batch size 64)",
+      "rationale": "Table 2 reports accuracy and F1 for the same trained CNN on each dataset within each framework. Frameworks and datasets remain separate.",
+      "members": [
+        {
+          "evaluation_id": "genomic-benchmarks-evaluation-baseline-cnn-pytorch-human-nontata-promoters-accuracy",
+          "record_sha256": "28f6d6f04c922356b06ac954ca979185bdc98d2b3147187c4ef174275a9a3df1"
+        },
+        {
+          "evaluation_id": "genomic-benchmarks-evaluation-baseline-cnn-pytorch-human-nontata-promoters-f1",
+          "record_sha256": "0954e39ffa1ad90419fd5f987fb4c8314e8f55403415df05518855e8131c9791"
+        }
+      ],
+      "name": "Baseline CNN (PyTorch) · human_nontata_promoters"
+    },
+    {
+      "id": "evaluation-group-genomic-benchmarks-table-2-baseline-cnn-pytorch-human-ocr-ensembl",
+      "model_id": "genomic-benchmarks-method-baseline-cnn-pytorch",
+      "dataset_id": "genomic-benchmarks-dataset-human-ocr-ensembl",
+      "source_id": "expansion-p3-genomic-benchmarks",
+      "artifact_sha256": "bda6fe51e3363a5d2fc8d265ca536897d3e83eb76458fc95066c21933e3bd0c0",
+      "source_locator": "Table 2, same dataset row and framework column group; Results, baseline CNN training paragraph (10 epochs, batch size 64)",
+      "rationale": "Table 2 reports accuracy and F1 for the same trained CNN on each dataset within each framework. Frameworks and datasets remain separate.",
+      "members": [
+        {
+          "evaluation_id": "genomic-benchmarks-evaluation-baseline-cnn-pytorch-human-ocr-ensembl-accuracy",
+          "record_sha256": "b54cc13c7aba800f1fd13062ad5f0c7a24dc23cac7ec2a2b7edf89536308c015"
+        },
+        {
+          "evaluation_id": "genomic-benchmarks-evaluation-baseline-cnn-pytorch-human-ocr-ensembl-f1",
+          "record_sha256": "7a47b13e8887a69fbb04313ca263823b36c0e1dba44483f27f5ecf82722fc526"
+        }
+      ],
+      "name": "Baseline CNN (PyTorch) · human_ocr_ensembl"
+    },
+    {
+      "id": "evaluation-group-genomic-benchmarks-table-2-baseline-cnn-tensorflow-demo-coding-vs-intergenomic-seqs",
+      "model_id": "genomic-benchmarks-method-baseline-cnn-tensorflow",
+      "dataset_id": "genomic-benchmarks-dataset-demo-coding-vs-intergenomic-seqs",
+      "source_id": "expansion-p3-genomic-benchmarks",
+      "artifact_sha256": "bda6fe51e3363a5d2fc8d265ca536897d3e83eb76458fc95066c21933e3bd0c0",
+      "source_locator": "Table 2, same dataset row and framework column group; Results, baseline CNN training paragraph (10 epochs, batch size 64)",
+      "rationale": "Table 2 reports accuracy and F1 for the same trained CNN on each dataset within each framework. Frameworks and datasets remain separate.",
+      "members": [
+        {
+          "evaluation_id": "genomic-benchmarks-evaluation-baseline-cnn-tensorflow-demo-coding-vs-intergenomic-seqs-accuracy",
+          "record_sha256": "539c39ef360ee126ed2fa7f076a83d64e7acd4ab7b52fe4431025529c3a070be"
+        },
+        {
+          "evaluation_id": "genomic-benchmarks-evaluation-baseline-cnn-tensorflow-demo-coding-vs-intergenomic-seqs-f1",
+          "record_sha256": "fbb11d43ac4cf068c865aa6ee6804c10d1bcccfc053be1913c7c1a11d71e28ac"
+        }
+      ],
+      "name": "Baseline CNN (TensorFlow) · demo_coding_vs_intergenomic_seqs"
+    },
+    {
+      "id": "evaluation-group-genomic-benchmarks-table-2-baseline-cnn-tensorflow-demo-human-or-worm",
+      "model_id": "genomic-benchmarks-method-baseline-cnn-tensorflow",
+      "dataset_id": "genomic-benchmarks-dataset-demo-human-or-worm",
+      "source_id": "expansion-p3-genomic-benchmarks",
+      "artifact_sha256": "bda6fe51e3363a5d2fc8d265ca536897d3e83eb76458fc95066c21933e3bd0c0",
+      "source_locator": "Table 2, same dataset row and framework column group; Results, baseline CNN training paragraph (10 epochs, batch size 64)",
+      "rationale": "Table 2 reports accuracy and F1 for the same trained CNN on each dataset within each framework. Frameworks and datasets remain separate.",
+      "members": [
+        {
+          "evaluation_id": "genomic-benchmarks-evaluation-baseline-cnn-tensorflow-demo-human-or-worm-accuracy",
+          "record_sha256": "0d98899f087e26011d44ed4292887da8797dc03513a1c5da0d0b3dfcc59feabf"
+        },
+        {
+          "evaluation_id": "genomic-benchmarks-evaluation-baseline-cnn-tensorflow-demo-human-or-worm-f1",
+          "record_sha256": "20199903133f9f100c9c6fbda4c6db4ef3cdc1a8f274456ecf27372773389235"
+        }
+      ],
+      "name": "Baseline CNN (TensorFlow) · demo_human_or_worm"
+    },
+    {
+      "id": "evaluation-group-genomic-benchmarks-table-2-baseline-cnn-tensorflow-drosophila-enhancers-stark",
+      "model_id": "genomic-benchmarks-method-baseline-cnn-tensorflow",
+      "dataset_id": "genomic-benchmarks-dataset-drosophila-enhancers-stark",
+      "source_id": "expansion-p3-genomic-benchmarks",
+      "artifact_sha256": "bda6fe51e3363a5d2fc8d265ca536897d3e83eb76458fc95066c21933e3bd0c0",
+      "source_locator": "Table 2, same dataset row and framework column group; Results, baseline CNN training paragraph (10 epochs, batch size 64)",
+      "rationale": "Table 2 reports accuracy and F1 for the same trained CNN on each dataset within each framework. Frameworks and datasets remain separate.",
+      "members": [
+        {
+          "evaluation_id": "genomic-benchmarks-evaluation-baseline-cnn-tensorflow-drosophila-enhancers-stark-accuracy",
+          "record_sha256": "b669fb0f91268ae238776276ebd1d138c7126073c3946f80e446e6f4b58a5a10"
+        },
+        {
+          "evaluation_id": "genomic-benchmarks-evaluation-baseline-cnn-tensorflow-drosophila-enhancers-stark-f1",
+          "record_sha256": "b15000671c8c7bb8fc1c302d65cc0fa14c7042b0394b0b56436f9039e3a904a5"
+        }
+      ],
+      "name": "Baseline CNN (TensorFlow) · drosophila_enhancers_stark"
+    },
+    {
+      "id": "evaluation-group-genomic-benchmarks-table-2-baseline-cnn-tensorflow-dummy-mouse-enhancers-ensembl",
+      "model_id": "genomic-benchmarks-method-baseline-cnn-tensorflow",
+      "dataset_id": "genomic-benchmarks-dataset-dummy-mouse-enhancers-ensembl",
+      "source_id": "expansion-p3-genomic-benchmarks",
+      "artifact_sha256": "bda6fe51e3363a5d2fc8d265ca536897d3e83eb76458fc95066c21933e3bd0c0",
+      "source_locator": "Table 2, same dataset row and framework column group; Results, baseline CNN training paragraph (10 epochs, batch size 64)",
+      "rationale": "Table 2 reports accuracy and F1 for the same trained CNN on each dataset within each framework. Frameworks and datasets remain separate.",
+      "members": [
+        {
+          "evaluation_id": "genomic-benchmarks-evaluation-baseline-cnn-tensorflow-dummy-mouse-enhancers-ensembl-accuracy",
+          "record_sha256": "b59dc67412de67aec39bacf7b8204acf14416120af685086ce14642299127a80"
+        },
+        {
+          "evaluation_id": "genomic-benchmarks-evaluation-baseline-cnn-tensorflow-dummy-mouse-enhancers-ensembl-f1",
+          "record_sha256": "8faa39230bccd277979d3e8610717856117126e97ba1e9e9c84dcf594ec98914"
+        }
+      ],
+      "name": "Baseline CNN (TensorFlow) · dummy_mouse_enhancers_ensembl"
+    },
+    {
+      "id": "evaluation-group-genomic-benchmarks-table-2-baseline-cnn-tensorflow-human-enhancers-cohn",
+      "model_id": "genomic-benchmarks-method-baseline-cnn-tensorflow",
+      "dataset_id": "genomic-benchmarks-dataset-human-enhancers-cohn",
+      "source_id": "expansion-p3-genomic-benchmarks",
+      "artifact_sha256": "bda6fe51e3363a5d2fc8d265ca536897d3e83eb76458fc95066c21933e3bd0c0",
+      "source_locator": "Table 2, same dataset row and framework column group; Results, baseline CNN training paragraph (10 epochs, batch size 64)",
+      "rationale": "Table 2 reports accuracy and F1 for the same trained CNN on each dataset within each framework. Frameworks and datasets remain separate.",
+      "members": [
+        {
+          "evaluation_id": "genomic-benchmarks-evaluation-baseline-cnn-tensorflow-human-enhancers-cohn-accuracy",
+          "record_sha256": "70d14a3cffe2e5ac09591fb262b1bb705cfa5fa3356a0b2b81540e4c26ffe3c0"
+        },
+        {
+          "evaluation_id": "genomic-benchmarks-evaluation-baseline-cnn-tensorflow-human-enhancers-cohn-f1",
+          "record_sha256": "7f4eeba58d915c7d0db5069eaa731a8d201a6a761e9424df0dc115bbad97f610"
+        }
+      ],
+      "name": "Baseline CNN (TensorFlow) · human_enhancers_cohn"
+    },
+    {
+      "id": "evaluation-group-genomic-benchmarks-table-2-baseline-cnn-tensorflow-human-enhancers-ensembl",
+      "model_id": "genomic-benchmarks-method-baseline-cnn-tensorflow",
+      "dataset_id": "genomic-benchmarks-dataset-human-enhancers-ensembl",
+      "source_id": "expansion-p3-genomic-benchmarks",
+      "artifact_sha256": "bda6fe51e3363a5d2fc8d265ca536897d3e83eb76458fc95066c21933e3bd0c0",
+      "source_locator": "Table 2, same dataset row and framework column group; Results, baseline CNN training paragraph (10 epochs, batch size 64)",
+      "rationale": "Table 2 reports accuracy and F1 for the same trained CNN on each dataset within each framework. Frameworks and datasets remain separate.",
+      "members": [
+        {
+          "evaluation_id": "genomic-benchmarks-evaluation-baseline-cnn-tensorflow-human-enhancers-ensembl-accuracy",
+          "record_sha256": "7f34a278a8f50e58380cdafc8b930666441ca8f7ab47b9a18475b2a003065a5c"
+        },
+        {
+          "evaluation_id": "genomic-benchmarks-evaluation-baseline-cnn-tensorflow-human-enhancers-ensembl-f1",
+          "record_sha256": "2eac92120b925d985c07af95c21ffd97d185487f910e4ae819a6d9f3224a50ee"
+        }
+      ],
+      "name": "Baseline CNN (TensorFlow) · human_enhancers_ensembl"
+    },
+    {
+      "id": "evaluation-group-genomic-benchmarks-table-2-baseline-cnn-tensorflow-human-ensembl-regulatory",
+      "model_id": "genomic-benchmarks-method-baseline-cnn-tensorflow",
+      "dataset_id": "genomic-benchmarks-dataset-human-ensembl-regulatory",
+      "source_id": "expansion-p3-genomic-benchmarks",
+      "artifact_sha256": "bda6fe51e3363a5d2fc8d265ca536897d3e83eb76458fc95066c21933e3bd0c0",
+      "source_locator": "Table 2, same dataset row and framework column group; Results, baseline CNN training paragraph (10 epochs, batch size 64)",
+      "rationale": "Table 2 reports accuracy and F1 for the same trained CNN on each dataset within each framework. Frameworks and datasets remain separate.",
+      "members": [
+        {
+          "evaluation_id": "genomic-benchmarks-evaluation-baseline-cnn-tensorflow-human-ensembl-regulatory-accuracy",
+          "record_sha256": "3da6759fa129ef67e066ba4a1008853a78c4eb6e6240229691490c12e5e7c59b"
+        },
+        {
+          "evaluation_id": "genomic-benchmarks-evaluation-baseline-cnn-tensorflow-human-ensembl-regulatory-f1",
+          "record_sha256": "a77748815e459cff361ed4ea3792af861e3b4ff90e421f584a235fa43e8f2908"
+        }
+      ],
+      "name": "Baseline CNN (TensorFlow) · human_ensembl_regulatory"
+    },
+    {
+      "id": "evaluation-group-genomic-benchmarks-table-2-baseline-cnn-tensorflow-human-nontata-promoters",
+      "model_id": "genomic-benchmarks-method-baseline-cnn-tensorflow",
+      "dataset_id": "genomic-benchmarks-dataset-human-nontata-promoters",
+      "source_id": "expansion-p3-genomic-benchmarks",
+      "artifact_sha256": "bda6fe51e3363a5d2fc8d265ca536897d3e83eb76458fc95066c21933e3bd0c0",
+      "source_locator": "Table 2, same dataset row and framework column group; Results, baseline CNN training paragraph (10 epochs, batch size 64)",
+      "rationale": "Table 2 reports accuracy and F1 for the same trained CNN on each dataset within each framework. Frameworks and datasets remain separate.",
+      "members": [
+        {
+          "evaluation_id": "genomic-benchmarks-evaluation-baseline-cnn-tensorflow-human-nontata-promoters-accuracy",
+          "record_sha256": "91071aa0c1752231531b0dafc4955f6efbd948b78feff786140aab6d7f843f7b"
+        },
+        {
+          "evaluation_id": "genomic-benchmarks-evaluation-baseline-cnn-tensorflow-human-nontata-promoters-f1",
+          "record_sha256": "6cebadf4297605584e61e31a6b72c5bc672bdbe29a96d7a763bd0ac84094adf1"
+        }
+      ],
+      "name": "Baseline CNN (TensorFlow) · human_nontata_promoters"
+    },
+    {
+      "id": "evaluation-group-genomic-benchmarks-table-2-baseline-cnn-tensorflow-human-ocr-ensembl",
+      "model_id": "genomic-benchmarks-method-baseline-cnn-tensorflow",
+      "dataset_id": "genomic-benchmarks-dataset-human-ocr-ensembl",
+      "source_id": "expansion-p3-genomic-benchmarks",
+      "artifact_sha256": "bda6fe51e3363a5d2fc8d265ca536897d3e83eb76458fc95066c21933e3bd0c0",
+      "source_locator": "Table 2, same dataset row and framework column group; Results, baseline CNN training paragraph (10 epochs, batch size 64)",
+      "rationale": "Table 2 reports accuracy and F1 for the same trained CNN on each dataset within each framework. Frameworks and datasets remain separate.",
+      "members": [
+        {
+          "evaluation_id": "genomic-benchmarks-evaluation-baseline-cnn-tensorflow-human-ocr-ensembl-accuracy",
+          "record_sha256": "9d7b5c5d0e5d0eadd974503142b87bb3b42faaf628e7a654d6331f9773549659"
+        },
+        {
+          "evaluation_id": "genomic-benchmarks-evaluation-baseline-cnn-tensorflow-human-ocr-ensembl-f1",
+          "record_sha256": "dd1bb89f90dbe70ab284e69f9afecb743f902b2217915af8ae96c45e84408407"
+        }
+      ],
+      "name": "Baseline CNN (TensorFlow) · human_ocr_ensembl"
+    },
+    {
+      "id": "evaluation-group-proteingym-table-2-zero-shot-substitutions-carp-640m",
+      "model_id": "proteingym-method-carp-640m",
+      "dataset_id": "proteingym-dataset-proteingym-substitution-dms-assays",
+      "source_id": "evidence-expansion-proteingym-a3b08cc4",
+      "artifact_sha256": "a3b08cc4a6befd64620cf0f287d78d55a36dc2639955f52c5655f83833c50104",
+      "source_locator": "Table 2, same model row across Spearman, AUC, MCC, NDCG and Recall columns; table caption",
+      "rationale": "Table 2 caption identifies all five columns as metrics between one model scoring setup and the substitution assay measurements. Each printed model configuration remains separate.",
+      "members": [
+        {
+          "evaluation_id": "proteingym-evaluation-carp-640m-zs-sub-auc",
+          "record_sha256": "4a70d038f6e0999a28f0f455889139781135a1a6fe0ad90fd5fcf565ebeeca5c"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-carp-640m-zs-sub-mcc",
+          "record_sha256": "5baa6112eb02f3945c02238ebf10b2d4cf18cd74c5ed36cd2dd19f7a0ee5afd0"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-carp-640m-zs-sub-ndcg",
+          "record_sha256": "77955ec90434ecbc5045448a8575ff0f784b498abe9fc2f2685dd2c9c77cb6a5"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-carp-640m-zs-sub-recall",
+          "record_sha256": "70a5d07217674d9d321017639d02b83b2272b826f1622b7c0054ac396e2b6b31"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-carp-640m-zs-sub-spearman",
+          "record_sha256": "9c6aa0adff5e49ce08c5e4174b828f5514750e94078447a3f53df3d98b47d18d"
+        }
+      ],
+      "name": "CARP (640M) · zero-shot substitutions"
+    },
+    {
+      "id": "evaluation-group-proteingym-table-2-zero-shot-substitutions-deepsequence-ensemble",
+      "model_id": "proteingym-method-deepsequence-ensemble",
+      "dataset_id": "proteingym-dataset-proteingym-substitution-dms-assays",
+      "source_id": "evidence-expansion-proteingym-a3b08cc4",
+      "artifact_sha256": "a3b08cc4a6befd64620cf0f287d78d55a36dc2639955f52c5655f83833c50104",
+      "source_locator": "Table 2, same model row across Spearman, AUC, MCC, NDCG and Recall columns; table caption",
+      "rationale": "Table 2 caption identifies all five columns as metrics between one model scoring setup and the substitution assay measurements. Each printed model configuration remains separate.",
+      "members": [
+        {
+          "evaluation_id": "proteingym-evaluation-deepsequence-ensemble-zs-sub-auc",
+          "record_sha256": "13caac3dfc3b6c56137119c45f289dd919cc612d6518e4c79eed2a2236940fb3"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-deepsequence-ensemble-zs-sub-mcc",
+          "record_sha256": "c449673c4d70a4ee0fce5a4352c00170cdcf80ebe856a7497c5d9c171d708c75"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-deepsequence-ensemble-zs-sub-ndcg",
+          "record_sha256": "cac3a41fa2f9067475990fd3ec93183cae70aa90df49bb75bf42cd92e49ba8ec"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-deepsequence-ensemble-zs-sub-recall",
+          "record_sha256": "ab0835cd8a97948b47b8d66abda238e81923a132cd3cbdedf1e352fc322aaff4"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-deepsequence-ensemble-zs-sub-spearman",
+          "record_sha256": "a277ab20828d1ad62054e6b3d67897e7daa7fa453bdc1e1e883f6c57c952598e"
+        }
+      ],
+      "name": "DeepSequence (ensemble) · zero-shot substitutions"
+    },
+    {
+      "id": "evaluation-group-proteingym-table-2-zero-shot-substitutions-esm-1b",
+      "model_id": "proteingym-method-esm-1b",
+      "dataset_id": "proteingym-dataset-proteingym-substitution-dms-assays",
+      "source_id": "evidence-expansion-proteingym-a3b08cc4",
+      "artifact_sha256": "a3b08cc4a6befd64620cf0f287d78d55a36dc2639955f52c5655f83833c50104",
+      "source_locator": "Table 2, same model row across Spearman, AUC, MCC, NDCG and Recall columns; table caption",
+      "rationale": "Table 2 caption identifies all five columns as metrics between one model scoring setup and the substitution assay measurements. Each printed model configuration remains separate.",
+      "members": [
+        {
+          "evaluation_id": "proteingym-evaluation-esm-1b-zs-sub-auc",
+          "record_sha256": "b917ee7c6d00c9a943cd3394aa49d5349ee963545a6c3986fdd64d1092b6d5f5"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-esm-1b-zs-sub-mcc",
+          "record_sha256": "b82548f62228abc283c8394ea6ebde7890aa5ad63e58866425dffdd43990fd43"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-esm-1b-zs-sub-ndcg",
+          "record_sha256": "5f8db3090a7dd6b754389d2bfa84667a10f34e8527881c147099a8f3e1aef11d"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-esm-1b-zs-sub-recall",
+          "record_sha256": "3696f0a3cb5ef5fce33425d3c382a50a57f1ec7b6ac9b9e9380210e9951c5c5d"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-esm-1b-zs-sub-spearman",
+          "record_sha256": "c7ee3b74a3b3f2797a0bfadf889ac21409bd850ab7923be8473bfdff18633ba0"
+        }
+      ],
+      "name": "ESM-1b · zero-shot substitutions"
+    },
+    {
+      "id": "evaluation-group-proteingym-table-2-zero-shot-substitutions-esm-1v-ensemble",
+      "model_id": "proteingym-method-esm-1v-ensemble",
+      "dataset_id": "proteingym-dataset-proteingym-substitution-dms-assays",
+      "source_id": "evidence-expansion-proteingym-a3b08cc4",
+      "artifact_sha256": "a3b08cc4a6befd64620cf0f287d78d55a36dc2639955f52c5655f83833c50104",
+      "source_locator": "Table 2, same model row across Spearman, AUC, MCC, NDCG and Recall columns; table caption",
+      "rationale": "Table 2 caption identifies all five columns as metrics between one model scoring setup and the substitution assay measurements. Each printed model configuration remains separate.",
+      "members": [
+        {
+          "evaluation_id": "proteingym-evaluation-esm-1v-ensemble-zs-sub-auc",
+          "record_sha256": "1e000ec31bbeaa093490549d3f6b05c64edc4fb40d762584cf8e9d1ed7623973"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-esm-1v-ensemble-zs-sub-mcc",
+          "record_sha256": "278a2e4a712d8c6087456ea16985e7ad9014bfdc3e1ef5c1999eece86414327d"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-esm-1v-ensemble-zs-sub-ndcg",
+          "record_sha256": "a634c807433627addf3f7ae0bf928b3c615646393abf165c8470e1ea1fe445ac"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-esm-1v-ensemble-zs-sub-recall",
+          "record_sha256": "0aa947a6347f4da3108e7c4ab684fa12ce47897065a69c9d327b15bc48c706bd"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-esm-1v-ensemble-zs-sub-spearman",
+          "record_sha256": "59ff84d364da371643d73a8cb967b31ad0950992624b80d90bcdebe1ce93a042"
+        }
+      ],
+      "name": "ESM-1v (ensemble) · zero-shot substitutions"
+    },
+    {
+      "id": "evaluation-group-proteingym-table-2-zero-shot-substitutions-esm-2-15b",
+      "model_id": "proteingym-method-esm-2-15b",
+      "dataset_id": "proteingym-dataset-proteingym-substitution-dms-assays",
+      "source_id": "evidence-expansion-proteingym-a3b08cc4",
+      "artifact_sha256": "a3b08cc4a6befd64620cf0f287d78d55a36dc2639955f52c5655f83833c50104",
+      "source_locator": "Table 2, same model row across Spearman, AUC, MCC, NDCG and Recall columns; table caption",
+      "rationale": "Table 2 caption identifies all five columns as metrics between one model scoring setup and the substitution assay measurements. Each printed model configuration remains separate.",
+      "members": [
+        {
+          "evaluation_id": "proteingym-evaluation-esm-2-15b-zs-sub-auc",
+          "record_sha256": "33dbe69e9dfdfe28768d576edcc6208997bcd381b5ed1e7b8f3f3e99f8be0201"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-esm-2-15b-zs-sub-mcc",
+          "record_sha256": "19bbab18f3fa1fe7bcf808692f1396e39f79cde68b6342022f88ba569802eb23"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-esm-2-15b-zs-sub-ndcg",
+          "record_sha256": "eb7fb0f2e683fdc85368dbc1da79583ac1d4609e927b38f5223626ea67a93273"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-esm-2-15b-zs-sub-recall",
+          "record_sha256": "35d42d4fb15c841d07253c13dd520f026e330d24aec5a01158d75ef2bca3bfb3"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-esm-2-15b-zs-sub-spearman",
+          "record_sha256": "52aacda32a3c42288eb6ac04a777e64d552dce6250f951407ff39418f806c275"
+        }
+      ],
+      "name": "ESM-2 (15B) · zero-shot substitutions"
+    },
+    {
+      "id": "evaluation-group-proteingym-table-2-zero-shot-substitutions-esm-if1",
+      "model_id": "proteingym-method-esm-if1",
+      "dataset_id": "proteingym-dataset-proteingym-substitution-dms-assays",
+      "source_id": "evidence-expansion-proteingym-a3b08cc4",
+      "artifact_sha256": "a3b08cc4a6befd64620cf0f287d78d55a36dc2639955f52c5655f83833c50104",
+      "source_locator": "Table 2, same model row across Spearman, AUC, MCC, NDCG and Recall columns; table caption",
+      "rationale": "Table 2 caption identifies all five columns as metrics between one model scoring setup and the substitution assay measurements. Each printed model configuration remains separate.",
+      "members": [
+        {
+          "evaluation_id": "proteingym-evaluation-esm-if1-zs-sub-auc",
+          "record_sha256": "fc4bb2ec616d077752221b28fd842cd52527b106d6077e73e88fec2ef8dbe7ae"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-esm-if1-zs-sub-mcc",
+          "record_sha256": "14e772c28ea0e371a6d98f38f2daf1f4510dd641edcb7a557cca18cadc1da813"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-esm-if1-zs-sub-ndcg",
+          "record_sha256": "d1194bceb5ca9ac01af96e2bf24c31a02f9068a773d474119c575a197c293819"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-esm-if1-zs-sub-recall",
+          "record_sha256": "e11b7ac5a6bbc06b6c3ed08fc7c7f6f495b9b2206cea0b1f1b037234b2edab67"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-esm-if1-zs-sub-spearman",
+          "record_sha256": "f3c6bb7201421528021c40a1f19255993c4bc3eba097f876472080fd64318d01"
+        }
+      ],
+      "name": "ESM-IF1 · zero-shot substitutions"
+    },
+    {
+      "id": "evaluation-group-proteingym-table-2-zero-shot-substitutions-eve-ensemble",
+      "model_id": "proteingym-method-eve-ensemble",
+      "dataset_id": "proteingym-dataset-proteingym-substitution-dms-assays",
+      "source_id": "evidence-expansion-proteingym-a3b08cc4",
+      "artifact_sha256": "a3b08cc4a6befd64620cf0f287d78d55a36dc2639955f52c5655f83833c50104",
+      "source_locator": "Table 2, same model row across Spearman, AUC, MCC, NDCG and Recall columns; table caption",
+      "rationale": "Table 2 caption identifies all five columns as metrics between one model scoring setup and the substitution assay measurements. Each printed model configuration remains separate.",
+      "members": [
+        {
+          "evaluation_id": "proteingym-evaluation-eve-ensemble-zs-sub-auc",
+          "record_sha256": "4d68f089f968b6034baa61ef6ebd62959af4651e59ea09e5935e195b95a2d085"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-eve-ensemble-zs-sub-mcc",
+          "record_sha256": "0f28a5c69843b7b1ec46e616cc84529ff2695c97ff8a28ab4c13c3383656fdd9"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-eve-ensemble-zs-sub-ndcg",
+          "record_sha256": "b682756bcd52358c84d8b3dea93b83f2524be15ded024cdc8897252c2524097a"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-eve-ensemble-zs-sub-recall",
+          "record_sha256": "2abeca29875f0dfe342e48265081eeebe0184c5ebb8ebed02dd237e0076bae0e"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-eve-ensemble-zs-sub-spearman",
+          "record_sha256": "b195d5c26271cfb0993c035d546052a4c11ccb22e349a6ab1a9a6ea2dd139fa2"
+        }
+      ],
+      "name": "EVE (ensemble) · zero-shot substitutions"
+    },
+    {
+      "id": "evaluation-group-proteingym-table-2-zero-shot-substitutions-evmutation",
+      "model_id": "proteingym-method-evmutation",
+      "dataset_id": "proteingym-dataset-proteingym-substitution-dms-assays",
+      "source_id": "evidence-expansion-proteingym-a3b08cc4",
+      "artifact_sha256": "a3b08cc4a6befd64620cf0f287d78d55a36dc2639955f52c5655f83833c50104",
+      "source_locator": "Table 2, same model row across Spearman, AUC, MCC, NDCG and Recall columns; table caption",
+      "rationale": "Table 2 caption identifies all five columns as metrics between one model scoring setup and the substitution assay measurements. Each printed model configuration remains separate.",
+      "members": [
+        {
+          "evaluation_id": "proteingym-evaluation-evmutation-zs-sub-auc",
+          "record_sha256": "5f9e0e1a6af4662cb8235d4a7cf67be9c9b3a8bf9efa55c1951b16edfc1219ba"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-evmutation-zs-sub-mcc",
+          "record_sha256": "7f8bf16cdc565bf251266e321fabe249f99eef8695fdcf356f8d7760bad3f003"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-evmutation-zs-sub-ndcg",
+          "record_sha256": "08d8a8f74396b024cef735b5c11070454d7cfa95a396569ac92c9f8fb5e843c2"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-evmutation-zs-sub-recall",
+          "record_sha256": "f4894a85fb8abf4296be20895db64be2764055e5c4b51ea902f683c25bcd466e"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-evmutation-zs-sub-spearman",
+          "record_sha256": "a9b6212442f36c1f248d5098d1e8db2b92b0a07509e2d6a0d409ca51ce01318a"
+        }
+      ],
+      "name": "EVmutation · zero-shot substitutions"
+    },
+    {
+      "id": "evaluation-group-proteingym-table-2-zero-shot-substitutions-gemme",
+      "model_id": "proteingym-method-gemme",
+      "dataset_id": "proteingym-dataset-proteingym-substitution-dms-assays",
+      "source_id": "evidence-expansion-proteingym-a3b08cc4",
+      "artifact_sha256": "a3b08cc4a6befd64620cf0f287d78d55a36dc2639955f52c5655f83833c50104",
+      "source_locator": "Table 2, same model row across Spearman, AUC, MCC, NDCG and Recall columns; table caption",
+      "rationale": "Table 2 caption identifies all five columns as metrics between one model scoring setup and the substitution assay measurements. Each printed model configuration remains separate.",
+      "members": [
+        {
+          "evaluation_id": "proteingym-evaluation-gemme-zs-sub-auc",
+          "record_sha256": "bbcef5d779439e4fa66a3dfa57da5bfc15948dcd0cd984ae94eb8bb23f9f47cc"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-gemme-zs-sub-mcc",
+          "record_sha256": "08c0db79ee9b241ffb01a79d13f359461a0e29826bb431918d9b369450bdcef6"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-gemme-zs-sub-ndcg",
+          "record_sha256": "5c441ead2386bb1fdfae351fd6005f973ed34d651866e6c95a5e668afada16e7"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-gemme-zs-sub-recall",
+          "record_sha256": "410600a83a0810286b93420ab6084e73f74785bf025c368ffeba2fb50054b863"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-gemme-zs-sub-spearman",
+          "record_sha256": "8b26f01e90a6a72d21e20b52936aef86913a6e5fced7afdf075124c368accc41"
+        }
+      ],
+      "name": "GEMME · zero-shot substitutions"
+    },
+    {
+      "id": "evaluation-group-proteingym-table-2-zero-shot-substitutions-mif-st",
+      "model_id": "proteingym-method-mif-st",
+      "dataset_id": "proteingym-dataset-proteingym-substitution-dms-assays",
+      "source_id": "evidence-expansion-proteingym-a3b08cc4",
+      "artifact_sha256": "a3b08cc4a6befd64620cf0f287d78d55a36dc2639955f52c5655f83833c50104",
+      "source_locator": "Table 2, same model row across Spearman, AUC, MCC, NDCG and Recall columns; table caption",
+      "rationale": "Table 2 caption identifies all five columns as metrics between one model scoring setup and the substitution assay measurements. Each printed model configuration remains separate.",
+      "members": [
+        {
+          "evaluation_id": "proteingym-evaluation-mif-st-zs-sub-auc",
+          "record_sha256": "8813c57d71d0ddd1b6fab06d2fc5ba93b5ce3e345c3a8ce6919646c574788c2d"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-mif-st-zs-sub-mcc",
+          "record_sha256": "48517449995f300dc9a3b8a8a98933bd7a3b241b16a53c6d37fdd3fbd0f2d387"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-mif-st-zs-sub-ndcg",
+          "record_sha256": "740fde0a52aa14be0ab4822e799e96283da2b28cf0d7f2941d2db6c5950db542"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-mif-st-zs-sub-recall",
+          "record_sha256": "06ce1a5105c61c44e388c5fddb71762b14745537055e4cb3c1c4b2da47383461"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-mif-st-zs-sub-spearman",
+          "record_sha256": "93f6e09e46d3580f1dc0a3287d7411cd5b4d31fedd981e95c57e577912bfd3f1"
+        }
+      ],
+      "name": "MIF-ST · zero-shot substitutions"
+    },
+    {
+      "id": "evaluation-group-proteingym-table-2-zero-shot-substitutions-msa-transformer-ensemble",
+      "model_id": "proteingym-method-msa-transformer-ensemble",
+      "dataset_id": "proteingym-dataset-proteingym-substitution-dms-assays",
+      "source_id": "evidence-expansion-proteingym-a3b08cc4",
+      "artifact_sha256": "a3b08cc4a6befd64620cf0f287d78d55a36dc2639955f52c5655f83833c50104",
+      "source_locator": "Table 2, same model row across Spearman, AUC, MCC, NDCG and Recall columns; table caption",
+      "rationale": "Table 2 caption identifies all five columns as metrics between one model scoring setup and the substitution assay measurements. Each printed model configuration remains separate.",
+      "members": [
+        {
+          "evaluation_id": "proteingym-evaluation-msa-transformer-ensemble-zs-sub-auc",
+          "record_sha256": "63fec179340112e9b2036dc806d0fe01c7ad0482a123713e7aae369be45fad45"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-msa-transformer-ensemble-zs-sub-mcc",
+          "record_sha256": "fb222ecca734661511b0d59862105d3ae84283bf1ea4184b4065e477adcc796f"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-msa-transformer-ensemble-zs-sub-ndcg",
+          "record_sha256": "e0aab2111e965ff78f644c1cd41d69d2a108b7bde8a63e2534d323119746eec0"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-msa-transformer-ensemble-zs-sub-recall",
+          "record_sha256": "bbb0e094ba040ae6f926cccecb65bef6da2a69e34a72e1d19f81673c323c4619"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-msa-transformer-ensemble-zs-sub-spearman",
+          "record_sha256": "864f00000bf3844bb58ead333411d02f3ce26dcc40e3ffb2fff4b9211222ce10"
+        }
+      ],
+      "name": "MSA Transformer (ensemble) · zero-shot substitutions"
+    },
+    {
+      "id": "evaluation-group-proteingym-table-2-zero-shot-substitutions-progen2-xl",
+      "model_id": "proteingym-method-progen2-xl",
+      "dataset_id": "proteingym-dataset-proteingym-substitution-dms-assays",
+      "source_id": "evidence-expansion-proteingym-a3b08cc4",
+      "artifact_sha256": "a3b08cc4a6befd64620cf0f287d78d55a36dc2639955f52c5655f83833c50104",
+      "source_locator": "Table 2, same model row across Spearman, AUC, MCC, NDCG and Recall columns; table caption",
+      "rationale": "Table 2 caption identifies all five columns as metrics between one model scoring setup and the substitution assay measurements. Each printed model configuration remains separate.",
+      "members": [
+        {
+          "evaluation_id": "proteingym-evaluation-progen2-xl-zs-sub-auc",
+          "record_sha256": "9537ddb91434fd533943f8a3507821258d467fb1f294b83cfcf9f2108fd1ae8b"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-progen2-xl-zs-sub-mcc",
+          "record_sha256": "841d02f169de4a8173fde749a5dd193fe367c8a293e09f345da46b7451747a91"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-progen2-xl-zs-sub-ndcg",
+          "record_sha256": "e37ae70c7b16168ee4082995b5a01bda2838c9bf70b8ab293b39ff5aa9af7039"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-progen2-xl-zs-sub-recall",
+          "record_sha256": "2850b218bf9fb5166db8b2bb78e60f45e536b7fea03b4d7900b0c4673e0501dd"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-progen2-xl-zs-sub-spearman",
+          "record_sha256": "f1ab60aaa09000a837f6891772ddcdc1f20101fbe8f5c65771c1cf209007e98c"
+        }
+      ],
+      "name": "ProGen2 XL · zero-shot substitutions"
+    },
+    {
+      "id": "evaluation-group-proteingym-table-2-zero-shot-substitutions-proteinmpnn",
+      "model_id": "proteingym-method-proteinmpnn",
+      "dataset_id": "proteingym-dataset-proteingym-substitution-dms-assays",
+      "source_id": "evidence-expansion-proteingym-a3b08cc4",
+      "artifact_sha256": "a3b08cc4a6befd64620cf0f287d78d55a36dc2639955f52c5655f83833c50104",
+      "source_locator": "Table 2, same model row across Spearman, AUC, MCC, NDCG and Recall columns; table caption",
+      "rationale": "Table 2 caption identifies all five columns as metrics between one model scoring setup and the substitution assay measurements. Each printed model configuration remains separate.",
+      "members": [
+        {
+          "evaluation_id": "proteingym-evaluation-proteinmpnn-zs-sub-auc",
+          "record_sha256": "00fbae590dc5f556f0d08b4f4647b9e714946be2f7b81b620b8a2d7bddb02423"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-proteinmpnn-zs-sub-mcc",
+          "record_sha256": "b61b379cc766fb7c0289590f0fab116549e7c238f1eb22fd68944ce6533eafa4"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-proteinmpnn-zs-sub-ndcg",
+          "record_sha256": "1058e13de9eca02f79e37b003ed863777007e3f6b3c518eb0dfcc3475af302da"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-proteinmpnn-zs-sub-recall",
+          "record_sha256": "f3a8457c0b4d1d4f08d31f06466faedff6024607b0ce08d223599118c1ae59a8"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-proteinmpnn-zs-sub-spearman",
+          "record_sha256": "d714a62aa3a5b0fbd6090f23c1b9755b7562da29cdc39bbccfef5027f419ea58"
+        }
+      ],
+      "name": "ProteinMPNN · zero-shot substitutions"
+    },
+    {
+      "id": "evaluation-group-proteingym-table-2-zero-shot-substitutions-rita-xl",
+      "model_id": "proteingym-method-rita-xl",
+      "dataset_id": "proteingym-dataset-proteingym-substitution-dms-assays",
+      "source_id": "evidence-expansion-proteingym-a3b08cc4",
+      "artifact_sha256": "a3b08cc4a6befd64620cf0f287d78d55a36dc2639955f52c5655f83833c50104",
+      "source_locator": "Table 2, same model row across Spearman, AUC, MCC, NDCG and Recall columns; table caption",
+      "rationale": "Table 2 caption identifies all five columns as metrics between one model scoring setup and the substitution assay measurements. Each printed model configuration remains separate.",
+      "members": [
+        {
+          "evaluation_id": "proteingym-evaluation-rita-xl-zs-sub-auc",
+          "record_sha256": "53f77bc8288beffe4cef959cd1ca06e021c22ce8baf15a33fa7db41dd3af6f36"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-rita-xl-zs-sub-mcc",
+          "record_sha256": "1c85100a93aebfb4da21bfbb03d3fe412d2c2b62c33378870c99213824b0166c"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-rita-xl-zs-sub-ndcg",
+          "record_sha256": "87c412a40460285a2189eb5ba43772aa8145e504f286f2fc410710ddddef2900"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-rita-xl-zs-sub-recall",
+          "record_sha256": "604de95b791db566e812e1f3918bae40569e7e7053c94c85057894b46889e2e7"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-rita-xl-zs-sub-spearman",
+          "record_sha256": "5049aa84bbef88801241edf53388a143ef99922c003f30220be75cb780a64b73"
+        }
+      ],
+      "name": "RITA XL · zero-shot substitutions"
+    },
+    {
+      "id": "evaluation-group-proteingym-table-2-zero-shot-substitutions-site-independent",
+      "model_id": "proteingym-method-site-independent",
+      "dataset_id": "proteingym-dataset-proteingym-substitution-dms-assays",
+      "source_id": "evidence-expansion-proteingym-a3b08cc4",
+      "artifact_sha256": "a3b08cc4a6befd64620cf0f287d78d55a36dc2639955f52c5655f83833c50104",
+      "source_locator": "Table 2, same model row across Spearman, AUC, MCC, NDCG and Recall columns; table caption",
+      "rationale": "Table 2 caption identifies all five columns as metrics between one model scoring setup and the substitution assay measurements. Each printed model configuration remains separate.",
+      "members": [
+        {
+          "evaluation_id": "proteingym-evaluation-site-independent-zs-sub-auc",
+          "record_sha256": "609fc636ad3fd100f448b98038d8cd4e7dd7bd8d098c3b958557b54e9cf7b432"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-site-independent-zs-sub-mcc",
+          "record_sha256": "60913d82e0507c0b3aa893499d5d74d9fb225b30bffea077d0b104db3026c692"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-site-independent-zs-sub-ndcg",
+          "record_sha256": "81b61d38e112fab62fa6c0bc5a5e4cbd62be663b9d4dce723d32c1abf6875bae"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-site-independent-zs-sub-recall",
+          "record_sha256": "620549ec9f736c636530d9a369f90bc05d02a4efc99933a909c1b4b387d87ea5"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-site-independent-zs-sub-spearman",
+          "record_sha256": "3b847d6e1494e1103f1b2352cf9fc406fb828497b746da63f0d166764b1a34b2"
+        }
+      ],
+      "name": "Site-Independent · zero-shot substitutions"
+    },
+    {
+      "id": "evaluation-group-proteingym-table-2-zero-shot-substitutions-trancepteve-l",
+      "model_id": "proteingym-method-trancepteve-l",
+      "dataset_id": "proteingym-dataset-proteingym-substitution-dms-assays",
+      "source_id": "evidence-expansion-proteingym-a3b08cc4",
+      "artifact_sha256": "a3b08cc4a6befd64620cf0f287d78d55a36dc2639955f52c5655f83833c50104",
+      "source_locator": "Table 2, same model row across Spearman, AUC, MCC, NDCG and Recall columns; table caption",
+      "rationale": "Table 2 caption identifies all five columns as metrics between one model scoring setup and the substitution assay measurements. Each printed model configuration remains separate.",
+      "members": [
+        {
+          "evaluation_id": "proteingym-evaluation-trancepteve-l-zs-sub-auc",
+          "record_sha256": "423281d4ea5e988ccfca8b843bd022f4e73679ed3ce46276bf6bd0fe75bbfc20"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-trancepteve-l-zs-sub-mcc",
+          "record_sha256": "785cbe080109db49fc16afe26183f241713368d69f497903f292b72115b3dac7"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-trancepteve-l-zs-sub-ndcg",
+          "record_sha256": "0e8f69acb242ca65a38ee0ed01cde0cfbb70f34b65c2b8c33417b0db408aa3bf"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-trancepteve-l-zs-sub-recall",
+          "record_sha256": "9f23170c51884e3dea6af1541737107f6e9954ca929e62b21e5dea7e4e3d8a7f"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-trancepteve-l-zs-sub-spearman",
+          "record_sha256": "16ce852e2507a00e3a148923e81f48b27cedd62aef7ffeba9223b742a76ebc93"
+        }
+      ],
+      "name": "TranceptEVE L · zero-shot substitutions"
+    },
+    {
+      "id": "evaluation-group-proteingym-table-2-zero-shot-substitutions-tranception-l",
+      "model_id": "proteingym-method-tranception-l",
+      "dataset_id": "proteingym-dataset-proteingym-substitution-dms-assays",
+      "source_id": "evidence-expansion-proteingym-a3b08cc4",
+      "artifact_sha256": "a3b08cc4a6befd64620cf0f287d78d55a36dc2639955f52c5655f83833c50104",
+      "source_locator": "Table 2, same model row across Spearman, AUC, MCC, NDCG and Recall columns; table caption",
+      "rationale": "Table 2 caption identifies all five columns as metrics between one model scoring setup and the substitution assay measurements. Each printed model configuration remains separate.",
+      "members": [
+        {
+          "evaluation_id": "proteingym-evaluation-tranception-l-zs-sub-auc",
+          "record_sha256": "0d0046d8e7d7368a470c0f84e31eeeceebb84265a2cb71c828e4df599cfc49ff"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-tranception-l-zs-sub-mcc",
+          "record_sha256": "e9076a320258f185acf3f56d4cf40deec447cc477710185c27672e28c33e8dea"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-tranception-l-zs-sub-ndcg",
+          "record_sha256": "5feb6bcf13b2de08d19268a66896bf6733a16195168fb5a64c04554e164f3dfc"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-tranception-l-zs-sub-recall",
+          "record_sha256": "2629ed9afff8bd04fc3e30df12f5a50a67041766c35585218b63d71ea477c342"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-tranception-l-zs-sub-spearman",
+          "record_sha256": "8f5b974a2e74e0e03e71708431c7c6341a63783d1856b0dea34a4fbd2c7e4a30"
+        }
+      ],
+      "name": "Tranception L · zero-shot substitutions"
+    },
+    {
+      "id": "evaluation-group-proteingym-table-2-zero-shot-substitutions-unirep",
+      "model_id": "proteingym-method-unirep",
+      "dataset_id": "proteingym-dataset-proteingym-substitution-dms-assays",
+      "source_id": "evidence-expansion-proteingym-a3b08cc4",
+      "artifact_sha256": "a3b08cc4a6befd64620cf0f287d78d55a36dc2639955f52c5655f83833c50104",
+      "source_locator": "Table 2, same model row across Spearman, AUC, MCC, NDCG and Recall columns; table caption",
+      "rationale": "Table 2 caption identifies all five columns as metrics between one model scoring setup and the substitution assay measurements. Each printed model configuration remains separate.",
+      "members": [
+        {
+          "evaluation_id": "proteingym-evaluation-unirep-zs-sub-auc",
+          "record_sha256": "12ceb06dcae333329f4b49405d21eeb5af030611a7d19de63fc7787c814420a6"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-unirep-zs-sub-mcc",
+          "record_sha256": "dcf8988211fdc2fb0117c98a990551c57377af0cec5fac8c69ee5eb0c0866329"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-unirep-zs-sub-ndcg",
+          "record_sha256": "b60adfc7c5105727829d6f123a4a11d7f371f82b08581f314063a1ca3b013c30"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-unirep-zs-sub-recall",
+          "record_sha256": "e363ac7470600dd004c6021882919b0c003e910873de9fb1dda083f8ad8d9e3e"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-unirep-zs-sub-spearman",
+          "record_sha256": "5d2cc9388f822edf78cd18031a4914d5ea6178b41bdfabddfd50cc75d4506dcb"
+        }
+      ],
+      "name": "UniRep · zero-shot substitutions"
+    },
+    {
+      "id": "evaluation-group-proteingym-table-2-zero-shot-substitutions-unirep-evotuned",
+      "model_id": "proteingym-method-unirep-evotuned",
+      "dataset_id": "proteingym-dataset-proteingym-substitution-dms-assays",
+      "source_id": "evidence-expansion-proteingym-a3b08cc4",
+      "artifact_sha256": "a3b08cc4a6befd64620cf0f287d78d55a36dc2639955f52c5655f83833c50104",
+      "source_locator": "Table 2, same model row across Spearman, AUC, MCC, NDCG and Recall columns; table caption",
+      "rationale": "Table 2 caption identifies all five columns as metrics between one model scoring setup and the substitution assay measurements. Each printed model configuration remains separate.",
+      "members": [
+        {
+          "evaluation_id": "proteingym-evaluation-unirep-evotuned-zs-sub-auc",
+          "record_sha256": "68bc75d78aa6419adc623a417d7c5dc7c0c9e810965e596e2c226239c84164b0"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-unirep-evotuned-zs-sub-mcc",
+          "record_sha256": "86cb09b3485cead167595276498f47019c319c240be533d7fa74ccd30b456c5a"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-unirep-evotuned-zs-sub-ndcg",
+          "record_sha256": "02d4fa50b371b32018ce0b9e5c827e814be6b6aa82ccf863fd4ad7472bc399cf"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-unirep-evotuned-zs-sub-recall",
+          "record_sha256": "8c7ba081e714da3b44507b799a96f8c255d7b001e78af9fa6ae1de06fae49116"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-unirep-evotuned-zs-sub-spearman",
+          "record_sha256": "3c52873337ad0360904826c48a8bf1c77a453cdbd2aa634ed302fdb5c7e588fd"
+        }
+      ],
+      "name": "UniRep evotuned · zero-shot substitutions"
+    },
+    {
+      "id": "evaluation-group-proteingym-table-2-zero-shot-substitutions-vespa",
+      "model_id": "proteingym-method-vespa",
+      "dataset_id": "proteingym-dataset-proteingym-substitution-dms-assays",
+      "source_id": "evidence-expansion-proteingym-a3b08cc4",
+      "artifact_sha256": "a3b08cc4a6befd64620cf0f287d78d55a36dc2639955f52c5655f83833c50104",
+      "source_locator": "Table 2, same model row across Spearman, AUC, MCC, NDCG and Recall columns; table caption",
+      "rationale": "Table 2 caption identifies all five columns as metrics between one model scoring setup and the substitution assay measurements. Each printed model configuration remains separate.",
+      "members": [
+        {
+          "evaluation_id": "proteingym-evaluation-vespa-zs-sub-auc",
+          "record_sha256": "cb7502eef628eba99c0f34b2a7080e1c17ec2fcb10b0d2b09f94befee27e15ba"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-vespa-zs-sub-mcc",
+          "record_sha256": "58aca69eef21dab1fb5a14233c91f053d9fb5d16ac09d4fde2e3e1f62d7ad67d"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-vespa-zs-sub-ndcg",
+          "record_sha256": "6932352da78420680249381f3caae1fffc18f35e12ff8b571b3cb88686b0982c"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-vespa-zs-sub-recall",
+          "record_sha256": "35229432aee7d6b2df57552fb83557f7087bf0fd4c035955b9a72932df36f2d4"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-vespa-zs-sub-spearman",
+          "record_sha256": "1cadb1730caea6fa2c1392436e11400146f17adf9de7a13fe334898484e45984"
+        }
+      ],
+      "name": "VESPA · zero-shot substitutions"
+    },
+    {
+      "id": "evaluation-group-proteingym-table-2-zero-shot-substitutions-wavenet",
+      "model_id": "proteingym-method-wavenet",
+      "dataset_id": "proteingym-dataset-proteingym-substitution-dms-assays",
+      "source_id": "evidence-expansion-proteingym-a3b08cc4",
+      "artifact_sha256": "a3b08cc4a6befd64620cf0f287d78d55a36dc2639955f52c5655f83833c50104",
+      "source_locator": "Table 2, same model row across Spearman, AUC, MCC, NDCG and Recall columns; table caption",
+      "rationale": "Table 2 caption identifies all five columns as metrics between one model scoring setup and the substitution assay measurements. Each printed model configuration remains separate.",
+      "members": [
+        {
+          "evaluation_id": "proteingym-evaluation-wavenet-zs-sub-auc",
+          "record_sha256": "7f9ff119a47b02dc5a493d6245c91d50ab3e65bf898b2776454078c22a801460"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-wavenet-zs-sub-mcc",
+          "record_sha256": "1b01f27f3e3eedfc6cd6b6c68b70a5dcbce2676a2d77507cb08696228f14a524"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-wavenet-zs-sub-ndcg",
+          "record_sha256": "c7afa21a43a5155981db868748a439e95a0a0f783673cd00af88e22270f5858c"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-wavenet-zs-sub-recall",
+          "record_sha256": "50b196e91c4eae088c0316fc34f400adcd5f3c02ea4c5e7540ab6b1c579875c4"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-wavenet-zs-sub-spearman",
+          "record_sha256": "9f3bad548247d9d3b2ce94dcb6594521c36495feb7a425a5b6fe73b25549906f"
+        }
+      ],
+      "name": "WaveNet · zero-shot substitutions"
+    },
+    {
+      "id": "evaluation-group-proteingym-table-3-supervised-substitutions-avg-embed-esm-1v",
+      "model_id": "proteingym-method-embed-esm-1v",
+      "dataset_id": "proteingym-dataset-proteingym-substitution-dms-assays",
+      "source_id": "evidence-expansion-proteingym-a3b08cc4",
+      "artifact_sha256": "a3b08cc4a6befd64620cf0f287d78d55a36dc2639955f52c5655f83833c50104",
+      "source_locator": "Table 3, same model/input-representation row and avg split column under Spearman and MSE; table caption",
+      "rationale": "Table 3 reports Spearman and MSE for the same model/input representation in the same split column. Contiguous, modulo, random and the average summary remain four separate scopes.",
+      "members": [
+        {
+          "evaluation_id": "proteingym-evaluation-embed-esm-1v-sup-sub-mse-avg",
+          "record_sha256": "ec9d33c9c09319b0af2f08c2b85fc2e908c616a793fd89c87b493e2fab961461"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-embed-esm-1v-sup-sub-spearman-avg",
+          "record_sha256": "e708dc411bcd5c5a91c347e2ab1f4ed0c997d3c5821ce00af5119904595a3e43"
+        }
+      ],
+      "name": "Embed. ESM-1v · supervised substitutions, average over splits"
+    },
+    {
+      "id": "evaluation-group-proteingym-table-3-supervised-substitutions-avg-embed-msat",
+      "model_id": "proteingym-method-embed-msat",
+      "dataset_id": "proteingym-dataset-proteingym-substitution-dms-assays",
+      "source_id": "evidence-expansion-proteingym-a3b08cc4",
+      "artifact_sha256": "a3b08cc4a6befd64620cf0f287d78d55a36dc2639955f52c5655f83833c50104",
+      "source_locator": "Table 3, same model/input-representation row and avg split column under Spearman and MSE; table caption",
+      "rationale": "Table 3 reports Spearman and MSE for the same model/input representation in the same split column. Contiguous, modulo, random and the average summary remain four separate scopes.",
+      "members": [
+        {
+          "evaluation_id": "proteingym-evaluation-embed-msat-sup-sub-mse-avg",
+          "record_sha256": "c0e41b0bef6de3c290d90742fc3877ac404efdad4028500a046e17e7c97471c1"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-embed-msat-sup-sub-spearman-avg",
+          "record_sha256": "a85878147da01d1369c8193bcf93b4269636770a82ad7693347048c095309e91"
+        }
+      ],
+      "name": "Embed. MSAT · supervised substitutions, average over splits"
+    },
+    {
+      "id": "evaluation-group-proteingym-table-3-supervised-substitutions-avg-embed-tranception",
+      "model_id": "proteingym-method-embed-tranception",
+      "dataset_id": "proteingym-dataset-proteingym-substitution-dms-assays",
+      "source_id": "evidence-expansion-proteingym-a3b08cc4",
+      "artifact_sha256": "a3b08cc4a6befd64620cf0f287d78d55a36dc2639955f52c5655f83833c50104",
+      "source_locator": "Table 3, same model/input-representation row and avg split column under Spearman and MSE; table caption",
+      "rationale": "Table 3 reports Spearman and MSE for the same model/input representation in the same split column. Contiguous, modulo, random and the average summary remain four separate scopes.",
+      "members": [
+        {
+          "evaluation_id": "proteingym-evaluation-embed-tranception-sup-sub-mse-avg",
+          "record_sha256": "2ce4e0d572ef3bb7d9e2681264b1baa158d49dafcabcd20f89886c50b3020d33"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-embed-tranception-sup-sub-spearman-avg",
+          "record_sha256": "b9e17076431b4946cbef8b997d0d5fba87b85fbe9c80f7d7b1bc97991e8d8afb"
+        }
+      ],
+      "name": "Embed. Tranception · supervised substitutions, average over splits"
+    },
+    {
+      "id": "evaluation-group-proteingym-table-3-supervised-substitutions-avg-npt-proteinnpt",
+      "model_id": "proteingym-method-npt-proteinnpt",
+      "dataset_id": "proteingym-dataset-proteingym-substitution-dms-assays",
+      "source_id": "evidence-expansion-proteingym-a3b08cc4",
+      "artifact_sha256": "a3b08cc4a6befd64620cf0f287d78d55a36dc2639955f52c5655f83833c50104",
+      "source_locator": "Table 3, same model/input-representation row and avg split column under Spearman and MSE; table caption",
+      "rationale": "Table 3 reports Spearman and MSE for the same model/input representation in the same split column. Contiguous, modulo, random and the average summary remain four separate scopes.",
+      "members": [
+        {
+          "evaluation_id": "proteingym-evaluation-npt-proteinnpt-sup-sub-mse-avg",
+          "record_sha256": "cea48fd29de7cc2a2b26a08a0f9b31d38f5f77749ee6518dd6893c813398acd4"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-npt-proteinnpt-sup-sub-spearman-avg",
+          "record_sha256": "fee832aa6c03b92c9b7d7a1f38e4a9d9388419f0c1f332edd23f8d69ac0b1e82"
+        }
+      ],
+      "name": "NPT ProteinNPT · supervised substitutions, average over splits"
+    },
+    {
+      "id": "evaluation-group-proteingym-table-3-supervised-substitutions-avg-ohe-deepsequence",
+      "model_id": "proteingym-method-ohe-deepsequence",
+      "dataset_id": "proteingym-dataset-proteingym-substitution-dms-assays",
+      "source_id": "evidence-expansion-proteingym-a3b08cc4",
+      "artifact_sha256": "a3b08cc4a6befd64620cf0f287d78d55a36dc2639955f52c5655f83833c50104",
+      "source_locator": "Table 3, same model/input-representation row and avg split column under Spearman and MSE; table caption",
+      "rationale": "Table 3 reports Spearman and MSE for the same model/input representation in the same split column. Contiguous, modulo, random and the average summary remain four separate scopes.",
+      "members": [
+        {
+          "evaluation_id": "proteingym-evaluation-ohe-deepsequence-sup-sub-mse-avg",
+          "record_sha256": "3085188ef6c1fd0f504dae7e7e809501c7ca8856c7c6666f3628fece1a942841"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-ohe-deepsequence-sup-sub-spearman-avg",
+          "record_sha256": "49afab1ebe4b71e0f9b53bcffdbb8c733d4eed09fc75c178f641105553d42f79"
+        }
+      ],
+      "name": "OHE DeepSequence · supervised substitutions, average over splits"
+    },
+    {
+      "id": "evaluation-group-proteingym-table-3-supervised-substitutions-avg-ohe-esm-1v",
+      "model_id": "proteingym-method-ohe-esm-1v",
+      "dataset_id": "proteingym-dataset-proteingym-substitution-dms-assays",
+      "source_id": "evidence-expansion-proteingym-a3b08cc4",
+      "artifact_sha256": "a3b08cc4a6befd64620cf0f287d78d55a36dc2639955f52c5655f83833c50104",
+      "source_locator": "Table 3, same model/input-representation row and avg split column under Spearman and MSE; table caption",
+      "rationale": "Table 3 reports Spearman and MSE for the same model/input representation in the same split column. Contiguous, modulo, random and the average summary remain four separate scopes.",
+      "members": [
+        {
+          "evaluation_id": "proteingym-evaluation-ohe-esm-1v-sup-sub-mse-avg",
+          "record_sha256": "bebf24616a5f49b515f6a10fbb91c6db1e315789573df6ae3cae65008c957b61"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-ohe-esm-1v-sup-sub-spearman-avg",
+          "record_sha256": "5b857568a9f93d254e64259e7f14c75ce9ee599d23e9d3d5bba8dc9a42e81b92"
+        }
+      ],
+      "name": "OHE ESM-1v · supervised substitutions, average over splits"
+    },
+    {
+      "id": "evaluation-group-proteingym-table-3-supervised-substitutions-avg-ohe-msat",
+      "model_id": "proteingym-method-ohe-msat",
+      "dataset_id": "proteingym-dataset-proteingym-substitution-dms-assays",
+      "source_id": "evidence-expansion-proteingym-a3b08cc4",
+      "artifact_sha256": "a3b08cc4a6befd64620cf0f287d78d55a36dc2639955f52c5655f83833c50104",
+      "source_locator": "Table 3, same model/input-representation row and avg split column under Spearman and MSE; table caption",
+      "rationale": "Table 3 reports Spearman and MSE for the same model/input representation in the same split column. Contiguous, modulo, random and the average summary remain four separate scopes.",
+      "members": [
+        {
+          "evaluation_id": "proteingym-evaluation-ohe-msat-sup-sub-mse-avg",
+          "record_sha256": "be72771854e79143996de7cac8e931c84601c3725e520002a4bf589f21804ac6"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-ohe-msat-sup-sub-spearman-avg",
+          "record_sha256": "dd30b08cd4330573076a74127ea8b10b7945c242fa9ddac157aedfceb698cb8c"
+        }
+      ],
+      "name": "OHE MSAT · supervised substitutions, average over splits"
+    },
+    {
+      "id": "evaluation-group-proteingym-table-3-supervised-substitutions-avg-ohe-none",
+      "model_id": "proteingym-method-ohe-none",
+      "dataset_id": "proteingym-dataset-proteingym-substitution-dms-assays",
+      "source_id": "evidence-expansion-proteingym-a3b08cc4",
+      "artifact_sha256": "a3b08cc4a6befd64620cf0f287d78d55a36dc2639955f52c5655f83833c50104",
+      "source_locator": "Table 3, same model/input-representation row and avg split column under Spearman and MSE; table caption",
+      "rationale": "Table 3 reports Spearman and MSE for the same model/input representation in the same split column. Contiguous, modulo, random and the average summary remain four separate scopes.",
+      "members": [
+        {
+          "evaluation_id": "proteingym-evaluation-ohe-none-sup-sub-mse-avg",
+          "record_sha256": "b7aff1f5a65b5f98ce59feea5154b0c0769656fa1b91db29e15919156c486995"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-ohe-none-sup-sub-spearman-avg",
+          "record_sha256": "a3056c082b353047c247dd3a3c40c5d5ce0e4d9ca1b6e29b127cbba498600168"
+        }
+      ],
+      "name": "OHE None · supervised substitutions, average over splits"
+    },
+    {
+      "id": "evaluation-group-proteingym-table-3-supervised-substitutions-avg-ohe-trancepteve",
+      "model_id": "proteingym-method-ohe-trancepteve",
+      "dataset_id": "proteingym-dataset-proteingym-substitution-dms-assays",
+      "source_id": "evidence-expansion-proteingym-a3b08cc4",
+      "artifact_sha256": "a3b08cc4a6befd64620cf0f287d78d55a36dc2639955f52c5655f83833c50104",
+      "source_locator": "Table 3, same model/input-representation row and avg split column under Spearman and MSE; table caption",
+      "rationale": "Table 3 reports Spearman and MSE for the same model/input representation in the same split column. Contiguous, modulo, random and the average summary remain four separate scopes.",
+      "members": [
+        {
+          "evaluation_id": "proteingym-evaluation-ohe-trancepteve-sup-sub-mse-avg",
+          "record_sha256": "3db9af52ce78b2cca6a92adc0943d63c1ccade28c6bbe352a0daca334c314d17"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-ohe-trancepteve-sup-sub-spearman-avg",
+          "record_sha256": "c2d437493a01e6b22f37da1c70f6e1248d5c187cbe7ef4ac84b9db316dd59140"
+        }
+      ],
+      "name": "OHE TranceptEVE · supervised substitutions, average over splits"
+    },
+    {
+      "id": "evaluation-group-proteingym-table-3-supervised-substitutions-avg-ohe-tranception",
+      "model_id": "proteingym-method-ohe-tranception",
+      "dataset_id": "proteingym-dataset-proteingym-substitution-dms-assays",
+      "source_id": "evidence-expansion-proteingym-a3b08cc4",
+      "artifact_sha256": "a3b08cc4a6befd64620cf0f287d78d55a36dc2639955f52c5655f83833c50104",
+      "source_locator": "Table 3, same model/input-representation row and avg split column under Spearman and MSE; table caption",
+      "rationale": "Table 3 reports Spearman and MSE for the same model/input representation in the same split column. Contiguous, modulo, random and the average summary remain four separate scopes.",
+      "members": [
+        {
+          "evaluation_id": "proteingym-evaluation-ohe-tranception-sup-sub-mse-avg",
+          "record_sha256": "450b09d27a2547a48c53927ff10d8eacf380312e6cde2948e97e7ecff7311e69"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-ohe-tranception-sup-sub-spearman-avg",
+          "record_sha256": "641f58ecaa2b7560585ea4cafcf72b6b9b0875b7080a4cc6fd538b58fda2cffc"
+        }
+      ],
+      "name": "OHE Tranception · supervised substitutions, average over splits"
+    },
+    {
+      "id": "evaluation-group-proteingym-table-3-supervised-substitutions-contig-embed-esm-1v",
+      "model_id": "proteingym-method-embed-esm-1v",
+      "dataset_id": "proteingym-dataset-proteingym-substitution-dms-assays",
+      "source_id": "evidence-expansion-proteingym-a3b08cc4",
+      "artifact_sha256": "a3b08cc4a6befd64620cf0f287d78d55a36dc2639955f52c5655f83833c50104",
+      "source_locator": "Table 3, same model/input-representation row and contig split column under Spearman and MSE; table caption",
+      "rationale": "Table 3 reports Spearman and MSE for the same model/input representation in the same split column. Contiguous, modulo, random and the average summary remain four separate scopes.",
+      "members": [
+        {
+          "evaluation_id": "proteingym-evaluation-embed-esm-1v-sup-sub-mse-contig",
+          "record_sha256": "122f39d8c719d487e9ebc48cee7293f056f7bf1f219ccdda9c572b04baac701a"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-embed-esm-1v-sup-sub-spearman-contig",
+          "record_sha256": "3d27da8fed3470325dd742bbca6c4cd7500d414b647ef201d2a44f2a7c7c0373"
+        }
+      ],
+      "name": "Embed. ESM-1v · supervised substitutions, contiguous split"
+    },
+    {
+      "id": "evaluation-group-proteingym-table-3-supervised-substitutions-contig-embed-msat",
+      "model_id": "proteingym-method-embed-msat",
+      "dataset_id": "proteingym-dataset-proteingym-substitution-dms-assays",
+      "source_id": "evidence-expansion-proteingym-a3b08cc4",
+      "artifact_sha256": "a3b08cc4a6befd64620cf0f287d78d55a36dc2639955f52c5655f83833c50104",
+      "source_locator": "Table 3, same model/input-representation row and contig split column under Spearman and MSE; table caption",
+      "rationale": "Table 3 reports Spearman and MSE for the same model/input representation in the same split column. Contiguous, modulo, random and the average summary remain four separate scopes.",
+      "members": [
+        {
+          "evaluation_id": "proteingym-evaluation-embed-msat-sup-sub-mse-contig",
+          "record_sha256": "46b909e9b574a377c6ef7b1f384b6b3785b504b9fb1465af49787e9f632fdbeb"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-embed-msat-sup-sub-spearman-contig",
+          "record_sha256": "05d34da9be306a1c5dda515b7ac6097892f28314ad80886e7ee11b197dcd39aa"
+        }
+      ],
+      "name": "Embed. MSAT · supervised substitutions, contiguous split"
+    },
+    {
+      "id": "evaluation-group-proteingym-table-3-supervised-substitutions-contig-embed-tranception",
+      "model_id": "proteingym-method-embed-tranception",
+      "dataset_id": "proteingym-dataset-proteingym-substitution-dms-assays",
+      "source_id": "evidence-expansion-proteingym-a3b08cc4",
+      "artifact_sha256": "a3b08cc4a6befd64620cf0f287d78d55a36dc2639955f52c5655f83833c50104",
+      "source_locator": "Table 3, same model/input-representation row and contig split column under Spearman and MSE; table caption",
+      "rationale": "Table 3 reports Spearman and MSE for the same model/input representation in the same split column. Contiguous, modulo, random and the average summary remain four separate scopes.",
+      "members": [
+        {
+          "evaluation_id": "proteingym-evaluation-embed-tranception-sup-sub-mse-contig",
+          "record_sha256": "ea7bb538cb6def2b395525a366ba51aa8cb993cd93d16e73001209e04c0c600f"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-embed-tranception-sup-sub-spearman-contig",
+          "record_sha256": "1e6f54e603cdf57a7d6fb95c342bf151f2913209fbc6add35db2ae4e9c6fa97a"
+        }
+      ],
+      "name": "Embed. Tranception · supervised substitutions, contiguous split"
+    },
+    {
+      "id": "evaluation-group-proteingym-table-3-supervised-substitutions-contig-npt-proteinnpt",
+      "model_id": "proteingym-method-npt-proteinnpt",
+      "dataset_id": "proteingym-dataset-proteingym-substitution-dms-assays",
+      "source_id": "evidence-expansion-proteingym-a3b08cc4",
+      "artifact_sha256": "a3b08cc4a6befd64620cf0f287d78d55a36dc2639955f52c5655f83833c50104",
+      "source_locator": "Table 3, same model/input-representation row and contig split column under Spearman and MSE; table caption",
+      "rationale": "Table 3 reports Spearman and MSE for the same model/input representation in the same split column. Contiguous, modulo, random and the average summary remain four separate scopes.",
+      "members": [
+        {
+          "evaluation_id": "proteingym-evaluation-npt-proteinnpt-sup-sub-mse-contig",
+          "record_sha256": "be40718350b2fce7233d6a39980e3fa6f1b6b7af07347adeda13049346b75d08"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-npt-proteinnpt-sup-sub-spearman-contig",
+          "record_sha256": "b591c6a8a77d01f0188d451445938c3731ba1f3ce13e0b683a6d0cd2f514572f"
+        }
+      ],
+      "name": "NPT ProteinNPT · supervised substitutions, contiguous split"
+    },
+    {
+      "id": "evaluation-group-proteingym-table-3-supervised-substitutions-contig-ohe-deepsequence",
+      "model_id": "proteingym-method-ohe-deepsequence",
+      "dataset_id": "proteingym-dataset-proteingym-substitution-dms-assays",
+      "source_id": "evidence-expansion-proteingym-a3b08cc4",
+      "artifact_sha256": "a3b08cc4a6befd64620cf0f287d78d55a36dc2639955f52c5655f83833c50104",
+      "source_locator": "Table 3, same model/input-representation row and contig split column under Spearman and MSE; table caption",
+      "rationale": "Table 3 reports Spearman and MSE for the same model/input representation in the same split column. Contiguous, modulo, random and the average summary remain four separate scopes.",
+      "members": [
+        {
+          "evaluation_id": "proteingym-evaluation-ohe-deepsequence-sup-sub-mse-contig",
+          "record_sha256": "e65d155f3005bee52e506a2bfac01e1f4556ed2497c984961ce80bbe52d5741d"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-ohe-deepsequence-sup-sub-spearman-contig",
+          "record_sha256": "2da4a7f26ba6dc83ebd6a4bdbf69ae12a009f8061ca4c58623b2c21e991519a1"
+        }
+      ],
+      "name": "OHE DeepSequence · supervised substitutions, contiguous split"
+    },
+    {
+      "id": "evaluation-group-proteingym-table-3-supervised-substitutions-contig-ohe-esm-1v",
+      "model_id": "proteingym-method-ohe-esm-1v",
+      "dataset_id": "proteingym-dataset-proteingym-substitution-dms-assays",
+      "source_id": "evidence-expansion-proteingym-a3b08cc4",
+      "artifact_sha256": "a3b08cc4a6befd64620cf0f287d78d55a36dc2639955f52c5655f83833c50104",
+      "source_locator": "Table 3, same model/input-representation row and contig split column under Spearman and MSE; table caption",
+      "rationale": "Table 3 reports Spearman and MSE for the same model/input representation in the same split column. Contiguous, modulo, random and the average summary remain four separate scopes.",
+      "members": [
+        {
+          "evaluation_id": "proteingym-evaluation-ohe-esm-1v-sup-sub-mse-contig",
+          "record_sha256": "87bd6d5ca61adf6852f40e1f8474e115f85a1af88945adb031b2d61baa17d013"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-ohe-esm-1v-sup-sub-spearman-contig",
+          "record_sha256": "4c755a06143ec498b20d8c370912e3207b47303a978a9a18864a70110a1ca964"
+        }
+      ],
+      "name": "OHE ESM-1v · supervised substitutions, contiguous split"
+    },
+    {
+      "id": "evaluation-group-proteingym-table-3-supervised-substitutions-contig-ohe-msat",
+      "model_id": "proteingym-method-ohe-msat",
+      "dataset_id": "proteingym-dataset-proteingym-substitution-dms-assays",
+      "source_id": "evidence-expansion-proteingym-a3b08cc4",
+      "artifact_sha256": "a3b08cc4a6befd64620cf0f287d78d55a36dc2639955f52c5655f83833c50104",
+      "source_locator": "Table 3, same model/input-representation row and contig split column under Spearman and MSE; table caption",
+      "rationale": "Table 3 reports Spearman and MSE for the same model/input representation in the same split column. Contiguous, modulo, random and the average summary remain four separate scopes.",
+      "members": [
+        {
+          "evaluation_id": "proteingym-evaluation-ohe-msat-sup-sub-mse-contig",
+          "record_sha256": "c76a112a1eeaa5b002d9f5075aeffc86ff1024d1d3d7ba64e5dcbebb0b93e2e4"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-ohe-msat-sup-sub-spearman-contig",
+          "record_sha256": "6d02c81738fc9f60e5acd8cd3a4d78e680d22d6c219900c97fefca60854ab3e5"
+        }
+      ],
+      "name": "OHE MSAT · supervised substitutions, contiguous split"
+    },
+    {
+      "id": "evaluation-group-proteingym-table-3-supervised-substitutions-contig-ohe-none",
+      "model_id": "proteingym-method-ohe-none",
+      "dataset_id": "proteingym-dataset-proteingym-substitution-dms-assays",
+      "source_id": "evidence-expansion-proteingym-a3b08cc4",
+      "artifact_sha256": "a3b08cc4a6befd64620cf0f287d78d55a36dc2639955f52c5655f83833c50104",
+      "source_locator": "Table 3, same model/input-representation row and contig split column under Spearman and MSE; table caption",
+      "rationale": "Table 3 reports Spearman and MSE for the same model/input representation in the same split column. Contiguous, modulo, random and the average summary remain four separate scopes.",
+      "members": [
+        {
+          "evaluation_id": "proteingym-evaluation-ohe-none-sup-sub-mse-contig",
+          "record_sha256": "f5eeef9e0d5038b34150d23fb40ab9f8dea875fad9958dd12a07b37571d6b776"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-ohe-none-sup-sub-spearman-contig",
+          "record_sha256": "5fb58a5fad692b640c4d070d3028e972978ba0154cfeeebbe09d71d2c191950d"
+        }
+      ],
+      "name": "OHE None · supervised substitutions, contiguous split"
+    },
+    {
+      "id": "evaluation-group-proteingym-table-3-supervised-substitutions-contig-ohe-trancepteve",
+      "model_id": "proteingym-method-ohe-trancepteve",
+      "dataset_id": "proteingym-dataset-proteingym-substitution-dms-assays",
+      "source_id": "evidence-expansion-proteingym-a3b08cc4",
+      "artifact_sha256": "a3b08cc4a6befd64620cf0f287d78d55a36dc2639955f52c5655f83833c50104",
+      "source_locator": "Table 3, same model/input-representation row and contig split column under Spearman and MSE; table caption",
+      "rationale": "Table 3 reports Spearman and MSE for the same model/input representation in the same split column. Contiguous, modulo, random and the average summary remain four separate scopes.",
+      "members": [
+        {
+          "evaluation_id": "proteingym-evaluation-ohe-trancepteve-sup-sub-mse-contig",
+          "record_sha256": "aabe60ab65e20f283f6f6f8e685e6db86901ff403bcf6d2aa88b2a2a61d31da0"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-ohe-trancepteve-sup-sub-spearman-contig",
+          "record_sha256": "9e5229add87caf03b3fda8456fbf2160648454b8481d493ec1adfe75a93d8e63"
+        }
+      ],
+      "name": "OHE TranceptEVE · supervised substitutions, contiguous split"
+    },
+    {
+      "id": "evaluation-group-proteingym-table-3-supervised-substitutions-contig-ohe-tranception",
+      "model_id": "proteingym-method-ohe-tranception",
+      "dataset_id": "proteingym-dataset-proteingym-substitution-dms-assays",
+      "source_id": "evidence-expansion-proteingym-a3b08cc4",
+      "artifact_sha256": "a3b08cc4a6befd64620cf0f287d78d55a36dc2639955f52c5655f83833c50104",
+      "source_locator": "Table 3, same model/input-representation row and contig split column under Spearman and MSE; table caption",
+      "rationale": "Table 3 reports Spearman and MSE for the same model/input representation in the same split column. Contiguous, modulo, random and the average summary remain four separate scopes.",
+      "members": [
+        {
+          "evaluation_id": "proteingym-evaluation-ohe-tranception-sup-sub-mse-contig",
+          "record_sha256": "3c5331eae5662390e64ad72791d3184e5c4d5f69531b5845ba160d4f4a643056"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-ohe-tranception-sup-sub-spearman-contig",
+          "record_sha256": "d5bf11051ad4a5c26bdba2701f0e5e2055a11449b5cd587bc3e2597faa66ec77"
+        }
+      ],
+      "name": "OHE Tranception · supervised substitutions, contiguous split"
+    },
+    {
+      "id": "evaluation-group-proteingym-table-3-supervised-substitutions-mod-embed-esm-1v",
+      "model_id": "proteingym-method-embed-esm-1v",
+      "dataset_id": "proteingym-dataset-proteingym-substitution-dms-assays",
+      "source_id": "evidence-expansion-proteingym-a3b08cc4",
+      "artifact_sha256": "a3b08cc4a6befd64620cf0f287d78d55a36dc2639955f52c5655f83833c50104",
+      "source_locator": "Table 3, same model/input-representation row and mod split column under Spearman and MSE; table caption",
+      "rationale": "Table 3 reports Spearman and MSE for the same model/input representation in the same split column. Contiguous, modulo, random and the average summary remain four separate scopes.",
+      "members": [
+        {
+          "evaluation_id": "proteingym-evaluation-embed-esm-1v-sup-sub-mse-mod",
+          "record_sha256": "7f66e25597fc5006c813b7ee77e2443dcafbe0ba6c3b3f9f2393d90093317bfd"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-embed-esm-1v-sup-sub-spearman-mod",
+          "record_sha256": "13cbbe023b9cd340dec98e0cacfb77c63b0d9f2a35519b2677af49317ad2c7fe"
+        }
+      ],
+      "name": "Embed. ESM-1v · supervised substitutions, modulo split"
+    },
+    {
+      "id": "evaluation-group-proteingym-table-3-supervised-substitutions-mod-embed-msat",
+      "model_id": "proteingym-method-embed-msat",
+      "dataset_id": "proteingym-dataset-proteingym-substitution-dms-assays",
+      "source_id": "evidence-expansion-proteingym-a3b08cc4",
+      "artifact_sha256": "a3b08cc4a6befd64620cf0f287d78d55a36dc2639955f52c5655f83833c50104",
+      "source_locator": "Table 3, same model/input-representation row and mod split column under Spearman and MSE; table caption",
+      "rationale": "Table 3 reports Spearman and MSE for the same model/input representation in the same split column. Contiguous, modulo, random and the average summary remain four separate scopes.",
+      "members": [
+        {
+          "evaluation_id": "proteingym-evaluation-embed-msat-sup-sub-mse-mod",
+          "record_sha256": "e5bd920b8d741083224c531d2d43fdce1f3245c9288ba5f87844e2670a268b1b"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-embed-msat-sup-sub-spearman-mod",
+          "record_sha256": "fe0b1cf2dce1c8037f3b36db6f61c62121c55685c4a7781ac64b5ca8872e9ffe"
+        }
+      ],
+      "name": "Embed. MSAT · supervised substitutions, modulo split"
+    },
+    {
+      "id": "evaluation-group-proteingym-table-3-supervised-substitutions-mod-embed-tranception",
+      "model_id": "proteingym-method-embed-tranception",
+      "dataset_id": "proteingym-dataset-proteingym-substitution-dms-assays",
+      "source_id": "evidence-expansion-proteingym-a3b08cc4",
+      "artifact_sha256": "a3b08cc4a6befd64620cf0f287d78d55a36dc2639955f52c5655f83833c50104",
+      "source_locator": "Table 3, same model/input-representation row and mod split column under Spearman and MSE; table caption",
+      "rationale": "Table 3 reports Spearman and MSE for the same model/input representation in the same split column. Contiguous, modulo, random and the average summary remain four separate scopes.",
+      "members": [
+        {
+          "evaluation_id": "proteingym-evaluation-embed-tranception-sup-sub-mse-mod",
+          "record_sha256": "6173e6c99c82f498d9f134f2add5951adad3490b19ef7fcdce1559915abbf56d"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-embed-tranception-sup-sub-spearman-mod",
+          "record_sha256": "c832ea7b0bf4cb6851863dbaeed8827b882c450bea7924ff2098827fc3f2d371"
+        }
+      ],
+      "name": "Embed. Tranception · supervised substitutions, modulo split"
+    },
+    {
+      "id": "evaluation-group-proteingym-table-3-supervised-substitutions-mod-npt-proteinnpt",
+      "model_id": "proteingym-method-npt-proteinnpt",
+      "dataset_id": "proteingym-dataset-proteingym-substitution-dms-assays",
+      "source_id": "evidence-expansion-proteingym-a3b08cc4",
+      "artifact_sha256": "a3b08cc4a6befd64620cf0f287d78d55a36dc2639955f52c5655f83833c50104",
+      "source_locator": "Table 3, same model/input-representation row and mod split column under Spearman and MSE; table caption",
+      "rationale": "Table 3 reports Spearman and MSE for the same model/input representation in the same split column. Contiguous, modulo, random and the average summary remain four separate scopes.",
+      "members": [
+        {
+          "evaluation_id": "proteingym-evaluation-npt-proteinnpt-sup-sub-mse-mod",
+          "record_sha256": "3c4857aea27fc25019ef6eda5d8b7bae1fea57864e37a9ff7a3a8d8622975c80"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-npt-proteinnpt-sup-sub-spearman-mod",
+          "record_sha256": "bacddd92571df3d65db03a98484e50438a51602adc004c37dc7529708b56464c"
+        }
+      ],
+      "name": "NPT ProteinNPT · supervised substitutions, modulo split"
+    },
+    {
+      "id": "evaluation-group-proteingym-table-3-supervised-substitutions-mod-ohe-deepsequence",
+      "model_id": "proteingym-method-ohe-deepsequence",
+      "dataset_id": "proteingym-dataset-proteingym-substitution-dms-assays",
+      "source_id": "evidence-expansion-proteingym-a3b08cc4",
+      "artifact_sha256": "a3b08cc4a6befd64620cf0f287d78d55a36dc2639955f52c5655f83833c50104",
+      "source_locator": "Table 3, same model/input-representation row and mod split column under Spearman and MSE; table caption",
+      "rationale": "Table 3 reports Spearman and MSE for the same model/input representation in the same split column. Contiguous, modulo, random and the average summary remain four separate scopes.",
+      "members": [
+        {
+          "evaluation_id": "proteingym-evaluation-ohe-deepsequence-sup-sub-mse-mod",
+          "record_sha256": "1f51bbbebf3057e0756450d935252b4e9ff6b35b292250483a80a2687ba3535a"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-ohe-deepsequence-sup-sub-spearman-mod",
+          "record_sha256": "4830f4adf8bdbe46b43625c35b943eab943915078e876dfd1f40ae0fb6866935"
+        }
+      ],
+      "name": "OHE DeepSequence · supervised substitutions, modulo split"
+    },
+    {
+      "id": "evaluation-group-proteingym-table-3-supervised-substitutions-mod-ohe-esm-1v",
+      "model_id": "proteingym-method-ohe-esm-1v",
+      "dataset_id": "proteingym-dataset-proteingym-substitution-dms-assays",
+      "source_id": "evidence-expansion-proteingym-a3b08cc4",
+      "artifact_sha256": "a3b08cc4a6befd64620cf0f287d78d55a36dc2639955f52c5655f83833c50104",
+      "source_locator": "Table 3, same model/input-representation row and mod split column under Spearman and MSE; table caption",
+      "rationale": "Table 3 reports Spearman and MSE for the same model/input representation in the same split column. Contiguous, modulo, random and the average summary remain four separate scopes.",
+      "members": [
+        {
+          "evaluation_id": "proteingym-evaluation-ohe-esm-1v-sup-sub-mse-mod",
+          "record_sha256": "6aadc17364b0fc6eb500101d612c797a4e54460cbf33d09de7036926079e86de"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-ohe-esm-1v-sup-sub-spearman-mod",
+          "record_sha256": "eac8e6fad364576b3c7c0f5c132b77a6a5cffe7f4c56ccb147fce49bfb1a2571"
+        }
+      ],
+      "name": "OHE ESM-1v · supervised substitutions, modulo split"
+    },
+    {
+      "id": "evaluation-group-proteingym-table-3-supervised-substitutions-mod-ohe-msat",
+      "model_id": "proteingym-method-ohe-msat",
+      "dataset_id": "proteingym-dataset-proteingym-substitution-dms-assays",
+      "source_id": "evidence-expansion-proteingym-a3b08cc4",
+      "artifact_sha256": "a3b08cc4a6befd64620cf0f287d78d55a36dc2639955f52c5655f83833c50104",
+      "source_locator": "Table 3, same model/input-representation row and mod split column under Spearman and MSE; table caption",
+      "rationale": "Table 3 reports Spearman and MSE for the same model/input representation in the same split column. Contiguous, modulo, random and the average summary remain four separate scopes.",
+      "members": [
+        {
+          "evaluation_id": "proteingym-evaluation-ohe-msat-sup-sub-mse-mod",
+          "record_sha256": "5767db4b8e679ae0701a8ef5113e45bab462e18214f08ea1037cf6368a2c1c22"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-ohe-msat-sup-sub-spearman-mod",
+          "record_sha256": "9aef654dace4c4e72c0ad34f82a76d88a3662fe4b1ec056d5a52b3bda02ee271"
+        }
+      ],
+      "name": "OHE MSAT · supervised substitutions, modulo split"
+    },
+    {
+      "id": "evaluation-group-proteingym-table-3-supervised-substitutions-mod-ohe-none",
+      "model_id": "proteingym-method-ohe-none",
+      "dataset_id": "proteingym-dataset-proteingym-substitution-dms-assays",
+      "source_id": "evidence-expansion-proteingym-a3b08cc4",
+      "artifact_sha256": "a3b08cc4a6befd64620cf0f287d78d55a36dc2639955f52c5655f83833c50104",
+      "source_locator": "Table 3, same model/input-representation row and mod split column under Spearman and MSE; table caption",
+      "rationale": "Table 3 reports Spearman and MSE for the same model/input representation in the same split column. Contiguous, modulo, random and the average summary remain four separate scopes.",
+      "members": [
+        {
+          "evaluation_id": "proteingym-evaluation-ohe-none-sup-sub-mse-mod",
+          "record_sha256": "f838d7774c3da8752785a9882a4fe65122fcd877e5b779c7a389a941048ea3c5"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-ohe-none-sup-sub-spearman-mod",
+          "record_sha256": "4221d903d59317655d07efbfdbc8c34e1502a1a17ffb8ca4edeba7c354ce7eaf"
+        }
+      ],
+      "name": "OHE None · supervised substitutions, modulo split"
+    },
+    {
+      "id": "evaluation-group-proteingym-table-3-supervised-substitutions-mod-ohe-trancepteve",
+      "model_id": "proteingym-method-ohe-trancepteve",
+      "dataset_id": "proteingym-dataset-proteingym-substitution-dms-assays",
+      "source_id": "evidence-expansion-proteingym-a3b08cc4",
+      "artifact_sha256": "a3b08cc4a6befd64620cf0f287d78d55a36dc2639955f52c5655f83833c50104",
+      "source_locator": "Table 3, same model/input-representation row and mod split column under Spearman and MSE; table caption",
+      "rationale": "Table 3 reports Spearman and MSE for the same model/input representation in the same split column. Contiguous, modulo, random and the average summary remain four separate scopes.",
+      "members": [
+        {
+          "evaluation_id": "proteingym-evaluation-ohe-trancepteve-sup-sub-mse-mod",
+          "record_sha256": "0358d81c033f19e02faad5ca2ac4ae46396e050f4393c759a7289ace7339dc89"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-ohe-trancepteve-sup-sub-spearman-mod",
+          "record_sha256": "e034ace4129874550b8558eec82b95779eb2053f5f1ce96bf74b4e45871b3459"
+        }
+      ],
+      "name": "OHE TranceptEVE · supervised substitutions, modulo split"
+    },
+    {
+      "id": "evaluation-group-proteingym-table-3-supervised-substitutions-mod-ohe-tranception",
+      "model_id": "proteingym-method-ohe-tranception",
+      "dataset_id": "proteingym-dataset-proteingym-substitution-dms-assays",
+      "source_id": "evidence-expansion-proteingym-a3b08cc4",
+      "artifact_sha256": "a3b08cc4a6befd64620cf0f287d78d55a36dc2639955f52c5655f83833c50104",
+      "source_locator": "Table 3, same model/input-representation row and mod split column under Spearman and MSE; table caption",
+      "rationale": "Table 3 reports Spearman and MSE for the same model/input representation in the same split column. Contiguous, modulo, random and the average summary remain four separate scopes.",
+      "members": [
+        {
+          "evaluation_id": "proteingym-evaluation-ohe-tranception-sup-sub-mse-mod",
+          "record_sha256": "f3dfca11685b01d31510e776b6534539c9ad89364a712ccb00e87d07178993a2"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-ohe-tranception-sup-sub-spearman-mod",
+          "record_sha256": "ee8fd8429e5c0d2d59da03ff6876481ceb90aa308d0614f8a27a5f54a7228fc2"
+        }
+      ],
+      "name": "OHE Tranception · supervised substitutions, modulo split"
+    },
+    {
+      "id": "evaluation-group-proteingym-table-3-supervised-substitutions-rand-embed-esm-1v",
+      "model_id": "proteingym-method-embed-esm-1v",
+      "dataset_id": "proteingym-dataset-proteingym-substitution-dms-assays",
+      "source_id": "evidence-expansion-proteingym-a3b08cc4",
+      "artifact_sha256": "a3b08cc4a6befd64620cf0f287d78d55a36dc2639955f52c5655f83833c50104",
+      "source_locator": "Table 3, same model/input-representation row and rand split column under Spearman and MSE; table caption",
+      "rationale": "Table 3 reports Spearman and MSE for the same model/input representation in the same split column. Contiguous, modulo, random and the average summary remain four separate scopes.",
+      "members": [
+        {
+          "evaluation_id": "proteingym-evaluation-embed-esm-1v-sup-sub-mse-rand",
+          "record_sha256": "10d8d315830fbfacae16e4cc670a1fadd0eddc5e7c2ca0880142568c184802db"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-embed-esm-1v-sup-sub-spearman-rand",
+          "record_sha256": "b0af4c7247009d9d5a010ee6d25852f7a08fee44c652518b5b95c885d2abe39d"
+        }
+      ],
+      "name": "Embed. ESM-1v · supervised substitutions, random split"
+    },
+    {
+      "id": "evaluation-group-proteingym-table-3-supervised-substitutions-rand-embed-msat",
+      "model_id": "proteingym-method-embed-msat",
+      "dataset_id": "proteingym-dataset-proteingym-substitution-dms-assays",
+      "source_id": "evidence-expansion-proteingym-a3b08cc4",
+      "artifact_sha256": "a3b08cc4a6befd64620cf0f287d78d55a36dc2639955f52c5655f83833c50104",
+      "source_locator": "Table 3, same model/input-representation row and rand split column under Spearman and MSE; table caption",
+      "rationale": "Table 3 reports Spearman and MSE for the same model/input representation in the same split column. Contiguous, modulo, random and the average summary remain four separate scopes.",
+      "members": [
+        {
+          "evaluation_id": "proteingym-evaluation-embed-msat-sup-sub-mse-rand",
+          "record_sha256": "c517e00e66d1d759fd556f624df72aed76ba4989a1ce30506980526fdedbd9c3"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-embed-msat-sup-sub-spearman-rand",
+          "record_sha256": "0613103e01bdb2984ca15624e49572c981ffb65567edc16c4c5a089646cebf11"
+        }
+      ],
+      "name": "Embed. MSAT · supervised substitutions, random split"
+    },
+    {
+      "id": "evaluation-group-proteingym-table-3-supervised-substitutions-rand-embed-tranception",
+      "model_id": "proteingym-method-embed-tranception",
+      "dataset_id": "proteingym-dataset-proteingym-substitution-dms-assays",
+      "source_id": "evidence-expansion-proteingym-a3b08cc4",
+      "artifact_sha256": "a3b08cc4a6befd64620cf0f287d78d55a36dc2639955f52c5655f83833c50104",
+      "source_locator": "Table 3, same model/input-representation row and rand split column under Spearman and MSE; table caption",
+      "rationale": "Table 3 reports Spearman and MSE for the same model/input representation in the same split column. Contiguous, modulo, random and the average summary remain four separate scopes.",
+      "members": [
+        {
+          "evaluation_id": "proteingym-evaluation-embed-tranception-sup-sub-mse-rand",
+          "record_sha256": "5f61421ac8fe35a15ddd2a96a8fcff5855dcc5bff5f9437de208779e3f1eafe2"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-embed-tranception-sup-sub-spearman-rand",
+          "record_sha256": "6200b8d1bca205ac9f38b1993eb327cd7524b7097c9a4576c4e45d0d53d8b3e9"
+        }
+      ],
+      "name": "Embed. Tranception · supervised substitutions, random split"
+    },
+    {
+      "id": "evaluation-group-proteingym-table-3-supervised-substitutions-rand-npt-proteinnpt",
+      "model_id": "proteingym-method-npt-proteinnpt",
+      "dataset_id": "proteingym-dataset-proteingym-substitution-dms-assays",
+      "source_id": "evidence-expansion-proteingym-a3b08cc4",
+      "artifact_sha256": "a3b08cc4a6befd64620cf0f287d78d55a36dc2639955f52c5655f83833c50104",
+      "source_locator": "Table 3, same model/input-representation row and rand split column under Spearman and MSE; table caption",
+      "rationale": "Table 3 reports Spearman and MSE for the same model/input representation in the same split column. Contiguous, modulo, random and the average summary remain four separate scopes.",
+      "members": [
+        {
+          "evaluation_id": "proteingym-evaluation-npt-proteinnpt-sup-sub-mse-rand",
+          "record_sha256": "0a2532985ec38f8f76ca859af3599a08ce68de9539a2108bea27f9f649ffb77a"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-npt-proteinnpt-sup-sub-spearman-rand",
+          "record_sha256": "237070179580ad18d371fcb78e831eecc31194a39645aa1b7cbf3e7b7a425849"
+        }
+      ],
+      "name": "NPT ProteinNPT · supervised substitutions, random split"
+    },
+    {
+      "id": "evaluation-group-proteingym-table-3-supervised-substitutions-rand-ohe-deepsequence",
+      "model_id": "proteingym-method-ohe-deepsequence",
+      "dataset_id": "proteingym-dataset-proteingym-substitution-dms-assays",
+      "source_id": "evidence-expansion-proteingym-a3b08cc4",
+      "artifact_sha256": "a3b08cc4a6befd64620cf0f287d78d55a36dc2639955f52c5655f83833c50104",
+      "source_locator": "Table 3, same model/input-representation row and rand split column under Spearman and MSE; table caption",
+      "rationale": "Table 3 reports Spearman and MSE for the same model/input representation in the same split column. Contiguous, modulo, random and the average summary remain four separate scopes.",
+      "members": [
+        {
+          "evaluation_id": "proteingym-evaluation-ohe-deepsequence-sup-sub-mse-rand",
+          "record_sha256": "0ba318f55b36a27cf2638cef5f797128940689a932786328bc6cce57dd72d885"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-ohe-deepsequence-sup-sub-spearman-rand",
+          "record_sha256": "2d91c0e155fa2233308f23b7a239ea9a852783ac6f5a772e7c4f02030e694fc7"
+        }
+      ],
+      "name": "OHE DeepSequence · supervised substitutions, random split"
+    },
+    {
+      "id": "evaluation-group-proteingym-table-3-supervised-substitutions-rand-ohe-esm-1v",
+      "model_id": "proteingym-method-ohe-esm-1v",
+      "dataset_id": "proteingym-dataset-proteingym-substitution-dms-assays",
+      "source_id": "evidence-expansion-proteingym-a3b08cc4",
+      "artifact_sha256": "a3b08cc4a6befd64620cf0f287d78d55a36dc2639955f52c5655f83833c50104",
+      "source_locator": "Table 3, same model/input-representation row and rand split column under Spearman and MSE; table caption",
+      "rationale": "Table 3 reports Spearman and MSE for the same model/input representation in the same split column. Contiguous, modulo, random and the average summary remain four separate scopes.",
+      "members": [
+        {
+          "evaluation_id": "proteingym-evaluation-ohe-esm-1v-sup-sub-mse-rand",
+          "record_sha256": "5eef5100735490b729df5508d23c556d36321a600c4fb8f7afff039b3d88f7c4"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-ohe-esm-1v-sup-sub-spearman-rand",
+          "record_sha256": "d62cf807207c35951bf144b136843fd9ffadc3680b7c4f005a16ba10572e6896"
+        }
+      ],
+      "name": "OHE ESM-1v · supervised substitutions, random split"
+    },
+    {
+      "id": "evaluation-group-proteingym-table-3-supervised-substitutions-rand-ohe-msat",
+      "model_id": "proteingym-method-ohe-msat",
+      "dataset_id": "proteingym-dataset-proteingym-substitution-dms-assays",
+      "source_id": "evidence-expansion-proteingym-a3b08cc4",
+      "artifact_sha256": "a3b08cc4a6befd64620cf0f287d78d55a36dc2639955f52c5655f83833c50104",
+      "source_locator": "Table 3, same model/input-representation row and rand split column under Spearman and MSE; table caption",
+      "rationale": "Table 3 reports Spearman and MSE for the same model/input representation in the same split column. Contiguous, modulo, random and the average summary remain four separate scopes.",
+      "members": [
+        {
+          "evaluation_id": "proteingym-evaluation-ohe-msat-sup-sub-mse-rand",
+          "record_sha256": "53afb99d38e52d15b65bea5fbb54ca81bddcc1341c5cd23af8100945f414ddeb"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-ohe-msat-sup-sub-spearman-rand",
+          "record_sha256": "5839e4e7cf942f36ea9e3e344de9496989a1c92e0a635adb21c0f8f98be74a13"
+        }
+      ],
+      "name": "OHE MSAT · supervised substitutions, random split"
+    },
+    {
+      "id": "evaluation-group-proteingym-table-3-supervised-substitutions-rand-ohe-none",
+      "model_id": "proteingym-method-ohe-none",
+      "dataset_id": "proteingym-dataset-proteingym-substitution-dms-assays",
+      "source_id": "evidence-expansion-proteingym-a3b08cc4",
+      "artifact_sha256": "a3b08cc4a6befd64620cf0f287d78d55a36dc2639955f52c5655f83833c50104",
+      "source_locator": "Table 3, same model/input-representation row and rand split column under Spearman and MSE; table caption",
+      "rationale": "Table 3 reports Spearman and MSE for the same model/input representation in the same split column. Contiguous, modulo, random and the average summary remain four separate scopes.",
+      "members": [
+        {
+          "evaluation_id": "proteingym-evaluation-ohe-none-sup-sub-mse-rand",
+          "record_sha256": "1bdcb22802823b1066f1a7b04054c95c2742c06e884aa615a8b962e1b297440c"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-ohe-none-sup-sub-spearman-rand",
+          "record_sha256": "8827e8390e207b39dd8cf5d957cc7c53132752a381ec0b8844e296c75322d529"
+        }
+      ],
+      "name": "OHE None · supervised substitutions, random split"
+    },
+    {
+      "id": "evaluation-group-proteingym-table-3-supervised-substitutions-rand-ohe-trancepteve",
+      "model_id": "proteingym-method-ohe-trancepteve",
+      "dataset_id": "proteingym-dataset-proteingym-substitution-dms-assays",
+      "source_id": "evidence-expansion-proteingym-a3b08cc4",
+      "artifact_sha256": "a3b08cc4a6befd64620cf0f287d78d55a36dc2639955f52c5655f83833c50104",
+      "source_locator": "Table 3, same model/input-representation row and rand split column under Spearman and MSE; table caption",
+      "rationale": "Table 3 reports Spearman and MSE for the same model/input representation in the same split column. Contiguous, modulo, random and the average summary remain four separate scopes.",
+      "members": [
+        {
+          "evaluation_id": "proteingym-evaluation-ohe-trancepteve-sup-sub-mse-rand",
+          "record_sha256": "46bf58e5f51af04926138e2d99fb2e6fc8f8c20067729303f9d180d32abab38a"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-ohe-trancepteve-sup-sub-spearman-rand",
+          "record_sha256": "9cc52c30b5349033fd7a29b30da0e6522c3ed219f06e8a3986a839bc8ac61d32"
+        }
+      ],
+      "name": "OHE TranceptEVE · supervised substitutions, random split"
+    },
+    {
+      "id": "evaluation-group-proteingym-table-3-supervised-substitutions-rand-ohe-tranception",
+      "model_id": "proteingym-method-ohe-tranception",
+      "dataset_id": "proteingym-dataset-proteingym-substitution-dms-assays",
+      "source_id": "evidence-expansion-proteingym-a3b08cc4",
+      "artifact_sha256": "a3b08cc4a6befd64620cf0f287d78d55a36dc2639955f52c5655f83833c50104",
+      "source_locator": "Table 3, same model/input-representation row and rand split column under Spearman and MSE; table caption",
+      "rationale": "Table 3 reports Spearman and MSE for the same model/input representation in the same split column. Contiguous, modulo, random and the average summary remain four separate scopes.",
+      "members": [
+        {
+          "evaluation_id": "proteingym-evaluation-ohe-tranception-sup-sub-mse-rand",
+          "record_sha256": "dbb6b158625f5b17b781e50da52f669acae5a25a400f4651cc0ef8a8ef3863c6"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-ohe-tranception-sup-sub-spearman-rand",
+          "record_sha256": "d7e574059e0395a71529b8c2ef0f23772fcb1c8440089b7862902e6bbeed1ad2"
+        }
+      ],
+      "name": "OHE Tranception · supervised substitutions, random split"
+    },
+    {
+      "id": "evaluation-group-proteingym-table-4-zero-shot-indels-all-hmm",
+      "model_id": "proteingym-method-hmm",
+      "dataset_id": "proteingym-dataset-proteingym-indel-dms-assays",
+      "source_id": "evidence-expansion-proteingym-a3b08cc4",
+      "artifact_sha256": "a3b08cc4a6befd64620cf0f287d78d55a36dc2639955f52c5655f83833c50104",
+      "source_locator": "Table 4, same model row, Spearman All and AUC All columns; table header and caption",
+      "rationale": "Table 4 labels both the pooled Spearman and AUC columns All. The Library and Designed/Natural Spearman subsets remain separate and are not assigned this group.",
+      "members": [
+        {
+          "evaluation_id": "proteingym-evaluation-hmm-zs-indel-auc",
+          "record_sha256": "49af58f9df50d9e8a3e2510d4483d6169d72ba937449b9e24afb12acd11a2853"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-hmm-zs-indel-spearman-all",
+          "record_sha256": "0b61506db0798e8fb1f9fa7661051a4cffbaacef720d7302c5ffe436a4429e8e"
+        }
+      ],
+      "name": "HMM · zero-shot indels, all assays"
+    },
+    {
+      "id": "evaluation-group-proteingym-table-4-zero-shot-indels-all-progen2-m",
+      "model_id": "proteingym-method-progen2-m",
+      "dataset_id": "proteingym-dataset-proteingym-indel-dms-assays",
+      "source_id": "evidence-expansion-proteingym-a3b08cc4",
+      "artifact_sha256": "a3b08cc4a6befd64620cf0f287d78d55a36dc2639955f52c5655f83833c50104",
+      "source_locator": "Table 4, same model row, Spearman All and AUC All columns; table header and caption",
+      "rationale": "Table 4 labels both the pooled Spearman and AUC columns All. The Library and Designed/Natural Spearman subsets remain separate and are not assigned this group.",
+      "members": [
+        {
+          "evaluation_id": "proteingym-evaluation-progen2-m-zs-indel-auc",
+          "record_sha256": "0b0a3dbae19e98ef0e8cdd74c1a9bbd64e3eccc5504018fc4fe71c7219c7d636"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-progen2-m-zs-indel-spearman-all",
+          "record_sha256": "fdff57c7b86b07fa3beddf91d878094bc3e26c7cf729b927af09925a180e8d0d"
+        }
+      ],
+      "name": "ProGen2 M · zero-shot indels, all assays"
+    },
+    {
+      "id": "evaluation-group-proteingym-table-4-zero-shot-indels-all-protgpt2",
+      "model_id": "proteingym-method-protgpt2",
+      "dataset_id": "proteingym-dataset-proteingym-indel-dms-assays",
+      "source_id": "evidence-expansion-proteingym-a3b08cc4",
+      "artifact_sha256": "a3b08cc4a6befd64620cf0f287d78d55a36dc2639955f52c5655f83833c50104",
+      "source_locator": "Table 4, same model row, Spearman All and AUC All columns; table header and caption",
+      "rationale": "Table 4 labels both the pooled Spearman and AUC columns All. The Library and Designed/Natural Spearman subsets remain separate and are not assigned this group.",
+      "members": [
+        {
+          "evaluation_id": "proteingym-evaluation-protgpt2-zs-indel-auc",
+          "record_sha256": "b403ab428ed6a1aa33e2b03fb9ed0ad19a09d9e103e9d175813d2e1850a90d94"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-protgpt2-zs-indel-spearman-all",
+          "record_sha256": "86fd6a9a2664411d163982156ffd3a806b8e6f6532bcc66e924d08ef8a4472e4"
+        }
+      ],
+      "name": "ProtGPT2 · zero-shot indels, all assays"
+    },
+    {
+      "id": "evaluation-group-proteingym-table-4-zero-shot-indels-all-provean",
+      "model_id": "proteingym-method-provean",
+      "dataset_id": "proteingym-dataset-proteingym-indel-dms-assays",
+      "source_id": "evidence-expansion-proteingym-a3b08cc4",
+      "artifact_sha256": "a3b08cc4a6befd64620cf0f287d78d55a36dc2639955f52c5655f83833c50104",
+      "source_locator": "Table 4, same model row, Spearman All and AUC All columns; table header and caption",
+      "rationale": "Table 4 labels both the pooled Spearman and AUC columns All. The Library and Designed/Natural Spearman subsets remain separate and are not assigned this group.",
+      "members": [
+        {
+          "evaluation_id": "proteingym-evaluation-provean-zs-indel-auc",
+          "record_sha256": "f77dda691535aad5b06b861167369ecf9ad309fcde38f3d5f78039428bb32043"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-provean-zs-indel-spearman-all",
+          "record_sha256": "8d28d8c32243b2133f4e381371a1fbfff387027b49dc846426231cb4a09df290"
+        }
+      ],
+      "name": "PROVEAN · zero-shot indels, all assays"
+    },
+    {
+      "id": "evaluation-group-proteingym-table-4-zero-shot-indels-all-rita-l",
+      "model_id": "proteingym-method-rita-l",
+      "dataset_id": "proteingym-dataset-proteingym-indel-dms-assays",
+      "source_id": "evidence-expansion-proteingym-a3b08cc4",
+      "artifact_sha256": "a3b08cc4a6befd64620cf0f287d78d55a36dc2639955f52c5655f83833c50104",
+      "source_locator": "Table 4, same model row, Spearman All and AUC All columns; table header and caption",
+      "rationale": "Table 4 labels both the pooled Spearman and AUC columns All. The Library and Designed/Natural Spearman subsets remain separate and are not assigned this group.",
+      "members": [
+        {
+          "evaluation_id": "proteingym-evaluation-rita-l-zs-indel-auc",
+          "record_sha256": "9a314828d2f67c3854118f5ad3409b847449ffda067e722f1a301a8f263b5fdd"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-rita-l-zs-indel-spearman-all",
+          "record_sha256": "147d6f0c238e1c4d838637a4593024df4bb38e92ae4e2e0950b689b103a3fd68"
+        }
+      ],
+      "name": "RITA L · zero-shot indels, all assays"
+    },
+    {
+      "id": "evaluation-group-proteingym-table-4-zero-shot-indels-all-trancepteve-m",
+      "model_id": "proteingym-method-trancepteve-m",
+      "dataset_id": "proteingym-dataset-proteingym-indel-dms-assays",
+      "source_id": "evidence-expansion-proteingym-a3b08cc4",
+      "artifact_sha256": "a3b08cc4a6befd64620cf0f287d78d55a36dc2639955f52c5655f83833c50104",
+      "source_locator": "Table 4, same model row, Spearman All and AUC All columns; table header and caption",
+      "rationale": "Table 4 labels both the pooled Spearman and AUC columns All. The Library and Designed/Natural Spearman subsets remain separate and are not assigned this group.",
+      "members": [
+        {
+          "evaluation_id": "proteingym-evaluation-trancepteve-m-zs-indel-auc",
+          "record_sha256": "b05cfeb13bbcb3a92a5971452d3a587793ab0650b1cddbd9992d99621108f3ce"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-trancepteve-m-zs-indel-spearman-all",
+          "record_sha256": "c4eef02b0a513d134aa827f92c3571a2fe71edb45f9978eff5458934b93032f5"
+        }
+      ],
+      "name": "TranceptEVE M · zero-shot indels, all assays"
+    },
+    {
+      "id": "evaluation-group-proteingym-table-4-zero-shot-indels-all-tranception-l",
+      "model_id": "proteingym-method-tranception-l",
+      "dataset_id": "proteingym-dataset-proteingym-indel-dms-assays",
+      "source_id": "evidence-expansion-proteingym-a3b08cc4",
+      "artifact_sha256": "a3b08cc4a6befd64620cf0f287d78d55a36dc2639955f52c5655f83833c50104",
+      "source_locator": "Table 4, same model row, Spearman All and AUC All columns; table header and caption",
+      "rationale": "Table 4 labels both the pooled Spearman and AUC columns All. The Library and Designed/Natural Spearman subsets remain separate and are not assigned this group.",
+      "members": [
+        {
+          "evaluation_id": "proteingym-evaluation-tranception-l-zs-indel-auc",
+          "record_sha256": "75408635204799fc4af7ddd58f7d6fe61f7220ff2b20cb92a53b538ca668fa50"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-tranception-l-zs-indel-spearman-all",
+          "record_sha256": "84fa21f08b0b444638c8e3ccf40ff9f9f337f47e7af5b8b5e9c67a88fcab8282"
+        }
+      ],
+      "name": "Tranception L · zero-shot indels, all assays"
+    },
+    {
+      "id": "evaluation-group-proteingym-table-4-zero-shot-indels-all-tranception-m",
+      "model_id": "proteingym-method-tranception-m",
+      "dataset_id": "proteingym-dataset-proteingym-indel-dms-assays",
+      "source_id": "evidence-expansion-proteingym-a3b08cc4",
+      "artifact_sha256": "a3b08cc4a6befd64620cf0f287d78d55a36dc2639955f52c5655f83833c50104",
+      "source_locator": "Table 4, same model row, Spearman All and AUC All columns; table header and caption",
+      "rationale": "Table 4 labels both the pooled Spearman and AUC columns All. The Library and Designed/Natural Spearman subsets remain separate and are not assigned this group.",
+      "members": [
+        {
+          "evaluation_id": "proteingym-evaluation-tranception-m-zs-indel-auc",
+          "record_sha256": "2de94dcd2c7e2fe7ebadbcb432139e11b6a100140c7816bd0de5b0fd8a61d574"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-tranception-m-zs-indel-spearman-all",
+          "record_sha256": "7c386e1934a384abf79aa9c88f3581af9a959c03effb216733d8bb8d006072b3"
+        }
+      ],
+      "name": "Tranception M · zero-shot indels, all assays"
+    },
+    {
+      "id": "evaluation-group-proteingym-table-4-zero-shot-indels-all-wavenet",
+      "model_id": "proteingym-method-wavenet",
+      "dataset_id": "proteingym-dataset-proteingym-indel-dms-assays",
+      "source_id": "evidence-expansion-proteingym-a3b08cc4",
+      "artifact_sha256": "a3b08cc4a6befd64620cf0f287d78d55a36dc2639955f52c5655f83833c50104",
+      "source_locator": "Table 4, same model row, Spearman All and AUC All columns; table header and caption",
+      "rationale": "Table 4 labels both the pooled Spearman and AUC columns All. The Library and Designed/Natural Spearman subsets remain separate and are not assigned this group.",
+      "members": [
+        {
+          "evaluation_id": "proteingym-evaluation-wavenet-zs-indel-auc",
+          "record_sha256": "525cfb4ed2730faffddbe8683262c2055722e0f5d9e92153f311562ba56bde50"
+        },
+        {
+          "evaluation_id": "proteingym-evaluation-wavenet-zs-indel-spearman-all",
+          "record_sha256": "26034201962e27b2de3c02f796f24df41f1ee85588295c324de846032d3c5893"
+        }
+      ],
+      "name": "WaveNet · zero-shot indels, all assays"
+    }
+  ]
+}

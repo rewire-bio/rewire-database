@@ -25,8 +25,11 @@
  */
 import { createHash } from "node:crypto";
 import fs from "node:fs";
+import { readPinnedPdfText } from "./extract/pdf";
 
 export const BEACON_SOURCE_URL = "https://arxiv.org/pdf/2406.10391";
+export const BEACON_SOURCE_SHA256 =
+  "1370d75fe591bb8f994bc67f100a1a3fd557a62b9edb962b21f2fb038e9dea16";
 export const BENCHMARK_ID = "discovery-benchmark-beacon";
 const REVIEWER = "Codex research agent; no human review claimed";
 
@@ -541,18 +544,17 @@ export function buildRecords(rows: MethodRow[], sha256: string, date: string) {
 }
 
 function main() {
-  const pdfText = process.argv[2];
+  const input = process.argv[2];
   const pdfFile = process.argv[3];
-  if (!pdfText || !pdfFile) {
+  if (!input) {
     console.error(
-      "usage: tsx scripts/omics/extract-beacon.ts <beacon.txt> <beacon.pdf>",
+      "usage: tsx scripts/omics/extract-beacon.ts <beacon.pdf> (or <beacon.txt> <beacon.pdf>)",
     );
     process.exit(1);
   }
-  const sha256 = createHash("sha256")
-    .update(fs.readFileSync(pdfFile))
-    .digest("hex");
-  const rows = parseBeaconTables(fs.readFileSync(pdfText, "utf8"));
+  const { text, transformation } = readPinnedPdfText(input, BEACON_SOURCE_SHA256, pdfFile);
+  const sha256 = transformation.input_sha256;
+  const rows = parseBeaconTables(text);
   const date = new Date().toISOString().slice(0, 10);
   const records = buildRecords(rows, sha256, date);
   const out = "data/omics/reviewed/beacon-2026.jsonl";
@@ -571,6 +573,7 @@ function main() {
         batch: "beacon-2026",
         source: BEACON_SOURCE_URL,
         artifact_sha256: sha256,
+        transformation,
         records_sha256: createHash("sha256")
           .update(fs.readFileSync(out))
           .digest("hex"),

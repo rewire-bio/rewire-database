@@ -2,11 +2,12 @@
   "status": "reviewed",
   "method": "AI-assisted source review. Runner recipes from implementation inspection; project recipes quoted by line range from each project's pinned README. No human review implied.",
   "date": "2026-09-19",
-  "runner_revision": "f80cef7f818bec33e51b7f43ad499eb5078c8d87",
+  "runner_revision": "aecb9e79a2a5e83b59e482212b1a8b812dd16079",
   "execution_claims": "Source review only. No instruction snippet is claimed executed. Local scoring receipts for the runner's own protocols are maintained in the runner repository.",
   "files": {
-    "data/omics/reviewed/run-recipes/records.jsonl": "1b4f9419dce1de6d0627a59b8cbb48d0ecccb276f259528478b8d4fb0c0baddc",
-    "data/omics/reviewed/run-recipes/overlays.json": "ea5ca8bb10a3dbe5efd9af410cac6a0bfeb83e9aa24c977553a6beaf32324a3b"
+    "data/omics/reviewed/run-recipes/records.jsonl": "1235863a4e3a25d7df0b36460863e8b60bd904b413a1e071c5f15c5dab930634",
+    "data/omics/reviewed/run-recipes/overlays.json": "43949582c98e85c34b1547298b9b4a0292686c2f8c9ec014b9ce231ee8ad432a"
   },
-  "reviewer": "Codex research agent; no human review claimed"
+  "reviewer": "Codex research agent; no human review claimed",
+  "correction_note": "Pin reviewed TDC and Genomic Benchmarks v2 instructions to runner 0.3.0. Old source records and archived releases retained. Source review only; snippet execution not claimed."
 }

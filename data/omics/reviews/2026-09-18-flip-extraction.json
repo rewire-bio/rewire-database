@@ -4,8 +4,23 @@
   "source": "https://flip.protein.properties/assets/FLIP_2021_manuscript.pdf",
   "artifact_sha256": "afcf360c88a7a4ae153b3c2d8d4fa6d4ac0abe84f2131b94409abff6447ce363",
   "records_sha256": "0f42544b21781effb106be98b93a5301fb4abadc78f24a96e8fd7ee48896d5c0",
+  "transformation": {
+    "tool": "pdftotext",
+    "tool_version": "pdftotext version 26.08.0",
+    "arguments": [
+      "-layout",
+      "-enc",
+      "UTF-8",
+      "-",
+      "-"
+    ],
+    "input_sha256": "afcf360c88a7a4ae153b3c2d8d4fa6d4ac0abe84f2131b94409abff6447ce363",
+    "output_sha256": "1c62f7aea3cd49e4fd8e918ec454153a79d43be5aa18c685a6ab3d95ab22776b"
+  },
   "method": "Deterministic parse of the pinned PDF text layer, with row counts asserted per table",
   "reviewer": "Codex research agent; no human review claimed",
   "reviewed_at": "2026-09-18",
-  "errors": []
+  "errors": [],
+  "revalidated_at": "2026-09-19",
+  "revalidation_method": "Regenerated text from the verified PDF bytes and reran the deterministic extractor; no benchmark execution or human review claimed."
 }

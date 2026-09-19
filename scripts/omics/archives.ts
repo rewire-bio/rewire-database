@@ -8,6 +8,29 @@ export function restoreReleaseBundles(
   input = "data/omics/releases",
   output = "public/omics/releases",
 ) {
+  // Large releases use one compressed file per artifact. A single JSON bundle
+  // can exceed Node's string limit even when every individual artifact fits.
+  for (const entry of fs.readdirSync(input, { withFileTypes: true })) {
+    if (!entry.isDirectory() || !/^\d{4}-\d{2}-\d{2}-[a-f0-9]{12}$/.test(entry.name)) continue;
+    const receipt = fs.readFileSync(path.join(input, `${entry.name}.json`));
+    const manifest = JSON.parse(receipt.toString());
+    if (manifest.release_id !== entry.name) throw new Error("Archived release ID mismatch");
+    const expected = ["catalogue.json", "records.csv", "records.jsonl",
+      ...(manifest.coverage?.evidence_table_version === "1.0" ? ["evidence.csv", "evidence.jsonl"] : [])];
+    if (JSON.stringify(Object.keys(manifest.files).sort()) !== JSON.stringify([...expected].sort()) ||
+        JSON.stringify(fs.readdirSync(path.join(input, entry.name)).sort()) !== JSON.stringify(expected.map(n => `${n}.gz`).sort()))
+      throw new Error("Unexpected archived files");
+    const dir = path.join(output, entry.name);
+    fs.mkdirSync(dir, { recursive: true });
+    for (const name of [...expected, "manifest.json"]) {
+      const bytes = name === "manifest.json" ? receipt : gunzipSync(fs.readFileSync(path.join(input, entry.name, `${name}.gz`)));
+      if (name !== "manifest.json" && createHash("sha256").update(bytes).digest("hex") !== manifest.files[name])
+        throw new Error(`Archive checksum mismatch: ${entry.name}/${name}`);
+      const target = path.join(dir, name);
+      if (fs.existsSync(target) && !fs.readFileSync(target).equals(bytes)) throw new Error(`Immutable release conflict: ${target}`);
+      fs.writeFileSync(target, bytes);
+    }
+  }
   for (const name of fs
     .readdirSync(input)
     .filter((name) => name.endsWith(".bundle.json.gz"))) {

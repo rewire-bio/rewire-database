@@ -83,7 +83,7 @@ export default function Results({
   }, [client, id, metric, origin, configuration, cursor, retry]);
   const groups = new Map<string, ResultsPage["items"]>();
   for (const row of data.items) {
-    const key = row.evaluation?.id || row.result.id;
+    const key = String(row.evaluation?.attributes.evaluation_group_id || row.evaluation?.id || row.result.id);
     groups.set(key, [...(groups.get(key) || []), row]);
   }
   return (
@@ -97,9 +97,8 @@ export default function Results({
         Release {initial.release_id} · {data.evaluation_count}{" "}
         {data.evaluation_count === 1 ? "evaluation" : "evaluations"} ·{" "}
         {data.total} {data.total === 1 ? "metric row" : "metric rows"}.
-        Different protocols are not a single leaderboard. Where several
-        source tables report the same metric, the published comparisons above
-        offer a pooled view that names what it does not hold constant.
+        Different protocols are not a single leaderboard. Charts retain each
+        source table’s protocol and dataset.
       </p>
       {initial.total > 0 && (
         <div className={styles.filters}>
@@ -202,17 +201,17 @@ export default function Results({
                     >
                       {first.evaluation ? (
                         <Link href={recordHref(first.evaluation)}>
-                          {first.evaluation.name}
+                          {String(first.evaluation.attributes.evaluation_group_name || first.evaluation.name)}
                         </Link>
                       ) : (
                         "Evaluation not linked"
                       )}
                       <div className={styles.evaluationLinks}>
-                        {groupEntities([
-                          ...testedEntities(first),
-                          ...evaluationEntities(first),
-                          ...datasetEntities(first),
-                        ]).map((group) => (
+                        {groupEntities(rows.flatMap(row => [
+                          ...testedEntities(row),
+                          ...evaluationEntities(row),
+                          ...datasetEntities(row),
+                        ])).map((group) => (
                           <span
                             key={group.kind}
                             className={styles.typedContext}
@@ -226,6 +225,8 @@ export default function Results({
                         {displayValue(first.evaluation?.attributes.protocol)}
                       </p>
                       <p className={styles.muted}>
+                        {first.evaluation?.attributes.evaluation_group_note
+                          ? String(first.evaluation.attributes.evaluation_group_note) + " " : ""}
                         {originLabel(first.origin)} · Evaluation metadata:{" "}
                         {first.evaluation?.status.replace(/_/g, " ") ||
                           "not reported"}
@@ -238,7 +239,7 @@ export default function Results({
                         <Link href={recordHref(result)}>
                           <strong>
                             {displayValue(result.attributes.printed_value)}
-                            {result.attributes.unit === "percent" ? "%" : ""}
+                            {result.attributes.unit === "percent" && !/%\s*$/.test(String(result.attributes.printed_value)) ? "%" : ""}
                           </strong>{" "}
                           {displayValue(result.attributes.metric)}
                         </Link>

@@ -74,6 +74,8 @@ describe("BEACON Table 3 batch", () => {
         kind: "benchmark",
         name: "BEACON",
         status: "discovered",
+        description: "RNA benchmark suite",
+        facets: {}, source_ids: [], links: [], attributes: {},
       },
       ...batch,
     ]);

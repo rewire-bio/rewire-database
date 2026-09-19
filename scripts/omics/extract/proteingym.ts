@@ -18,8 +18,7 @@
  * identify anything here, only the model name in the second column is, so the
  * wrapping cannot shift a score onto the wrong model.
  */
-import { createHash } from "node:crypto";
-import fs from "node:fs";
+import { readPinnedPdfText } from "./pdf";
 import { parseCell } from "./tables";
 import {
   writeBatch,
@@ -100,12 +99,7 @@ const TABLES = [
 ];
 
 function run(file: string) {
-  const text = fs.readFileSync(file, "utf8");
-  const sha = createHash("sha256")
-    .update(fs.readFileSync(process.argv[3]))
-    .digest("hex");
-  if (sha !== SHA256)
-    throw new Error(`Artifact hash ${sha} does not match the pinned ${SHA256}`);
+  const { text, transformation } = readPinnedPdfText(file, SHA256, process.argv[3]);
 
   const lines = text.split("\n");
   const tasks = new Map<string, TaskSpec>();
@@ -181,6 +175,7 @@ function run(file: string) {
   }
 
   const spec: BatchSpec = {
+    transformation,
     key: "proteingym",
     benchmarkId: "discovery-benchmark-proteingym",
     benchmarkName: "ProteinGym",

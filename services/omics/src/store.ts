@@ -1,8 +1,10 @@
 import { createHash, randomUUID } from "node:crypto";
 import { TRPCError } from "@trpc/server";
 import type { DecodedIdToken } from "firebase-admin/auth";
+import { FieldPath } from "firebase-admin/firestore";
 import type {
   Firestore,
+  Query,
   Transaction,
   DocumentSnapshot,
 } from "firebase-admin/firestore";
@@ -177,15 +179,69 @@ export async function createSubmission(
     return { id: ref.id, status: data.status };
   });
 }
-export async function listOwn(db: Firestore, uid: string) {
-  const docs = await submissions(db)
-    .where("uid", "==", uid)
-    .orderBy("created_at", "desc")
-    .limit(200)
-    .get();
-  return docs.docs
-    .map((d) => visible(d.data() as StoredSubmission))
-    .sort((a, b) => b.created_at.localeCompare(a.created_at));
+export type SubmissionPageInput = { cursor?: string; limit?: number };
+async function submissionPage(
+  query: Query,
+  scope: string,
+  direction: "asc" | "desc",
+  input: SubmissionPageInput,
+) {
+  const limit = input.limit ?? 50;
+  if (!Number.isInteger(limit) || limit < 1 || limit > 200)
+    throw new TRPCError({ code: "BAD_REQUEST", message: "Invalid page limit" });
+  let ordered = query
+    .orderBy("created_at", direction)
+    .orderBy(FieldPath.documentId(), direction);
+  if (input.cursor) {
+    try {
+      const cursor = JSON.parse(
+        Buffer.from(input.cursor, "base64url").toString("utf8"),
+      );
+      if (
+        cursor.scope !== scope ||
+        typeof cursor.created_at !== "string" ||
+        !/^\d{4}-\d{2}-\d{2}T/.test(cursor.created_at) ||
+        typeof cursor.id !== "string" ||
+        !/^[a-z0-9-]{1,255}$/.test(cursor.id)
+      )
+        throw new Error("Invalid cursor");
+      ordered = ordered.startAfter(cursor.created_at, cursor.id);
+    } catch {
+      throw new TRPCError({
+        code: "BAD_REQUEST",
+        message: "Cursor does not match this submission list",
+      });
+    }
+  }
+  const docs = (await ordered.limit(limit + 1).get()).docs;
+  const selected = docs.slice(0, limit);
+  const last = selected.at(-1);
+  return {
+    items: selected.map((doc) => doc.data() as StoredSubmission),
+    next_cursor:
+      docs.length > limit && last
+        ? Buffer.from(
+            JSON.stringify({
+              scope,
+              created_at: last.data().created_at,
+              id: last.id,
+            }),
+          ).toString("base64url")
+        : null,
+  };
+}
+export async function listOwn(
+  db: Firestore,
+  uid: string,
+  input: SubmissionPageInput = {},
+) {
+  const page = await submissionPage(
+    submissions(db).where("uid", "==", uid),
+    hash(`owner:${uid}`),
+    "desc",
+    input,
+  );
+  return { ...page, items: page.items.map(visible) };
 }
 export async function getOwn(db: Firestore, uid: string, id: string) {
   const ref = submissions(db).doc(id);
@@ -264,14 +320,20 @@ export async function updateOwn(
     return visible(data);
   });
 }
-export async function curatorList(db: Firestore, status?: Status) {
+export async function curatorList(
+  db: Firestore,
+  status?: Status,
+  input: SubmissionPageInput = {},
+) {
   const query = status
     ? submissions(db).where("status", "==", status)
     : submissions(db);
-  const docs = await query.orderBy("created_at", "asc").limit(200).get();
-  return docs.docs
-    .map((d) => d.data() as StoredSubmission)
-    .sort((a, b) => a.created_at.localeCompare(b.created_at));
+  return submissionPage(
+    query,
+    hash(`curator:${status || "all"}`),
+    "asc",
+    input,
+  );
 }
 const transitions: Record<Status, Status[]> = {
   submitted: ["in_review", "rejected"],

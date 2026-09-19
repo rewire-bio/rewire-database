@@ -13,8 +13,7 @@
  *
  * A dash means the model was not run on that task. No result is written for it.
  */
-import { createHash } from "node:crypto";
-import fs from "node:fs";
+import { readPinnedPdfText } from "./pdf";
 import { joinSmallCaps, layoutRows, parseCell } from "./tables";
 import {
   writeBatch,
@@ -51,10 +50,7 @@ const TASKS: TaskSpec[] = [
 }));
 
 function run(file: string) {
-  const text = fs.readFileSync(file, "utf8");
-  const sha = createHash("sha256").update(fs.readFileSync(process.argv[3])).digest("hex");
-  if (sha !== SHA256)
-    throw new Error(`Artifact hash ${sha} does not match the pinned ${SHA256}`);
+  const { text, transformation } = readPinnedPdfText(file, SHA256, process.argv[3]);
 
   const rows = layoutRows(text, /^\s*Table 3: Results on all tasks/, /^5\s+R ESULTS/);
   const methods = new Map<string, MethodSpec>();
@@ -136,6 +132,7 @@ function run(file: string) {
   if (models !== 15) throw new Error(`Table 3: ${models} model rows`);
 
   const spec: BatchSpec = {
+    transformation,
     key: "bend",
     benchmarkId: "discovery-benchmark-bend",
     benchmarkName: "BEND",

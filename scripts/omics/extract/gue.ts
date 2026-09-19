@@ -16,8 +16,7 @@
  * pre-training on the GUE training sets, which is a different model, so it is
  * kept as its own entry.
  */
-import { createHash } from "node:crypto";
-import fs from "node:fs";
+import { readPinnedPdfText } from "./pdf";
 import { layoutRows, parseCell } from "./tables";
 import {
   writeBatch,
@@ -93,12 +92,7 @@ const MODELS = [
 ];
 
 function run(file: string) {
-  const text = fs.readFileSync(file, "utf8");
-  const sha = createHash("sha256")
-    .update(fs.readFileSync(process.argv[3]))
-    .digest("hex");
-  if (sha !== SHA256)
-    throw new Error(`Artifact hash ${sha} does not match the pinned ${SHA256}`);
+  const { text, transformation } = readPinnedPdfText(file, SHA256, process.argv[3]);
 
   const rows = layoutRows(
     text,
@@ -185,6 +179,7 @@ function run(file: string) {
   }
 
   const spec: BatchSpec = {
+    transformation,
     key: "gue",
     benchmarkId: "discovery-benchmark-gue",
     benchmarkName: "GUE",

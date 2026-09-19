@@ -34,6 +34,14 @@ jobs:
       NODE_OPTIONS: --max-old-space-size=8192
     steps:
       - uses: actions/checkout@v4
+      - name: Free temporary runner space for immutable release exports
+        if: runner.environment == 'github-hosted'
+        run: |
+          df -h .
+          # This Node/Python/Java project does not use these preinstalled SDKs.
+          # Keep the scientific archives; reclaim only disposable runner tools.
+          sudo rm -rf -- /usr/local/lib/android /usr/share/dotnet
+          df -h .
       - uses: actions/setup-node@v4
         with:
           node-version: '22'

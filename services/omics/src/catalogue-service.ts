@@ -85,6 +85,7 @@ export async function activateRelease(db: Firestore, releaseId: string) {
   const meta = (await ref.get()).data();
   if (meta?.state !== "ready")
     throw new Error("Only complete, ready releases can be published");
+  if (meta.coverage?.audit_history && !meta.audit_manifest) throw new Error("Audit import must complete before publication");
   const records = (await ref.collection("records").get()).docs.map((d) =>
     d.data(),
   );

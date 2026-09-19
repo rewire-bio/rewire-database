@@ -1,0 +1,37 @@
+{
+  "reviewed_at": "2026-09-19",
+  "review_method": "independent-automated-locator-check",
+  "source_artifacts_checked": 33,
+  "candidate_rows_checked": 3214,
+  "numeric_rows": 3057,
+  "missing_source_cells": 157,
+  "bounded_table_counts": {
+    "beeline-12_ESM.csv": 144,
+    "beeline-13_ESM.csv": 192,
+    "beeline-14_ESM.csv": 264,
+    "scib-metrics.csv": 966,
+    "vcc-leaderboard.json": 1048,
+    "petab-jl-computation_times1.csv": 60,
+    "petab-jl-computation_times2.csv": 60,
+    "petab-jl-computation_times3.csv": 60,
+    "petab-jl-computation_times4.csv": 60,
+    "petab-jl-computation_times5.csv": 60,
+    "petab-jl-computation_times6.csv": 60,
+    "petab-jl-computation_times7.csv": 60,
+    "petab-jl-computation_times8.csv": 60,
+    "petab-jl-computation_times9.csv": 60,
+    "petab-jl-computation_times10.csv": 60
+  },
+  "candidate_file_sha256": "c365eb7f1443daa56f2d588053742ab2aa32a1f8997f142cb7180d7ab38b0810",
+  "checker_sha256": "c1f5399354708e4600b6dfe556d5f507bafd2199fb2fd0af89d6e2f9de4126b1",
+  "mutation_test": "changed numeric transcription rejected",
+  "status": "transcription-supported; publication review still required",
+  "not_verified": [
+    "human review",
+    "independent scientific reproduction",
+    "exact model identity mappings",
+    "PEtab timing scope and hardware",
+    "VCC licence and protocol weighting",
+    "BEELINE original source-data reuse terms"
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "id": "audit-2026-09-19-9bfaeae9d749a4f0",
+  "baseline_release_id": "2026-09-19-f5c67a009c10",
+  "inventory_sha256": "d7ae93ba0ad841f3b5b1e17b24258f1ba912e3bcdfde66e75841413d98a23a01",
+  "started_at": "2026-09-19",
+  "completed_at": "2026-09-19",
+  "reviewer": "Codex automated checks and separate AI-assisted source reviews; no human sign-off",
+  "review_method": "ai_assisted",
+  "verifier_revision": "443f4f6cacbe2fbb5d853c015537754649204d24c85c107f5cb674477c276af4",
+  "scope": "Current catalogue plus the hash-pinned acquisition batch. All records and relationships inventoried; checks apply to exact field values and source fingerprints. Historical versions remain preserved and are not blanket reverified.",
+  "limitations": [
+    "Supported structural/access/history checks do not establish scientific validity",
+    "Unresolved fields remain insufficient evidence",
+    "New source transcription checks are distinct from preserved historical review",
+    "No new models or experimental reproductions were run",
+    "Distinct archived scientific versions outside this current inventory require subsequent audit runs"
+  ],
+  "record_count": 21866,
+  "check_count": 105931
+}

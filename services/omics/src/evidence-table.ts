@@ -91,7 +91,10 @@ type ClaimInput = {
   claimStatus?: string;
 };
 
-export function createEvidenceIndex(snapshot: CatalogueSnapshot) {
+export function createEvidenceIndex(
+  snapshot: CatalogueSnapshot,
+  options: { cache?: boolean } = {},
+) {
   assertNoPrivateFields(snapshot);
   const records = snapshot.records.filter((r) => r.status !== "excluded");
   const byId = new Map(records.map((r) => [r.id, r]));
@@ -451,29 +454,44 @@ export function createEvidenceIndex(snapshot: CatalogueSnapshot) {
     rows.sort((a, b) => a.row_id.localeCompare(b.row_id));
     if (new Set(rows.map((r) => r.row_id)).size !== rows.length)
       throw new Error(`Duplicate evidence rows: ${id}`);
-    cache.set(id, rows);
+    if (options.cache !== false) cache.set(id, rows);
     return rows;
   }
-  return {
-    forRecord,
-    all: () =>
-      records
-        .slice()
-        .sort((a, b) => a.id.localeCompare(b.id))
-        .flatMap((r) => forRecord(r.id)),
-  };
+  function* iterate(): Generator<EvidenceRow> {
+    for (const record of records
+      .slice()
+      .sort((a, b) => a.id.localeCompare(b.id)))
+      yield* forRecord(record.id);
+  }
+  return { forRecord, iterate, all: () => [...iterate()] };
 }
 
-export function evidenceCsv(rows: EvidenceRow[]): string {
-  if (!rows.length) return "";
-  const keys = Object.keys(rows[0]) as (keyof EvidenceRow)[];
-  // Prefix spreadsheet formulas in CSV only; JSONL/value_json preserve exact values.
+/** Emits exactly the historical CSV bytes without a catalogue-sized string. */
+export function* evidenceCsvLines(
+  rows: Iterable<EvidenceRow>,
+): Generator<string> {
+  let keys: (keyof EvidenceRow)[] | undefined;
   const quote = (value: string) =>
     `"${(/^[\s]*[=+@-]/.test(value) ? "'" + value : value).replace(/"/g, '""')}"`;
-  return (
-    keys.join(",") +
-    "\n" +
-    rows.map((row) => keys.map((key) => quote(row[key])).join(",")).join("\n") +
-    "\n"
-  );
+  for (const row of rows) {
+    if (!keys) {
+      keys = Object.keys(row) as (keyof EvidenceRow)[];
+      yield keys.join(",") + "\n";
+    }
+    yield keys.map((key) => quote(row[key])).join(",") + "\n";
+  }
+}
+export function* evidenceJsonlLines(
+  rows: Iterable<EvidenceRow>,
+): Generator<string> {
+  let any = false;
+  for (const row of rows) {
+    any = true;
+    yield JSON.stringify(row) + "\n";
+  }
+  // Preserve the original empty-JSONL export convention.
+  if (!any) yield "\n";
+}
+export function evidenceCsv(rows: EvidenceRow[]): string {
+  return [...evidenceCsvLines(rows)].join("");
 }

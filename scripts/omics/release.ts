@@ -1,3 +1,11 @@
+import { writeImmutableChunks } from "./stream-files";
+import {
+  addAcquiredEvidence,
+  acquisitionFiles,
+  applyAcquisitionCorrections,
+  profileCorrectionFile,
+} from "./acquisition/records";
+import { auditFiles, loadAudits, auditInputFiles } from "./audit/release";
 import { benchmarkCoverage } from "./audit-benchmark-evidence";
 import { addRunRecipes, runRecipeInputs } from "./run-recipes";
 import { legacyKinds } from "../../services/omics/src/entity-kinds";
@@ -6,6 +14,8 @@ import { assertNoPrivateFields } from "../../services/omics/src/private-fields";
 import {
   createEvidenceIndex,
   evidenceCsv,
+  evidenceCsvLines,
+  evidenceJsonlLines,
 } from "../../services/omics/src/evidence-table";
 import fs from "node:fs";
 import { restoreReleaseBundles } from "./archives";
@@ -26,6 +36,7 @@ export function buildRelease(
   records: RecordEntry[],
   releasedAt: string,
   extraCoverage: Record<string, unknown> = {},
+  streamEvidence = false,
 ) {
   validateRecords(records);
   const schemaVersion =
@@ -106,12 +117,26 @@ export function buildRelease(
     "records.jsonl": visible.map((r) => JSON.stringify(r)).join("\n") + "\n",
     "records.csv": csv,
   };
-  if (extraCoverage.evidence_table_version === "1.0") {
+  const streamedHashes: Record<string, string> = {};
+  if (extraCoverage.evidence_table_version === "1.0" && streamEvidence) {
+    const index = createEvidenceIndex(snapshot, { cache: false });
+    const dir = path.join("public/omics/releases", releaseId);
+    streamedHashes["evidence.jsonl"] = writeImmutableChunks(
+      path.join(dir, "evidence.jsonl"),
+      evidenceJsonlLines(index.iterate()),
+    );
+    streamedHashes["evidence.csv"] = writeImmutableChunks(
+      path.join(dir, "evidence.csv"),
+      evidenceCsvLines(index.iterate()),
+    );
+  } else if (extraCoverage.evidence_table_version === "1.0") {
     const evidence = createEvidenceIndex(snapshot).all();
     files["evidence.jsonl"] =
       evidence.map((row) => JSON.stringify(row)).join("\n") + "\n";
     files["evidence.csv"] = evidenceCsv(evidence);
   }
+  if (extraCoverage.audit_history)
+    Object.assign(files, auditFiles(loadAudits(), releaseId).files);
   const manifest = {
     schema_version: schemaVersion,
     release_id: releaseId,
@@ -120,9 +145,12 @@ export function buildRelease(
     coverage,
     archive_sha256: sha(all),
     catalogue_sha256: sha(files["catalogue.json"]),
-    files: Object.fromEntries(
-      Object.entries(files).map(([name, data]) => [name, sha(data)]),
-    ),
+    files: Object.fromEntries([
+      ...Object.entries(files).flatMap(([name, data]) => [
+        [name, sha(data)],
+        ...(name === "records.csv" ? Object.entries(streamedHashes) : []),
+      ]),
+    ]),
     changelog: Array.isArray(extraCoverage.changelog)
       ? extraCoverage.changelog
       : [
@@ -236,7 +264,9 @@ function main() {
         : [],
     ),
   );
-  const records = addRunRecipes(separateEntities(profiled));
+  const records = applyAcquisitionCorrections(
+    addAcquiredEvidence(addRunRecipes(separateEntities(profiled))),
+  );
   const profiles = records
     .filter((record) => record.attributes.profile)
     .map((record) => record.attributes.profile as OmicsProfile);
@@ -250,106 +280,136 @@ function main() {
   ];
   const facts = profiles.flatMap((profile) => profile.facts);
   const benchmarkCounts = benchmarkCoverage(publicRecords(records));
-  const output = buildRelease(records, audit.released_at, {
-    entity_schema_version: "1.1",
-    entity_migration: {
-      baseline_release: "2026-09-17-5054ddf2a281",
-      note: "Separate models, methods, configurations, pipelines, hosted services, benchmarks, tasks, protocols and evaluators. IDs, printed scores and archived releases remain unchanged.",
-    },
-    run_instructions: {
-      review: "Official source instructions; not executed by rewire",
-      guides: records.filter((r) => r.attributes.run_guide).length,
-      documentation_audits: records.filter(
-        (r) => r.attributes.run_documentation,
-      ).length,
-    },
-    run_recipe_coverage: {
-      recipes: records.reduce(
-        (total, record) =>
-          total +
-          (Array.isArray(record.attributes.run_recipes)
-            ? record.attributes.run_recipes.length
-            : 0),
-        0,
+  const output = buildRelease(
+    records,
+    audit.released_at,
+    {
+      ...(auditInputFiles().some((f) => f.endsWith(".run.json"))
+        ? { audit_history: auditFiles(loadAudits()).coverage }
+        : {}),
+      entity_schema_version: "1.1",
+      entity_migration: {
+        baseline_release: "2026-09-17-5054ddf2a281",
+        note: "Separate models, methods, configurations, pipelines, hosted services, benchmarks, tasks, protocols and evaluators. IDs, printed scores and archived releases remain unchanged.",
+      },
+      acquisition_review: {
+        date: "2026-09-19",
+        scope:
+          "Nine benchmark result collections; PEtab timing data remains quarantined. Source cells checked independently; not experimental reproduction.",
+      },
+      run_instructions: {
+        review: "Official source instructions; not executed by rewire",
+        guides: records.filter((r) => r.attributes.run_guide).length,
+        documentation_audits: records.filter(
+          (r) => r.attributes.run_documentation,
+        ).length,
+      },
+      run_recipe_coverage: {
+        recipes: records.reduce(
+          (total, record) =>
+            total +
+            (Array.isArray(record.attributes.run_recipes)
+              ? record.attributes.run_recipes.length
+              : 0),
+          0,
+        ),
+        evaluations_with_verified_recipe_links: records.filter(
+          (record) => record.attributes.reproduction,
+        ).length,
+        top_level_benchmarks: publicRecords(records).filter(
+          (record) => record.kind === "benchmark",
+        ).length,
+        official_documentation_or_gap: publicRecords(records).filter(
+          (record) =>
+            record.kind === "benchmark" && record.attributes.run_documentation,
+        ).length,
+        note: "Source-reviewed instructions and exact applicability links; execution receipts do not establish reproduction of published scores. Production contributions remain disabled.",
+      },
+      evidence_table_version: "1.0",
+      evidence_table_generator_sha256: sha(
+        [
+          "services/omics/src/evidence-table.ts",
+          "services/omics/src/run-recipe.ts",
+          "services/omics/src/profile-schema.ts",
+          "services/omics/src/private-fields.ts",
+        ]
+          .map((file) => fs.readFileSync(file, "utf8"))
+          .join("\n"),
       ),
-      evaluations_with_verified_recipe_links: records.filter(
-        (record) => record.attributes.reproduction,
-      ).length,
-      top_level_benchmarks: publicRecords(records).filter(
-        (record) => record.kind === "benchmark",
-      ).length,
-      official_documentation_or_gap: publicRecords(records).filter(
-        (record) =>
-          record.kind === "benchmark" && record.attributes.run_documentation,
-      ).length,
-      note: "Source-reviewed instructions and exact applicability links; execution receipts do not establish reproduction of published scores. Production contributions remain disabled.",
+      ...(profiles.length
+        ? {
+            profile_coverage: {
+              total: profiles.length,
+              fact_status_counts: Object.fromEntries(
+                factStates.map((state) => [
+                  state,
+                  facts.filter(
+                    (fact) => (fact.status || "unclassified") === state,
+                  ).length,
+                ]),
+              ),
+              note: "Source review applies to individual cited claims. Missing fields and inaccessible evidence remain explicit; profile coverage is not independent experimental verification.",
+              reviewed: profiles.filter(
+                (profile) => profile.coverage === "reviewed",
+              ).length,
+              limited: profiles.filter(
+                (profile) => profile.coverage === "limited",
+              ).length,
+            },
+            benchmark_paper_review: {
+              date: audit.released_at.slice(0, 10),
+              top_level_benchmarks: benchmarkCounts.length,
+              benchmark_pages_with_results: benchmarkCounts.filter(
+                (row) => row.results > 0,
+              ).length,
+              benchmark_pages_with_figures: benchmarkCounts.filter(
+                (row) => row.charts > 0,
+              ).length,
+              published_comparison_figures: benchmarkCounts.reduce(
+                (sum, row) => sum + row.charts,
+                0,
+              ),
+              source_checked_result_rows: records.filter(
+                (r) => r.kind === "result" && r.status === "source_checked",
+              ).length,
+              scope:
+                "Counts derived from this release through the production relationship and chart gates. Figures are source-specific, and metric rows are not independent experiments. Source review is not reproduction.",
+            },
+            changelog: [
+              "Add complete bounded primary-source result tables for BEELINE, CAFA, CAMI, CAPRI, CASP, FLIP2, PLINDER, scIB and provisional Virtual Cell Challenge 2026 validation.",
+              "Preserve PEtab timing candidates and four conflicting FLIP2 values in acquisition staging with explicit limitations.",
+              "Add append-only linked audit runs, field checks, source retrieval receipts and correction history; unresolved fields remain explicit.",
+              "Recover 16 omitted ProteinBench percentage results and correct percent units; original printed and numeric values remain unchanged.",
+              "Correct DART-Eval correlation units and remove unsupported standard-deviation labels from TDC printed plus/minus spreads.",
+              "Recheck pinned extraction inputs, reject unrecognised cells and authenticate PDF-to-text transformations.",
+              "Count reviewed metrics from the same source evaluation setup together, retaining all original record IDs and links.",
+              "Load individual source-scoped charts, remove cross-protocol pooled rankings, and move findings before detailed instructions.",
+              "Preserve archived release bytes, historical URLs and MFASS history. Contributions remain disabled.",
+            ],
+          }
+        : {}),
+      research_lanes: 9,
+      search_entries: ledger.length,
+      legacy_papers: 100,
+      legacy_result_rows: 149,
+      source_inputs: [
+        ...inputs,
+        ...auditInputFiles(),
+        ...[...acquisitionFiles, profileCorrectionFile].filter((file) =>
+          fs.existsSync(file),
+        ),
+        ...entityInputFiles,
+        ...runRecipeInputs,
+        ...reviewInputFiles.filter((file) => fs.existsSync(file)),
+        ...profileInputs.filter((file) => fs.existsSync(file)),
+        ...associationInputs.filter((file) => fs.existsSync(file)),
+      ].map((file) => ({
+        file,
+        sha256: fs.existsSync(file) ? sha(fs.readFileSync(file)) : null,
+      })),
     },
-    evidence_table_version: "1.0",
-    evidence_table_generator_sha256: sha(
-      [
-        "services/omics/src/evidence-table.ts",
-        "services/omics/src/run-recipe.ts",
-        "services/omics/src/profile-schema.ts",
-        "services/omics/src/private-fields.ts",
-      ]
-        .map((file) => fs.readFileSync(file, "utf8"))
-        .join("\n"),
-    ),
-    ...(profiles.length
-      ? {
-          profile_coverage: {
-            total: profiles.length,
-            fact_status_counts: Object.fromEntries(
-              factStates.map((state) => [
-                state,
-                facts.filter(
-                  (fact) => (fact.status || "unclassified") === state,
-                ).length,
-              ]),
-            ),
-            note: "Source review applies to individual cited claims. Missing fields and inaccessible evidence remain explicit; profile coverage is not independent experimental verification.",
-            reviewed: profiles.filter(
-              (profile) => profile.coverage === "reviewed",
-            ).length,
-            limited: profiles.filter(
-              (profile) => profile.coverage === "limited",
-            ).length,
-          },
-          benchmark_paper_review: {
-            date: audit.released_at.slice(0, 10),
-            top_level_benchmarks: benchmarkCounts.length,
-            benchmark_pages_with_results: benchmarkCounts.filter(row => row.results > 0).length,
-            benchmark_pages_with_figures: benchmarkCounts.filter(row => row.charts > 0).length,
-            published_comparison_figures: benchmarkCounts.reduce((sum, row) => sum + row.charts, 0),
-            source_checked_result_rows: records.filter(r => r.kind === "result" && r.status === "source_checked").length,
-            scope: "Counts derived from this release through the production relationship and chart gates. Figures are source-specific, and metric rows are not independent experiments. Source review is not reproduction.",
-          },
-          changelog: [
-            "Recover 16 omitted ProteinBench percentage results and correct percent units; original printed and numeric values remain unchanged.",
-            "Correct DART-Eval correlation units and remove unsupported standard-deviation labels from TDC printed plus/minus spreads.",
-            "Recheck pinned extraction inputs, reject unrecognised cells and authenticate PDF-to-text transformations.",
-            "Count reviewed metrics from the same source evaluation setup together, retaining all original record IDs and links.",
-            "Load individual source-scoped charts, remove cross-protocol pooled rankings, and move findings before detailed instructions.",
-            "Preserve archived release bytes, historical URLs and MFASS history. Contributions remain disabled.",
-          ],
-        }
-      : {}),
-    research_lanes: 9,
-    search_entries: ledger.length,
-    legacy_papers: 100,
-    legacy_result_rows: 149,
-    source_inputs: [
-      ...inputs,
-      ...entityInputFiles,
-      ...runRecipeInputs,
-      ...reviewInputFiles.filter((file) => fs.existsSync(file)),
-      ...profileInputs.filter((file) => fs.existsSync(file)),
-      ...associationInputs.filter((file) => fs.existsSync(file)),
-    ].map((file) => ({
-      file,
-      sha256: fs.existsSync(file) ? sha(fs.readFileSync(file)) : null,
-    })),
-  });
+    true,
+  );
   writeArchive(output);
   fs.writeFileSync(
     "public/omics/catalogue.json",

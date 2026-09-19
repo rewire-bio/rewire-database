@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import {importAuditFiles} from '../services/omics/dist/audit-import.js';
 import { readFile } from 'node:fs/promises';
 import { firebase } from '../services/omics/dist/firebase.js';
 import { importRelease } from '../services/omics/dist/catalogue.js';
@@ -31,7 +32,19 @@ async function query(procedure, input, expected = 200) {
 try {
   const imported=await importRelease(db, bytes, manifest);
   if(imported.imported) await query('release', {release_id:snapshot.release_id},404);
+  if (manifest.coverage?.audit_history) {
+    const files={};
+    for(const name of Object.keys(manifest.files).filter(n=>/^audit-[a-z0-9-]+\.json$/.test(n)))
+      files[name]=await readFile(new URL(`../public/omics/releases/${manifest.release_id}/${name}`,import.meta.url));
+    await importAuditFiles(db,snapshot.release_id,manifest,files);
+  }
   await activateRelease(db,snapshot.release_id);
+  if (manifest.coverage?.audit_history) {
+    const audits=await query('auditRecords',{release_id:snapshot.release_id,limit:2});
+    assert.equal(audits.total,manifest.coverage.audit_history.records);
+    const checks=await query('auditChecks',{release_id:snapshot.release_id,record_id:'rewire-result-baseline-kmer-position-v2-average-precision',limit:1});
+    assert.ok(checks.resolutions.length > 0);
+  }
   const release = await query('release',{});
   assert.equal(release.record_count,snapshot.records.filter(record=>record.status!=='excluded').length);
   const pinned = {release_id:snapshot.release_id};

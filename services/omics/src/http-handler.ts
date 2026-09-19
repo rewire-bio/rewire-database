@@ -17,6 +17,9 @@ const catalogueProcedures = new Set([
   "catalogue.compare",
   "catalogue.comparison",
   "catalogue.evidence",
+  "catalogue.auditRuns",
+  "catalogue.auditRecords",
+  "catalogue.auditChecks",
 ]);
 function catalogueRequest(req: Request): boolean {
   if (req.method !== "GET") return false;

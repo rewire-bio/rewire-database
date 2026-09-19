@@ -63,6 +63,11 @@ export default function EvidenceGuide() {
           <section className={styles.section}>
             <h2>Download the source-origin tables</h2>
             <p>
+              <Link href="/audits/">
+                Browse linked audit checks and review history
+              </Link>
+            </p>
+            <p>
               Release {catalogue.release_id}, published{" "}
               {catalogue.released_at.slice(0, 10)}. The table contains{" "}
               {rows.length.toLocaleString("en-GB")} rows across{" "}

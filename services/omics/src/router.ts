@@ -1,3 +1,5 @@
+import { auditRuns, auditRecords, auditChecks } from "./audit-service.js";
+import { auditOutcomes, auditCategories } from "./audit.js";
 import { entityKinds } from "./entity-kinds.js";
 import { initTRPC, TRPCError } from "@trpc/server";
 import { z } from "zod";
@@ -127,6 +129,9 @@ export const appRouter = t.router({
           return q.evidence(filters);
         }),
       ),
+    auditRuns: t.procedure.input(z.object({...pinned,...pagination}).strict()).query(({input})=>auditRuns(firebase().db,input)),
+    auditRecords: t.procedure.input(z.object({...pinned,...pagination,run_id:id.optional(),kind:z.string().max(100).optional(),date_from:z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),date_to:z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),q:z.string().max(300).optional(),outcome:z.enum(auditOutcomes).optional(),category:z.enum(auditCategories).optional()}).strict()).query(({input})=>auditRecords(firebase().db,input)),
+    auditChecks: t.procedure.input(z.object({...pinned,...pagination,record_id:id,run_id:id.optional(),outcome:z.enum(auditOutcomes).optional(),category:z.enum(auditCategories).optional()}).strict()).query(({input})=>auditChecks(firebase().db,input)),
     compare: t.procedure
       .input(z.object({ ...pinned, ids: z.array(id).min(2).max(20) }).strict())
       .query(({ input }) =>

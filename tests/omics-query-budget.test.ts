@@ -3,7 +3,7 @@ import { gunzipSync } from "node:zlib";
 import { describe, expect, it } from "vitest";
 import { createCatalogueQuery } from "../services/omics/src/catalogue-query";
 import { benchmarkCoverage, assertCoverageFloor } from "../scripts/omics/audit-benchmark-evidence";
-const snapshot = JSON.parse(gunzipSync(fs.readFileSync("data/omics/releases/2026-09-17-26ec7db1590e/catalogue.json.gz")).toString());
+const snapshot = JSON.parse(gunzipSync(fs.readFileSync("data/omics/releases/2026-09-19-eb6149e5d766/catalogue.json.gz")).toString());
 const query = createCatalogueQuery(snapshot);
 const bytes = (value: unknown) => Buffer.byteLength(JSON.stringify(value));
 describe("bounded public catalogue responses", () => {

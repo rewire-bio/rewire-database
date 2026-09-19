@@ -1,0 +1,626 @@
+
+
+                            Table A1. Baseline performance for Amylase one-to-many
+                    Model                                   Spearman              NDCG
+                    Ridge (one-hot)                             0.430             0.903
+                    Ridge (one-hot + likelihoods)               0.597             0.947
+                    Dayhoff likelihood                          0.522             0.936
+                    ESM2-650M likelihood                        0.560             0.942
+                    CARP-640M likelihood                        0.513             0.931
+                    CARP-640M supervised                0.242 ± 0.153     0.873 ± 0.029
+                    CARP-640M naive supervised          0.087 ± 0.172     0.863 ± 0.023
+                    ESMC-300M supervised                0.148 ± 0.181     0.869 ± 0.028
+                    ESMC-300M naive supervised          0.044 ± 0.028     0.850 ± 0.007
+
+
+
+                            Table A2. Baseline performance for Amylase close-to-far
+                    Model                                   Spearman              NDCG
+                    Ridge (one-hot)                              nan              0.865
+                    Ridge (one-hot + likelihoods)               0.612             0.955
+                    Dayhoff likelihood                          0.538             0.943
+                    ESM2-650M likelihood                        0.617             0.955
+                    CARP-640M likelihood                        0.543             0.945
+                    CARP-640M supervised                0.081 ± 0.055     0.867 ± 0.015
+                    CARP-640M naive supervised          0.006 ± 0.117     0.864 ± 0.016
+                    ESMC-300M supervised                0.107 ± 0.113     0.869 ± 0.024
+                    ESMC-300M naive supervised          0.007 ± 0.032     0.864 ± 0.012
+
+
+
+                            Table A3. Baseline performance for Amylase far-to-close
+                   Model                                     Spearman                 NDCG
+                   Ridge (one-hot)                              0.036              0.836
+                   Ridge (one-hot + likelihoods)                0.588              0.933
+                   Dayhoff likelihood                           0.580              0.947
+                   ESM2-650M likelihood                         0.598              0.932
+                   CARP-640M likelihood                         0.566              0.919
+                   CARP-640M supervised                 0.140 ± 0.102      0.832 ± 0.019
+                   CARP-640M naive supervised          −0.019 ± 0.057      0.825 ± 0.009
+                   ESMC-300M supervised                 0.011 ± 0.066      0.819 ± 0.011
+                   ESMC-300M naive supervised           0.015 ± 0.028      0.818 ± 0.002
+
+
+
+
+                                                      12
+                               FLIP2
+
+
+        Table A4. Baseline performance for Amylase by-mutation
+Model                                   Spearman               NDCG
+Ridge (one-hot)                            0.648             0.940
+Ridge (one-hot + likelihoods)              0.681             0.940
+Dayhoff likelihood                         0.499             0.917
+ESM2-650M likelihood                       0.540             0.909
+CARP-640M likelihood                       0.468             0.906
+CARP-640M supervised               0.551 ± 0.239     0.926 ± 0.050
+CARP-640M naive supervised         0.109 ± 0.134     0.819 ± 0.029
+ESMC-300M supervised               0.061 ± 0.130     0.793 ± 0.030
+ESMC-300M naive supervised         0.054 ± 0.115     0.819 ± 0.048
+
+
+         Table A5. Baseline performance for IRED two-to-many
+Model                                   Spearman               NDCG
+Ridge (one-hot)                            0.193             0.960
+Ridge (one-hot + likelihoods)              0.211             0.964
+Dayhoff likelihood                         0.142             0.955
+ESM2-650M likelihood                       0.141             0.953
+CARP-640M likelihood                       0.144             0.956
+CARP-640M supervised               0.072 ± 0.046     0.948 ± 0.004
+CARP-640M naive supervised         0.012 ± 0.017     0.944 ± 0.001
+ESMC-300M supervised               0.160 ± 0.022     0.954 ± 0.002
+ESMC-300M naive supervised         0.106 ± 0.005     0.949 ± 0.001
+
+
+         Table A6. Baseline performance for NucB two-to-many
+Model                                   Spearman               NDCG
+Ridge (one-hot)                            0.606             0.943
+Ridge (one-hot + likelihoods)              0.623             0.946
+Dayhoff likelihood                         0.478             0.919
+ESM2-650M likelihood                       0.397             0.906
+CARP-640M likelihood                       0.188             0.889
+CARP-640M supervised               0.717 ± 0.012     0.970 ± 0.001
+CARP-640M naive supervised         0.704 ± 0.007     0.967 ± 0.001
+ESMC-300M supervised               0.723 ± 0.002     0.966 ± 0.000
+ESMC-300M naive supervised         0.635 ± 0.011     0.956 ± 0.003
+
+
+         Table A7. Baseline performance for TrpB one-to-many
+Model                                   Spearman               NDCG
+Ridge (one-hot)                            0.441             0.989
+Ridge (one-hot + likelihoods)              0.453             0.993
+Dayhoff likelihood                         0.136             0.991
+ESM2-650M likelihood                       0.430             0.992
+CARP-640M likelihood                       0.418             0.992
+CARP-640M supervised               0.451 ± 0.022     0.992 ± 0.002
+CARP-640M naive supervised         0.298 ± 0.217     0.984 ± 0.002
+ESMC-300M supervised               0.306 ± 0.063     0.992 ± 0.001
+ESMC-300M naive supervised         0.369 ± 0.028     0.986 ± 0.002
+
+
+                                 13
+                                FLIP2
+
+
+         Table A8. Baseline performance for TrpB two-to-many
+Model                                   Spearman                 NDCG
+Ridge (one-hot)                             0.437             0.994
+Ridge (one-hot + likelihoods)               0.410             0.994
+Dayhoff likelihood                          0.139             0.991
+ESM2-650M likelihood                        0.427             0.992
+CARP-640M likelihood                        0.417             0.992
+CARP-640M supervised                0.509 ± 0.010     0.996 ± 0.000
+CARP-640M naive supervised          0.328 ± 0.095     0.985 ± 0.002
+ESMC-300M supervised                0.429 ± 0.042     0.991 ± 0.003
+ESMC-300M naive supervised          0.398 ± 0.020     0.986 ± 0.001
+
+
+          Table A9. Baseline performance for TrpB by-position
+Model                                    Spearman                NDCG
+Ridge (one-hot)                            0.274              0.987
+Ridge (one-hot + likelihoods)              0.294              0.988
+Dayhoff likelihood                         0.183              0.988
+ESM2-650M likelihood                       0.260              0.988
+CARP-640M likelihood                       0.252              0.988
+CARP-640M supervised               0.167 ± 0.018      0.983 ± 0.003
+CARP-640M naive supervised         −0.009 ± nan       0.975 ± 0.000
+ESMC-300M supervised               0.091 ± 0.118      0.980 ± 0.007
+ESMC-300M naive supervised         0.154 ± 0.059      0.978 ± 0.004
+
+
+        Table A10. Baseline performance for hydro three-to-many
+Model                                   Spearman                 NDCG
+Ridge (one-hot)                             0.148             0.960
+Ridge (one-hot + likelihoods)               0.337             0.974
+Dayhoff likelihood                          0.387             0.970
+ESM2-650M likelihood                      −0.036              0.967
+CARP-640M likelihood                        0.165             0.963
+CARP-640M supervised                0.516 ± 0.035     0.982 ± 0.002
+CARP-640M naive supervised          0.604 ± 0.035     0.984 ± 0.001
+ESMC-300M supervised                0.399 ± 0.174     0.977 ± 0.007
+ESMC-300M naive supervised          0.367 ± 0.042     0.973 ± 0.002
+
+
+         Table A11. Baseline performance for hydro low-to-high
+Model                                   Spearman                 NDCG
+Ridge (one-hot)                             0.146             0.887
+Ridge (one-hot + likelihoods)               0.205             0.903
+Dayhoff likelihood                          0.308             0.924
+ESM2-650M likelihood                      −0.038              0.865
+CARP-640M likelihood                        0.284             0.921
+CARP-640M supervised                0.188 ± 0.071     0.887 ± 0.007
+CARP-640M naive supervised          0.188 ± 0.202     0.896 ± 0.032
+ESMC-300M supervised                0.099 ± 0.194     0.870 ± 0.030
+ESMC-300M naive supervised          0.270 ± 0.048     0.905 ± 0.008
+
+
+                                  14
+                                FLIP2
+
+
+          Table A12. Baseline performance for hydro to-P06241
+Model                                   Spearman                NDCG
+Ridge (one-hot)                           −0.138              0.913
+Ridge (one-hot + likelihoods)               0.097             0.926
+Dayhoff likelihood                          0.426             0.967
+ESM2-650M likelihood                        0.017             0.928
+CARP-640M likelihood                        0.393             0.957
+CARP-640M supervised                0.150 ± 0.046     0.933 ± 0.008
+CARP-640M naive supervised          0.006 ± 0.137     0.927 ± 0.006
+ESMC-300M supervised                0.161 ± 0.184     0.934 ± 0.011
+ESMC-300M naive supervised          0.098 ± 0.024     0.927 ± 0.001
+
+
+         Table A13. Baseline performance for hydro to-P0A9X9
+Model                                    Spearman               NDCG
+Ridge (one-hot)                           −0.170               0.957
+Ridge (one-hot + likelihoods)             −0.028               0.964
+Dayhoff likelihood                          0.151              0.973
+ESM2-650M likelihood                        0.049              0.964
+CARP-640M likelihood                      −0.032               0.967
+CARP-640M supervised                0.004 ± 0.103      0.961 ± 0.004
+CARP-640M naive supervised         −0.029 ± 0.074      0.960 ± 0.002
+ESMC-300M supervised                0.078 ± 0.133      0.970 ± 0.001
+ESMC-300M naive supervised         −0.050 ± 0.193      0.958 ± 0.004
+
+
+          Table A14. Baseline performance for hydro to-P01053
+Model                                    Spearman               NDCG
+Ridge (one-hot)                           −0.204               0.889
+Ridge (one-hot + likelihoods)               0.213              0.942
+Dayhoff likelihood                          0.229              0.964
+ESM2-650M likelihood                        0.053              0.911
+CARP-640M likelihood                        0.252              0.948
+CARP-640M supervised                0.049 ± 0.088      0.909 ± 0.008
+CARP-640M naive supervised          0.061 ± 0.094      0.907 ± 0.009
+ESMC-300M supervised                0.329 ± 0.190      0.949 ± 0.024
+ESMC-300M naive supervised         −0.086 ± 0.135      0.895 ± 0.006
+
+
+        Table A15. Baseline performance for rhomax by-wild-type
+Model                                    Spearman               NDCG
+Ridge (one-hot)                             0.327              0.939
+Ridge (one-hot + likelihoods)               0.337              0.936
+Dayhoff likelihood                          0.019              0.902
+ESM2-650M likelihood                      −0.177               0.904
+CARP-640M likelihood                        0.379              0.937
+CARP-640M supervised                0.072 ± 0.244      0.934 ± 0.029
+CARP-640M naive supervised          0.056 ± 0.125      0.934 ± 0.009
+ESMC-300M supervised               −0.016 ± 0.113      0.942 ± 0.008
+ESMC-300M naive supervised          0.036 ± 0.218      0.936 ± 0.022
+
+
+                                  15
+                                                     FLIP2
+
+
+
+
+                           Table A16. Baseline performance for PDZ3 single-to-double
+                     Model                                    Spearman               NDCG
+                     Ridge (one-hot)                             0.476              0.873
+                     Ridge (one-hot + likelihoods)               0.478              0.875
+                     Dayhoff likelihood                        −0.007               0.856
+                     ESM2-650M likelihood                        0.048              0.854
+                     CARP-640M likelihood                        0.043              0.863
+                     CARP-640M supervised                0.512 ± 0.014      0.882 ± 0.015
+                     CARP-640M naive supervised          0.464 ± 0.022      0.870 ± 0.008
+                     ESMC-300M supervised                0.499 ± 0.018      0.889 ± 0.011
+                     ESMC-300M naive supervised          0.502 ± 0.016      0.880 ± 0.006
+
+
+
+
+                                Table A17. Best-performing baseline for each split
+Dataset                      Split               Split type                          Best model   Best Spearman
+Alpha amylase (Amylase)      one-to-many         number         Ridge (one-hot + likelihoods)             0.597
+                             close-to-far        position            ESM2-650M likelihood                 0.617
+                             far-to-close        position            ESM2-650M likelihood                 0.598
+                             by-mutation         mutation       Ridge (one-hot + likelihoods)             0.681
+Imine reductase (IRED)       two-to-many         number         Ridge (one-hot + likelihoods)             0.211
+Nuclease B (NucB)            two-to-many         number             ESMC-300M supervised                  0.723
+Tryptophan B (TrpB)          one-to-many         number             CARP-640M supervised                  0.453
+                             two-to-many         number             CARP-640M supervised                  0.509
+                             by-position         position       Ridge (one-hot + likelihoods)             0.294
+Hydrophobic core (hydro)     three-to-many       number        CARP-640M naive supervised                 0.604
+                             low-to-high         fitness                  Dayhoff likelihood              0.308
+                             to-P06241           wild-type                Dayhoff likelihood              0.426
+                             to-P0A9X9           wild-type                Dayhoff likelihood              0.151
+                             to-P01053           wild-type           CARP-640M likelihood                 0.330
+Rhodopsin (rhomax)           by-wild-type        wild-type          CARP-640M supervised                  0.379
+PDZ3                         single-to-double    number        ESMC-300M naive supervised                 0.733
+
+
+
+
+                                                       16
+                                                     FLIP2
+
+
+
+
+      (a) Ridge (one-hot)               (b) Ridge (one-hot + likelihoods)              (c) Dayhoff likelihood
+
+
+
+
+  (d) ESM2-650M likelihood                (e) CARP-640M likelihood                  (f) CARP-640M supervised
+
+
+
+
+(g) CARP-640M naive supervised            (h) ESMC-300M supervised                (i) ESMC-300M naive supervised
+
+                                 Figure A1. Predictions for amylase one-to-many
+
+
+
+
+                                                       17
+                                                     FLIP2
+
+
+
+
+      (a) Ridge (one-hot)               (b) Ridge (one-hot + likelihoods)               (c) Dayhoff likelihood
+
+
+
+
+  (d) ESM2-650M likelihood                (e) CARP-640M likelihood                   (f) CARP-640M supervised
+
+
+
+
+(g) CARP-640M naive supervised            (h) ESMC-300M supervised                 (i) ESMC-300M naive supervised
+
+                                 Figure A2. Predictions for amylase close-to-far
+
+
+
+
+                                                       18
+                                                     FLIP2
+
+
+
+
+      (a) Ridge (one-hot)              (b) Ridge (one-hot + likelihoods)                (c) Dayhoff likelihood
+
+
+
+
+  (d) ESM2-650M likelihood                (e) CARP-640M likelihood                   (f) CARP-640M supervised
+
+
+
+
+(g) CARP-640M naive supervised            (h) ESMC-300M supervised                 (i) ESMC-300M naive supervised
+
+                                 Figure A3. Predictions for amylase far-to-close
+
+
+
+
+                                                       19
+                                                     FLIP2
+
+
+
+
+      (a) Ridge (one-hot)               (b) Ridge (one-hot + likelihoods)              (c) Dayhoff likelihood
+
+
+
+
+  (d) ESM2-650M likelihood                (e) CARP-640M likelihood                  (f) CARP-640M supervised
+
+
+
+
+(g) CARP-640M naive supervised            (h) ESMC-300M supervised                (i) ESMC-300M naive supervised
+
+                                 Figure A4. Predictions for amylase by-mutation
+
+
+
+
+                                                       20
+                                                    FLIP2
+
+
+
+
+      (a) Ridge (one-hot)              (b) Ridge (one-hot + likelihoods)            (c) Dayhoff likelihood
+
+
+
+
+  (d) ESM2-650M likelihood               (e) CARP-640M likelihood                (f) CARP-640M supervised
+
+
+
+
+(g) CARP-640M naive supervised           (h) ESMC-300M supervised              (i) ESMC-300M naive supervised
+
+                                 Figure A5. Predictions for IRED two-to-many
+
+
+
+
+                                                      21
+                                                    FLIP2
+
+
+
+
+      (a) Ridge (one-hot)              (b) Ridge (one-hot + likelihoods)            (c) Dayhoff likelihood
+
+
+
+
+  (d) ESM2-650M likelihood               (e) CARP-640M likelihood                (f) CARP-640M supervised
+
+
+
+
+(g) CARP-640M naive supervised           (h) ESMC-300M supervised              (i) ESMC-300M naive supervised
+
+                                 Figure A6. Predictions for NucB two-to-many
+
+
+
+
+                                                      22
+                                                   FLIP2
+
+
+
+
+      (a) Ridge (one-hot)             (b) Ridge (one-hot + likelihoods)             (c) Dayhoff likelihood
+
+
+
+
+  (d) ESM2-650M likelihood               (e) CARP-640M likelihood                (f) CARP-640M supervised
+
+
+
+
+(g) CARP-640M naive supervised           (h) ESMC-300M supervised              (i) ESMC-300M naive supervised
+
+                                 Figure A7. Predictions for TrpB one-to-many
+
+
+
+
+                                                     23
+                                                   FLIP2
+
+
+
+
+      (a) Ridge (one-hot)             (b) Ridge (one-hot + likelihoods)             (c) Dayhoff likelihood
+
+
+
+
+  (d) ESM2-650M likelihood               (e) CARP-640M likelihood                (f) CARP-640M supervised
+
+
+
+
+(g) CARP-640M naive supervised           (h) ESMC-300M supervised              (i) ESMC-300M naive supervised
+
+                                 Figure A8. Predictions for TrpB two-to-many
+
+
+
+
+                                                     24
+                                                   FLIP2
+
+
+
+
+      (a) Ridge (one-hot)             (b) Ridge (one-hot + likelihoods)             (c) Dayhoff likelihood
+
+
+
+
+  (d) ESM2-650M likelihood               (e) CARP-640M likelihood                (f) CARP-640M supervised
+
+
+
+
+(g) CARP-640M naive supervised          (h) ESMC-300M supervised               (i) ESMC-300M naive supervised
+
+                                 Figure A9. Predictions for TrpB by-position
+
+
+
+
+                                                     25
+                                                           FLIP2
+
+
+
+
+      (a) Ridge (one-hot)                     (b) Ridge (one-hot + likelihoods)                    (c) Dayhoff likelihood
+
+
+
+
+  (d) ESM2-650M likelihood                      (e) CARP-640M likelihood                        (f) CARP-640M supervised
+
+
+
+
+(g) CARP-640M naive supervised                  (h) ESMC-300M supervised                      (i) ESMC-300M naive supervised
+
+                                 Figure A10. Predictions for hydrophobic core three-to-many
+
+
+
+
+                                                             26
+                                                          FLIP2
+
+
+
+
+      (a) Ridge (one-hot)                    (b) Ridge (one-hot + likelihoods)                   (c) Dayhoff likelihood
+
+
+
+
+  (d) ESM2-650M likelihood                     (e) CARP-640M likelihood                       (f) CARP-640M supervised
+
+
+
+
+(g) CARP-640M naive supervised                 (h) ESMC-300M supervised                     (i) ESMC-300M naive supervised
+
+                                 Figure A11. Predictions for hydrophobic core low-to-high
+
+
+
+
+                                                            27
+                                                         FLIP2
+
+
+
+
+      (a) Ridge (one-hot)                   (b) Ridge (one-hot + likelihoods)                  (c) Dayhoff likelihood
+
+
+
+
+  (d) ESM2-650M likelihood                    (e) CARP-640M likelihood                      (f) CARP-640M supervised
+
+
+
+
+(g) CARP-640M naive supervised                (h) ESMC-300M supervised                    (i) ESMC-300M naive supervised
+
+                                 Figure A12. Predictions for hydrophobic core to-P06241
+
+
+
+
+                                                           28
+                                                         FLIP2
+
+
+
+
+      (a) Ridge (one-hot)                   (b) Ridge (one-hot + likelihoods)                  (c) Dayhoff likelihood
+
+
+
+
+  (d) ESM2-650M likelihood                     (e) CARP-640M likelihood                     (f) CARP-640M supervised
+
+
+
+
+(g) CARP-640M naive supervised                (h) ESMC-300M supervised                    (i) ESMC-300M naive supervised
+
+                                 Figure A13. Predictions for hydrophobic core to-P0A9X9
+
+
+
+
+                                                           29
+                                                         FLIP2
+
+
+
+
+      (a) Ridge (one-hot)                   (b) Ridge (one-hot + likelihoods)                  (c) Dayhoff likelihood
+
+
+
+
+  (d) ESM2-650M likelihood                    (e) CARP-640M likelihood                      (f) CARP-640M supervised
+
+
+
+
+(g) CARP-640M naive supervised                (h) ESMC-300M supervised                    (i) ESMC-300M naive supervised
+
+                                 Figure A14. Predictions for hydrophobic core to-P01053
+
+
+
+
+                                                           30
+                                                     FLIP2
+
+
+
+
+      (a) Ridge (one-hot)               (b) Ridge (one-hot + likelihoods)               (c) Dayhoff likelihood
+
+
+
+
+  (d) ESM2-650M likelihood                 (e) CARP-640M likelihood                  (f) CARP-640M supervised
+
+
+
+
+(g) CARP-640M naive supervised             (h) ESMC-300M supervised                (i) ESMC-300M naive supervised
+
+                                 Figure A15. Predictions for Rhomax by-wild-type
+
+
+
+
+                                                       31
+                                                      FLIP2
+
+
+
+
+      (a) Ridge (one-hot)                (b) Ridge (one-hot + likelihoods)                (c) Dayhoff likelihood
+
+
+
+
+  (d) ESM2-650M likelihood                  (e) CARP-640M likelihood                   (f) CARP-640M supervised
+
+
+
+
+(g) CARP-640M naive supervised             (h) ESMC-300M supervised                  (i) ESMC-300M naive supervised
+
+                                 Figure A16. Predictions for PDZ3 single-to-double
+
+
+
+
+                                                        32
+

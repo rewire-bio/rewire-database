@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
-import { fetchWithRetry } from "./deployment-transaction.mjs";
+import { fetchWithRetry, verifyResolutionPublications } from "./deployment-transaction.mjs";
 
 // Read-only acceptance probe. No Firebase credentials, imports or writes.
 const origin = (process.argv[2] || "https://benchmarks.rewire.it").replace(
@@ -132,11 +132,11 @@ if (manifest.coverage.audit_history) {
     corrected.resolutions.length > 0,
     "Exact-source correction must have linked resolution",
   );
-  assert.ok(
-    corrected.resolutions.every(
-      (r) => r.published_release_id === manifest.release_id,
-    ),
-  );
+  const publishedResolutions = JSON.parse(await readFile(new URL(
+    `../public/omics/releases/${manifest.release_id}/audit-resolutions.json`,
+    import.meta.url,
+  ), "utf8"));
+  verifyResolutionPublications(corrected.resolutions, publishedResolutions);
   assert.ok(corrected.record_url);
   for (const name of [
     "beeline",

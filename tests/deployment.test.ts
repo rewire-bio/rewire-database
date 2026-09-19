@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 import {
   deployCatalogue,
   fetchWithRetry,
+  verifyResolutionPublications,
 } from "../scripts/deployment-transaction.mjs";
 
 function operations(failAt?: string) {
@@ -26,6 +27,23 @@ function operations(failAt?: string) {
   };
   return { actions, calls };
 }
+
+describe("correction publication across releases", () => {
+  const published = [{ id: "correction-1", published_release_id: "earlier-release" }];
+  it("accepts a retained correction from an earlier release", () => {
+    expect(() => verifyResolutionPublications(published, published)).not.toThrow();
+  });
+  it("rejects a correction rebound to the current release", () => {
+    expect(() => verifyResolutionPublications([
+      { id: "correction-1", published_release_id: "current-release" },
+    ], published)).toThrow("differs from the release artifact");
+  });
+  it("rejects corrections absent from the published artifact", () => {
+    expect(() => verifyResolutionPublications([
+      { id: "unknown", published_release_id: "earlier-release" },
+    ], published)).toThrow("differs from the release artifact");
+  });
+});
 
 describe("deployment rollback", () => {
   it("verifies both surfaces before declaring success", async () => {

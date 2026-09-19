@@ -1,3 +1,12 @@
+/** A correction retains its first publication when carried into later releases. */
+export function verifyResolutionPublications(actual, published) {
+  const expected = new Map(published.map((row) => [row.id, row.published_release_id]));
+  for (const row of actual) {
+    if (!expected.has(row.id) || expected.get(row.id) !== row.published_release_id)
+      throw new Error(`Correction publication differs from the release artifact: ${row.id}`);
+  }
+}
+
 /** Roll back both surfaces even when a deploy command fails after publishing. */
 export async function deployCatalogue(actions) {
   const previous = await actions.capture();

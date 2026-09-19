@@ -1,8 +1,8 @@
 "use client";
-import { useId, useState, type ReactNode } from "react";
+import { useId, useState, useEffect } from "react";
 import Link from "next/link";
 import type { ResolvedComparison } from "@/services/omics/src/published-comparisons";
-import type { AggregateComparison } from "@/services/omics/src/aggregate-comparisons";
+import { catalogueClient } from "@/lib/catalogue-client";
 import type { ResultRow } from "@/services/omics/src/catalogue-query";
 import { displayValue, originLabel, recordHref } from "@/lib/omics";
 import { testedEntities, singularKindLabels } from "@/lib/omics-browse";
@@ -248,153 +248,45 @@ function PanelFigure({ panel }: { panel: ResolvedComparison }) {
   );
 }
 
-export function PooledFigure({ group }: { group: AggregateComparison }) {
-  const rows: ChartRow[] = group.rows.map(({ row, panel }) => ({
-    row,
-    note: `${panel.protocol.name} · ${panel.dataset.name}`,
-  }));
-  const omitted = rows.filter(
-    ({ row }) => row.result.attributes.numeric_value === null,
-  ).length;
-  const dates = [...new Set(group.panels.map((panel) => panel.review.date))]
-    .sort()
-    .join(", ");
-  return (
-    <figure className={styles.comparisonFigure}>
-      <figcaption>
-        <h3>
-          {group.metric}: {group.panels.length} source tables pooled
-        </h3>
-        <p>
-          {group.metric} ({group.unit}) ·{" "}
-          {group.direction === "higher" ? "Higher" : "Lower"} values are better
-          for this metric. Ranked by printed value.
-        </p>
-        <p className={styles.pooledWarning}>
-          {group.divergent.length
-            ? `These rows do not hold the following constant: ${group.divergent.join(", ")}. Read each row with its own protocol and dataset. A position in this order is not evidence that one entity is better.`
-            : "These rows come from separate source tables. A position in this order is not evidence that one entity is better."}
-        </p>
-        <p>
-          {group.protocols.map((protocol, index) => (
-            <span key={protocol.id}>
-              {index ? " · " : ""}
-              <Link href={recordHref(protocol)}>{protocol.name}</Link>
-            </span>
-          ))}
-        </p>
-      </figcaption>
-      <Chart rows={rows} metric={group.metric} unit={group.unit} />
-      <p className={styles.muted}>
-        {omitted > 0
-          ? `${omitted} unavailable values are omitted from the plot and retained in the table. `
-          : ""}
-        Plotted marks show point estimates; uncertainty, where reported, is
-        retained in the printed values and table. Differences do not establish
-        statistical significance.
-      </p>
-      <details>
-        <summary>Values, uncertainty and evidence</summary>
-        <ValueTable
-          rows={rows}
-          unit={group.unit}
-          caption={`${group.metric}: pooled source values, each row with its own protocol and dataset`}
-          sourceColumn
-        />
-      </details>
-      <Caveats caveats={group.caveats} date={dates} />
-    </figure>
-  );
-}
-
-export default function BenchmarkCharts({
-  panels,
-  aggregates = [],
-}: {
+export default function BenchmarkCharts({ panels, recordId, releaseId, options }: {
   panels: ResolvedComparison[];
-  aggregates?: AggregateComparison[];
+  recordId?: string;
+  releaseId?: string;
+  options?: { id: string; title: string; metric: string }[];
 }) {
   const id = useId();
+  const choices = options || panels;
   const [selected, setSelected] = useState(panels[0]?.id || "");
-  const [pooledId, setPooledId] = useState(aggregates[0]?.id || "");
-  const [pooled, setPooled] = useState(false);
-  if (!panels.length) return null;
-  const panel = panels.find((item) => item.id === selected) || panels[0];
-  const group =
-    aggregates.find((item) => item.id === pooledId) || aggregates[0];
-  const showPooled = pooled && group !== undefined;
-  const control: ReactNode = aggregates.length ? (
-    <fieldset className={styles.chartModes}>
-      <legend>View</legend>
-      <label>
-        <input
-          type="radio"
-          name={`${id}-mode`}
-          checked={!showPooled}
-          onChange={() => setPooled(false)}
-        />{" "}
-        By source table
-      </label>
-      <label>
-        <input
-          type="radio"
-          name={`${id}-mode`}
-          checked={showPooled}
-          onChange={() => setPooled(true)}
-        />{" "}
-        Pooled by metric
-      </label>
-    </fieldset>
-  ) : null;
-  return (
-    <section
-      id="charts"
-      className={styles.section}
-      aria-labelledby={`${id}-title`}
-    >
-      <h2 id={`${id}-title`}>Published comparisons</h2>
-      <p>
-        Explore the results reported under one evaluation protocol. Each figure
-        keeps its source, dataset and metric together; it is not a ranking
-        across studies. The pooled view gathers every source table that reports
-        the same metric and names what it does not hold constant.
-      </p>
-      {control}
-      {showPooled ? (
-        <>
-          <label htmlFor={`${id}-pooled`}>Pooled metric</label>
-          <select
-            id={`${id}-pooled`}
-            className={styles.chartSelect}
-            value={group.id}
-            onChange={(event) => setPooledId(event.target.value)}
-          >
-            {aggregates.map((item) => (
-              <option key={item.id} value={item.id}>
-                {item.metric} · {item.panels.length} source tables
-              </option>
-            ))}
-          </select>
-          <PooledFigure group={group} />
-        </>
-      ) : (
-        <>
-          <label htmlFor={`${id}-select`}>Comparison and metric</label>
-          <select
-            id={`${id}-select`}
-            className={styles.chartSelect}
-            value={panel.id}
-            onChange={(event) => setSelected(event.target.value)}
-          >
-            {panels.map((item) => (
-              <option key={item.id} value={item.id}>
-                {item.title} · {item.metric}
-              </option>
-            ))}
-          </select>
-          <PanelFigure panel={panel} />
-        </>
-      )}
-    </section>
-  );
+  const [panel, setPanel] = useState(panels[0]);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [retry, setRetry] = useState(0);
+  useEffect(() => {
+    let active = true;
+    const local = panels.find(item => item.id === selected);
+    setError("");
+    if (local) { setPanel(local); setLoading(false); return; }
+    if (!recordId || !releaseId) return;
+    setLoading(true);
+    catalogueClient(releaseId).comparison({ id: recordId, panel_id: selected })
+      .then(value => { if (active) {
+        if (!value.panel) throw new Error("Comparison unavailable");
+        setPanel(value.panel);
+      } })
+      .catch(() => { if (active) setError("The selected comparison could not be loaded. The previous figure is retained."); })
+      .finally(() => { if (active) setLoading(false); });
+    return () => { active = false; };
+  }, [selected, panels, recordId, releaseId, retry]);
+  if (!panel) return null;
+  return <section id="charts" className={styles.section} aria-labelledby={`${id}-title`}>
+    <h2 id={`${id}-title`}>Published comparisons</h2>
+    <p>Each figure keeps its source, protocol, dataset and metric together. Results from different protocols are shown separately, without a pooled ranking.</p>
+    <label htmlFor={`${id}-select`}>Comparison and metric</label>
+    <select id={`${id}-select`} className={styles.chartSelect} value={selected}
+      onChange={event => setSelected(event.target.value)}>
+      {choices.map(item => <option key={item.id} value={item.id}>{item.title} · {item.metric}</option>)}
+    </select>
+    <div aria-live="polite">{loading && <p>Loading comparison…</p>}{error && <p role="alert">{error} <button onClick={() => setRetry(retry + 1)}>Retry</button></p>}</div>
+    <div aria-busy={loading}><PanelFigure panel={panel} /></div>
+  </section>;
 }

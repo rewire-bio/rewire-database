@@ -39,6 +39,53 @@ const batches = extractedBatches.map((key) => ({
   ),
 }));
 
+describe("reviewed extraction corrections", () => {
+  const results = (key: string) => batches.find((batch) => batch.key === key)!.records
+    .filter((record) => record.kind === "result");
+
+  it("retains ProteinBench's percentage cells and explicit missing values", () => {
+    const records = results("proteinbench");
+    expect(records).toHaveLength(556);
+    const percentages = records.filter((record) => /column\((Accuracy AAR|Specificity PHR)/.test(
+      String(record.attributes.source_locator),
+    ));
+    expect(percentages).toHaveLength(16);
+    expect(percentages.every((record) => record.attributes.unit === "percent")).toBe(true);
+    const native = percentages.find((record) => record.attributes.printed_value === "100.00%");
+    expect(native?.attributes.numeric_value).toBe("100.00");
+    expect(records.some((record) => /eigenfold.*pepbond/.test(record.id))).toBe(false);
+  });
+
+  it("does not claim an uncertainty definition absent from the pinned TDC source", () => {
+    const tdc = results("tdc");
+    expect(tdc).toHaveLength(66);
+    for (const record of tdc)
+      expect(record.attributes.uncertainty).toMatchObject({ type: "reported_plus_minus_type_unresolved" });
+  });
+
+  it("labels DART-Eval correlations consistently, including negative correlations", () => {
+    const correlations = results("dart-eval").filter((record) =>
+      ["pearson_r", "spearman_r"].includes(String(record.attributes.metric)),
+    );
+    expect(correlations).toHaveLength(91);
+    expect(correlations.every((record) => record.attributes.unit === "correlation")).toBe(true);
+    expect(correlations.some((record) => Number(record.attributes.numeric_value) < 0)).toBe(true);
+  });
+
+  it.each(["atom3d", "beacon", "bend", "flip", "gue", "hest", "proteingym", "tdc"])(
+    "receipts the verified PDF-to-text transformation for %s",
+    (key) => {
+      const receipt = batches.find((batch) => batch.key === key)!.receipt;
+      expect(receipt.transformation).toMatchObject({
+        tool: "pdftotext", input_sha256: receipt.artifact_sha256,
+        arguments: ["-layout", "-enc", "UTF-8", "-", "-"],
+      });
+      expect(receipt.transformation.output_sha256).toMatch(/^[a-f0-9]{64}$/);
+      expect(receipt.transformation.tool_version).toMatch(/^pdftotext version /);
+    },
+  );
+});
+
 describe.each(batches)("$key batch", ({ key, records, receipt }) => {
   const byId = new Map(records.map((record) => [record.id, record]));
   const of = (kind: string) => records.filter((r) => r.kind === kind);
@@ -163,13 +210,25 @@ describe("extracted batches reach their benchmarks", () => {
       const row = coverage.find((c) => c.id === id);
       expect(row, `${key} -> ${id}`).toBeDefined();
       expect(row!.evaluations).toBe(
-        records.filter((r) => r.kind === "evaluation").length,
+        key === "genomic-benchmarks" ? 18 : key === "proteingym" ? 88 : records.filter((r) => r.kind === "evaluation").length,
       );
     }
   });
 });
 
 describe("table reading", () => {
+  it.each(["0.87%", "unreadable", "0.87 ± broken", "0.87 ± -0.01", "1×10^999"])(
+    "rejects unrecognised or invalid cells instead of silently dropping %s",
+    (printed) => expect(() => parseCell(printed)).toThrow(/Unrecognised/),
+  );
+
+  it("preserves source percentages only with an explicit percentage unit", () => {
+    expect(parseCell("4 0.05% ± 1.06", { unit: "percent" })).toEqual({
+      printed: "4 0.05% ± 1.06", value: "40.05", sd: "1.06",
+    });
+    expect(parseCell("100.00%", { unit: "percent" }).value).toBe("100.00");
+  });
+
   it("reads a number, its spread and an empty cell", () => {
     expect(parseCell("0.450")).toMatchObject({ value: "0.450", sd: null });
     expect(parseCell("64.18(0.44)")).toMatchObject({

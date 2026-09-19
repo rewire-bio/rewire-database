@@ -1,135 +1,39 @@
-/**
- * Report how many evaluations and results each benchmark can actually be reached
- * from, and fail if coverage drops below the recorded floor.
- *
- * Evaluations do not link to a benchmark directly. They link to the task or
- * protocol they ran, and that child declares `part_of` its benchmark, so a
- * benchmark is reached in two hops. Counting only direct links reports zero for
- * every benchmark and hides the real gap, which is that most tasks and protocols
- * never declare a parent.
- */
+/** Coverage uses the same sourced relationships and chart gates as the API. */
 import fs from "node:fs";
-
-/** Only the fields coverage needs, so published and in-flight records both fit. */
-export type CoverageInput = {
-  id: string;
-  kind: string;
-  name: string;
-  status: string;
-  links?: { relation: string; target_id: string }[];
-};
-
-const CATALOGUE = "public/omics/catalogue.json";
-
-const FLOOR_FILE = "data/omics/benchmark-evidence-floor.json";
-
+import { createCatalogueQuery, type CatalogueRecord } from "../../services/omics/src/catalogue-query";
+export type CoverageInput = CatalogueRecord;
 export type BenchmarkCoverage = {
-  id: string;
-  name: string;
-  status: string;
-  evaluations: number;
-  results: number;
+  id: string; name: string; status: string; evaluations: number; results: number; charts: number;
 };
-
-export function benchmarkCoverage(
-  records: readonly CoverageInput[],
-): BenchmarkCoverage[] {
-  const byId = new Map(records.map((r) => [r.id, r]));
-  const isBenchmark = (id: string) => byId.get(id)?.kind === "benchmark";
-
-  // child task/protocol -> benchmark it belongs to
-  const parent = new Map<string, string>();
-  for (const r of records)
-    for (const link of r.links || [])
-      if (
-        (link.relation === "part_of" || link.relation === "benchmark") &&
-        isBenchmark(link.target_id)
-      )
-        parent.set(r.id, link.target_id);
-
-  const evaluations = new Map<string, Set<string>>();
-  for (const r of records) {
-    if (r.kind !== "evaluation") continue;
-    for (const link of r.links || []) {
-      if (link.relation !== "benchmark") continue;
-      const target = isBenchmark(link.target_id)
-        ? link.target_id
-        : parent.get(link.target_id);
-      if (!target) continue;
-      if (!evaluations.has(target)) evaluations.set(target, new Set());
-      evaluations.get(target)!.add(r.id);
-    }
-  }
-
-  const results = new Map<string, Set<string>>();
-  for (const r of records) {
-    if (r.kind !== "result") continue;
-    for (const link of r.links || []) {
-      if (link.relation !== "evaluation") continue;
-      for (const [benchmark, ids] of evaluations)
-        if (ids.has(link.target_id)) {
-          if (!results.has(benchmark)) results.set(benchmark, new Set());
-          results.get(benchmark)!.add(r.id);
-        }
-    }
-  }
-
-  return records
-    .filter((r) => r.kind === "benchmark")
-    .map((r) => ({
-      id: r.id,
-      name: r.name,
-      status: r.status,
-      evaluations: evaluations.get(r.id)?.size ?? 0,
-      results: results.get(r.id)?.size ?? 0,
-    }))
-    .sort((a, b) => b.evaluations - a.evaluations || a.id.localeCompare(b.id));
+export function benchmarkCoverage(records: readonly CoverageInput[]): BenchmarkCoverage[] {
+  const query = createCatalogueQuery({schema_version: "1.1", release_id: "coverage-audit",
+    released_at: "2026-09-19T00:00:00Z", coverage: {}, records: [...records]});
+  return records.filter(r => r.kind === "benchmark" && r.status !== "excluded")
+    .map(r => {
+      const results = query.results({id: r.id, limit: 1});
+      return { id: r.id, name: r.name, status: r.status,
+        evaluations: results.evaluation_count, results: results.total,
+        charts: query.get({id: r.id, include_comparisons: false})!.comparison_options.length };
+    }).sort((a,b) => b.results - a.results || a.id.localeCompare(b.id));
 }
-
+export function assertCoverageFloor(coverage: BenchmarkCoverage[], floor: {
+  covered: number;
+  benchmarks?: Record<string, {results: number; charts: number}>;
+}) {
+  if (coverage.filter(r => r.results > 0).length < floor.covered)
+    throw new Error("Benchmark coverage regressed");
+  for (const [id, minimum] of Object.entries(floor.benchmarks || {})) {
+    const current = coverage.find(r => r.id === id);
+    if (!current || current.results < minimum.results || current.charts < minimum.charts)
+      throw new Error(`Benchmark evidence regressed: ${id}`);
+  }
+}
 function main() {
-  // Audit the published artifact, which is what the site serves. Rebuilding from
-  // a subset of the source files describes a catalogue nobody sees.
-  const published = JSON.parse(fs.readFileSync(CATALOGUE, "utf8"));
-  const coverage = benchmarkCoverage(published.records as CoverageInput[]);
-  console.log(`release ${published.release_id}\n`);
-  const covered = coverage.filter((c) => c.evaluations > 0);
-
-  for (const c of coverage)
-    console.log(
-      `${c.evaluations > 0 ? "  " : "! "}${c.id.padEnd(48)} evaluations=${String(
-        c.evaluations,
-      ).padStart(4)} results=${String(c.results).padStart(4)}`,
-    );
-  console.log(
-    `\n${covered.length} of ${coverage.length} benchmarks are reachable from at least one evaluation.`,
-  );
-  if (covered.length < coverage.length)
-    console.log(
-      `${coverage.length - covered.length} have no evaluation. A benchmark is reached ` +
-        `through a task or protocol that declares 'part_of' it, so an unreached ` +
-        `benchmark usually means its children never declared a parent.`,
-    );
-
-  const floor = fs.existsSync(FLOOR_FILE)
-    ? JSON.parse(fs.readFileSync(FLOOR_FILE, "utf8")).covered
-    : 0;
-  if (covered.length < floor) {
-    console.error(
-      `\nCoverage regressed: ${covered.length} benchmarks reachable, floor is ${floor}.`,
-    );
-    process.exit(1);
-  }
-  if (covered.length > floor) {
-    fs.writeFileSync(
-      FLOOR_FILE,
-      JSON.stringify(
-        { covered: covered.length, total: coverage.length },
-        null,
-        2,
-      ) + "\n",
-    );
-    console.log(`\nCoverage floor raised to ${covered.length}.`);
-  }
+  const published = JSON.parse(fs.readFileSync("public/omics/catalogue.json", "utf8"));
+  const coverage = benchmarkCoverage(published.records);
+  console.log(`Release ${published.release_id}`);
+  for (const row of coverage) console.log(`${row.id}: ${row.evaluations} evaluations, ${row.results} metric rows, ${row.charts} charts`);
+  console.log(`${coverage.filter(r => r.results > 0).length}/${coverage.length} benchmarks have linked results. Missing evidence is not a zero score.`);
+  assertCoverageFloor(coverage, JSON.parse(fs.readFileSync("data/omics/benchmark-evidence-floor.json", "utf8")));
 }
-
 if (process.argv[1]?.endsWith("audit-benchmark-evidence.ts")) main();

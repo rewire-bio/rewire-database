@@ -51,24 +51,9 @@ jobs:
         run: npx firebase deploy --only functions:omics,firestore --project "$FIREBASE_PROJECT_ID" --non-interactive
         env:
           FIREBASE_PROJECT_ID: ${{ vars.FIREBASE_PROJECT_ID }}
-      - name: Import and activate the reviewed catalogue release
+      - name: Publish catalogue and website with rollback
         if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && vars.FIREBASE_DEPLOY_ENABLED == 'true' && vars.FIREBASE_BACKEND_DEPLOY_ENABLED == 'true'
-        run: |
-          test "$GCLOUD_PROJECT" = "rewire-it"
-          npm --prefix services/omics run import-release -- ../../public/omics/catalogue.json ../../public/omics/manifest.json
-          RELEASE_ID=$(node -p "require('./public/omics/manifest.json').release_id")
-          npm --prefix services/omics run import-release -- --activate "$RELEASE_ID"
+        run: node scripts/deploy-catalogue.mjs
         env:
           GCLOUD_PROJECT: ${{ vars.FIREBASE_PROJECT_ID }}
           NODE_ENV: production
-      - name: Verify the published API before updating the website
-        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && vars.FIREBASE_DEPLOY_ENABLED == 'true' && vars.FIREBASE_BACKEND_DEPLOY_ENABLED == 'true'
-        run: node scripts/check-live-catalogue.mjs https://europe-west2-rewire-it.cloudfunctions.net/contributions
-      - name: Deploy the database website
-        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && vars.FIREBASE_DEPLOY_ENABLED == 'true' && vars.FIREBASE_BACKEND_DEPLOY_ENABLED == 'true'
-        run: npx firebase deploy --only hosting --project "$FIREBASE_PROJECT_ID" --non-interactive
-        env:
-          FIREBASE_PROJECT_ID: ${{ vars.FIREBASE_PROJECT_ID }}
-      - name: Verify the live website API
-        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && vars.FIREBASE_DEPLOY_ENABLED == 'true' && vars.FIREBASE_BACKEND_DEPLOY_ENABLED == 'true'
-        run: node scripts/check-live-catalogue.mjs https://benchmarks.rewire.it

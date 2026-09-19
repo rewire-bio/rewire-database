@@ -4,8 +4,23 @@
   "source": "https://arxiv.org/pdf/2012.04035v4",
   "artifact_sha256": "92656c20a15311c32bed9edc7f465bb26eb30338f40324fe43bec4b1fc6a7890",
   "records_sha256": "468fd0d2819fdbb97c787d316f2d97fa5b6ffb2b411f731e7e3fa57c4c06cae0",
+  "transformation": {
+    "tool": "pdftotext",
+    "tool_version": "pdftotext version 26.08.0",
+    "arguments": [
+      "-layout",
+      "-enc",
+      "UTF-8",
+      "-",
+      "-"
+    ],
+    "input_sha256": "92656c20a15311c32bed9edc7f465bb26eb30338f40324fe43bec4b1fc6a7890",
+    "output_sha256": "d98fc8767e5988e0341c619cdcaf68ac41696effcf3277672d1366ce8ede27d9"
+  },
   "method": "Deterministic parse of the pinned PDF text layer, with the expected row labels asserted per table",
   "reviewer": "Codex research agent; no human review claimed",
   "reviewed_at": "2026-09-18",
-  "errors": []
+  "errors": [],
+  "revalidated_at": "2026-09-19",
+  "revalidation_method": "Regenerated text from the verified PDF bytes and reran the deterministic extractor; no benchmark execution or human review claimed."
 }

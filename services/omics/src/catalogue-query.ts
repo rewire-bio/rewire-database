@@ -10,7 +10,7 @@ import {
 import { assertNoPrivateFields as assertPublicCatalogue } from "./private-fields.js";
 import { createEvidenceIndex } from "./evidence-table.js";
 import { resolveComparisons } from "./published-comparisons.js";
-import { resolveAggregates } from "./aggregate-comparisons.js";
+import type { ResolvedComparison } from "./published-comparisons.js";
 /** The public catalogue contract shared by Firestore and static-release adapters. */
 export interface CatalogueRecord {
   id: string;
@@ -66,6 +66,28 @@ export interface ResultRow {
   review_status: string;
 }
 export { assertPublicCatalogue };
+/** Linked records are references, not recursively embedded profile pages. The
+ * complete record remains available through get and the immutable downloads. */
+export function recordReference(record: CatalogueRecord): CatalogueRecord {
+  const { profile, comparison_panels, run_guide, run_recipes, benchmark_research,
+    ...attributes } = record.attributes;
+  return { ...record, attributes };
+}
+export function compactResult(row: ResultRow): ResultRow {
+  return Object.fromEntries(Object.entries(row).map(([key, value]) => [key,
+    Array.isArray(value) ? value.map(recordReference) : value && typeof value === "object"
+      ? recordReference(value as CatalogueRecord) : value,
+  ])) as unknown as ResultRow;
+}
+export function evaluationIdentity(record: CatalogueRecord): string {
+  return typeof record.attributes.evaluation_group_id === "string"
+    ? record.attributes.evaluation_group_id : record.id;
+}
+function compactPanel(panel: ResolvedComparison): ResolvedComparison {
+  return { ...panel, rows: panel.rows.map(compactResult),
+    protocol: recordReference(panel.protocol), dataset: recordReference(panel.dataset),
+    sources: panel.sources.map(recordReference) };
+}
 function canonical(value: unknown): string {
   if (Array.isArray(value)) return JSON.stringify(value.map(canonical));
   if (value && typeof value === "object")
@@ -112,7 +134,8 @@ export function createCatalogueQuery(snapshot: CatalogueSnapshot) {
       )
       .map((record) => record.id),
   );
-  const evidenceIndex = createEvidenceIndex(snapshot);
+  // Most public requests do not need the evidence table. Build it only on demand.
+  let evidenceIndex: ReturnType<typeof createEvidenceIndex> | undefined;
   if (byId.size !== records.length) throw new Error("Duplicate catalogue IDs");
   const reverse = new Map<
     string,
@@ -334,6 +357,32 @@ export function createCatalogueQuery(snapshot: CatalogueSnapshot) {
           : null,
     };
   }
+  function comparisons(id: string): ResolvedComparison[] {
+    const record = byId.get(id);
+    if (!record) return [];
+      // A suite carries no figures of its own. Its tasks do, and each of those
+      // panels has already had to prove a reviewed path up to the suite, so
+      // showing them here is the same claim the task page makes.
+      const childPanels = isBenchmarkSubject(record.kind)
+        ? visibleRecords
+            .filter(
+              (r) =>
+                r.id !== id &&
+                isBenchmarkSubject(r.kind) &&
+                r.attributes.comparison_panels !== undefined &&
+                ancestors(r.id).has(id),
+            )
+            .sort((a, b) => a.id.localeCompare(b.id))
+            .flatMap((r) => resolveComparisons(r, byId, rowsById))
+        : [];
+      return [
+        ...new Map(
+          [...resolveComparisons(record, byId, rowsById), ...childPanels].map(
+            (panel) => [panel.id, panel],
+          ),
+        ).values(),
+      ];
+  }
   return {
     release: () => ({
       release_id,
@@ -441,7 +490,7 @@ export function createCatalogueQuery(snapshot: CatalogueSnapshot) {
     }) {
       const { cursor, limit, ...filters } = input;
       const q = input.q?.trim().toLowerCase();
-      const selected = evidenceIndex
+      const selected = (evidenceIndex ||= createEvidenceIndex(snapshot))
         .forRecord(input.id)
         .filter(
           (row) =>
@@ -465,43 +514,28 @@ export function createCatalogueQuery(snapshot: CatalogueSnapshot) {
         (row) => row.row_id,
       );
     },
-    get({ id }: { id: string }) {
+    get({ id, include_comparisons = true }: { id: string; include_comparisons?: boolean }) {
       const record = byId.get(id);
       if (!record) return null;
-      // A suite carries no figures of its own. Its tasks do, and each of those
-      // panels has already had to prove a reviewed path up to the suite, so
-      // showing them here is the same claim the task page makes.
-      const childPanels = isBenchmarkSubject(record.kind)
-        ? visibleRecords
-            .filter(
-              (r) =>
-                r.id !== id &&
-                isBenchmarkSubject(r.kind) &&
-                r.attributes.comparison_panels !== undefined &&
-                ancestors(r.id).has(id),
-            )
-            .sort((a, b) => a.id.localeCompare(b.id))
-            .flatMap((r) => resolveComparisons(r, byId, rowsById))
-        : [];
-      const published = [
-        ...new Map(
-          [...resolveComparisons(record, byId, rowsById), ...childPanels].map(
-            (panel) => [panel.id, panel],
-          ),
-        ).values(),
-      ];
+      const published = comparisons(id);
       return {
         release_id,
         record,
         direct: record.links.flatMap((l) => {
           const target = byId.get(l.target_id);
-          return target ? [{ relation: l.relation, record: target }] : [];
+          return target ? [{ relation: l.relation, record: recordReference(target) }] : [];
         }),
-        reverse: reverse.get(id) || [],
+        reverse: (reverse.get(id) || []).map(item => ({ ...item, record: recordReference(item.record) })),
         sources: sources(record, ...linked(record, "evaluation")),
-        published_comparisons: published,
-        aggregate_comparisons: resolveAggregates(published),
+        published_comparisons: (include_comparisons ? published : published.slice(0, 1)).map(compactPanel),
+        comparison_options: published.map(({ id, title, metric }) => ({ id, title, metric })),
+        // Kept for older clients. Cross-protocol rankings are no longer offered.
+        aggregate_comparisons: [],
       };
+    },
+    comparison({ id, panel_id }: { id: string; panel_id: string }) {
+      const panel = comparisons(id).find(item => item.id === panel_id);
+      return { release_id, panel: panel ? compactPanel(panel) : null };
     },
     results(input: ResultsInput) {
       const { cursor, limit, ...filters } = input;
@@ -511,13 +545,16 @@ export function createCatalogueQuery(snapshot: CatalogueSnapshot) {
           (!input.metric || row.result.attributes.metric === input.metric) &&
           (!input.origin || row.origin === input.origin) &&
           (!input.configuration_id ||
-            row.evaluation?.id === input.configuration_id),
+            row.evaluation?.id === input.configuration_id ||
+            (row.evaluation && evaluationIdentity(row.evaluation) === input.configuration_id)),
       );
+      const selectedPage = page(selected, input, canonical(filters), (r) => r.result.id);
       return {
-        ...page(selected, input, canonical(filters), (r) => r.result.id),
+        ...selectedPage,
+        items: selectedPage.items.map(compactResult),
         evaluation_count: new Set(
           selected.flatMap((row) =>
-            row.evaluation ? [row.evaluation.id] : [],
+            row.evaluation ? [evaluationIdentity(row.evaluation)] : [],
           ),
         ).size,
         facets: {
@@ -533,8 +570,8 @@ export function createCatalogueQuery(snapshot: CatalogueSnapshot) {
                 row.evaluation
                   ? [
                       [
-                        row.evaluation.id,
-                        { id: row.evaluation.id, name: row.evaluation.name },
+                        evaluationIdentity(row.evaluation),
+                        { id: evaluationIdentity(row.evaluation), name: String(row.evaluation.attributes.evaluation_group_name || row.evaluation.name) },
                       ] as const,
                     ]
                   : [],

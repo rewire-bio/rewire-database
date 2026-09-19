@@ -50,10 +50,10 @@ Imports prepare compact serving chunks and record-integrity hashes. A warm servi
 ## Contribution and curator interface
 
 - `submission.create({ contribution, idempotencyKey })`: verified user only; contribution follows `docs/omics/record-contract.md` except email comes from the verified identity. Returns `{id,status}`. Use a fresh UUID for each distinct contribution and retain it across network retries.
-- `submission.list()`: that user's contributions, newest first, currently capped at 200.
+- `submission.list({cursor?,limit?})`: that user's contributions, newest first, in cursor pages of up to 200.
 - `submission.get({id})`: owned contribution, revisions and review notes. Other users receive “not found”.
 - `submission.update({id,patch})`: append a revision while submitted or changes are requested. Type/email/ownership cannot be patched. Accepted, rejected, published and in-review records are locked.
-- `curator.list({status?})`, `curator.transition(...)`, `curator.proposal({id})`: require a Firebase `curator: true` custom claim. There is no public claim-granting endpoint.
+- `curator.list({status?,cursor?,limit?})`, `curator.transition(...)`, `curator.proposal({id})`: require a Firebase `curator: true` custom claim. There is no public claim-granting endpoint.
 
 Firestore rules deny all direct client access. Deploy `firestore.indexes.json` alongside the rules: contributor and curator queues select their newest/oldest records before applying the 200-record limit. Pagination beyond that initial limit remains future work. Only this service's Admin SDK accesses private collections. Curator notes are contributor-visible; do not place secrets or unrelated private information in them. Internal duplicate flags stay visible only to curators. The service never fetches contributor-provided URLs, follows redirects or accepts uploads.
 
@@ -84,6 +84,8 @@ npm run curator -- transition SUBMISSION_ID published 'Included in the reviewed 
 The importer validates the schema, cross-record references and source/evaluation types, then verifies the manifest's `catalogue_sha256` or `files["catalogue.json"]` hash. Same-ID releases are immutable; identical reimports are safe. Partial imports remain in `staging`; the same import can resume after its 15-minute lease expires. A release becomes `ready` only after every record and serving chunk is written. Import completion alone does not publish it. Activation validates records and chunk integrity, then atomically records publication and switches `cataloguePublication/active`. Use the same `--activate PREVIOUS_RELEASE_ID` command to roll back; previously published pinned releases remain available. Private submissions are unaffected. Marking a contribution published requires an accepted contribution and active record IDs of the submitted kind in an explicitly published release. Submitted results must be source checked or reproduced; corrections must include their target record. Acceptance alone never marks a contribution published. The curator must import the released dataset and confirm its public availability before marking contributions published; the service does not probe the live website.
 
 Only server operators run release imports using Admin credentials. Source-reviewed JSONL in Git remains authoritative; Firestore mirrors are disposable and rebuildable. Preserve private submissions separately when restoring or changing the active public release. Do not roll back private contribution state when rolling back static catalogue files.
+
+Submission and curator lists return `{items,next_cursor}`. Pages default to 50 records and permit at most 200; the opaque cursor is bound to the owner or curator status filter. Ordering uses creation time plus document ID so equal timestamps cannot skip records. The contribution screen loads additional pages on request; `curator list [status]` drains every page before printing its JSON array.
 
 ## Contribution email outbox
 

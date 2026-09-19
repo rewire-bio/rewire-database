@@ -21,6 +21,7 @@ import fs from "node:fs";
 import {
   arrowDirection,
   headedBlocks,
+  isMissingCell,
   parseCell,
   tableMatching,
   type Table,
@@ -43,6 +44,7 @@ const TABLES = [
   {
     caption: /Table 2: Performance of structure-based sequence design/,
     number: "Table 2",
+    blocks: [{ rows: 4, columns: 13, metrics: 12 }],
     prefix: "IF",
     dataset: "CASP, CAMEO and de novo backbones",
     protocol:
@@ -51,6 +53,10 @@ const TABLES = [
   {
     caption: /Table 3: Performance of backbone design/,
     number: "Table 3",
+    blocks: [
+      { rows: 9, columns: 11, metrics: 10 },
+      { rows: 9, columns: 11, metrics: 10 },
+    ],
     prefix: "BB",
     dataset: "Designed backbones at fixed lengths",
     protocol:
@@ -59,6 +65,10 @@ const TABLES = [
   {
     caption: /Table 4: Performance of protein sequence generative/,
     number: "Table 4",
+    blocks: [
+      { rows: 5, columns: 11, metrics: 10 },
+      { rows: 5, columns: 11, metrics: 10 },
+    ],
     prefix: "SEQ",
     dataset: "Generated sequences at fixed lengths",
     protocol:
@@ -67,6 +77,10 @@ const TABLES = [
   {
     caption: /Table 5: Performance of protein co-design/,
     number: "Table 5",
+    blocks: [
+      { rows: 5, columns: 9, metrics: 8 },
+      { rows: 5, columns: 9, metrics: 8 },
+    ],
     prefix: "CO",
     dataset: "Co-generated structures and sequences at fixed lengths",
     protocol:
@@ -75,6 +89,11 @@ const TABLES = [
   {
     caption: /Table 6: Performance of antibody design/,
     number: "Table 6",
+    blocks: [
+      { rows: 8, columns: 8, metrics: 7 },
+      // The last column of the second block is blank padding in the source.
+      { rows: 8, columns: 8, metrics: 6 },
+    ],
     prefix: "AB",
     dataset: "RAbD, 55 antibody-antigen complexes",
     protocol:
@@ -83,6 +102,7 @@ const TABLES = [
   {
     caption: /Table 7: Performance of protein folding on the CAMEO2022/,
     number: "Table 7",
+    blocks: [{ rows: 5, columns: 8, metrics: 7 }],
     prefix: "FOLD",
     dataset: "CAMEO2022, 183 proteins",
     protocol:
@@ -90,6 +110,32 @@ const TABLES = [
     splitMeanMedian: true,
   },
 ];
+
+/** Fixed dimensions of the pinned paper, including stacked table blocks. */
+export function proteinBenchBlocks(table: Table, number: string) {
+  const config = TABLES.find((entry) => entry.number === number);
+  if (!config) throw new Error(`Unknown ProteinBench table: ${number}`);
+  const blocks = headedBlocks(table);
+  if (blocks.length !== config.blocks.length)
+    throw new Error(`${number}: expected ${config.blocks.length} blocks, got ${blocks.length}`);
+  for (const [index, block] of blocks.entries()) {
+    const expected = config.blocks[index];
+    if (
+      block.rows.length !== expected.rows ||
+      block.metrics.length !== expected.columns ||
+      block.metrics.slice(1).filter((metric) => metric.trim()).length !== expected.metrics
+    )
+      throw new Error(`${number}, block ${index + 1}: unexpected row or column count`);
+    for (const row of block.rows) {
+      if (row.length !== expected.columns)
+        throw new Error(`${number}, row(${row[0]}): expected ${expected.columns} cells, got ${row.length}`);
+      for (let i = 1; i < row.length; i++)
+        if (!block.metrics[i].trim() && row[i].trim())
+          throw new Error(`${number}, row(${row[0]}): value in an unlabelled column`);
+    }
+  }
+  return blocks;
+}
 
 function run(file: string) {
   const html = fs.readFileSync(file, "utf8");
@@ -113,12 +159,17 @@ function run(file: string) {
 
   for (const config of TABLES) {
     const table: Table = tableMatching(html, config.caption);
-    const blocks = headedBlocks(table);
-    if (!blocks.length) throw new Error(`${config.number}: no header found`);
+    const blocks = proteinBenchBlocks(table, config.number);
     for (const block of blocks) {
       const columns = block.metrics
         .map((metric, index) => ({ metric: clean(metric), index }))
-        .filter((column) => column.metric && column.index > 0);
+        .filter((column) => column.metric && column.index > 0)
+        .map((column) => ({
+          ...column,
+          unit: /%/.test(column.metric) || block.rows.some((row) => /%/.test(row[column.index]))
+            ? "percent"
+            : "score",
+        }));
       for (const column of columns) {
         const direction = arrowDirection(column.metric);
         if (!direction)
@@ -150,7 +201,7 @@ function run(file: string) {
               .join(" "),
             metric: [metric, stat && `(${stat})`].filter(Boolean).join(" "),
             metricKey: [slug(metric), stat].filter(Boolean).join("_"),
-            unit: "score",
+            unit: column.unit,
             direction,
             dataset: config.dataset,
             protocol: config.protocol,
@@ -172,16 +223,18 @@ function run(file: string) {
             locator: `${config.number}, row(${clean(row[0])})`,
           });
         for (const column of columns) {
-          const printed = row[column.index] ?? "";
+          const printed = row[column.index];
+          // N/A contains a slash but is one missing cell, not a mean/median pair.
+          if (isMissingCell(printed)) continue;
           const metric = column.metric.replace(/[↑↓]/g, "").trim();
           const group = block.groups[column.index] || "";
           const pieces = config.splitMeanMedian
             ? printed.split("/").map((part, i) => [part, i === 0 ? "mean" : "median"] as const)
             : ([[printed, ""]] as const);
-          if (config.splitMeanMedian && pieces.length > 2)
+          if (config.splitMeanMedian && pieces.length !== 2)
             throw new Error(`${config.number}: cannot split "${printed}"`);
           for (const [part, stat] of pieces) {
-            const cell = parseCell(part);
+            const cell = parseCell(part, { unit: column.unit });
             if (cell.value === null) continue;
             const label = [
               config.prefix,
@@ -211,6 +264,8 @@ function run(file: string) {
   }
 
   const spec: BatchSpec = {
+    // Tables 4–6 define their printed spreads as standard deviations.
+    uncertaintyType: "standard_deviation",
     key: "proteinbench",
     benchmarkId: "discovery-benchmark-proteinbench",
     benchmarkName: NAME,
@@ -227,7 +282,7 @@ function run(file: string) {
       retrievedAt: DATE,
     },
     reviewer: "Codex research agent; no human review claimed",
-    date: DATE,
+    date: "2026-09-19",
     method:
       "Deterministic parse of the pinned HTML tables, with the direction of every metric read from the arrow the paper prints in its header",
     caveats: [
@@ -239,6 +294,8 @@ function run(file: string) {
     methods: [...methods.values()],
     cells,
   };
+  if (cells.length !== 556)
+    throw new Error(`ProteinBench: expected 556 numeric measurements, got ${cells.length}`);
   writeBatch(spec);
 }
 

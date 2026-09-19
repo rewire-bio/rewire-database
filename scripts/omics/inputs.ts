@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import { createHash } from "node:crypto";
 import { enrichMetadata } from "./metadata";
+import { addEvaluationGroups, evaluationGroupInputFiles } from "./evaluation-groups";
 import { addEvidenceConcerns } from "./evidence-concerns";
 import { type RecordEntry, recordSchema } from "./schema";
 import {
@@ -55,6 +56,8 @@ const batchReceipt = (key: string) =>
   `data/omics/reviews/2026-09-18-${key}-extraction.json`;
 
 export const reviewInputFiles = [
+  ...evaluationGroupInputFiles,
+  "data/omics/reviews/2026-09-19-extraction-recheck.json",
   ...benchmarkEvidenceFiles,
   ...extractedBatches.flatMap((key) => [batchFile(key), batchReceipt(key)]),
   "data/omics/reviewed/alphagenome-2026.jsonl",
@@ -123,7 +126,7 @@ export function extractedResults(): RecordEntry[] {
 export function currentCatalogueBase(base: RecordEntry[]): RecordEntry[] {
   const optional = (file: string) =>
     fs.existsSync(file) ? readJsonl(file) : [];
-  return addBenchmarkEvidence(
+  return addEvaluationGroups(addBenchmarkEvidence(
     enrichMetadata(
       addEvidenceConcerns(
         [
@@ -136,5 +139,5 @@ export function currentCatalogueBase(base: RecordEntry[]): RecordEntry[] {
       ),
       optional("data/omics/metadata-corrections.jsonl"),
     ),
-  );
+  ));
 }

@@ -1,3 +1,4 @@
+import { benchmarkCoverage } from "./audit-benchmark-evidence";
 import { addRunRecipes, runRecipeInputs } from "./run-recipes";
 import { legacyKinds } from "../../services/omics/src/entity-kinds";
 import { separateEntities, entityInputFiles } from "./entity-migration";
@@ -248,6 +249,7 @@ function main() {
     "unclassified",
   ];
   const facts = profiles.flatMap((profile) => profile.facts);
+  const benchmarkCounts = benchmarkCoverage(publicRecords(records));
   const output = buildRelease(records, audit.released_at, {
     entity_schema_version: "1.1",
     entity_migration: {
@@ -314,25 +316,21 @@ function main() {
             ).length,
           },
           benchmark_paper_review: {
-            searched_existing_benchmarks: 221,
-            reviewed_source_cells: 1187,
-            additional_numeric_results: 1122,
-            additional_unavailable_results: 15,
-            additional_quarantined_results: 8,
-            published_comparison_figures: 223,
-            benchmark_pages_with_figures: 120,
-            date: "2026-09-17",
-            scope:
-              "Dated primary-paper search across the existing catalogue; complete selected source tables, not exhaustive numerical extraction of every paper.",
+            date: audit.released_at.slice(0, 10),
+            top_level_benchmarks: benchmarkCounts.length,
+            benchmark_pages_with_results: benchmarkCounts.filter(row => row.results > 0).length,
+            benchmark_pages_with_figures: benchmarkCounts.filter(row => row.charts > 0).length,
+            published_comparison_figures: benchmarkCounts.reduce((sum, row) => sum + row.charts, 0),
+            source_checked_result_rows: records.filter(r => r.kind === "result" && r.status === "source_checked").length,
+            scope: "Counts derived from this release through the production relationship and chart gates. Figures are source-specific, and metric rows are not independent experiments. Source review is not reproduction.",
           },
           changelog: [
-            "Add versioned local runner recipes for MFASS v2 and ProteinGym v1.3 DMS substitutions, with access requirements and explicit execution status.",
-            "Link reviewed exact evaluations to applicable recipes without relabelling paper evidence as independent reproduction.",
-            "Add private verified-email SDK contribution validation; production submissions remain disabled.",
-            "Separate entity categories in the catalogue and API; benchmarks contain top-level suites and challenges, with tasks, protocols and evaluators separately browsable.",
-            "Preserve stable IDs and historical URLs through canonical entity pages and explicit legacy route aliases.",
-            "Add pinned official benchmark run instructions with prerequisites, copyable shell commands and explicit source-review-only status. No new model computation.",
-            "Preserve every previous result value, scientific association, source artifact and archived release; submissions remain disabled.",
+            "Recover 16 omitted ProteinBench percentage results and correct percent units; original printed and numeric values remain unchanged.",
+            "Correct DART-Eval correlation units and remove unsupported standard-deviation labels from TDC printed plus/minus spreads.",
+            "Recheck pinned extraction inputs, reject unrecognised cells and authenticate PDF-to-text transformations.",
+            "Count reviewed metrics from the same source evaluation setup together, retaining all original record IDs and links.",
+            "Load individual source-scoped charts, remove cross-protocol pooled rankings, and move findings before detailed instructions.",
+            "Preserve archived release bytes, historical URLs and MFASS history. Contributions remain disabled.",
           ],
         }
       : {}),

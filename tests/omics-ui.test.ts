@@ -1,6 +1,7 @@
 import {
   contributionInput,
   submissionOutput,
+  submissionPageOutput,
 } from "../lib/omics-contributions";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
@@ -231,4 +232,28 @@ describe("browser-only contribution contract", () => {
       submissionOutput.safeParse({ ...body, status: "unexpected" }).success,
     ).toBe(false);
   });
+});
+
+it("validates paginated private lists and strips unexpected identity fields from rows", () => {
+  const row = {
+    id: "private-1",
+    type: "model",
+    title: "A model",
+    summary: "Evidence from a reviewed source",
+    source_urls: ["https://example.org/paper"],
+    details: {},
+    status: "submitted",
+    created_at: "2026-01-01T00:00:00Z",
+    updated_at: "2026-01-01T00:00:00Z",
+    email: "private@example.org",
+    uid: "private-user",
+  };
+  const page = submissionPageOutput.parse({
+    items: [row],
+    next_cursor: "opaque-cursor",
+  });
+  expect(page.next_cursor).toBe("opaque-cursor");
+  expect(page.items[0]).not.toHaveProperty("email");
+  expect(page.items[0]).not.toHaveProperty("uid");
+  expect(submissionPageOutput.safeParse([row]).success).toBe(false);
 });

@@ -86,6 +86,10 @@ export const submissionOutput = submissionBody.extend({
 });
 export type ContributionInput = z.infer<typeof contributionInput>;
 export type SubmissionOutput = z.infer<typeof submissionOutput>;
+export const submissionPageOutput = z.object({
+  items: z.array(submissionOutput),
+  next_cursor: z.string().nullable(),
+});
 
 export function createContributionClient(
   url: string,
@@ -119,10 +123,10 @@ export function createContributionClient(
         },
       },
       list: {
-        query: async () =>
-          z
-            .array(submissionOutput)
-            .parse(await transport.query("submission.list")),
+        query: async (input: { cursor?: string; limit?: number } = {}) =>
+          submissionPageOutput.parse(
+            await transport.query("submission.list", input),
+          ),
       },
       get: {
         query: async (input: { id: string }) =>

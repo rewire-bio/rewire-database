@@ -29,6 +29,10 @@ const pagination = {
   cursor: z.string().max(8000).optional(),
   limit: z.number().int().min(1).max(100).optional(),
 };
+const privatePagination = {
+  cursor: z.string().max(2000).optional(),
+  limit: z.number().int().min(1).max(200).optional(),
+};
 async function readCatalogue<T>(
   releaseId: string | undefined,
   run: (query: CatalogueQuery) => T,
@@ -74,8 +78,11 @@ export const appRouter = t.router({
     get: t.procedure
       .input(z.object({ ...pinned, id }).strict())
       .query(({ input }) =>
-        readCatalogue(input.release_id, (q) => q.get(input)),
+        readCatalogue(input.release_id, (q) => q.get({ ...input, include_comparisons: false })),
       ),
+    comparison: t.procedure
+      .input(z.object({ ...pinned, id, panel_id: id }).strict())
+      .query(({ input }) => readCatalogue(input.release_id, q => q.comparison(input))),
     results: t.procedure
       .input(
         z
@@ -141,9 +148,9 @@ export const appRouter = t.router({
           input.idempotencyKey,
         ),
       ),
-    list: authenticated.query(({ ctx }) =>
-      store.listOwn(firebase().db, ctx.user.uid),
-    ),
+    list: authenticated
+      .input(z.object(privatePagination).strict().default({}))
+      .query(({ ctx, input }) => store.listOwn(firebase().db, ctx.user.uid, input)),
     get: authenticated
       .input(z.object({ id }))
       .query(({ ctx, input }) =>
@@ -158,9 +165,9 @@ export const appRouter = t.router({
   curator: t.router({
     list: curator
       .input(
-        z.object({ status: z.enum(store.statuses).optional() }).default({}),
+        z.object({ status: z.enum(store.statuses).optional(), ...privatePagination }).strict().default({}),
       )
-      .query(({ input }) => store.curatorList(firebase().db, input.status)),
+      .query(({ input }) => store.curatorList(firebase().db, input.status, input)),
     transition: curator
       .input(
         z

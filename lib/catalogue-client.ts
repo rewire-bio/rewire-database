@@ -35,8 +35,10 @@ export function catalogueClient(releaseId: string) {
   return {
     list: (input: Parameters<Query["list"]>[0]) =>
       read<CataloguePage>("list", input || {}),
-    get: (input: Parameters<Query["get"]>[0]) =>
+    get: (input: { id: string }) =>
       read<CatalogueDetail | null>("get", input),
+    comparison: (input: Parameters<Query["comparison"]>[0]) =>
+      read<ReturnType<Query["comparison"]>>("comparison", input),
     results: (input: Parameters<Query["results"]>[0]) =>
       read<ResultsPage>("results", input),
     evidence: (input: Parameters<Query["evidence"]>[0]) =>

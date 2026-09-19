@@ -17,8 +17,7 @@
  * Metrics are mixed and two of them, MAE and RMSE, are errors. Each row states
  * its own metric and direction here, taken from the table's metric column.
  */
-import { createHash } from "node:crypto";
-import fs from "node:fs";
+import { readPinnedPdfText } from "./pdf";
 import { layoutRows, parseCell } from "./tables";
 import {
   writeBatch,
@@ -59,12 +58,7 @@ type Row = {
 };
 
 function run(file: string) {
-  const text = fs.readFileSync(file, "utf8");
-  const sha = createHash("sha256")
-    .update(fs.readFileSync(process.argv[3]))
-    .digest("hex");
-  if (sha !== SHA256)
-    throw new Error(`Artifact hash ${sha} does not match the pinned ${SHA256}`);
+  const { text, transformation } = readPinnedPdfText(file, SHA256, process.argv[3]);
 
   const tasks = new Map<string, TaskSpec>();
   const methods = new Map<string, MethodSpec>();
@@ -244,6 +238,7 @@ function run(file: string) {
   });
 
   const spec: BatchSpec = {
+    transformation,
     key: "atom3d",
     benchmarkId: "discovery-benchmark-atom3d",
     benchmarkName: "ATOM3D",

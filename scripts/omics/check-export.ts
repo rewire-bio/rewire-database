@@ -1,11 +1,12 @@
 import { recordHref, recordRouteKinds } from "../../lib/omics";
 import {
   createEvidenceIndex,
-  evidenceCsv,
+  evidenceCsvLines,
+  evidenceJsonlLines,
 } from "../../services/omics/src/evidence-table";
 import fs from "node:fs";
 import path from "node:path";
-import crypto from "node:crypto";
+import { fileSha256, chunksSha256 } from "./stream-files";
 import { validateRecords } from "./schema";
 const catalogue = JSON.parse(
   fs.readFileSync("out/omics/catalogue.json", "utf8"),
@@ -52,13 +53,13 @@ for (const paper of papers) page(`/literature/papers/${paper.id}/`);
 const currentManifest = JSON.parse(
   fs.readFileSync("out/omics/manifest.json", "utf8"),
 );
-const evidenceRows = createEvidenceIndex(catalogue).all();
+const evidenceIndex = createEvidenceIndex(catalogue, { cache: false });
 const evidenceRoot = path.join("out/omics/releases", catalogue.release_id);
 if (
-  fs.readFileSync(path.join(evidenceRoot, "evidence.jsonl"), "utf8") !==
-    evidenceRows.map((row) => JSON.stringify(row)).join("\n") + "\n" ||
-  fs.readFileSync(path.join(evidenceRoot, "evidence.csv"), "utf8") !==
-    evidenceCsv(evidenceRows)
+  fileSha256(path.join(evidenceRoot, "evidence.jsonl")) !==
+    chunksSha256(evidenceJsonlLines(evidenceIndex.iterate())) ||
+  fileSha256(path.join(evidenceRoot, "evidence.csv")) !==
+    chunksSha256(evidenceCsvLines(evidenceIndex.iterate()))
 )
   failures.push("Evidence exports do not match their release records");
 const archiveRoot = "out/omics/releases";
@@ -83,8 +84,7 @@ for (const id of archivedIds) {
     fs.readFileSync(path.join(archiveRoot, id, "manifest.json"), "utf8"),
   );
   for (const [file, digest] of Object.entries(manifest.files)) {
-    const bytes = fs.readFileSync(path.join(archiveRoot, id, file));
-    if (crypto.createHash("sha256").update(bytes).digest("hex") !== digest)
+    if (fileSha256(path.join(archiveRoot, id, file)) !== digest)
       failures.push(`Checksum ${id}/${file}`);
   }
 }

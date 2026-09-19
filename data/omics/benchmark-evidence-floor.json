@@ -1,14 +1,34 @@
 {
-  "covered": 20,
+  "covered": 29,
   "total": 30,
   "benchmarks": {
     "discovery-benchmark-nabench": {
       "results": 1101,
       "charts": 43
     },
+    "discovery-benchmark-virtual-cell-challenge-2026": {
+      "results": 1048,
+      "charts": 14
+    },
+    "discovery-benchmark-scib": {
+      "results": 821,
+      "charts": 13
+    },
+    "discovery-benchmark-beeline": {
+      "results": 588,
+      "charts": 71
+    },
     "discovery-benchmark-proteinbench": {
-      "results": 540,
-      "charts": 93
+      "results": 556,
+      "charts": 95
+    },
+    "discovery-benchmark-cafa": {
+      "results": 438,
+      "charts": 6
+    },
+    "discovery-benchmark-capri": {
+      "results": 400,
+      "charts": 16
     },
     "discovery-benchmark-open-problems": {
       "results": 384,
@@ -18,9 +38,21 @@
       "results": 316,
       "charts": 23
     },
+    "discovery-benchmark-flip2": {
+      "results": 283,
+      "charts": 32
+    },
     "discovery-benchmark-gue": {
       "results": 280,
       "charts": 28
+    },
+    "discovery-benchmark-casp": {
+      "results": 270,
+      "charts": 6
+    },
+    "discovery-benchmark-cami": {
+      "results": 256,
+      "charts": 16
     },
     "discovery-benchmark-beacon": {
       "results": 221,
@@ -78,47 +110,15 @@
       "results": 36,
       "charts": 18
     },
+    "discovery-benchmark-plinder": {
+      "results": 33,
+      "charts": 5
+    },
     "discovery-benchmark-geneb": {
       "results": 22,
       "charts": 2
     },
-    "discovery-benchmark-beeline": {
-      "results": 0,
-      "charts": 0
-    },
-    "discovery-benchmark-cafa": {
-      "results": 0,
-      "charts": 0
-    },
-    "discovery-benchmark-cami": {
-      "results": 0,
-      "charts": 0
-    },
-    "discovery-benchmark-capri": {
-      "results": 0,
-      "charts": 0
-    },
-    "discovery-benchmark-casp": {
-      "results": 0,
-      "charts": 0
-    },
-    "discovery-benchmark-flip2": {
-      "results": 0,
-      "charts": 0
-    },
     "discovery-benchmark-petab-benchmark-collection": {
-      "results": 0,
-      "charts": 0
-    },
-    "discovery-benchmark-plinder": {
-      "results": 0,
-      "charts": 0
-    },
-    "discovery-benchmark-scib": {
-      "results": 0,
-      "charts": 0
-    },
-    "discovery-benchmark-virtual-cell-challenge-2026": {
       "results": 0,
       "charts": 0
     }

@@ -37,7 +37,10 @@ async function query(name, input) {
   assert.equal(response.status, 200, `${name} must return 200`);
   assert.match(response.headers.get("content-type") || "", /application\/json/);
   const body = await response.text();
-  assert.ok(Buffer.byteLength(body) < 1_000_000, `${name} exceeds the probe response budget`);
+  assert.ok(
+    Buffer.byteLength(body) < 1_000_000,
+    `${name} exceeds the probe response budget`,
+  );
   const json = JSON.parse(body);
   assert.ok(json.result?.data, `${name} must return a catalogue response`);
   assert.equal(
@@ -55,13 +58,22 @@ assert.equal(
 );
 const page = await query("list", { ...pinned, kind: "model", limit: 2 });
 assert.equal(page.items.length, 2);
-const benchmark = await query("get", { ...pinned, id: "discovery-benchmark-nabench" });
+const benchmark = await query("get", {
+  ...pinned,
+  id: "discovery-benchmark-nabench",
+});
 assert.equal(benchmark.published_comparisons.length, 1);
 assert.ok(benchmark.comparison_options.length > 40);
 assert.deepEqual(benchmark.aggregate_comparisons, []);
-const chart = await query("comparison", { ...pinned, id: benchmark.record.id,
-  panel_id: benchmark.comparison_options.at(-1).id });
-assert.ok(chart.panel.rows.length > 1, "An individually requested chart must contain its source rows");
+const chart = await query("comparison", {
+  ...pinned,
+  id: benchmark.record.id,
+  panel_id: benchmark.comparison_options.at(-1).id,
+});
+assert.ok(
+  chart.panel.rows.length > 1,
+  "An individually requested chart must contain its source rows",
+);
 const result = await query("get", { ...pinned, id: "b2-barcodebert-2026" });
 assert.equal(result.record.attributes.printed_value, "78.5");
 const rows = await query("results", { ...pinned, id: result.record.id });
@@ -98,6 +110,60 @@ assert.ok(
       item.review_status === "source_checked",
   ),
 );
+if (manifest.coverage.audit_history) {
+  const runs = await query("auditRuns", { ...pinned, limit: 2 });
+  assert.equal(runs.total, manifest.coverage.audit_history.runs);
+  const audit = await query("auditRecords", { ...pinned, limit: 2 });
+  assert.equal(audit.total, manifest.coverage.audit_history.records);
+  assert.ok(audit.next_cursor, "Audit pagination must remain available");
+  const next = await query("auditRecords", {
+    ...pinned,
+    limit: 2,
+    cursor: audit.next_cursor,
+  });
+  assert.notEqual(next.items[0].record_id, audit.items[0].record_id);
+  const corrected = await query("auditChecks", {
+    ...pinned,
+    record_id: "rewire-result-baseline-kmer-position-v2-average-precision",
+    limit: 1,
+  });
+  assert.ok(corrected.total > 1);
+  assert.ok(
+    corrected.resolutions.length > 0,
+    "Exact-source correction must have linked resolution",
+  );
+  assert.ok(
+    corrected.resolutions.every(
+      (r) => r.published_release_id === manifest.release_id,
+    ),
+  );
+  assert.ok(corrected.record_url);
+  for (const name of [
+    "beeline",
+    "cafa",
+    "cami",
+    "capri",
+    "casp",
+    "flip2",
+    "plinder",
+    "scib",
+    "virtual-cell-challenge-2026",
+  ]) {
+    const profile = await query("get", {
+      ...pinned,
+      id: `discovery-benchmark-${name}`,
+    });
+    assert.ok(
+      profile.comparison_options.length > 0,
+      `${name} must expose reviewed charts`,
+    );
+    assert.ok(
+      profile.published_comparisons[0]?.rows.length > 0,
+      `${name} must return an initial chart`,
+    );
+  }
+}
+
 const disabled = await fetchWithRetry(
   `${origin}/api/trpc/submission.list?verify=${probe}`,
   {
@@ -122,6 +188,11 @@ if (process.argv.includes("--website")) {
     { redirect: "manual", headers: { "Cache-Control": "no-cache" } },
   );
   assert.equal(response.status, 200, "Live website manifest must be available");
+  if (manifest.coverage.audit_history) {
+    const auditPage = await fetchWithRetry(`${origin}/audits/?verify=${probe}`);
+    assert.equal(auditPage.status, 200);
+    assert.ok((await auditPage.text()).includes("Catalogue audit history"));
+  }
   assert.equal(
     (await response.json()).release_id,
     manifest.release_id,

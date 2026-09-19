@@ -1,0 +1,20 @@
+{
+  "id": "audit-historical-2026-09-17-b9bc163c8ab1-87dd05ea1f6d",
+  "baseline_release_id": "2026-09-17-b9bc163c8ab1",
+  "inventory_sha256": "b14b372751422a211e07095f1fefb91a59cbb0b2adfb6fe13f8986c8dfdc11a6",
+  "started_at": "2026-09-19",
+  "completed_at": "2026-09-19",
+  "reviewer": "Automated archived-version inventory and scoped check reuse",
+  "review_method": "automated",
+  "verifier_revision": "9e1165a798cc19762fd6fd015455bd4c704ba73ff44606c46268c2aab64602b1",
+  "scope": "Every one of 4199 records in archived release 2026-09-17-b9bc163c8ab1 assessed or explicitly linked to checks of identical record/source versions. New version assessments: 0; current reused: 4183; historical reused: 16. Inventory retains all original IDs and kinds.",
+  "limitations": [
+    "Structural support does not verify scientific claims",
+    "New distinct historical metadata remains insufficient evidence unless a source-specific applicable check is explicitly linked",
+    "Legacy record types are not coerced into current entity types",
+    "Record_count and check_count count newly emitted checks only; complete archive coverage and explicit reuse links are in the version inventory",
+    "Reusing a check preserves its original outcome; it does not upgrade status or create independent evidence"
+  ],
+  "record_count": 0,
+  "check_count": 0
+}

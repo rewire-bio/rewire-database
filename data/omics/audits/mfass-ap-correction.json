@@ -1,0 +1,29 @@
+{
+  "record_id": "rewire-result-baseline-kmer-position-v2-average-precision",
+  "baseline_release": "2026-09-19-f5c67a009c10",
+  "correction_type": "exact_source_precision_alignment",
+  "old": {
+    "attributes.printed_value": "0.28641674595892375",
+    "attributes.numeric_value": "0.28641674595892375"
+  },
+  "new": {
+    "attributes.printed_value": "0.2864167459589237",
+    "attributes.numeric_value": "0.2864167459589237"
+  },
+  "source_id": "rewire-mfass-v2-source",
+  "source_revision": "bee9133b83f3aedaf2bbb9013f1875515845607e",
+  "source_url": "https://raw.githubusercontent.com/rewire-bio/rewire-benchmarks/bee9133b83f3aedaf2bbb9013f1875515845607e/benchmarks/mfass/results/baseline-kmer-position-v2.json",
+  "artifact_sha256": "9a0b78674cc714177fec6e8c487588d6186d4fe93d6d7dbcb48bed6858885e15",
+  "source_locator": "JSON pointer /metrics/average_precision_sklearn",
+  "legacy_import_path": "data/benchmark-runs/mfass-v2.json",
+  "evidence": "Current migrated record copied the legacy display/export scalar ending 375. The original pinned runner JSON explicitly ends 37. Both display as AP 0.286 at published precision.",
+  "difference": {
+    "exact_decimal": "0.00000000000000005",
+    "binary64_ulp_count": 1,
+    "absolute_tolerance_for_scientific_equivalence": "1e-12"
+  },
+  "interpretation": "Precision-only import/source inconsistency, not a scientific result change. Adjacent binary64 values are scientifically equivalent at the displayed precision, but the exact preserved source decimal should match its pinned artifact. The reason the legacy display artifact differs is not established; serialization versus independently computed floating-point output is not proven.",
+  "publication_instruction": "Apply a reviewed current-record overlay and append a linked resolution. Preserve archived releases, the pinned runner artifact and this original contradicted check. Do not change the historical experiment or claim new reproduction.",
+  "review_method": "Independent source-pinned git blob inspection and exact Decimal comparison; no new benchmark run; no human review claimed",
+  "reviewed_at": "2026-09-19"
+}

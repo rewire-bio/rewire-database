@@ -1,0 +1,25 @@
+{
+  "reviewed_at": "2026-09-19",
+  "reviewer": "separate source_cells_networks agent",
+  "review_method": "AI-assisted scientific scope review plus independent automated raw-byte/table-cell checks",
+  "candidate_sha256": "d7426ebdaa0748bc3a7db71d76923ad5800053188d6c005f56b9949f3baf2cf9",
+  "candidates_checked": 1364,
+  "counts": {
+    "discovery-benchmark-casp": 270,
+    "discovery-benchmark-capri": 400,
+    "discovery-benchmark-cami": 256,
+    "discovery-benchmark-cafa": 438
+  },
+  "source_hashes_checked": 12,
+  "value_and_identity_check": "all passed",
+  "bounded_completeness_check": "all passed",
+  "issues": [],
+  "status": "supported_with_explicit_limitations",
+  "limitations": [
+    "No methods inferred from participant IDs",
+    "CAFA mode1 remains unresolved; retain exact table scope and do not compare with another mode",
+    "CAMI gold standard must be presented as a reference not a competing method",
+    "CAPRI predictor model1 and CASP first-submission domain scores are not challenge-wide best-of-N rankings",
+    "No independent model execution or human review"
+  ]
+}

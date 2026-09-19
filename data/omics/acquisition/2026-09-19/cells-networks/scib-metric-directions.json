@@ -1,0 +1,123 @@
+{
+  "reviewed_at": "2026-09-19",
+  "review_method": "AI-assisted review of pinned official data-consumption and plotting source; no execution or human review",
+  "scope": "Only data/metrics.csv at the same pinned commit; not arbitrary primitive metric implementations",
+  "source_version": "3afbffd3674726e5146797be21cf6bd7470a2c5f",
+  "direction_basis": "get_metrics reads these14 columns, applies only increasing min-max scaling per dataset, takes means within positive-weight batch/bio groups, and uses positive0.4/0.6 overall weights; the official plotting code sorts that score descending. No column inversion is applied. The separate plotting implementation states input scores are already scaled[0,1]. Thus higher is the intended direction for these exported scores, including kBET and cLISI, not their untransformed primitive statistics.",
+  "evidence": [
+    {
+      "source_id": "acquisition-scib-website-R-load-R",
+      "url": "https://raw.githubusercontent.com/theislab/scib-reproducibility/3afbffd3674726e5146797be21cf6bd7470a2c5f/website/R/load.R",
+      "sha256": "87a0b609ab85f4d637d326a30d1fb5f55ba4dba4173e6c1c870cbf0651d7bcd6"
+    },
+    {
+      "source_id": "acquisition-scib-website-R-tables-R",
+      "url": "https://raw.githubusercontent.com/theislab/scib-reproducibility/3afbffd3674726e5146797be21cf6bd7470a2c5f/website/R/tables.R",
+      "sha256": "18ec78c88d0ff41a583cd84fb34f08c27a0ccfb56e0279bc026c4126c96ab4ae"
+    },
+    {
+      "source_id": "acquisition-scib-visualization-plotSingleTaskRNA-R",
+      "url": "https://raw.githubusercontent.com/theislab/scib-reproducibility/3afbffd3674726e5146797be21cf6bd7470a2c5f/visualization/plotSingleTaskRNA.R",
+      "sha256": "aaa666691406e3ac09f8ae9ed4f61b85a9edd94208f1943958ead4abb65fd6fb"
+    }
+  ],
+  "locators": {
+    "column_names_start": "website/R/load.R:45",
+    "increasing_rescale": "website/R/load.R:132",
+    "positive_aggregation": "website/R/load.R:155",
+    "score_semantics": "visualization/plotSingleTaskRNA.R:136",
+    "descending_ranking": "visualization/plotSingleTaskRNA.R:156"
+  },
+  "metrics": {
+    "NMI_cluster/label": {
+      "direction": "higher",
+      "unit": "score",
+      "source_transform_applied_by_rewire": "none",
+      "status": "supported-by-pinned-official-code"
+    },
+    "ARI_cluster/label": {
+      "direction": "higher",
+      "unit": "score",
+      "source_transform_applied_by_rewire": "none",
+      "status": "supported-by-pinned-official-code"
+    },
+    "ASW_label": {
+      "direction": "higher",
+      "unit": "score",
+      "source_transform_applied_by_rewire": "none",
+      "status": "supported-by-pinned-official-code"
+    },
+    "ASW_label/batch": {
+      "direction": "higher",
+      "unit": "score",
+      "source_transform_applied_by_rewire": "none",
+      "status": "supported-by-pinned-official-code"
+    },
+    "PCR_batch": {
+      "direction": "higher",
+      "unit": "score",
+      "source_transform_applied_by_rewire": "none",
+      "status": "supported-by-pinned-official-code"
+    },
+    "cell_cycle_conservation": {
+      "direction": "higher",
+      "unit": "score",
+      "source_transform_applied_by_rewire": "none",
+      "status": "supported-by-pinned-official-code"
+    },
+    "isolated_label_F1": {
+      "direction": "higher",
+      "unit": "score",
+      "source_transform_applied_by_rewire": "none",
+      "status": "supported-by-pinned-official-code"
+    },
+    "isolated_label_silhouette": {
+      "direction": "higher",
+      "unit": "score",
+      "source_transform_applied_by_rewire": "none",
+      "status": "supported-by-pinned-official-code"
+    },
+    "graph_conn": {
+      "direction": "higher",
+      "unit": "score",
+      "source_transform_applied_by_rewire": "none",
+      "status": "supported-by-pinned-official-code"
+    },
+    "kBET": {
+      "direction": "higher",
+      "unit": "score",
+      "source_transform_applied_by_rewire": "none",
+      "status": "supported-by-pinned-official-code"
+    },
+    "iLISI": {
+      "direction": "higher",
+      "unit": "score",
+      "source_transform_applied_by_rewire": "none",
+      "status": "supported-by-pinned-official-code"
+    },
+    "cLISI": {
+      "direction": "higher",
+      "unit": "score",
+      "source_transform_applied_by_rewire": "none",
+      "status": "supported-by-pinned-official-code"
+    },
+    "hvg_overlap": {
+      "direction": "higher",
+      "unit": "score",
+      "source_transform_applied_by_rewire": "none",
+      "status": "supported-by-pinned-official-code"
+    },
+    "trajectory": {
+      "direction": "higher",
+      "unit": "score",
+      "source_transform_applied_by_rewire": "none",
+      "status": "supported-by-pinned-official-code"
+    }
+  },
+  "restrictions": [
+    "No overall score derived or published",
+    "Do not compare preprocessing or dataset scopes without labels",
+    "Missing metric values are missing; no imputation",
+    "This proves intended direction of published export, not correctness of underlying metric implementation"
+  ]
+}

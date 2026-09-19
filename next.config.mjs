@@ -7,6 +7,8 @@ const nextConfig = {
    * @see https://nextjs.org/docs/app/building-your-application/deploying/static-exports
    */
   output: "export",
+  // Each worker holds the reviewed catalogue; keep builds within laptop/CI memory.
+  experimental: { cpus: 2 },
   trailingSlash: true,
   webpack(config) {
     // Shared Firebase modules use NodeNext .js specifiers; resolve their TS

@@ -1,0 +1,22 @@
+{
+  "date": "2026-09-19",
+  "reviewer_type": "automated",
+  "review_method": "Structured parser extraction cross-checked with independent direct-cell/column parser for every candidate; source bytes hash-pinned. Not independent scientific reproduction or human review.",
+  "candidates_checked": 1364,
+  "checks": [
+    "all source hashes",
+    "all selected values exact printed equality",
+    "numeric parse finite or explicit missing",
+    "candidate identity uniqueness",
+    "bounded inventory retained"
+  ],
+  "counts": {
+    "casp": 270,
+    "capri": 400,
+    "cami": 256,
+    "cafa": 438
+  },
+  "candidates_sha256": "d7426ebdaa0748bc3a7db71d76923ad5800053188d6c005f56b9949f3baf2cf9",
+  "extractor_sha256": "3c4917501caa0000a063afe0ee857d883e9eb89d59d5a47f590ac8ee239fcc5e",
+  "scientific_review_status": "pending independent scientific review; candidate records only"
+}

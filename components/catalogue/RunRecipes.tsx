@@ -1,5 +1,14 @@
 "use client";
 import { Fragment, useState, useMemo, useEffect } from "react";
+
+const runtimeLabel = (runtime: string) =>
+  ({
+    python: "Python",
+    command_line: "Command line",
+    podman: "Podman",
+    apptainer: "Apptainer",
+    slurm: "Slurm",
+  })[runtime] || runtime;
 import Link from "next/link";
 import { runRecipeSchema } from "@/services/omics/src/run-recipe";
 import { recordHref, type OmicsRecord } from "@/lib/omics";
@@ -26,14 +35,14 @@ export default function RunRecipes({
     [record.attributes.run_recipes],
   );
   const [recipeIndex, setRecipeIndex] = useState(0);
-  const [runtime, setRuntime] = useState("");
+  const [step, setStep] = useState(0);
   const [message, setMessage] = useState("");
   useEffect(() => {
     const apply = () => {
       const id = new URLSearchParams(window.location.search).get("recipe");
       const index = recipes.findIndex((recipe) => recipe.id === id);
       setRecipeIndex(index < 0 ? 0 : index);
-      setRuntime("");
+      setStep(0);
       setMessage("");
     };
     apply();
@@ -42,8 +51,9 @@ export default function RunRecipes({
   }, [recipes]);
   const recipe = recipes[recipeIndex];
   const instructions = recipe?.instructions || [];
-  const selected =
-    instructions.find((i) => i.runtime === runtime) || instructions[0];
+  // Selected by position, not by runtime: a recipe can have several steps that
+  // run the same way, and keying on the runtime hides all but the first.
+  const selected = instructions[step] || instructions[0];
   if (!recipe && !protocols.length) return null;
   return (
     <section
@@ -85,7 +95,7 @@ export default function RunRecipes({
                   const url = new URL(window.location.href);
                   url.searchParams.set("recipe", recipes[index].id);
                   window.history.replaceState(window.history.state, "", url);
-                  setRuntime("");
+                  setStep(0);
                   setMessage("");
                 }}
               >
@@ -142,25 +152,17 @@ export default function RunRecipes({
             </ul>
           </details>
           <label className={styles.label}>
-            Environment
+            Step
             <select
-              value={selected.runtime}
+              value={String(instructions.indexOf(selected))}
               onChange={(e) => {
-                setRuntime(e.target.value);
+                setStep(Number(e.target.value));
                 setMessage("");
               }}
             >
-              {instructions.map((i) => (
-                <option key={i.runtime} value={i.runtime}>
-                  {
-                    {
-                      python: "Python",
-                      command_line: "Command line",
-                      podman: "Podman",
-                      apptainer: "Apptainer",
-                      slurm: "Slurm",
-                    }[i.runtime]
-                  }
+              {instructions.map((i, index) => (
+                <option key={`${index}-${i.title}`} value={String(index)}>
+                  {index + 1}. {i.title} ({runtimeLabel(i.runtime)})
                 </option>
               ))}
             </select>

@@ -1,11 +1,12 @@
 {
   "status": "reviewed",
-  "method": "AI-assisted source/implementation inspection; schema, rendering and contract tests (no human review implied)",
-  "date": "2026-09-17",
+  "method": "AI-assisted source review. Runner recipes from implementation inspection; project recipes quoted by line range from each project's pinned README. No human review implied.",
+  "date": "2026-09-19",
   "runner_revision": "f80cef7f818bec33e51b7f43ad499eb5078c8d87",
-  "execution_claims": "Source review only. Runtime instruction snippets are not claimed executed. Local scoring receipts are maintained in the runner repository.",
+  "execution_claims": "Source review only. No instruction snippet is claimed executed. Local scoring receipts for the runner's own protocols are maintained in the runner repository.",
   "files": {
-    "data/omics/reviewed/run-recipes/records.jsonl": "cb8fcc98bc24e6bd4eeba290aafb652b5b1cb06991d5043f9e73daac0cd4f6ab",
-    "data/omics/reviewed/run-recipes/overlays.json": "90dd2d870529f3cb122f9764915d9895eedd03d7331262343110dde407ff13f6"
-  }
+    "data/omics/reviewed/run-recipes/records.jsonl": "1b4f9419dce1de6d0627a59b8cbb48d0ecccb276f259528478b8d4fb0c0baddc",
+    "data/omics/reviewed/run-recipes/overlays.json": "ea5ca8bb10a3dbe5efd9af410cac6a0bfeb83e9aa24c977553a6beaf32324a3b"
+  },
+  "reviewer": "Codex research agent; no human review claimed"
 }

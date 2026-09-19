@@ -5,8 +5,8 @@
   "runner_revision": "f80cef7f818bec33e51b7f43ad499eb5078c8d87",
   "execution_claims": "Source review only. No instruction snippet is claimed executed. Local scoring receipts for the runner's own protocols are maintained in the runner repository.",
   "files": {
-    "data/omics/reviewed/run-recipes/records.jsonl": "70b5701d9ac61e924654105e0b99ddc7c6477f2c62f1c847108aafb0f6e98abb",
-    "data/omics/reviewed/run-recipes/overlays.json": "374e06b55e3bcf2b5b5f81ad1e6c8317e9a313e55838c723c4902751c22e4873"
+    "data/omics/reviewed/run-recipes/records.jsonl": "1b4f9419dce1de6d0627a59b8cbb48d0ecccb276f259528478b8d4fb0c0baddc",
+    "data/omics/reviewed/run-recipes/overlays.json": "ea5ca8bb10a3dbe5efd9af410cac6a0bfeb83e9aa24c977553a6beaf32324a3b"
   },
   "reviewer": "Codex research agent; no human review claimed"
 }

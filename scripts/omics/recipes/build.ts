@@ -14,7 +14,13 @@
 import { createHash } from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
-import { PROJECTS, type Project } from "./projects";
+import {
+  PROJECTS,
+  RUNNER_COMMIT,
+  RUNNER_REPO,
+  type Project,
+  type Runner,
+} from "./projects";
 
 const ROOT = "data/omics/reviewed/run-recipes";
 const PREFIX = "project-recipe-";
@@ -25,7 +31,7 @@ const sourceId = (project: Project) =>
   `${PREFIX}${project.key}-${project.commit.slice(0, 8)}`;
 
 const COMMAND =
-  /^\s*(pip|conda|git|python|python3|Rscript|bash|sh|export|cd|wget|curl|docker|podman|uv|mamba|from |import |>>> |\$ |[A-Za-z_][A-Za-z0-9_]* *=)/;
+  /^\s*(pip|conda|git|python|python3|Rscript|bash|sh|export|cd|wget|curl|docker|podman|uv|mamba|rewirebench|from |import |>>> |\$ |[A-Za-z_][A-Za-z0-9_]* *=)/;
 
 /**
  * The exact lines the instruction cites, with the file's own indentation.
@@ -87,10 +93,93 @@ function build(dir: string) {
       },
     });
 
+    // A benchmark rewirebench implements gets a second recipe, quoted from the
+    // runner's own docs and citing the protocol that does the scoring.
+    const runnerIds: string[] = [];
+    if (project.runner) {
+      const runner = project.runner;
+      for (const [file, sha] of [
+        [runner.doc, runner.docSha256],
+        [runner.implementation, runner.implementationSha256],
+      ] as const) {
+        const runnerId = `${PREFIX}runner-${project.key}-${file
+          .split("/")
+          .pop()!
+          .replace(/[^a-z0-9]+/gi, "-")
+          .toLowerCase()}-${RUNNER_COMMIT.slice(0, 8)}`;
+        runnerIds.push(runnerId);
+        sources.push({
+          id: runnerId,
+          kind: "source",
+          name: `rewirebench: ${file}`,
+          description: "Pinned runner file backing this recipe.",
+          status: "source_checked",
+          facets: {},
+          source_ids: [],
+          links: [],
+          attributes: {
+            url: `https://github.com/${RUNNER_REPO}/blob/${RUNNER_COMMIT}/${file}`,
+            version: RUNNER_COMMIT,
+            retrieved_at: DATE,
+            artifact_sha256: sha,
+            hash_scope: "complete file bytes",
+            artifact_format: "text",
+            source_locator: file,
+            review_method:
+              "AI-assisted implementation review; protocol scoring transcribed from the upstream evaluator",
+          },
+        });
+      }
+    }
+
     const locator = `README.md at ${project.commit.slice(0, 8)}`;
+    const runnerRecipe = (runner: Runner) => {
+      const docFile = path.join(dir, `${project.key}.RUNNERDOC`);
+      const doc = fs.readFileSync(docFile);
+      const docDigest = createHash("sha256").update(doc).digest("hex");
+      if (docDigest !== runner.docSha256)
+        throw new Error(
+          `${project.key}: runner doc hash ${docDigest} does not match the pinned ${runner.docSha256}`,
+        );
+      const docLocator = `${runner.doc} at ${RUNNER_COMMIT.slice(0, 8)}`;
+      return {
+        id: `${project.key}-rewirebench`,
+        protocol_id: runner.protocolId,
+        version: RUNNER_COMMIT,
+        title: runner.title,
+        purpose: "generate_and_evaluate",
+        summary: runner.summary,
+        inputs: runner.inputs,
+        outputs: runner.outputs,
+        requirements: {
+          data: runner.data,
+          weights: "Whatever your own model needs; the runner supplies none.",
+          licence:
+            "Runner code is MIT. The benchmark's own data terms are upstream and unreported here.",
+          software: runner.software,
+          hardware: runner.hardware,
+        },
+        instructions: runner.instructions.map((instruction) => ({
+          runtime: instruction.runtime,
+          title: instruction.title,
+          code: quote(doc.toString("utf8"), instruction.lines),
+          status: "source_reviewed_not_executed",
+          source_ids: runnerIds,
+          source_locator: `${docLocator}, ${instruction.heading}, lines ${instruction.lines[0]}-${instruction.lines[1]}`,
+        })),
+        limitations: [
+          "Quoted from the runner's documentation and not executed by this repository.",
+          "Scoring follows the benchmark's own evaluator; running it does not by itself reproduce a published number.",
+          ...runner.limitations,
+        ],
+        source_ids: runnerIds,
+        source_locator: docLocator,
+      };
+    };
+
     overlays.push({
       id: project.benchmarkId,
-      source_ids: [id],
+      source_ids: [id, ...runnerIds],
       run_recipes: [
         {
           id: `${project.key}-official`,
@@ -124,6 +213,7 @@ function build(dir: string) {
           source_ids: [id],
           source_locator: locator,
         },
+        ...(project.runner ? [runnerRecipe(project.runner)] : []),
       ],
     });
   }
@@ -171,7 +261,10 @@ function build(dir: string) {
     review.files[`${ROOT}/${name}`] = createHash("sha256")
       .update(fs.readFileSync(`${ROOT}/${name}`))
       .digest("hex");
-  fs.writeFileSync(`${ROOT}/review.json`, JSON.stringify(review, null, 2) + "\n");
+  fs.writeFileSync(
+    `${ROOT}/review.json`,
+    JSON.stringify(review, null, 2) + "\n",
+  );
 
   console.log(
     `${sources.length} project sources, ${overlays.length} benchmark recipes, ${overlays.reduce(

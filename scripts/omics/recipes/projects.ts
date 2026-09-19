@@ -19,6 +19,27 @@ export type Instruction = {
   heading: string;
 };
 
+/** A recipe for rewirebench's own protocol, quoted from the runner's docs. */
+export type Runner = {
+  protocolId: string;
+  doc: string;
+  docSha256: string;
+  implementation: string;
+  implementationSha256: string;
+  title: string;
+  summary: string;
+  inputs: string[];
+  outputs: string[];
+  data: string;
+  software: string;
+  hardware: string;
+  limitations: string[];
+  instructions: Instruction[];
+};
+
+export const RUNNER_REPO = "rewire-bio/rewire-benchmarks";
+export const RUNNER_COMMIT = "e9b92e0a36260794b682ad1d6c6ad318edc3a60a";
+
 export type Project = {
   key: string;
   benchmarkId: string;
@@ -39,6 +60,8 @@ export type Project = {
     limitations: string[];
   };
   instructions: Instruction[];
+  /** Present when rewirebench implements this benchmark's scoring itself. */
+  runner?: Runner;
 };
 
 const unknownHardware =
@@ -65,7 +88,8 @@ export const PROJECTS: Project[] = [
         "A per-dataset score from the group's own evaluator, under the scaffold split the group defines.",
       ],
       data: "Downloaded by PyTDC on first use; the benchmark group fixes the split.",
-      weights: "None. The baselines are trained from the featurisation you choose.",
+      weights:
+        "None. The baselines are trained from the featurisation you choose.",
       software: "Python with PyTDC installed from PyPI.",
       hardware: "CPU is enough for the paper's own baselines.",
       limitations: [
@@ -74,7 +98,12 @@ export const PROJECTS: Project[] = [
       ],
     },
     instructions: [
-      { title: "Install", runtime: "command_line", lines: [73, 73], heading: "Using `pip`" },
+      {
+        title: "Install",
+        runtime: "command_line",
+        lines: [73, 73],
+        heading: "Using `pip`",
+      },
       {
         title: "Evaluate against the benchmark group",
         runtime: "python",
@@ -82,6 +111,47 @@ export const PROJECTS: Project[] = [
         heading: "TDC Leaderboards",
       },
     ],
+    runner: {
+      protocolId: "tdc-admet-group-v1",
+      doc: "docs/tdc-admet.md",
+      docSha256:
+        "860890c1214075f311e65314fbcbfaad8c83c7a5e95fb9ad7e714344ccdc85c3",
+      implementation:
+        "packages/rewirebench/src/rewirebench/protocols/tdc_admet.py",
+      implementationSha256:
+        "027f01e4485b5c5316875c54440bee37e6ead9723ae246a530bce9d4004764bb",
+      title: "Score your own model with rewirebench",
+      summary:
+        "Prepare a dataset TDC has written to disk, then score an adapter with the metric TDC assigns that dataset.",
+      inputs: [
+        "The dataset directory TDC's BenchmarkGroup wrote locally.",
+        "An adapter returning one number per Drug_ID: a predicted value, or a positive-class score for a classification dataset.",
+      ],
+      outputs: [
+        "A local report with the metric, its direction, the coverage and the digest of the files it read.",
+      ],
+      data: "Whatever TDC downloaded locally. The runner records its SHA-256 rather than claiming a canonical split.",
+      software: "Python 3.11 with the pinned rewirebench environment.",
+      hardware: "CPU for scoring. Your own model decides what it needs.",
+      limitations: [
+        "Six of the 22 datasets are errors where lower is better; the report states the direction per dataset.",
+        "A matching metric is not a matching result: the split on disk, the featurisation and the training all have to match a published number too.",
+      ],
+      instructions: [
+        {
+          title: "Prepare a dataset",
+          runtime: "command_line",
+          lines: [36, 38],
+          heading: "Prepare, run and score",
+        },
+        {
+          title: "Run and score an adapter",
+          runtime: "command_line",
+          lines: [47, 50],
+          heading: "Prepare, run and score",
+        },
+      ],
+    },
   },
   {
     key: "genomic-benchmarks",
@@ -100,15 +170,67 @@ export const PROJECTS: Project[] = [
       data: "Downloaded by the package; the splits are fixed by the release.",
       weights: "None. The published baseline is a small convolutional network.",
       software: "Python with the genomic-benchmarks package from PyPI.",
-      hardware: "CPU is enough to load the data; training the baseline benefits from a GPU.",
+      hardware:
+        "CPU is enough to load the data; training the baseline benefits from a GPU.",
       limitations: [
         "The scores here are the paper's own baseline in two frameworks, not a leaderboard.",
       ],
     },
     instructions: [
-      { title: "Install", runtime: "command_line", lines: [13, 13], heading: "Install" },
-      { title: "List the datasets", runtime: "python", lines: [40, 43], heading: "Usage" },
+      {
+        title: "Install",
+        runtime: "command_line",
+        lines: [13, 13],
+        heading: "Install",
+      },
+      {
+        title: "List the datasets",
+        runtime: "python",
+        lines: [40, 43],
+        heading: "Usage",
+      },
     ],
+    runner: {
+      protocolId: "genomic-benchmarks-v1",
+      doc: "docs/genomic-benchmarks.md",
+      docSha256:
+        "54cc5e958ba059b8772a4fd056b8510af90c6db6ec3004689858eafd663fd3e2",
+      implementation:
+        "packages/rewirebench/src/rewirebench/protocols/genomic_benchmarks.py",
+      implementationSha256:
+        "81d63c5a4d9ba36720a669a95cc6bf1acf69398baeef059a6a234e5a242437f8",
+      title: "Score your own classifier with rewirebench",
+      summary:
+        "Prepare a downloaded dataset and score an adapter on accuracy and F1 over the packaged test split.",
+      inputs: [
+        "The dataset directory the genomic-benchmarks package downloaded.",
+        "An adapter returning a class index, or a probability for a binary dataset.",
+      ],
+      outputs: [
+        "A local report with accuracy, F1, the coverage and the digest of the sequences it read.",
+      ],
+      data: "Whatever the package downloaded locally, read from its train and test directories.",
+      software: "Python 3.11 with the pinned rewirebench environment.",
+      hardware: "CPU for scoring. Your own model decides what it needs.",
+      limitations: [
+        "Class labels are assigned from the sorted class name, because upstream takes them from filesystem order, which differs between machines. Compare class names, not indices.",
+        "For the one dataset with three classes the paper does not say which F1 averaging it used, so macro and weighted are both reported and neither is the paper's number.",
+      ],
+      instructions: [
+        {
+          title: "Prepare a dataset",
+          runtime: "command_line",
+          lines: [37, 39],
+          heading: "Prepare, run and score",
+        },
+        {
+          title: "Run and score an adapter",
+          runtime: "command_line",
+          lines: [47, 50],
+          heading: "Prepare, run and score",
+        },
+      ],
+    },
   },
   {
     key: "atom3d",
@@ -134,9 +256,24 @@ export const PROJECTS: Project[] = [
       ],
     },
     instructions: [
-      { title: "Install", runtime: "command_line", lines: [24, 24], heading: "Installation" },
-      { title: "Download a dataset", runtime: "python", lines: [42, 43], heading: "Downloading a dataset" },
-      { title: "Load a dataset", runtime: "python", lines: [52, 55], heading: "Loading a dataset" },
+      {
+        title: "Install",
+        runtime: "command_line",
+        lines: [24, 24],
+        heading: "Installation",
+      },
+      {
+        title: "Download a dataset",
+        runtime: "python",
+        lines: [42, 43],
+        heading: "Downloading a dataset",
+      },
+      {
+        title: "Load a dataset",
+        runtime: "python",
+        lines: [52, 55],
+        heading: "Loading a dataset",
+      },
     ],
   },
   {
@@ -151,11 +288,15 @@ export const PROJECTS: Project[] = [
       title: "Evaluate a model on the GUE benchmark",
       summary:
         "Fine-tune and score a model across the GUE datasets, using the authors' own evaluation script.",
-      inputs: ["A tokeniser and model checkpoint loadable by transformers.", "The GUE dataset directory."],
+      inputs: [
+        "A tokeniser and model checkpoint loadable by transformers.",
+        "The GUE dataset directory.",
+      ],
       outputs: ["Per-dataset scores under the split the benchmark fixes."],
       data: "The GUE archive, downloaded separately as the README describes.",
       weights: "A published checkpoint, or your own.",
-      software: "Python with transformers and the repository's finetune scripts.",
+      software:
+        "Python with transformers and the repository's finetune scripts.",
       hardware: unknownHardware,
       limitations: [
         "Scores are MCC, except Covid variant classification which is F1.",
@@ -163,8 +304,18 @@ export const PROJECTS: Project[] = [
       ],
     },
     instructions: [
-      { title: "Load the model", runtime: "python", lines: [84, 88], heading: "4. Quick Start" },
-      { title: "Evaluate on GUE", runtime: "command_line", lines: [138, 151], heading: "6.1 Evaluate models on GUE" },
+      {
+        title: "Load the model",
+        runtime: "python",
+        lines: [84, 88],
+        heading: "4. Quick Start",
+      },
+      {
+        title: "Evaluate on GUE",
+        runtime: "command_line",
+        lines: [138, 151],
+        heading: "6.1 Evaluate models on GUE",
+      },
     ],
   },
   {
@@ -179,7 +330,10 @@ export const PROJECTS: Project[] = [
       title: "Embed, train and evaluate on a BEND task",
       summary:
         "Precompute embeddings for a DNA language model, then train and score the downstream head on one of the seven tasks.",
-      inputs: ["A supported embedder, or your own.", "The task data the repository downloads."],
+      inputs: [
+        "A supported embedder, or your own.",
+        "The task data the repository downloads.",
+      ],
       outputs: ["Precomputed embeddings and a scored downstream model."],
       data: "Downloaded by the repository's scripts.",
       weights: "A published DNA language model checkpoint.",
@@ -191,9 +345,24 @@ export const PROJECTS: Project[] = [
       ],
     },
     instructions: [
-      { title: "Precompute embeddings", runtime: "command_line", lines: [58, 58], heading: "3. Computing embeddings" },
-      { title: "Train and evaluate on a task", runtime: "command_line", lines: [117, 117], heading: "Training and evaluating supervised models" },
-      { title: "Score variant effects", runtime: "command_line", lines: [162, 162], heading: "Unsupervised tasks" },
+      {
+        title: "Precompute embeddings",
+        runtime: "command_line",
+        lines: [58, 58],
+        heading: "3. Computing embeddings",
+      },
+      {
+        title: "Train and evaluate on a task",
+        runtime: "command_line",
+        lines: [117, 117],
+        heading: "Training and evaluating supervised models",
+      },
+      {
+        title: "Score variant effects",
+        runtime: "command_line",
+        lines: [162, 162],
+        heading: "Unsupervised tasks",
+      },
     ],
   },
   {
@@ -208,10 +377,13 @@ export const PROJECTS: Project[] = [
       title: "Fine-tune a model on a BEACON task",
       summary:
         "Clone the benchmark, then fine-tune a model on one of the thirteen RNA tasks scored on this page.",
-      inputs: ["A model checkpoint and the task data laid out as the README shows."],
+      inputs: [
+        "A model checkpoint and the task data laid out as the README shows.",
+      ],
       outputs: ["A fine-tuned model and its score on the task's test split."],
       data: "Laid out under the repository's data directory as the README describes.",
-      weights: "A published RNA language model checkpoint, or none for the supervised baselines.",
+      weights:
+        "A published RNA language model checkpoint, or none for the supervised baselines.",
       software: "Python with the repository's environment.",
       hardware: unknownHardware,
       limitations: [
@@ -220,9 +392,24 @@ export const PROJECTS: Project[] = [
       ],
     },
     instructions: [
-      { title: "Clone and install", runtime: "command_line", lines: [20, 23], heading: "Installation" },
-      { title: "Fine-tune on a task", runtime: "command_line", lines: [148, 149], heading: "Finetuning" },
-      { title: "Compute embeddings", runtime: "python", lines: [155, 170], heading: "Computing embeddings" },
+      {
+        title: "Clone and install",
+        runtime: "command_line",
+        lines: [20, 23],
+        heading: "Installation",
+      },
+      {
+        title: "Fine-tune on a task",
+        runtime: "command_line",
+        lines: [148, 149],
+        heading: "Finetuning",
+      },
+      {
+        title: "Compute embeddings",
+        runtime: "python",
+        lines: [155, 170],
+        heading: "Computing embeddings",
+      },
     ],
   },
   {
@@ -241,7 +428,8 @@ export const PROJECTS: Project[] = [
       outputs: ["Per-task probe scores over the benchmark's splits."],
       data: "Downloaded by the package.",
       weights: "A published mRNA or nucleotide model checkpoint.",
-      software: "Python with the mrna-bench package and the model's own environment.",
+      software:
+        "Python with the mrna-bench package and the model's own environment.",
       hardware: unknownHardware,
       limitations: [
         "Metrics alternate between AUPRC on a percentage scale and Pearson R.",
@@ -249,9 +437,24 @@ export const PROJECTS: Project[] = [
       ],
     },
     instructions: [
-      { title: "Install", runtime: "command_line", lines: [34, 34], heading: "Datasets Only" },
-      { title: "Load a dataset", runtime: "python", lines: [77, 80], heading: "Usage" },
-      { title: "Embed and evaluate", runtime: "python", lines: [85, 109], heading: "Usage" },
+      {
+        title: "Install",
+        runtime: "command_line",
+        lines: [34, 34],
+        heading: "Datasets Only",
+      },
+      {
+        title: "Load a dataset",
+        runtime: "python",
+        lines: [77, 80],
+        heading: "Usage",
+      },
+      {
+        title: "Embed and evaluate",
+        runtime: "python",
+        lines: [85, 109],
+        heading: "Usage",
+      },
     ],
   },
   {
@@ -267,10 +470,13 @@ export const PROJECTS: Project[] = [
       summary:
         "Install the library with its benchmark extras, then evaluate a patch encoder across the ten cohorts on this page.",
       inputs: ["A histology patch encoder."],
-      outputs: ["Per-cohort Pearson correlation from the benchmark's own head."],
+      outputs: [
+        "Per-cohort Pearson correlation from the benchmark's own head.",
+      ],
       data: "HEST-1k, downloaded by the library.",
       weights: "A published patch encoder checkpoint.",
-      software: "Python with the repository installed in editable mode and its benchmark extras.",
+      software:
+        "Python with the repository installed in editable mode and its benchmark extras.",
       hardware: unknownHardware,
       limitations: [
         "Every figure comes from the same Random Forest head, so it measures the encoder rather than a full pipeline.",
@@ -278,9 +484,24 @@ export const PROJECTS: Project[] = [
       ],
     },
     instructions: [
-      { title: "Install", runtime: "command_line", lines: [46, 50], heading: "HEST-Library installation" },
-      { title: "Add the benchmark extras", runtime: "command_line", lines: [56, 56], heading: "Additional dependencies (HEST-Benchmark)" },
-      { title: "Inspect the data", runtime: "python", lines: [80, 83], heading: "Inspect HEST-1k with HEST-Library" },
+      {
+        title: "Install",
+        runtime: "command_line",
+        lines: [46, 50],
+        heading: "HEST-Library installation",
+      },
+      {
+        title: "Add the benchmark extras",
+        runtime: "command_line",
+        lines: [56, 56],
+        heading: "Additional dependencies (HEST-Benchmark)",
+      },
+      {
+        title: "Inspect the data",
+        runtime: "python",
+        lines: [80, 83],
+        heading: "Inspect HEST-1k with HEST-Library",
+      },
     ],
   },
   {
@@ -295,11 +516,16 @@ export const PROJECTS: Project[] = [
       title: "Train and evaluate a perturbation model",
       summary:
         "Install the environment, load a benchmark dataset with its split, and train a model through the repository's configuration system.",
-      inputs: ["A perturbation response model implemented against the repository's base class."],
-      outputs: ["Trained model checkpoints and the evaluation the pipeline runs."],
+      inputs: [
+        "A perturbation response model implemented against the repository's base class.",
+      ],
+      outputs: [
+        "Trained model checkpoints and the evaluation the pipeline runs.",
+      ],
       data: "Downloaded by the repository's dataset accessors.",
       weights: "None required; models are trained from the data.",
-      software: "Python with the repository's conda environment and hydra configs.",
+      software:
+        "Python with the repository's conda environment and hydra configs.",
       hardware: unknownHardware,
       limitations: [
         "RMSE and both rank metrics on this page are better when lower.",
@@ -307,10 +533,30 @@ export const PROJECTS: Project[] = [
       ],
     },
     instructions: [
-      { title: "Install", runtime: "command_line", lines: [17, 22], heading: "Install PerturBench" },
-      { title: "Load a dataset", runtime: "python", lines: [35, 39], heading: "Dataset Access" },
-      { title: "Apply the benchmark split", runtime: "python", lines: [49, 52], heading: "Data Splitting" },
-      { title: "Train a model", runtime: "command_line", lines: [66, 66], heading: "Hydra Training Script" },
+      {
+        title: "Install",
+        runtime: "command_line",
+        lines: [17, 22],
+        heading: "Install PerturBench",
+      },
+      {
+        title: "Load a dataset",
+        runtime: "python",
+        lines: [35, 39],
+        heading: "Dataset Access",
+      },
+      {
+        title: "Apply the benchmark split",
+        runtime: "python",
+        lines: [49, 52],
+        heading: "Data Splitting",
+      },
+      {
+        title: "Train a model",
+        runtime: "command_line",
+        lines: [66, 66],
+        heading: "Hydra Training Script",
+      },
     ],
   },
   {
@@ -337,9 +583,24 @@ export const PROJECTS: Project[] = [
       ],
     },
     instructions: [
-      { title: "Clone and create the environment", runtime: "command_line", lines: [29, 36], heading: "Installation" },
-      { title: "Fine-tune a single task", runtime: "command_line", lines: [104, 109], heading: "Fine-tuning a single task" },
-      { title: "Zero-shot evaluation", runtime: "command_line", lines: [115, 120], heading: "Zero-shot evaluation" },
+      {
+        title: "Clone and create the environment",
+        runtime: "command_line",
+        lines: [29, 36],
+        heading: "Installation",
+      },
+      {
+        title: "Fine-tune a single task",
+        runtime: "command_line",
+        lines: [104, 109],
+        heading: "Fine-tuning a single task",
+      },
+      {
+        title: "Zero-shot evaluation",
+        runtime: "command_line",
+        lines: [115, 120],
+        heading: "Zero-shot evaluation",
+      },
     ],
   },
   {
@@ -354,11 +615,14 @@ export const PROJECTS: Project[] = [
       title: "Embed and score a nucleotide model on NABench",
       summary:
         "Create the environment, produce embeddings for a model, and run the benchmark's own evaluation over the scored assays.",
-      inputs: ["A nucleotide foundation model and the assay data the repository downloads."],
+      inputs: [
+        "A nucleotide foundation model and the assay data the repository downloads.",
+      ],
       outputs: ["Per-assay scores aggregated the way the benchmark defines."],
       data: "Downloaded as the README's data section describes.",
       weights: "A published nucleotide model checkpoint.",
-      software: "Python with the repository's conda environment and requirements file.",
+      software:
+        "Python with the repository's conda environment and requirements file.",
       hardware: unknownHardware,
       limitations: [
         "Zero-shot, few-shot and cross-validation figures come from different protocols and are not comparable.",
@@ -366,9 +630,24 @@ export const PROJECTS: Project[] = [
       ],
     },
     instructions: [
-      { title: "Create the environment", runtime: "command_line", lines: [99, 104], heading: "Usage and Reproducibility" },
-      { title: "Produce embeddings", runtime: "command_line", lines: [114, 115], heading: "Usage and Reproducibility" },
-      { title: "Evaluate", runtime: "command_line", lines: [122, 123], heading: "Usage and Reproducibility" },
+      {
+        title: "Create the environment",
+        runtime: "command_line",
+        lines: [99, 104],
+        heading: "Usage and Reproducibility",
+      },
+      {
+        title: "Produce embeddings",
+        runtime: "command_line",
+        lines: [114, 115],
+        heading: "Usage and Reproducibility",
+      },
+      {
+        title: "Evaluate",
+        runtime: "command_line",
+        lines: [122, 123],
+        heading: "Usage and Reproducibility",
+      },
     ],
   },
   {
@@ -394,9 +673,24 @@ export const PROJECTS: Project[] = [
       ],
     },
     instructions: [
-      { title: "Install", runtime: "command_line", lines: [30, 38], heading: "Installation" },
-      { title: "Run a single task", runtime: "command_line", lines: [80, 81], heading: "Single-Task Learning" },
-      { title: "Run the multi-task setting", runtime: "command_line", lines: [98, 99], heading: "Multi-Task Learning" },
+      {
+        title: "Install",
+        runtime: "command_line",
+        lines: [30, 38],
+        heading: "Installation",
+      },
+      {
+        title: "Run a single task",
+        runtime: "command_line",
+        lines: [80, 81],
+        heading: "Single-Task Learning",
+      },
+      {
+        title: "Run the multi-task setting",
+        runtime: "command_line",
+        lines: [98, 99],
+        heading: "Multi-Task Learning",
+      },
     ],
   },
   {
@@ -412,7 +706,9 @@ export const PROJECTS: Project[] = [
       summary:
         "Install the package and load the benchmark dataset that the scores on this page are measured over.",
       inputs: ["A model for one of the benchmark's spectrum tasks."],
-      outputs: ["The benchmark dataset and the scores its evaluation produces."],
+      outputs: [
+        "The benchmark dataset and the scores its evaluation produces.",
+      ],
       data: "Downloaded by the package on first use.",
       weights: "None required.",
       software: "Python with the massspecgym package from PyPI.",
@@ -422,8 +718,18 @@ export const PROJECTS: Project[] = [
       ],
     },
     instructions: [
-      { title: "Install", runtime: "command_line", lines: [43, 43], heading: "Installation" },
-      { title: "Load the dataset", runtime: "python", lines: [76, 77], heading: "Getting started with MassSpecGym" },
+      {
+        title: "Install",
+        runtime: "command_line",
+        lines: [43, 43],
+        heading: "Installation",
+      },
+      {
+        title: "Load the dataset",
+        runtime: "python",
+        lines: [76, 77],
+        heading: "Getting started with MassSpecGym",
+      },
     ],
   },
   {
@@ -450,11 +756,36 @@ export const PROJECTS: Project[] = [
       ],
     },
     instructions: [
-      { title: "Generate the dataset", runtime: "command_line", lines: [39, 39], heading: "Dataset Generation" },
-      { title: "Score zero-shot", runtime: "command_line", lines: [56, 56], heading: "Zero-shot likelihood analyses" },
-      { title: "Extract embeddings", runtime: "command_line", lines: [84, 84], heading: "Probing models" },
-      { title: "Train a probing model", runtime: "command_line", lines: [90, 90], heading: "Probing models" },
-      { title: "Evaluate a probing model", runtime: "command_line", lines: [96, 96], heading: "Probing models" },
+      {
+        title: "Generate the dataset",
+        runtime: "command_line",
+        lines: [39, 39],
+        heading: "Dataset Generation",
+      },
+      {
+        title: "Score zero-shot",
+        runtime: "command_line",
+        lines: [56, 56],
+        heading: "Zero-shot likelihood analyses",
+      },
+      {
+        title: "Extract embeddings",
+        runtime: "command_line",
+        lines: [84, 84],
+        heading: "Probing models",
+      },
+      {
+        title: "Train a probing model",
+        runtime: "command_line",
+        lines: [90, 90],
+        heading: "Probing models",
+      },
+      {
+        title: "Evaluate a probing model",
+        runtime: "command_line",
+        lines: [96, 96],
+        heading: "Probing models",
+      },
     ],
   },
 ];

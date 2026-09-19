@@ -313,7 +313,9 @@
   {
     "id": "discovery-benchmark-tdc-molecular-tasks",
     "source_ids": [
-      "project-recipe-tdc-c310c35f"
+      "project-recipe-tdc-c310c35f",
+      "project-recipe-runner-tdc-tdc-admet-md-e9b92e0a",
+      "project-recipe-runner-tdc-tdc-admet-py-e9b92e0a"
     ],
     "run_recipes": [
       {
@@ -369,13 +371,72 @@
           "project-recipe-tdc-c310c35f"
         ],
         "source_locator": "README.md at c310c35f"
+      },
+      {
+        "id": "tdc-rewirebench",
+        "protocol_id": "tdc-admet-group-v1",
+        "version": "e9b92e0a36260794b682ad1d6c6ad318edc3a60a",
+        "title": "Score your own model with rewirebench",
+        "purpose": "generate_and_evaluate",
+        "summary": "Prepare a dataset TDC has written to disk, then score an adapter with the metric TDC assigns that dataset.",
+        "inputs": [
+          "The dataset directory TDC's BenchmarkGroup wrote locally.",
+          "An adapter returning one number per Drug_ID: a predicted value, or a positive-class score for a classification dataset."
+        ],
+        "outputs": [
+          "A local report with the metric, its direction, the coverage and the digest of the files it read."
+        ],
+        "requirements": {
+          "data": "Whatever TDC downloaded locally. The runner records its SHA-256 rather than claiming a canonical split.",
+          "weights": "Whatever your own model needs; the runner supplies none.",
+          "licence": "Runner code is MIT. The benchmark's own data terms are upstream and unreported here.",
+          "software": "Python 3.11 with the pinned rewirebench environment.",
+          "hardware": "CPU for scoring. Your own model decides what it needs."
+        },
+        "instructions": [
+          {
+            "runtime": "command_line",
+            "title": "Prepare a dataset",
+            "code": "rewirebench prepare tdc-admet-group-v1 \\\n  --source ./data --options '{\"dataset\": \"caco2_wang\"}' \\\n  --output ./prepared-caco2",
+            "status": "source_reviewed_not_executed",
+            "source_ids": [
+              "project-recipe-runner-tdc-tdc-admet-md-e9b92e0a",
+              "project-recipe-runner-tdc-tdc-admet-py-e9b92e0a"
+            ],
+            "source_locator": "docs/tdc-admet.md at e9b92e0a, Prepare, run and score, lines 36-38"
+          },
+          {
+            "runtime": "command_line",
+            "title": "Run and score an adapter",
+            "code": "rewirebench run --prepared ./prepared-caco2 \\\n  --adapter my_models.admet:MyAdapter \\\n  --model-name 'my model' --training-overlap 'unreported' \\\n  --output ./scored-caco2",
+            "status": "source_reviewed_not_executed",
+            "source_ids": [
+              "project-recipe-runner-tdc-tdc-admet-md-e9b92e0a",
+              "project-recipe-runner-tdc-tdc-admet-py-e9b92e0a"
+            ],
+            "source_locator": "docs/tdc-admet.md at e9b92e0a, Prepare, run and score, lines 47-50"
+          }
+        ],
+        "limitations": [
+          "Quoted from the runner's documentation and not executed by this repository.",
+          "Scoring follows the benchmark's own evaluator; running it does not by itself reproduce a published number.",
+          "Six of the 22 datasets are errors where lower is better; the report states the direction per dataset.",
+          "A matching metric is not a matching result: the split on disk, the featurisation and the training all have to match a published number too."
+        ],
+        "source_ids": [
+          "project-recipe-runner-tdc-tdc-admet-md-e9b92e0a",
+          "project-recipe-runner-tdc-tdc-admet-py-e9b92e0a"
+        ],
+        "source_locator": "docs/tdc-admet.md at e9b92e0a"
       }
     ]
   },
   {
     "id": "discovery-benchmark-genomic-benchmarks",
     "source_ids": [
-      "project-recipe-genomic-benchmarks-605d8539"
+      "project-recipe-genomic-benchmarks-605d8539",
+      "project-recipe-runner-genomic-benchmarks-genomic-benchmarks-md-e9b92e0a",
+      "project-recipe-runner-genomic-benchmarks-genomic-benchmarks-py-e9b92e0a"
     ],
     "run_recipes": [
       {
@@ -429,6 +490,63 @@
           "project-recipe-genomic-benchmarks-605d8539"
         ],
         "source_locator": "README.md at 605d8539"
+      },
+      {
+        "id": "genomic-benchmarks-rewirebench",
+        "protocol_id": "genomic-benchmarks-v1",
+        "version": "e9b92e0a36260794b682ad1d6c6ad318edc3a60a",
+        "title": "Score your own classifier with rewirebench",
+        "purpose": "generate_and_evaluate",
+        "summary": "Prepare a downloaded dataset and score an adapter on accuracy and F1 over the packaged test split.",
+        "inputs": [
+          "The dataset directory the genomic-benchmarks package downloaded.",
+          "An adapter returning a class index, or a probability for a binary dataset."
+        ],
+        "outputs": [
+          "A local report with accuracy, F1, the coverage and the digest of the sequences it read."
+        ],
+        "requirements": {
+          "data": "Whatever the package downloaded locally, read from its train and test directories.",
+          "weights": "Whatever your own model needs; the runner supplies none.",
+          "licence": "Runner code is MIT. The benchmark's own data terms are upstream and unreported here.",
+          "software": "Python 3.11 with the pinned rewirebench environment.",
+          "hardware": "CPU for scoring. Your own model decides what it needs."
+        },
+        "instructions": [
+          {
+            "runtime": "command_line",
+            "title": "Prepare a dataset",
+            "code": "rewirebench prepare genomic-benchmarks-v1 \\\n  --source ./genomic_benchmarks --options '{\"dataset\": \"human_nontata_promoters\"}' \\\n  --output ./prepared-promoters",
+            "status": "source_reviewed_not_executed",
+            "source_ids": [
+              "project-recipe-runner-genomic-benchmarks-genomic-benchmarks-md-e9b92e0a",
+              "project-recipe-runner-genomic-benchmarks-genomic-benchmarks-py-e9b92e0a"
+            ],
+            "source_locator": "docs/genomic-benchmarks.md at e9b92e0a, Prepare, run and score, lines 37-39"
+          },
+          {
+            "runtime": "command_line",
+            "title": "Run and score an adapter",
+            "code": "rewirebench run --prepared ./prepared-promoters \\\n  --adapter my_models.dna:MyAdapter \\\n  --model-name 'my model' --training-overlap 'unreported' \\\n  --output ./scored-promoters",
+            "status": "source_reviewed_not_executed",
+            "source_ids": [
+              "project-recipe-runner-genomic-benchmarks-genomic-benchmarks-md-e9b92e0a",
+              "project-recipe-runner-genomic-benchmarks-genomic-benchmarks-py-e9b92e0a"
+            ],
+            "source_locator": "docs/genomic-benchmarks.md at e9b92e0a, Prepare, run and score, lines 47-50"
+          }
+        ],
+        "limitations": [
+          "Quoted from the runner's documentation and not executed by this repository.",
+          "Scoring follows the benchmark's own evaluator; running it does not by itself reproduce a published number.",
+          "Class labels are assigned from the sorted class name, because upstream takes them from filesystem order, which differs between machines. Compare class names, not indices.",
+          "For the one dataset with three classes the paper does not say which F1 averaging it used, so macro and weighted are both reported and neither is the paper's number."
+        ],
+        "source_ids": [
+          "project-recipe-runner-genomic-benchmarks-genomic-benchmarks-md-e9b92e0a",
+          "project-recipe-runner-genomic-benchmarks-genomic-benchmarks-py-e9b92e0a"
+        ],
+        "source_locator": "docs/genomic-benchmarks.md at e9b92e0a"
       }
     ]
   },

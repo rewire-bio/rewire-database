@@ -183,12 +183,33 @@ describe("recipes quoted from each project's own instructions", () => {
       .map((line) => JSON.parse(line))
       .map((r) => [r.id, r]),
   );
-  const quoted = overlays.filter((overlay) =>
-    overlay.run_recipes?.some((recipe) => recipe.id.endsWith("-official")),
+  const generated = overlays.filter((overlay) =>
+    overlay.run_recipes?.some(
+      (recipe) =>
+        recipe.id.endsWith("-official") || recipe.id.endsWith("-rewirebench"),
+    ),
   );
+  const quoted = generated.map((overlay) => ({
+    ...overlay,
+    run_recipes: overlay.run_recipes!.filter(
+      (recipe) =>
+        recipe.id.endsWith("-official") || recipe.id.endsWith("-rewirebench"),
+    ),
+  }));
 
   it("covers the benchmarks whose projects publish commands", () => {
     expect(quoted.length).toBeGreaterThanOrEqual(14);
+  });
+
+  it("offers the runner's own recipe where rewirebench implements the scoring", () => {
+    const runner = quoted.filter((overlay) =>
+      overlay.run_recipes!.some((recipe) => recipe.id.endsWith("-rewirebench")),
+    );
+    expect(runner.map((overlay) => overlay.id).sort()).toEqual([
+      "discovery-benchmark-genomic-benchmarks",
+      "discovery-benchmark-tdc-molecular-tasks",
+    ]);
+    for (const overlay of runner) expect(overlay.run_recipes).toHaveLength(2);
   });
 
   it("pins every quoted instruction to a line range in a hashed file", () => {
@@ -196,8 +217,10 @@ describe("recipes quoted from each project's own instructions", () => {
       for (const recipe of overlay.run_recipes!)
         for (const instruction of recipe.instructions) {
           expect(instruction.status).toBe("source_reviewed_not_executed");
+          // Either the project's own README or the runner's own docs, always
+          // a named file at a pinned commit and an exact line range.
           expect(instruction.source_locator).toMatch(
-            /^README\.md at [0-9a-f]{8}, .+, lines \d+-\d+$/,
+            /^(README\.md|docs\/[\w.-]+\.md) at [0-9a-f]{8}, .+, lines \d+-\d+$/,
           );
           for (const id of instruction.source_ids) {
             const source = sources.get(id);
@@ -219,6 +242,6 @@ describe("recipes quoted from each project's own instructions", () => {
           (recipe as unknown as { limitations: string[] }).limitations.join(
             " ",
           ),
-        ).toContain("not executed by rewire");
+        ).toMatch(/not executed by (rewire|this repository)/);
   });
 });

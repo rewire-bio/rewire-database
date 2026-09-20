@@ -1,13 +1,57 @@
 {
   "status": "reviewed",
-  "method": "AI-assisted source review. Runner recipes from implementation inspection; project recipes quoted by line range from each project's pinned README. No human review implied.",
-  "date": "2026-09-19",
-  "runner_revision": "aecb9e79a2a5e83b59e482212b1a8b812dd16079",
-  "execution_claims": "Source review only. No instruction snippet is claimed executed. Local scoring receipts for the runner's own protocols are maintained in the runner repository.",
+  "method": "AI-assisted source and implementation review; no human review implied. Existing recipe entries retained. New sequence-runner recipes link source manifests and narrow automated execution receipts.",
+  "date": "2026-09-20",
+  "runner_revision": "fcccbbcdbe3d5cd64a1a312d536615273320f7b4",
+  "execution_claims": "All rendered snippets remain source_reviewed_not_executed. Linked FLIP2 and mRNABench receipts cover small source-data CPU tests; DART receipt covers synthetic statistics only. No published-model reproduction is claimed.",
   "files": {
-    "data/omics/reviewed/run-recipes/records.jsonl": "1235863a4e3a25d7df0b36460863e8b60bd904b413a1e071c5f15c5dab930634",
-    "data/omics/reviewed/run-recipes/overlays.json": "43949582c98e85c34b1547298b9b4a0292686c2f8c9ec014b9ce231ee8ad432a"
+    "data/omics/reviewed/run-recipes/records.jsonl": "83126a556bb4a3a6160eed92cd209d6461429c3bbfd8b24af76928b52dc28c87",
+    "data/omics/reviewed/run-recipes/overlays.json": "7f2434db6000d770c2257d0ef477e22172067a8bb6ea85d034083a8e2761ad45"
   },
   "reviewer": "Codex research agent; no human review claimed",
-  "correction_note": "Pin reviewed TDC and Genomic Benchmarks v2 instructions to runner 0.3.0. Old source records and archived releases retained. Source review only; snippet execution not claimed."
+  "correction_note": "Add FLIP2 archived v3 splits, DART zero-shot Task1 and mRNABench Sample MRL recipes. Preserve existing recipes and scientific records. DART authenticated-data gap and FLIP2 manuscript/archive count conflicts remain explicit.",
+  "local_recipe_checks": {
+    "date": "2026-09-20",
+    "platform": "macOS arm64; Python 3.11.13",
+    "method": "Executed each new Python control snippet verbatim against small inputs from checked sources or the packaged synthetic demonstration. No network access, uploads, weights or full benchmark execution.",
+    "checks": [
+      {
+        "recipe_id": "mrnabench-sample-runner-control-v1",
+        "snippet_sha256": "4992e2d1475499cdd6d9714abed806a57598cdd6d45c614633ceb251ea389e59",
+        "status": "passed",
+        "scope": "smoke",
+        "completion": "partial",
+        "coverage": {
+          "denominator": 47771,
+          "scored": 32,
+          "unscored": 47739
+        }
+      },
+      {
+        "recipe_id": "dart-task1-runner-control-v1",
+        "snippet_sha256": "ad1234dd3eb9e3b5c800b572ba63f3d7d2a82b4c2b7bda6f68aa356fa603f1a9",
+        "status": "passed",
+        "scope": "smoke",
+        "completion": "partial",
+        "coverage": {
+          "denominator": 24,
+          "scored": 24,
+          "unscored": 0
+        }
+      },
+      {
+        "recipe_id": "flip2-runner-control-v1",
+        "snippet_sha256": "c9566b8c4550fe94bb7d76ba0b1133144c9a4f79050c3955edff974427d811db",
+        "status": "passed",
+        "scope": "smoke",
+        "completion": "partial",
+        "coverage": {
+          "denominator": 184,
+          "scored": 8,
+          "unscored": 176
+        }
+      }
+    ],
+    "publication_labels": "Generic instructions remain source_reviewed_not_executed. These local checks do not establish execution in every environment, on full datasets or reproduction of published model results."
+  }
 }

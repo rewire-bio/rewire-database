@@ -836,9 +836,206 @@
   {
     "id": "discovery-benchmark-mrnabench",
     "source_ids": [
-      "project-recipe-mrnabench-74f96b8e"
+      "project-recipe-mrnabench-74f96b8e",
+      "runner-04-docs-sdk-md",
+      "runner-04-docs-hpc-md",
+      "runner-04-docs-mrnabench-md",
+      "runner-04-packages-rewirebench-src-rewirebench-protocols-mrnabench-py",
+      "runner-04-packages-rewirebench-src-rewirebench-resources-mrnabench-sources-json",
+      "runner-04-packages-rewirebench-src-rewirebench-resources-mrnabench-validation-receipt-json"
     ],
     "run_recipes": [
+      {
+        "id": "mrnabench-sample-runner-rescore-v1",
+        "protocol_id": "mrnabench-sample-mrl-v1",
+        "version": "fcccbbcdbe3d5cd64a1a312d536615273320f7b4",
+        "title": "mRNABench Sample mean-ribosome-load targets: score supplied predictions",
+        "purpose": "rescore_predictions",
+        "summary": "Predict assay mean ribosome load from the full processed sequence, including reporter context, for one chemical target and dataset. Test MSE, Pearson and Spearman correlations; fixed upstream RidgeCV procedure for frozen sequence embeddings.",
+        "inputs": [
+          "Prepared protocol inputs with evaluator-owned labels and opaque IDs.",
+          "Keyed finite scalar scores; missing predictions must be explicitly permitted and remain in coverage."
+        ],
+        "outputs": [
+          "Local report.json with metrics, source/version identity and coverage.",
+          "Local predictions.json and unscored.json; nothing submitted automatically."
+        ],
+        "requirements": {
+          "data": "Obtain pinned morrislab/mrl-sample parquets at ef67f7cf8a999bb1c412ad6551aa7d9f901cbb95. Four datasets, six target columns. Source hashes and each target split are checked; default splitter70/15/15 with seed2541.",
+          "weights": "No weights needed for rescoring or the supplied toy/composition control. Private-model weights remain local; their access requirements depend on the model.",
+          "licence": "Runner MIT. Publisher data card says licence unknown; data are not redistributed. Upstream software AGPL-3.0 is not bundled by this independent implementation.",
+          "software": "Python3.11, pinned rewirebench0.4 environment; sequence extra for parquet and HDF5. Podman or Apptainer is optional.",
+          "hardware": "CPU scoring and small controls; memory/accelerator needs for real private-model inference are model-dependent and unreported here."
+        },
+        "instructions": [
+          {
+            "runtime": "python",
+            "title": "Score supplied keyed predictions",
+            "code": "import rewirebench\nprepared = rewirebench.prepare(\n    'mrnabench-sample-mrl-v1', source='inputs/mrl-sample-egfp.parquet', output='prepared-mrnabench-sample', dataset='egfp', target='target_mrl_egfp_unmod', require_official=True, limit=32\n)\nreport = rewirebench.evaluate(\n    prepared, 'predictions.json', output='results-mrnabench-sample-rescore',\n    model={'name': 'My private model', 'training_overlap': 'Unreported'},\n)",
+            "status": "source_reviewed_not_executed",
+            "source_ids": [
+              "runner-04-docs-sdk-md",
+              "runner-04-docs-hpc-md",
+              "runner-04-docs-mrnabench-md",
+              "runner-04-packages-rewirebench-src-rewirebench-protocols-mrnabench-py",
+              "runner-04-packages-rewirebench-src-rewirebench-resources-mrnabench-sources-json",
+              "runner-04-packages-rewirebench-src-rewirebench-resources-mrnabench-validation-receipt-json"
+            ],
+            "source_locator": "docs/mrnabench.md and protocol implementation; linked validation receipt concerns its stated tests, not execution of this exact snippet"
+          },
+          {
+            "runtime": "command_line",
+            "title": "Prepare inputs and score supplied predictions",
+            "code": "git clone https://github.com/rewire-bio/rewire-benchmarks.git\ncd rewire-benchmarks\ngit checkout --detach fcccbbcdbe3d5cd64a1a312d536615273320f7b4\nuv sync --locked --package rewirebench --extra sequence --python 3.11\nuv run --package rewirebench rewirebench prepare mrnabench-sample-mrl-v1 \\\n  --source inputs/mrl-sample-egfp.parquet --output prepared-mrnabench-sample \\\n  --options '{\"dataset\":\"egfp\",\"target\":\"target_mrl_egfp_unmod\",\"require_official\":true,\"limit\":32}'\nuv run --package rewirebench rewirebench evaluate \\\n  --prepared prepared-mrnabench-sample --predictions predictions.json \\\n  --output results-mrnabench-sample-rescore --model-name 'My private model'",
+            "status": "source_reviewed_not_executed",
+            "source_ids": [
+              "runner-04-docs-sdk-md",
+              "runner-04-docs-hpc-md",
+              "runner-04-docs-mrnabench-md",
+              "runner-04-packages-rewirebench-src-rewirebench-protocols-mrnabench-py",
+              "runner-04-packages-rewirebench-src-rewirebench-resources-mrnabench-sources-json",
+              "runner-04-packages-rewirebench-src-rewirebench-resources-mrnabench-validation-receipt-json"
+            ],
+            "source_locator": "docs/mrnabench.md and protocol implementation; linked validation receipt concerns its stated tests, not execution of this exact snippet"
+          },
+          {
+            "runtime": "podman",
+            "title": "Score prepared predictions offline",
+            "code": "# Obtain/build the pinned core OCI image following the linked HPC guide.\nmkdir -p runs\npodman run --rm --userns=keep-id --network=none \\\n  -v \"$PWD/prepared-mrnabench-sample:/prepared:ro\" \\\n  -v \"$PWD/predictions:/predictions:ro\" -v \"$PWD/runs:/outputs:rw\" \\\n  localhost/rewirebench:core evaluate --prepared /prepared \\\n  --predictions /predictions/predictions.json --output /outputs/mrnabench-sample-rescore",
+            "status": "source_reviewed_not_executed",
+            "source_ids": [
+              "runner-04-docs-sdk-md",
+              "runner-04-docs-hpc-md",
+              "runner-04-docs-mrnabench-md",
+              "runner-04-packages-rewirebench-src-rewirebench-protocols-mrnabench-py",
+              "runner-04-packages-rewirebench-src-rewirebench-resources-mrnabench-sources-json",
+              "runner-04-packages-rewirebench-src-rewirebench-resources-mrnabench-validation-receipt-json"
+            ],
+            "source_locator": "docs/mrnabench.md and protocol implementation; linked validation receipt concerns its stated tests, not execution of this exact snippet"
+          },
+          {
+            "runtime": "apptainer",
+            "title": "Score prepared predictions offline",
+            "code": "# Obtain/build the pinned SIF following the linked HPC guide.\nmkdir -p runs\napptainer run --cleanenv --containall \\\n  --bind \"$PWD/prepared-mrnabench-sample:/prepared:ro\" \\\n  --bind \"$PWD/predictions:/predictions:ro\" --bind \"$PWD/runs:/outputs:rw\" \\\n  rewirebench-core.sif evaluate --prepared /prepared \\\n  --predictions /predictions/predictions.json --output /outputs/mrnabench-sample-rescore",
+            "status": "source_reviewed_not_executed",
+            "source_ids": [
+              "runner-04-docs-sdk-md",
+              "runner-04-docs-hpc-md",
+              "runner-04-docs-mrnabench-md",
+              "runner-04-packages-rewirebench-src-rewirebench-protocols-mrnabench-py",
+              "runner-04-packages-rewirebench-src-rewirebench-resources-mrnabench-sources-json",
+              "runner-04-packages-rewirebench-src-rewirebench-resources-mrnabench-validation-receipt-json"
+            ],
+            "source_locator": "docs/mrnabench.md and protocol implementation; linked validation receipt concerns its stated tests, not execution of this exact snippet"
+          },
+          {
+            "runtime": "slurm",
+            "title": "Schedule prepared scoring with site-specific resources",
+            "code": "#!/bin/bash\nset -euo pipefail\n# Set these for your cluster; no performance or resource estimate is implied.\n: \"${REWIRE_ACCOUNT:?Set your Slurm account}\"\n: \"${REWIRE_PARTITION:?Set your Slurm partition}\"\n: \"${REWIRE_CPUS:?Set the requested CPU count}\"\n: \"${REWIRE_MEMORY:?Set the requested memory}\"\n: \"${REWIRE_WALLTIME:?Set the requested time limit}\"\n: \"${REWIRE_JOB_ROOT:?Set a shared absolute directory with prepared data and SIF}\"\nexport REWIRE_JOB_ROOT\nsbatch --account=\"$REWIRE_ACCOUNT\" --partition=\"$REWIRE_PARTITION\" \\\n  --cpus-per-task=\"$REWIRE_CPUS\" --mem=\"$REWIRE_MEMORY\" \\\n  --time=\"$REWIRE_WALLTIME\" --export=ALL <<'REWIRE_JOB'\n#!/bin/bash\nset -euo pipefail\ncd \"$REWIRE_JOB_ROOT\"\nmkdir -p runs\napptainer run --cleanenv --containall \\\n  --bind \"$PWD/prepared-mrnabench-sample:/prepared:ro\" \\\n  --bind \"$PWD/predictions:/predictions:ro\" \\\n  --bind \"$PWD/runs:/outputs:rw\" \\\n  rewirebench-core.sif evaluate \\\n  --prepared /prepared --predictions /predictions/predictions.json \\\n  --output /outputs/mrnabench-sample-rescore\nREWIRE_JOB",
+            "status": "source_reviewed_not_executed",
+            "source_ids": [
+              "runner-04-docs-sdk-md",
+              "runner-04-docs-hpc-md",
+              "runner-04-docs-mrnabench-md",
+              "runner-04-packages-rewirebench-src-rewirebench-protocols-mrnabench-py",
+              "runner-04-packages-rewirebench-src-rewirebench-resources-mrnabench-sources-json",
+              "runner-04-packages-rewirebench-src-rewirebench-resources-mrnabench-validation-receipt-json"
+            ],
+            "source_locator": "docs/hpc.md: Slurm template, caller-supplied account/partition/resources; protocol guide: evaluate prepared predictions"
+          }
+        ],
+        "limitations": [
+          "Only four Sample datasets are supported, with three eGFP targets plus one each for mCherry, designed and varying-length sequences. There is no aggregate across targets.",
+          "Sequence-only input excludes CDS, splice, uORF and Kozak tracks; multi-track published results use different information. Source DNA letters for RNA constructs are preserved.",
+          "Missing target values are excluded before splitting. Nine eGFP methylpseudouridine labels are missing; original source and eligible denominators are retained.",
+          "Frozen RidgeCV selects from alphas0.001,0.01,0.1,1,10 using training data only. Validation/test labels do not select the penalty.",
+          "All four source files and six target splits were checked. Small80-source-row probes matched the actual pinned upstream splitter and metrics within1e-9; full-model published performance was not reproduced.",
+          "These snippets are source-reviewed instructions. The linked automated receipt supports only the tests it records; it does not certify the exact snippet or published-model reproduction.",
+          "Smoke examples and partial predictions retain original denominators and cannot establish a complete suite. Prepared execution is offline; exports and submissions are explicit."
+        ],
+        "source_ids": [
+          "runner-04-docs-sdk-md",
+          "runner-04-docs-hpc-md",
+          "runner-04-docs-mrnabench-md",
+          "runner-04-packages-rewirebench-src-rewirebench-protocols-mrnabench-py",
+          "runner-04-packages-rewirebench-src-rewirebench-resources-mrnabench-sources-json",
+          "runner-04-packages-rewirebench-src-rewirebench-resources-mrnabench-validation-receipt-json"
+        ],
+        "source_locator": "docs/mrnabench.md; source manifest; protocol score function; automated receipt scope"
+      },
+      {
+        "id": "mrnabench-sample-runner-control-v1",
+        "protocol_id": "mrnabench-sample-mrl-v1",
+        "version": "fcccbbcdbe3d5cd64a1a312d536615273320f7b4",
+        "title": "mRNABench Sample mean-ribosome-load targets: local model or software control",
+        "purpose": "generate_and_evaluate",
+        "summary": "Predict assay mean ribosome load from the full processed sequence, including reporter context, for one chemical target and dataset. Test MSE, Pearson and Spearman correlations; fixed upstream RidgeCV procedure for frozen sequence embeddings.",
+        "inputs": [
+          "Same prepared biological inputs; no evaluation labels are exposed to adapters.",
+          "A private local adapter or the documented lightweight software control."
+        ],
+        "outputs": [
+          "Local report.json with metrics, source/version identity and coverage.",
+          "Local predictions.json and unscored.json; nothing submitted automatically."
+        ],
+        "requirements": {
+          "data": "Obtain pinned morrislab/mrl-sample parquets at ef67f7cf8a999bb1c412ad6551aa7d9f901cbb95. Four datasets, six target columns. Source hashes and each target split are checked; default splitter70/15/15 with seed2541.",
+          "weights": "No weights needed for rescoring or the supplied toy/composition control. Private-model weights remain local; their access requirements depend on the model.",
+          "licence": "Runner MIT. Publisher data card says licence unknown; data are not redistributed. Upstream software AGPL-3.0 is not bundled by this independent implementation.",
+          "software": "Python3.11, pinned rewirebench0.4 environment; sequence extra for parquet and HDF5. Podman or Apptainer is optional.",
+          "hardware": "CPU scoring and small controls; memory/accelerator needs for real private-model inference are model-dependent and unreported here."
+        },
+        "instructions": [
+          {
+            "runtime": "python",
+            "title": "Run a small local software control",
+            "code": "import rewirebench\nfrom rewirebench.adapters.sequence import SequenceComposition\nprepared = rewirebench.prepare(\n    'mrnabench-sample-mrl-v1', source='inputs/mrl-sample-egfp.parquet', output='prepared-mrnabench-sample', dataset='egfp', target='target_mrl_egfp_unmod', require_official=True, limit=32\n)\nreport = rewirebench.run(\n    prepared, SequenceComposition(), output='results-mrnabench-sample-control',\n    model={'name': 'Local software control; not a published baseline'},\n)",
+            "status": "source_reviewed_not_executed",
+            "source_ids": [
+              "runner-04-docs-sdk-md",
+              "runner-04-docs-hpc-md",
+              "runner-04-docs-mrnabench-md",
+              "runner-04-packages-rewirebench-src-rewirebench-protocols-mrnabench-py",
+              "runner-04-packages-rewirebench-src-rewirebench-resources-mrnabench-sources-json",
+              "runner-04-packages-rewirebench-src-rewirebench-resources-mrnabench-validation-receipt-json"
+            ],
+            "source_locator": "docs/mrnabench.md and protocol implementation; linked validation receipt concerns its stated tests, not execution of this exact snippet"
+          },
+          {
+            "runtime": "command_line",
+            "title": "Run a small composition control",
+            "code": "git clone https://github.com/rewire-bio/rewire-benchmarks.git\ncd rewire-benchmarks\ngit checkout --detach fcccbbcdbe3d5cd64a1a312d536615273320f7b4\nuv sync --locked --package rewirebench --extra sequence --python 3.11\nuv run --package rewirebench rewirebench prepare mrnabench-sample-mrl-v1 \\\n  --source inputs/mrl-sample-egfp.parquet --output prepared-mrnabench-sample \\\n  --options '{\"dataset\":\"egfp\",\"target\":\"target_mrl_egfp_unmod\",\"require_official\":true,\"limit\":32}'\nuv run --package rewirebench rewirebench run --prepared prepared-mrnabench-sample \\\n  --adapter rewirebench.adapters.sequence:SequenceComposition --prediction-type embedding \\\n  --output results-mrnabench-sample-control",
+            "status": "source_reviewed_not_executed",
+            "source_ids": [
+              "runner-04-docs-sdk-md",
+              "runner-04-docs-hpc-md",
+              "runner-04-docs-mrnabench-md",
+              "runner-04-packages-rewirebench-src-rewirebench-protocols-mrnabench-py",
+              "runner-04-packages-rewirebench-src-rewirebench-resources-mrnabench-sources-json",
+              "runner-04-packages-rewirebench-src-rewirebench-resources-mrnabench-validation-receipt-json"
+            ],
+            "source_locator": "docs/mrnabench.md and protocol implementation; linked validation receipt concerns its stated tests, not execution of this exact snippet"
+          }
+        ],
+        "limitations": [
+          "Only four Sample datasets are supported, with three eGFP targets plus one each for mCherry, designed and varying-length sequences. There is no aggregate across targets.",
+          "Sequence-only input excludes CDS, splice, uORF and Kozak tracks; multi-track published results use different information. Source DNA letters for RNA constructs are preserved.",
+          "Missing target values are excluded before splitting. Nine eGFP methylpseudouridine labels are missing; original source and eligible denominators are retained.",
+          "Frozen RidgeCV selects from alphas0.001,0.01,0.1,1,10 using training data only. Validation/test labels do not select the penalty.",
+          "All four source files and six target splits were checked. Small80-source-row probes matched the actual pinned upstream splitter and metrics within1e-9; full-model published performance was not reproduced.",
+          "These snippets are source-reviewed instructions. The linked automated receipt supports only the tests it records; it does not certify the exact snippet or published-model reproduction.",
+          "Smoke examples and partial predictions retain original denominators and cannot establish a complete suite. Prepared execution is offline; exports and submissions are explicit."
+        ],
+        "source_ids": [
+          "runner-04-docs-sdk-md",
+          "runner-04-docs-hpc-md",
+          "runner-04-docs-mrnabench-md",
+          "runner-04-packages-rewirebench-src-rewirebench-protocols-mrnabench-py",
+          "runner-04-packages-rewirebench-src-rewirebench-resources-mrnabench-sources-json",
+          "runner-04-packages-rewirebench-src-rewirebench-resources-mrnabench-validation-receipt-json"
+        ],
+        "source_locator": "docs/mrnabench.md; source manifest; protocol score function; automated receipt scope"
+      },
       {
         "id": "mrnabench-official",
         "protocol_id": "discovery-benchmark-mrnabench",
@@ -1331,9 +1528,191 @@
   {
     "id": "discovery-benchmark-dart-eval",
     "source_ids": [
-      "project-recipe-dart-eval-af2a86d6"
+      "project-recipe-dart-eval-af2a86d6",
+      "runner-04-docs-sdk-md",
+      "runner-04-docs-hpc-md",
+      "runner-04-docs-dart-eval-md",
+      "runner-04-packages-rewirebench-src-rewirebench-protocols-dart-eval-py",
+      "runner-04-packages-rewirebench-src-rewirebench-resources-dart-eval-sources-json",
+      "runner-04-packages-rewirebench-src-rewirebench-resources-dart-eval-statistical-reference-json"
     ],
     "run_recipes": [
+      {
+        "id": "dart-task1-runner-rescore-v1",
+        "protocol_id": "dart-eval-task1-zero-shot-v1",
+        "version": "fcccbbcdbe3d5cd64a1a312d536615273320f7b4",
+        "title": "DART-Eval Task1 zero-shot paired controls: score supplied predictions",
+        "purpose": "rescore_predictions",
+        "summary": "Score regulatory sequences against their existing paired shuffled controls without model fitting. Strict element-score greater-than-control accuracy; paired score-difference summaries and pinned SciPy1.12 one-sided Wilcoxon procedure.",
+        "inputs": [
+          "Prepared protocol inputs with evaluator-owned labels and opaque IDs.",
+          "Keyed finite scalar scores; missing predictions must be explicitly permitted and remain in coverage."
+        ],
+        "outputs": [
+          "Local report.json with metrics, source/version identity and coverage.",
+          "Local predictions.json and unscored.json; nothing submitted automatically."
+        ],
+        "requirements": {
+          "data": "Official one-hot paired input is Synapse syn64314109 version1; authenticated access is required. Anonymous downloads returned403 and official bytes/complete denominator remain unverified. The local demo is12 synthetic pairs.",
+          "weights": "No weights needed for rescoring or the supplied toy/composition control. Private-model weights remain local; their access requirements depend on the model.",
+          "licence": "Runner MIT. Dataset reuse terms are not established by the software licence; review Synapse access and original ENCODE terms.",
+          "software": "Python3.11, pinned rewirebench0.4 environment; sequence extra for parquet and HDF5. Podman or Apptainer is optional.",
+          "hardware": "CPU scoring and small controls; memory/accelerator needs for real private-model inference are model-dependent and unreported here."
+        },
+        "instructions": [
+          {
+            "runtime": "python",
+            "title": "Score supplied keyed predictions",
+            "code": "import rewirebench\nprepared = rewirebench.prepare(\n    'dart-eval-task1-zero-shot-v1', source='demo', output='prepared-dart-task1'\n)\nreport = rewirebench.evaluate(\n    prepared, 'predictions.json', output='results-dart-task1-rescore',\n    model={'name': 'My private model', 'training_overlap': 'Unreported'},\n)",
+            "status": "source_reviewed_not_executed",
+            "source_ids": [
+              "runner-04-docs-sdk-md",
+              "runner-04-docs-hpc-md",
+              "runner-04-docs-dart-eval-md",
+              "runner-04-packages-rewirebench-src-rewirebench-protocols-dart-eval-py",
+              "runner-04-packages-rewirebench-src-rewirebench-resources-dart-eval-sources-json",
+              "runner-04-packages-rewirebench-src-rewirebench-resources-dart-eval-statistical-reference-json"
+            ],
+            "source_locator": "docs/dart-eval.md and protocol implementation; linked validation receipt concerns its stated tests, not execution of this exact snippet"
+          },
+          {
+            "runtime": "command_line",
+            "title": "Prepare inputs and score supplied predictions",
+            "code": "git clone https://github.com/rewire-bio/rewire-benchmarks.git\ncd rewire-benchmarks\ngit checkout --detach fcccbbcdbe3d5cd64a1a312d536615273320f7b4\nuv sync --locked --package rewirebench --extra sequence --python 3.11\nuv run --package rewirebench rewirebench prepare dart-eval-task1-zero-shot-v1 \\\n  --source demo --output prepared-dart-task1 \\\n  --options '{}'\nuv run --package rewirebench rewirebench evaluate \\\n  --prepared prepared-dart-task1 --predictions predictions.json \\\n  --output results-dart-task1-rescore --model-name 'My private model'",
+            "status": "source_reviewed_not_executed",
+            "source_ids": [
+              "runner-04-docs-sdk-md",
+              "runner-04-docs-hpc-md",
+              "runner-04-docs-dart-eval-md",
+              "runner-04-packages-rewirebench-src-rewirebench-protocols-dart-eval-py",
+              "runner-04-packages-rewirebench-src-rewirebench-resources-dart-eval-sources-json",
+              "runner-04-packages-rewirebench-src-rewirebench-resources-dart-eval-statistical-reference-json"
+            ],
+            "source_locator": "docs/dart-eval.md and protocol implementation; linked validation receipt concerns its stated tests, not execution of this exact snippet"
+          },
+          {
+            "runtime": "podman",
+            "title": "Score prepared predictions offline",
+            "code": "# Obtain/build the pinned core OCI image following the linked HPC guide.\nmkdir -p runs\npodman run --rm --userns=keep-id --network=none \\\n  -v \"$PWD/prepared-dart-task1:/prepared:ro\" \\\n  -v \"$PWD/predictions:/predictions:ro\" -v \"$PWD/runs:/outputs:rw\" \\\n  localhost/rewirebench:core evaluate --prepared /prepared \\\n  --predictions /predictions/predictions.json --output /outputs/dart-task1-rescore",
+            "status": "source_reviewed_not_executed",
+            "source_ids": [
+              "runner-04-docs-sdk-md",
+              "runner-04-docs-hpc-md",
+              "runner-04-docs-dart-eval-md",
+              "runner-04-packages-rewirebench-src-rewirebench-protocols-dart-eval-py",
+              "runner-04-packages-rewirebench-src-rewirebench-resources-dart-eval-sources-json",
+              "runner-04-packages-rewirebench-src-rewirebench-resources-dart-eval-statistical-reference-json"
+            ],
+            "source_locator": "docs/dart-eval.md and protocol implementation; linked validation receipt concerns its stated tests, not execution of this exact snippet"
+          },
+          {
+            "runtime": "apptainer",
+            "title": "Score prepared predictions offline",
+            "code": "# Obtain/build the pinned SIF following the linked HPC guide.\nmkdir -p runs\napptainer run --cleanenv --containall \\\n  --bind \"$PWD/prepared-dart-task1:/prepared:ro\" \\\n  --bind \"$PWD/predictions:/predictions:ro\" --bind \"$PWD/runs:/outputs:rw\" \\\n  rewirebench-core.sif evaluate --prepared /prepared \\\n  --predictions /predictions/predictions.json --output /outputs/dart-task1-rescore",
+            "status": "source_reviewed_not_executed",
+            "source_ids": [
+              "runner-04-docs-sdk-md",
+              "runner-04-docs-hpc-md",
+              "runner-04-docs-dart-eval-md",
+              "runner-04-packages-rewirebench-src-rewirebench-protocols-dart-eval-py",
+              "runner-04-packages-rewirebench-src-rewirebench-resources-dart-eval-sources-json",
+              "runner-04-packages-rewirebench-src-rewirebench-resources-dart-eval-statistical-reference-json"
+            ],
+            "source_locator": "docs/dart-eval.md and protocol implementation; linked validation receipt concerns its stated tests, not execution of this exact snippet"
+          },
+          {
+            "runtime": "slurm",
+            "title": "Schedule prepared scoring with site-specific resources",
+            "code": "#!/bin/bash\nset -euo pipefail\n# Set these for your cluster; no performance or resource estimate is implied.\n: \"${REWIRE_ACCOUNT:?Set your Slurm account}\"\n: \"${REWIRE_PARTITION:?Set your Slurm partition}\"\n: \"${REWIRE_CPUS:?Set the requested CPU count}\"\n: \"${REWIRE_MEMORY:?Set the requested memory}\"\n: \"${REWIRE_WALLTIME:?Set the requested time limit}\"\n: \"${REWIRE_JOB_ROOT:?Set a shared absolute directory with prepared data and SIF}\"\nexport REWIRE_JOB_ROOT\nsbatch --account=\"$REWIRE_ACCOUNT\" --partition=\"$REWIRE_PARTITION\" \\\n  --cpus-per-task=\"$REWIRE_CPUS\" --mem=\"$REWIRE_MEMORY\" \\\n  --time=\"$REWIRE_WALLTIME\" --export=ALL <<'REWIRE_JOB'\n#!/bin/bash\nset -euo pipefail\ncd \"$REWIRE_JOB_ROOT\"\nmkdir -p runs\napptainer run --cleanenv --containall \\\n  --bind \"$PWD/prepared-dart-task1:/prepared:ro\" \\\n  --bind \"$PWD/predictions:/predictions:ro\" \\\n  --bind \"$PWD/runs:/outputs:rw\" \\\n  rewirebench-core.sif evaluate \\\n  --prepared /prepared --predictions /predictions/predictions.json \\\n  --output /outputs/dart-task1-rescore\nREWIRE_JOB",
+            "status": "source_reviewed_not_executed",
+            "source_ids": [
+              "runner-04-docs-sdk-md",
+              "runner-04-docs-hpc-md",
+              "runner-04-docs-dart-eval-md",
+              "runner-04-packages-rewirebench-src-rewirebench-protocols-dart-eval-py",
+              "runner-04-packages-rewirebench-src-rewirebench-resources-dart-eval-sources-json",
+              "runner-04-packages-rewirebench-src-rewirebench-resources-dart-eval-statistical-reference-json"
+            ],
+            "source_locator": "docs/hpc.md: Slurm template, caller-supplied account/partition/resources; protocol guide: evaluate prepared predictions"
+          }
+        ],
+        "limitations": [
+          "Only zero-shot Task1 is supported, not the full DART-Eval suite; training and embedding probes are forbidden.",
+          "Official biological inputs and DNABERT-2 prediction artifacts require authenticated access. User-supplied local hashes prove integrity, not source authenticity or complete chromosome coverage.",
+          "The demo contains synthetic random DNA with shuffled controls. Its toy score checks software only and is not a biological baseline.",
+          "Missing either pair member excludes that pair from metrics; sequence and complete-pair coverage stay separate. Ties are incorrect for accuracy.",
+          "Scoring is tested on synthetic inputs against the pinned upstream evaluator and historical SciPy rules. No official biological inference or published evaluation reproduction is claimed.",
+          "These snippets are source-reviewed instructions. The linked automated receipt supports only the tests it records; it does not certify the exact snippet or published-model reproduction.",
+          "Smoke examples and partial predictions retain original denominators and cannot establish a complete suite. Prepared execution is offline; exports and submissions are explicit."
+        ],
+        "source_ids": [
+          "runner-04-docs-sdk-md",
+          "runner-04-docs-hpc-md",
+          "runner-04-docs-dart-eval-md",
+          "runner-04-packages-rewirebench-src-rewirebench-protocols-dart-eval-py",
+          "runner-04-packages-rewirebench-src-rewirebench-resources-dart-eval-sources-json",
+          "runner-04-packages-rewirebench-src-rewirebench-resources-dart-eval-statistical-reference-json"
+        ],
+        "source_locator": "docs/dart-eval.md; source manifest; protocol score function; automated receipt scope"
+      },
+      {
+        "id": "dart-task1-runner-control-v1",
+        "protocol_id": "dart-eval-task1-zero-shot-v1",
+        "version": "fcccbbcdbe3d5cd64a1a312d536615273320f7b4",
+        "title": "DART-Eval Task1 zero-shot paired controls: local model or software control",
+        "purpose": "generate_and_evaluate",
+        "summary": "Score regulatory sequences against their existing paired shuffled controls without model fitting. Strict element-score greater-than-control accuracy; paired score-difference summaries and pinned SciPy1.12 one-sided Wilcoxon procedure.",
+        "inputs": [
+          "Same prepared biological inputs; no evaluation labels are exposed to adapters.",
+          "A private local adapter or the documented lightweight software control."
+        ],
+        "outputs": [
+          "Local report.json with metrics, source/version identity and coverage.",
+          "Local predictions.json and unscored.json; nothing submitted automatically."
+        ],
+        "requirements": {
+          "data": "Official one-hot paired input is Synapse syn64314109 version1; authenticated access is required. Anonymous downloads returned403 and official bytes/complete denominator remain unverified. The local demo is12 synthetic pairs.",
+          "weights": "No weights needed for rescoring or the supplied toy/composition control. Private-model weights remain local; their access requirements depend on the model.",
+          "licence": "Runner MIT. Dataset reuse terms are not established by the software licence; review Synapse access and original ENCODE terms.",
+          "software": "Python3.11, pinned rewirebench0.4 environment; sequence extra for parquet and HDF5. Podman or Apptainer is optional.",
+          "hardware": "CPU scoring and small controls; memory/accelerator needs for real private-model inference are model-dependent and unreported here."
+        },
+        "instructions": [
+          {
+            "runtime": "python",
+            "title": "Run a small local software control",
+            "code": "import rewirebench\nclass ToySequenceScore:\n    def predict(self, inputs):\n        return {row[\"id\"]: float(row[\"sequence\"].count(\"AAA\")) for row in inputs}\nprepared = rewirebench.prepare(\n    'dart-eval-task1-zero-shot-v1', source='demo', output='prepared-dart-task1'\n)\nreport = rewirebench.run(\n    prepared, ToySequenceScore(), output='results-dart-task1-control',\n    model={'name': 'Local software control; not a published baseline'},\n)",
+            "status": "source_reviewed_not_executed",
+            "source_ids": [
+              "runner-04-docs-sdk-md",
+              "runner-04-docs-hpc-md",
+              "runner-04-docs-dart-eval-md",
+              "runner-04-packages-rewirebench-src-rewirebench-protocols-dart-eval-py",
+              "runner-04-packages-rewirebench-src-rewirebench-resources-dart-eval-sources-json",
+              "runner-04-packages-rewirebench-src-rewirebench-resources-dart-eval-statistical-reference-json"
+            ],
+            "source_locator": "docs/dart-eval.md and protocol implementation; linked validation receipt concerns its stated tests, not execution of this exact snippet"
+          }
+        ],
+        "limitations": [
+          "Only zero-shot Task1 is supported, not the full DART-Eval suite; training and embedding probes are forbidden.",
+          "Official biological inputs and DNABERT-2 prediction artifacts require authenticated access. User-supplied local hashes prove integrity, not source authenticity or complete chromosome coverage.",
+          "The demo contains synthetic random DNA with shuffled controls. Its toy score checks software only and is not a biological baseline.",
+          "Missing either pair member excludes that pair from metrics; sequence and complete-pair coverage stay separate. Ties are incorrect for accuracy.",
+          "Scoring is tested on synthetic inputs against the pinned upstream evaluator and historical SciPy rules. No official biological inference or published evaluation reproduction is claimed.",
+          "These snippets are source-reviewed instructions. The linked automated receipt supports only the tests it records; it does not certify the exact snippet or published-model reproduction.",
+          "Smoke examples and partial predictions retain original denominators and cannot establish a complete suite. Prepared execution is offline; exports and submissions are explicit."
+        ],
+        "source_ids": [
+          "runner-04-docs-sdk-md",
+          "runner-04-docs-hpc-md",
+          "runner-04-docs-dart-eval-md",
+          "runner-04-packages-rewirebench-src-rewirebench-protocols-dart-eval-py",
+          "runner-04-packages-rewirebench-src-rewirebench-resources-dart-eval-sources-json",
+          "runner-04-packages-rewirebench-src-rewirebench-resources-dart-eval-statistical-reference-json"
+        ],
+        "source_locator": "docs/dart-eval.md; source manifest; protocol score function; automated receipt scope"
+      },
       {
         "id": "dart-eval-official",
         "protocol_id": "discovery-benchmark-dart-eval",
@@ -1416,6 +1795,220 @@
           "project-recipe-dart-eval-af2a86d6"
         ],
         "source_locator": "README.md at af2a86d6"
+      }
+    ]
+  },
+  {
+    "id": "discovery-benchmark-flip2",
+    "source_ids": [
+      "runner-04-docs-sdk-md",
+      "runner-04-docs-hpc-md",
+      "runner-04-docs-flip2-md",
+      "runner-04-packages-rewirebench-src-rewirebench-protocols-flip2-py",
+      "runner-04-packages-rewirebench-src-rewirebench-resources-flip2-sources-json",
+      "runner-04-packages-rewirebench-src-rewirebench-resources-flip2-validation-2026-09-20-json",
+      "runner-04-packages-rewirebench-src-rewirebench-resources-flip2-example-adapter-py"
+    ],
+    "run_recipes": [
+      {
+        "id": "flip2-runner-rescore-v1",
+        "protocol_id": "flip2-fitness-v1",
+        "version": "fcccbbcdbe3d5cd64a1a312d536615273320f7b4",
+        "title": "FLIP2 archived fitness splits: score supplied predictions",
+        "purpose": "rescore_predictions",
+        "summary": "Rank protein variants by measured fitness on one archived train/validation/test split. Spearman correlation and full-ranking NDCG using the upstream minimum-shifted test targets and tie handling.",
+        "inputs": [
+          "Prepared protocol inputs with evaluator-owned labels and opaque IDs.",
+          "Keyed finite scalar scores; missing predictions must be explicitly permitted and remain in coverage."
+        ],
+        "outputs": [
+          "Local report.json with metrics, source/version identity and coverage.",
+          "Local predictions.json and unscored.json; nothing submitted automatically."
+        ],
+        "requirements": {
+          "data": "Download the selected CSV from pinned Zenodo18433203 v3. Preparation checks exact decompressed CSV SHA-256. The packaged manifest lists all16 splits; this example selects Rhomax by-wild-type.",
+          "weights": "No weights needed for rescoring or the supplied toy/composition control. Private-model weights remain local; their access requirements depend on the model.",
+          "licence": "Runner MIT. FLIP2 archive CC-BY-4.0; retain per-dataset attribution. Original Amylase MIT and TrpB CC0-1.0 according to source attribution. Upstream evaluator AFL-3.0; formulas independently implemented.",
+          "software": "Python3.11, pinned rewirebench0.4 environment; sequence extra for parquet and HDF5. Podman or Apptainer is optional.",
+          "hardware": "CPU scoring and small controls; memory/accelerator needs for real private-model inference are model-dependent and unreported here."
+        },
+        "instructions": [
+          {
+            "runtime": "python",
+            "title": "Score supplied keyed predictions",
+            "code": "import rewirebench\nprepared = rewirebench.prepare(\n    'flip2-fitness-v1', source='flip2-data', output='prepared-flip2', dataset='flip2-rhomax-by-wild-type', limit=8\n)\nreport = rewirebench.evaluate(\n    prepared, 'predictions.json', output='results-flip2-rescore',\n    model={'name': 'My private model', 'training_overlap': 'Unreported'},\n)",
+            "status": "source_reviewed_not_executed",
+            "source_ids": [
+              "runner-04-docs-sdk-md",
+              "runner-04-docs-hpc-md",
+              "runner-04-docs-flip2-md",
+              "runner-04-packages-rewirebench-src-rewirebench-protocols-flip2-py",
+              "runner-04-packages-rewirebench-src-rewirebench-resources-flip2-sources-json",
+              "runner-04-packages-rewirebench-src-rewirebench-resources-flip2-validation-2026-09-20-json",
+              "runner-04-packages-rewirebench-src-rewirebench-resources-flip2-example-adapter-py"
+            ],
+            "source_locator": "docs/flip2.md and protocol implementation; linked validation receipt concerns its stated tests, not execution of this exact snippet"
+          },
+          {
+            "runtime": "command_line",
+            "title": "Prepare inputs and score supplied predictions",
+            "code": "git clone https://github.com/rewire-bio/rewire-benchmarks.git\ncd rewire-benchmarks\ngit checkout --detach fcccbbcdbe3d5cd64a1a312d536615273320f7b4\nuv sync --locked --package rewirebench --extra sequence --python 3.11\nuv run --package rewirebench rewirebench prepare flip2-fitness-v1 \\\n  --source flip2-data --output prepared-flip2 \\\n  --options '{\"dataset\":\"flip2-rhomax-by-wild-type\",\"limit\":8}'\nuv run --package rewirebench rewirebench evaluate \\\n  --prepared prepared-flip2 --predictions predictions.json \\\n  --output results-flip2-rescore --model-name 'My private model'",
+            "status": "source_reviewed_not_executed",
+            "source_ids": [
+              "runner-04-docs-sdk-md",
+              "runner-04-docs-hpc-md",
+              "runner-04-docs-flip2-md",
+              "runner-04-packages-rewirebench-src-rewirebench-protocols-flip2-py",
+              "runner-04-packages-rewirebench-src-rewirebench-resources-flip2-sources-json",
+              "runner-04-packages-rewirebench-src-rewirebench-resources-flip2-validation-2026-09-20-json",
+              "runner-04-packages-rewirebench-src-rewirebench-resources-flip2-example-adapter-py"
+            ],
+            "source_locator": "docs/flip2.md and protocol implementation; linked validation receipt concerns its stated tests, not execution of this exact snippet"
+          },
+          {
+            "runtime": "podman",
+            "title": "Score prepared predictions offline",
+            "code": "# Obtain/build the pinned core OCI image following the linked HPC guide.\nmkdir -p runs\npodman run --rm --userns=keep-id --network=none \\\n  -v \"$PWD/prepared-flip2:/prepared:ro\" \\\n  -v \"$PWD/predictions:/predictions:ro\" -v \"$PWD/runs:/outputs:rw\" \\\n  localhost/rewirebench:core evaluate --prepared /prepared \\\n  --predictions /predictions/predictions.json --output /outputs/flip2-rescore",
+            "status": "source_reviewed_not_executed",
+            "source_ids": [
+              "runner-04-docs-sdk-md",
+              "runner-04-docs-hpc-md",
+              "runner-04-docs-flip2-md",
+              "runner-04-packages-rewirebench-src-rewirebench-protocols-flip2-py",
+              "runner-04-packages-rewirebench-src-rewirebench-resources-flip2-sources-json",
+              "runner-04-packages-rewirebench-src-rewirebench-resources-flip2-validation-2026-09-20-json",
+              "runner-04-packages-rewirebench-src-rewirebench-resources-flip2-example-adapter-py"
+            ],
+            "source_locator": "docs/flip2.md and protocol implementation; linked validation receipt concerns its stated tests, not execution of this exact snippet"
+          },
+          {
+            "runtime": "apptainer",
+            "title": "Score prepared predictions offline",
+            "code": "# Obtain/build the pinned SIF following the linked HPC guide.\nmkdir -p runs\napptainer run --cleanenv --containall \\\n  --bind \"$PWD/prepared-flip2:/prepared:ro\" \\\n  --bind \"$PWD/predictions:/predictions:ro\" --bind \"$PWD/runs:/outputs:rw\" \\\n  rewirebench-core.sif evaluate --prepared /prepared \\\n  --predictions /predictions/predictions.json --output /outputs/flip2-rescore",
+            "status": "source_reviewed_not_executed",
+            "source_ids": [
+              "runner-04-docs-sdk-md",
+              "runner-04-docs-hpc-md",
+              "runner-04-docs-flip2-md",
+              "runner-04-packages-rewirebench-src-rewirebench-protocols-flip2-py",
+              "runner-04-packages-rewirebench-src-rewirebench-resources-flip2-sources-json",
+              "runner-04-packages-rewirebench-src-rewirebench-resources-flip2-validation-2026-09-20-json",
+              "runner-04-packages-rewirebench-src-rewirebench-resources-flip2-example-adapter-py"
+            ],
+            "source_locator": "docs/flip2.md and protocol implementation; linked validation receipt concerns its stated tests, not execution of this exact snippet"
+          },
+          {
+            "runtime": "slurm",
+            "title": "Schedule prepared scoring with site-specific resources",
+            "code": "#!/bin/bash\nset -euo pipefail\n# Set these for your cluster; no performance or resource estimate is implied.\n: \"${REWIRE_ACCOUNT:?Set your Slurm account}\"\n: \"${REWIRE_PARTITION:?Set your Slurm partition}\"\n: \"${REWIRE_CPUS:?Set the requested CPU count}\"\n: \"${REWIRE_MEMORY:?Set the requested memory}\"\n: \"${REWIRE_WALLTIME:?Set the requested time limit}\"\n: \"${REWIRE_JOB_ROOT:?Set a shared absolute directory with prepared data and SIF}\"\nexport REWIRE_JOB_ROOT\nsbatch --account=\"$REWIRE_ACCOUNT\" --partition=\"$REWIRE_PARTITION\" \\\n  --cpus-per-task=\"$REWIRE_CPUS\" --mem=\"$REWIRE_MEMORY\" \\\n  --time=\"$REWIRE_WALLTIME\" --export=ALL <<'REWIRE_JOB'\n#!/bin/bash\nset -euo pipefail\ncd \"$REWIRE_JOB_ROOT\"\nmkdir -p runs\napptainer run --cleanenv --containall \\\n  --bind \"$PWD/prepared-flip2:/prepared:ro\" \\\n  --bind \"$PWD/predictions:/predictions:ro\" \\\n  --bind \"$PWD/runs:/outputs:rw\" \\\n  rewirebench-core.sif evaluate \\\n  --prepared /prepared --predictions /predictions/predictions.json \\\n  --output /outputs/flip2-rescore\nREWIRE_JOB",
+            "status": "source_reviewed_not_executed",
+            "source_ids": [
+              "runner-04-docs-sdk-md",
+              "runner-04-docs-hpc-md",
+              "runner-04-docs-flip2-md",
+              "runner-04-packages-rewirebench-src-rewirebench-protocols-flip2-py",
+              "runner-04-packages-rewirebench-src-rewirebench-resources-flip2-sources-json",
+              "runner-04-packages-rewirebench-src-rewirebench-resources-flip2-validation-2026-09-20-json",
+              "runner-04-packages-rewirebench-src-rewirebench-resources-flip2-example-adapter-py"
+            ],
+            "source_locator": "docs/hpc.md: Slurm template, caller-supplied account/partition/resources; protocol guide: evaluate prepared predictions"
+          }
+        ],
+        "limitations": [
+          "A run is one of16 archived splits across7 datasets; no suite-wide score is computed.",
+          "Archived Amylase one_to_many and NucB split counts conflict with manuscript Table1. IRED printed total also differs. The runner preserves archive assignments and records each conflict; it does not claim paper-cohort reproduction.",
+          "PDZ3 inputs preserve protein:peptide notation including empty partners. An adapter must handle this representation explicitly.",
+          "Frozen-embedding alpha10 ridge is a Rewire extension with train-only target scaling, not the published one-hot ridge baseline.",
+          "Native CPU smoke checks covered all16 archived splits with8 rows per train/validation/test group; pinned upstream metric expressions agreed within1e-12. No full model runs or published-score reproduction.",
+          "These snippets are source-reviewed instructions. The linked automated receipt supports only the tests it records; it does not certify the exact snippet or published-model reproduction.",
+          "Smoke examples and partial predictions retain original denominators and cannot establish a complete suite. Prepared execution is offline; exports and submissions are explicit."
+        ],
+        "source_ids": [
+          "runner-04-docs-sdk-md",
+          "runner-04-docs-hpc-md",
+          "runner-04-docs-flip2-md",
+          "runner-04-packages-rewirebench-src-rewirebench-protocols-flip2-py",
+          "runner-04-packages-rewirebench-src-rewirebench-resources-flip2-sources-json",
+          "runner-04-packages-rewirebench-src-rewirebench-resources-flip2-validation-2026-09-20-json",
+          "runner-04-packages-rewirebench-src-rewirebench-resources-flip2-example-adapter-py"
+        ],
+        "source_locator": "docs/flip2.md; source manifest; protocol score function; automated receipt scope"
+      },
+      {
+        "id": "flip2-runner-control-v1",
+        "protocol_id": "flip2-fitness-v1",
+        "version": "fcccbbcdbe3d5cd64a1a312d536615273320f7b4",
+        "title": "FLIP2 archived fitness splits: local model or software control",
+        "purpose": "generate_and_evaluate",
+        "summary": "Rank protein variants by measured fitness on one archived train/validation/test split. Spearman correlation and full-ranking NDCG using the upstream minimum-shifted test targets and tie handling.",
+        "inputs": [
+          "Same prepared biological inputs; no evaluation labels are exposed to adapters.",
+          "A private local adapter or the documented lightweight software control."
+        ],
+        "outputs": [
+          "Local report.json with metrics, source/version identity and coverage.",
+          "Local predictions.json and unscored.json; nothing submitted automatically."
+        ],
+        "requirements": {
+          "data": "Download the selected CSV from pinned Zenodo18433203 v3. Preparation checks exact decompressed CSV SHA-256. The packaged manifest lists all16 splits; this example selects Rhomax by-wild-type.",
+          "weights": "No weights needed for rescoring or the supplied toy/composition control. Private-model weights remain local; their access requirements depend on the model.",
+          "licence": "Runner MIT. FLIP2 archive CC-BY-4.0; retain per-dataset attribution. Original Amylase MIT and TrpB CC0-1.0 according to source attribution. Upstream evaluator AFL-3.0; formulas independently implemented.",
+          "software": "Python3.11, pinned rewirebench0.4 environment; sequence extra for parquet and HDF5. Podman or Apptainer is optional.",
+          "hardware": "CPU scoring and small controls; memory/accelerator needs for real private-model inference are model-dependent and unreported here."
+        },
+        "instructions": [
+          {
+            "runtime": "python",
+            "title": "Run a small local software control",
+            "code": "import rewirebench\nfrom rewirebench.resources.flip2.example_adapter import CompositionEmbeddings\nprepared = rewirebench.prepare(\n    'flip2-fitness-v1', source='flip2-data', output='prepared-flip2', dataset='flip2-rhomax-by-wild-type', limit=8\n)\nreport = rewirebench.run(\n    prepared, CompositionEmbeddings(), output='results-flip2-control',\n    model={'name': 'Local software control; not a published baseline'},\n)",
+            "status": "source_reviewed_not_executed",
+            "source_ids": [
+              "runner-04-docs-sdk-md",
+              "runner-04-docs-hpc-md",
+              "runner-04-docs-flip2-md",
+              "runner-04-packages-rewirebench-src-rewirebench-protocols-flip2-py",
+              "runner-04-packages-rewirebench-src-rewirebench-resources-flip2-sources-json",
+              "runner-04-packages-rewirebench-src-rewirebench-resources-flip2-validation-2026-09-20-json",
+              "runner-04-packages-rewirebench-src-rewirebench-resources-flip2-example-adapter-py"
+            ],
+            "source_locator": "docs/flip2.md and protocol implementation; linked validation receipt concerns its stated tests, not execution of this exact snippet"
+          },
+          {
+            "runtime": "command_line",
+            "title": "Run a small composition control",
+            "code": "git clone https://github.com/rewire-bio/rewire-benchmarks.git\ncd rewire-benchmarks\ngit checkout --detach fcccbbcdbe3d5cd64a1a312d536615273320f7b4\nuv sync --locked --package rewirebench --extra sequence --python 3.11\nuv run --package rewirebench rewirebench prepare flip2-fitness-v1 \\\n  --source flip2-data --output prepared-flip2 \\\n  --options '{\"dataset\":\"flip2-rhomax-by-wild-type\",\"limit\":8}'\nuv run --package rewirebench rewirebench run --prepared prepared-flip2 \\\n  --adapter rewirebench.resources.flip2.example_adapter:CompositionEmbeddings --prediction-type embedding \\\n  --output results-flip2-control",
+            "status": "source_reviewed_not_executed",
+            "source_ids": [
+              "runner-04-docs-sdk-md",
+              "runner-04-docs-hpc-md",
+              "runner-04-docs-flip2-md",
+              "runner-04-packages-rewirebench-src-rewirebench-protocols-flip2-py",
+              "runner-04-packages-rewirebench-src-rewirebench-resources-flip2-sources-json",
+              "runner-04-packages-rewirebench-src-rewirebench-resources-flip2-validation-2026-09-20-json",
+              "runner-04-packages-rewirebench-src-rewirebench-resources-flip2-example-adapter-py"
+            ],
+            "source_locator": "docs/flip2.md and protocol implementation; linked validation receipt concerns its stated tests, not execution of this exact snippet"
+          }
+        ],
+        "limitations": [
+          "A run is one of16 archived splits across7 datasets; no suite-wide score is computed.",
+          "Archived Amylase one_to_many and NucB split counts conflict with manuscript Table1. IRED printed total also differs. The runner preserves archive assignments and records each conflict; it does not claim paper-cohort reproduction.",
+          "PDZ3 inputs preserve protein:peptide notation including empty partners. An adapter must handle this representation explicitly.",
+          "Frozen-embedding alpha10 ridge is a Rewire extension with train-only target scaling, not the published one-hot ridge baseline.",
+          "Native CPU smoke checks covered all16 archived splits with8 rows per train/validation/test group; pinned upstream metric expressions agreed within1e-12. No full model runs or published-score reproduction.",
+          "These snippets are source-reviewed instructions. The linked automated receipt supports only the tests it records; it does not certify the exact snippet or published-model reproduction.",
+          "Smoke examples and partial predictions retain original denominators and cannot establish a complete suite. Prepared execution is offline; exports and submissions are explicit."
+        ],
+        "source_ids": [
+          "runner-04-docs-sdk-md",
+          "runner-04-docs-hpc-md",
+          "runner-04-docs-flip2-md",
+          "runner-04-packages-rewirebench-src-rewirebench-protocols-flip2-py",
+          "runner-04-packages-rewirebench-src-rewirebench-resources-flip2-sources-json",
+          "runner-04-packages-rewirebench-src-rewirebench-resources-flip2-validation-2026-09-20-json",
+          "runner-04-packages-rewirebench-src-rewirebench-resources-flip2-example-adapter-py"
+        ],
+        "source_locator": "docs/flip2.md; source manifest; protocol score function; automated receipt scope"
       }
     ]
   }

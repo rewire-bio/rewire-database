@@ -1,4 +1,8 @@
 import {
+  isSequenceProtocol,
+  sequenceSubmissionIssues,
+} from "./sdk-sequence.js";
+import {
   proteinGymAssayIds,
   proteinGymAssayCounts,
   proteinGymTotalVariants,
@@ -10,6 +14,11 @@ const sha = z.string().regex(/^[a-f0-9]{64}$/);
 // not make a private path or customer name in its dictionary key safe to send.
 const provenanceFields: Record<string, number> = {
   source_sha256: 64,
+  source_csv_sha256: 64,
+  validation_sha256: 64,
+  dataset_manifest_sha256: 64,
+  evaluator_sha256: 64,
+  dataset_revision: 40,
   cohort_sha256: 64,
   split_sha256: 64,
   raw_sha256: 64,
@@ -106,12 +115,23 @@ export const sdkSubmissionSchema = z
       .default("unreported"),
     kind: z.literal("rewire_benchmark_submission"),
     evaluation_claim: z.literal(localEvaluationClaim).optional(),
+    evaluation_method: z
+      .enum([
+        "frozen_embedding_probe",
+        "adapter_fit",
+        "imported_predictions",
+        "prefitted_or_zero_shot_adapter",
+      ])
+      .optional(),
     protocol_id: z.enum([
       "mfass-v2",
       "mfass-v2-frozen-encoder",
       "proteingym-v1.3-dms-substitutions",
       "tdc-admet-group-v1",
       "genomic-benchmarks-v2",
+      "flip2-fitness-v1",
+      "dart-eval-task1-zero-shot-v1",
+      "mrnabench-sample-mrl-v1",
     ]),
     protocol_version: text,
     dataset_id: text,
@@ -148,7 +168,11 @@ export const sdkSubmissionSchema = z
           });
       }
     }),
-    execution_status: z.enum(["imported_predictions", "local_adapter"]),
+    execution_status: z.enum([
+      "imported_predictions",
+      "imported_embeddings",
+      "local_adapter",
+    ]),
     review_status: z.literal("unreviewed_contribution"),
     independently_reproduced: z.literal(false),
     prepared_sha256: sha,
@@ -175,6 +199,21 @@ export const sdkSubmissionSchema = z
     const pgNames = new Set(["Spearman", "AUC", "MCC", "NDCG", "Top_recall"]);
     let measured = false;
     if (
+      !isSequenceProtocol(value.protocol_id) &&
+      value.evaluation_method !== undefined
+    )
+      issue("Evaluation method is supported only for sequence protocols");
+    if (
+      value.execution_status === "imported_embeddings" &&
+      !isSequenceProtocol(value.protocol_id) &&
+      value.protocol_id !== "mfass-v2-frozen-encoder"
+    )
+      issue("Imported embeddings are not supported by this protocol");
+    if (isSequenceProtocol(value.protocol_id)) {
+      const errors = sequenceSubmissionIssues(value);
+      errors.forEach(issue);
+      measured = !errors.length;
+    } else if (
       value.protocol_id === "tdc-admet-group-v1" ||
       value.protocol_id === "genomic-benchmarks-v2"
     ) {

@@ -6,7 +6,7 @@ import { firebase } from "../src/firebase.js";
 import { context } from "../src/auth.js";
 import { importRelease } from "../src/catalogue.js";
 import { activateRelease } from "../src/catalogue-service.js";
-import { drainOutbox } from "../src/outbox.js";
+import { drainOutbox, MailDeliveryError } from "../src/outbox.js";
 import { fixture, proposalInput } from "./fixtures.js";
 import { createAppServer } from "../src/server.js";
 import { createServer } from "node:http";
@@ -853,7 +853,9 @@ emulatorTest(
       assert.equal(detail?.record.id, "model-one");
       assert.equal(results.items[0].sources[0].id, "source-one");
       const chart = await publicClient.catalogue.comparison.query({
-        release_id: snapshot.release_id, id: "model-one", panel_id: "unknown",
+        release_id: snapshot.release_id,
+        id: "model-one",
+        panel_id: "unknown",
       });
       assert.equal(chart.release_id, snapshot.release_id);
       assert.equal(chart.panel, null);
@@ -1034,5 +1036,161 @@ emulatorTest(
       server.closeAllConnections();
       await new Promise<void>((resolve) => server.close(() => resolve()));
     }
+  },
+);
+
+async function queuedMail(extra: Record<string, unknown> = {}) {
+  const ref = firebase().db.collection("privateOutbox").doc(randomUUID());
+  await ref.set({
+    recipient: "private@example.org",
+    subject: "Contribution update",
+    body: "Private text",
+    state: "pending",
+    available_at: "2000-01-01T00:00:00.000Z",
+    attempts: 0,
+    ...extra,
+  });
+  return ref;
+}
+emulatorTest(
+  "outbox stops permanent failures and does not persist provider secrets",
+  async () => {
+    const ref = await queuedMail();
+    await drainOutbox(firebase().db, async () => {
+      throw new MailDeliveryError("permanent");
+    });
+    assert.equal((await ref.get()).data()?.state, "failed");
+    assert.equal((await ref.get()).data()?.lease_until, null);
+    assert.deepEqual(
+      await drainOutbox(firebase().db, async () =>
+        assert.fail("must not retry"),
+      ),
+      { sent: 0, failed: 0 },
+    );
+  },
+);
+emulatorTest(
+  "outbox bounds retries and keeps stable provider idempotency",
+  async () => {
+    const ref = await queuedMail();
+    const keys = new Set<string>();
+    for (let attempt = 0; attempt < 6; attempt++) {
+      await ref.update({ available_at: "2000-01-01T00:00:00.000Z" });
+      await drainOutbox(firebase().db, async (mail) => {
+        keys.add(mail.idempotencyKey);
+        throw new Error(
+          "SMTP failed for private@example.org credential SECRET",
+        );
+      });
+    }
+    const saved = (await ref.get()).data();
+    assert.equal(keys.size, 1);
+    assert.equal(saved?.attempts, 6);
+    assert.equal(saved?.state, "failed");
+    assert.equal(JSON.stringify(saved?.error).includes("SECRET"), false);
+    assert.equal(
+      JSON.stringify(saved?.error).includes("private@example.org"),
+      false,
+    );
+  },
+);
+emulatorTest(
+  "outbox quota rejections defer without spending retry budget",
+  async () => {
+    const now = Date.now();
+    const ref = await queuedMail();
+    assert.deepEqual(
+      await drainOutbox(
+        firebase().db,
+        async () => {
+          throw new MailDeliveryError("quota", 300_000);
+        },
+        50,
+        { now: () => now },
+      ),
+      { sent: 0, failed: 0 },
+    );
+    const saved = (await ref.get()).data();
+    assert.equal(saved?.attempts, 0);
+    assert.equal(saved?.state, "pending");
+    assert.equal(saved?.uncertain_since, null);
+    assert.equal(saved?.available_at, new Date(now + 300_000).toISOString());
+    const quota = (
+      await firebase().db.collection("privateMailQuota").doc("resend").get()
+    ).data();
+    assert.equal(quota?.reservations.length, 1);
+  },
+);
+emulatorTest(
+  "outbox atomically limits concurrent daily reservations",
+  async () => {
+    await queuedMail();
+    await queuedMail();
+    let sends = 0;
+    const deliver = async () => {
+      sends++;
+    };
+    await Promise.all([
+      drainOutbox(firebase().db, deliver, 50, { dailyLimit: 1 }),
+      drainOutbox(firebase().db, deliver, 50, { dailyLimit: 1 }),
+    ]);
+    assert.equal(sends, 1);
+    const pending = await firebase()
+      .db.collection("privateOutbox")
+      .where("state", "==", "pending")
+      .get();
+    assert.equal(pending.size, 1);
+    assert.equal(pending.docs[0].data().attempts, 0);
+  },
+);
+emulatorTest(
+  "outbox conservatively holds monthly quota for 31 days",
+  async () => {
+    const now = Date.now();
+    const reserved = now - 2 * 86_400_000;
+    await firebase()
+      .db.collection("privateMailQuota")
+      .doc("resend")
+      .set({ reservations: [reserved] });
+    const ref = await queuedMail();
+    await drainOutbox(
+      firebase().db,
+      async () => assert.fail("quota exhausted"),
+      50,
+      { now: () => now, monthlyLimit: 1 },
+    );
+    assert.equal(
+      (await ref.get()).data()?.available_at,
+      new Date(reserved + 31 * 86_400_000 + 1).toISOString(),
+    );
+  },
+);
+emulatorTest(
+  "outbox quarantines uncertain delivery after provider deduplication window",
+  async () => {
+    const now = Date.now();
+    const ref = await queuedMail({
+      attempts: 1,
+      uncertain_since: new Date(now - 24 * 3_600_000).toISOString(),
+    });
+    await drainOutbox(
+      firebase().db,
+      async () => assert.fail("might send twice"),
+      50,
+      { now: () => now },
+    );
+    assert.equal((await ref.get()).data()?.state, "failed");
+  },
+);
+emulatorTest(
+  "quota rejection retains earlier ambiguous delivery history",
+  async () => {
+    const uncertain = new Date(Date.now() - 3_600_000).toISOString();
+    const ref = await queuedMail({ attempts: 1, uncertain_since: uncertain });
+    await drainOutbox(firebase().db, async () => {
+      throw new MailDeliveryError("quota");
+    });
+    assert.equal((await ref.get()).data()?.uncertain_since, uncertain);
+    assert.equal((await ref.get()).data()?.attempts, 1);
   },
 );

@@ -1,32 +1,34 @@
-import nodemailer from "nodemailer";
+import { pathToFileURL } from "node:url";
 import { firebase } from "./firebase.js";
 import { drainOutbox } from "./outbox.js";
-if (!process.env.SMTP_HOST)
-  throw new Error(
-    "SMTP_HOST must be configured explicitly; no emails are sent by default.",
-  );
-const transport = nodemailer.createTransport({
-  host: process.env.SMTP_HOST,
-  port: Number(process.env.SMTP_PORT || 1025),
-  secure: process.env.SMTP_SECURE === "true",
-  requireTLS: process.env.NODE_ENV === "production",
-  auth: process.env.SMTP_USER
-    ? { user: process.env.SMTP_USER, pass: process.env.SMTP_PASSWORD }
-    : undefined,
-  connectionTimeout: 15_000,
-  socketTimeout: 30_000,
-});
-console.log(
-  await drainOutbox(firebase().db, (mail) =>
-    transport.sendMail({
-      from: process.env.MAIL_FROM || "Rewire <contributions@rewire.it>",
-      to: mail.recipient,
-      subject: mail.subject,
-      text: mail.body,
-      messageId: mail.messageId,
-      disableFileAccess: true,
-      disableUrlAccess: true,
-    }),
-  ),
-);
-await firebase().db.terminate();
+import { createMailDelivery } from "./mail-transport.js";
+
+/** Invoked by the authenticated scheduler; importing this module never sends mail. */
+export async function runMailWorker() {
+  const transport = createMailDelivery();
+  try {
+    // Bound each invocation to two messages within the 180-second function timeout.
+    const result = await drainOutbox(firebase().db, transport.deliver, 2);
+    const log = result.failed > 0 ? console.warn : console.log;
+    log(JSON.stringify({ event: "contribution_mail_drain", ...result }));
+    return result;
+  } finally {
+    transport.close();
+  }
+}
+
+if (
+  process.argv[1] &&
+  import.meta.url === pathToFileURL(process.argv[1]).href
+) {
+  try {
+    await runMailWorker();
+  } catch {
+    console.error(
+      "Contribution mail worker failed; check configuration and redacted queue status",
+    );
+    process.exitCode = 1;
+  } finally {
+    await firebase().db.terminate();
+  }
+}

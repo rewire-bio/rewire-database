@@ -1,6 +1,8 @@
 import { spawn } from "node:child_process";
 import { readFile } from "node:fs/promises";
 import { deployCatalogue, hostingVersion } from "./deployment-transaction.mjs";
+import { contributionProbeMode } from "./contribution-deployment.mjs";
+const contributionProbeArgument = `--contributions=${contributionProbeMode()}`;
 
 // Run only from the reviewed deployment workflow with WIF/ADC. Tests exercise
 // deployment-transaction.mjs using injected operations and never contact production.
@@ -85,12 +87,14 @@ await deployCatalogue({
     run("node", [
       "scripts/check-live-catalogue.mjs",
       "https://europe-west2-rewire-it.cloudfunctions.net/contributions",
+      contributionProbeArgument,
     ]),
   deployHosting: () => firebase("deploy", "--only", "hosting"),
   verifyWebsite: () =>
     run("node", [
       "scripts/check-live-catalogue.mjs",
       "https://benchmarks.rewire.it",
+      contributionProbeArgument,
       "--website",
     ]),
   restoreHosting: (version) =>

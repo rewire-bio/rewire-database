@@ -8,6 +8,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileSha256, chunksSha256 } from "./stream-files";
 import { validateRecords } from "./schema";
+import { verifyContributionExport } from "./contribution-export";
 const catalogue = JSON.parse(
   fs.readFileSync("out/omics/catalogue.json", "utf8"),
 );
@@ -94,10 +95,8 @@ console.log(
 );
 
 const contributionPage = page("/contribute/");
-if (!contributionPage.includes("Submissions are not open yet."))
-  throw new Error("Submissions unexpectedly enabled");
-if (!contributionPage.includes("no-referrer"))
-  throw new Error("Contribution referrer protection missing");
-if (/googletagmanager|google-analytics|goatcounter/i.test(contributionPage))
-  throw new Error("Analytics in contribution workflow");
-console.log("New contribution route remains disabled and analytics-free.");
+const contributionsEnabled = verifyContributionExport(
+  contributionPage,
+  process.env.NEXT_PUBLIC_OMICS_CONTRIBUTIONS_ENABLED,
+);
+console.log(`Contribution export is ${contributionsEnabled ? "enabled with email verification" : "disabled with local drafts"} and analytics-free.`);

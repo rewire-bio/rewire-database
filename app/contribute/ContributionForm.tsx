@@ -403,6 +403,12 @@ export default function ContributionForm() {
               rewirebench.submit in your local environment; never put it in a
               script, notebook, log or public issue.
             </p>
+            <p>
+              The library returns a submission ID for this private review queue,
+              not a published result. Refresh this page to see submissions from
+              the library. If your token expires, copy a fresh one and retry the
+              same bundle with the same idempotency key.
+            </p>
             <button
               type="button"
               className={styles.button}

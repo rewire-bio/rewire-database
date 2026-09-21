@@ -19,6 +19,7 @@ import Profile, {
 } from "@/components/catalogue/Profile";
 import EvidenceTable from "@/components/catalogue/EvidenceTable";
 import RunRecipes from "@/components/catalogue/RunRecipes";
+import BaselineCoverage from "@/components/catalogue/BaselineCoverage";
 import Reproduction from "@/components/catalogue/Reproduction";
 import RunGuide from "@/components/catalogue/RunGuide";
 import Results from "@/components/catalogue/Results";
@@ -324,6 +325,9 @@ export default function RecordPage({ params }: { params: Params }) {
                 >
                   How to run
                 </a>
+              )}
+              {["benchmark", "protocol"].includes(record.kind) && (
+                <a href="#reference-baselines">Reference baselines</a>
               )}
               {record.attributes.benchmark_research ? (
                 <a href="#papers">Papers</a>
@@ -632,6 +636,7 @@ export default function RecordPage({ params }: { params: Params }) {
               )}
             </section>
           )}
+          <BaselineCoverage record={record} catalogue={catalogue} />
           {evaluationDesign && (
             <RunRecipes
               record={record}

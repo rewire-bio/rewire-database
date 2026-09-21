@@ -1,3 +1,4 @@
+import { baselineAuditFiles } from "./baseline-coverage";
 import { recordHref, recordRouteKinds } from "../../lib/omics";
 import {
   createEvidenceIndex,
@@ -87,6 +88,15 @@ for (const id of archivedIds) {
     if (fileSha256(path.join(archiveRoot, id, file)) !== digest)
       failures.push(`Checksum ${id}/${file}`);
   }
+}
+const baselineExport = baselineAuditFiles(
+  fs.readFileSync("out/omics/catalogue.json"),
+  "published_release",
+);
+for (const [name, expected] of Object.entries(baselineExport.files)) {
+  const file = path.join("out/omics/baseline-coverage", catalogue.release_id, name);
+  if (!fs.existsSync(file) || fs.readFileSync(file, "utf8") !== expected)
+    failures.push(`Baseline audit export mismatch: ${name}`);
 }
 if (failures.length) throw new Error(failures.join("\n"));
 console.log(

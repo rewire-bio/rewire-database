@@ -9,6 +9,7 @@
   },
   "scripts": {
     "build": "tsc",
+    "check:functions:load": "node -e \"const f=require('./dist/functions.js'); if(!f.contributions || !f.contributionMail) process.exit(1)\"",
     "dev": "tsx src/server.ts",
     "test": "tsx --test test/*.test.ts",
     "test:emulator": "firebase emulators:exec --project demo-rewire-omics --only auth,firestore 'npm test'",

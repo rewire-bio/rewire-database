@@ -17,10 +17,7 @@ export async function runMailWorker() {
   }
 }
 
-if (
-  process.argv[1] &&
-  import.meta.url === pathToFileURL(process.argv[1]).href
-) {
+async function main() {
   try {
     await runMailWorker();
   } catch {
@@ -31,4 +28,13 @@ if (
   } finally {
     await firebase().db.terminate();
   }
+}
+
+// Firebase's emulator loads the ESM graph with require(). Keep its import graph
+// free of top-level await, even when this CLI-only branch would not execute.
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  void main().catch(() => {
+    console.error("Contribution mail worker cleanup failed");
+    process.exitCode = 1;
+  });
 }

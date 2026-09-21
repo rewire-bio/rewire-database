@@ -57,7 +57,7 @@ jobs:
           distribution: temurin
           java-version: '21'
       - name: Install and build the API
-        run: npm ci --prefix services/omics && npm --prefix services/omics run build
+        run: npm ci --prefix services/omics && npm --prefix services/omics run build && npm --prefix services/omics run check:functions:load
       - name: Verify Hosting and API integration
         run: npx firebase emulators:exec --project demo-rewire-omics --only hosting,functions,auth,firestore 'npm --prefix services/omics test && node scripts/check-api-hosting.mjs'
       - name: Authenticate to Google

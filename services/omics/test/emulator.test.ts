@@ -568,6 +568,15 @@ emulatorTest(
     await assert.rejects(() => context(`Bearer ${expired}`), /Sign in/);
   },
 );
+
+emulatorTest("revoked verified sessions cannot access contributions", async () => {
+  const user = await signIn();
+  assert.equal((await context(`Bearer ${user.token}`)).user?.uid, user.uid);
+  // Firebase compares authentication/revocation times at whole-second precision.
+  await new Promise((resolve) => setTimeout(resolve, 1100));
+  await firebase().auth.revokeRefreshTokens(user.uid);
+  await assert.rejects(() => context(`Bearer ${user.token}`), /Sign in/);
+});
 emulatorTest(
   "publication guard requires matching kinds and checked result evidence",
   async () => {

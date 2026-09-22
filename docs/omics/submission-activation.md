@@ -7,22 +7,27 @@ checks below pass. Scientific publication still requires a reviewed dataset rele
 ## Prerequisites before merging and deploying
 
 The new scheduled function is declared even when `OMICS_MAIL_ENABLED=false`.
-Provision its service account and secret **before merging**: main deploys the whole
+Provision its service account **before merging**: main deploys the whole
 Functions codebase. The mail flag stops delivery; it is not an infrastructure flag.
 
 1. Reauthenticate Google Cloud as the existing operator and inspect project
    `rewire-it`. Record the current Function revision, Hosting release and catalogue
    release. Do not replace existing infrastructure or email DNS records.
-2. Register the free Resend account, verify `notify.rewire.it`, and disable open
-   and click tracking. Add only the provider's required DNS records. Use sender
-   `Rewire <contributions@notify.rewire.it>` and Reply-To `tim@rewire.it`.
-   Create a domain-restricted sending credential and store an enabled version as
-   Secret Manager secret `SMTP_PASSWORD`; never put it in GitHub variables or Git.
-3. Create `rewire-mail-runtime@rewire-it.iam.gserviceaccount.com`. Grant only
-   Firestore data access needed by the queue and access to that single secret.
-   Allow the existing deployment identity to act as this service account. Verify
-   Scheduler service identity/invocation permissions; do not grant public invocation
-   to `contributionMail`. The catalogue/API identity must not receive the mail secret.
+2. Use the existing Google Workspace mailbox `tim@rewire.it` through the Gmail
+   API. No Resend account, sending-domain DNS changes or SMTP password is required.
+   Enable Gmail and IAM Credentials APIs in `rewire-it`. Authorise the dedicated
+   mail service account's numeric OAuth client ID in Workspace domain-wide
+   delegation for **only** `https://www.googleapis.com/auth/gmail.send`.
+   Workspace delegation is domain-wide even though this application fixes the
+   sender to Tim; the Workspace administrator must review this permission.
+3. Use `rewire-mail-runtime@rewire-it.iam.gserviceaccount.com` as both runtime and
+   JWT signer. Grant it `iam.serviceAccounts.signJwt` on itself through a custom
+   role, plus the existing private-outbox Firestore role. No downloaded keys are
+   needed. Keep the catalogue runtime unable to sign as this identity. Allow the
+   existing deployment identity to act as it. Scheduler invocation stays private.
+   The mailer exchanges a signed assertion for a short-lived `gmail.send` token;
+   it cannot read the mailbox. From is `Rewire <tim@rewire.it>` and Reply-To is
+   `tim@rewire.it`. Messages contain no tracking.
 4. Extend the API runtime from read-only Firestore to the data operations required
    by submission transactions; it also requires `firebaseauth.users.get` for revoked
    token checks. Use a custom IAM role without project administration or Auth writes.
@@ -51,10 +56,19 @@ Repository variables configure the reviewed deployment:
 The service `.env` is generated from an allowlist during deployment. It contains no
 credentials. A typo in an activation flag or mismatched client project fails the
 build. Build the frontend with its public settings; changing a runtime variable
-does not change already exported HTML. Firebase binds `SMTP_PASSWORD` only to the
-mail function. Resend free-tier quota pauses retain queued messages. Existing
-Firebase usage, Scheduler, TTL and Secret Manager can incur usage charges; the
-free email plan is not a cloud spending cap.
+does not change already exported HTML. The reviewed service configuration fixes
+`MAIL_PROVIDER=gmail`, `GMAIL_SERVICE_ACCOUNT` and `GMAIL_SENDER`; it contains no
+credentials. Gmail uses the runtime identity rather than a bound secret. The
+legacy empty SMTP secret is unused. Conservative limits of 100 attempts per day
+and 3,000 per rolling month also apply; Google Workspace may enforce additional
+limits. Quota pauses retain queued messages. Existing Firebase usage, Scheduler
+and TTL can incur usage charges; this is not a cloud spending cap.
+
+Gmail does not guarantee duplicate suppression. Stable Message-ID and Date help
+manual reconciliation but are not idempotency keys. An uncertain send or a worker
+crash after claiming a message is parked for curator review rather than retried.
+Definite temporary rejections use bounded backoff; permanent errors are reported.
+Check the sender's Sent folder before any manual retry of an uncertain message.
 
 ## Acceptance and first submissions
 
@@ -75,19 +89,29 @@ free email plan is not a cloud spending cap.
   immutable evidence URL. Save the returned submission ID and idempotency key in
   the private operations record. Verify owner tracking, curator visibility and
   actual receipt delivery. Do not put tokens or email bodies in public receipts.
-- Submit the remaining four audited bundles with the same retry discipline. Link
+- Submit the remaining queued audited bundles with the same retry discipline. Link
   their IDs privately to database PR #24 and its proposed evaluation IDs. Curator
   notes must prevent those same evaluations being imported a second time. Leave
-  all five pending review; this activation does not merge scientific results.
+  all contributions pending review; this activation does not merge scientific results.
 
 ## Rollback
 
 Set both contribution flags false and redeploy the Function and website. If mail
 is faulty, set `OMICS_MAIL_ENABLED=false` and redeploy the mail function too. Keep
-the secret and service identity provisioned so the codebase can deploy. Preserve
+the service identity provisioned so the codebase can deploy. Preserve
 all private submissions, revisions, idempotency entries and queues. Restore a
 compatible application revision and keep public catalogue reads available.
 
 The existing SDK contract is unchanged: dry runs are offline; real requests use a
 short-lived verified-email token; successful requests return a private submission
 ID with `publication_status=pending_review`. No run or export submits automatically.
+
+## Google implementation references
+
+- [Firebase email sign-in](https://firebase.google.com/docs/auth/web/email-link-auth)
+- [Workspace delegated service-account authentication](https://developers.google.com/identity/protocols/oauth2/service-account)
+- [Keyless JWT signing](https://docs.cloud.google.com/iam/docs/reference/credentials/rest/v1/projects.serviceAccounts/signJwt)
+- [Gmail message sending](https://developers.google.com/workspace/gmail/api/guides/sending)
+
+Implementation references reviewed 22 September 2026. Successful unit tests do
+not establish Workspace authorisation or inbox delivery; record those separately.

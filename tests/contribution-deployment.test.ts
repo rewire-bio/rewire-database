@@ -46,8 +46,10 @@ describe("persistent contribution deployment settings", () => {
     const config = contributionDeployment({ OMICS_MAIL_ENABLED: "true" });
     expect(config.mail).toBe(true);
     expect(config.service).toMatchObject({
-      SMTP_HOST: "smtp.resend.com", SMTP_PORT: "465", SMTP_SECURE: "true", SMTP_USER: "resend",
-      MAIL_FROM: "Rewire <contributions@notify.rewire.it>", MAIL_REPLY_TO: "tim@rewire.it",
+      MAIL_PROVIDER: "gmail",
+      GMAIL_SERVICE_ACCOUNT: "rewire-mail-runtime@rewire-it.iam.gserviceaccount.com",
+      GMAIL_SENDER: "tim@rewire.it",
+      MAIL_FROM: "Rewire <tim@rewire.it>", MAIL_REPLY_TO: "tim@rewire.it",
     });
   });
   it.each(["OMICS_CONTRIBUTIONS_ENABLED", "NEXT_PUBLIC_OMICS_CONTRIBUTIONS_ENABLED", "OMICS_MAIL_ENABLED"])("rejects misspelled %s", key => {

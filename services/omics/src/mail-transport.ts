@@ -1,6 +1,7 @@
 import nodemailer from "nodemailer";
 import type SMTPTransport from "nodemailer/lib/smtp-transport/index.js";
 import { MailDeliveryError, type Delivery } from "./outbox.js";
+import { createGoogleMailDelivery } from "./google-mail.js";
 
 export function smtpConfiguration(
   env: NodeJS.ProcessEnv,
@@ -78,6 +79,9 @@ export function createMailDelivery(env: NodeJS.ProcessEnv = process.env): {
   deliver: Delivery;
   close: () => void;
 } {
+  if (env.MAIL_PROVIDER === "gmail") return createGoogleMailDelivery(env);
+  if (env.MAIL_PROVIDER && !["smtp", "resend"].includes(env.MAIL_PROVIDER))
+    throw new Error("Unsupported MAIL_PROVIDER");
   const transport = nodemailer.createTransport(smtpConfiguration(env));
   return {
     deliver: async (mail) => {

@@ -1,6 +1,5 @@
 import { onRequest } from "firebase-functions/v2/https";
 import { onSchedule } from "firebase-functions/v2/scheduler";
-import { defineSecret } from "firebase-functions/params";
 import { logger } from "firebase-functions";
 import { deployedContributionHttpHandler } from "./http-handler.js";
 import { runMailWorker } from "./mail-worker.js";
@@ -21,7 +20,6 @@ export const contributions = onRequest(
 );
 
 // Scheduler invokes this function using IAM; it is not a public HTTP mail API.
-const smtpPassword = defineSecret("SMTP_PASSWORD");
 export const contributionMail = onSchedule(
   {
     schedule: "every 5 minutes",
@@ -34,7 +32,6 @@ export const contributionMail = onSchedule(
     memory: "256MiB",
     timeoutSeconds: 180,
     retryCount: 0,
-    secrets: [smtpPassword],
   },
   async () => {
     if (process.env.OMICS_MAIL_ENABLED !== "true") return;

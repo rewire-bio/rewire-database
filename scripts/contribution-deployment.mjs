@@ -30,11 +30,10 @@ export function contributionDeployment(env = process.env) {
     OMICS_MAIL_ENABLED: String(mail),
     PUBLIC_WEB_URL: "https://benchmarks.rewire.it",
     ALLOWED_ORIGINS: "https://benchmarks.rewire.it",
-    SMTP_HOST: "smtp.resend.com",
-    SMTP_PORT: "465",
-    SMTP_SECURE: "true",
-    SMTP_USER: "resend",
-    MAIL_FROM: "Rewire <contributions@notify.rewire.it>",
+    MAIL_PROVIDER: "gmail",
+    GMAIL_SERVICE_ACCOUNT: "rewire-mail-runtime@rewire-it.iam.gserviceaccount.com",
+    GMAIL_SENDER: "tim@rewire.it",
+    MAIL_FROM: "Rewire <tim@rewire.it>",
     MAIL_REPLY_TO: "tim@rewire.it",
   };
   return { backend, frontend, mail, service };

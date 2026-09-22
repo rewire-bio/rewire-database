@@ -24,6 +24,8 @@ const DAY = 86_400_000;
 const IDEMPOTENCY_WINDOW = 23 * 3_600_000;
 const MAX_ATTEMPTS = 6;
 export interface OutboxOptions {
+  /** Gmail does not offer provider-side idempotency for send requests. */
+  provider?: "resend" | "gmail";
   now?: () => number;
   dailyLimit?: number;
   monthlyLimit?: number;
@@ -35,13 +37,14 @@ export async function drainOutbox(
   limit = 50,
   options: OutboxOptions = {},
 ) {
+  const provider = options.provider ?? "resend";
   const clock = options.now || Date.now;
   const iso = (ms = clock()) => new Date(ms).toISOString();
   const dailyLimit = Math.min(options.dailyLimit ?? 100, 100);
   const monthlyLimit = Math.min(options.monthlyLimit ?? 3000, 3000);
   if (![dailyLimit, monthlyLimit].every((n) => Number.isInteger(n) && n > 0))
     throw new Error("Mail quota limits must be positive integers");
-  const quotaRef = db.collection("privateMailQuota").doc("resend");
+  const quotaRef = db.collection("privateMailQuota").doc(provider);
   const pending = await db
     .collection("privateOutbox")
     .where("state", "==", "pending")
@@ -64,11 +67,14 @@ export async function drainOutbox(
         (data.lease_until && data.lease_until > iso(now))
       )
         return null;
-      // A process may have died after SMTP accepted its message. Do not retry beyond
-      // the provider's 24-hour deduplication window without checking delivery history.
+      // The previous process may have died after the provider accepted its message.
+      // Gmail has no send-idempotency guarantee, so any unresolved attempt needs
+      // manual reconciliation. Legacy Resend attempts retain their bounded window.
       if (
         (data.uncertain_since &&
-          now - Date.parse(data.uncertain_since) >= IDEMPOTENCY_WINDOW) ||
+          (provider === "gmail" ||
+            data.delivery_provider === "gmail" ||
+            now - Date.parse(data.uncertain_since) >= IDEMPOTENCY_WINDOW)) ||
         (data.attempts ?? 0) >= MAX_ATTEMPTS
       ) {
         tx.update(doc.ref, {
@@ -106,6 +112,7 @@ export async function drainOutbox(
         blocked_until: 0,
       });
       tx.update(doc.ref, {
+        delivery_provider: provider,
         lease_owner: owner,
         // Outlast the 180-second function timeout before another worker reclaims.
         lease_until: iso(now + 240_000),
@@ -152,13 +159,15 @@ export async function drainOutbox(
         error instanceof MailDeliveryError
           ? error
           : new MailDeliveryError("transient", 300_000, true);
-      if (failure.kind !== "quota") failed++;
+      const requiresReconciliation = provider === "gmail" && failure.ambiguous;
+      if (failure.kind !== "quota" || requiresReconciliation) failed++;
       await db.runTransaction(async (tx) => {
         const current = await tx.get(doc.ref);
         if (current.data()?.lease_owner !== owner) return;
         const attempts = current.data()?.attempts ?? 1;
         const now = clock();
         const terminal =
+          requiresReconciliation ||
           failure.kind === "permanent" ||
           (failure.kind !== "quota" && attempts >= MAX_ATTEMPTS);
         const delay =
@@ -186,11 +195,13 @@ export async function drainOutbox(
           uncertain_since: failure.ambiguous
             ? current.data()?.uncertain_since
             : mail.uncertain_since || null,
-          error: terminal
-            ? "Delivery failed; curator action required"
-            : failure.kind === "quota"
-              ? "Queued until provider quota is available"
-              : "Delivery temporarily unavailable; retry queued",
+          error: requiresReconciliation
+            ? "Delivery uncertain; curator reconciliation required before retry"
+            : terminal
+              ? "Delivery failed; curator action required"
+              : failure.kind === "quota"
+                ? "Queued until provider quota is available"
+                : "Delivery temporarily unavailable; retry queued",
         });
       });
     }

@@ -347,7 +347,7 @@ export default function RunRecipes({
             </ul>
           </details>
           <p>
-            <Link href="/contribute/">Contribute a result for review</Link>. The
+            <a href="/contribute/">Contribute a result for review</a>. The
             library can submit an exported evaluation for private review when
             intake is open. Check the contribution page for access and sign-in.
           </p>

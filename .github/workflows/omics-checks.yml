@@ -50,6 +50,8 @@ jobs:
       - run: npm run omics:migrate
       - name: Verify reproducible migration
         run: git diff --exit-code -- data/omics/migrated.jsonl data/omics/scope-audit.jsonl
+      - name: Test public-artifact review without network or private data
+        run: python3 -m unittest discover -s scripts/omics/tests -p "test_*.py"
       - run: npm run test:omics
       - run: npm run build
       - run: npm run omics:check-export

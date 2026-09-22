@@ -1,4 +1,5 @@
 import { writeImmutableChunks } from "./stream-files";
+import { addLocalEvaluations, localEvaluationInputs } from "./local-evaluations";
 import {
   addAcquiredEvidence,
   acquisitionFiles,
@@ -264,9 +265,9 @@ function main() {
         : [],
     ),
   );
-  const records = applyAcquisitionCorrections(
+  const records = addLocalEvaluations(applyAcquisitionCorrections(
     addAcquiredEvidence(addRunRecipes(separateEntities(profiled))),
-  );
+  ));
   const profiles = records
     .filter((record) => record.attributes.profile)
     .map((record) => record.attributes.profile as OmicsProfile);
@@ -400,6 +401,7 @@ function main() {
         ),
         ...entityInputFiles,
         ...runRecipeInputs,
+        ...localEvaluationInputs,
         ...reviewInputFiles.filter((file) => fs.existsSync(file)),
         ...profileInputs.filter((file) => fs.existsSync(file)),
         ...associationInputs.filter((file) => fs.existsSync(file)),
@@ -420,7 +422,7 @@ function main() {
     JSON.stringify(output.manifest, null, 2) + "\n",
   );
   console.log(
-    `Omics ${output.snapshot.release_id}: ${output.snapshot.records.length} public records; ${output.manifest.coverage.source_checked_results} checked external result rows; ${output.manifest.coverage.quarantined_results} in review.`,
+    `Omics ${output.snapshot.release_id}: ${output.snapshot.records.length} public records; ${output.manifest.coverage.source_checked_results} source-checked result rows; ${output.manifest.coverage.quarantined_results} in review.`,
   );
 }
 if (process.argv[1]?.endsWith("release.ts")) main();

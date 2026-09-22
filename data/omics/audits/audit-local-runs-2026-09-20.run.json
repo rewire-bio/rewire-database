@@ -1,0 +1,19 @@
+{
+  "id": "audit-local-runs-2026-09-20",
+  "baseline_release_id": "2026-09-20-b2596bdf5206",
+  "inventory_sha256": "57d96fac0c53ff160a182a841076cdf7e10efcc71722ac660f5ff9cf8af62fd2",
+  "started_at": "2026-09-20T20:54:03Z",
+  "completed_at": "2026-09-20T20:54:03Z",
+  "reviewer": "Automated execution-report transcription and catalogue integrity checks",
+  "review_method": "automated",
+  "verifier_revision": "51911e675f97bb21f0fcb30ac4d6ad1665cc43e7f38390f857ee23ede8ebef00",
+  "scope": "Five local evaluations on three selected protocols. Numerical checks preserve observed values, undefined control correlations, coverage and exact assay/split scope. Original benchmark publication scores are not reproduced.",
+  "limitations": [
+    "Automated verification; no human review claimed.",
+    "These are new local evaluations, not reproduction of published scores.",
+    "No cross-suite aggregate; missing constant-control correlations remain unavailable.",
+    "Raw predictions remain local; public reports and input/output hashes support provenance, not independent regeneration without data access."
+  ],
+  "record_count": 48,
+  "check_count": 48
+}

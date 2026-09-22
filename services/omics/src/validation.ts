@@ -3,6 +3,8 @@ import { validateRunRecipes } from "./run-recipe.js";
 import { validateRunGuide } from "./run-guide.js";
 import {
   entityKinds,
+  catalogueRelations,
+  validateDatasetReuseLink,
   legacyKinds,
   modelSubjectKinds,
   benchmarkSubjectKinds,
@@ -142,33 +144,7 @@ export type Contribution = z.infer<typeof contribution>;
 
 const link = z
   .object({
-    relation: z.enum([
-      "method",
-      "configuration",
-      "pipeline",
-      "service",
-      "task",
-      "protocol",
-      "evaluator",
-      "dataset_subset",
-      "model",
-      "benchmark",
-      "dataset",
-      "evaluation",
-      "baseline",
-      "family",
-      "parent",
-      "supersedes",
-      "original_evaluation",
-      "subject",
-      "source",
-      "applicable_to",
-      "uses_model",
-      "variant_of",
-      "alias_of",
-      "part_of",
-      "evaluates_task",
-    ]),
+    relation: z.enum(catalogueRelations),
     target_id: id,
   })
   .strict();
@@ -349,6 +325,7 @@ export function validateSnapshot(input: unknown) {
     for (const link of record.links) {
       const target = records.get(link.target_id);
       if (!target) throw new Error(`Unresolved link ${link.target_id}`);
+      validateDatasetReuseLink(record, link, target);
       if (
         ["family", "variant_of", "alias_of"].includes(link.relation) &&
         (!isModelSubject(record.kind) || !isModelSubject(target.kind))

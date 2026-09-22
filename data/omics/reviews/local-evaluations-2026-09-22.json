@@ -1,0 +1,594 @@
+{
+  "schema_version": "1.0",
+  "reviewed_at": "2026-09-22",
+  "review_scope": "Existing public artifacts and previously acknowledged private SDK queue; no new model execution, human review, curator decision or scientific publication.",
+  "live_release_at_review": "2026-09-20-b2596bdf5206",
+  "proposed_first_batch_release": "2026-09-20-370b30415b09",
+  "private_reconciliation": {
+    "method": "Read-only live Firestore and Firebase Auth reconciliation using operator application-default credentials, compared against retained SDK acknowledgements; no user-token refresh or state transitions.",
+    "submitted": 10,
+    "unique_private_ids": 10,
+    "bundles_match_public_artifacts": 10,
+    "publications": 0,
+    "private_identifiers_included": false,
+    "checked_at": "2026-09-22T21:19:57.399Z",
+    "verified_owners": 1,
+    "curator_accounts": 1,
+    "writes": 0
+  },
+  "evaluations": [
+    {
+      "evaluation_id": "rewire-local-20260920-evaluation-flip2-composition",
+      "model_name": "Amino-acid composition + fixed ridge (Rewire control)",
+      "protocol_id": "flip2-fitness-v1",
+      "protocol_version": "1",
+      "dataset_id": "flip2-rhomax-by-wild-type",
+      "scope": "full",
+      "completion": "complete",
+      "coverage": {
+        "denominator": 184,
+        "scored": 184,
+        "unscored": 0
+      },
+      "metrics": {
+        "n": 184,
+        "ndcg": 0.954819941821582,
+        "spearman": 0.41818225155801514
+      },
+      "metric_path": [
+        "metrics"
+      ],
+      "predictions_sha256": "72ea3c506b8645ae6020207f904fbd5c0b09549cd125fcdcabfb487e68681b9c",
+      "prepared_sha256": "f417d43497e0c8c453bd7c66cfea05959b4d6d47462283096e42a2dae8b72419",
+      "data_verification": "pinned_source_bytes",
+      "artifacts": {
+        "report": {
+          "url": "https://raw.githubusercontent.com/rewire-bio/rewire-benchmarks/ca73fa47136d182f2d4ddb083d084712198fc0e2/research/local-runs-2026-09-20/flip2-composition/report.json",
+          "sha256": "abd08d3f493428d06f43740c94e268575d755560e72120c73b294127acb395e6"
+        },
+        "bundle": {
+          "url": "https://raw.githubusercontent.com/rewire-bio/rewire-benchmarks/ca73fa47136d182f2d4ddb083d084712198fc0e2/research/local-runs-2026-09-20/flip2-composition/bundle.json",
+          "sha256": "2de6bdd2a86b70db6a3ba56336f92f0f413b5c4c631d2677da1442208374d7e7"
+        },
+        "audit": {
+          "url": "https://raw.githubusercontent.com/rewire-bio/rewire-benchmarks/ca73fa47136d182f2d4ddb083d084712198fc0e2/research/local-runs-2026-09-20/flip2-composition/audit.json",
+          "sha256": "11ef7cddae136cf1f1a104eeb11701d690303c5873d5f705a08ae59c3d446826"
+        }
+      },
+      "audit_run": null,
+      "catalogue_evaluation_id": "rewire-local-20260920-evaluation-flip2-composition",
+      "review_disposition": "ready_for_publication_review",
+      "publication_status": "not_published",
+      "review_method": "automated_artifact_reconciliation_and_agent_source_review",
+      "limitations": [
+        "No confidence intervals or seed variability estimate.",
+        "Source checking and local execution do not reproduce a published paper score.",
+        "The 40-feature and 22-feature composition controls are distinct configurations; do not consolidate them by name."
+      ],
+      "publication_record_ids": [
+        "rewire-local-20260920-evaluation-flip2-composition",
+        "rewire-local-20260920-result-flip2-composition-ndcg",
+        "rewire-local-20260920-result-flip2-composition-spearman"
+      ]
+    },
+    {
+      "evaluation_id": "rewire-local-20260920-evaluation-flip2-train-mean",
+      "model_name": "Training mean (Rewire control)",
+      "protocol_id": "flip2-fitness-v1",
+      "protocol_version": "1",
+      "dataset_id": "flip2-rhomax-by-wild-type",
+      "scope": "full",
+      "completion": "complete",
+      "coverage": {
+        "denominator": 184,
+        "scored": 184,
+        "unscored": 0
+      },
+      "metrics": {
+        "n": 184,
+        "ndcg": 0.9206667522227658,
+        "spearman": null
+      },
+      "metric_path": [
+        "metrics"
+      ],
+      "predictions_sha256": "599dca4e6fa643a7cdfc96ac339033f61e5846ce225af17ac2ac3917ecc14fac",
+      "prepared_sha256": "f417d43497e0c8c453bd7c66cfea05959b4d6d47462283096e42a2dae8b72419",
+      "data_verification": "pinned_source_bytes",
+      "artifacts": {
+        "report": {
+          "url": "https://raw.githubusercontent.com/rewire-bio/rewire-benchmarks/ca73fa47136d182f2d4ddb083d084712198fc0e2/research/local-runs-2026-09-20/flip2-train-mean/report.json",
+          "sha256": "eb89260f6e138bb9ae2fdf3b882a87fdf8aeabd54a0ac6f17a73f5671c96b4d8"
+        },
+        "bundle": {
+          "url": "https://raw.githubusercontent.com/rewire-bio/rewire-benchmarks/ca73fa47136d182f2d4ddb083d084712198fc0e2/research/local-runs-2026-09-20/flip2-train-mean/bundle.json",
+          "sha256": "054486283a32b1011a21175f9ee2370ad98f17f9c52fd590076d81c84ac00f12"
+        },
+        "audit": {
+          "url": "https://raw.githubusercontent.com/rewire-bio/rewire-benchmarks/ca73fa47136d182f2d4ddb083d084712198fc0e2/research/local-runs-2026-09-20/flip2-train-mean/audit.json",
+          "sha256": "9b3ed3267a1b8557bb67214594db1fa0044bd6d6ff41b57324b8d603a88ad974"
+        }
+      },
+      "audit_run": null,
+      "catalogue_evaluation_id": "rewire-local-20260920-evaluation-flip2-train-mean",
+      "review_disposition": "ready_for_publication_review",
+      "publication_status": "not_published",
+      "review_method": "automated_artifact_reconciliation_and_agent_source_review",
+      "limitations": [
+        "No confidence intervals or seed variability estimate.",
+        "Source checking and local execution do not reproduce a published paper score."
+      ],
+      "publication_record_ids": [
+        "rewire-local-20260920-evaluation-flip2-train-mean",
+        "rewire-local-20260920-result-flip2-train-mean-ndcg",
+        "rewire-local-20260920-result-flip2-train-mean-spearman"
+      ]
+    },
+    {
+      "evaluation_id": "rewire-local-20260920-evaluation-mrnabench-composition",
+      "model_name": "Sequence composition + RidgeCV (Rewire control)",
+      "protocol_id": "mrnabench-sample-mrl-v1",
+      "protocol_version": "1",
+      "dataset_id": "mrnabench-sample-mrl-designed-target_mrl_designed",
+      "scope": "full",
+      "completion": "complete",
+      "coverage": {
+        "denominator": 15003,
+        "scored": 15003,
+        "unscored": 0
+      },
+      "metrics": {
+        "mse": 1.914439715839851,
+        "pearson": 0.4367869170170987,
+        "spearman": 0.49477537290902324
+      },
+      "metric_path": [
+        "metrics"
+      ],
+      "predictions_sha256": "a8f80cfea7ddd197ef9446e161f5a761741b3f778dfc1459275c3355432e15c5",
+      "prepared_sha256": "f4f9777b5119b739437c6a9d85e4e1b937268dafd1307efca5f072d38957738b",
+      "data_verification": "pinned_source_bytes",
+      "artifacts": {
+        "report": {
+          "url": "https://raw.githubusercontent.com/rewire-bio/rewire-benchmarks/ca73fa47136d182f2d4ddb083d084712198fc0e2/research/local-runs-2026-09-20/mrnabench-composition/report.json",
+          "sha256": "8b68dfe5725bf5d8c108265039e3787f4b3b55986eab8a430082c4d446a4f960"
+        },
+        "bundle": {
+          "url": "https://raw.githubusercontent.com/rewire-bio/rewire-benchmarks/ca73fa47136d182f2d4ddb083d084712198fc0e2/research/local-runs-2026-09-20/mrnabench-composition/bundle.json",
+          "sha256": "d1ddc4c9aebb259465fbcb6740d94eaf36fb1c2c59a9c9b507f83c8ccf92e825"
+        },
+        "audit": {
+          "url": "https://raw.githubusercontent.com/rewire-bio/rewire-benchmarks/ca73fa47136d182f2d4ddb083d084712198fc0e2/research/local-runs-2026-09-20/mrnabench-composition/audit.json",
+          "sha256": "9f50fa70c15eeb38d2266015f766ac800dad4b2cc5e32202fb91d52b6f6670df"
+        }
+      },
+      "audit_run": null,
+      "catalogue_evaluation_id": "rewire-local-20260920-evaluation-mrnabench-composition",
+      "review_disposition": "ready_for_publication_review",
+      "publication_status": "not_published",
+      "review_method": "automated_artifact_reconciliation_and_agent_source_review",
+      "limitations": [
+        "No confidence intervals or seed variability estimate.",
+        "Source checking and local execution do not reproduce a published paper score.",
+        "The 40-feature and 22-feature composition controls are distinct configurations; do not consolidate them by name.",
+        "Train-only RidgeCV on the canonical test target differs from upstream default validation evaluation."
+      ],
+      "publication_record_ids": [
+        "rewire-local-20260920-evaluation-mrnabench-composition",
+        "rewire-local-20260920-result-mrnabench-composition-mse",
+        "rewire-local-20260920-result-mrnabench-composition-pearson",
+        "rewire-local-20260920-result-mrnabench-composition-spearman"
+      ]
+    },
+    {
+      "evaluation_id": "rewire-local-20260920-evaluation-mrnabench-train-mean",
+      "model_name": "Training mean (Rewire control)",
+      "protocol_id": "mrnabench-sample-mrl-v1",
+      "protocol_version": "1",
+      "dataset_id": "mrnabench-sample-mrl-designed-target_mrl_designed",
+      "scope": "full",
+      "completion": "complete",
+      "coverage": {
+        "denominator": 15003,
+        "scored": 15003,
+        "unscored": 0
+      },
+      "metrics": {
+        "mse": 2.3655294722554605,
+        "pearson": null,
+        "spearman": null
+      },
+      "metric_path": [
+        "metrics"
+      ],
+      "predictions_sha256": "fb435ffda2e56792a9c781fba8dfda535b3d6508cf28f484162c5fd9065a87d8",
+      "prepared_sha256": "f4f9777b5119b739437c6a9d85e4e1b937268dafd1307efca5f072d38957738b",
+      "data_verification": "pinned_source_bytes",
+      "artifacts": {
+        "report": {
+          "url": "https://raw.githubusercontent.com/rewire-bio/rewire-benchmarks/ca73fa47136d182f2d4ddb083d084712198fc0e2/research/local-runs-2026-09-20/mrnabench-train-mean/report.json",
+          "sha256": "c036d9fa75b6ba4d5c65d31cd575ee2bfc357beec3ca7e6c80f07e3128a04e71"
+        },
+        "bundle": {
+          "url": "https://raw.githubusercontent.com/rewire-bio/rewire-benchmarks/ca73fa47136d182f2d4ddb083d084712198fc0e2/research/local-runs-2026-09-20/mrnabench-train-mean/bundle.json",
+          "sha256": "5e5cb060b06e9794f3549400490b7024bfa02d51f5b0378d73c48a0d28673d9b"
+        },
+        "audit": {
+          "url": "https://raw.githubusercontent.com/rewire-bio/rewire-benchmarks/ca73fa47136d182f2d4ddb083d084712198fc0e2/research/local-runs-2026-09-20/mrnabench-train-mean/audit.json",
+          "sha256": "9aad168bcc131d8beb9fe152fe8550078ae03452128e339171761b8ac5911984"
+        }
+      },
+      "audit_run": null,
+      "catalogue_evaluation_id": "rewire-local-20260920-evaluation-mrnabench-train-mean",
+      "review_disposition": "ready_for_publication_review",
+      "publication_status": "not_published",
+      "review_method": "automated_artifact_reconciliation_and_agent_source_review",
+      "limitations": [
+        "No confidence intervals or seed variability estimate.",
+        "Source checking and local execution do not reproduce a published paper score.",
+        "Train-only RidgeCV on the canonical test target differs from upstream default validation evaluation."
+      ],
+      "publication_record_ids": [
+        "rewire-local-20260920-evaluation-mrnabench-train-mean",
+        "rewire-local-20260920-result-mrnabench-train-mean-mse",
+        "rewire-local-20260920-result-mrnabench-train-mean-pearson",
+        "rewire-local-20260920-result-mrnabench-train-mean-spearman"
+      ]
+    },
+    {
+      "evaluation_id": "rewire-local-20260920-evaluation-proteingym-esm2",
+      "model_name": "ESM-2 esm2_t6_8M_UR50D masked marginals",
+      "protocol_id": "proteingym-v1.3-dms-substitutions",
+      "protocol_version": "1.3",
+      "dataset_id": "proteingym-dms-substitutions-v1.3",
+      "scope": "subset",
+      "completion": "partial",
+      "coverage": {
+        "denominator": 2972,
+        "scored": 2972,
+        "unscored": 0
+      },
+      "metrics": {
+        "AUC": 0.394,
+        "MCC": -0.139,
+        "NDCG": 0.44,
+        "Spearman": -0.209,
+        "Top_recall": 0.057
+      },
+      "metric_path": [
+        "protocol_results",
+        "per_assay",
+        "AMFR_HUMAN_Tsuboyama_2023_4G3O",
+        "metrics"
+      ],
+      "predictions_sha256": "7ab0c8901406d5c1ab759038c8beef235721938394cfdf192c46671e98e0bbca",
+      "prepared_sha256": "9f0e0cce34942797364990ef4dc9fb8b382f7b2fd59e6c72de23efc2992fb148",
+      "data_verification": "local_bytes_hashed_not_independently_source_verified",
+      "artifacts": {
+        "report": {
+          "url": "https://raw.githubusercontent.com/rewire-bio/rewire-benchmarks/ca73fa47136d182f2d4ddb083d084712198fc0e2/research/local-runs-2026-09-20/proteingym-esm2/report.json",
+          "sha256": "6a14b3866141d5779c76da8071d85c73b7cce0dc4e101c93122706873e847d26"
+        },
+        "bundle": {
+          "url": "https://raw.githubusercontent.com/rewire-bio/rewire-benchmarks/ca73fa47136d182f2d4ddb083d084712198fc0e2/research/local-runs-2026-09-20/proteingym-esm2/submission.json",
+          "sha256": "315286a915c3a3ccc18ed80ebacd0ec7e4359d8b82411991118c9b7dad06a606"
+        },
+        "audit": {
+          "url": "https://raw.githubusercontent.com/rewire-bio/rewire-benchmarks/ca73fa47136d182f2d4ddb083d084712198fc0e2/research/local-runs-2026-09-20/proteingym-esm2/audit.json",
+          "sha256": "c0e9ba796883bf9a2918bc5490a62dce8cb06abed32ed9b7026bb0b34bfc6655"
+        }
+      },
+      "audit_run": null,
+      "catalogue_evaluation_id": "rewire-local-20260920-evaluation-proteingym-esm2",
+      "review_disposition": "ready_for_publication_review",
+      "publication_status": "not_published",
+      "review_method": "automated_artifact_reconciliation_and_agent_source_review",
+      "limitations": [
+        "No confidence intervals or seed variability estimate.",
+        "Source checking and local execution do not reproduce a published paper score.",
+        "One complete AMFR assay, not the full 217-assay track.",
+        "Input bytes were hashed locally, not independently verified against an upstream published checksum.",
+        "Pretraining overlap is unreported; conclusions apply to the exact evaluated configuration."
+      ],
+      "publication_record_ids": [
+        "rewire-local-20260920-evaluation-proteingym-esm2",
+        "rewire-local-20260920-result-proteingym-esm2-auc",
+        "rewire-local-20260920-result-proteingym-esm2-mcc",
+        "rewire-local-20260920-result-proteingym-esm2-ndcg",
+        "rewire-local-20260920-result-proteingym-esm2-spearman",
+        "rewire-local-20260920-result-proteingym-esm2-top-recall"
+      ]
+    },
+    {
+      "evaluation_id": "rewire-local-20260921-evaluation-composition22",
+      "model_name": "Protein composition + fixed ridge probe",
+      "protocol_id": "flip2-fitness-v1",
+      "protocol_version": "1",
+      "dataset_id": "flip2-rhomax-by-wild-type",
+      "scope": "full",
+      "completion": "complete",
+      "coverage": {
+        "denominator": 184,
+        "scored": 184,
+        "unscored": 0
+      },
+      "metrics": {
+        "n": 184,
+        "ndcg": 0.9548154942827918,
+        "spearman": 0.41798958279508075
+      },
+      "metric_path": [
+        "metrics"
+      ],
+      "predictions_sha256": "0a214b7dbad99d3684353cf3d56c5c57bae1e2dfa67eb88f67e3f32c66313dd7",
+      "prepared_sha256": "f417d43497e0c8c453bd7c66cfea05959b4d6d47462283096e42a2dae8b72419",
+      "data_verification": "pinned_source_bytes",
+      "artifacts": {
+        "report": {
+          "url": "https://raw.githubusercontent.com/rewire-bio/rewire-benchmarks/6d95ece86ef9851db916f49e81a581e306657377/research/baseline-programme-2026-09-21/rhomax/protein-composition-probe-v1.report.json",
+          "sha256": "2071ac2487d56df4150109b944a42944ed12e1398d00899c054580f709921317"
+        },
+        "bundle": {
+          "url": "https://raw.githubusercontent.com/rewire-bio/rewire-benchmarks/6d95ece86ef9851db916f49e81a581e306657377/research/baseline-programme-2026-09-21/rhomax/protein-composition-probe-v1.bundle.json",
+          "sha256": "3dc670c2b89776e13d36b68d003d2fe554ba500aeaa199ba04c6d3f56b1f3fef"
+        },
+        "audit": {
+          "url": "https://raw.githubusercontent.com/rewire-bio/rewire-benchmarks/1663d1f04b2bbd6dfcff77fea78129d30b0de191/research/baseline-programme-2026-09-21/rhomax/verification.json",
+          "sha256": "4126d97686aaa026bab6989f85c405e097b383831e4b8012232394c2ec9178de"
+        }
+      },
+      "audit_run": "protein-composition-probe-v1",
+      "catalogue_evaluation_id": "rewire-local-20260921-evaluation-composition22",
+      "review_disposition": "ready_for_publication_review",
+      "publication_status": "not_published",
+      "review_method": "automated_artifact_reconciliation_and_agent_source_review",
+      "limitations": [
+        "No confidence intervals or seed variability estimate.",
+        "Source checking and local execution do not reproduce a published paper score.",
+        "The 40-feature and 22-feature composition controls are distinct configurations; do not consolidate them by name."
+      ],
+      "publication_record_ids": [
+        "rewire-local-20260921-evaluation-composition22",
+        "rewire-local-20260921-result-composition22-ndcg",
+        "rewire-local-20260921-result-composition22-spearman"
+      ]
+    },
+    {
+      "evaluation_id": "rewire-local-20260921-evaluation-esm2-35m",
+      "model_name": "ESM-2 35M frozen residue-mean embeddings + fixed ridge (Rewire)",
+      "protocol_id": "flip2-fitness-v1",
+      "protocol_version": "1",
+      "dataset_id": "flip2-rhomax-by-wild-type",
+      "scope": "full",
+      "completion": "complete",
+      "coverage": {
+        "denominator": 184,
+        "scored": 184,
+        "unscored": 0
+      },
+      "metrics": {
+        "n": 184,
+        "ndcg": 0.9072580204736261,
+        "spearman": -0.2217595033467806
+      },
+      "metric_path": [
+        "metrics"
+      ],
+      "predictions_sha256": "96e8a0c6663dd0a471b984fb86506e483d252a6036a9617cf5f4487664274abd",
+      "prepared_sha256": "f417d43497e0c8c453bd7c66cfea05959b4d6d47462283096e42a2dae8b72419",
+      "data_verification": "pinned_source_bytes",
+      "artifacts": {
+        "report": {
+          "url": "https://raw.githubusercontent.com/rewire-bio/rewire-benchmarks/6d95ece86ef9851db916f49e81a581e306657377/research/baseline-programme-2026-09-21/rhomax-35m/esm2.report.json",
+          "sha256": "29d7c0ae7f47d45861a769eb8813bf8c650c9a95b3a6821c524b216b0b907ef0"
+        },
+        "bundle": {
+          "url": "https://raw.githubusercontent.com/rewire-bio/rewire-benchmarks/6d95ece86ef9851db916f49e81a581e306657377/research/baseline-programme-2026-09-21/rhomax-35m/esm2.bundle.json",
+          "sha256": "4b88241280194e00dae57eb9e4318058c4ad9a1d5b7f18befc1c6fa5004f1b6b"
+        },
+        "audit": {
+          "url": "https://raw.githubusercontent.com/rewire-bio/rewire-benchmarks/1663d1f04b2bbd6dfcff77fea78129d30b0de191/research/baseline-programme-2026-09-21/rhomax-35m/verification.json",
+          "sha256": "27dca7c2ac34ab35a7c2bd5ae80969e5ac10cf8e4e03bd969ac4a593cae397b7"
+        }
+      },
+      "audit_run": "esm2",
+      "catalogue_evaluation_id": "rewire-local-20260921-evaluation-esm2-35m",
+      "review_disposition": "ready_for_publication_review",
+      "publication_status": "not_published",
+      "review_method": "automated_artifact_reconciliation_and_agent_source_review",
+      "limitations": [
+        "No confidence intervals or seed variability estimate.",
+        "Source checking and local execution do not reproduce a published paper score.",
+        "Pretraining overlap is unreported; conclusions apply to the exact evaluated configuration."
+      ],
+      "publication_record_ids": [
+        "rewire-local-20260921-evaluation-esm2-35m",
+        "rewire-local-20260921-result-esm2-35m-ndcg",
+        "rewire-local-20260921-result-esm2-35m-spearman"
+      ]
+    },
+    {
+      "evaluation_id": "rewire-local-20260921-evaluation-esm2-8m",
+      "model_name": "ESM-2 8M frozen residue-mean embeddings + fixed ridge (Rewire)",
+      "protocol_id": "flip2-fitness-v1",
+      "protocol_version": "1",
+      "dataset_id": "flip2-rhomax-by-wild-type",
+      "scope": "full",
+      "completion": "complete",
+      "coverage": {
+        "denominator": 184,
+        "scored": 184,
+        "unscored": 0
+      },
+      "metrics": {
+        "n": 184,
+        "ndcg": 0.8964799835636942,
+        "spearman": -0.1463506755340845
+      },
+      "metric_path": [
+        "metrics"
+      ],
+      "predictions_sha256": "b975eff8d023c310860b6d8215fbe365a694985950afc95966db632eaa5eeb6c",
+      "prepared_sha256": "f417d43497e0c8c453bd7c66cfea05959b4d6d47462283096e42a2dae8b72419",
+      "data_verification": "pinned_source_bytes",
+      "artifacts": {
+        "report": {
+          "url": "https://raw.githubusercontent.com/rewire-bio/rewire-benchmarks/6d95ece86ef9851db916f49e81a581e306657377/research/baseline-programme-2026-09-21/rhomax/esm2.report.json",
+          "sha256": "d6df9e916e77872112571b404265e918276974c79dcbe25721b3eca0eae4e51a"
+        },
+        "bundle": {
+          "url": "https://raw.githubusercontent.com/rewire-bio/rewire-benchmarks/6d95ece86ef9851db916f49e81a581e306657377/research/baseline-programme-2026-09-21/rhomax/esm2.bundle.json",
+          "sha256": "77138b9b9e413ff2be463f35010c013ee17bf1ebec1eea57238552ab2cbbc3f6"
+        },
+        "audit": {
+          "url": "https://raw.githubusercontent.com/rewire-bio/rewire-benchmarks/1663d1f04b2bbd6dfcff77fea78129d30b0de191/research/baseline-programme-2026-09-21/rhomax/verification.json",
+          "sha256": "4126d97686aaa026bab6989f85c405e097b383831e4b8012232394c2ec9178de"
+        }
+      },
+      "audit_run": "esm2",
+      "catalogue_evaluation_id": "rewire-local-20260921-evaluation-esm2-8m",
+      "review_disposition": "ready_for_publication_review",
+      "publication_status": "not_published",
+      "review_method": "automated_artifact_reconciliation_and_agent_source_review",
+      "limitations": [
+        "No confidence intervals or seed variability estimate.",
+        "Source checking and local execution do not reproduce a published paper score.",
+        "Pretraining overlap is unreported; conclusions apply to the exact evaluated configuration."
+      ],
+      "publication_record_ids": [
+        "rewire-local-20260921-evaluation-esm2-8m",
+        "rewire-local-20260921-result-esm2-8m-ndcg",
+        "rewire-local-20260921-result-esm2-8m-spearman"
+      ]
+    },
+    {
+      "evaluation_id": "rewire-local-20260921-evaluation-mfass-prior",
+      "model_name": "Training class prior / majority",
+      "protocol_id": "mfass-v2",
+      "protocol_version": "bee9133b83f3aedaf2bbb9013f1875515845607e",
+      "dataset_id": "mfass-assay-pairs-v2",
+      "scope": "full",
+      "completion": "complete",
+      "coverage": {
+        "denominator": 8324,
+        "scored": 8324,
+        "unscored": 0
+      },
+      "metrics": {
+        "auroc": 0.5,
+        "average_precision_sklearn": 0.037842383469485825,
+        "capacity": 100,
+        "n": 8324,
+        "positives": 315,
+        "precision_at_capacity": 0.04,
+        "prevalence": 0.037842383469485825,
+        "recall_at_capacity": 0.012698412698412698
+      },
+      "metric_path": [
+        "metrics"
+      ],
+      "predictions_sha256": "c9f2d729201ae3dd80fcfa7eb71c75968eb6cb33e30648109e1cbda070a3b9f8",
+      "prepared_sha256": "cbba55d19fea7cb204127343ecb554da169a16f047117eb1db6472a5707f38d3",
+      "data_verification": "pinned_source_bytes",
+      "artifacts": {
+        "report": {
+          "url": "https://raw.githubusercontent.com/rewire-bio/rewire-benchmarks/60dc51f972ca736f1b7f10e85a1db8cfa837bab9/research/mfass-null-2026-09-21/evidence/training-prior.report.json",
+          "sha256": "89e06a2f7229f16b980254a6589eb808ec89137018388db98719beb72324f56a"
+        },
+        "bundle": {
+          "url": "https://raw.githubusercontent.com/rewire-bio/rewire-benchmarks/60dc51f972ca736f1b7f10e85a1db8cfa837bab9/research/mfass-null-2026-09-21/evidence/training-prior.bundle.json",
+          "sha256": "85af2ced4ef5a86f8c8367bed521e0fb12723d2799b1f4e4cd96e878494fca4b"
+        },
+        "audit": {
+          "url": "https://raw.githubusercontent.com/rewire-bio/rewire-benchmarks/1663d1f04b2bbd6dfcff77fea78129d30b0de191/research/mfass-null-2026-09-21/evidence/verification.json",
+          "sha256": "7eff5c6fe57c641296be48cce0ac90ab9c03f59db2c1fc43c5fafd41a93c76c8"
+        }
+      },
+      "audit_run": null,
+      "catalogue_evaluation_id": "rewire-local-20260921-evaluation-mfass-prior",
+      "review_disposition": "ready_for_publication_review",
+      "publication_status": "not_published",
+      "review_method": "automated_artifact_reconciliation_and_agent_source_review",
+      "limitations": [
+        "No confidence intervals or seed variability estimate.",
+        "Source checking and local execution do not reproduce a published paper score.",
+        "All predictions tie. Four positives in the first 100 reflect one fixed label-independent tie break, not expected chance ranking ability."
+      ],
+      "publication_record_ids": [
+        "rewire-local-20260921-evaluation-mfass-prior",
+        "rewire-local-20260921-result-mfass-prior-auroc",
+        "rewire-local-20260921-result-mfass-prior-average-precision-sklearn",
+        "rewire-local-20260921-result-mfass-prior-precision-at-capacity"
+      ]
+    },
+    {
+      "evaluation_id": "rewire-local-20260921-evaluation-proteingym-random",
+      "model_name": "Seeded random ranking control",
+      "protocol_id": "proteingym-v1.3-dms-substitutions",
+      "protocol_version": "1.3",
+      "dataset_id": "proteingym-dms-substitutions-v1.3",
+      "scope": "subset",
+      "completion": "partial",
+      "coverage": {
+        "denominator": 2972,
+        "scored": 2972,
+        "unscored": 0
+      },
+      "metrics": {
+        "AUC": 0.514,
+        "MCC": 0.019,
+        "NDCG": 0.526,
+        "Spearman": 0.008,
+        "Top_recall": 0.087
+      },
+      "metric_path": [
+        "protocol_results",
+        "per_assay",
+        "AMFR_HUMAN_Tsuboyama_2023_4G3O",
+        "metrics"
+      ],
+      "predictions_sha256": "37a020ad31e35d57a924397c395c10bfac152417f0a42207400cef789d3d5e02",
+      "prepared_sha256": "9f0e0cce34942797364990ef4dc9fb8b382f7b2fd59e6c72de23efc2992fb148",
+      "data_verification": "local_bytes_hashed_not_independently_source_verified",
+      "artifacts": {
+        "report": {
+          "url": "https://raw.githubusercontent.com/rewire-bio/rewire-benchmarks/bf3266e4cae93d9a5f9c51137fba2530f2503eb4/research/proteingym-null-2026-09-21/evidence/seeded-random.report.json",
+          "sha256": "0f20a55715e3f223b9127792df28c6f37547fa7d0c18be55795b632c87019c58"
+        },
+        "bundle": {
+          "url": "https://raw.githubusercontent.com/rewire-bio/rewire-benchmarks/bf3266e4cae93d9a5f9c51137fba2530f2503eb4/research/proteingym-null-2026-09-21/evidence/seeded-random.bundle.json",
+          "sha256": "326381c78c6fa82e125e1ae3a2230ade3c7bca157bd574c5a0713ee9911144f3"
+        },
+        "audit": {
+          "url": "https://raw.githubusercontent.com/rewire-bio/rewire-benchmarks/1663d1f04b2bbd6dfcff77fea78129d30b0de191/research/proteingym-null-2026-09-21/evidence/verification.json",
+          "sha256": "e27576294fcc8b01fab73745df1f46787ca2b5864c2c55685b48ee3619b47666"
+        }
+      },
+      "audit_run": null,
+      "catalogue_evaluation_id": "rewire-local-20260921-evaluation-proteingym-random",
+      "review_disposition": "ready_for_publication_review",
+      "publication_status": "not_published",
+      "review_method": "automated_artifact_reconciliation_and_agent_source_review",
+      "limitations": [
+        "No confidence intervals or seed variability estimate.",
+        "Source checking and local execution do not reproduce a published paper score.",
+        "One complete AMFR assay, not the full 217-assay track.",
+        "Input bytes were hashed locally, not independently verified against an upstream published checksum.",
+        "One fixed-seed random ranking, not a chance-performance interval."
+      ],
+      "publication_record_ids": [
+        "rewire-local-20260921-evaluation-proteingym-random",
+        "rewire-local-20260921-result-proteingym-random-auc",
+        "rewire-local-20260921-result-proteingym-random-mcc",
+        "rewire-local-20260921-result-proteingym-random-ndcg",
+        "rewire-local-20260921-result-proteingym-random-spearman",
+        "rewire-local-20260921-result-proteingym-random-top-recall"
+      ]
+    }
+  ],
+  "duplicate_exclusions": [
+    "rhomax/training-mean-v1 is a repeated verification of the original training-mean evidence, not a new evaluation.",
+    "rhomax-35m/training-mean-v1 and rhomax-35m/protein-composition-probe-v1 repeat controls; retain as validation receipts only."
+  ],
+  "proposed_release": "2026-09-22-f58a0f1d267f"
+}

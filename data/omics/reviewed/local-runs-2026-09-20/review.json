@@ -1,0 +1,23 @@
+{
+  "schema_version": "1.0",
+  "status": "reviewed",
+  "review_method": "automated",
+  "reviewed_at": "2026-09-20T20:54:03Z",
+  "records_sha256": "7d936c8c328d475ffef7becff2b15a3305f5fc036077dde2fe319925407a71e6",
+  "evidence_sha256": "7cee91f57e86a6d7379702301def95c76b266da225adddf23f2f15c3f9a9ff4e",
+  "source_revision": "ca73fa47136d182f2d4ddb083d084712198fc0e2",
+  "evaluation_ids": [
+    "rewire-local-20260920-evaluation-flip2-composition",
+    "rewire-local-20260920-evaluation-flip2-train-mean",
+    "rewire-local-20260920-evaluation-mrnabench-composition",
+    "rewire-local-20260920-evaluation-mrnabench-train-mean",
+    "rewire-local-20260920-evaluation-proteingym-esm2"
+  ],
+  "errors": [],
+  "limitations": [
+    "Automated verification; no human review claimed.",
+    "These are new local evaluations, not reproduction of published scores.",
+    "No cross-suite aggregate; missing constant-control correlations remain unavailable.",
+    "Raw predictions remain local; public reports and input/output hashes support provenance, not independent regeneration without data access."
+  ]
+}

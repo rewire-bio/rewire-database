@@ -1,4 +1,5 @@
 import { writeImmutableChunks } from "./stream-files";
+import { addLocalEvaluations, localEvaluationInputs, addBaselineEvaluations, baselineEvaluationInputs } from "./local-evaluations";
 import {
   addAcquiredEvidence,
   acquisitionFiles,
@@ -218,8 +219,12 @@ function main() {
       : [],
   );
   if (!baseRecords.length) throw new Error("No reviewed catalogue inputs");
-  restoreArchivedRelease(baseRecords);
-  restoreReleaseBundles();
+  // Review-only release preparation can avoid expanding all historical downloads.
+  // Production builds omit this option and still restore/check every archive.
+  if (!process.argv.includes("--current-only")) {
+    restoreArchivedRelease(baseRecords);
+    restoreReleaseBundles();
+  }
   const ledger = fs.existsSync("data/omics/search-ledger.jsonl")
     ? fs
         .readFileSync("data/omics/search-ledger.jsonl", "utf8")
@@ -264,9 +269,9 @@ function main() {
         : [],
     ),
   );
-  const records = applyAcquisitionCorrections(
+  const records = addBaselineEvaluations(addLocalEvaluations(applyAcquisitionCorrections(
     addAcquiredEvidence(addRunRecipes(separateEntities(profiled))),
-  );
+  )));
   const profiles = records
     .filter((record) => record.attributes.profile)
     .map((record) => record.attributes.profile as OmicsProfile);
@@ -400,6 +405,8 @@ function main() {
         ),
         ...entityInputFiles,
         ...runRecipeInputs,
+        ...localEvaluationInputs,
+        ...baselineEvaluationInputs,
         ...reviewInputFiles.filter((file) => fs.existsSync(file)),
         ...profileInputs.filter((file) => fs.existsSync(file)),
         ...associationInputs.filter((file) => fs.existsSync(file)),
@@ -420,7 +427,7 @@ function main() {
     JSON.stringify(output.manifest, null, 2) + "\n",
   );
   console.log(
-    `Omics ${output.snapshot.release_id}: ${output.snapshot.records.length} public records; ${output.manifest.coverage.source_checked_results} checked external result rows; ${output.manifest.coverage.quarantined_results} in review.`,
+    `Omics ${output.snapshot.release_id}: ${output.snapshot.records.length} public records; ${output.manifest.coverage.source_checked_results} source-checked result rows; ${output.manifest.coverage.quarantined_results} in review.`,
   );
 }
 if (process.argv[1]?.endsWith("release.ts")) main();

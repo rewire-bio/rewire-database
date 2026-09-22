@@ -80,11 +80,15 @@ export const appRouter = t.router({
     get: t.procedure
       .input(z.object({ ...pinned, id }).strict())
       .query(({ input }) =>
-        readCatalogue(input.release_id, (q) => q.get({ ...input, include_comparisons: false })),
+        readCatalogue(input.release_id, (q) =>
+          q.get({ ...input, include_comparisons: false }),
+        ),
       ),
     comparison: t.procedure
       .input(z.object({ ...pinned, id, panel_id: id }).strict())
-      .query(({ input }) => readCatalogue(input.release_id, q => q.comparison(input))),
+      .query(({ input }) =>
+        readCatalogue(input.release_id, (q) => q.comparison(input)),
+      ),
     results: t.procedure
       .input(
         z
@@ -95,6 +99,9 @@ export const appRouter = t.router({
             metric: z.string().max(200).optional(),
             origin: z.string().max(100).optional(),
             configuration_id: id.optional(),
+            protocol_id: id.optional(),
+            dataset_id: id.optional(),
+            tested_entity_id: id.optional(),
           })
           .strict(),
       )
@@ -129,9 +136,46 @@ export const appRouter = t.router({
           return q.evidence(filters);
         }),
       ),
-    auditRuns: t.procedure.input(z.object({...pinned,...pagination}).strict()).query(({input})=>auditRuns(firebase().db,input)),
-    auditRecords: t.procedure.input(z.object({...pinned,...pagination,run_id:id.optional(),kind:z.string().max(100).optional(),date_from:z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),date_to:z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),q:z.string().max(300).optional(),outcome:z.enum(auditOutcomes).optional(),category:z.enum(auditCategories).optional()}).strict()).query(({input})=>auditRecords(firebase().db,input)),
-    auditChecks: t.procedure.input(z.object({...pinned,...pagination,record_id:id,run_id:id.optional(),outcome:z.enum(auditOutcomes).optional(),category:z.enum(auditCategories).optional()}).strict()).query(({input})=>auditChecks(firebase().db,input)),
+    auditRuns: t.procedure
+      .input(z.object({ ...pinned, ...pagination }).strict())
+      .query(({ input }) => auditRuns(firebase().db, input)),
+    auditRecords: t.procedure
+      .input(
+        z
+          .object({
+            ...pinned,
+            ...pagination,
+            run_id: id.optional(),
+            kind: z.string().max(100).optional(),
+            date_from: z
+              .string()
+              .regex(/^\d{4}-\d{2}-\d{2}$/)
+              .optional(),
+            date_to: z
+              .string()
+              .regex(/^\d{4}-\d{2}-\d{2}$/)
+              .optional(),
+            q: z.string().max(300).optional(),
+            outcome: z.enum(auditOutcomes).optional(),
+            category: z.enum(auditCategories).optional(),
+          })
+          .strict(),
+      )
+      .query(({ input }) => auditRecords(firebase().db, input)),
+    auditChecks: t.procedure
+      .input(
+        z
+          .object({
+            ...pinned,
+            ...pagination,
+            record_id: id,
+            run_id: id.optional(),
+            outcome: z.enum(auditOutcomes).optional(),
+            category: z.enum(auditCategories).optional(),
+          })
+          .strict(),
+      )
+      .query(({ input }) => auditChecks(firebase().db, input)),
     compare: t.procedure
       .input(z.object({ ...pinned, ids: z.array(id).min(2).max(20) }).strict())
       .query(({ input }) =>
@@ -155,7 +199,9 @@ export const appRouter = t.router({
       ),
     list: authenticated
       .input(z.object(privatePagination).strict().default({}))
-      .query(({ ctx, input }) => store.listOwn(firebase().db, ctx.user.uid, input)),
+      .query(({ ctx, input }) =>
+        store.listOwn(firebase().db, ctx.user.uid, input),
+      ),
     get: authenticated
       .input(z.object({ id }))
       .query(({ ctx, input }) =>
@@ -170,9 +216,17 @@ export const appRouter = t.router({
   curator: t.router({
     list: curator
       .input(
-        z.object({ status: z.enum(store.statuses).optional(), ...privatePagination }).strict().default({}),
+        z
+          .object({
+            status: z.enum(store.statuses).optional(),
+            ...privatePagination,
+          })
+          .strict()
+          .default({}),
       )
-      .query(({ input }) => store.curatorList(firebase().db, input.status, input)),
+      .query(({ input }) =>
+        store.curatorList(firebase().db, input.status, input),
+      ),
     transition: curator
       .input(
         z

@@ -17,6 +17,7 @@ import {
 import { createContributionClient } from "@/lib/omics-contributions";
 import { displayValue } from "@/lib/omics";
 import styles from "../database/database.module.css";
+import taskStyles from "./ContributionTasks.module.css";
 
 type ContributionType = "model" | "benchmark" | "result" | "correction";
 interface Draft {
@@ -95,6 +96,8 @@ function readDraft(record: Submission): Draft {
 }
 export default function ContributionForm() {
   const [draft, setDraft] = useState<Draft>(emptyDraft);
+  const [view, setView] = useState<"new" | "contributions" | "python">("new");
+  const draftCache = useRef(new Map<string, Draft>());
   const [email, setEmail] = useState("");
   const [user, setUser] = useState<User | null>(null);
   const [message, setMessage] = useState("");
@@ -297,10 +300,12 @@ export default function ContributionForm() {
       )
         return;
       setActive(record as unknown as Submission);
+      if (!active) draftCache.current.set("new", emptyDraft);
+      setView("contributions");
       setMessage(
         active
           ? "Your revision has been saved for review."
-          : `Submission ${id} has been saved privately and is pending review. Track it in Your contributions below.`,
+          : `Submission ${id} has been saved privately and is pending review. Track it in Your contributions.`,
       );
       await refresh(user);
     } catch {
@@ -313,6 +318,7 @@ export default function ContributionForm() {
   }
   async function openSubmission(id: string) {
     if (!user) return;
+    draftCache.current.set(active?.id || "new", draft);
     const epoch = sessionEpoch.current;
     setBusy(true);
     setError("");
@@ -326,13 +332,24 @@ export default function ContributionForm() {
       )
         return;
       setActive(record);
-      setDraft(readDraft(record));
+      setDraft(draftCache.current.get(id) || readDraft(record));
       setMessage("");
     } catch {
       setError("This contribution could not be loaded.");
     } finally {
       setBusy(false);
     }
+  }
+  function selectView(next: "new" | "contributions" | "python") {
+    if (busy) return;
+    // Keep private drafts in memory only, including unsaved revisions. Task
+    // navigation must never discard text or overwrite the new-submission draft.
+    draftCache.current.set(active?.id || "new", draft);
+    if (next === "new" && active) {
+      setActive(null);
+      setDraft(draftCache.current.get("new") || emptyDraft);
+    }
+    setView(next);
   }
   function update<K extends keyof Draft>(key: K, value: Draft[K]) {
     setDraft((current) => ({ ...current, [key]: value }));
@@ -380,6 +397,27 @@ export default function ContributionForm() {
           reviewed and published.
         </p>
       )}
+      <nav aria-label="Contribution tasks" className={taskStyles.tasks}>
+        {(
+          [
+            ["new", "New contribution"],
+            ["contributions", "Your contributions"],
+            ["python", "Submit with Python"],
+          ] as const
+        ).map(([key, label]) => (
+          <button
+            type="button"
+            key={key}
+            disabled={busy}
+            aria-pressed={view === key}
+            aria-controls={`contribution-${key}`}
+            className={styles.button}
+            onClick={() => selectView(key)}
+          >
+            {label}
+          </button>
+        ))}
+      </nav>
       {configured && !user && (
         <form className={styles.form} onSubmit={authenticate}>
           <label className={styles.label}>
@@ -403,8 +441,49 @@ export default function ContributionForm() {
             Signed in as {user.email}. Your contributions are visible only to
             you and the review team until publication.
           </p>
-          <details>
-            <summary>Submit from the Python library</summary>
+
+          <button
+            className={styles.button}
+            onClick={() => {
+              sessionEpoch.current += 1;
+              if (authRef.current) void signOut(authRef.current);
+              setSubmissions([]);
+              setActive(null);
+              setEmail("");
+              setPendingLink("");
+              window.sessionStorage.removeItem(emailStorageKey);
+              window.sessionStorage.removeItem("rewire-omics-draft");
+              setDraft(emptyDraft);
+              draftCache.current.clear();
+              setMessage("");
+            }}
+          >
+            Sign out
+          </button>
+        </div>
+      )}
+      {error && (
+        <p className={styles.error} role="alert">
+          {error}
+        </p>
+      )}
+      {message && (
+        <p className={styles.notice} role="status">
+          {message}
+        </p>
+      )}
+      <section
+        id="contribution-python"
+        hidden={view !== "python"}
+        className={styles.section}
+      >
+        <h2>Submit with Python</h2>
+        <p>
+          Export an evaluation with rewirebench, then submit its bundle for
+          private review. Submission does not publish a result.
+        </p>
+        {configured && user ? (
+          <>
             <p>
               Copy a short-lived access token after verifying your email. It
               authorises access to your private contributions. Pass it to
@@ -445,275 +524,285 @@ export default function ContributionForm() {
             >
               Copy library access token
             </button>
-          </details>
-          <button
-            className={styles.button}
-            onClick={() => {
-              sessionEpoch.current += 1;
-              if (authRef.current) void signOut(authRef.current);
-              setSubmissions([]);
-              setActive(null);
-              setEmail("");
-              setPendingLink("");
-              window.sessionStorage.removeItem(emailStorageKey);
-              window.sessionStorage.removeItem("rewire-omics-draft");
-              setDraft(emptyDraft);
-              setMessage("");
-            }}
-          >
-            Sign out
-          </button>
-        </div>
-      )}
-      {error && (
-        <p className={styles.error} role="alert">
-          {error}
-        </p>
-      )}
-      {message && (
-        <p className={styles.notice} role="status">
-          {message}
-        </p>
-      )}
-      {submissions.length > 0 && (
-        <section className={styles.section}>
-          <h2>Your contributions</h2>
-          <p>Open a contribution to see its review status and any reviewer notes.</p>
-          <ul className={styles.list}>
-            {submissions.map((item) => (
-              <li key={item.id}>
-                <button
-                  className={styles.button}
-                  disabled={busy}
-                  onClick={() => void openSubmission(item.id)}
-                >
-                  {item.title} · {item.status.replace(/_/g, " ")}
-                </button>
-                <p className={styles.muted}>Submission ID: {item.id}</p>
-              </li>
-            ))}
-          </ul>
-          {nextCursor && (
-            <button
-              className={styles.button}
-              disabled={busy || loadingMore}
-              onClick={() => {
-                if (!user) return;
-                setLoadingMore(true);
-                void refresh(user, nextCursor)
-                  .catch(() =>
-                    setError(
-                      "More contributions could not be loaded. Try again.",
-                    ),
-                  )
-                  .finally(() => setLoadingMore(false));
-              }}
-            >
-              {loadingMore ? "Loading…" : "Load more contributions"}
-            </button>
-          )}
-        </section>
-      )}
-      {active && (
-        <section className={styles.section}>
-          <h2>Contribution status: {active.status.replace(/_/g, " ")}</h2>
-          <p className={styles.muted}>Submission ID: {active.id}</p>
-          {!!active.review_notes && (
-            <p>Review notes: {displayValue(active.review_notes)}</p>
-          )}
-          {!!active.revisions && (
-            <details>
-              <summary>Revision history</summary>
-              <ol className={styles.list}>
-                {active.revisions.map((revision) => (
-                  <li key={revision.id}>
-                    <strong>
-                      {new Date(revision.created_at).toLocaleString("en-GB")}
-                    </strong>
-                    {" · "}
-                    {revision.actor === "curator"
-                      ? "Review team"
-                      : "Contributor"}
-                    {" · "}
-                    {revision.status.replace(/_/g, " ")}
-                    {revision.note && <p>{revision.note}</p>}
-                    {revision.payload?.summary && (
-                      <p>{revision.payload.summary}</p>
-                    )}
-                  </li>
-                ))}
-              </ol>
-            </details>
-          )}
-          {!editable && (
-            <p>
-              This contribution is currently locked for editing. Submit a
-              correction if further changes are needed.
-            </p>
-          )}
-          <button
-            className={styles.button}
-            onClick={() => {
-              setActive(null);
-              setDraft(emptyDraft);
-              setMessage("");
-            }}
-          >
-            Start a new contribution
-          </button>
-        </section>
-      )}
-      <form className={styles.form} onSubmit={submit}>
-        <label className={styles.label}>
-          Contribution type
-          <select
-            value={draft.type}
-            disabled={!!active}
-            onChange={(event) =>
-              update("type", event.target.value as ContributionType)
-            }
-          >
-            <option value="model">Model</option>
-            <option value="benchmark">Benchmark</option>
-            <option value="result">Result</option>
-            <option value="correction">Correction</option>
-          </select>
-        </label>
-        <label className={styles.label}>
-          Title
-          <input
-            required
-            maxLength={300}
-            value={draft.title}
-            disabled={!editable}
-            onChange={(event) => update("title", event.target.value)}
-          />
-        </label>
-        <label className={styles.label}>
-          Existing record ID{" "}
-          {draft.type === "correction" ? "(required)" : "(optional)"}
-          <input
-            required={draft.type === "correction"}
-            maxLength={200}
-            value={draft.target_id || ""}
-            disabled={!editable}
-            onChange={(event) =>
-              update("target_id", event.target.value || undefined)
-            }
-          />
-        </label>
-        <label className={styles.label}>
-          What should we add or change?
-          <textarea
-            required
-            minLength={10}
-            maxLength={10000}
-            value={draft.summary}
-            disabled={!editable}
-            onChange={(event) => update("summary", event.target.value)}
-          />
-        </label>
-        <label className={styles.label}>
-          Source URLs (one per line)
-          <textarea
-            required
-            value={draft.source_urls.join("\n")}
-            disabled={!editable}
-            onChange={(event) =>
-              update("source_urls", event.target.value.split("\n"))
-            }
-            placeholder="https://doi.org/…"
-          />
-        </label>
-        {draft.type === "result" &&
-          resultFields.map((field) => (
-            <label className={styles.label} key={field}>
-              {field === "source_locator"
-                ? "Evidence location (table, figure, page or artifact row)"
-                : field.replace(/_/g, " ")}
-              <input
-                required
-                value={draft.details[field] || ""}
-                disabled={!editable}
-                onChange={(event) =>
-                  update("details", {
-                    ...draft.details,
-                    [field]: event.target.value,
-                  })
-                }
-              />
-            </label>
-          ))}
-        <label className={styles.label}>
-          Your name (optional)
-          <input
-            maxLength={200}
-            value={draft.name || ""}
-            disabled={!editable}
-            onChange={(event) =>
-              update("name", event.target.value || undefined)
-            }
-          />
-        </label>
-        <label className={styles.label}>
-          Affiliation (optional)
-          <input
-            maxLength={300}
-            value={draft.affiliation || ""}
-            disabled={!editable}
-            onChange={(event) =>
-              update("affiliation", event.target.value || undefined)
-            }
-          />
-        </label>
-        <label className={styles.label}>
-          ORCID URL (optional)
-          <input
-            type="url"
-            value={draft.orcid || ""}
-            disabled={!editable}
-            onChange={(event) =>
-              update("orcid", event.target.value || undefined)
-            }
-            placeholder="https://orcid.org/…"
-          />
-        </label>
-        <label className={styles.check}>
-          <input
-            type="checkbox"
-            checked={draft.public_credit}
-            disabled={!editable}
-            onChange={(event) => update("public_credit", event.target.checked)}
-          />
-          Credit me publicly if this contribution is published. This does not
-          publish my email.
-        </label>
-        {configured ? (
-          <>
-            <button
-              className={styles.button}
-              type="submit"
-              disabled={!user || busy || !editable}
-            >
-              {active ? "Save revision" : "Submit for review"}
-            </button>
-            {!user && (
-              <p className={styles.muted}>
-                Verify your email above to submit. Your draft stays in this page
-                until then.
-              </p>
-            )}
           </>
         ) : (
-          <button
-            className={styles.button}
-            type="button"
-            onClick={downloadDraft}
-          >
-            Download draft
-          </button>
+          <p>
+            {configured
+              ? "Verify your email above to copy a short-lived library access token."
+              : "Library submissions are disabled. Keep your exported bundle locally until intake opens."}
+          </p>
         )}
-      </form>
+        <p>
+          <a href="https://github.com/rewire-bio/rewire-benchmarks/blob/main/docs/sdk.md">
+            Python submission instructions
+          </a>
+        </p>
+      </section>
+      <section
+        id="contribution-contributions"
+        hidden={view !== "contributions"}
+      >
+        {submissions.length === 0 && (
+          <div className={styles.section}>
+            <h2>Your contributions</h2>
+            <p>
+              {user
+                ? "No contributions have been loaded for this account."
+                : "Sign in to view your private contributions and review status."}
+            </p>
+          </div>
+        )}
+        {submissions.length > 0 && (
+          <section className={styles.section}>
+            <h2>Your contributions</h2>
+            <p>
+              Open a contribution to see its review status and any reviewer
+              notes.
+            </p>
+            <ul className={styles.list}>
+              {submissions.map((item) => (
+                <li key={item.id}>
+                  <button
+                    className={styles.button}
+                    disabled={busy}
+                    onClick={() => void openSubmission(item.id)}
+                  >
+                    {item.title} · {item.status.replace(/_/g, " ")}
+                  </button>
+                  <p className={styles.muted}>Submission ID: {item.id}</p>
+                </li>
+              ))}
+            </ul>
+            {nextCursor && (
+              <button
+                className={styles.button}
+                disabled={busy || loadingMore}
+                onClick={() => {
+                  if (!user) return;
+                  setLoadingMore(true);
+                  void refresh(user, nextCursor)
+                    .catch(() =>
+                      setError(
+                        "More contributions could not be loaded. Try again.",
+                      ),
+                    )
+                    .finally(() => setLoadingMore(false));
+                }}
+              >
+                {loadingMore ? "Loading…" : "Load more contributions"}
+              </button>
+            )}
+          </section>
+        )}
+        {active && (
+          <section className={styles.section}>
+            <h2>Contribution status: {active.status.replace(/_/g, " ")}</h2>
+            <p className={styles.muted}>Submission ID: {active.id}</p>
+            {!!active.review_notes && (
+              <p>Review notes: {displayValue(active.review_notes)}</p>
+            )}
+            {!!active.revisions && (
+              <details>
+                <summary>Revision history</summary>
+                <ol className={styles.list}>
+                  {active.revisions.map((revision) => (
+                    <li key={revision.id}>
+                      <strong>
+                        {new Date(revision.created_at).toLocaleString("en-GB")}
+                      </strong>
+                      {" · "}
+                      {revision.actor === "curator"
+                        ? "Review team"
+                        : "Contributor"}
+                      {" · "}
+                      {revision.status.replace(/_/g, " ")}
+                      {revision.note && <p>{revision.note}</p>}
+                      {revision.payload?.summary && (
+                        <p>{revision.payload.summary}</p>
+                      )}
+                    </li>
+                  ))}
+                </ol>
+              </details>
+            )}
+            {!editable && (
+              <p>
+                This contribution is currently locked for editing. Submit a
+                correction if further changes are needed.
+              </p>
+            )}
+            <button
+              className={styles.button}
+              disabled={busy}
+              onClick={() => {
+                selectView("new");
+                setMessage("");
+              }}
+            >
+              Start a new contribution
+            </button>
+          </section>
+        )}
+      </section>
+      <section
+        id="contribution-new"
+        hidden={view !== "new" && !(view === "contributions" && active)}
+      >
+        <h2>{active ? "Revise contribution" : "New contribution"}</h2>
+        <form className={styles.form} onSubmit={submit}>
+          <label className={styles.label}>
+            Contribution type
+            <select
+              value={draft.type}
+              disabled={!!active}
+              onChange={(event) =>
+                update("type", event.target.value as ContributionType)
+              }
+            >
+              <option value="model">Model</option>
+              <option value="benchmark">Benchmark</option>
+              <option value="result">Result</option>
+              <option value="correction">Correction</option>
+            </select>
+          </label>
+          <label className={styles.label}>
+            Title
+            <input
+              required
+              maxLength={300}
+              value={draft.title}
+              disabled={!editable}
+              onChange={(event) => update("title", event.target.value)}
+            />
+          </label>
+          <label className={styles.label}>
+            Existing record ID{" "}
+            {draft.type === "correction" ? "(required)" : "(optional)"}
+            <input
+              required={draft.type === "correction"}
+              maxLength={200}
+              value={draft.target_id || ""}
+              disabled={!editable}
+              onChange={(event) =>
+                update("target_id", event.target.value || undefined)
+              }
+            />
+          </label>
+          <label className={styles.label}>
+            What should we add or change?
+            <textarea
+              required
+              minLength={10}
+              maxLength={10000}
+              value={draft.summary}
+              disabled={!editable}
+              onChange={(event) => update("summary", event.target.value)}
+            />
+          </label>
+          <label className={styles.label}>
+            Source URLs (one per line)
+            <textarea
+              required
+              value={draft.source_urls.join("\n")}
+              disabled={!editable}
+              onChange={(event) =>
+                update("source_urls", event.target.value.split("\n"))
+              }
+              placeholder="https://doi.org/…"
+            />
+          </label>
+          {draft.type === "result" &&
+            resultFields.map((field) => (
+              <label className={styles.label} key={field}>
+                {field === "source_locator"
+                  ? "Evidence location (table, figure, page or artifact row)"
+                  : field.replace(/_/g, " ")}
+                <input
+                  required
+                  value={draft.details[field] || ""}
+                  disabled={!editable}
+                  onChange={(event) =>
+                    update("details", {
+                      ...draft.details,
+                      [field]: event.target.value,
+                    })
+                  }
+                />
+              </label>
+            ))}
+          <label className={styles.label}>
+            Your name (optional)
+            <input
+              maxLength={200}
+              value={draft.name || ""}
+              disabled={!editable}
+              onChange={(event) =>
+                update("name", event.target.value || undefined)
+              }
+            />
+          </label>
+          <label className={styles.label}>
+            Affiliation (optional)
+            <input
+              maxLength={300}
+              value={draft.affiliation || ""}
+              disabled={!editable}
+              onChange={(event) =>
+                update("affiliation", event.target.value || undefined)
+              }
+            />
+          </label>
+          <label className={styles.label}>
+            ORCID URL (optional)
+            <input
+              type="url"
+              value={draft.orcid || ""}
+              disabled={!editable}
+              onChange={(event) =>
+                update("orcid", event.target.value || undefined)
+              }
+              placeholder="https://orcid.org/…"
+            />
+          </label>
+          <label className={styles.check}>
+            <input
+              type="checkbox"
+              checked={draft.public_credit}
+              disabled={!editable}
+              onChange={(event) =>
+                update("public_credit", event.target.checked)
+              }
+            />
+            Credit me publicly if this contribution is published. This does not
+            publish my email.
+          </label>
+          {configured ? (
+            <>
+              <button
+                className={styles.button}
+                type="submit"
+                disabled={!user || busy || !editable}
+              >
+                {active ? "Save revision" : "Submit for review"}
+              </button>
+              {!user && (
+                <p className={styles.muted}>
+                  Verify your email above to submit. Your draft stays in this
+                  page until then.
+                </p>
+              )}
+            </>
+          ) : (
+            <button
+              className={styles.button}
+              type="button"
+              onClick={downloadDraft}
+            >
+              Download draft
+            </button>
+          )}
+        </form>
+      </section>
     </>
   );
 }

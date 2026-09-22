@@ -1,0 +1,19 @@
+.tasks {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-block: 1.5rem;
+}
+
+.tasks button[aria-pressed="true"] {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+  font-weight: 700;
+}
+
+@media (max-width: 480px) {
+  .tasks {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}

@@ -23,7 +23,7 @@
 }
 .muted {
   color: var(--ink-3);
-  font-size: 13px;
+  font-size: 14px;
   line-height: 1.6;
 }
 .filters {
@@ -720,7 +720,7 @@
 }
 .keyFacts {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
   gap: 16px;
 }
 .keyFacts article {

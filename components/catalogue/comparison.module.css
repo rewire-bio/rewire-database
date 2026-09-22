@@ -1,0 +1,247 @@
+.anchor {
+  display: block;
+  scroll-margin-top: 6rem;
+}
+.switches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+.switches button,
+.toolbar select,
+.selectors select,
+.toolbar input,
+.search input {
+  border: 1px solid var(--line);
+  border-radius: 0.35rem;
+  background: var(--paper, #fff);
+  color: var(--ink);
+  padding: 0.55rem 0.7rem;
+  font: inherit;
+  min-height: 2.75rem;
+}
+.switches button {
+  cursor: pointer;
+}
+.switches button[aria-pressed="true"] {
+  background: var(--ink);
+  color: var(--paper, #fff);
+}
+.search,
+.selectors label,
+.toolbar label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-width: 0;
+  font-size: 0.9rem;
+}
+.search {
+  max-width: 36rem;
+  margin: 1rem 0;
+}
+.selectors {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.8rem;
+  margin: 1rem 0;
+}
+.selectors select {
+  width: 100%;
+  text-overflow: ellipsis;
+}
+.panelHeader {
+  margin-top: 1.25rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--line);
+}
+.panelHeader h3 {
+  font-size: 1.1rem;
+}
+.panelHeader p {
+  margin: 0.4rem 0;
+}
+.panelHeader details {
+  margin-top: 0.6rem;
+}
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  align-items: end;
+  margin-top: 1rem;
+}
+.toolbar label:first-child {
+  flex: 1 1 16rem;
+}
+.zoom {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  margin: 0.75rem 0;
+}
+.plot {
+  max-height: 34rem;
+  overflow-y: auto;
+  border: 1px solid var(--line);
+  border-radius: 0.35rem;
+  background: var(--paper, #fff);
+}
+.axisRow,
+.plotRow {
+  display: grid;
+  grid-template-columns: minmax(10rem, 1fr) minmax(10rem, 1.3fr) minmax(
+      5rem,
+      0.45fr
+    );
+  gap: 0.8rem;
+  align-items: center;
+  padding: 0.7rem 0.8rem;
+}
+.axisRow {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: var(--paper, #fff);
+  border-bottom: 1px solid var(--line);
+  font-size: 0.8rem;
+  min-height: 3rem;
+}
+.axis {
+  position: relative;
+  height: 1.5rem;
+}
+.axis span {
+  position: absolute;
+  transform: translateX(-50%);
+  font-variant-numeric: tabular-nums;
+}
+.rows {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.plotRow {
+  border-bottom: 1px solid var(--line);
+  min-height: 3.1rem;
+  font-size: 0.9rem;
+}
+.modelLabel {
+  overflow-wrap: anywhere;
+  line-height: 1.4;
+}
+.track {
+  position: relative;
+  height: 1.2rem;
+}
+.track::before {
+  content: "";
+  position: absolute;
+  top: 0.75rem;
+  left: 3%;
+  right: 3%;
+  height: 1px;
+  background: var(--line);
+}
+.dot {
+  position: absolute;
+  top: 0.45rem;
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 1px solid var(--ink);
+  transform: translateX(-50%);
+}
+.interval {
+  position: absolute;
+  top: 0.7rem;
+  height: 0.15rem;
+  background: var(--ink);
+}
+.interval::before,
+.interval::after {
+  content: "";
+  position: absolute;
+  top: -0.2rem;
+  width: 1px;
+  height: 0.55rem;
+  background: var(--ink);
+}
+.interval::after {
+  right: 0;
+}
+.value {
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+  text-align: right;
+}
+.unavailable {
+  font-size: 0.8rem;
+}
+.filtersPanel {
+  border-block: 1px solid var(--line);
+  padding: 0.6rem 0;
+}
+.filtersPanel summary {
+  cursor: pointer;
+}
+.pagination {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  align-items: center;
+  justify-content: space-between;
+  margin: 1rem 0;
+}
+.compactTable td,
+.compactTable th {
+  min-width: 10rem;
+  font-size: 0.9rem;
+}
+.compactTable p {
+  margin: 0.4rem 0;
+}
+.compactTable details {
+  margin-top: 0.4rem;
+}
+.tableHeading {
+  font-size: 1.15rem;
+  margin-top: 1rem;
+}
+@media (max-width: 640px) {
+  .selectors {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .axisRow,
+  .plotRow {
+    grid-template-columns: minmax(0, 1fr) minmax(4rem, 0.35fr);
+    gap: 0.5rem;
+  }
+  .axisRow > :first-child {
+    display: none;
+  }
+  .axisRow {
+    font-size: 0.75rem;
+  }
+  .modelLabel {
+    grid-column: 1 / -1;
+  }
+  .plotRow {
+    row-gap: 0.3rem;
+  }
+  .toolbar {
+    align-items: stretch;
+  }
+  .toolbar label {
+    max-width: 100%;
+  }
+  .plot {
+    max-height: 36rem;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .plot {
+    scroll-behavior: auto;
+  }
+}

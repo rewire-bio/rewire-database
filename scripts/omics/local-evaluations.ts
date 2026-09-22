@@ -9,6 +9,11 @@ export const localEvaluationInputs = [
   `${root}/review.json`,
   `${root}/evidence.json`,
 ];
+export const baselineEvaluationInputs = [
+  "data/omics/reviewed/baseline-runs-2026-09-22/records.jsonl",
+  "data/omics/reviewed/baseline-runs-2026-09-22/review.json",
+  "data/omics/reviewed/baseline-runs-2026-09-22/evidence.json",
+];
 const sha256 = (value: string | Buffer) =>
   createHash("sha256").update(value).digest("hex");
 const hash = z.string().regex(/^[a-f0-9]{64}$/);
@@ -46,7 +51,8 @@ export function applyLocalEvaluations(
       expected_count: number; scored_count: number; missing_count: number;
       metric_path: string; report: Record<string, unknown>; report_sha256: string; report_source_id: string;
       audit_sha256: string; audit_source_id: string;
-      execution_audit: { checks: Record<string, boolean> | { status: string }[] } }[];
+      audit_run?: string | null;
+      execution_audit: { checks?: Record<string, boolean> | { status: string }[]; [key: string]: unknown } }[];
   };
   const evaluations = added.filter((record) => record.kind === "evaluation");
   if (new Set(receipt.evaluation_ids).size !== receipt.evaluation_ids.length ||
@@ -73,9 +79,29 @@ export function applyLocalEvaluations(
           (reportedMetrics as Record<string, unknown>)[key] !== value))
       throw new Error("Local metric is not present in the execution report");
     const checks = run.execution_audit.checks;
-    if (Array.isArray(checks) ? !checks.length || checks.some((check) => check.status !== "passed") :
-        !Object.keys(checks).length || Object.values(checks).some((passed) => passed !== true))
-      throw new Error("Local execution has unresolved audit checks");
+    if (checks !== undefined) {
+      if (Array.isArray(checks) ? !checks.length || checks.some((check) => check.status !== "passed") :
+          !Object.keys(checks).length || Object.values(checks).some((passed) => passed !== true))
+        throw new Error("Local execution has unresolved audit checks");
+    } else {
+      // Newer receipts retain their original shape. Check exact run bindings,
+      // never synthesize a successful checks array or infer it from a title.
+      const audit = run.execution_audit;
+      const selected = run.audit_run
+        ? (audit.runs as Record<string, unknown>[] | undefined)?.filter((item) => item.run === run.audit_run)
+        : [audit];
+      if (!selected || selected.length !== 1) throw new Error("Ambiguous local audit run");
+      const checked = selected[0];
+      if (checked.prediction_digest_verification !== "passed" || checked.prepared_and_code_binding !== "passed" ||
+          checked.predictions_sha256 !== run.report.predictions_sha256 ||
+          audit.prepared_sha256 !== run.report.prepared_sha256 ||
+          audit.code_hash_start !== audit.code_hash_end || !audit.code_hash_start)
+        throw new Error("Local execution audit identity mismatch");
+      const audited = run.audit_run ? checked : (checked.rounded_metrics || checked.metrics) as Record<string, unknown>;
+      if (!audited || Object.entries(run.metrics).some(([key, value]) => audited[key] !== value) ||
+          (run.audit_run && checked.independent_metric_recomputation !== "passed"))
+        throw new Error("Local execution audit metrics mismatch");
+    }
     const metricRows = added.filter((record) => record.kind === "result" &&
       record.links.some((link) => link.relation === "evaluation" && link.target_id === run.evaluation_id));
     const metricKeys = metricRows.map((record) => String(record.attributes.metric_key)).sort();
@@ -128,4 +154,11 @@ export function addLocalEvaluations(input: RecordEntry[]): RecordEntry[] {
     fs.readFileSync(localEvaluationInputs[0], "utf8"),
     fs.readFileSync(localEvaluationInputs[2], "utf8"),
     JSON.parse(fs.readFileSync(localEvaluationInputs[1], "utf8")));
+}
+
+export function addBaselineEvaluations(input: RecordEntry[]): RecordEntry[] {
+  return applyLocalEvaluations(input,
+    fs.readFileSync(baselineEvaluationInputs[0], "utf8"),
+    fs.readFileSync(baselineEvaluationInputs[2], "utf8"),
+    JSON.parse(fs.readFileSync(baselineEvaluationInputs[1], "utf8")));
 }

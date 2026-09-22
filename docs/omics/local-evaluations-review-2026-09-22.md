@@ -4,22 +4,22 @@ Review date: 22 September 2026. This review checks existing public execution art
 
 ## Disposition
 
-All ten exact bundles match their pinned public artifacts and their retained private submission acknowledgements. The previously recorded owner and curator reconciliation contains the same ten unique identities. This pass did not make a fresh authenticated live request. The public report deliberately contains no private submission IDs, email addresses, credentials or idempotency keys.
+All ten exact bundles match their pinned public artifacts and their retained private submission acknowledgements. Fresh read-only Firestore and Firebase Auth reconciliation at 21:19:57 UTC found ten unique submissions, all still submitted, no publication links, and a verified owner with curator permission. Exact source URLs and bundles matched the retained SDK queue. Operator authentication succeeded; this was not a new browser sign-in or SDK submission. The public report deliberately contains no private submission IDs, email addresses, credentials or idempotency keys.
 
-The original five evaluations are ready for publication review in PR24 after its engineering checks pass. The five newer evaluations have consistent source evidence but need their own reviewed catalogue records and release ingestion. They are not included by this branch. None is currently a public catalogue result.
+All ten evaluations are now ingested for publication review in PR24. New immutable release `2026-09-22-f58a0f1d267f` adds 93 records, including ten evaluations and 29 metric rows, to the previous live release. The original five proposed evaluations and both earlier release archives remain unchanged. None was marked published by this review.
 
 | Evaluation | Selected coverage | Result retained | Disposition |
 |---|---:|---|---|
 | [Amino-acid composition + fixed ridge (Rewire control)](https://raw.githubusercontent.com/rewire-bio/rewire-benchmarks/ca73fa47136d182f2d4ddb083d084712198fc0e2/research/local-runs-2026-09-20/flip2-composition/report.json) | 184/184 | spearman 0.41818225155801514 | PR24: ready for publication review |
-| [Training mean (Rewire control)](https://raw.githubusercontent.com/rewire-bio/rewire-benchmarks/ca73fa47136d182f2d4ddb083d084712198fc0e2/research/local-runs-2026-09-20/flip2-train-mean/report.json) | 184/184 | spearman None | PR24: ready for publication review |
+| [Training mean (Rewire control)](https://raw.githubusercontent.com/rewire-bio/rewire-benchmarks/ca73fa47136d182f2d4ddb083d084712198fc0e2/research/local-runs-2026-09-20/flip2-train-mean/report.json) | 184/184 | spearman undefined | PR24: ready for publication review |
 | [Sequence composition + RidgeCV (Rewire control)](https://raw.githubusercontent.com/rewire-bio/rewire-benchmarks/ca73fa47136d182f2d4ddb083d084712198fc0e2/research/local-runs-2026-09-20/mrnabench-composition/report.json) | 15003/15003 | spearman 0.49477537290902324, mse 1.914439715839851 | PR24: ready for publication review |
-| [Training mean (Rewire control)](https://raw.githubusercontent.com/rewire-bio/rewire-benchmarks/ca73fa47136d182f2d4ddb083d084712198fc0e2/research/local-runs-2026-09-20/mrnabench-train-mean/report.json) | 15003/15003 | spearman None, mse 2.3655294722554605 | PR24: ready for publication review |
+| [Training mean (Rewire control)](https://raw.githubusercontent.com/rewire-bio/rewire-benchmarks/ca73fa47136d182f2d4ddb083d084712198fc0e2/research/local-runs-2026-09-20/mrnabench-train-mean/report.json) | 15003/15003 | spearman undefined, mse 2.3655294722554605 | PR24: ready for publication review |
 | [ESM-2 esm2_t6_8M_UR50D masked marginals](https://raw.githubusercontent.com/rewire-bio/rewire-benchmarks/ca73fa47136d182f2d4ddb083d084712198fc0e2/research/local-runs-2026-09-20/proteingym-esm2/report.json) | 2972/2972 | Spearman -0.209 | PR24: ready for publication review |
-| [Protein composition + fixed ridge probe](https://raw.githubusercontent.com/rewire-bio/rewire-benchmarks/6d95ece86ef9851db916f49e81a581e306657377/research/baseline-programme-2026-09-21/rhomax/protein-composition-probe-v1.report.json) | 184/184 | spearman 0.41798958279508075 | Needs reviewed catalogue ingestion |
-| [ESM-2 35M frozen residue-mean embeddings + fixed ridge (Rewire)](https://raw.githubusercontent.com/rewire-bio/rewire-benchmarks/6d95ece86ef9851db916f49e81a581e306657377/research/baseline-programme-2026-09-21/rhomax-35m/esm2.report.json) | 184/184 | spearman -0.2217595033467806 | Needs reviewed catalogue ingestion |
-| [ESM-2 8M frozen residue-mean embeddings + fixed ridge (Rewire)](https://raw.githubusercontent.com/rewire-bio/rewire-benchmarks/6d95ece86ef9851db916f49e81a581e306657377/research/baseline-programme-2026-09-21/rhomax/esm2.report.json) | 184/184 | spearman -0.1463506755340845 | Needs reviewed catalogue ingestion |
-| [Training class prior / majority](https://raw.githubusercontent.com/rewire-bio/rewire-benchmarks/60dc51f972ca736f1b7f10e85a1db8cfa837bab9/research/mfass-null-2026-09-21/evidence/training-prior.report.json) | 8324/8324 | auroc 0.5, average_precision_sklearn 0.037842383469485825 | Needs reviewed catalogue ingestion |
-| [Seeded random ranking control](https://raw.githubusercontent.com/rewire-bio/rewire-benchmarks/bf3266e4cae93d9a5f9c51137fba2530f2503eb4/research/proteingym-null-2026-09-21/evidence/seeded-random.report.json) | 2972/2972 | Spearman 0.008 | Needs reviewed catalogue ingestion |
+| [Protein composition + fixed ridge probe](https://raw.githubusercontent.com/rewire-bio/rewire-benchmarks/6d95ece86ef9851db916f49e81a581e306657377/research/baseline-programme-2026-09-21/rhomax/protein-composition-probe-v1.report.json) | 184/184 | spearman 0.41798958279508075 | PR24: ready for publication review |
+| [ESM-2 35M frozen residue-mean embeddings + fixed ridge (Rewire)](https://raw.githubusercontent.com/rewire-bio/rewire-benchmarks/6d95ece86ef9851db916f49e81a581e306657377/research/baseline-programme-2026-09-21/rhomax-35m/esm2.report.json) | 184/184 | spearman -0.2217595033467806 | PR24: ready for publication review |
+| [ESM-2 8M frozen residue-mean embeddings + fixed ridge (Rewire)](https://raw.githubusercontent.com/rewire-bio/rewire-benchmarks/6d95ece86ef9851db916f49e81a581e306657377/research/baseline-programme-2026-09-21/rhomax/esm2.report.json) | 184/184 | spearman -0.1463506755340845 | PR24: ready for publication review |
+| [Training class prior / majority](https://raw.githubusercontent.com/rewire-bio/rewire-benchmarks/60dc51f972ca736f1b7f10e85a1db8cfa837bab9/research/mfass-null-2026-09-21/evidence/training-prior.report.json) | 8324/8324 | auroc 0.5, average_precision_sklearn 0.037842383469485825 | PR24: ready for publication review |
+| [Seeded random ranking control](https://raw.githubusercontent.com/rewire-bio/rewire-benchmarks/bf3266e4cae93d9a5f9c51137fba2530f2503eb4/research/proteingym-null-2026-09-21/evidence/seeded-random.report.json) | 2972/2972 | Spearman 0.008 | PR24: ready for publication review |
 
 Full metrics, source URLs, SHA-256 hashes, exact dataset/protocol identity, review status and limitations are recorded in [the public review table](../../data/omics/reviews/local-evaluations-2026-09-22.json). This table is a review inventory, not a catalogue release.
 
@@ -58,12 +58,21 @@ Run offline regression tests:
 
 ```sh
 python3 -m unittest discover -s scripts/omics/tests -p "test_*.py"
-npx vitest run tests/omics-local-evaluations.test.ts tests/omics-submitted-run-review.test.ts
+npx vitest run tests/omics-local-evaluations.test.ts tests/omics-baseline-run-ingestion.test.ts tests/omics-submitted-run-review.test.ts
 ```
 
-## Remaining work
+## Release generation and post-release reconciliation
 
-1. Finish independent code/scientific review and CI on the integrated PR24 branch; then decide separately whether to publish its five evaluations.
-2. Add reviewed, exact configuration/protocol mappings for the remaining five and prepare their immutable release, retaining their existing evidence identities.
-3. After each accepted release is actually deployed, verify live tables and links, then associate the matching private review items with the released IDs. Never mark them published based only on a merged runner PR.
-4. Keep issue #32 open until all ten have an explicit final reviewed/published/blocked disposition. No new computation is needed for these steps.
+The new five records are generated by `scripts/omics/import-baseline-runs.py --runner-repo /path/to/rewire-benchmarks`; `scripts/omics/audit/baseline-runs.ts` creates field-bound audit checks. Both use existing source artifacts without inference. Reports are pinned to runner revision `1663d1f04b2bbd6dfcff77fea78129d30b0de191` only after verifying byte equality with their original submission sources. The ESM family links apply only to the two frozen ESM configurations. The ProteinGym random control has its own protocol and model-neutral dataset subset, with a source-checked same-data relationship to the original ESM assay record; it does not inherit masked-marginal instructions.
+
+`npm run omics:release -- --current-only` generates the candidate release without restoring every archived export. This is for local review under disk constraints, not a production export. Normal builds restore all historical downloads and check their original hashes.
+
+After independent review and successful CI, publication still requires the following ordered steps:
+
+1. Deploy the approved release. Check the live website and API both serve release `2026-09-22-f58a0f1d267f`, and every `publication_record_ids` entry in the public review table resolves with the expected metric and source. Confirm the Firestore release is ready and has a publication timestamp.
+2. Re-read the ten private submissions using the retained SDK acknowledgements. Join each queue entry to the public review table using the exact pinned report URL, verify the complete submitted bundle and unchanged ownership, and require the expected review state. Keep this mapping in private operator storage; do not copy submission IDs into Git or console output.
+3. Obtain an explicit curator publication decision. With a current verified curator token, use the existing authenticated `curator.transition` API for each private item: `submitted` → `in_review` → `accepted` → `published`. For the last transition, pass the approved release ID and that evaluation's exact public evaluation/result IDs from `publication_record_ids`. Never create a new contribution or write curator state directly through Firestore.
+4. Persist each transition acknowledgement privately. Before retrying, read current state: skip only an already completed transition whose release and record IDs match; stop on changed source, ownership, bundle or unexpected state. A request timeout does not prove failure.
+5. Read each final owner and curator tracking response and verify all ten publication links. Keep issue #32 open until those checks pass. Publishing queues contribution notices, but email remains paused; do not claim delivery.
+
+This review made zero curator writes. Its `not_published` statuses are a dated pre-publication record and must not be interpreted as a live tracking endpoint. No new model computation is needed for the remaining publication steps.

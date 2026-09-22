@@ -153,11 +153,20 @@ export default function Profile({
     )
     .map(([label]) => label);
 
-  const keyFacts = [
-    /^(model type|method or algorithm|method type|architecture|components|model class|algorithm)$/i,
-    /^(biological inputs|inputs|required inputs|input)$/i,
-    /^(biological outputs|outputs|output)$/i,
-  ].flatMap((pattern) => {
+  const keyFacts = (
+    predictive
+      ? [
+          /^(model type|method or algorithm|method type|architecture|components|model class|algorithm)$/i,
+          /^(biological inputs|inputs|required inputs|input)$/i,
+          /^(biological outputs|outputs|output)$/i,
+          /^(access|availability|access and terms|local access)$/i,
+        ]
+      : [
+          /^(datasets?|data and labels)$/i,
+          /^(metrics?|scoring)$/i,
+          /^(allowed inputs|inputs|required inputs)$/i,
+        ]
+  ).flatMap((pattern) => {
     const fact = profile.facts.find((item) => pattern.test(item.label));
     return fact ? [fact] : [];
   });
@@ -182,9 +191,9 @@ export default function Profile({
   return (
     <>
       {part === "visual" && diagram}
-      {part === "overview" && predictive && (
+      {part === "overview" && (
         <section id="overview" className={styles.section}>
-          <h2>At a glance</h2>
+          <h2>Overview</h2>
           {keyFacts.length > 0 && (
             <div className={styles.keyFacts}>
               {keyFacts.map((fact) => (
@@ -211,6 +220,12 @@ export default function Profile({
               the linked evaluation and sources for the reported setup.
             </p>
           )}
+          {!predictive && diagram && (
+            <details className={styles.profileDisclosure}>
+              <summary>Evaluation procedure diagram</summary>
+              {diagram}
+            </details>
+          )}
           <p className={styles.muted}>
             {profile.coverage === "reviewed"
               ? "Source reviewed"
@@ -220,13 +235,10 @@ export default function Profile({
           </p>
         </section>
       )}
-      {(part === "specifications" || (part === "overview" && !predictive)) && (
-        <section
-          id={predictive ? "specifications" : "overview"}
-          className={styles.section}
-        >
-          <h2>{predictive ? "Specifications" : "At a glance"}</h2>
-          <details className={styles.profileDisclosure} open={!predictive}>
+      {part === "specifications" && (
+        <section id="specifications" className={styles.section}>
+          <h2>Specifications</h2>
+          <details className={styles.profileDisclosure}>
             <summary>Inputs, training, access and other details</summary>
             <p className={styles.muted}>
               Explanatory profile:{" "}
@@ -305,13 +317,9 @@ export default function Profile({
       {part === "mechanism" && (
         <section id="how-it-works" className={styles.section}>
           <h2>How it works</h2>
-          {!predictive && diagram}
+
           {profile.sections.map((section, i) => (
-            <details
-              key={i}
-              className={styles.profileDisclosure}
-              open={!predictive}
-            >
+            <details key={i} className={styles.profileDisclosure}>
               <summary>{section.title}</summary>
               <p>{section.body}</p>
               <ProfileEvidence

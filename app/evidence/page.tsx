@@ -61,48 +61,26 @@ export default function EvidenceGuide() {
             <Link href="/">Benchmark database</Link>
           </nav>
           <section className={styles.section}>
-            <h2>Download the source-origin tables</h2>
-            <p>
-              <Link href="/audits/">
-                Browse linked audit checks and review history
-              </Link>
-            </p>
-            <p>
-              Release {catalogue.release_id}, published{" "}
-              {catalogue.released_at.slice(0, 10)}. The table contains{" "}
-              {rows.length.toLocaleString("en-GB")} rows across{" "}
-              {catalogue.records.length.toLocaleString("en-GB")} records. A
-              statement citing two sources occupies two rows; this is not a
-              count of independent findings.
-            </p>
-            <div className={styles.downloads}>
-              <a href={`${release}/evidence.csv`} download>
-                Evidence table (CSV)
-              </a>
-              <a href={`${release}/evidence.jsonl`} download>
-                Evidence table (JSONL)
-              </a>
-              <a href={`${release}/manifest.json`}>Release checksums</a>
-            </div>
-            <p>
-              Each row stores the stable record and field, original value,
-              source URL and DOI, version, evidence location, retrieval date,
-              artifact hash and its scope, review method and review date. Empty
-              cells mean that information was not recorded. Hashes identify
-              inspected bytes; they are not a guarantee that a scientific claim
-              is correct.
-            </p>
-            <p>
-              Use <code>record_id</code> to select a model, benchmark or result.
-              Use <code>field_path</code> to find its original field, and{" "}
-              <code>source_id</code> to join the source record. The JSONL{" "}
-              <code>value_json</code> preserves types, nulls and exact strings.
-              CSV cells that could be spreadsheet formulas are escaped with a
-              leading apostrophe; use JSONL for lossless machine processing.
-            </p>
-          </section>
-          <section className={styles.section}>
-            <h2>Read the review scope first</h2>
+            <h2>What review status means</h2>
+            <dl className={styles.details}>
+              <dt>Source checked</dt>
+              <dd>
+                The reported claim or value was checked against its cited
+                source. It has not necessarily been reproduced.
+              </dd>
+              <dt>Independently reproduced</dt>
+              <dd>
+                A separate execution must be documented by its run artifacts and
+                validation scope. A source check or small smoke test does not
+                establish reproduction.
+              </dd>
+              <dt>Unreported or unextracted</dt>
+              <dd>
+                The source omits the information, or it has not yet been
+                extracted. A missing field is not a verified value.
+              </dd>
+            </dl>
+            <h3>What the citation supports</h3>
             <div
               className={styles.tableScroll}
               tabIndex={0}
@@ -150,6 +128,27 @@ export default function EvidenceGuide() {
             </p>
           </section>
           <section className={styles.section}>
+            <h2>Inspect an example</h2>
+            <ul className={styles.list}>
+              <li>
+                <Link href="/database/model/discovery-model-alphafold-3/#evidence">
+                  AlphaFold 3: architecture, training and separate code/weight
+                  terms
+                </Link>
+              </li>
+              <li>
+                <Link href="/database/model/catalog-model-alphafold-3-server/#evidence">
+                  AlphaFold Server: service limits and reproducibility
+                </Link>
+              </li>
+              <li>
+                <Link href="/database/result/b2-barcodebert-2026/#evidence">
+                  BarcodeBERT: the original 78.5 result and Table 1 location
+                </Link>
+              </li>
+            </ul>
+          </section>
+          <section className={styles.section}>
             <h2>Coverage and remaining gaps</h2>
             <p>
               This release contains{" "}
@@ -166,8 +165,8 @@ export default function EvidenceGuide() {
               top-level benchmarks, with methods, configurations, tasks,
               protocols and datasets listed separately. The catalogue’s
               explanatory profiles contain{" "}
-              {uniqueFacts.size.toLocaleString("en-GB")} structured facts
-              include{" "}
+              {uniqueFacts.size.toLocaleString("en-GB")} structured facts,
+              including{" "}
               {Array.from(uniqueFacts.values())
                 .filter((row) => row.review_status === "source_checked")
                 .length.toLocaleString("en-GB")}{" "}
@@ -204,26 +203,47 @@ export default function EvidenceGuide() {
               incompatible scores into a universal leaderboard.
             </p>
           </section>
+
           <section className={styles.section}>
-            <h2>Inspect an example</h2>
-            <ul className={styles.list}>
-              <li>
-                <Link href="/database/model/discovery-model-alphafold-3/#evidence">
-                  AlphaFold 3: architecture, training and separate code/weight
-                  terms
-                </Link>
-              </li>
-              <li>
-                <Link href="/database/model/catalog-model-alphafold-3-server/#evidence">
-                  AlphaFold Server: service limits and reproducibility
-                </Link>
-              </li>
-              <li>
-                <Link href="/database/result/b2-barcodebert-2026/#evidence">
-                  BarcodeBERT: the original 78.5 result and Table 1 location
-                </Link>
-              </li>
-            </ul>
+            <h2>Download the source-origin tables</h2>
+            <p>
+              <Link href="/audits/">
+                Browse linked audit checks and review history
+              </Link>
+            </p>
+            <p>
+              Release {catalogue.release_id}, published{" "}
+              {catalogue.released_at.slice(0, 10)}. The table contains{" "}
+              {rows.length.toLocaleString("en-GB")} rows across{" "}
+              {catalogue.records.length.toLocaleString("en-GB")} records. A
+              statement citing two sources occupies two rows; this is not a
+              count of independent findings.
+            </p>
+            <div className={styles.downloads}>
+              <a href={`${release}/evidence.csv`} download>
+                Evidence table (CSV)
+              </a>
+              <a href={`${release}/evidence.jsonl`} download>
+                Evidence table (JSONL)
+              </a>
+              <a href={`${release}/manifest.json`}>Release checksums</a>
+            </div>
+            <p>
+              Each row stores the stable record and field, original value,
+              source URL and DOI, version, evidence location, retrieval date,
+              artifact hash and its scope, review method and review date. Empty
+              cells mean that information was not recorded. Hashes identify
+              inspected bytes; they are not a guarantee that a scientific claim
+              is correct.
+            </p>
+            <p>
+              Use <code>record_id</code> to select a model, benchmark or result.
+              Use <code>field_path</code> to find its original field, and{" "}
+              <code>source_id</code> to join the source record. The JSONL{" "}
+              <code>value_json</code> preserves types, nulls and exact strings.
+              CSV cells that could be spreadsheet formulas are escaped with a
+              leading apostrophe; use JSONL for lossless machine processing.
+            </p>
           </section>
         </div>
       </section>

@@ -63,6 +63,12 @@ img { max-width: 100%; display: block; }
 .serif { font-family: var(--serif); }
 .mono { font-family: var(--mono); }
 
+.skip-link { position: fixed; left: 16px; top: -80px; z-index: 100; padding: 12px 18px; background: var(--bg); color: var(--accent-ink); border: 2px solid var(--accent-ink); }
+.skip-link:focus { top: 12px; }
+main [id] { scroll-margin-top: 145px; }
+a:focus-visible, summary:focus-visible, button:focus-visible, select:focus-visible { outline: 2px solid var(--accent-ink); outline-offset: 3px; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
 h1, h2, h3, h4 { margin: 0; font-weight: 600; letter-spacing: -0.02em; line-height: 1.2; overflow-wrap: break-word; }
 
 /* ---------- top bar ---------- */

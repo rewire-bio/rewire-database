@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useId, useMemo, useState } from "react";
 import Link from "next/link";
 import { catalogueClient, type ResultsPage } from "@/lib/catalogue-client";
 import {
@@ -13,10 +13,26 @@ import {
   testedEntities,
   evaluationEntities,
   datasetEntities,
-  groupEntities,
+  singularKindLabels,
 } from "@/lib/omics-browse";
+import { useResultsLocation } from "./useResultsLocation";
 import styles from "@/app/database/database.module.css";
+import ux from "./comparison.module.css";
 
+const defaults = {
+  metric: "",
+  origin: "",
+  configuration: "",
+  protocol: "",
+  dataset: "",
+  entity: "",
+  cursor: "",
+};
+function coverage(row: ResultsPage["items"][number]) {
+  const attributes = row.result.attributes;
+  if (attributes.coverage) return displayValue(attributes.coverage);
+  return `${displayValue(attributes.scored_count)} scored / ${displayValue(attributes.eligible_count)} eligible`;
+}
 function RecordLinks({ records }: { records: OmicsRecord[] }) {
   return (
     <>
@@ -24,6 +40,9 @@ function RecordLinks({ records }: { records: OmicsRecord[] }) {
         ? records.map((record, i) => (
             <span key={record.id}>
               {i > 0 ? ", " : ""}
+              <span className={styles.muted}>
+                {singularKindLabels[record.kind]}:{" "}
+              </span>
               <Link href={recordHref(record)}>{record.name}</Link>
             </span>
           ))
@@ -35,43 +54,51 @@ export default function Results({
   id,
   initial,
   title = "Benchmarks and results",
+  embedded = false,
 }: {
   id: string;
   initial: ResultsPage;
   title?: string;
+  embedded?: boolean;
 }) {
+  const headingId = useId();
   const client = useMemo(
     () => catalogueClient(initial.release_id),
     [initial.release_id],
   );
+  const { state, update, ready } = useResultsLocation(defaults);
   const [data, setData] = useState(initial);
-  const [metric, setMetric] = useState("");
-  const [origin, setOrigin] = useState("");
-  const [configuration, setConfiguration] = useState("");
-  const [cursor, setCursor] = useState<string | undefined>();
+  const [applied, setApplied] = useState(defaults);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [retry, setRetry] = useState(0);
   useEffect(() => {
+    if (!ready) return;
     let active = true;
     setLoading(true);
     setError("");
     client
       .results({
         id,
-        metric: metric || undefined,
-        origin: origin || undefined,
-        configuration_id: configuration || undefined,
-        cursor,
+        metric: state.metric || undefined,
+        origin: state.origin || undefined,
+        configuration_id: state.configuration || undefined,
+        protocol_id: state.protocol || undefined,
+        dataset_id: state.dataset || undefined,
+        tested_entity_id: state.entity || undefined,
+        cursor: state.cursor || undefined,
         limit: 25,
       })
       .then((page) => {
-        if (active) setData(page);
+        if (active) {
+          setData(page);
+          setApplied(state);
+        }
       })
       .catch(() => {
         if (active)
           setError(
-            "The results service is unavailable. The table below retains the last loaded page; requested filters have not been applied.",
+            "The requested results could not be loaded. The last successful results and their applied filters are retained below.",
           );
       })
       .finally(() => {
@@ -80,98 +107,132 @@ export default function Results({
     return () => {
       active = false;
     };
-  }, [client, id, metric, origin, configuration, cursor, retry]);
-  const groups = new Map<string, ResultsPage["items"]>();
-  for (const row of data.items) {
-    const key = String(row.evaluation?.attributes.evaluation_group_id || row.evaluation?.id || row.result.id);
-    groups.set(key, [...(groups.get(key) || []), row]);
-  }
+  }, [client, id, state, retry, ready]);
+  const filter = (key: keyof typeof defaults, value: string) =>
+    update({ [key]: value, cursor: "" });
+  const filters = [
+    {
+      key: "entity" as const,
+      label: "Tested model or method",
+      options: initial.facets.tested_entities || [],
+    },
+    {
+      key: "protocol" as const,
+      label: "Protocol",
+      options: initial.facets.protocols || [],
+    },
+    {
+      key: "dataset" as const,
+      label: "Dataset",
+      options: initial.facets.datasets || [],
+    },
+    {
+      key: "configuration" as const,
+      label: "Evaluation setup",
+      options: initial.facets.configurations,
+    },
+    {
+      key: "metric" as const,
+      label: "Metric",
+      options: initial.facets.metrics.map((name) => ({ id: name, name })),
+    },
+    {
+      key: "origin" as const,
+      label: "Evidence origin",
+      options: initial.facets.origins.map((id) => ({
+        id,
+        name: originLabel(id),
+      })),
+    },
+  ];
+  const appliedText =
+    filters
+      .flatMap((item) =>
+        applied[item.key]
+          ? [
+              `${item.label}: ${item.options.find((option) => option.id === applied[item.key])?.name || applied[item.key]}`,
+            ]
+          : [],
+      )
+      .join(" · ") || "All linked evaluations";
   return (
     <section
-      id="results"
-      className={styles.section}
-      aria-labelledby="results-title"
+      id={embedded ? undefined : "results"}
+      className={embedded ? undefined : styles.section}
+      aria-labelledby={headingId}
     >
-      <h2 id="results-title">{title}</h2>
+      <h2 id={headingId} className={embedded ? ux.tableHeading : undefined}>
+        {title}
+      </h2>
       <p className={styles.muted}>
-        Release {initial.release_id} · {data.evaluation_count}{" "}
+        {data.evaluation_count}{" "}
         {data.evaluation_count === 1 ? "evaluation" : "evaluations"} ·{" "}
-        {data.total} {data.total === 1 ? "metric row" : "metric rows"}.
-        Different protocols are not a single leaderboard. Charts retain each
-        source table’s protocol and dataset.
+        {data.total} metric rows. Different protocols are not a single
+        leaderboard.
       </p>
       {initial.total > 0 && (
-        <div className={styles.filters}>
-          <label className={styles.label}>
-            Evaluation setup
-            <select
-              aria-label="Evaluation setup"
-              value={configuration}
-              onChange={(event) => {
-                setConfiguration(event.target.value);
-                setCursor(undefined);
-              }}
-            >
-              <option value="">All evaluation setups</option>
-              {initial.facets.configurations.map((item) => (
-                <option value={item.id} key={item.id}>
-                  {item.name}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label className={styles.label}>
-            Metric
-            <select
-              aria-label="Metric"
-              value={metric}
-              onChange={(event) => {
-                setMetric(event.target.value);
-                setCursor(undefined);
-              }}
-            >
-              <option value="">All metrics</option>
-              {initial.facets.metrics.map((item) => (
-                <option key={item}>{item}</option>
-              ))}
-            </select>
-          </label>
-          <label className={styles.label}>
-            Evidence origin
-            <select
-              aria-label="Evidence origin"
-              value={origin}
-              onChange={(event) => {
-                setOrigin(event.target.value);
-                setCursor(undefined);
-              }}
-            >
-              <option value="">All origins</option>
-              {initial.facets.origins.map((item) => (
-                <option value={item} key={item}>
-                  {originLabel(item)}
-                </option>
-              ))}
-            </select>
-          </label>
-        </div>
+        <details
+          className={ux.filtersPanel}
+          open={Object.entries(state).some(
+            ([key, value]) => key !== "cursor" && value !== "",
+          )}
+        >
+          <summary>Filter evaluations</summary>
+          <div className={styles.filters}>
+            {filters.map((item) => (
+              <label key={item.key} className={styles.label}>
+                {item.label}
+                <select
+                  value={state[item.key]}
+                  onChange={(event) => filter(item.key, event.target.value)}
+                >
+                  <option value="">All</option>
+                  {item.options.map((option) => (
+                    <option key={option.id} value={option.id}>
+                      {option.name}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            ))}
+          </div>
+          <button className={styles.button} onClick={() => update(defaults)}>
+            Reset filters
+          </button>
+        </details>
       )}
       <div aria-live="polite">
         {loading && <p>Loading results…</p>}
         {error && (
-          <div className={styles.error}>
-            <p>{error}</p>
+          <p role="alert">
+            {error}{" "}
             <button
               className={styles.button}
               onClick={() => setRetry(retry + 1)}
             >
               Retry
             </button>
-          </div>
+          </p>
         )}
       </div>
+      <p className={styles.muted}>Applied filters: {appliedText}</p>
       {!data.total ? (
-        <p>No evaluations linked in this release.</p>
+        <p>
+          {initial.total
+            ? "No results match the selected filters."
+            : "No evaluations linked in this release."}
+          {initial.total > 0 && (
+            <>
+              {" "}
+              <button
+                className={styles.button}
+                onClick={() => update(defaults)}
+              >
+                Reset filters
+              </button>
+            </>
+          )}
+        </p>
       ) : (
         <div
           className={styles.tableScroll}
@@ -180,165 +241,112 @@ export default function Results({
           aria-label="Evaluation results"
           aria-busy={loading}
         >
-          <table className={styles.resultTable}>
-            <caption>Results grouped by the exact reported evaluation</caption>
+          <table className={`${styles.resultTable} ${ux.compactTable}`}>
+            <caption>
+              Exact evaluated configurations and original reported results
+            </caption>
             <thead>
               <tr>
-                <th scope="col">Metric and finding</th>
-                <th scope="col">Coverage and uncertainty</th>
-                <th scope="col">Evidence</th>
+                <th scope="col">Tested configuration</th>
+                <th scope="col">Protocol and dataset</th>
+                <th scope="col">Finding</th>
+                <th scope="col">Evidence and details</th>
               </tr>
             </thead>
-            {Array.from(groups).map(([key, rows]) => {
-              const first = rows[0];
-              return (
-                <tbody key={key}>
-                  <tr>
-                    <th
-                      colSpan={3}
-                      className={styles.evaluationHeading}
-                      scope="rowgroup"
-                    >
-                      {first.evaluation ? (
-                        <Link href={recordHref(first.evaluation)}>
-                          {String(first.evaluation.attributes.evaluation_group_name || first.evaluation.name)}
-                        </Link>
-                      ) : (
-                        "Evaluation not linked"
+            <tbody>
+              {data.items.map((row) => (
+                <tr key={row.result.id}>
+                  <th scope="row">
+                    <RecordLinks records={testedEntities(row)} />
+                  </th>
+                  <td>
+                    <RecordLinks records={evaluationEntities(row)} />
+                    <br />
+                    <span className={styles.muted}>
+                      <RecordLinks records={datasetEntities(row)} />
+                    </span>
+                  </td>
+                  <td>
+                    <Link href={recordHref(row.result)}>
+                      <strong>
+                        {displayValue(row.result.attributes.printed_value)}
+                        {row.result.attributes.unit === "percent" &&
+                        !/%/.test(String(row.result.attributes.printed_value))
+                          ? "%"
+                          : ""}
+                      </strong>{" "}
+                      {displayValue(row.result.attributes.metric)}
+                    </Link>
+                    <div className={styles.muted}>
+                      {displayValue(row.result.attributes.unit)} ·{" "}
+                      {displayValue(row.result.attributes.metric_direction)}
+                    </div>
+                    <p>
+                      Uncertainty:{" "}
+                      {displayValue(row.result.attributes.uncertainty)}
+                    </p>
+                    <p>Coverage: {coverage(row)}</p>
+                  </td>
+                  <td>
+                    <span>
+                      {originLabel(row.origin)} ·{" "}
+                      {row.review_status.replace(/_/g, " ")}
+                    </span>
+                    <EvidenceConcerns sources={row.sources} />
+                    <details>
+                      <summary>Methods, coverage and source</summary>
+                      {row.evaluation && (
+                        <p>
+                          <Link href={recordHref(row.evaluation)}>
+                            {row.evaluation.name}
+                          </Link>
+                        </p>
                       )}
-                      <div className={styles.evaluationLinks}>
-                        {groupEntities(rows.flatMap(row => [
-                          ...testedEntities(row),
-                          ...evaluationEntities(row),
-                          ...datasetEntities(row),
-                        ])).map((group) => (
-                          <span
-                            key={group.kind}
-                            className={styles.typedContext}
-                          >
-                            {group.label}:{" "}
-                            <RecordLinks records={group.records} />
-                          </span>
-                        ))}
-                      </div>
+                      <p>{displayValue(row.evaluation?.attributes.protocol)}</p>
                       <p>
-                        {displayValue(first.evaluation?.attributes.protocol)}
+                        Aggregation:{" "}
+                        {displayValue(row.result.attributes.aggregation)}
                       </p>
-                      <p className={styles.muted}>
-                        {first.evaluation?.attributes.evaluation_group_note
-                          ? String(first.evaluation.attributes.evaluation_group_note) + " " : ""}
-                        {originLabel(first.origin)} · Evaluation metadata:{" "}
-                        {first.evaluation?.status.replace(/_/g, " ") ||
-                          "not reported"}
-                      </p>
-                    </th>
-                  </tr>
-                  {rows.map(({ result, sources, review_status }) => (
-                    <tr key={result.id}>
-                      <td>
-                        <Link href={recordHref(result)}>
-                          <strong>
-                            {displayValue(result.attributes.printed_value)}
-                            {result.attributes.unit === "percent" && !/%\s*$/.test(String(result.attributes.printed_value)) ? "%" : ""}
-                          </strong>{" "}
-                          {displayValue(result.attributes.metric)}
-                        </Link>
-                        <p className={styles.muted}>
-                          Unit: {displayValue(result.attributes.unit)} ·
-                          Direction:{" "}
-                          {displayValue(result.attributes.metric_direction)}
-                        </p>
-                        {!!result.attributes.aggregation && (
-                          <p>
-                            Aggregation:{" "}
-                            {displayValue(result.attributes.aggregation)}
-                          </p>
+                      <Evidence
+                        ids={row.result.source_ids}
+                        locator={String(
+                          row.result.attributes.source_locator ||
+                            "Evidence location not reported",
                         )}
-                      </td>
-                      <td>
-                        <p>
-                          Uncertainty:{" "}
-                          {displayValue(
-                            result.attributes.uncertainty ??
-                              (
-                                result.attributes.missing_metadata as
-                                  | Record<string, unknown>
-                                  | undefined
-                              )?.uncertainty,
-                          ).replace(/_/g, " ")}
-                        </p>
-                        <p>
-                          {typeof result.attributes.coverage === "string" ? (
-                            `Coverage (scored/eligible): ${result.attributes.coverage}`
-                          ) : (
-                            <>
-                              Scored:{" "}
-                              {displayValue(
-                                result.attributes.scored_count ??
-                                  (
-                                    result.attributes.coverage as
-                                      | Record<string, unknown>
-                                      | undefined
-                                  )?.scored,
-                              )}{" "}
-                              · Eligible:{" "}
-                              {displayValue(
-                                result.attributes.eligible_count ??
-                                  (
-                                    result.attributes.coverage as
-                                      | Record<string, unknown>
-                                      | undefined
-                                  )?.denominator,
-                              )}
-                            </>
-                          )}
-                        </p>
-                      </td>
-                      <td>
-                        <span className={styles.tag}>
-                          {review_status.replace(/_/g, " ")}
-                        </span>
-                        <EvidenceConcerns sources={sources} />
-                        <Evidence
-                          ids={result.source_ids}
-                          locator={String(
-                            result.attributes.source_locator ||
-                              "Evidence location not reported",
-                          )}
-                          sources={sources}
-                        />
-                        <p className={styles.muted}>
-                          Source checking is not independent reproduction.
-                        </p>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              );
-            })}
+                        sources={row.sources}
+                      />
+                    </details>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
           </table>
         </div>
       )}
-      <div className={styles.downloads}>
-        {cursor && (
-          <button
-            className={styles.button}
-            disabled={loading}
-            onClick={() => setCursor(undefined)}
-          >
-            First page
-          </button>
-        )}
-        {data.next_cursor && (
-          <button
-            className={styles.button}
-            disabled={loading}
-            onClick={() => setCursor(data.next_cursor || undefined)}
-          >
-            Next results
-          </button>
-        )}
-      </div>
+      <nav className={ux.pagination} aria-label="Result pages">
+        <button
+          className={styles.button}
+          disabled={loading || !!error || data.previous_cursor == null}
+          onClick={() => update({ cursor: data.previous_cursor || "" })}
+        >
+          Previous
+        </button>
+        <span>
+          {data.range_start ?? (data.total ? 1 : 0)}–
+          {data.range_end ?? data.items.length} of {data.total} rows
+        </span>
+        <button
+          className={styles.button}
+          disabled={loading || !!error || !data.next_cursor}
+          onClick={() => update({ cursor: data.next_cursor || "" })}
+        >
+          Next
+        </button>
+      </nav>
+      <p className={styles.muted}>
+        Source checking is not independent reproduction. Release{" "}
+        {initial.release_id}.
+      </p>
     </section>
   );
 }

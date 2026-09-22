@@ -7,6 +7,7 @@ import {
 import type { OmicsRecord } from "@/lib/omics";
 import { Evidence } from "./Profile";
 import styles from "@/app/database/database.module.css";
+import guideStyles from "./ExecutionGuide.module.css";
 export default function RunGuide({
   record,
   sources,
@@ -99,34 +100,36 @@ export default function RunGuide({
           <li key={i}>{item}</li>
         ))}
       </ul>
-      {guide.steps.map((step, i) => (
-        <div key={i} className={styles.runStep}>
-          <h3>
-            {i + 1}. {step.title}
-          </h3>
-          <p>{step.explanation}</p>
-          <button
-            type="button"
-            className={styles.runCopy}
-            onClick={() => copy(step.shell, i)}
-            aria-label={`Copy commands: ${step.title}`}
-          >
-            {copied === i ? "Copied" : "Copy commands"}
-          </button>
-          <pre
-            className={styles.runCode}
-            tabIndex={0}
-            aria-label={`${step.title}: shell commands`}
-          >
-            <code>{step.shell}</code>
-          </pre>
-          <Evidence
-            ids={step.source_ids}
-            locator={step.source_locator}
-            sources={sources}
-          />
-        </div>
-      ))}
+      <ol className={guideStyles.steps} aria-label="Official execution steps">
+        {guide.steps.map((step, i) => (
+          <li key={i} className={guideStyles.step}>
+            <h3>
+              {i + 1}. {step.title}
+            </h3>
+            <p>{step.explanation}</p>
+            <button
+              type="button"
+              className={styles.runCopy}
+              onClick={() => copy(step.shell, i)}
+              aria-label={`Copy commands: ${step.title}`}
+            >
+              {copied === i ? "Copied" : "Copy commands"}
+            </button>
+            <pre
+              className={styles.runCode}
+              tabIndex={0}
+              aria-label={`${step.title}: shell commands`}
+            >
+              <code>{step.shell}</code>
+            </pre>
+            <Evidence
+              ids={step.source_ids}
+              locator={step.source_locator}
+              sources={sources}
+            />
+          </li>
+        ))}
+      </ol>
       <p role="status" aria-live="polite">
         {error || (copied !== null ? "Commands copied to clipboard." : "")}
       </p>

@@ -272,7 +272,8 @@ describe("explicit catalogue entity UI", () => {
     const html = renderToStaticMarkup(
       <RecordPage params={{ kind: "protocol", id: "procedure" }} />,
     );
-    expect(html).toContain('href="#run"');
+    expect(html).toContain('href="#execution"');
+    expect(html).toContain('id="execution"');
     expect(html).toContain('id="run"');
     expect(html).toContain("python evaluate.py predictions.csv");
     expect(html).toContain("These commands have not been executed by rewire");

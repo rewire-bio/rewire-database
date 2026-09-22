@@ -36,7 +36,7 @@ jobs:
       - run: npm test
       - run: npm run lint
       - name: Validate contribution configuration and build website
-        run: node scripts/configure-contribution-deployment.mjs --validate-only && npm run build
+        run: node scripts/check-analytics-config.mjs && node scripts/configure-contribution-deployment.mjs --validate-only && npm run build
         env:
           FIREBASE_PROJECT_ID: ${{ vars.FIREBASE_PROJECT_ID }}
           OMICS_CONTRIBUTIONS_ENABLED: ${{ vars.OMICS_CONTRIBUTIONS_ENABLED || 'false' }}
@@ -46,9 +46,11 @@ jobs:
           NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: ${{ vars.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN }}
           NEXT_PUBLIC_FIREBASE_PROJECT_ID: ${{ vars.NEXT_PUBLIC_FIREBASE_PROJECT_ID }}
           NEXT_PUBLIC_FIREBASE_APP_ID: ${{ vars.NEXT_PUBLIC_FIREBASE_APP_ID }}
+          NEXT_PUBLIC_GA_ID: ${{ vars.NEXT_PUBLIC_GA_ID }}
       - run: npm run typecheck
       - run: npm run check:export
         env:
+          NEXT_PUBLIC_GA_ID: ${{ vars.NEXT_PUBLIC_GA_ID }}
           NEXT_PUBLIC_OMICS_CONTRIBUTIONS_ENABLED: ${{ vars.NEXT_PUBLIC_OMICS_CONTRIBUTIONS_ENABLED || 'false' }}
       - name: Verify Firebase HTTP routing
         run: npx firebase emulators:exec --project demo-rewire-omics --only hosting 'npm run check:http'

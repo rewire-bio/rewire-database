@@ -14,8 +14,10 @@ export default function Header() {
   const [open, setOpen] = useState(false);
   const links = (
     <>
-      {NAV.map(({ href, label }) => (
-        <Link
+      {NAV.map(({ href, label }) => {
+        // Enter the private workflow in a fresh document without public trackers.
+        const NavigationLink = href === "/contribute/" ? "a" : Link;
+        return <NavigationLink
           key={href}
           href={href}
           className={
@@ -39,8 +41,8 @@ export default function Header() {
           onClick={() => setOpen(false)}
         >
           {label}
-        </Link>
-      ))}
+        </NavigationLink>;
+      })}
       <a href="https://rewire.it/blog/">Articles</a>
     </>
   );

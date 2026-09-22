@@ -14,6 +14,11 @@ assert.match(await home.text(), /id="mfass-v1"/);
 await check('/literature/?q=splice', 200, 'text/html');
 await check('/runs/mfass-v2/', 200, 'text/html');
 await check('/sitemap.xml', 200, 'xml');
+const analytics = await check('/_analytics/', 200, 'text/html');
+assert.equal(analytics.headers.get('referrer-policy'), 'no-referrer');
+assert.match(analytics.headers.get('x-robots-tag') || '', /noindex/);
+assert.match(analytics.headers.get('cache-control') || '', /no-store/);
+await check('/_analytics/frame.js', 200, 'javascript');
 for (const icon of ['/icon', '/apple-icon']) await check(icon, 200, 'image/png');
 for (const name of ['papers.json', 'results.csv']) {
   const response = await check(`/benchmark-literature/${name}`, 200);

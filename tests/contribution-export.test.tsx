@@ -21,6 +21,9 @@ describe("contribution static export activation", () => {
     const html = await rendered(true);
     expect(html).toContain('type="email"');
     expect(html).toContain("Email me a sign-in link");
+    expect(html).toContain("Sign-in links are sent by Firebase");
+    expect(html).toContain("not being emailed yet");
+    expect(html).toContain("Save your submission ID");
     expect(verifyContributionExport(html, "true")).toBe(true);
   });
   it("accepts the disabled local-draft flow", async () => {

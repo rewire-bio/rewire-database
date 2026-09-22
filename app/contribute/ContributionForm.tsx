@@ -300,7 +300,7 @@ export default function ContributionForm() {
       setMessage(
         active
           ? "Your revision has been saved for review."
-          : "Your contribution has been submitted for review. It is not public yet.",
+          : `Submission ${id} has been saved privately and is pending review. Track it in Your contributions below.`,
       );
       await refresh(user);
     } catch {
@@ -372,6 +372,14 @@ export default function ContributionForm() {
         contribution updates. There is no newsletter enrolment. Public credit is
         optional.
       </p>
+      {configured && (
+        <p className={styles.notice}>
+          Sign-in links are sent by Firebase. Submission receipts and review
+          updates are not being emailed yet. Save your submission ID and return
+          here to check Your contributions. Every submission stays private until
+          reviewed and published.
+        </p>
+      )}
       {configured && !user && (
         <form className={styles.form} onSubmit={authenticate}>
           <label className={styles.label}>
@@ -470,6 +478,7 @@ export default function ContributionForm() {
       {submissions.length > 0 && (
         <section className={styles.section}>
           <h2>Your contributions</h2>
+          <p>Open a contribution to see its review status and any reviewer notes.</p>
           <ul className={styles.list}>
             {submissions.map((item) => (
               <li key={item.id}>
@@ -480,6 +489,7 @@ export default function ContributionForm() {
                 >
                   {item.title} · {item.status.replace(/_/g, " ")}
                 </button>
+                <p className={styles.muted}>Submission ID: {item.id}</p>
               </li>
             ))}
           </ul>
@@ -507,7 +517,7 @@ export default function ContributionForm() {
       {active && (
         <section className={styles.section}>
           <h2>Contribution status: {active.status.replace(/_/g, " ")}</h2>
-          <p className={styles.muted}>Reference: {active.id}</p>
+          <p className={styles.muted}>Submission ID: {active.id}</p>
           {!!active.review_notes && (
             <p>Review notes: {displayValue(active.review_notes)}</p>
           )}

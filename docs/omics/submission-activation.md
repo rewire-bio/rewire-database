@@ -1,8 +1,11 @@
 # Activate SDK submissions
 
 This change prepares live intake; it does not certify that production authentication,
-email, IAM or backups have been configured. Keep both intake flags false until the
-checks below pass. Scientific publication still requires a reviewed dataset release.
+IAM or backups have been configured. Keep both intake flags false until the
+intake checks below pass. Firebase Auth sends sign-in links independently of the
+notification worker. Custom receipt and review emails may remain paused with
+`OMICS_MAIL_ENABLED=false` while contributors track submissions on the website.
+Scientific publication still requires a reviewed dataset release.
 
 ## Prerequisites before merging and deploying
 
@@ -13,14 +16,34 @@ Functions codebase. The mail flag stops delivery; it is not an infrastructure fl
 1. Reauthenticate Google Cloud as the existing operator and inspect project
    `rewire-it`. Record the current Function revision, Hosting release and catalogue
    release. Do not replace existing infrastructure or email DNS records.
-2. Use the existing Google Workspace mailbox `tim@rewire.it` through the Gmail
+2. Extend the API runtime from read-only Firestore to the data operations required
+   by submission transactions; it also requires `firebaseauth.users.get` for revoked
+   token checks. Use a custom IAM role without project administration or Auth writes.
+   Firestore server IAM is not collection-level isolation: retain deny-all browser
+   rules and the API's verified-owner/curator checks.
+3. Enable Firebase email-link sign-in. Authorize `benchmarks.rewire.it` and use
+   `https://benchmarks.rewire.it/contribute/` for continuation. Configure project
+   email quotas and verify real sign-in delivery. Do not enable emulator trust.
+4. Complete the private snapshot and restore drill described in
+   [contribution operations](contribution-operations.md). Secure the production
+   backup location and record the recovery checks before opening intake.
+
+## Optional notification delivery
+
+These steps are separate from opening intake. Keep `OMICS_MAIL_ENABLED=false`
+until they pass. Preserve queued messages while delivery is paused. The
+contribution page must explain that Firebase sign-in emails still work but
+receipt and review emails are not yet delivered. Contributors save the returned
+submission ID and use **Your contributions** for status and reviewer notes.
+
+1. Use the existing Google Workspace mailbox `tim@rewire.it` through the Gmail
    API. No Resend account, sending-domain DNS changes or SMTP password is required.
    Enable Gmail and IAM Credentials APIs in `rewire-it`. Authorise the dedicated
    mail service account's numeric OAuth client ID in Workspace domain-wide
    delegation for **only** `https://www.googleapis.com/auth/gmail.send`.
    Workspace delegation is domain-wide even though this application fixes the
    sender to Tim; the Workspace administrator must review this permission.
-3. Use `rewire-mail-runtime@rewire-it.iam.gserviceaccount.com` as both runtime and
+2. Use `rewire-mail-runtime@rewire-it.iam.gserviceaccount.com` as both runtime and
    JWT signer. Grant it `iam.serviceAccounts.signJwt` on itself through a custom
    role, plus the existing private-outbox Firestore role. No downloaded keys are
    needed. Keep the catalogue runtime unable to sign as this identity. Allow the
@@ -28,17 +51,9 @@ Functions codebase. The mail flag stops delivery; it is not an infrastructure fl
    The mailer exchanges a signed assertion for a short-lived `gmail.send` token;
    it cannot read the mailbox. From is `Rewire <tim@rewire.it>` and Reply-To is
    `tim@rewire.it`. Messages contain no tracking.
-4. Extend the API runtime from read-only Firestore to the data operations required
-   by submission transactions; it also requires `firebaseauth.users.get` for revoked
-   token checks. Use a custom IAM role without project administration or Auth writes.
-   Firestore server IAM is not collection-level isolation: retain deny-all browser
-   rules and the API's verified-owner/curator checks.
-5. Enable Firebase email-link sign-in. Authorize `benchmarks.rewire.it` and use
-   `https://benchmarks.rewire.it/contribute/` for continuation. Configure project
-   email quotas and verify real sign-in delivery. Do not enable emulator trust.
-6. Complete the private snapshot and restore drill described in
-   [contribution operations](contribution-operations.md). Secure the production
-   backup location and record the recovery checks before opening intake.
+3. Run a controlled delivery test and verify inbox arrival before enabling the
+   worker. Review the queued backlog before resuming delivery. Update the
+   contribution page and SDK guide when notification delivery actually starts.
 
 ## Persisted configuration
 
@@ -48,7 +63,7 @@ Repository variables configure the reviewed deployment:
 | --- | --- |
 | `OMICS_CONTRIBUTIONS_ENABLED` | `false` initially, then `true` after readiness checks |
 | `NEXT_PUBLIC_OMICS_CONTRIBUTIONS_ENABLED` | `false` initially, then `true` for the public sign-in page |
-| `OMICS_MAIL_ENABLED` | `true` after a controlled delivery test |
+| `OMICS_MAIL_ENABLED` | `false` during initial intake; independently enable after a controlled delivery test |
 | `NEXT_PUBLIC_FIREBASE_PROJECT_ID` | `rewire-it` |
 | `NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN` | `rewire-it.firebaseapp.com` |
 | `NEXT_PUBLIC_FIREBASE_API_KEY`, `NEXT_PUBLIC_FIREBASE_APP_ID` | Verified public web-app configuration from Firebase |
@@ -87,8 +102,10 @@ Check the sender's Sent folder before any manual retry of an uncertain message.
   public results but deny private members. Neither probe creates contributions.
 - Use the released `rewirebench.submit()` with the first audited bundle and its
   immutable evidence URL. Save the returned submission ID and idempotency key in
-  the private operations record. Verify owner tracking, curator visibility and
-  actual receipt delivery. Do not put tokens or email bodies in public receipts.
+  the private operations record. Verify owner tracking and curator visibility.
+  With notifications paused, confirm the receipt is queued without claiming
+  delivery. The API acknowledgement and authenticated tracking record establish
+  successful intake. Do not put tokens or email bodies in public receipts.
 - Submit the remaining queued audited bundles with the same retry discipline. Link
   their IDs privately to database PR #24 and its proposed evaluation IDs. Curator
   notes must prevent those same evaluations being imported a second time. Leave

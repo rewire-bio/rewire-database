@@ -2,7 +2,7 @@
 
 The Python `rewirebench.submit` client uses the existing verified-email contribution service. Running or exporting a benchmark never uploads it. Calling `submit` is an explicit submission for curator review, not publication or independent verification.
 
-Production submissions and verification email delivery remain disabled. This document describes the contract implemented and tested locally; enabling production requires the separately approved email and hosting checks.
+Intake and notification delivery are controlled separately. Firebase Auth sends the sign-in links; custom receipt and review emails are paused while `OMICS_MAIL_ENABLED=false`. Intake can open after authentication, ownership, backup and deployment checks pass, without waiting for a notification provider. The contribution page shows whether intake is open. Pending notifications remain queued; they are not evidence that an email was delivered.
 
 ## Authentication and transport
 
@@ -21,6 +21,8 @@ Submit one contribution with:
 The bundle has a strict allowlist in `services/omics/src/sdk-submission.ts`: protocol/data identifiers, summary numeric metrics (at least one finite value, at most six nesting levels), positive reconciled coverage, declared model name/training overlap, hash/revision provenance and explicit unreviewed status. Sequences, weights, row predictions, embeddings, paths, tokens and contributor email are not bundle fields. Subset and incomplete runs retain their scope. The full details object is limited to 24,000 UTF-8 bytes, with a 64 KiB request ceiling. Larger per-assay evidence must be linked from an intentionally published external artifact, not silently truncated into a misleading aggregate.
 
 Retry uncertain requests with the same payload and idempotency key. Changed content with the same key returns a conflict. Do not silently retry with new keys. The server deduplicates and rate limits submissions, and obtains ownership/email from the verified identity rather than client fields.
+
+Save the returned submission ID. It identifies a private item pending review, not a published result. Sign in again at `/contribute/` to find it under **Your contributions**, including its current status and reviewer notes. Do not wait for a receipt email while notifications are paused.
 
 Read status using authenticated `GET /api/trpc/submission.get?input={"id":"..."}` with URL-encoded JSON. Only the owner or a curator can access private records. Revisions use the existing submission update flow and reset review where applicable. Acceptance remains separate from release publication; source checking never becomes independent reproduction because the SDK submitted a bundle.
 

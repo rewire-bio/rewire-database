@@ -87,7 +87,7 @@ describe("reviewed local execution recipes", () => {
     expect(html).toContain("Dataset access");
     expect(html).toContain("Copy instructions");
     expect(html).toContain("not been executed");
-    expect(html).toContain("production submissions remain disabled");
+    expect(html).toContain("submit an exported evaluation for private review");
     expect(html).toContain("sdk.py: evaluate");
   });
   it("offers every step of a recipe, including repeats of one runtime", () => {

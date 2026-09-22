@@ -101,6 +101,7 @@
         "*debug.log",
         ".env",
         ".env.*",
+        ".secret.local",
         ".git",
         ".firebase"
       ]

@@ -276,8 +276,8 @@ export default function RunRecipes({
           </details>
           <p>
             <Link href="/contribute/">Contribute a result for review</Link>. The
-            library can prepare a private submission; production submissions
-            remain disabled until verified email delivery is enabled.
+            library can submit an exported evaluation for private review when
+            intake is open. Check the contribution page for access and sign-in.
           </p>
         </>
       )}

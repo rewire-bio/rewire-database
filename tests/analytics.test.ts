@@ -22,6 +22,14 @@ function analyticsFrame(origin = ANALYTICS_FRAME_ORIGIN) {
 }
 
 describe("consented public analytics", () => {
+  it("covers every current canonical record path, including dataset subsets", () => {
+    const records = JSON.parse(readFileSync("public/omics/catalogue.json", "utf8")).records as { kind: string; id: string }[];
+    expect(records.length).toBeGreaterThan(0);
+    expect(records.filter(record => !isPublicAnalyticsPath(`/database/${record.kind}/${record.id}/`))).toEqual([]);
+    const frame = analyticsFrame();
+    frame.post("/database/dataset_subset/example/");
+    expect(frame.commands().filter(row => row[0] === "event")).toHaveLength(1);
+  });
   it("does not load or send anything without an explicit message from the consented parent", () => {
     const frame = analyticsFrame();
     expect(frame.scripts).toHaveLength(0);

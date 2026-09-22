@@ -7,7 +7,7 @@ export const CLIENT_KEY = "rewire-benchmarks-analytics-client-v1";
 const CONSENT_LIFETIME = 180 * 24 * 60 * 60 * 1000;
 
 export function isPublicAnalyticsPath(pathname: string) {
-  return /^\/(?:$|(?:evidence|audits)\/?$|runs\/mfass-v[12]\/?$|database\/[a-z-]+\/[a-z0-9-]+\/?$)/.test(pathname);
+  return /^\/(?:$|(?:evidence|audits)\/?$|runs\/mfass-v[12]\/?$|database\/[a-z_-]+\/[a-z0-9-]+\/?$)/.test(pathname);
 }
 
 export function publicPage(location: Pick<Location, "origin" | "pathname">, title: string) {

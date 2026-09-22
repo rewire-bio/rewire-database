@@ -21,7 +21,7 @@
     } catch { /* Third-party storage can be blocked. */ }
   }
   window.addEventListener("pagehide", stop);
-  const allowed = path => /^\/(?:$|(?:evidence|audits)\/?$|runs\/mfass-v[12]\/?$|database\/[a-z-]+\/[a-z0-9-]+\/?$)/.test(path);
+  const allowed = path => /^\/(?:$|(?:evidence|audits)\/?$|runs\/mfass-v[12]\/?$|database\/[a-z_-]+\/[a-z0-9-]+\/?$)/.test(path);
   const pageUrl = value => {
     try {
       const url = new URL(value);

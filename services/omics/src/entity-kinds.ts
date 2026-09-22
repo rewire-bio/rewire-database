@@ -74,3 +74,23 @@ export function relationAcceptsKind(relation: string, kind: string): boolean {
   if (relation === "dataset") return isDatasetSubject(kind);
   return relation === kind;
 }
+
+/** Shared publication vocabulary prevents website/API release validation drift. */
+export const catalogueRelations = [
+  "method", "configuration", "pipeline", "service", "task", "protocol",
+  "evaluator", "dataset_subset", "model", "benchmark", "dataset", "evaluation",
+  "baseline", "family", "parent", "supersedes", "original_evaluation", "subject",
+  "source", "applicable_to", "uses_model", "variant_of", "alias_of", "part_of",
+  "evaluates_task", "same_data_as",
+] as const;
+
+/** Informational data reuse only: never merges methods, results or comparison groups. */
+export function validateDatasetReuseLink(
+  record: { id: string; kind: string },
+  link: { relation: string },
+  target: { id: string; kind: string },
+): void {
+  if (link.relation === "same_data_as" &&
+      (!isDatasetSubject(record.kind) || !isDatasetSubject(target.kind) || record.id === target.id))
+    throw new Error(`Invalid dataset reuse relationship on ${record.id}`);
+}

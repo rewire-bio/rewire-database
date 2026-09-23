@@ -213,21 +213,37 @@ function exactValuePanel() {
 }
 
 describe("readable comparison evidence", () => {
-  it("retains exact printed decimals, exponent notation and missing values in descending chart order", () => {
+  it("rounds visible scores while preserving missing values and descending numeric order", () => {
     const panel = exactValuePanel();
     const html = renderToStaticMarkup(<BenchmarkCharts panels={[panel]} />);
     const values = [...html.matchAll(/href="\/database\/result\/([^/\"]+)\/"[^>]*>([^<]*)<\/a>/g)];
     expect(values.map((match) => [match[1], match[2]])).toEqual([
-      ["result-3", "0.9012345678901234567"],
-      ["result-1", "1.2345678901234567e-12"],
-      ["result-5", "0.0000000000000000"],
-      ["result-4", "-2.5000000000000000e-08"],
-      ["result-0", "-0.037894589438910123"],
+      ["result-3", "0.901"],
+      ["result-1", "1.23e-12"],
+      ["result-5", "0"],
+      ["result-4", "-2.5e-8"],
+      ["result-0", "-0.0379"],
       ["result-2", "N/A"],
     ]);
     expect(html.match(/role="img"/g)).toHaveLength(5);
     expect(html).toContain("Not available");
     expect(html).toContain("1 unavailable value;");
+  });
+
+  it("sorts using full precision when rounded scores tie and leaves source records intact", () => {
+    const panel = exactValuePanel();
+    panel.rows = panel.rows.slice(0, 2);
+    panel.rows[0].result.attributes.printed_value = "0.34521";
+    panel.rows[0].result.attributes.numeric_value = "0.34521";
+    panel.rows[1].result.attributes.printed_value = "0.34524";
+    panel.rows[1].result.attributes.numeric_value = "0.34524";
+    const original = JSON.stringify(panel);
+    const html = renderToStaticMarkup(<BenchmarkCharts panels={[panel]} />);
+    const values = [...html.matchAll(/href="\/database\/result\/([^/\"]+)\/"[^>]*>([^<]*)<\/a>/g)];
+    expect(values.map((match) => [match[1], match[2]])).toEqual([
+      ["result-1", "0.345"], ["result-0", "0.345"],
+    ]);
+    expect(JSON.stringify(panel)).toBe(original);
   });
 
   it("omits missingness commentary when every score is available", () => {
@@ -318,7 +334,7 @@ describe("readable comparison evidence", () => {
   });
 });
 
-describe("exact comparison values in table view", () => {
+describe("rounded comparison values in table view", () => {
   let tree: ReactTestRenderer | undefined;
   beforeEach(() => {
     let url = new URL("https://benchmarks.rewire.it/database/benchmark/benchmark/");
@@ -342,7 +358,7 @@ describe("exact comparison values in table view", () => {
     vi.unstubAllGlobals();
   });
 
-  it("switches between keyboard-accessible views without changing exact values or numeric order", async () => {
+  it("switches between keyboard-accessible views with consistent rounded scores and numeric order", async () => {
     const panel = { ...exactValuePanel(), direction: "lower" as const };
     await act(async () => {
       tree = create(<BenchmarkCharts panels={[panel]} />);
@@ -352,8 +368,8 @@ describe("exact comparison values in table view", () => {
       .map((link) => ({ href: link.props.href, text: link.children.join("") }));
     const chartValues = scoreLinks();
     expect(chartValues.map((value) => value.text)).toEqual([
-      "0.9012345678901234567", "1.2345678901234567e-12", "0.0000000000000000",
-      "-2.5000000000000000e-08", "-0.037894589438910123", "N/A",
+      "0.901", "1.23e-12", "0",
+      "-2.5e-8", "-0.0379", "N/A",
     ]);
     expect(tree!.root.findAll((node) => node.props.role === "region")
       .some((node) => node.props.tabIndex === 0 && node.props["aria-label"].includes("dot plot"))).toBe(true);
@@ -362,7 +378,7 @@ describe("exact comparison values in table view", () => {
         .find((button) => button.children.join("") === "Table")!.props.onClick();
     });
     expect(scoreLinks()).toEqual(chartValues);
-    expect(tree!.root.findByType("caption").children.join("")).toBe("correlation: original source values");
+    expect(tree!.root.findByType("caption").children.join("")).toBe("correlation: reported scores");
     const tableRegion = tree!.root.find((node) => node.props["aria-label"] === "Comparison values");
     expect(tableRegion.props.role).toBe("region");
     expect(tableRegion.props.tabIndex).toBe(0);

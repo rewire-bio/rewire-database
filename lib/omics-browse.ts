@@ -1,3 +1,4 @@
+import { formatScore } from "./score-display";
 import { omicsKinds, type OmicsKind, type OmicsRecord } from "./omics";
 export type CatalogueFilters = {
   kind: OmicsKind;
@@ -306,7 +307,7 @@ export function supportsEvaluationSummary(kind: OmicsKind): boolean {
 export function explorerPrintedScore(value: unknown, unit: unknown): string {
   const printed =
     typeof value === "string" || typeof value === "number"
-      ? String(value)
+      ? formatScore(value)
       : "Unreported";
   return `${printed}${unit === "percent" && !printed.includes("%") && printed !== "Unreported" ? "%" : ""}`;
 }

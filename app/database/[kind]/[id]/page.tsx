@@ -1,3 +1,4 @@
+import { formatScore } from "@/lib/score-display";
 import { catalogueText } from "@/lib/catalogue-text";
 import type { Metadata } from "next";
 import Link from "next/link";
@@ -180,7 +181,7 @@ export default function RecordPage({ params }: { params: Params }) {
   );
   const finding =
     record.kind === "result"
-      ? `${displayValue(record.attributes.printed_value)}${record.attributes.unit === "percent" && !/%/.test(String(record.attributes.printed_value)) ? "%" : ""} ${displayValue(record.attributes.metric)}`
+      ? `${formatScore(record.attributes.printed_value)}${record.attributes.unit === "percent" && !/%/.test(String(record.attributes.printed_value)) ? "%" : ""} ${displayValue(record.attributes.metric)}`
       : catalogueText(record.name);
   const modelLinks = first
     ? testedEntities(first)

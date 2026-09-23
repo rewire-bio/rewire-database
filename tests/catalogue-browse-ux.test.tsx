@@ -138,6 +138,8 @@ it("preserves printed percentages including uncertainty", () => {
   );
   expect(explorerPrintedScore("78.5", "percent")).toBe("78.5%");
   expect(explorerPrintedScore("0.75", "fraction")).toBe("0.75");
+  expect(explorerPrintedScore("0.3452228016183431", "fraction")).toBe("0.345");
+  expect(explorerPrintedScore("78.54321", "percent")).toBe("78.5%");
   expect(explorerPrintedScore(null, "percent")).toBe("Unreported");
 });
 

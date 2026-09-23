@@ -1,4 +1,5 @@
 "use client";
+import { formatScore } from "@/lib/score-display";
 import { catalogueText } from "@/lib/catalogue-text";
 import { useEffect, useId, useMemo, useState } from "react";
 import Link from "next/link";
@@ -281,7 +282,7 @@ export default function Results({
                   <td>
                     <Link href={recordHref(row.result)}>
                       <strong className={styles.numericValue}>
-                        {displayValue(row.result.attributes.printed_value)}
+                        {formatScore(row.result.attributes.printed_value)}
                         {row.result.attributes.unit === "percent" &&
                         !/%/.test(String(row.result.attributes.printed_value))
                           ? "%"

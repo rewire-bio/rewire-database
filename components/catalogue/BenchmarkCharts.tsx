@@ -1,4 +1,5 @@
 "use client";
+import { formatScore } from "@/lib/score-display";
 import { catalogueText } from "@/lib/catalogue-text";
 import { useId, useState, useEffect, useMemo } from "react";
 import Link from "next/link";
@@ -540,11 +541,11 @@ export function ComparisonWorkspace({
                   aria-label="Comparison values"
                 >
                   <table className={styles.resultTable}>
-                    <caption>{panel.metric}: original source values</caption>
+                    <caption>{panel.metric}: reported scores</caption>
                     <thead>
                       <tr>
                         <th scope="col">Tested configuration</th>
-                        <th scope="col">Printed value ({panel.unit})</th>
+                        <th scope="col">Score ({panel.unit})</th>
                         <th scope="col">Uncertainty</th>
                         <th scope="col">Source</th>
                       </tr>
@@ -560,7 +561,7 @@ export function ComparisonWorkspace({
                               className={styles.numericValue}
                               href={recordHref(row.result)}
                             >
-                              {String(row.result.attributes.printed_value)}
+                              {formatScore(row.result.attributes.printed_value)}
                             </Link>
                           </td>
                           <td>
@@ -633,7 +634,7 @@ export function ComparisonWorkspace({
                               <div
                                 className={ux.track}
                                 role={value === null ? undefined : "img"}
-                                aria-label={`${testedName(row)}: ${String(row.result.attributes.printed_value)} ${panel.unit}${interval ? `; ${interval.label} ${interval.low} to ${interval.high}` : "; no supported uncertainty interval plotted"}`}
+                                aria-label={`${testedName(row)}: ${formatScore(row.result.attributes.printed_value)} ${panel.unit}${interval ? `; ${interval.label} ${formatScore(interval.low)} to ${formatScore(interval.high)}` : "; no supported uncertainty interval plotted"}`}
                               >
                                 {value !== null ? (
                                   <>
@@ -662,7 +663,7 @@ export function ComparisonWorkspace({
                                 className={ux.value}
                                 href={recordHref(row.result)}
                               >
-                                {String(row.result.attributes.printed_value)}
+                                {formatScore(row.result.attributes.printed_value)}
                               </Link>
                             </li>
                           );

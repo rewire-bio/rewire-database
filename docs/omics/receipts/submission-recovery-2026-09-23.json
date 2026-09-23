@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "checked_at": "2026-09-23T05:14:45.652697+00:00",
+  "checked_at": "2026-09-23T05:19:18.127286+00:00",
   "issue": "https://github.com/rewire-bio/rewire-database/issues/34",
   "method": "automated_emulator_tests_and_authenticated_production_read_only_checks",
   "base_revision": "1894c0e82f537b4f9a2639c65ac7abf2979e6d38",
@@ -22,7 +22,7 @@
   },
   "local": {
     "website_tests_passed": 505,
-    "service_emulator_tests_passed": 290,
+    "service_emulator_tests_passed": 293,
     "service_emulator_tests_skipped": 0,
     "backup_restore": "synthetic_same_project_private_collection_loss_and_restore",
     "owner_tracking_preserved": true,
@@ -33,7 +33,10 @@
     "private_files_outside_git": true,
     "directory_mode": "0700",
     "file_modes": "0600",
-    "temporary_private_files_removed": true
+    "temporary_private_files_removed": true,
+    "restore_request_max_estimated_bytes": 8000000,
+    "restore_request_max_documents": 300,
+    "large_roundtrip_documents": 240
   },
   "not_performed": [
     "production_backup_or_restore",

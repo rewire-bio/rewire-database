@@ -231,6 +231,25 @@ export async function backupPrivate(
   await file.close();
   return { documents: documents.length, sha256: checksum };
 }
+export const PRIVATE_RESTORE_LIMITS = { documents: 300, bytes: 8_000_000, overheadPerDocument: 1024 } as const;
+type RestoreDocument = { path: string; data: Record<string, unknown> };
+/** Tagged JSON overestimates ordinary values; reserve additional wire overhead per document. */
+export function planPrivateRestore(documents: RestoreDocument[]) {
+  const batches: { documents: RestoreDocument[]; estimatedBytes: number }[] = [];
+  let batch: RestoreDocument[] = [], bytes = 0;
+  for (const document of documents) {
+    const size = Buffer.byteLength(JSON.stringify({ path: document.path, data: encode(document.data) }))
+      + PRIVATE_RESTORE_LIMITS.overheadPerDocument;
+    if (size > PRIVATE_RESTORE_LIMITS.bytes)
+      throw new Error("Private document exceeds conservative restore request budget");
+    if (batch.length && (batch.length >= PRIVATE_RESTORE_LIMITS.documents || bytes + size > PRIVATE_RESTORE_LIMITS.bytes)) {
+      batches.push({ documents: batch, estimatedBytes: bytes }); batch = []; bytes = 0;
+    }
+    batch.push(document); bytes += size;
+  }
+  if (batch.length) batches.push({ documents: batch, estimatedBytes: bytes });
+  return batches;
+}
 export async function restorePrivate(
   db: Firestore,
   project: string,
@@ -274,6 +293,7 @@ export async function restorePrivate(
       data: decode(doc.data, db) as Record<string, unknown>,
     };
   });
+  const batches = planPrivateRestore(decoded); // Validate every request before the first write.
   for (const collection of privateCollections)
     if ((await db.collection(collection).listDocuments()).length)
       throw new Error(
@@ -281,9 +301,9 @@ export async function restorePrivate(
       );
   // create, never set: concurrent writes cannot be silently replaced. On a partial
   // failure use a new empty recovery database, do not retry over partial data.
-  for (let offset = 0; offset < decoded.length; offset += 300) {
+  for (const planned of batches) {
     const batch = db.batch();
-    for (const doc of decoded.slice(offset, offset + 300))
+    for (const doc of planned.documents)
       batch.create(db.doc(doc.path), doc.data);
     await batch.commit();
   }

@@ -8,6 +8,8 @@ import { initializeApp, deleteApp } from "firebase-admin/app";
 import { getFirestore, Timestamp, GeoPoint } from "firebase-admin/firestore";
 import {
   backupPrivate,
+  planPrivateRestore,
+  PRIVATE_RESTORE_LIMITS,
   restorePrivate,
   encode,
   decode,
@@ -175,3 +177,55 @@ test(
     }
   },
 );
+
+
+function largePermittedContribution() {
+  return {
+    type: "model", title: "Synthetic recovery model", summary: "s".repeat(10_000),
+    source_urls: Array.from({ length: 20 }, (_, i) => `https://example.org/${i}/${"x".repeat(500)}`),
+    public_credit: false, details: { description: "d".repeat(23_500) },
+  };
+}
+
+test("restore plans respect byte and document limits for permitted large contributions", async () => {
+  const { contribution } = await import("../src/validation.js");
+  const data = contribution.parse(largePermittedContribution());
+  const documents = Array.from({ length: 300 }, (_, i) => ({ path: `privateSubmissions/item-${i}`, data }));
+  assert.ok(Buffer.byteLength(JSON.stringify(documents)) > 10 * 1024 * 1024);
+  const batches = planPrivateRestore(documents);
+  assert.ok(batches.length > 1);
+  assert.deepEqual(batches.flatMap(b => b.documents), documents);
+  assert.ok(batches.every(b => b.estimatedBytes <= PRIVATE_RESTORE_LIMITS.bytes && b.documents.length <= 300));
+  assert.deepEqual(planPrivateRestore(Array.from({ length: 301 }, (_, i) => ({ path: `privateRateLimits/item-${i}`, data: { count: i } }))).map(b => b.documents.length), [300, 1]);
+  assert.deepEqual(planPrivateRestore([]), []);
+});
+
+test("restore planning rejects oversized documents before committing any batch", () => {
+  assert.throws(() => planPrivateRestore([
+    { path: "privateSubmissions/small", data: { title: "safe" } },
+    { path: "privateSubmissions/large", data: { value: "x".repeat(PRIVATE_RESTORE_LIMITS.bytes) } },
+  ]), /restore request budget/);
+});
+
+test("large private recovery crosses byte-bounded batches without overwriting", { skip: !process.env.FIRESTORE_EMULATOR_HOST }, async () => {
+  const project = `demo-large-recovery-${randomUUID().slice(0, 8)}`;
+  const app = initializeApp({ projectId: project }, randomUUID());
+  const db = getFirestore(app);
+  const dir = await mkdtemp(join(tmpdir(), "rewire-large-recovery-"));
+  const file = join(dir, "snapshot.json");
+  const documents = Array.from({ length: 240 }, (_, i) => ({ path: `privateSubmissions/item-${i}`, data: largePermittedContribution() }));
+  assert.ok(planPrivateRestore(documents).length > 1);
+  const content = JSON.stringify({ schema: 1, project, captured_at: new Date().toISOString(), documents: documents.map(d => ({ path: d.path, data: encode(d.data) })) });
+  try {
+    await writeFile(file, content, { mode: 0o600 });
+    await writeFile(`${file}.sha256`, createHash("sha256").update(content).digest("hex"), { mode: 0o600 });
+    assert.equal((await restorePrivate(db, project, file)).documents, 240);
+    const restored = await db.collection("privateSubmissions").get();
+    assert.equal(restored.size, 240);
+    for (const doc of restored.docs) assert.deepEqual(doc.data(), largePermittedContribution());
+    await assert.rejects(restorePrivate(db, project, file), /empty/);
+  } finally {
+    await db.recursiveDelete(db.collection("privateSubmissions"));
+    await deleteApp(app); await rm(dir, { recursive: true, force: true });
+  }
+});

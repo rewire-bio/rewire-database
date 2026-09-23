@@ -1,0 +1,14 @@
+.index { font-family: var(--sans); }
+.shortcuts, .pagination { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin: 24px 0 0; }
+.shortcuts a, .pagination a { display: inline-flex; align-items: center; min-height: 44px; padding: 8px 12px; border: 1px solid var(--line); border-radius: var(--radius-sm); }
+.shortcuts a[aria-current], .pagination a[aria-current] { background: var(--accent-soft); color: var(--accent-ink); font-weight: 600; }
+.index a, .shortcuts a { text-underline-offset: 3px; }
+.index a:focus-visible, .shortcuts a:focus-visible { outline: 3px solid var(--accent-ink); outline-offset: 4px; }
+.context { color: var(--ink-2); max-width: 80ch; line-height: 1.65; }
+.records { list-style: none; padding: 0; margin: 24px 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 40px; }
+.records li { padding: 24px 0; border-top: 1px solid var(--line); min-width: 0; overflow-wrap: anywhere; }
+.records h2 { font-size: 22px; }
+.records p { line-height: 1.6; margin: 12px 0 0; }
+.records .areas { font-size: 13px; color: var(--accent-ink); }
+.records .identity { font-size: 12px; color: var(--ink-3); }
+@media (max-width: 680px) { .records { grid-template-columns: minmax(0, 1fr); } }

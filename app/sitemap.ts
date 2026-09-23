@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { readFileSync } from "node:fs";
 import { parseCatalogue, recordHref } from "@/lib/omics";
+import { catalogueIndexPaths } from "@/lib/catalogue-index";
 export default function sitemap(): MetadataRoute.Sitemap {
   const base = "https://benchmarks.rewire.it";
   const catalogue = parseCatalogue(
@@ -11,6 +12,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${base}/runs/mfass-v2/` },
     { url: `${base}/evidence/`, lastModified: catalogue.released_at },
     { url: `${base}/audits/`, lastModified: catalogue.released_at },
+    ...catalogueIndexPaths(catalogue.records).map((path) => ({ url: base + path, lastModified: catalogue.released_at })),
     ...catalogue.records
       .filter((record) => record.kind !== "claim")
       .map((record) => ({

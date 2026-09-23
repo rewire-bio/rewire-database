@@ -14,6 +14,8 @@ assert.match(await home.text(), /id="mfass-v1"/);
 await check('/literature/?q=splice', 200, 'text/html');
 await check('/runs/mfass-v2/', 200, 'text/html');
 await check('/sitemap.xml', 200, 'xml');
+await check('/benchmarks/', 200, 'text/html');
+await check('/models/', 200, 'text/html');
 const analytics = await check('/_analytics/', 200, 'text/html');
 assert.equal(analytics.headers.get('referrer-policy'), 'no-referrer');
 assert.match(analytics.headers.get('x-robots-tag') || '', /noindex/);
@@ -24,7 +26,7 @@ for (const name of ['papers.json', 'results.csv']) {
   const response = await check(`/benchmark-literature/${name}`, 200);
   assert.deepEqual(Buffer.from(await response.arrayBuffer()), fs.readFileSync(`data/benchmark-literature/${name}`));
 }
-for (const route of ['/__missing_page__/', '/blog/', '/benchmarks/']) await check(route, 404);
+for (const route of ['/__missing_page__/', '/blog/', '/models/page/1/', '/models/page/999999/']) await check(route, 404);
 // Published baseline must not expose review-only routes. Review branch checks its own catalogue.
 if (!fs.existsSync('app/database')) {
   await check('/database/', 404);

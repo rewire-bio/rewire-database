@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "audit_version": 1,
+  "release_id": "2026-09-20-370b30415b09",
+  "release_date": "2026-09-20T20:54:03Z",
+  "publication_status": "prospective_review",
+  "catalogue_sha256": "7c958333d84da8c0233dfb1d54ce48265b0eaf1d8b5e4ab228b67ef4de585316",
+  "counts": {
+    "protocols": 183,
+    "suites": 30,
+    "model_records": 59,
+    "exact_model_method_configuration_records": 2447,
+    "measured_roles": 5,
+    "selection_required_roles": 359,
+    "historical_roles": 2,
+    "protocols_without_explicit_suite": 77,
+    "models_with_rewire_evaluations": 9
+  },
+  "generator_sha256": "64b5fa1702a19374ed8a1d35f7ba4f8802379ae5fc0d41c2878fb21151257a7b",
+  "exporter_sha256": "826a4f799484d53f14a0e1e5765989e5b2854f9b1f78e845ffaab50546781238",
+  "review_method": "Automated exact-record linkage and editorial triage; no new source review or execution",
+  "files": {
+    "coverage.json": "2c0d1ca38d029ea1210d2eb2161bc8914c173f34d8a362acecb832441d0d1d0d",
+    "protocol-baselines.csv": "8456fa3772ad9d74000baefd17e9f74c7ded896b512b817712d35a4dc324a6d8",
+    "model-evaluation-matrix.csv": "9c6191c40a5e0fffec74714ebb3d27205c9bd0ff27f47850b22d453f299c3d94",
+    "suite-coverage.csv": "61f32617d78a9db2912b9e5fd05866935c16ce4b40a981fc16a6fc9a2b3fa8eb",
+    "sources.json": "b4254cfded1f8503e07083deebcf170a2f104fa3882fb4bff5bec91961ae7f0d",
+    "sources.csv": "ca930d83a27628c23c2a85b8114bb6fdfd2eddd415aa7978e6d1ffd0aafe5830"
+  }
+}

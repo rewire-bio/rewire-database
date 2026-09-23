@@ -177,7 +177,7 @@ describe("release-pinned payload and request behaviour", () => {
     expect(api.results).toHaveBeenCalledTimes(1);
     expect(text()).toContain("All evaluations");
     await changeLocation("");
-    expect(text()).toContain("Highest scores first.");
+    expect(text()).toContain("dot plot; use Table");
   });
   it("keeps static results until a requested filter changes and restores them on reset", async () => {
     await act(async () => {
@@ -241,7 +241,7 @@ describe("release-pinned payload and request behaviour", () => {
     await act(async () =>
       resolvePending({ ...results, items: [], total: 0, evaluation_count: 0 }),
     );
-    expect(text()).toContain("Highest scores first.");
+    expect(text()).toContain("dot plot; use Table");
     await act(async () =>
       button(`All evaluations (${results.evaluation_count})`).props.onClick(),
     );
@@ -288,7 +288,7 @@ describe("comparison score ordering", () => {
       .map((href) => Number(href.match(/ordering-(\d+)/)![1]));
   }
   for (const direction of ["higher", "lower"] as const) {
-    it(`defaults to best ${direction}-is-better scores before truncation, with matching charts and tables`, async () => {
+    it(`sorts ${direction}-is-better metrics numerically descending before truncation, with matching charts and tables`, async () => {
       const original = detail.published_comparisons[0];
       const panel = {
         ...original,
@@ -311,10 +311,7 @@ describe("comparison score ordering", () => {
         })),
       };
       const snapshot = JSON.stringify(panel);
-      const expected =
-        direction === "higher"
-          ? [15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 2, 3, 5, 4, 1, 0]
-          : [1, 4, 5, 2, 3, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0];
+      const expected = [15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 2, 3, 5, 4, 1, 0];
       await act(async () => {
         tree = create(<ComparisonWorkspace panels={[panel]} />);
       });
@@ -324,23 +321,18 @@ describe("comparison score ordering", () => {
       await act(async () => button("Table").props.onClick());
       expect(orderedIds()).toEqual(expected);
       expect(JSON.stringify(panel)).toBe(snapshot);
-      const order = tree.root
-        .findAllByType("select")
-        .find((node) => node.props.value === "score")!;
-      await act(async () =>
-        order.props.onChange({ target: { value: "source" } }),
+      expect(text()).not.toMatch(
+        /Lowest scores first|Highest scores first|best first|Source order/,
       );
-      expect(url.searchParams.get("results_order")).toBe("source");
-      expect(orderedIds()).toEqual(values.map((_, index) => index));
-      expect(text()).toContain("Source order is preserved.");
-      await changeLocation(
-        "?results_order=score&results_view=table&results_all=1",
-      );
-      expect(orderedIds()).toEqual(expected);
-      await changeLocation(
-        "?results_order=source&results_view=table&results_all=1",
-      );
-      expect(orderedIds()).toEqual(values.map((_, index) => index));
+      expect(
+        tree.root.findAllByType("option").some(node => node.props.value === "score"),
+      ).toBe(false);
+      for (const order of ["score", "source", "name"]) {
+        await changeLocation(
+          `?results_order=${order}&results_view=table&results_all=1`,
+        );
+        expect(orderedIds()).toEqual(expected);
+      }
     });
   }
 });

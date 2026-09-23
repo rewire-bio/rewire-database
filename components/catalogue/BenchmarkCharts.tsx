@@ -52,7 +52,6 @@ const defaults = {
   panel: "",
   view: "chart",
   search: "",
-  order: "score",
   all: "",
   zoom: "",
   scope_search: "",
@@ -212,18 +211,15 @@ export function ComparisonWorkspace({
         .toLowerCase()
         .includes(state.search.toLowerCase()),
     );
-    if (state.order === "name")
-      filtered.sort((a, b) => testedName(a).localeCompare(testedName(b)));
-    if (state.order === "score")
-      filtered.sort((a, b) => {
-        const av = numericScore(a.result.attributes.numeric_value),
-          bv = numericScore(b.result.attributes.numeric_value);
-        if (av === null) return bv === null ? 0 : 1;
-        if (bv === null) return -1;
-        return panel?.direction === "lower" ? av - bv : bv - av;
-      });
+    filtered.sort((a, b) => {
+      const av = numericScore(a.result.attributes.numeric_value),
+        bv = numericScore(b.result.attributes.numeric_value);
+      if (av === null) return bv === null ? 0 : 1;
+      if (bv === null) return -1;
+      return bv - av;
+    });
     return filtered;
-  }, [panel, state.search, state.order]);
+  }, [panel, state.search]);
   const visible = state.all === "1" ? rows : rows.slice(0, 12);
   const [low, high] = panel
     ? comparisonRange(panel.rows, panel.metric, panel.unit, state.zoom === "1")
@@ -442,17 +438,6 @@ export function ComparisonWorkspace({
                     }
                   />
                 </label>
-                <label>
-                  Order
-                  <select
-                    value={state.order}
-                    onChange={(event) => update({ order: event.target.value })}
-                  >
-                    <option value="score">Score, best first</option>
-                    <option value="source">Source order</option>
-                    <option value="name">Name</option>
-                  </select>
-                </label>
                 <div
                   className={ux.switches}
                   role="group"
@@ -485,11 +470,7 @@ export function ComparisonWorkspace({
                 {state.search
                   ? ` (${panel.rows.length} in this comparison)`
                   : ""}
-                . {state.order === "source" && "Source order is preserved."}
-                {state.order === "score" &&
-                  (panel.direction === "lower"
-                    ? "Lowest scores first."
-                    : "Highest scores first.")}
+                .
               </p>
               {!rows.length ? (
                 <p>

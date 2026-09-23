@@ -51,7 +51,7 @@ const defaults = {
   panel: "",
   view: "chart",
   search: "",
-  order: "source",
+  order: "score",
   all: "",
   zoom: "",
   scope_search: "",
@@ -442,9 +442,9 @@ export function ComparisonWorkspace({
                     value={state.order}
                     onChange={(event) => update({ order: event.target.value })}
                   >
+                    <option value="score">Score, best first</option>
                     <option value="source">Source order</option>
                     <option value="name">Name</option>
-                    <option value="score">Score, best first</option>
                   </select>
                 </label>
                 <div
@@ -480,6 +480,10 @@ export function ComparisonWorkspace({
                   ? ` (${panel.rows.length} in this comparison)`
                   : ""}
                 . {state.order === "source" && "Source order is preserved."}
+                {state.order === "score" &&
+                  (panel.direction === "lower"
+                    ? "Lowest scores first."
+                    : "Highest scores first.")}
               </p>
               {!rows.length ? (
                 <p>

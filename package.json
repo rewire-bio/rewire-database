@@ -22,7 +22,8 @@
     "omics:check-export": "tsx scripts/omics/check-export.ts",
     "preview:stack": "npm --prefix services/omics run build && firebase emulators:start --project demo-rewire-omics --only hosting,functions,auth,firestore",
     "deploy:stack": "firebase deploy --only hosting,functions:omics,firestore",
-    "check:http": "node scripts/check-hosting-http.mjs"
+    "check:http": "node scripts/check-hosting-http.mjs",
+    "omics:baseline-coverage": "tsx scripts/omics/baseline-coverage.ts"
   },
   "dependencies": {
     "@trpc/client": "^11.18.0",

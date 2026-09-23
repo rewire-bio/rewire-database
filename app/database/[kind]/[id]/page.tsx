@@ -19,6 +19,7 @@ import Profile, {
 } from "@/components/catalogue/Profile";
 import EvidenceTable from "@/components/catalogue/EvidenceTable";
 import RunRecipes from "@/components/catalogue/RunRecipes";
+import BaselineCoverage from "@/components/catalogue/BaselineCoverage";
 import Reproduction from "@/components/catalogue/Reproduction";
 import RunGuide from "@/components/catalogue/RunGuide";
 import Results from "@/components/catalogue/Results";
@@ -660,6 +661,7 @@ export default function RecordPage({ params }: { params: Params }) {
             </section>
           )}
           {(evaluationDesign || hasRunInstructions) && <div id="execution" />}
+          <BaselineCoverage record={record} catalogue={catalogue} />
           {evaluationDesign && (
             <RunRecipes
               record={record}

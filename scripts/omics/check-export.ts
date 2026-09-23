@@ -1,3 +1,5 @@
+import { baselineAuditFiles } from "./baseline-coverage";
+import { catalogueIndexPaths, indexRecords, MODEL_PAGE_SIZE } from "../../lib/catalogue-index";
 import { recordHref, recordRouteKinds } from "../../lib/omics";
 import {
   createEvidenceIndex,
@@ -35,6 +37,18 @@ for (const record of records) {
     let file = path.join("out", decodeURIComponent(url.pathname));
     if (url.pathname.endsWith("/")) file = path.join(file, "index.html");
     if (!fs.existsSync(file)) failures.push(href);
+  }
+}
+// Index discovery must exist in initial HTML, not only after hydration.
+const sitemapHtml = fs.readFileSync("out/sitemap.xml", "utf8");
+for (const url of catalogueIndexPaths(records)) {
+  const html = page(url);
+  if (!html.includes(`rel="canonical" href="https://benchmarks.rewire.it${url}"`)) failures.push(`Index canonical ${url}`);
+  if (!sitemapHtml.includes(`https://benchmarks.rewire.it${url}</loc>`)) failures.push(`Index sitemap ${url}`);
+  const number = url === "/models/" ? 1 : Number(url.match(/page\/(\d+)/)?.[1]);
+  const expected = url === "/benchmarks/" ? indexRecords(records, "benchmark") : indexRecords(records, "model").slice((number - 1) * MODEL_PAGE_SIZE, number * MODEL_PAGE_SIZE);
+  for (const record of expected) {
+    if (!html.includes(`href="${recordHref(record)}"`)) failures.push(`Index missing canonical anchor ${record.id}`);
   }
 }
 for (const url of [
@@ -88,6 +102,15 @@ for (const id of archivedIds) {
     if (fileSha256(path.join(archiveRoot, id, file)) !== digest)
       failures.push(`Checksum ${id}/${file}`);
   }
+}
+const baselineExport = baselineAuditFiles(
+  fs.readFileSync("out/omics/catalogue.json"),
+  "published_release",
+);
+for (const [name, expected] of Object.entries(baselineExport.files)) {
+  const file = path.join("out/omics/baseline-coverage", catalogue.release_id, name);
+  if (!fs.existsSync(file) || fs.readFileSync(file, "utf8") !== expected)
+    failures.push(`Baseline audit export mismatch: ${name}`);
 }
 if (failures.length) throw new Error(failures.join("\n"));
 console.log(

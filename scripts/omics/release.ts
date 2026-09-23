@@ -1,3 +1,4 @@
+import { writeBaselineAudit } from "./baseline-coverage";
 import { writeImmutableChunks } from "./stream-files";
 import { addLocalEvaluations, localEvaluationInputs, addBaselineEvaluations, baselineEvaluationInputs } from "./local-evaluations";
 import {
@@ -426,6 +427,7 @@ function main() {
     "public/omics/manifest.json",
     JSON.stringify(output.manifest, null, 2) + "\n",
   );
+  writeBaselineAudit();
   console.log(
     `Omics ${output.snapshot.release_id}: ${output.snapshot.records.length} public records; ${output.manifest.coverage.source_checked_results} source-checked result rows; ${output.manifest.coverage.quarantined_results} in review.`,
   );

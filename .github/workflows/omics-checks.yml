@@ -10,6 +10,7 @@ on:
       - 'app/sitemap.ts'
       - 'lib/omics*.ts'
       - 'lib/catalogue*.ts'
+      - 'lib/baseline-coverage.ts'
       - 'components/catalogue/**'
       - 'components/SiteAnalytics.tsx'
       - 'tests/omics-*.test.ts'

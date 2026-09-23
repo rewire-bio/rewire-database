@@ -1,0 +1,3692 @@
+[
+  {
+    "id": "2ome-lm-2025",
+    "name": "2OMe-LM: predicting 2′-O-methylation sites in human RNA using a pre-trained RNA language model",
+    "review_status": "discovered",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12342186/",
+    "version": "journal full text in PMC",
+    "retrieved_at": "2026-09-15T23:33:26Z",
+    "artifact_sha256": "54fe4db6f35c03d0d4f3ef4da720eb26a832199372c56d0956609ff07af750ee"
+  },
+  {
+    "id": "acquired-source-0f6c059ffdc338b70a5c",
+    "name": "BEELINE: 10.1038/s41592-019-0690-6 source data published 2020",
+    "review_status": "source_checked",
+    "url": "https://media.springernature.com/original/springer-static/esm/art%3A10.1038%2Fs41592-019-0690-6/MediaObjects/41592_2019_690_MOESM12_ESM.csv",
+    "version": "10.1038/s41592-019-0690-6 source data published 2020",
+    "retrieved_at": "2026-09-19",
+    "artifact_sha256": "21df5e45c94decf352af1861340e2ac4052c477a9c173b643dcfcd146fffe506"
+  },
+  {
+    "id": "acquired-source-31344fb7e5e8ae6b9666",
+    "name": "BEELINE: 10.1038/s41592-019-0690-6 source data published 2020",
+    "review_status": "source_checked",
+    "url": "https://media.springernature.com/original/springer-static/esm/art%3A10.1038%2Fs41592-019-0690-6/MediaObjects/41592_2019_690_MOESM14_ESM.csv",
+    "version": "10.1038/s41592-019-0690-6 source data published 2020",
+    "retrieved_at": "2026-09-19",
+    "artifact_sha256": "1f6a38649aa1fc1d90522e3d09f85f7e5714cc80c585ef679ed7603d7a1c7b70"
+  },
+  {
+    "id": "acquired-source-3156602fda847ae943b4",
+    "name": "BEELINE: 10.1038/s41592-019-0690-6 source data published 2020",
+    "review_status": "source_checked",
+    "url": "https://media.springernature.com/original/springer-static/esm/art%3A10.1038%2Fs41592-019-0690-6/MediaObjects/41592_2019_690_MOESM13_ESM.csv",
+    "version": "10.1038/s41592-019-0690-6 source data published 2020",
+    "retrieved_at": "2026-09-19",
+    "artifact_sha256": "3582523c27176f7573e62fc3fa11843076568b9ce522e556cd2a6973029c90cb"
+  },
+  {
+    "id": "acquired-source-5eabf9f83e79b736479d",
+    "name": "scIB: 3afbffd3674726e5146797be21cf6bd7470a2c5f",
+    "review_status": "source_checked",
+    "url": "https://raw.githubusercontent.com/theislab/scib-reproducibility/3afbffd3674726e5146797be21cf6bd7470a2c5f/data/metrics.csv",
+    "version": "3afbffd3674726e5146797be21cf6bd7470a2c5f",
+    "retrieved_at": "2026-09-19",
+    "artifact_sha256": "d130cca3688cfe192e2a6df8fa52a0b345d099e259f79014ccf6b90442e626b6"
+  },
+  {
+    "id": "acquired-source-7470044466b466152cf1",
+    "name": "CAFA: Figshare 8135393 v3, file 17519846",
+    "review_status": "source_checked",
+    "url": "https://ndownloader.figshare.com/files/17519846",
+    "version": "Figshare 8135393 v3, file 17519846",
+    "retrieved_at": "2026-09-19",
+    "artifact_sha256": "a3de18ef5c0aafecc1a2ca27c7c1d8e82b7332bbb9594e389fbd972cc5100b68"
+  },
+  {
+    "id": "acquired-source-8594fdd08941d9338591",
+    "name": "CAFA: Figshare 8135393 v3, file 17519846",
+    "review_status": "source_checked",
+    "url": "https://ndownloader.figshare.com/files/17519846",
+    "version": "Figshare 8135393 v3, file 17519846",
+    "retrieved_at": "2026-09-19",
+    "artifact_sha256": "8682458e98787f4bcd7c0f46d3bc3002a808d0f395ec1d50f15f06bb5f1a5243"
+  },
+  {
+    "id": "acquired-source-8729ad22565c7a738b41",
+    "name": "CAFA: Figshare 8135393 v3, file 17519846",
+    "review_status": "source_checked",
+    "url": "https://ndownloader.figshare.com/files/17519846",
+    "version": "Figshare 8135393 v3, file 17519846",
+    "retrieved_at": "2026-09-19",
+    "artifact_sha256": "8587fd5675e79b8450f0ab21f13a02459cdf5ff7d338a59a7be641d2ebfeb626"
+  },
+  {
+    "id": "acquired-source-9156fdf9eed96dcdafaa",
+    "name": "CASP: CASP16, snapshot 2026-09-19",
+    "review_status": "source_checked",
+    "url": "https://predictioncenter.org/download_area/CASP16/results/tables/CASP16_prot_domains.scores.csv",
+    "version": "CASP16, snapshot 2026-09-19",
+    "retrieved_at": "2026-09-19",
+    "artifact_sha256": "c598ca536fde5c8ff514dc1ced651629ef7d80db71ae24a58d36dacd871c8bb9"
+  },
+  {
+    "id": "acquired-source-a1e1af10cf13322916ca",
+    "name": "CAPRI: CAPRI round 61, snapshot 2026-09-19",
+    "review_status": "source_checked",
+    "url": "https://www.capri-docking.org/assessment/files/round61.csv",
+    "version": "CAPRI round 61, snapshot 2026-09-19",
+    "retrieved_at": "2026-09-19",
+    "artifact_sha256": "a0cf877f528550b3908aff7e8a1ad30cbbeb685807cdbb343f37acf38bf17f0a"
+  },
+  {
+    "id": "acquired-source-f3795f9b2fe16e3605bb",
+    "name": "Virtual Cell Challenge 2026: 2026-09-19 snapshot; panel vcc2026-val-1",
+    "review_status": "source_checked",
+    "url": "https://virtualcellchallenge.org/api/leaderboard",
+    "version": "2026-09-19 snapshot; panel vcc2026-val-1",
+    "retrieved_at": "2026-09-19",
+    "artifact_sha256": "85eacc0c1e9067231f84607715f4d94a52e5115e4758cfbaed65898621e96103"
+  },
+  {
+    "id": "acquired-source-f64302952624afe35a58",
+    "name": "CAMI: 501b543f65d62e5c1d6c3813be0badcac5e079ca",
+    "review_status": "source_checked",
+    "url": "https://raw.githubusercontent.com/CAMI-challenge/second_challenge_evaluation/501b543f65d62e5c1d6c3813be0badcac5e079ca/binning/genome_binning/marine_dataset/results/amber_marine_nocircular/results.tsv",
+    "version": "501b543f65d62e5c1d6c3813be0badcac5e079ca",
+    "retrieved_at": "2026-09-19",
+    "artifact_sha256": "f08245658a243f36caedcfb1faebed1ca14dcc33a71f148981f634bc43e8f8a0"
+  },
+  {
+    "id": "adar-gpt-editing-2026",
+    "name": "ADAR-GPT: A continually fine-tuned language model for predicting A-to-I RNA editing sites",
+    "review_status": "discovered",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12798952/",
+    "version": "version of record",
+    "retrieved_at": "2026-09-15T23:37:05Z",
+    "artifact_sha256": "cc8c7eb928f246f1f347a8822f614cd3475381c35eef6d579032ce441580198e"
+  },
+  {
+    "id": "akscore-2020",
+    "name": "AK-Score: Accurate Protein-Ligand Binding Affinity Prediction Using an Ensemble of 3D-Convolutional Neural Networks",
+    "review_status": "discovered",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7697539/",
+    "version": "version of record",
+    "retrieved_at": "2026-09-15T23:29:32Z",
+    "artifact_sha256": "40cfd28dcd587599768ec99a6590ec593486475ff01c7b1d1f229b44aa91bf8d"
+  },
+  {
+    "id": "antibody-deamidation-plm-2024",
+    "name": "The Accurate Prediction of Antibody Deamidations by Combining High-Throughput Automated Peptide Mapping and Protein Language Model-Based Deep Learning",
+    "review_status": "discovered",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11417914/",
+    "version": "journal full text in PMC",
+    "retrieved_at": "2026-09-15T23:33:26Z",
+    "artifact_sha256": "aa049f6d78e29540ba902a0d3b7f53d49e9833e4dad9869f79ac27664e8c150b"
+  },
+  {
+    "id": "antibody-flexibility-2025",
+    "name": "Enhancing antibody-antigen interaction prediction with atomic flexibility",
+    "review_status": "discovered",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12530544/",
+    "version": "version of record",
+    "retrieved_at": "2026-09-15T23:29:32Z",
+    "artifact_sha256": "57e64694c69052ed0495570e12ebfb4bb6c0ad152219f23827cd4b1cb53450ef"
+  },
+  {
+    "id": "arsenal-regulatory-dna-2026",
+    "name": "Short-Context Regulatory DNA Language Models with Motif-Discovery Regularization",
+    "review_status": "discovered",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12889687/",
+    "version": "preprint version in PMC",
+    "retrieved_at": "2026-09-15T23:37:05Z",
+    "artifact_sha256": "4a264956e47fc633aaff6573aac368dc691dd5de709b27c7421c078608ff542a"
+  },
+  {
+    "id": "barcodebert-2026",
+    "name": "BarcodeBERT: transformers for biodiversity analyses",
+    "review_status": "discovered",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13008329/",
+    "version": "journal full text in PMC",
+    "retrieved_at": "2026-09-15T23:33:26Z",
+    "artifact_sha256": "493f9fe70b483780ba76d51ccf217d3ca83539c82b89917fd3ccebe2b6eb831d"
+  },
+  {
+    "id": "birna-bert-2025",
+    "name": "BiRNA-BERT allows efficient RNA language modeling with adaptive tokenization",
+    "review_status": "discovered",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12635123/",
+    "version": "journal full text in PMC",
+    "retrieved_at": "2026-09-15T23:33:26Z",
+    "artifact_sha256": "bf7dbc52b6515301c77010c513f13e676c38395ddc82c20310171f518690c152"
+  },
+  {
+    "id": "boltz-stereochemistry-2025",
+    "name": "Improving Stereochemical Limitations in Protein–Ligand Complex Structure Prediction",
+    "review_status": "discovered",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12658688/",
+    "version": "version of record",
+    "retrieved_at": "2026-09-15T23:25:00Z",
+    "artifact_sha256": "78a77b9a0ab8bfa371f5b9baef3f443f4590d6e71cf864d67e90e9ebdfa7fc1b"
+  },
+  {
+    "id": "boltz1-2025",
+    "name": "Boltz-1 Democratizing Biomolecular Interaction Modeling",
+    "review_status": "discovered",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11601547/",
+    "version": "PMC archival version PMC11601547.4",
+    "retrieved_at": "2026-09-15T23:29:32Z",
+    "artifact_sha256": "1ebf712314d9a1c678ded989cc95a0c00c0331e5ad8c9f63194bc9780971d214"
+  },
+  {
+    "id": "bpfold-2025",
+    "name": "Deep generalizable prediction of RNA secondary structure via base pair motif energy",
+    "review_status": "discovered",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12216785/",
+    "version": "version of record",
+    "retrieved_at": "2026-09-15T23:25:00Z",
+    "artifact_sha256": "976218bd172998a1a6e7ed1609ecb8cb2ee380fb48a8dc7b25bc05ea8b0a49af"
+  },
+  {
+    "id": "cammiq-2022",
+    "name": "Strain level microbial detection and quantification with applications to single cell metagenomics",
+    "review_status": "discovered",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9616933/",
+    "version": "version of record",
+    "retrieved_at": "2026-09-15T23:29:32Z",
+    "artifact_sha256": "f0939647ed3de995d58254f79472a612c21b0e1b2560a82783302aa1a148dde3"
+  },
+  {
+    "id": "catalog-source-alphafold-3-server",
+    "name": "AlphaFold 3 Server official resource",
+    "review_status": "discovered",
+    "url": "https://alphafoldserver.com/output-terms",
+    "version": null,
+    "retrieved_at": "2026-09-16T10:50:02Z",
+    "artifact_sha256": null
+  },
+  {
+    "id": "catalog-source-alphagenome",
+    "name": "AlphaGenome official resource",
+    "review_status": "discovered",
+    "url": "https://github.com/google-deepmind/alphagenome_research",
+    "version": null,
+    "retrieved_at": "2026-09-16T10:50:02Z",
+    "artifact_sha256": null
+  },
+  {
+    "id": "catalog-source-boltz-2",
+    "name": "Boltz-2 official resource",
+    "review_status": "discovered",
+    "url": "https://github.com/jwohlwend/boltz",
+    "version": null,
+    "retrieved_at": "2026-09-16T10:50:02Z",
+    "artifact_sha256": null
+  },
+  {
+    "id": "catalog-source-chai-1",
+    "name": "Chai-1 official resource",
+    "review_status": "discovered",
+    "url": "https://github.com/chaidiscovery/chai-lab",
+    "version": null,
+    "retrieved_at": "2026-09-16T10:50:02Z",
+    "artifact_sha256": null
+  },
+  {
+    "id": "catalog-source-diffdock-l",
+    "name": "DiffDock-L official resource",
+    "review_status": "discovered",
+    "url": "https://github.com/gcorso/DiffDock",
+    "version": null,
+    "retrieved_at": "2026-09-16T10:50:02Z",
+    "artifact_sha256": null
+  },
+  {
+    "id": "catalog-source-dnabert-2",
+    "name": "DNABERT-2 official resource",
+    "review_status": "discovered",
+    "url": "https://huggingface.co/zhihan1996/DNABERT-2-117M",
+    "version": null,
+    "retrieved_at": "2026-09-16T10:50:02Z",
+    "artifact_sha256": null
+  },
+  {
+    "id": "catalog-source-esm-2",
+    "name": "ESM-2 official resource",
+    "review_status": "discovered",
+    "url": "https://github.com/facebookresearch/esm",
+    "version": null,
+    "retrieved_at": "2026-09-16T10:50:02Z",
+    "artifact_sha256": null
+  },
+  {
+    "id": "catalog-source-esmfold",
+    "name": "ESMFold official resource",
+    "review_status": "discovered",
+    "url": "https://github.com/facebookresearch/esm",
+    "version": null,
+    "retrieved_at": "2026-09-16T10:50:02Z",
+    "artifact_sha256": null
+  },
+  {
+    "id": "catalog-source-evo-2",
+    "name": "Evo 2 official resource",
+    "review_status": "discovered",
+    "url": "https://github.com/ArcInstitute/evo2",
+    "version": null,
+    "retrieved_at": "2026-09-16T10:50:02Z",
+    "artifact_sha256": null
+  },
+  {
+    "id": "catalog-source-gears",
+    "name": "GEARS official resource",
+    "review_status": "discovered",
+    "url": "https://github.com/snap-stanford/GEARS",
+    "version": null,
+    "retrieved_at": "2026-09-16T10:50:02Z",
+    "artifact_sha256": null
+  },
+  {
+    "id": "catalog-source-geneformer",
+    "name": "Geneformer official resource",
+    "review_status": "discovered",
+    "url": "https://huggingface.co/ctheodoris/Geneformer",
+    "version": null,
+    "retrieved_at": "2026-09-16T10:50:02Z",
+    "artifact_sha256": null
+  },
+  {
+    "id": "catalog-source-kraken2",
+    "name": "Kraken2 official resource",
+    "review_status": "discovered",
+    "url": "https://github.com/DerrickWood/kraken2",
+    "version": null,
+    "retrieved_at": "2026-09-16T10:50:02Z",
+    "artifact_sha256": null
+  },
+  {
+    "id": "catalog-source-metagene-1",
+    "name": "METAGENE-1 official resource",
+    "review_status": "discovered",
+    "url": "https://huggingface.co/metagene-ai/METAGENE-1",
+    "version": null,
+    "retrieved_at": "2026-09-16T10:50:02Z",
+    "artifact_sha256": null
+  },
+  {
+    "id": "catalog-source-metaphlan",
+    "name": "MetaPhlAn official resource",
+    "review_status": "discovered",
+    "url": "https://github.com/biobakery/MetaPhlAn",
+    "version": null,
+    "retrieved_at": "2026-09-16T10:50:02Z",
+    "artifact_sha256": null
+  },
+  {
+    "id": "catalog-source-mimic",
+    "name": "MIMIC official resource",
+    "review_status": "discovered",
+    "url": "https://huggingface.co/polymathic-ai/MIMIC",
+    "version": null,
+    "retrieved_at": "2026-09-16T10:50:02Z",
+    "artifact_sha256": null
+  },
+  {
+    "id": "catalog-source-mrna-fm",
+    "name": "mRNA-FM official resource",
+    "review_status": "discovered",
+    "url": "https://github.com/ml4bio/RNA-FM",
+    "version": null,
+    "retrieved_at": "2026-09-16T10:50:02Z",
+    "artifact_sha256": null
+  },
+  {
+    "id": "catalog-source-nt-v2",
+    "name": "Nucleotide Transformer v2 official resource",
+    "review_status": "discovered",
+    "url": "https://huggingface.co/InstaDeepAI/nucleotide-transformer-v2-50m-multi-species",
+    "version": null,
+    "retrieved_at": "2026-09-16T10:50:02Z",
+    "artifact_sha256": null
+  },
+  {
+    "id": "catalog-source-pangolin",
+    "name": "Pangolin official resource",
+    "review_status": "discovered",
+    "url": "https://github.com/tkzeng/Pangolin",
+    "version": null,
+    "retrieved_at": "2026-09-16T10:50:02Z",
+    "artifact_sha256": null
+  },
+  {
+    "id": "catalog-source-prokbert",
+    "name": "ProkBERT official resource",
+    "review_status": "discovered",
+    "url": "https://github.com/nbrg-ppcu/prokbert",
+    "version": null,
+    "retrieved_at": "2026-09-16T10:50:02Z",
+    "artifact_sha256": null
+  },
+  {
+    "id": "catalog-source-proteinmpnn",
+    "name": "ProteinMPNN official resource",
+    "review_status": "discovered",
+    "url": "https://github.com/dauparas/ProteinMPNN",
+    "version": null,
+    "retrieved_at": "2026-09-16T10:50:02Z",
+    "artifact_sha256": null
+  },
+  {
+    "id": "catalog-source-rhofold",
+    "name": "RhoFold+ official resource",
+    "review_status": "discovered",
+    "url": "https://github.com/ml4bio/RhoFold",
+    "version": null,
+    "retrieved_at": "2026-09-16T10:50:02Z",
+    "artifact_sha256": null
+  },
+  {
+    "id": "catalog-source-rna-fm",
+    "name": "RNA-FM official resource",
+    "review_status": "discovered",
+    "url": "https://github.com/ml4bio/RNA-FM",
+    "version": null,
+    "retrieved_at": "2026-09-16T10:50:02Z",
+    "artifact_sha256": null
+  },
+  {
+    "id": "catalog-source-scfoundation",
+    "name": "scFoundation official resource",
+    "review_status": "discovered",
+    "url": "https://github.com/biomap-research/scFoundation",
+    "version": null,
+    "retrieved_at": "2026-09-16T10:50:02Z",
+    "artifact_sha256": null
+  },
+  {
+    "id": "catalog-source-scgpt",
+    "name": "scGPT official resource",
+    "review_status": "discovered",
+    "url": "https://github.com/bowang-lab/scGPT",
+    "version": null,
+    "retrieved_at": "2026-09-16T10:50:02Z",
+    "artifact_sha256": null
+  },
+  {
+    "id": "catalog-source-scvi",
+    "name": "scVI official resource",
+    "review_status": "discovered",
+    "url": "https://github.com/scverse/scvi-tools",
+    "version": null,
+    "retrieved_at": "2026-09-16T10:50:02Z",
+    "artifact_sha256": null
+  },
+  {
+    "id": "catalog-source-spliceai",
+    "name": "SpliceAI official resource",
+    "review_status": "discovered",
+    "url": "https://github.com/Illumina/SpliceAI",
+    "version": null,
+    "retrieved_at": "2026-09-16T10:50:02Z",
+    "artifact_sha256": null
+  },
+  {
+    "id": "catalog-source-vina",
+    "name": "AutoDock Vina official resource",
+    "review_status": "discovered",
+    "url": "https://github.com/ccsb-scripps/AutoDock-Vina",
+    "version": null,
+    "retrieved_at": "2026-09-16T10:50:02Z",
+    "artifact_sha256": null
+  },
+  {
+    "id": "cathe2-2025",
+    "name": "CATHe2: Enhanced CATH superfamily detection using ProstT5 and structural alphabets",
+    "review_status": "discovered",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12631783/",
+    "version": "journal full text in PMC",
+    "retrieved_at": "2026-09-15T23:33:26Z",
+    "artifact_sha256": "713dbfb6ec1cc1aa85c0543eb93aafa0b45b8873df28053b765dd0a1b6d9b563"
+  },
+  {
+    "id": "cell-dino-2025",
+    "name": "Cell-DINO: Self-supervised image-based embeddings for cell fluorescent microscopy",
+    "review_status": "discovered",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12826486/",
+    "version": "version of record",
+    "retrieved_at": "2026-09-15T23:37:05Z",
+    "artifact_sha256": "12a53a78c70b3033c3351cf7afd4da42ebc98bb3281308f07e71e5baffc153a0"
+  },
+  {
+    "id": "cell2sentence-2024",
+    "name": "Cell2Sentence: Teaching Large Language Models the Language of Biology",
+    "review_status": "discovered",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11565894/",
+    "version": "preprint archived 2024-10-29",
+    "retrieved_at": "2026-09-15T23:25:00Z",
+    "artifact_sha256": "e088727d6e04857fccb7033a9b074e1850f775e86e7d2e99e603dde09558ab02"
+  },
+  {
+    "id": "clape-smb-2024",
+    "name": "Protein-small molecule binding site prediction based on a pre-trained protein language model with contrastive learning",
+    "review_status": "discovered",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11542454/",
+    "version": "version of record",
+    "retrieved_at": "2026-09-15T23:37:05Z",
+    "artifact_sha256": "215919244c3dd2dfb0b55fce91c211430fd8d4aee4bb28bd03eab9f4feb73e62"
+  },
+  {
+    "id": "clathrin-plm-2025",
+    "name": "Advancing the accuracy of clathrin protein prediction through multi-source protein language models",
+    "review_status": "discovered",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12238356/",
+    "version": "journal full text in PMC",
+    "retrieved_at": "2026-09-15T23:33:26Z",
+    "artifact_sha256": "2edc86b25707c1b737d26117093ce8d856e79cc5d0b335f27c1c341f887f1c7e"
+  },
+  {
+    "id": "cobra-rna-binding-2026",
+    "name": "CoBRA: compound binding site prediction using RNA language model",
+    "review_status": "discovered",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12790621/",
+    "version": "journal full text in PMC",
+    "retrieved_at": "2026-09-15T23:33:26Z",
+    "artifact_sha256": "8c6a6f00f5fa5f62acf301a66e9e6fa9ef11c7a05ad9b7447d2ade2ce8eba793"
+  },
+  {
+    "id": "codonbert-vaccines-2024",
+    "name": "CodonBERT large language model for mRNA vaccines",
+    "review_status": "discovered",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11368176/",
+    "version": "journal full text in PMC",
+    "retrieved_at": "2026-09-15T23:33:26Z",
+    "artifact_sha256": "2968073753e6d44feff9c08b131edf23145e95b171434539dddf77bb92847033"
+  },
+  {
+    "id": "cupid-rna-interactions-2026",
+    "name": "Computational understanding of non-coding RNA pairwise interactions",
+    "review_status": "discovered",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12957212/",
+    "version": "PMC archival version PMC12957212.1",
+    "retrieved_at": "2026-09-15T23:37:05Z",
+    "artifact_sha256": "0e6719410b390ee9c4858bb9321042851100fb74df3aa109bf2af2b8aaff7ac1"
+  },
+  {
+    "id": "cyaprombert-2022",
+    "name": "TSSNote-CyaPromBERT: Development of an integrated platform for highly accurate promoter prediction and visualization of Synechococcus sp. and Synechocystis sp. through a state-of-the-art natural language processing model BERT",
+    "review_status": "discovered",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9745317/",
+    "version": "version of record",
+    "retrieved_at": "2026-09-15T23:25:00Z",
+    "artifact_sha256": "74278ccd77b2bc00a3f4434546545e8bdec8b0652a0e5d1862ec0f91decccd8d"
+  },
+  {
+    "id": "dart-eval-regulatory-2024",
+    "name": "DART-Eval: A Comprehensive DNA Language Model Evaluation Benchmark on Regulatory DNA",
+    "review_status": "discovered",
+    "url": "https://proceedings.neurips.cc/paper_files/paper/2024/file/71998bfc3217ffe1cca1ee084dfadadd-Paper-Datasets_and_Benchmarks_Track.pdf",
+    "version": "NeurIPS 2024 Datasets and Benchmarks Track proceedings",
+    "retrieved_at": "2026-09-15T23:33:26Z",
+    "artifact_sha256": "e5aee5b1f7cc6fd961b1d2a131d02cf243b79e091d5e418fbabee7fde9b39b22"
+  },
+  {
+    "id": "debfold-2024",
+    "name": "DEBFold: Computational Identification of RNA Secondary Structures for Sequences across Structural Families Using Deep Learning",
+    "review_status": "discovered",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11094721/",
+    "version": "PMC11094721.1",
+    "retrieved_at": "2026-09-15T23:25:00Z",
+    "artifact_sha256": "e8f960eafb7f00edfdd81d4fb75c6de838e9b872b7e18875fc7a5bff2a2f72b3"
+  },
+  {
+    "id": "deelig-2021",
+    "name": "DEELIG: A Deep Learning Approach to Predict Protein-Ligand Binding Affinity",
+    "review_status": "discovered",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8274096/",
+    "version": "PMC archival version PMC8274096.1",
+    "retrieved_at": "2026-09-15T23:29:32Z",
+    "artifact_sha256": "5a7620c18d0622561004e1e25b5cfaf7399e93df3547eeefdd4cf6d300bb8aba"
+  },
+  {
+    "id": "deepinteraware-2025",
+    "name": "DeepInterAware: Deep Interaction Interface‐Aware Network for Improving Antigen‐Antibody Interaction Prediction from Sequence Data",
+    "review_status": "discovered",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11967782/",
+    "version": "version of record",
+    "retrieved_at": "2026-09-15T23:37:05Z",
+    "artifact_sha256": "25d3561934965f754d8712ec02b2052e9a3979e433b88ecebd5db14e930f17a1"
+  },
+  {
+    "id": "detire-viral-metagenomes-2023",
+    "name": "DETIRE: a hybrid deep learning model for identifying viral sequences from metagenomes",
+    "review_status": "discovered",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10313334/",
+    "version": "PMC archival version PMC10313334.1",
+    "retrieved_at": "2026-09-15T23:37:05Z",
+    "artifact_sha256": "9ff7d32758620f7b0b0628425f62abff103ca2e33269ce3763383584bcebfc3c"
+  },
+  {
+    "id": "dna-foundation-models-2025",
+    "name": "Benchmarking DNA foundation models for genomic and genetic tasks",
+    "review_status": "discovered",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12663285/",
+    "version": "PMC12663285.1",
+    "retrieved_at": "2026-09-15T23:25:00Z",
+    "artifact_sha256": "5d8ca9bcf88cc1b38ad667906a2e4699b1aefa6d31c6f49259784930353f3202"
+  },
+  {
+    "id": "dnabert2-enhancer-2025",
+    "name": "Utilizing a deep learning model based on BERT for identifying enhancers and their strength",
+    "review_status": "discovered",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11981215/",
+    "version": "journal full text in PMC",
+    "retrieved_at": "2026-09-15T23:33:26Z",
+    "artifact_sha256": "d052b80efe7bfc1380994ad28503a5575f04ef940f74d5c9c137cb4ba6827863"
+  },
+  {
+    "id": "dnalongbench-2025",
+    "name": "DNALongBench: A Benchmark Suite for Long-Range DNA Prediction Tasks",
+    "review_status": "discovered",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11741265/",
+    "version": "PMC11741265.1",
+    "retrieved_at": "2026-09-15T23:25:00Z",
+    "artifact_sha256": "fa440a17cecf16a5d872d50a30910f7591b5f6f78e10a944c6bda5ea8d7e32dd"
+  },
+  {
+    "id": "eden-genomic-classification-2026",
+    "name": "EDEN: multiscale expected density of nucleotide encoding for enhanced DNA sequence classification with hybrid deep learning",
+    "review_status": "discovered",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12879454/",
+    "version": "journal full text in PMC",
+    "retrieved_at": "2026-09-15T23:33:26Z",
+    "artifact_sha256": "38a6e26b3caffe8e021a2b0b672218e783aca9ee42046765e323946813015e65"
+  },
+  {
+    "id": "enbed-2024",
+    "name": "Understanding the natural language of DNA using encoder–decoder foundation models with byte-level precision",
+    "review_status": "discovered",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11341122/",
+    "version": "version of record",
+    "retrieved_at": "2026-09-15T23:25:00Z",
+    "artifact_sha256": "e95d4be70d32e61af5a92eda8ea66f25a2cc629e3f83e7b5241b13cde8bdb83b"
+  },
+  {
+    "id": "enhancer-position-encoding-2024",
+    "name": "A deep learning model for DNA enhancer prediction based on nucleotide position aware feature encoding",
+    "review_status": "discovered",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11167433/",
+    "version": "version of record",
+    "retrieved_at": "2026-09-15T23:37:05Z",
+    "artifact_sha256": "0183b6a111b1b02344cad35a571a1fd2c56257e406c5be1df69f7902c5d06749"
+  },
+  {
+    "id": "ensemble-idp-docking-2025",
+    "name": "Ensemble docking for intrinsically disordered proteins",
+    "review_status": "discovered",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11785235/",
+    "version": "preprint archived 2025-01-26",
+    "retrieved_at": "2026-09-15T23:29:32Z",
+    "artifact_sha256": "d02d91cdde41cb76ec5c86b532dffc564879c69e764a8c6b7752460fbbfd24b7"
+  },
+  {
+    "id": "ernie-rna-2025",
+    "name": "ERNIE-RNA: an RNA language model with structure-enhanced representations",
+    "review_status": "discovered",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12627772/",
+    "version": "journal full text in PMC",
+    "retrieved_at": "2026-09-15T23:33:26Z",
+    "artifact_sha256": "0bd1d4b3cbf5d59d452cec4864614947861efcee050ba07e7de395cd90630047"
+  },
+  {
+    "id": "esm2-amp-2025",
+    "name": "ESM2_AMP: an interpretable framework for protein–protein interactions prediction and biological mechanism discovery",
+    "review_status": "discovered",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12392411/",
+    "version": "version of record",
+    "retrieved_at": "2026-09-15T23:37:05Z",
+    "artifact_sha256": "8e7ad6efb72ca28d73037cdf465b0e62f99cd6d0ee4ca9eaf96a4c48da22fd6c"
+  },
+  {
+    "id": "esm2-ofs-fitness-2025",
+    "name": "Pseudo-perplexity in One Fell Swoop for Protein Fitness Estimation",
+    "review_status": "discovered",
+    "url": "https://journals.aps.org/prxlife/pdf/10.1103/zhx7-hcmm",
+    "version": "PRX Life 2025 journal article",
+    "retrieved_at": "2026-09-15T23:33:26Z",
+    "artifact_sha256": "085ef646f11b8e5335c4b3d86b15fb6c7bf5edf4a80a8b622753ac69d9991a67"
+  },
+  {
+    "id": "evidence-alphafold-paper",
+    "name": "AlphaFold 3 paper",
+    "review_status": "source_checked",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11168924/",
+    "version": "Nature 2024; DOI 10.1038/s41586-024-07487-w; XML retrieved 2026-09-16",
+    "retrieved_at": "2026-09-16T19:56:24.856478+00:00",
+    "artifact_sha256": "e627083f74d990b275e96a7503eee3e3eae9e3035b8efb28321277fcac6f1d6e"
+  },
+  {
+    "id": "evidence-alphafold-readme",
+    "name": "AlphaFold 3 README",
+    "review_status": "source_checked",
+    "url": "https://github.com/google-deepmind/alphafold3/blob/c0f97eda2f1f482fd94d3a38bece18c7069b4a5c/README.md",
+    "version": "c0f97eda2f1f482fd94d3a38bece18c7069b4a5c",
+    "retrieved_at": "2026-09-16T19:56:24.856478+00:00",
+    "artifact_sha256": "cc16ba436ea8a967c764ac034a655d632b4c1ef8b4065868b8d07914c7cb88be"
+  },
+  {
+    "id": "evidence-alphafold-server-faq",
+    "name": "AlphaFold Server FAQ",
+    "review_status": "source_checked",
+    "url": "https://alphafoldserver.com/faq",
+    "version": "Rendered public FAQ, 2026-09-16",
+    "retrieved_at": "2026-09-16T19:56:24.856478+00:00",
+    "artifact_sha256": "66df2a77d57bbf01afc72d6ac110bc195d85a259d01d3f532c2e6e576e652eb0"
+  },
+  {
+    "id": "evidence-alphafold-server-terms",
+    "name": "AlphaFold Server terms",
+    "review_status": "source_checked",
+    "url": "https://alphafoldserver.com/terms",
+    "version": "Last modified 2024-05-08; rendered 2026-09-16",
+    "retrieved_at": "2026-09-16T19:56:24.856478+00:00",
+    "artifact_sha256": "5861ed425310fcda7e2a7807d20fbfd4e6bf6dc00801d082cd8b4f2507dacfae"
+  },
+  {
+    "id": "evidence-benchmark-mfass-pinned-readme",
+    "name": "MFASS computational protocol README at bee9133b83f3aedaf2bbb9013f1875515845607e",
+    "review_status": "source_checked",
+    "url": "https://github.com/timini/rewire-benchmarks/blob/bee9133b83f3aedaf2bbb9013f1875515845607e/benchmarks/mfass/README.md",
+    "version": "bee9133b83f3aedaf2bbb9013f1875515845607e",
+    "retrieved_at": "2026-09-16T20:55:04.446365+00:00",
+    "artifact_sha256": "62a9381484fd2360767e78b114d9aa6cd8a4fc6487a981881a4c4999f0ab1b23"
+  },
+  {
+    "id": "evidence-discovery-final-tape",
+    "name": "tape primary benchmark evidence",
+    "review_status": "source_checked",
+    "url": "https://arxiv.org/pdf/1906.08230v1",
+    "version": "1906.08230v1",
+    "retrieved_at": "2026-09-16T20:23:48.238777+00:00",
+    "artifact_sha256": "6ee0c3e6e870635cba8fa67e0a4abc5598c0ab2a10ba127a46b67ac450ae0168"
+  },
+  {
+    "id": "evidence-expansion-atom3d-92656c20",
+    "name": "ATOM3D: Tasks On Molecules in Three Dimensions",
+    "review_status": "source_checked",
+    "url": "https://arxiv.org/pdf/2012.04035v4",
+    "version": "Primary full-text snapshot retrieved 2026-09-17; exact bytes pinned by SHA-256",
+    "retrieved_at": "2026-09-17T08:06:28.182997+00:00",
+    "artifact_sha256": "92656c20a15311c32bed9edc7f465bb26eb30338f40324fe43bec4b1fc6a7890"
+  },
+  {
+    "id": "evidence-expansion-bend-final-f709b6be",
+    "name": "BEND: Benchmarking DNA Language Models on Biologically Meaningful Tasks",
+    "review_status": "source_checked",
+    "url": "https://proceedings.iclr.cc/paper_files/paper/2024/file/429e7b31625a8b7839f9e4d6e2aa9bb9-Paper-Conference.pdf",
+    "version": "Primary full-text snapshot retrieved 2026-09-17; exact bytes pinned by SHA-256",
+    "retrieved_at": "2026-09-17T08:06:28.183228+00:00",
+    "artifact_sha256": "f709b6bef3120eb979c0a0e02d2582475c49410f29850ed7601ba7a700ca379d"
+  },
+  {
+    "id": "evidence-expansion-flip2-d0e61ca2",
+    "name": "FLIP2: Expanding Protein Fitness Landscape Benchmarks for Real-World Machine Learning Applications",
+    "review_status": "source_checked",
+    "url": "https://flip.protein.properties/assets/FLIP_manuscipt.pdf",
+    "version": "Primary full-text snapshot retrieved 2026-09-17; exact bytes pinned by SHA-256",
+    "retrieved_at": "2026-09-17T08:06:28.183348+00:00",
+    "artifact_sha256": "d0e61ca27863c023adddcc225a3e4af1718f2e3fdfe3642bef89c24c93621a17"
+  },
+  {
+    "id": "evidence-expansion-gue-49300ace",
+    "name": "DNABERT-2: Efficient Foundation Model and Benchmark for Multi-Species Genomes",
+    "review_status": "source_checked",
+    "url": "https://arxiv.org/pdf/2306.15006",
+    "version": "Primary full-text snapshot retrieved 2026-09-17; exact bytes pinned by SHA-256",
+    "retrieved_at": "2026-09-17T08:06:28.183387+00:00",
+    "artifact_sha256": "49300acee3e4afd44bebc3de9893c3bc310d331bd4805374e0952fdfbf366f06"
+  },
+  {
+    "id": "evidence-expansion-mfass-readme-62a93814",
+    "name": "MFASS benchmark: corrected v2 protocol and reproducibility instructions",
+    "review_status": "source_checked",
+    "url": "https://raw.githubusercontent.com/rewire-bio/rewire-benchmarks/bee9133b83f3aedaf2bbb9013f1875515845607e/benchmarks/mfass/README.md",
+    "version": "Primary full-text snapshot retrieved 2026-09-17; exact bytes pinned by SHA-256",
+    "retrieved_at": "2026-09-17T08:06:30.007068+00:00",
+    "artifact_sha256": "62a9381484fd2360767e78b114d9aa6cd8a4fc6487a981881a4c4999f0ab1b23"
+  },
+  {
+    "id": "evidence-expansion-nabench-fefd48d5",
+    "name": "NABench: Large-Scale Benchmarks of Nucleotide Foundation Models for Fitness Prediction",
+    "review_status": "source_checked",
+    "url": "https://arxiv.org/html/2511.02888v1",
+    "version": "Primary full-text snapshot retrieved 2026-09-17; exact bytes pinned by SHA-256",
+    "retrieved_at": "2026-09-17T08:06:28.183421+00:00",
+    "artifact_sha256": "fefd48d53b1a7eadf9e14db96adacc8e646304c1b592562d9f136f4508941350"
+  },
+  {
+    "id": "evidence-expansion-p2-evidence-discovery-final-dart-4194b137ba55",
+    "name": "DART-Eval: A Comprehensive DNA Language Model Evaluation Benchmark on Regulatory DNA",
+    "review_status": "source_checked",
+    "url": "https://arxiv.org/html/2412.05430v1",
+    "version": "2412.05430v1",
+    "retrieved_at": "2026-09-17T07:56:09.182117+00:00",
+    "artifact_sha256": "4194b137ba55c9a2c269d119a9afec6ae1bb0feaf17d91433ae483c41221a56b"
+  },
+  {
+    "id": "evidence-expansion-p2-evidence-discovery-final-geneb-47975089c0ca",
+    "name": "GENEB: Why Genomic Models Are Hard to Compare",
+    "review_status": "source_checked",
+    "url": "https://arxiv.org/html/2606.04525v1",
+    "version": "2606.04525v1",
+    "retrieved_at": "2026-09-17T07:56:09.460928+00:00",
+    "artifact_sha256": "47975089c0ca738d5e2d6e6ea91cd4e7b80498c3f175803d8ec39ca77aa41629"
+  },
+  {
+    "id": "evidence-expansion-p2-hest-cached-636099a73dee",
+    "name": "HEST-1k: A Dataset for Spatial Transcriptomics and Histology Image Analysis",
+    "review_status": "source_checked",
+    "url": "https://arxiv.org/pdf/2406.16192v1",
+    "version": "Version pinned by URL and artifact SHA256 when available",
+    "retrieved_at": "2026-09-16",
+    "artifact_sha256": "636099a73dee8337f60e6e9120230b914605b35553872ddf76e4661bbe14be9b"
+  },
+  {
+    "id": "evidence-expansion-perturbench-5c480456",
+    "name": "PerturBench: Benchmarking Machine Learning Models for Cellular Perturbation Analysis",
+    "review_status": "source_checked",
+    "url": "https://arxiv.org/html/2408.10609v1",
+    "version": "Primary full-text snapshot retrieved 2026-09-17; exact bytes pinned by SHA-256",
+    "retrieved_at": "2026-09-17T08:06:28.400469+00:00",
+    "artifact_sha256": "5c4804565dd9faa17a11853a79e9847dcb6da73715b4c91f62e5b274cc79f186"
+  },
+  {
+    "id": "evidence-expansion-proteingym-a3b08cc4",
+    "name": "ProteinGym: Large-Scale Benchmarks for Protein Fitness Prediction and Design",
+    "review_status": "source_checked",
+    "url": "https://papers.nips.cc/paper/2023/file/cac723e5ff29f65e3fcbb0739ae91bee-Paper-Datasets_and_Benchmarks.pdf",
+    "version": "Primary full-text snapshot retrieved 2026-09-17; exact bytes pinned by SHA-256",
+    "retrieved_at": "2026-09-17T08:06:28.522924+00:00",
+    "artifact_sha256": "a3b08cc4a6befd64620cf0f287d78d55a36dc2639955f52c5655f83833c50104"
+  },
+  {
+    "id": "evidence-expansion-tdc-cached-v1-aaa5526f",
+    "name": "Therapeutics Data Commons: Machine Learning Datasets and Tasks for Drug Discovery and Development",
+    "review_status": "source_checked",
+    "url": "https://arxiv.org/pdf/2102.09548v1",
+    "version": "arXiv 2102.09548v1; later NSF v2 discovery retrieved partially but full artifact unavailable",
+    "retrieved_at": "2026-09-16T21:04:55.709744+00:00",
+    "artifact_sha256": "aaa5526f6f100093bc06c9921a8564ad08cfd5332270d614d7681051c2dd66bc"
+  },
+  {
+    "id": "evidence-final-model-rna-fm-paper",
+    "name": "RNA-FM original methods, arXiv v5",
+    "review_status": "source_checked",
+    "url": "https://arxiv.org/pdf/2204.00300v5",
+    "version": "2204.00300v5",
+    "retrieved_at": "2026-09-16T21:10:17.419803+00:00",
+    "artifact_sha256": "b3945c283c5ca6e8a346cfeb3e8d6609dac6e4a3874fd38dc2436c35eeb6074a"
+  },
+  {
+    "id": "evidence-official-019aff235ae2c3cf29d6",
+    "name": "dauparas/ProteinMPNN: protein_mpnn_utils.py",
+    "review_status": "source_checked",
+    "url": "https://github.com/dauparas/ProteinMPNN/blob/8907e6671bfbfc92303b5f79c4b5e6ce47cdef57/protein_mpnn_utils.py",
+    "version": "8907e6671bfbfc92303b5f79c4b5e6ce47cdef57",
+    "retrieved_at": "2026-09-16T19:46:18.948060+00:00",
+    "artifact_sha256": "74c8f9b7553422a7a0bbd705874844ee103c8926c2c96f154a87e0b824071e1b"
+  },
+  {
+    "id": "evidence-official-028db5eeb224def23456",
+    "name": "songlab-cal/tape: README.md",
+    "review_status": "source_checked",
+    "url": "https://github.com/songlab-cal/tape/blob/6d345c2b2bbf52cd32cf179325c222afd92aec7e/README.md",
+    "version": "6d345c2b2bbf52cd32cf179325c222afd92aec7e",
+    "retrieved_at": "2026-09-16T19:46:20.570146+00:00",
+    "artifact_sha256": "b28c74fe3cd6b69a8ba6d84891d0539e54dfef882abd5ed4d11ed0b029bb477a"
+  },
+  {
+    "id": "evidence-official-0437be6150a3da9f8efc",
+    "name": "evolutionaryscale/esm: _assets/ESM3_README.md",
+    "review_status": "source_checked",
+    "url": "https://github.com/evolutionaryscale/esm/blob/bf343ba264b650dff7a073643725f9aaa1fdbe8d/_assets/ESM3_README.md",
+    "version": "bf343ba264b650dff7a073643725f9aaa1fdbe8d",
+    "retrieved_at": "2026-09-16T19:46:18.983347+00:00",
+    "artifact_sha256": "2f564153712e32ad668f1586b6e78599d1a7fd6a3b3b7049718d85f9b33f79a6"
+  },
+  {
+    "id": "evidence-official-044ad0df4e4fe48a2125",
+    "name": "songlab-cal/tape: tape/models/modeling_unirep.py",
+    "review_status": "source_checked",
+    "url": "https://github.com/songlab-cal/tape/blob/6d345c2b2bbf52cd32cf179325c222afd92aec7e/tape/models/modeling_unirep.py",
+    "version": "6d345c2b2bbf52cd32cf179325c222afd92aec7e",
+    "retrieved_at": "2026-09-16T19:46:20.570146+00:00",
+    "artifact_sha256": "f6a0da726a8bcdd40640fab39c0814a56d6188531b44a3ce6e7e7137755c9a02"
+  },
+  {
+    "id": "evidence-official-04ac37076f906b8470cb",
+    "name": "InstaDeepAI/agro-nucleotide-transformer-1b: config.json",
+    "review_status": "source_checked",
+    "url": "https://huggingface.co/InstaDeepAI/agro-nucleotide-transformer-1b/blob/b0e1ea1f53a2bf5bb29f8eab7a7e553bf06c1ab1/config.json",
+    "version": "b0e1ea1f53a2bf5bb29f8eab7a7e553bf06c1ab1",
+    "retrieved_at": "2026-09-16T20:12:20.913125+00:00",
+    "artifact_sha256": "4063f8250f32d922611d8b36f0def1bb53b7ae129d6439c50c8b6c340e8eb0bd"
+  },
+  {
+    "id": "evidence-official-082d60e1af5af7ed12ca",
+    "name": "aqlaboratory/genie3: README.md",
+    "review_status": "source_checked",
+    "url": "https://github.com/aqlaboratory/genie3/blob/d77ae5ac04212ff1e8b29b585859a3244c614804/README.md",
+    "version": "d77ae5ac04212ff1e8b29b585859a3244c614804",
+    "retrieved_at": "2026-09-16T19:46:18.306022+00:00",
+    "artifact_sha256": "50a634fe3236b6272b70928ac41bdebd4a230467b151f59597742ccd56ac8909"
+  },
+  {
+    "id": "evidence-official-099d109417c7fae96e96",
+    "name": "aertslab/GRNBoost: README.md",
+    "review_status": "source_checked",
+    "url": "https://github.com/aertslab/GRNBoost/blob/26c836b3dcbb85852d3c6f4b8340e8655434da02/README.md",
+    "version": "26c836b3dcbb85852d3c6f4b8340e8655434da02",
+    "retrieved_at": "2026-09-16T19:46:18.179520+00:00",
+    "artifact_sha256": "f2befd99acf59576a22b8a44abd2345e8ed7304cf470609f27d311e08ed3f066"
+  },
+  {
+    "id": "evidence-official-0b8003691827eb09b0a4",
+    "name": "proteinmpnn-supp: Publisher supplementary archive",
+    "review_status": "source_checked",
+    "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC9997061/supplementaryFiles",
+    "version": "Retrieved page snapshot; no immutable publisher revision supplied",
+    "retrieved_at": "2026-09-16T20:43:11.978593+00:00",
+    "artifact_sha256": "002269144962619673b7b187bdda20bd250e5f3cfd9f72a529eac53e7a1ac082"
+  },
+  {
+    "id": "evidence-official-0cbab80c2d1769287a1f",
+    "name": "scverse/scvi-tools: docs/user_guide/models/scvi.md",
+    "review_status": "source_checked",
+    "url": "https://github.com/scverse/scvi-tools/blob/73b28e44223621470e582a81a102c107bb22678b/docs/user_guide/models/scvi.md",
+    "version": "73b28e44223621470e582a81a102c107bb22678b",
+    "retrieved_at": "2026-09-16T19:46:20.137176+00:00",
+    "artifact_sha256": "c81a5cfb30db1eca8c03af3d0db1a36a447a1bb5a27b270de5633ba73ebeeeef"
+  },
+  {
+    "id": "evidence-official-0e4dac85aa0e0ff1d4b2",
+    "name": "bowang-lab/scGPT: README.md",
+    "review_status": "source_checked",
+    "url": "https://github.com/bowang-lab/scGPT/blob/cebd6fae655b9c585a4807daa3ac31bb764f06b4/README.md",
+    "version": "cebd6fae655b9c585a4807daa3ac31bb764f06b4",
+    "retrieved_at": "2026-09-16T19:46:18.594429+00:00",
+    "artifact_sha256": "b0503e8ca789f19f1fc2350c5aaf57b1b323bbae43b354655231b5f4a1586c83"
+  },
+  {
+    "id": "evidence-official-0ffe1031786a71400ffd",
+    "name": "mimic: Primary paper PDF",
+    "review_status": "source_checked",
+    "url": "https://arxiv.org/pdf/2604.24506",
+    "version": "2604.24506v1",
+    "retrieved_at": "2026-09-16T20:04:04.776851+00:00",
+    "artifact_sha256": "0ba8639b263f0e7f736bbd4564a8b1acca1f66acc4300cffd3c26e6bf2e93ffe"
+  },
+  {
+    "id": "evidence-official-10a6550ca70fdeaf33cb",
+    "name": "matsui-lab/GlycanGT: README.md",
+    "review_status": "source_checked",
+    "url": "https://github.com/matsui-lab/GlycanGT/blob/96611518c971deb89215ca163deaf9de3a59fa32/README.md",
+    "version": "96611518c971deb89215ca163deaf9de3a59fa32",
+    "retrieved_at": "2026-09-16T19:46:19.737544+00:00",
+    "artifact_sha256": "fa39bffca31211baedb3b63df5dede775fcffff7b411d4261d5b18f526ae1153"
+  },
+  {
+    "id": "evidence-official-10f58e320879def8b102",
+    "name": "biobakery/humann: readme.md",
+    "review_status": "source_checked",
+    "url": "https://github.com/biobakery/humann/blob/e07b3a34d0b94c09a8ac5d28ff95009611178be2/readme.md",
+    "version": "e07b3a34d0b94c09a8ac5d28ff95009611178be2",
+    "retrieved_at": "2026-09-16T19:46:18.580457+00:00",
+    "artifact_sha256": "96260519b594ae22cba9f28d1f64622de001f2abf11d406c9da572bfaf145727"
+  },
+  {
+    "id": "evidence-official-116050b81d03a38e3b6f",
+    "name": "dreams: Journal full-text XML",
+    "review_status": "source_checked",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13090125/",
+    "version": "Retrieved page snapshot; no immutable publisher revision supplied",
+    "retrieved_at": "2026-09-16T19:53:03.200000+00:00",
+    "artifact_sha256": "4bbe2ecff0ad75944b3aec5131369c1b2f75ff6f4b5dc257487a274fdd7b0fef"
+  },
+  {
+    "id": "evidence-official-116dfd8f61e04b51c148",
+    "name": "tbepler/protein-sequence-embedding-iclr2019: README.md",
+    "review_status": "source_checked",
+    "url": "https://github.com/tbepler/protein-sequence-embedding-iclr2019/blob/be32cffeec26431bdf87438eb5f07ddd6fc5d7dd/README.md",
+    "version": "be32cffeec26431bdf87438eb5f07ddd6fc5d7dd",
+    "retrieved_at": "2026-09-16T19:57:33.688522+00:00",
+    "artifact_sha256": "ecb193485e89d65558a509bae571057862dd079d29afc877c8c9812c4c525415"
+  },
+  {
+    "id": "evidence-official-12d43bf3076a93fc4ee7",
+    "name": "songlab-cal/tape: tape/models/modeling_onehot.py",
+    "review_status": "source_checked",
+    "url": "https://github.com/songlab-cal/tape/blob/6d345c2b2bbf52cd32cf179325c222afd92aec7e/tape/models/modeling_onehot.py",
+    "version": "6d345c2b2bbf52cd32cf179325c222afd92aec7e",
+    "retrieved_at": "2026-09-16T19:46:20.570146+00:00",
+    "artifact_sha256": "546fab3931d2ae7b6a0ee06ff64c6bcedf2d58b460e5aa90be623b0895befe43"
+  },
+  {
+    "id": "evidence-official-137a3a936ffa4673b3d3",
+    "name": "facebook/esm1v_t33_650M_UR90S_1: config.json",
+    "review_status": "source_checked",
+    "url": "https://huggingface.co/facebook/esm1v_t33_650M_UR90S_1/blob/8bfdb1892536cc77bd0760b9c25ddced2cd0b4c8/config.json",
+    "version": "8bfdb1892536cc77bd0760b9c25ddced2cd0b4c8",
+    "retrieved_at": "2026-09-16T20:12:20.912868+00:00",
+    "artifact_sha256": "6c4b576e2e73ad85fc51a4fa75d4e350532b773e04551307a74643c3fc3c5d59"
+  },
+  {
+    "id": "evidence-official-18d8f4d5fc3f6616922d",
+    "name": "instadeepai/nucleotide-transformer: README.md",
+    "review_status": "source_checked",
+    "url": "https://github.com/instadeepai/nucleotide-transformer/blob/2dc37b86e16a6970fbc731751f7719d9f676f7f9/README.md",
+    "version": "2dc37b86e16a6970fbc731751f7719d9f676f7f9",
+    "retrieved_at": "2026-09-16T19:46:19.364532+00:00",
+    "artifact_sha256": "9f51bbb20c4c5c36e77fb03ca1c5c36236e287c48a1ee31f53150545d421ec25"
+  },
+  {
+    "id": "evidence-official-1aae5efd1b27ae9c761a",
+    "name": "songlab-cal/tape: tape/models/modeling_lstm.py",
+    "review_status": "source_checked",
+    "url": "https://github.com/songlab-cal/tape/blob/6d345c2b2bbf52cd32cf179325c222afd92aec7e/tape/models/modeling_lstm.py",
+    "version": "6d345c2b2bbf52cd32cf179325c222afd92aec7e",
+    "retrieved_at": "2026-09-16T19:46:20.570146+00:00",
+    "artifact_sha256": "e857bc4d6d551915a375116208f7f74b286e7fc88d0d54f54b2746b2fb02e1ca"
+  },
+  {
+    "id": "evidence-official-1b2aa7207e3a05f297ab",
+    "name": "ViennaRNA/ViennaRNA: README.md",
+    "review_status": "source_checked",
+    "url": "https://github.com/ViennaRNA/ViennaRNA/blob/1ffec79f5e258896160f7362ced8263450f371dc/README.md",
+    "version": "1ffec79f5e258896160f7362ced8263450f371dc",
+    "retrieved_at": "2026-09-16T19:46:18.166113+00:00",
+    "artifact_sha256": "d37146b01e4273062a5230c496a9af8414ee7ef14fcd905cf415959256d59c4e"
+  },
+  {
+    "id": "evidence-official-1d81a48c6dcc0e6dc14d",
+    "name": "biohub/ESMC-6B: README.md",
+    "review_status": "source_checked",
+    "url": "https://huggingface.co/biohub/ESMC-6B/blob/af1602ba7406f521b11bf8f81d52af378cde09e4/README.md",
+    "version": "af1602ba7406f521b11bf8f81d52af378cde09e4",
+    "retrieved_at": "2026-09-16T20:22:27.767420+00:00",
+    "artifact_sha256": "64096baa2f7345c1badd5be2c97c0998fc46d4c3d017c2a3f3ce83418a20f147"
+  },
+  {
+    "id": "evidence-official-1df5b1865861177c0c75",
+    "name": "ArcInstitute/state: README.md",
+    "review_status": "source_checked",
+    "url": "https://github.com/ArcInstitute/state/blob/9bbfe78a434a55205e4de834e1ea99f85f7a3add/README.md",
+    "version": "9bbfe78a434a55205e4de834e1ea99f85f7a3add",
+    "retrieved_at": "2026-09-16T19:46:17.767683+00:00",
+    "artifact_sha256": "568c0b4f9d93374f7ebc7467c226fdde0050abfd60147bce0b316163bf4199d6"
+  },
+  {
+    "id": "evidence-official-1f027f8ecc53decdeec8",
+    "name": "evolutionaryscale/esm: THIRD_PARTY_NOTICE.md",
+    "review_status": "source_checked",
+    "url": "https://github.com/evolutionaryscale/esm/blob/bf343ba264b650dff7a073643725f9aaa1fdbe8d/THIRD_PARTY_NOTICE.md",
+    "version": "bf343ba264b650dff7a073643725f9aaa1fdbe8d",
+    "retrieved_at": "2026-09-16T19:46:18.983347+00:00",
+    "artifact_sha256": "5bff8515ba4e0f53abdc43714c180b79c5b606160497d98de741a369cb9b6a23"
+  },
+  {
+    "id": "evidence-official-1f756fefa823dd402b0f",
+    "name": "kraken2: Journal full-text XML",
+    "review_status": "source_checked",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6883579/",
+    "version": "Retrieved page snapshot; no immutable publisher revision supplied",
+    "retrieved_at": "2026-09-16T19:53:03.009224+00:00",
+    "artifact_sha256": "2fd1d7785b45855deacb566acc79336e292c4c2d4975095b2ff7b1200c406869"
+  },
+  {
+    "id": "evidence-official-23e72f7e93a0a633ab2b",
+    "name": "ccsb-scripps/AutoDock-Vina: README.md",
+    "review_status": "source_checked",
+    "url": "https://github.com/ccsb-scripps/AutoDock-Vina/blob/3c65c0b3e6c2c1d183f6a175ecb65e3c5ba91645/README.md",
+    "version": "3c65c0b3e6c2c1d183f6a175ecb65e3c5ba91645",
+    "retrieved_at": "2026-09-16T19:46:18.718558+00:00",
+    "artifact_sha256": "4f1728521ab79de1c33e1cf8605b31037effed5de2a2fbbccba58d7b0a005ae7"
+  },
+  {
+    "id": "evidence-official-25b222d11900e0e88a51",
+    "name": "MAGICS-LAB/DNABERT_2: LICENSE",
+    "review_status": "source_checked",
+    "url": "https://github.com/MAGICS-LAB/DNABERT_2/blob/f25bed9ee20db966dff39e5c1571249d04e36404/LICENSE",
+    "version": "f25bed9ee20db966dff39e5c1571249d04e36404",
+    "retrieved_at": "2026-09-16T19:46:17.892989+00:00",
+    "artifact_sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
+  },
+  {
+    "id": "evidence-official-28c1720afecf4240f3f7",
+    "name": "rfdiffusion-supp: Publisher supplementary archive",
+    "review_status": "source_checked",
+    "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC10468394/supplementaryFiles",
+    "version": "Retrieved page snapshot; no immutable publisher revision supplied",
+    "retrieved_at": "2026-09-16T20:43:11.978663+00:00",
+    "artifact_sha256": "eb2ee3da27da262aa90fd5c4ee371581e429039b2b976c135463fbe4b2dbb199"
+  },
+  {
+    "id": "evidence-official-28fc17fbe0c1d99da219",
+    "name": "facebook/esm2_t33_650M_UR50D: config.json",
+    "review_status": "source_checked",
+    "url": "https://huggingface.co/facebook/esm2_t33_650M_UR50D/blob/08e4846e537177426273712802403f7ba8261b6c/config.json",
+    "version": "08e4846e537177426273712802403f7ba8261b6c",
+    "retrieved_at": "2026-09-16T20:04:02.230771+00:00",
+    "artifact_sha256": "539095c22efc52a09d6147074ba4ca119f76a890df5901213b2b55f7d2f96b2b"
+  },
+  {
+    "id": "evidence-official-29d4b229a3aa426a6dfb",
+    "name": "facebookresearch/esm: README.md",
+    "review_status": "source_checked",
+    "url": "https://github.com/facebookresearch/esm/blob/2b369911bb5b4b0dda914521b9475cad1656b2ac/README.md",
+    "version": "2b369911bb5b4b0dda914521b9475cad1656b2ac",
+    "retrieved_at": "2026-09-16T19:46:19.090082+00:00",
+    "artifact_sha256": "8b273c21a322fc9473d1b68d0dd40c8166ab2f89e4a190aa26ca87251b97cba9"
+  },
+  {
+    "id": "evidence-official-2bf115f7d072744af00a",
+    "name": "BojarLab/glycowork: glycowork/ml/models.py",
+    "review_status": "source_checked",
+    "url": "https://github.com/BojarLab/glycowork/blob/3d63f1ec25c850da3cde4d25cb602d50b6b5732b/glycowork/ml/models.py",
+    "version": "3d63f1ec25c850da3cde4d25cb602d50b6b5732b",
+    "retrieved_at": "2026-09-16T19:46:17.767851+00:00",
+    "artifact_sha256": "40222af745e6ec5795ff03d86ca33f9d40eaf331330cd677d9013fce01e88bfb"
+  },
+  {
+    "id": "evidence-official-2cf0a41fec83ee9c5cc9",
+    "name": "zhihan1996/DNABERT-2-117M: config.json",
+    "review_status": "source_checked",
+    "url": "https://huggingface.co/zhihan1996/DNABERT-2-117M/blob/7bce263b15377fc15361f52cfab88f8b586abda0/config.json",
+    "version": "7bce263b15377fc15361f52cfab88f8b586abda0",
+    "retrieved_at": "2026-09-16T19:46:20.874956+00:00",
+    "artifact_sha256": "ba9bdafaff0cc3e30556927474d4a179519a9864012bed2628e9f1bc23c84bfd"
+  },
+  {
+    "id": "evidence-official-2efbfaba5a1c09f4f7fa",
+    "name": "nbrg-ppcu/prokbert: README.md",
+    "review_status": "source_checked",
+    "url": "https://github.com/nbrg-ppcu/prokbert/blob/8670ae92b816cff158a0b85647a8dea122e251eb/README.md",
+    "version": "8670ae92b816cff158a0b85647a8dea122e251eb",
+    "retrieved_at": "2026-09-16T19:46:19.913949+00:00",
+    "artifact_sha256": "29de39c6ad006ce704ab14240cfd97af93da411fb63ec89ebe499c2646928cfc"
+  },
+  {
+    "id": "evidence-official-3076c52b2fa7cb48ba7b",
+    "name": "https://zenodo.org/api/records/10997887: page.html",
+    "review_status": "source_checked",
+    "url": "https://zenodo.org/api/records/10997887",
+    "version": "Retrieved page snapshot; no immutable publisher revision supplied",
+    "retrieved_at": "2026-09-16T20:22:27.767327+00:00",
+    "artifact_sha256": "bfd7a787f3a7f1f900ca62b763a7161a486653011a43b50c39911a3b82d46c9e"
+  },
+  {
+    "id": "evidence-official-33fe0374c8ebbc2c7294",
+    "name": "DerrickWood/kraken2: docs/MANUAL.markdown",
+    "review_status": "source_checked",
+    "url": "https://github.com/DerrickWood/kraken2/blob/8c190b1b668825935dbf6dee5f969227dc8269bb/docs/MANUAL.markdown",
+    "version": "8c190b1b668825935dbf6dee5f969227dc8269bb",
+    "retrieved_at": "2026-09-16T19:46:17.767980+00:00",
+    "artifact_sha256": "182565cb02f3958b39b8303749e58cd8829c6c6bf4734e39533d86e7980071f7"
+  },
+  {
+    "id": "evidence-official-362b9cef071111dfe343",
+    "name": "tape: Primary paper PDF",
+    "review_status": "source_checked",
+    "url": "https://arxiv.org/pdf/1906.08230",
+    "version": "1906.08230v1",
+    "retrieved_at": "2026-09-16T20:23:48.238777+00:00",
+    "artifact_sha256": "6ee0c3e6e870635cba8fa67e0a4abc5598c0ab2a10ba127a46b67ac450ae0168"
+  },
+  {
+    "id": "evidence-official-3759a2f34cb49263eb43",
+    "name": "ODonnell-Lipidomics/LipidFinder: README.md",
+    "review_status": "source_checked",
+    "url": "https://github.com/ODonnell-Lipidomics/LipidFinder/blob/8306ca014c2e6b34ce6ef3ec6cab01fa4c666a09/README.md",
+    "version": "8306ca014c2e6b34ce6ef3ec6cab01fa4c666a09",
+    "retrieved_at": "2026-09-16T19:57:35.576108+00:00",
+    "artifact_sha256": "0449bf076d0d37a2690f0e66f655a03d5e3577207e166f2c963d93d3afcbcd1a"
+  },
+  {
+    "id": "evidence-official-37f825d1226e59cbbfbf",
+    "name": "metaphlan: Journal full-text XML",
+    "review_status": "source_checked",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10635831/",
+    "version": "Retrieved page snapshot; no immutable publisher revision supplied",
+    "retrieved_at": "2026-09-16T19:53:03.009254+00:00",
+    "artifact_sha256": "547306680d52f70865906db567dee93323ecdec3b2e162608dff5057e057aa4b"
+  },
+  {
+    "id": "evidence-official-39a15ed8072aeea14a22",
+    "name": "jwohlwend/boltz: docs/training.md",
+    "review_status": "source_checked",
+    "url": "https://github.com/jwohlwend/boltz/blob/b1ebfc46ecf57f5414e0d1a6f9027bbb122c53bc/docs/training.md",
+    "version": "b1ebfc46ecf57f5414e0d1a6f9027bbb122c53bc",
+    "retrieved_at": "2026-09-16T19:46:19.465940+00:00",
+    "artifact_sha256": "4574fa3cac9d086708dce59de68a144dc337722af3242db9adfd6798bb37e21c"
+  },
+  {
+    "id": "evidence-official-3aa749d3205c0a768b22",
+    "name": "dnabert2: Primary paper PDF",
+    "review_status": "source_checked",
+    "url": "https://arxiv.org/pdf/2306.15006",
+    "version": "2306.15006v2",
+    "retrieved_at": "2026-09-16T20:04:04.777189+00:00",
+    "artifact_sha256": "49300acee3e4afd44bebc3de9893c3bc310d331bd4805374e0952fdfbf366f06"
+  },
+  {
+    "id": "evidence-official-3cec54ed6ded9cb0a092",
+    "name": "songlab-cal/tape: tape/models/modeling_resnet.py",
+    "review_status": "source_checked",
+    "url": "https://github.com/songlab-cal/tape/blob/6d345c2b2bbf52cd32cf179325c222afd92aec7e/tape/models/modeling_resnet.py",
+    "version": "6d345c2b2bbf52cd32cf179325c222afd92aec7e",
+    "retrieved_at": "2026-09-16T19:46:20.570146+00:00",
+    "artifact_sha256": "fc97f083f059f5b587d568aa0c32f7cca227e247160a7e22e3a168aef1469ebe"
+  },
+  {
+    "id": "evidence-official-3e1890c3652bc5c150f7",
+    "name": "rhofold: Journal full-text XML",
+    "review_status": "source_checked",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11621015/",
+    "version": "Retrieved page snapshot; no immutable publisher revision supplied",
+    "retrieved_at": "2026-09-16T19:53:03.009162+00:00",
+    "artifact_sha256": "a74ba0e47c4b0cdc4481f10ffd10d323eaabc9906d55315f9b2009898d8ae803"
+  },
+  {
+    "id": "evidence-official-40f46dc4b9fcc306773b",
+    "name": "DerrickWood/kraken2: README.md",
+    "review_status": "source_checked",
+    "url": "https://github.com/DerrickWood/kraken2/blob/8c190b1b668825935dbf6dee5f969227dc8269bb/README.md",
+    "version": "8c190b1b668825935dbf6dee5f969227dc8269bb",
+    "retrieved_at": "2026-09-16T19:46:17.767980+00:00",
+    "artifact_sha256": "2ea33af266b4268a55fd750d0f3265cd3165d61f6be375c5ea3b3ff5c58c7c8c"
+  },
+  {
+    "id": "evidence-official-4565e66fdeb787b99afa",
+    "name": "polymathic-ai/MIMIC: config.json",
+    "review_status": "source_checked",
+    "url": "https://huggingface.co/polymathic-ai/MIMIC/blob/72e63a1ece34928422fd46f89b6a6580ace99a97/config.json",
+    "version": "72e63a1ece34928422fd46f89b6a6580ace99a97",
+    "retrieved_at": "2026-09-16T19:46:20.846683+00:00",
+    "artifact_sha256": "687e182e410fbfa235e24c337f51411c6fff583d3135fdbac202b08b0e63a8ef"
+  },
+  {
+    "id": "evidence-official-4603e2d255507e025c80",
+    "name": "InstaDeepAI/agro-nucleotide-transformer-1b: README.md",
+    "review_status": "source_checked",
+    "url": "https://huggingface.co/InstaDeepAI/agro-nucleotide-transformer-1b/blob/b0e1ea1f53a2bf5bb29f8eab7a7e553bf06c1ab1/README.md",
+    "version": "b0e1ea1f53a2bf5bb29f8eab7a7e553bf06c1ab1",
+    "retrieved_at": "2026-09-16T20:12:20.913125+00:00",
+    "artifact_sha256": "552b83763443130a7a207a749d47026c5cc36be72268cb827afe251c30857807"
+  },
+  {
+    "id": "evidence-official-4920952f9b3c4b8909a0",
+    "name": "instadeepai/nucleotide-transformer: docs/segment_nt.md",
+    "review_status": "source_checked",
+    "url": "https://github.com/instadeepai/nucleotide-transformer/blob/2dc37b86e16a6970fbc731751f7719d9f676f7f9/docs/segment_nt.md",
+    "version": "2dc37b86e16a6970fbc731751f7719d9f676f7f9",
+    "retrieved_at": "2026-09-16T19:46:19.364532+00:00",
+    "artifact_sha256": "8eec4580ba64ab944fb9b42674be70ffe793135f3503cce8640f5b08f8290f7a"
+  },
+  {
+    "id": "evidence-official-4abb9affb1a9e5438c91",
+    "name": "InstaDeepAI/nucleotide-transformer-v2-50m-multi-species: README.md",
+    "review_status": "source_checked",
+    "url": "https://huggingface.co/InstaDeepAI/nucleotide-transformer-v2-50m-multi-species/blob/81b29e5786726d891dbf929404ef20adca5b36f1/README.md",
+    "version": "81b29e5786726d891dbf929404ef20adca5b36f1",
+    "retrieved_at": "2026-09-16T19:46:20.607357+00:00",
+    "artifact_sha256": "e526d7b98f106bc2ca9ba73fa166ff5fd62853812e9757a6692eeedf25e42923"
+  },
+  {
+    "id": "evidence-official-4bf005200ebfb2586b78",
+    "name": "evolutionaryscale/esm: README.md",
+    "review_status": "source_checked",
+    "url": "https://github.com/evolutionaryscale/esm/blob/bf343ba264b650dff7a073643725f9aaa1fdbe8d/README.md",
+    "version": "bf343ba264b650dff7a073643725f9aaa1fdbe8d",
+    "retrieved_at": "2026-09-16T19:46:18.983347+00:00",
+    "artifact_sha256": "74a897f0e97e3d4256f7cff11424dd264df4daaf8cabd9a6fb74b661421de038"
+  },
+  {
+    "id": "evidence-official-53934b67953ba33b2c95",
+    "name": "aqlaboratory/openfold: docs/source/original_readme.md",
+    "review_status": "source_checked",
+    "url": "https://github.com/aqlaboratory/openfold/blob/be2ec1841f16c966c65ae0e7599ebbadc725757d/docs/source/original_readme.md",
+    "version": "be2ec1841f16c966c65ae0e7599ebbadc725757d",
+    "retrieved_at": "2026-09-16T19:46:18.314650+00:00",
+    "artifact_sha256": "aa0812608f4b4dca4b4d30b9e0eb6b7d08ca9d1596535419d6255c3ced48f36f"
+  },
+  {
+    "id": "evidence-official-550f6719c2f22f4d57b3",
+    "name": "scverse/scvi-tools: README.md",
+    "review_status": "source_checked",
+    "url": "https://github.com/scverse/scvi-tools/blob/73b28e44223621470e582a81a102c107bb22678b/README.md",
+    "version": "73b28e44223621470e582a81a102c107bb22678b",
+    "retrieved_at": "2026-09-16T19:46:20.137176+00:00",
+    "artifact_sha256": "eb46b8a54e60643ca0cd8cb375ede05b01dcbd2380ca17ce8027a92ba13cebbb"
+  },
+  {
+    "id": "evidence-official-56e5abfb5f12f1cd3b20",
+    "name": "alphagenome: Journal full-text XML",
+    "review_status": "source_checked",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12851941/",
+    "version": "Retrieved page snapshot; no immutable publisher revision supplied",
+    "retrieved_at": "2026-09-16T19:53:03.009088+00:00",
+    "artifact_sha256": "d159b791fc6cb7b679c151727b7b05a6e5b6388b08a89b675014983d85b6df36"
+  },
+  {
+    "id": "evidence-official-56f02d45976d011d80aa",
+    "name": "instadeepai/nucleotide-transformer: docs/agro_nucleotide_transformer.md",
+    "review_status": "source_checked",
+    "url": "https://github.com/instadeepai/nucleotide-transformer/blob/2dc37b86e16a6970fbc731751f7719d9f676f7f9/docs/agro_nucleotide_transformer.md",
+    "version": "2dc37b86e16a6970fbc731751f7719d9f676f7f9",
+    "retrieved_at": "2026-09-16T19:46:19.364532+00:00",
+    "artifact_sha256": "23e27d40473bbabadac45c56e8e282349f0b053da85fda89ff2125b5fe381fc6"
+  },
+  {
+    "id": "evidence-official-576c2ecba240ddfda8f2",
+    "name": "agront: Journal full-text XML",
+    "review_status": "source_checked",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11233511/",
+    "version": "Retrieved page snapshot; no immutable publisher revision supplied",
+    "retrieved_at": "2026-09-16T20:16:14.422658+00:00",
+    "artifact_sha256": "ac36567140994e07e029042e4ac088d5895eabc2cf7ee79b174aee7d7a074070"
+  },
+  {
+    "id": "evidence-official-578439da3f3a3a476b7f",
+    "name": "google-deepmind/alphagenome_research: README.md",
+    "review_status": "source_checked",
+    "url": "https://github.com/google-deepmind/alphagenome_research/blob/0db53bd4352c66d1e00a049a81da373a066e6670/README.md",
+    "version": "0db53bd4352c66d1e00a049a81da373a066e6670",
+    "retrieved_at": "2026-09-16T19:46:19.361780+00:00",
+    "artifact_sha256": "c715b22c31bd4f69e9b76236de0ab6a26c96fa0f384ad56a2f9d2cb65e262681"
+  },
+  {
+    "id": "evidence-official-5a9e55abdf288d9dd8da",
+    "name": "jwohlwend/boltz: docs/prediction.md",
+    "review_status": "source_checked",
+    "url": "https://github.com/jwohlwend/boltz/blob/b1ebfc46ecf57f5414e0d1a6f9027bbb122c53bc/docs/prediction.md",
+    "version": "b1ebfc46ecf57f5414e0d1a6f9027bbb122c53bc",
+    "retrieved_at": "2026-09-16T19:46:19.465940+00:00",
+    "artifact_sha256": "b9cb2ff437389864bde02e7e9fd9fbcc7de189ca2e240a5f3fb6261ca595a795"
+  },
+  {
+    "id": "evidence-official-5e268f31f0347fc5564c",
+    "name": "prokbert: Journal full-text XML",
+    "review_status": "source_checked",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10810988/",
+    "version": "Retrieved page snapshot; no immutable publisher revision supplied",
+    "retrieved_at": "2026-09-16T19:53:03.847832+00:00",
+    "artifact_sha256": "8610e2a54aa877c8dc565a9cdb6e82099f284c5e0907a52cab18d994ea732436"
+  },
+  {
+    "id": "evidence-official-657e83427ab59f3aec83",
+    "name": "instadeepai/nucleotide-transformer: docs/nucleotide_transformer.md",
+    "review_status": "source_checked",
+    "url": "https://github.com/instadeepai/nucleotide-transformer/blob/2dc37b86e16a6970fbc731751f7719d9f676f7f9/docs/nucleotide_transformer.md",
+    "version": "2dc37b86e16a6970fbc731751f7719d9f676f7f9",
+    "retrieved_at": "2026-09-16T19:46:19.364532+00:00",
+    "artifact_sha256": "ab16d582de98652526b5cebb120eec969328f9db29dc741826bcd81c397e0672"
+  },
+  {
+    "id": "evidence-official-6a331ce74fa7d11e0bfe",
+    "name": "biohub/ESMFold2: config.json",
+    "review_status": "source_checked",
+    "url": "https://huggingface.co/biohub/ESMFold2/blob/69869f737beffec5294845ede23db5fc0b4f509e/config.json",
+    "version": "69869f737beffec5294845ede23db5fc0b4f509e",
+    "retrieved_at": "2026-09-16T20:22:27.767500+00:00",
+    "artifact_sha256": "72054c1af92f432ac2d8e0628ba08b377d04c6a8679b5128b798dbc7f644ddc8"
+  },
+  {
+    "id": "evidence-official-6b79ddfdd330693bf4fb",
+    "name": "InstaDeepAI/nucleotide-transformer-v2-50m-multi-species: config.json",
+    "review_status": "source_checked",
+    "url": "https://huggingface.co/InstaDeepAI/nucleotide-transformer-v2-50m-multi-species/blob/81b29e5786726d891dbf929404ef20adca5b36f1/config.json",
+    "version": "81b29e5786726d891dbf929404ef20adca5b36f1",
+    "retrieved_at": "2026-09-16T19:46:20.607357+00:00",
+    "artifact_sha256": "e20f497248c7cb264c7cd4582dbcfd52dc4cbf74a97fc711559b8c8f71c635db"
+  },
+  {
+    "id": "evidence-official-7267eabca7c4a7945878",
+    "name": "zhihan1996/DNABERT-2-117M: README.md",
+    "review_status": "source_checked",
+    "url": "https://huggingface.co/zhihan1996/DNABERT-2-117M/blob/7bce263b15377fc15361f52cfab88f8b586abda0/README.md",
+    "version": "7bce263b15377fc15361f52cfab88f8b586abda0",
+    "retrieved_at": "2026-09-16T19:46:20.874956+00:00",
+    "artifact_sha256": "48b18abd051eb4952e0c0a50a0740387a1cea145be06517b67ab73a29431a3bc"
+  },
+  {
+    "id": "evidence-official-72fdaed158e4ff851fbe",
+    "name": "biobakery/MetaPhlAn: README.md",
+    "review_status": "source_checked",
+    "url": "https://github.com/biobakery/MetaPhlAn/blob/424f3e6e30618266404353e1083c6405a9f02f48/README.md",
+    "version": "424f3e6e30618266404353e1083c6405a9f02f48",
+    "retrieved_at": "2026-09-16T19:46:18.561509+00:00",
+    "artifact_sha256": "ce491bb2d686145e0773c685d0d02e8a5fabc7daaea60eef07cf54298561fba7"
+  },
+  {
+    "id": "evidence-official-734117ed8501eb26fefc",
+    "name": "jwohlwend/boltz: src/boltz/model/models/boltz2.py",
+    "review_status": "source_checked",
+    "url": "https://github.com/jwohlwend/boltz/blob/b1ebfc46ecf57f5414e0d1a6f9027bbb122c53bc/src/boltz/model/models/boltz2.py",
+    "version": "b1ebfc46ecf57f5414e0d1a6f9027bbb122c53bc",
+    "retrieved_at": "2026-09-16T19:46:19.465940+00:00",
+    "artifact_sha256": "f05169e66488910fc11c6a56b56d19a58e3f43649586218df75573eeff7a9945"
+  },
+  {
+    "id": "evidence-official-760ab2fa8c396aeb796c",
+    "name": "msalign: Primary paper PDF",
+    "review_status": "source_checked",
+    "url": "https://arxiv.org/pdf/2605.19752",
+    "version": "2605.19752v1",
+    "retrieved_at": "2026-09-16T20:04:04.777728+00:00",
+    "artifact_sha256": "7395a55141ee7916741b7d9e6d4f42a1d3a03217a36ce6824ac3ff48afd4f26f"
+  },
+  {
+    "id": "evidence-official-790ab6283e5bb91474ed",
+    "name": "matsui-lab/GlycanGT: model/config_tokengt.py",
+    "review_status": "source_checked",
+    "url": "https://github.com/matsui-lab/GlycanGT/blob/96611518c971deb89215ca163deaf9de3a59fa32/model/config_tokengt.py",
+    "version": "96611518c971deb89215ca163deaf9de3a59fa32",
+    "retrieved_at": "2026-09-16T19:46:19.737544+00:00",
+    "artifact_sha256": "355c055f44e4b09c33ed640606800014b411e96674a1cdb48157c6d57ea5d426"
+  },
+  {
+    "id": "evidence-official-7972ce2bdd6a5e40d8ad",
+    "name": "biomap-research/scFoundation: model/README.md",
+    "review_status": "source_checked",
+    "url": "https://github.com/biomap-research/scFoundation/blob/397631c495eddf9ad6644fc00c6ea8139e651245/model/README.md",
+    "version": "397631c495eddf9ad6644fc00c6ea8139e651245",
+    "retrieved_at": "2026-09-16T19:46:18.581063+00:00",
+    "artifact_sha256": "f62879233ecf5fac407cd516aca2ddb3df20370523cb111c9d057676b4721d5d"
+  },
+  {
+    "id": "evidence-official-7b6fdf915d9c6950ad0d",
+    "name": "dauparas/ProteinMPNN: training/README.md",
+    "review_status": "source_checked",
+    "url": "https://github.com/dauparas/ProteinMPNN/blob/8907e6671bfbfc92303b5f79c4b5e6ce47cdef57/training/README.md",
+    "version": "8907e6671bfbfc92303b5f79c4b5e6ce47cdef57",
+    "retrieved_at": "2026-09-16T19:46:18.948060+00:00",
+    "artifact_sha256": "7cbe5f3f1cef53f1954b15710317d9755b7b7b3febace4758190850f12e23029"
+  },
+  {
+    "id": "evidence-official-7c43b700aa87c22843a6",
+    "name": "BojarLab/glycowork: README.md",
+    "review_status": "source_checked",
+    "url": "https://github.com/BojarLab/glycowork/blob/3d63f1ec25c850da3cde4d25cb602d50b6b5732b/README.md",
+    "version": "3d63f1ec25c850da3cde4d25cb602d50b6b5732b",
+    "retrieved_at": "2026-09-16T19:46:17.767851+00:00",
+    "artifact_sha256": "4d907a6723f3f56b14b13e35eeb0833ddf9a2f3512a1fafd07d79259105b264c"
+  },
+  {
+    "id": "evidence-official-7cb8cb7f091536b92c11",
+    "name": "jwohlwend/boltz: scripts/train/configs/full.yaml",
+    "review_status": "source_checked",
+    "url": "https://github.com/jwohlwend/boltz/blob/b1ebfc46ecf57f5414e0d1a6f9027bbb122c53bc/scripts/train/configs/full.yaml",
+    "version": "b1ebfc46ecf57f5414e0d1a6f9027bbb122c53bc",
+    "retrieved_at": "2026-09-16T19:46:19.465940+00:00",
+    "artifact_sha256": "70aa005d0c29b1c28918e104b92fd43b5cfde6157993dfcd8fe832e9a2e107dc"
+  },
+  {
+    "id": "evidence-official-7e59c59bfea79722fc33",
+    "name": "InstaDeepAI/segment_nt: README.md",
+    "review_status": "source_checked",
+    "url": "https://huggingface.co/InstaDeepAI/segment_nt/blob/1048ad869036bb8e50a15d82b323ebeb52e8ab92/README.md",
+    "version": "1048ad869036bb8e50a15d82b323ebeb52e8ab92",
+    "retrieved_at": "2026-09-16T20:12:20.913226+00:00",
+    "artifact_sha256": "6e19e9c9293b0c392c053f92360b674b86c86c4457608b00c2fcb962bbd1d1bc"
+  },
+  {
+    "id": "evidence-official-81e51077d7d3352a6de4",
+    "name": "soedinglab/MMseqs2: README.md",
+    "review_status": "source_checked",
+    "url": "https://github.com/soedinglab/MMseqs2/blob/d401e78c2d18a822cdb1527d7464a043f6035a15/README.md",
+    "version": "d401e78c2d18a822cdb1527d7464a043f6035a15",
+    "retrieved_at": "2026-09-16T19:46:20.231620+00:00",
+    "artifact_sha256": "b6c591a763bf99c027857385f0e87ce5aa96caeaa74d71afd1fcec449eadb3d7"
+  },
+  {
+    "id": "evidence-official-849b751ed4bf88622749",
+    "name": "ArcInstitute/evo2_7b: README.md",
+    "review_status": "source_checked",
+    "url": "https://huggingface.co/ArcInstitute/evo2_7b/blob/bda0089f92582d5baabf0f22d9fc85f3588f6b58/README.md",
+    "version": "bda0089f92582d5baabf0f22d9fc85f3588f6b58",
+    "retrieved_at": "2026-09-16T20:04:02.231112+00:00",
+    "artifact_sha256": "802cb1e030bc560414a9fabcddd8fe243c296ad7d0b523dde0a3a0e1a7eaf794"
+  },
+  {
+    "id": "evidence-official-863f6c2e6e18152c2f8b",
+    "name": "soedinglab/hh-suite: README.md",
+    "review_status": "source_checked",
+    "url": "https://github.com/soedinglab/hh-suite/blob/43095e46ada4ec2a8a47d47ef5ad7e38b1429f7b/README.md",
+    "version": "43095e46ada4ec2a8a47d47ef5ad7e38b1429f7b",
+    "retrieved_at": "2026-09-16T19:46:20.402052+00:00",
+    "artifact_sha256": "2f8690d6a4a9767973ba9ea2af019d43d6108555ef0e9a69786033a71547d133"
+  },
+  {
+    "id": "evidence-official-864a2c5ea6e61aa310f9",
+    "name": "Illumina/SpliceAI: README.md",
+    "review_status": "source_checked",
+    "url": "https://github.com/Illumina/SpliceAI/blob/03f42437aaf56dc5dfd822c4ccee5aec1a705079/README.md",
+    "version": "03f42437aaf56dc5dfd822c4ccee5aec1a705079",
+    "retrieved_at": "2026-09-16T19:46:17.769160+00:00",
+    "artifact_sha256": "8e5203afe343100832391e6155c7112f15cfe60bf0c21681d64e3420f854ef4d"
+  },
+  {
+    "id": "evidence-official-867f2d1dcb4084248daa",
+    "name": "facebook/esmfold_v1: config.json",
+    "review_status": "source_checked",
+    "url": "https://huggingface.co/facebook/esmfold_v1/blob/75a3841ee059df2bf4d56688166c8fb459ddd97a/config.json",
+    "version": "75a3841ee059df2bf4d56688166c8fb459ddd97a",
+    "retrieved_at": "2026-09-16T20:04:02.231029+00:00",
+    "artifact_sha256": "6b98125e2685fef2875499f6bd7c83968a077993ab53f99bf5581113665f7cc6"
+  },
+  {
+    "id": "evidence-official-8717ffb993cc8f7eddec",
+    "name": "evo2: Journal full-text XML",
+    "review_status": "source_checked",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13128491/",
+    "version": "Retrieved page snapshot; no immutable publisher revision supplied",
+    "retrieved_at": "2026-09-16T20:16:14.422554+00:00",
+    "artifact_sha256": "d043dbda49e023ef6b70e36e7ca7832bda6b7af6c5934368e8778a7f23cda8bd"
+  },
+  {
+    "id": "evidence-official-87c70bddba97a72a5e5d",
+    "name": "glycangt: Journal full-text XML",
+    "review_status": "source_checked",
+    "url": "https://europepmc.org/article/PMC/PMC13105845",
+    "version": "Primary article XML snapshot",
+    "retrieved_at": "2026-09-16T20:20:56.439056+00:00",
+    "artifact_sha256": "53e89a636c868c0329ee7eb6ae92f1028ec891940bc61730a148981b647fbbe5"
+  },
+  {
+    "id": "evidence-official-89de5de6fecdda12060d",
+    "name": "pluskal-lab/DreaMS: README.md",
+    "review_status": "source_checked",
+    "url": "https://github.com/pluskal-lab/DreaMS/blob/dbec3a0b514a99e5056cfccde4559fda8cfe8129/README.md",
+    "version": "dbec3a0b514a99e5056cfccde4559fda8cfe8129",
+    "retrieved_at": "2026-09-16T19:46:20.105311+00:00",
+    "artifact_sha256": "a6afe934f9894cc71fb9b561c7a122d043b377c27b3fc6f18505fe65b6226256"
+  },
+  {
+    "id": "evidence-official-8b4e1bd487c21cda9862",
+    "name": "cuhkaih/rhofold: README.md",
+    "review_status": "source_checked",
+    "url": "https://huggingface.co/cuhkaih/rhofold/blob/4458c1c5484a3a10a7f3059b9f0e8ca0447b23ac/README.md",
+    "version": "4458c1c5484a3a10a7f3059b9f0e8ca0447b23ac",
+    "retrieved_at": "2026-09-16T20:04:02.231237+00:00",
+    "artifact_sha256": "f5672ffed6edaea59f16fe42dfa0bac09473801cd90cbcb6d8ca00995a2969c2"
+  },
+  {
+    "id": "evidence-official-8e894fc6d180746a1808",
+    "name": "metagene-ai/METAGENE-1: README.md",
+    "review_status": "source_checked",
+    "url": "https://huggingface.co/metagene-ai/METAGENE-1/blob/ad8a1e0ee62b85058bfc05d823d8e8d4759edc48/README.md",
+    "version": "ad8a1e0ee62b85058bfc05d823d8e8d4759edc48",
+    "retrieved_at": "2026-09-16T19:46:20.736359+00:00",
+    "artifact_sha256": "277517aa69527fccaeb85c124f3ec9772c5508fadb5c6ad423bee39a3071ad17"
+  },
+  {
+    "id": "evidence-official-92b0ae57a020cbc40fe7",
+    "name": "proteinmpnn: Journal full-text XML",
+    "review_status": "source_checked",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9997061/",
+    "version": "Retrieved page snapshot; no immutable publisher revision supplied",
+    "retrieved_at": "2026-09-16T19:53:03.193318+00:00",
+    "artifact_sha256": "3e9042dc0ac2837e07654a43e74abcbcdd7dc4cf017fa81e2d9869b1fdb3c52e"
+  },
+  {
+    "id": "evidence-official-94c61d963d28fa3a8993",
+    "name": "https://meme-suite.org/meme/doc/copyright.html: copyright.html",
+    "review_status": "source_checked",
+    "url": "https://meme-suite.org/meme/doc/copyright.html",
+    "version": "Copyright 1994–2025; source snapshot 2026-09-16",
+    "retrieved_at": "2026-09-16T20:41:37.711422+00:00",
+    "artifact_sha256": "f54d004ea7c8e38222b76ffa4c04e072a204ccd948d41c3d46f55e36516b7262"
+  },
+  {
+    "id": "evidence-official-955922130ff85a74fa18",
+    "name": "ml4bio/RhoFold: README.md",
+    "review_status": "source_checked",
+    "url": "https://github.com/ml4bio/RhoFold/blob/6bdfbda720184409eb682ce08c05d258162ddc48/README.md",
+    "version": "6bdfbda720184409eb682ce08c05d258162ddc48",
+    "retrieved_at": "2026-09-16T19:46:19.891935+00:00",
+    "artifact_sha256": "530ee4a54cc39d30c7b66ddafe6f28a6162219812d977473a2d0ade7ad1fcba6"
+  },
+  {
+    "id": "evidence-official-95a620349435ae6651c5",
+    "name": "https://www.lipidmaps.org/resources/tools/lipidfinder/: page.html",
+    "review_status": "source_checked",
+    "url": "https://www.lipidmaps.org/resources/tools/lipidfinder/",
+    "version": "Retrieved page snapshot; no immutable publisher revision supplied",
+    "retrieved_at": "2026-09-16T19:46:20.922105+00:00",
+    "artifact_sha256": "ae877d2c58b02e412782873bee4fc6216e8cb74e4497aa67f324e7f38a72e8ff"
+  },
+  {
+    "id": "evidence-official-965600234c25fbd104c8",
+    "name": "neuralbioinfo/prokbert-mini: README.md",
+    "review_status": "source_checked",
+    "url": "https://huggingface.co/neuralbioinfo/prokbert-mini/blob/feb2520a43cd9cdb5b3d8477e47209dbcb55d1dc/README.md",
+    "version": "feb2520a43cd9cdb5b3d8477e47209dbcb55d1dc",
+    "retrieved_at": "2026-09-16T20:04:02.231162+00:00",
+    "artifact_sha256": "172ec5b600e342302df5a22d84b12e1ab61d05722adda549b6d82f65e5c5d658"
+  },
+  {
+    "id": "evidence-official-96b5c3a31a50f7c259d6",
+    "name": "MAGICS-LAB/DNABERT_2: README.md",
+    "review_status": "source_checked",
+    "url": "https://github.com/MAGICS-LAB/DNABERT_2/blob/f25bed9ee20db966dff39e5c1571249d04e36404/README.md",
+    "version": "f25bed9ee20db966dff39e5c1571249d04e36404",
+    "retrieved_at": "2026-09-16T19:46:17.892989+00:00",
+    "artifact_sha256": "734a8cec5f667d74d421bf3b273ad7e256216109636da45aa7ceba21cd34de16"
+  },
+  {
+    "id": "evidence-official-97071500fc3422c426d4",
+    "name": "InstaDeepAI/segment_nt: config.json",
+    "review_status": "source_checked",
+    "url": "https://huggingface.co/InstaDeepAI/segment_nt/blob/1048ad869036bb8e50a15d82b323ebeb52e8ab92/config.json",
+    "version": "1048ad869036bb8e50a15d82b323ebeb52e8ab92",
+    "retrieved_at": "2026-09-16T20:12:20.913226+00:00",
+    "artifact_sha256": "1412a48b99cfe79e6f34f84131ed964fd3ad5c4f3b3ea7db7ba2b0ac3466eadc"
+  },
+  {
+    "id": "evidence-official-9863509ad10b824dc96b",
+    "name": "scfoundation-preprint: Primary paper PDF",
+    "review_status": "source_checked",
+    "url": "https://yiheng-zhu.github.io/Yiheng/papers/5/scFoundation_bioRxiv_2023.pdf",
+    "version": "bioRxiv manuscript posted 2023-06-15",
+    "retrieved_at": "2026-09-16T20:35:33.635910+00:00",
+    "artifact_sha256": "e2ce9d623a09b53eb863ae6ca359fe2956b7b0a7c3ebe7de6911aca3a660f737"
+  },
+  {
+    "id": "evidence-official-9b820532ba8e3965f64e",
+    "name": "illumina/SpliceAI: README.md",
+    "review_status": "source_checked",
+    "url": "https://github.com/illumina/SpliceAI/blob/03f42437aaf56dc5dfd822c4ccee5aec1a705079/README.md",
+    "version": "03f42437aaf56dc5dfd822c4ccee5aec1a705079",
+    "retrieved_at": "2026-09-16T19:46:19.364217+00:00",
+    "artifact_sha256": "8e5203afe343100832391e6155c7112f15cfe60bf0c21681d64e3420f854ef4d"
+  },
+  {
+    "id": "evidence-official-9ba2b6dc494c7b6df951",
+    "name": "DerrickWood/kraken2: docs/MANUAL.html",
+    "review_status": "source_checked",
+    "url": "https://github.com/DerrickWood/kraken2/blob/8c190b1b668825935dbf6dee5f969227dc8269bb/docs/MANUAL.html",
+    "version": "8c190b1b668825935dbf6dee5f969227dc8269bb",
+    "retrieved_at": "2026-09-16T19:46:17.767980+00:00",
+    "artifact_sha256": "ef0962a736771bfb8373905d612d64f334544d625236f89e54cf3a04c9737016"
+  },
+  {
+    "id": "evidence-official-a07254268b1d1de1f7f8",
+    "name": "yeqinglin/genie3: README.md",
+    "review_status": "source_checked",
+    "url": "https://huggingface.co/yeqinglin/genie3/blob/9ae31ebb8c56eebdc05ab282a8fd3f6a6d2a03a2/README.md",
+    "version": "9ae31ebb8c56eebdc05ab282a8fd3f6a6d2a03a2",
+    "retrieved_at": "2026-09-16T20:22:27.767036+00:00",
+    "artifact_sha256": "4bcf87ecfbbb8e07a01b21415a970c8b53a5283bf6872b657040d3f45c9241f7"
+  },
+  {
+    "id": "evidence-official-a248990b44d481814f47",
+    "name": "ArcInstitute/evo2: README.md",
+    "review_status": "source_checked",
+    "url": "https://github.com/ArcInstitute/evo2/blob/53f195997257c56c00e5ef8d33a54f5baad143a6/README.md",
+    "version": "53f195997257c56c00e5ef8d33a54f5baad143a6",
+    "retrieved_at": "2026-09-16T19:46:17.765915+00:00",
+    "artifact_sha256": "58787c8ef5cb4fba4c04322a4ceb9f174e2233ec22d4193622fb6bc67d651d89"
+  },
+  {
+    "id": "evidence-official-a48ae27aa000bdab7442",
+    "name": "zhihan1996/DNABERT-2-117M: LICENSE",
+    "review_status": "source_checked",
+    "url": "https://huggingface.co/zhihan1996/DNABERT-2-117M/blob/7bce263b15377fc15361f52cfab88f8b586abda0/LICENSE",
+    "version": "7bce263b15377fc15361f52cfab88f8b586abda0",
+    "retrieved_at": "2026-09-16T19:46:20.874956+00:00",
+    "artifact_sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
+  },
+  {
+    "id": "evidence-official-a6b46962aae5cfc348c6",
+    "name": "metagene-ai/metagene-pretrain: README.md",
+    "review_status": "source_checked",
+    "url": "https://github.com/metagene-ai/metagene-pretrain/blob/82b9e142db2c7e0a268346d53344d6c3bf223066/README.md",
+    "version": "82b9e142db2c7e0a268346d53344d6c3bf223066",
+    "retrieved_at": "2026-09-16T20:04:02.447523+00:00",
+    "artifact_sha256": "f09b3bc7f21c19d31ad90205da47010dc73b75096c12af5b350a925b4cac5a7b"
+  },
+  {
+    "id": "evidence-official-a766fb9176a491dc1ec3",
+    "name": "kundajelab/chrombpnet: README.md",
+    "review_status": "source_checked",
+    "url": "https://github.com/kundajelab/chrombpnet/blob/09938fdb4397ec0006510e5251e48920a505d4de/README.md",
+    "version": "09938fdb4397ec0006510e5251e48920a505d4de",
+    "retrieved_at": "2026-09-16T19:46:19.514840+00:00",
+    "artifact_sha256": "058c4f98218ea2ed854681126b6f682c9f3beec91275781fb37e39c55d0c92ea"
+  },
+  {
+    "id": "evidence-official-aadbeb0f10ec55d34f5f",
+    "name": "nt: Journal full-text XML",
+    "review_status": "source_checked",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11810778/",
+    "version": "Retrieved page snapshot; no immutable publisher revision supplied",
+    "retrieved_at": "2026-09-16T20:16:14.422628+00:00",
+    "artifact_sha256": "7c3b78a4f38ef053a08e466222e5662dd9711d91c535512d0b35d459d1fc7249"
+  },
+  {
+    "id": "evidence-official-ad7f5c1eb802d9895413",
+    "name": "aertslab/GENIE3: DESCRIPTION",
+    "review_status": "source_checked",
+    "url": "https://github.com/aertslab/GENIE3/blob/54bc15636322e8773357de6e0b6683c6bc802825/DESCRIPTION",
+    "version": "54bc15636322e8773357de6e0b6683c6bc802825",
+    "retrieved_at": "2026-09-16T19:46:18.166390+00:00",
+    "artifact_sha256": "4a2d48a4198b2ea6cbe5fa7749e9aa7286b318ebe19021bd1be52f29435e3196"
+  },
+  {
+    "id": "evidence-official-af8da643e933eae36a68",
+    "name": "polymathic-ai/MIMIC: README.md",
+    "review_status": "source_checked",
+    "url": "https://huggingface.co/polymathic-ai/MIMIC/blob/72e63a1ece34928422fd46f89b6a6580ace99a97/README.md",
+    "version": "72e63a1ece34928422fd46f89b6a6580ace99a97",
+    "retrieved_at": "2026-09-16T19:46:20.846683+00:00",
+    "artifact_sha256": "462acc643cba24d1d4c6f1419838402c5f3196e94260039baf61a59ef0a0a107"
+  },
+  {
+    "id": "evidence-official-affbe2d511ff2a80f457",
+    "name": "chaidiscovery/chai-lab: README.md",
+    "review_status": "source_checked",
+    "url": "https://github.com/chaidiscovery/chai-lab/blob/66c38d1fe5c6756a89ff8596b1dea87d305ec06f/README.md",
+    "version": "66c38d1fe5c6756a89ff8596b1dea87d305ec06f",
+    "retrieved_at": "2026-09-16T19:46:18.824295+00:00",
+    "artifact_sha256": "ea6f6e64f6fc73d0e3dcbe6755c2aab226fa13bad279d1213acc0217f3f5013f"
+  },
+  {
+    "id": "evidence-official-b554679ea1503ce3d9f6",
+    "name": "metagene-ai/metagene-pretrain: train/config_hub/pretrain/genomicsllama.yml",
+    "review_status": "source_checked",
+    "url": "https://github.com/metagene-ai/metagene-pretrain/blob/82b9e142db2c7e0a268346d53344d6c3bf223066/train/config_hub/pretrain/genomicsllama.yml",
+    "version": "82b9e142db2c7e0a268346d53344d6c3bf223066",
+    "retrieved_at": "2026-09-16T20:04:02.447523+00:00",
+    "artifact_sha256": "0e764482ebf7e68c4751adfcf6430acdaa67fb683f59a31b9e25f8412d8ff5ad"
+  },
+  {
+    "id": "evidence-official-b5e81b2c497214b18f8a",
+    "name": "snap-stanford/GEARS: gears/model.py",
+    "review_status": "source_checked",
+    "url": "https://github.com/snap-stanford/GEARS/blob/f374e43e197b295016d80395d7a54ddb81cc6769/gears/model.py",
+    "version": "f374e43e197b295016d80395d7a54ddb81cc6769",
+    "retrieved_at": "2026-09-16T19:46:20.191253+00:00",
+    "artifact_sha256": "07fee864bc5020807c90ed5443ff17530116f47f257332466243c233ef2bc857"
+  },
+  {
+    "id": "evidence-official-b8df803e8f55324a4eb5",
+    "name": "ArcInstitute/evo2_7b: config.json",
+    "review_status": "source_checked",
+    "url": "https://huggingface.co/ArcInstitute/evo2_7b/blob/bda0089f92582d5baabf0f22d9fc85f3588f6b58/config.json",
+    "version": "bda0089f92582d5baabf0f22d9fc85f3588f6b58",
+    "retrieved_at": "2026-09-16T20:04:02.231112+00:00",
+    "artifact_sha256": "7f2e195e156de678b6d7db090dca19b37e88671f72ea7c9e1866e103946b69b2"
+  },
+  {
+    "id": "evidence-official-b91fc1ec601eec6598c3",
+    "name": "chai1-web: Browser-extracted primary-paper passages",
+    "review_status": "source_checked",
+    "url": "https://chaiassets.com/chai-1/paper/technical_report_v1.pdf",
+    "version": "Technical report v1, 9 September 2024; browser-extracted passages pp.1–2,7–10",
+    "retrieved_at": "2026-09-16T20:25:06.247632+00:00",
+    "artifact_sha256": "8b6fcde51e45e97254308fead77ad8dae47d9990e5d6052221ce185644798608"
+  },
+  {
+    "id": "evidence-official-ba08b650243c9212de3f",
+    "name": "https://arxiv.org/abs/2605.19752: page.html",
+    "review_status": "source_checked",
+    "url": "https://arxiv.org/abs/2605.19752",
+    "version": "Retrieved page snapshot; no immutable publisher revision supplied",
+    "retrieved_at": "2026-09-16T19:46:17.765548+00:00",
+    "artifact_sha256": "e503f496841fd1d3836ebdab573de645257fc92fe7b5479056592da512e0ef3f"
+  },
+  {
+    "id": "evidence-official-ba12a2d759aba6800ae6",
+    "name": "glycangt-supp: Publisher supplementary archive",
+    "review_status": "source_checked",
+    "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC13105845/supplementaryFiles",
+    "version": "Retrieved page snapshot; no immutable publisher revision supplied",
+    "retrieved_at": "2026-09-16T20:42:10.495586+00:00",
+    "artifact_sha256": "17987fb07979d88c8f073905247bdacd22e4607e16c3c399bb292685e711846f"
+  },
+  {
+    "id": "evidence-official-bc0327ef2ea6107e1773",
+    "name": "alphagenome-supp: Publisher supplementary archive",
+    "review_status": "source_checked",
+    "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC12851941/supplementaryFiles",
+    "version": "Retrieved page snapshot; no immutable publisher revision supplied",
+    "retrieved_at": "2026-09-16T20:43:11.978411+00:00",
+    "artifact_sha256": "a006a3373cfdf42c41f9be7f64b883b38ea3f16be8037ea6024b5d0463f811dc"
+  },
+  {
+    "id": "evidence-official-bc3f1b0fa5b0999bbfa0",
+    "name": "kundajelab/chrombpnet: chrombpnet/training/models/chrombpnet_with_bias_model.py",
+    "review_status": "source_checked",
+    "url": "https://github.com/kundajelab/chrombpnet/blob/09938fdb4397ec0006510e5251e48920a505d4de/chrombpnet/training/models/chrombpnet_with_bias_model.py",
+    "version": "09938fdb4397ec0006510e5251e48920a505d4de",
+    "retrieved_at": "2026-09-16T19:46:19.514840+00:00",
+    "artifact_sha256": "bedc63a36ee27bb25ab39a00f1d9e3d4d64809754bf46aebe10d17b3a331dd33"
+  },
+  {
+    "id": "evidence-official-bd6ec1f819e22f075c32",
+    "name": "boltz2: Journal full-text XML",
+    "review_status": "source_checked",
+    "url": "https://europepmc.org/article/PPR/PPR1039145",
+    "version": "preprint; 1",
+    "retrieved_at": "2026-09-16T20:20:56.438787+00:00",
+    "artifact_sha256": "4ba7533096d594725e7f6362807aee6cc19596571fd09d9ae82fc49c6daa16fd"
+  },
+  {
+    "id": "evidence-official-bfbc8babf3630ddb3ed7",
+    "name": "biomap-research/scFoundation: README.md",
+    "review_status": "source_checked",
+    "url": "https://github.com/biomap-research/scFoundation/blob/397631c495eddf9ad6644fc00c6ea8139e651245/README.md",
+    "version": "397631c495eddf9ad6644fc00c6ea8139e651245",
+    "retrieved_at": "2026-09-16T19:46:18.581063+00:00",
+    "artifact_sha256": "02a7ae44cf2cc9948b5c1520b18a261b45abf9f17e3149e37d9f48072184f376"
+  },
+  {
+    "id": "evidence-official-c0351b621280a9c081da",
+    "name": "rfdiffusion: Journal full-text XML",
+    "review_status": "source_checked",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10468394/",
+    "version": "Retrieved page snapshot; no immutable publisher revision supplied",
+    "retrieved_at": "2026-09-16T20:16:14.422733+00:00",
+    "artifact_sha256": "bd41c7070976ae82e317a10367c81492a2692482c302a25c7f2a28ffe6ef4110"
+  },
+  {
+    "id": "evidence-official-c037e3419c04936262a0",
+    "name": "snap-stanford/GEARS: README.md",
+    "review_status": "source_checked",
+    "url": "https://github.com/snap-stanford/GEARS/blob/f374e43e197b295016d80395d7a54ddb81cc6769/README.md",
+    "version": "f374e43e197b295016d80395d7a54ddb81cc6769",
+    "retrieved_at": "2026-09-16T19:46:20.191253+00:00",
+    "artifact_sha256": "fe78b7b1ede50c673b8f0d91fb2637707685c78b269ee157edb6cbc4d510d61b"
+  },
+  {
+    "id": "evidence-official-c0ac4d10941b082e5f86",
+    "name": "aqlaboratory/openfold: README.md",
+    "review_status": "source_checked",
+    "url": "https://github.com/aqlaboratory/openfold/blob/be2ec1841f16c966c65ae0e7599ebbadc725757d/README.md",
+    "version": "be2ec1841f16c966c65ae0e7599ebbadc725757d",
+    "retrieved_at": "2026-09-16T19:46:18.314650+00:00",
+    "artifact_sha256": "985b6dc09144ea14378dd2c543b288e8d2a05cb342a77cbc56b7a39c5170f638"
+  },
+  {
+    "id": "evidence-official-c14c0e6a0fdbe1479658",
+    "name": "PolymathicAI/MIMIC: README.md",
+    "review_status": "source_checked",
+    "url": "https://github.com/PolymathicAI/MIMIC/blob/9e652f16491e6c2e3881111e24b285c288554275/README.md",
+    "version": "9e652f16491e6c2e3881111e24b285c288554275",
+    "retrieved_at": "2026-09-16T20:04:02.231308+00:00",
+    "artifact_sha256": "694bed54356d27cf087890ed80649c08ef4520a0eb5c85374a7347138a6cbb2f"
+  },
+  {
+    "id": "evidence-official-c303652f3d79132a00c2",
+    "name": "songlab-cal/tape: tape/models/modeling_bert.py",
+    "review_status": "source_checked",
+    "url": "https://github.com/songlab-cal/tape/blob/6d345c2b2bbf52cd32cf179325c222afd92aec7e/tape/models/modeling_bert.py",
+    "version": "6d345c2b2bbf52cd32cf179325c222afd92aec7e",
+    "retrieved_at": "2026-09-16T19:46:20.570146+00:00",
+    "artifact_sha256": "eba47206598a0e93e2f662d9c87343222556f236ac37373236e3970c43fb521d"
+  },
+  {
+    "id": "evidence-official-c7befbb0fbd8620d5c3c",
+    "name": "RosettaCommons/RFdiffusion: README.md",
+    "review_status": "source_checked",
+    "url": "https://github.com/RosettaCommons/RFdiffusion/blob/86507b6538f51fce57b5a72477165f03999ed7ae/README.md",
+    "version": "86507b6538f51fce57b5a72477165f03999ed7ae",
+    "retrieved_at": "2026-09-16T19:46:18.126662+00:00",
+    "artifact_sha256": "d89eb9790ce805ce23e1b1a6804f4d67c81056025e4852b875f8ddfd87a08125"
+  },
+  {
+    "id": "evidence-official-d3d9afa5c6172982ed01",
+    "name": "ctheodoris/Geneformer: README.md",
+    "review_status": "source_checked",
+    "url": "https://huggingface.co/ctheodoris/Geneformer/blob/1f7fbae4e469a5f4f1af8c111a529cfe1b3829f5/README.md",
+    "version": "1f7fbae4e469a5f4f1af8c111a529cfe1b3829f5",
+    "retrieved_at": "2026-09-16T19:46:20.640731+00:00",
+    "artifact_sha256": "56d6e570b349cbedae9a54634421c94e7af8ea467ce0fdd79193372ae3cbdbd8"
+  },
+  {
+    "id": "evidence-official-d65bf8ba587b6841e0d9",
+    "name": "biohub/ESMFold2: README.md",
+    "review_status": "source_checked",
+    "url": "https://huggingface.co/biohub/ESMFold2/blob/69869f737beffec5294845ede23db5fc0b4f509e/README.md",
+    "version": "69869f737beffec5294845ede23db5fc0b4f509e",
+    "retrieved_at": "2026-09-16T20:22:27.767500+00:00",
+    "artifact_sha256": "7f20294b352b7e490689229c0fe26760115e3ffc66869d96dd89347729fe941d"
+  },
+  {
+    "id": "evidence-official-d7e5c63feb0e0e627625",
+    "name": "facebook/esm2_t33_650M_UR50D: README.md",
+    "review_status": "source_checked",
+    "url": "https://huggingface.co/facebook/esm2_t33_650M_UR50D/blob/08e4846e537177426273712802403f7ba8261b6c/README.md",
+    "version": "08e4846e537177426273712802403f7ba8261b6c",
+    "retrieved_at": "2026-09-16T20:04:02.230771+00:00",
+    "artifact_sha256": "462a2f24724e19c6be0efab926315c294a863c9a9770e2c8b3d859b2d81a07de"
+  },
+  {
+    "id": "evidence-official-d8e2d4f2e752370b6565",
+    "name": "bowang-lab/scGPT: scgpt/model/model.py",
+    "review_status": "source_checked",
+    "url": "https://github.com/bowang-lab/scGPT/blob/cebd6fae655b9c585a4807daa3ac31bb764f06b4/scgpt/model/model.py",
+    "version": "cebd6fae655b9c585a4807daa3ac31bb764f06b4",
+    "retrieved_at": "2026-09-16T19:46:18.594429+00:00",
+    "artifact_sha256": "4ae77618cc6f12a7d1f6d946fee3f7bd5c56f3e9e103073394a590ceba5a35ed"
+  },
+  {
+    "id": "evidence-official-da4566a88ed9fa42fdcb",
+    "name": "segmentnt: Journal full-text XML",
+    "review_status": "source_checked",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12615259/",
+    "version": "Retrieved page snapshot; no immutable publisher revision supplied",
+    "retrieved_at": "2026-09-16T20:16:14.422701+00:00",
+    "artifact_sha256": "b9bddff89c5f8898fc677008205a47b960ea569f3887cc15845e2547b92aaa70"
+  },
+  {
+    "id": "evidence-official-dacb012b22c0a7de4880",
+    "name": "Akikitani295/GlycanGT: README.md",
+    "review_status": "source_checked",
+    "url": "https://huggingface.co/Akikitani295/GlycanGT/blob/7c9f4a19b366ca48ed03995a0ad47fa1e745f24c/README.md",
+    "version": "7c9f4a19b366ca48ed03995a0ad47fa1e745f24c",
+    "retrieved_at": "2026-09-16T20:04:02.231272+00:00",
+    "artifact_sha256": "16a2967195f6be2d4478faf7151ceb7b96de4fa97ff168c7c975dc01d1dd69d3"
+  },
+  {
+    "id": "evidence-official-dc53e8df56bb7352c014",
+    "name": "calico/basenji: README.md",
+    "review_status": "source_checked",
+    "url": "https://github.com/calico/basenji/blob/06ce5d387e20b47184d05433b3983163c5f923cd/README.md",
+    "version": "06ce5d387e20b47184d05433b3983163c5f923cd",
+    "retrieved_at": "2026-09-16T19:46:18.649671+00:00",
+    "artifact_sha256": "b77d93b4ff352874ecd21e074357b0bb7f4f09e7bfd53d8f7f152d05063c30c1"
+  },
+  {
+    "id": "evidence-official-de1ee43bdd6f04de9850",
+    "name": "pangolin: Journal full-text XML",
+    "review_status": "source_checked",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9022248/",
+    "version": "Retrieved page snapshot; no immutable publisher revision supplied",
+    "retrieved_at": "2026-09-16T19:53:03.008861+00:00",
+    "artifact_sha256": "c51d34f0bc17ffd34ee5c7caf4bbf627edd9f75f57497c8d6b133f405ec4c307"
+  },
+  {
+    "id": "evidence-official-ded281404bd1a0f3fdb7",
+    "name": "spliceai: Primary paper PDF",
+    "review_status": "source_checked",
+    "url": "https://doi.org/10.1016/j.cell.2018.12.015",
+    "version": "Cell 2019 published article PDF, university-hosted copy",
+    "retrieved_at": "2026-09-16T20:04:38.697838+00:00",
+    "artifact_sha256": "e0d62bfd97c26907e184a6a262eb277e3ad0737322373df282c9832b56697dda"
+  },
+  {
+    "id": "evidence-official-e17e3864c464d981afc7",
+    "name": "ml4bio/RNA-FM: fm/pretrained.py",
+    "review_status": "source_checked",
+    "url": "https://github.com/ml4bio/RNA-FM/blob/348951516e0963d22bbb33b3c9fc18c89081d38e/fm/pretrained.py",
+    "version": "348951516e0963d22bbb33b3c9fc18c89081d38e",
+    "retrieved_at": "2026-09-16T19:46:19.769679+00:00",
+    "artifact_sha256": "ab7271f8dbb876dbc5e2010e2d88b086088aada096f04149436d315a4f256aac"
+  },
+  {
+    "id": "evidence-official-e508b40498c3a3ba53d5",
+    "name": "matchms/matchms: README.rst",
+    "review_status": "source_checked",
+    "url": "https://github.com/matchms/matchms/blob/066608589587c8d089afd2e8d55ceadb2766ea62/README.rst",
+    "version": "066608589587c8d089afd2e8d55ceadb2766ea62",
+    "retrieved_at": "2026-09-16T19:46:19.674309+00:00",
+    "artifact_sha256": "06a0c6b7adf444d7af53d20ce94c3cef483bd7be8db02fd8960c0704680d61ee"
+  },
+  {
+    "id": "evidence-official-e604b144dfbd97bf8917",
+    "name": "CAMI-challenge/CAMISIM: README.md",
+    "review_status": "source_checked",
+    "url": "https://github.com/CAMI-challenge/CAMISIM/blob/7ce6013c6d5a0fac8ba8a80e52a03560d3546fa6/README.md",
+    "version": "7ce6013c6d5a0fac8ba8a80e52a03560d3546fa6",
+    "retrieved_at": "2026-09-16T19:46:17.767933+00:00",
+    "artifact_sha256": "ec5309bf16daab6c9a0adb393b191a3e716b9c627834cf3e08655c250a63da61"
+  },
+  {
+    "id": "evidence-official-e69877a2a54345e162b3",
+    "name": "biohub/ESMC-6B: config.json",
+    "review_status": "source_checked",
+    "url": "https://huggingface.co/biohub/ESMC-6B/blob/af1602ba7406f521b11bf8f81d52af378cde09e4/config.json",
+    "version": "af1602ba7406f521b11bf8f81d52af378cde09e4",
+    "retrieved_at": "2026-09-16T20:22:27.767420+00:00",
+    "artifact_sha256": "80ccf981fbbd4f9f0a64830a0b64f1c79ed0f629d3f3b95f4424fd73174ac540"
+  },
+  {
+    "id": "evidence-official-ea568a52ea3ab476db6a",
+    "name": "dauparas/ProteinMPNN: README.md",
+    "review_status": "source_checked",
+    "url": "https://github.com/dauparas/ProteinMPNN/blob/8907e6671bfbfc92303b5f79c4b5e6ce47cdef57/README.md",
+    "version": "8907e6671bfbfc92303b5f79c4b5e6ce47cdef57",
+    "retrieved_at": "2026-09-16T19:46:18.948060+00:00",
+    "artifact_sha256": "772ebe52d2ba5100a28a888910c6f0c9fd4ded1d1372e3d89f6f1c48707e0365"
+  },
+  {
+    "id": "evidence-official-eaf3efab8850672f44e4",
+    "name": "tkzeng/Pangolin: README.md",
+    "review_status": "source_checked",
+    "url": "https://github.com/tkzeng/Pangolin/blob/5cf94b8db938c658391b4305cd7ce33297d44ff7/README.md",
+    "version": "5cf94b8db938c658391b4305cd7ce33297d44ff7",
+    "retrieved_at": "2026-09-16T19:46:20.582143+00:00",
+    "artifact_sha256": "9117f9d255d6b6e810d224a600d381192bccccd3f0cd417fed9559d49ca8fffd"
+  },
+  {
+    "id": "evidence-official-eb328c1926fbe500f86b",
+    "name": "opencobra/cobrapy: README.rst",
+    "review_status": "source_checked",
+    "url": "https://github.com/opencobra/cobrapy/blob/5aa19300fbf5dd632a9ac5c39ca28c1c621b943d/README.rst",
+    "version": "5aa19300fbf5dd632a9ac5c39ca28c1c621b943d",
+    "retrieved_at": "2026-09-16T19:46:19.916278+00:00",
+    "artifact_sha256": "ae2da4ad3ae1d822e0010b6c023b26ef1d02b97007e17611dd4b1e22c70d4998"
+  },
+  {
+    "id": "evidence-official-edce0c06db05117706cb",
+    "name": "calico/basenji: docs/train.md",
+    "review_status": "source_checked",
+    "url": "https://github.com/calico/basenji/blob/06ce5d387e20b47184d05433b3983163c5f923cd/docs/train.md",
+    "version": "06ce5d387e20b47184d05433b3983163c5f923cd",
+    "retrieved_at": "2026-09-16T19:46:18.649671+00:00",
+    "artifact_sha256": "2e42f0173b07e3493a570b901639a182b421c66c60741141278336b7757b76e6"
+  },
+  {
+    "id": "evidence-official-ee6e270af125ddf16eb3",
+    "name": "neuralbioinfo/prokbert-mini: config.json",
+    "review_status": "source_checked",
+    "url": "https://huggingface.co/neuralbioinfo/prokbert-mini/blob/feb2520a43cd9cdb5b3d8477e47209dbcb55d1dc/config.json",
+    "version": "feb2520a43cd9cdb5b3d8477e47209dbcb55d1dc",
+    "retrieved_at": "2026-09-16T20:04:02.231162+00:00",
+    "artifact_sha256": "6d68c922f919e0de3f87de60c07ebc1823927df806645937f94911c5b8245de6"
+  },
+  {
+    "id": "evidence-official-efa6ec9d886a21534a20",
+    "name": "scgpt-may2023: Primary paper PDF",
+    "review_status": "source_checked",
+    "url": "https://www.biorxiv.org/content/10.1101/2023.04.30.538439v1",
+    "version": "bioRxiv version posted 1 May 2023; re-inspected existing local research artifact",
+    "retrieved_at": "2026-09-16T20:21:23.046376+00:00",
+    "artifact_sha256": "4ef64d2b3431812df07c4b3e428950644ff264ec5728267c2e4692588f557419"
+  },
+  {
+    "id": "evidence-official-efc93d867cbf62e80ebb",
+    "name": "sokrypton/ColabFold: README.md",
+    "review_status": "source_checked",
+    "url": "https://github.com/sokrypton/ColabFold/blob/84c27d9cc500489fd9b97545d2325b9d00f251d5/README.md",
+    "version": "84c27d9cc500489fd9b97545d2325b9d00f251d5",
+    "retrieved_at": "2026-09-16T19:46:20.488416+00:00",
+    "artifact_sha256": "a384ec62c86d568aeb0fe3e8a3b111f071fbcfacb937b407eb6da24fc70c823f"
+  },
+  {
+    "id": "evidence-official-f078ec10fa45b5d77ad7",
+    "name": "aertslab/GENIE3: README.md",
+    "review_status": "source_checked",
+    "url": "https://github.com/aertslab/GENIE3/blob/54bc15636322e8773357de6e0b6683c6bc802825/README.md",
+    "version": "54bc15636322e8773357de6e0b6683c6bc802825",
+    "retrieved_at": "2026-09-16T19:46:18.166390+00:00",
+    "artifact_sha256": "045aa63715acf615327d45ff42a897e77fa6d4b88084d2ad4e2ea836eb5fb48a"
+  },
+  {
+    "id": "evidence-official-f0b17e30e69338b7762f",
+    "name": "https://meme-suite.org/meme/tools/fimo: page.html",
+    "review_status": "source_checked",
+    "url": "https://meme-suite.org/meme/tools/fimo",
+    "version": "Retrieved page snapshot; no immutable publisher revision supplied",
+    "retrieved_at": "2026-09-16T19:46:20.892034+00:00",
+    "artifact_sha256": "c0acb8f22d51b718d5c3a253e81b9882d804fa2aa153b6fcf3e826e22f085dd3"
+  },
+  {
+    "id": "evidence-official-f464cd407a6a9d031720",
+    "name": "gears: Journal full-text XML",
+    "review_status": "source_checked",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11180609/",
+    "version": "Retrieved page snapshot; no immutable publisher revision supplied",
+    "retrieved_at": "2026-09-16T20:16:14.422594+00:00",
+    "artifact_sha256": "6e9a8f4a2b8ccbc9aa46c43a34701b687f71b797048adf27aae2a99d9e2dcad9"
+  },
+  {
+    "id": "evidence-official-f60303c5eaa60ed9c77a",
+    "name": "ctheodoris/Geneformer: config.json",
+    "review_status": "source_checked",
+    "url": "https://huggingface.co/ctheodoris/Geneformer/blob/1f7fbae4e469a5f4f1af8c111a529cfe1b3829f5/config.json",
+    "version": "1f7fbae4e469a5f4f1af8c111a529cfe1b3829f5",
+    "retrieved_at": "2026-09-16T19:46:20.640731+00:00",
+    "artifact_sha256": "2cc4af3442644e84af71814a607b61c958d7b4e5ebde6791ab77b5f534ac6f6e"
+  },
+  {
+    "id": "evidence-official-f71e6c488025a4d82997",
+    "name": "metagene-ai/METAGENE-1: config.json",
+    "review_status": "source_checked",
+    "url": "https://huggingface.co/metagene-ai/METAGENE-1/blob/ad8a1e0ee62b85058bfc05d823d8e8d4759edc48/config.json",
+    "version": "ad8a1e0ee62b85058bfc05d823d8e8d4759edc48",
+    "retrieved_at": "2026-09-16T19:46:20.736359+00:00",
+    "artifact_sha256": "dc3751f8648b4ab24a3c0c42026267e1a2561b93249f54b460c0374e62d33f98"
+  },
+  {
+    "id": "evidence-official-f780521ccebbb0691f9e",
+    "name": "jwohlwend/boltz: README.md",
+    "review_status": "source_checked",
+    "url": "https://github.com/jwohlwend/boltz/blob/b1ebfc46ecf57f5414e0d1a6f9027bbb122c53bc/README.md",
+    "version": "b1ebfc46ecf57f5414e0d1a6f9027bbb122c53bc",
+    "retrieved_at": "2026-09-16T19:46:19.465940+00:00",
+    "artifact_sha256": "79149435313841e6f9cc0c8b581259f3952a2469cbe6f9a733f7143b557025c2"
+  },
+  {
+    "id": "evidence-official-fa53ab621979fb5f37c8",
+    "name": "facebook/esmfold_v1: README.md",
+    "review_status": "source_checked",
+    "url": "https://huggingface.co/facebook/esmfold_v1/blob/75a3841ee059df2bf4d56688166c8fb459ddd97a/README.md",
+    "version": "75a3841ee059df2bf4d56688166c8fb459ddd97a",
+    "retrieved_at": "2026-09-16T20:04:02.231029+00:00",
+    "artifact_sha256": "12c535c3711211dcd3947ff8164d2e1428ca3461ef8a631ea7b6419673322fe2"
+  },
+  {
+    "id": "evidence-official-fa7a6c37148223466dee",
+    "name": "gcorso/DiffDock: README.md",
+    "review_status": "source_checked",
+    "url": "https://github.com/gcorso/DiffDock/blob/85c49b60d3e0b0182a59ee43a34a6d7036981284/README.md",
+    "version": "85c49b60d3e0b0182a59ee43a34a6d7036981284",
+    "retrieved_at": "2026-09-16T19:46:19.329065+00:00",
+    "artifact_sha256": "6f63088d85b5f05d58416ede319387c1b7f3661b27741a36314ada861f2056de"
+  },
+  {
+    "id": "evidence-official-fd8e332abdf04a75195b",
+    "name": "ml4bio/RNA-FM: README.md",
+    "review_status": "source_checked",
+    "url": "https://github.com/ml4bio/RNA-FM/blob/348951516e0963d22bbb33b3c9fc18c89081d38e/README.md",
+    "version": "348951516e0963d22bbb33b3c9fc18c89081d38e",
+    "retrieved_at": "2026-09-16T19:46:19.769679+00:00",
+    "artifact_sha256": "f9f1c1d62adc471661ca98b30c0250e9f3ce0cff7433830f149f5f48ea41c3da"
+  },
+  {
+    "id": "evidence-official-fffd4026cb8f4018fe2e",
+    "name": "diffdockl: Primary paper PDF",
+    "review_status": "source_checked",
+    "url": "https://arxiv.org/pdf/2402.18396",
+    "version": "2402.18396v1",
+    "retrieved_at": "2026-09-16T20:04:04.777388+00:00",
+    "artifact_sha256": "c8022ecbf5a2e628e42a03302a5595390020d40d65cc630490c5803ff6c14170"
+  },
+  {
+    "id": "evidence-reported-base-boltz-readme-md",
+    "name": "jwohlwend/boltz README.md",
+    "review_status": "source_checked",
+    "url": "https://github.com/jwohlwend/boltz/blob/b1ebfc46ecf57f5414e0d1a6f9027bbb122c53bc/README.md",
+    "version": "b1ebfc46ecf57f5414e0d1a6f9027bbb122c53bc",
+    "retrieved_at": "2026-09-16T20:30:16.575839+00:00",
+    "artifact_sha256": "79149435313841e6f9cc0c8b581259f3952a2469cbe6f9a733f7143b557025c2"
+  },
+  {
+    "id": "evidence-reported-base-caduceus-readme-md",
+    "name": "kuleshov-group/caduceus README.md",
+    "review_status": "source_checked",
+    "url": "https://github.com/kuleshov-group/caduceus/blob/0060a6d8079b6a040fc55d505e15972a327b70a6/README.md",
+    "version": "0060a6d8079b6a040fc55d505e15972a327b70a6",
+    "retrieved_at": "2026-09-16T20:00:02.715892+00:00",
+    "artifact_sha256": "e508e5199d0cfb9c36dbd503cdccf50d734f419fa8cf1f890dec0db7e741ad42"
+  },
+  {
+    "id": "evidence-reported-base-chai-readme-md",
+    "name": "github.com/chaidiscovery/chai-lab README.md",
+    "review_status": "source_checked",
+    "url": "https://github.com/chaidiscovery/chai-lab/blob/66c38d1fe5c6756a89ff8596b1dea87d305ec06f/README.md",
+    "version": "66c38d1fe5c6756a89ff8596b1dea87d305ec06f",
+    "retrieved_at": "2026-09-16T19:46:18.824295+00:00",
+    "artifact_sha256": "ea6f6e64f6fc73d0e3dcbe6755c2aab226fa13bad279d1213acc0217f3f5013f"
+  },
+  {
+    "id": "evidence-reported-base-diffdock-readme-md",
+    "name": "gcorso/DiffDock README.md",
+    "review_status": "source_checked",
+    "url": "https://github.com/gcorso/DiffDock/blob/85c49b60d3e0b0182a59ee43a34a6d7036981284/README.md",
+    "version": "85c49b60d3e0b0182a59ee43a34a6d7036981284",
+    "retrieved_at": "2026-09-16T20:00:00.818010+00:00",
+    "artifact_sha256": "6f63088d85b5f05d58416ede319387c1b7f3661b27741a36314ada861f2056de"
+  },
+  {
+    "id": "evidence-reported-base-dnabert2-readme-md",
+    "name": "MAGICS-LAB/DNABERT_2 README.md",
+    "review_status": "source_checked",
+    "url": "https://github.com/MAGICS-LAB/DNABERT_2/blob/f25bed9ee20db966dff39e5c1571249d04e36404/README.md",
+    "version": "f25bed9ee20db966dff39e5c1571249d04e36404",
+    "retrieved_at": "2026-09-16T20:00:02.624261+00:00",
+    "artifact_sha256": "734a8cec5f667d74d421bf3b273ad7e256216109636da45aa7ceba21cd34de16"
+  },
+  {
+    "id": "evidence-reported-base-esm-readme-md",
+    "name": "facebookresearch/esm README.md",
+    "review_status": "source_checked",
+    "url": "https://github.com/facebookresearch/esm/blob/2b369911bb5b4b0dda914521b9475cad1656b2ac/README.md",
+    "version": "2b369911bb5b4b0dda914521b9475cad1656b2ac",
+    "retrieved_at": "2026-09-16T20:00:00.816433+00:00",
+    "artifact_sha256": "8b273c21a322fc9473d1b68d0dd40c8166ab2f89e4a190aa26ca87251b97cba9"
+  },
+  {
+    "id": "evidence-reported-base-evo2-readme-md",
+    "name": "ArcInstitute/evo2 README.md",
+    "review_status": "source_checked",
+    "url": "https://github.com/ArcInstitute/evo2/blob/53f195997257c56c00e5ef8d33a54f5baad143a6/README.md",
+    "version": "53f195997257c56c00e5ef8d33a54f5baad143a6",
+    "retrieved_at": "2026-09-16T20:00:02.431871+00:00",
+    "artifact_sha256": "58787c8ef5cb4fba4c04322a4ceb9f174e2233ec22d4193622fb6bc67d651d89"
+  },
+  {
+    "id": "evidence-reported-base-geneformer-readme-md",
+    "name": "huggingface.co/ctheodoris/Geneformer README.md",
+    "review_status": "source_checked",
+    "url": "https://huggingface.co/ctheodoris/Geneformer/blob/1f7fbae4e469a5f4f1af8c111a529cfe1b3829f5/README.md",
+    "version": "1f7fbae4e469a5f4f1af8c111a529cfe1b3829f5",
+    "retrieved_at": "2026-09-16T19:46:20.640731+00:00",
+    "artifact_sha256": "56d6e570b349cbedae9a54634421c94e7af8ea467ce0fdd79193372ae3cbdbd8"
+  },
+  {
+    "id": "evidence-reported-base-genomad-readme-md",
+    "name": "apcamargo/genomad README.md",
+    "review_status": "source_checked",
+    "url": "https://github.com/apcamargo/genomad/blob/8c5fd0d1722d458a3e8ff50278cdc00ed4a514fc/README.md",
+    "version": "8c5fd0d1722d458a3e8ff50278cdc00ed4a514fc",
+    "retrieved_at": "2026-09-16T20:00:02.618496+00:00",
+    "artifact_sha256": "0d7ab49689a8b402b2e081cecf38e6fe2fb44bccbbd2b8bd61bb08aaa53720af"
+  },
+  {
+    "id": "evidence-reported-base-gtdbtk-readme-md",
+    "name": "Ecogenomics/GTDBTk README.md",
+    "review_status": "source_checked",
+    "url": "https://github.com/Ecogenomics/GTDBTk/blob/f17decef1f9d9cf5b4d31fd21f5c9d32d813abdc/README.md",
+    "version": "f17decef1f9d9cf5b4d31fd21f5c9d32d813abdc",
+    "retrieved_at": "2026-09-16T20:00:03.977720+00:00",
+    "artifact_sha256": "72124a5fb40dc02379ca775daae2bf894bc9e1b240a0a31d65e6c6c5c99e268c"
+  },
+  {
+    "id": "evidence-reported-base-hyenadna-readme-md",
+    "name": "HazyResearch/hyena-dna README.md",
+    "review_status": "source_checked",
+    "url": "https://github.com/HazyResearch/hyena-dna/blob/d553021b483b82980aa4b868b37ec2d4332e198a/README.md",
+    "version": "d553021b483b82980aa4b868b37ec2d4332e198a",
+    "retrieved_at": "2026-09-16T20:00:02.742030+00:00",
+    "artifact_sha256": "2b551789c76b8a552c1d989b194ef72a4cd83790d06bc2a8ac2af6ebee92e8db"
+  },
+  {
+    "id": "evidence-reported-base-kraken2-readme-md",
+    "name": "DerrickWood/kraken2 README.md",
+    "review_status": "source_checked",
+    "url": "https://github.com/DerrickWood/kraken2/blob/8c190b1b668825935dbf6dee5f969227dc8269bb/README.md",
+    "version": "8c190b1b668825935dbf6dee5f969227dc8269bb",
+    "retrieved_at": "2026-09-16T20:00:00.821204+00:00",
+    "artifact_sha256": "2ea33af266b4268a55fd750d0f3265cd3165d61f6be375c5ea3b3ff5c58c7c8c"
+  },
+  {
+    "id": "evidence-reported-base-metaphlan-readme-md",
+    "name": "biobakery/MetaPhlAn README.md",
+    "review_status": "source_checked",
+    "url": "https://github.com/biobakery/MetaPhlAn/blob/424f3e6e30618266404353e1083c6405a9f02f48/README.md",
+    "version": "424f3e6e30618266404353e1083c6405a9f02f48",
+    "retrieved_at": "2026-09-16T20:00:02.332125+00:00",
+    "artifact_sha256": "ce491bb2d686145e0773c685d0d02e8a5fabc7daaea60eef07cf54298561fba7"
+  },
+  {
+    "id": "evidence-reported-base-promotech-readme-md",
+    "name": "BioinformaticsLabAtMUN/Promotech README.md",
+    "review_status": "source_checked",
+    "url": "https://github.com/BioinformaticsLabAtMUN/Promotech/blob/56251ad9b883ef831b4753fc623d5ec970fe65e0/README.md",
+    "version": "56251ad9b883ef831b4753fc623d5ec970fe65e0",
+    "retrieved_at": "2026-09-16T20:40:28.842295+00:00",
+    "artifact_sha256": "51050c0bf5982be985dd87e450ea5c2408a2d87cd32c679fc639246d64e5ca80"
+  },
+  {
+    "id": "evidence-reported-base-proteinmpnn-readme-md",
+    "name": "dauparas/ProteinMPNN README.md",
+    "review_status": "source_checked",
+    "url": "https://github.com/dauparas/ProteinMPNN/blob/8907e6671bfbfc92303b5f79c4b5e6ce47cdef57/README.md",
+    "version": "8907e6671bfbfc92303b5f79c4b5e6ce47cdef57",
+    "retrieved_at": "2026-09-16T20:00:02.940818+00:00",
+    "artifact_sha256": "772ebe52d2ba5100a28a888910c6f0c9fd4ded1d1372e3d89f6f1c48707e0365"
+  },
+  {
+    "id": "evidence-reported-base-rinalmo-readme-md",
+    "name": "lbcb-sci/RiNALMo README.md",
+    "review_status": "source_checked",
+    "url": "https://github.com/lbcb-sci/RiNALMo/blob/2c2c5c14a5ae609d8c560a5d9ca32e51e0288955/README.md",
+    "version": "2c2c5c14a5ae609d8c560a5d9ca32e51e0288955",
+    "retrieved_at": "2026-09-16T20:00:00.817876+00:00",
+    "artifact_sha256": "de3d60dd5aedc63c4f401a92876c2d1e053011e008773ce1be38511360463b63"
+  },
+  {
+    "id": "evidence-reported-base-rnafm-readme-md",
+    "name": "ml4bio/RNA-FM README.md",
+    "review_status": "source_checked",
+    "url": "https://github.com/ml4bio/RNA-FM/blob/348951516e0963d22bbb33b3c9fc18c89081d38e/README.md",
+    "version": "348951516e0963d22bbb33b3c9fc18c89081d38e",
+    "retrieved_at": "2026-09-16T20:00:00.817676+00:00",
+    "artifact_sha256": "f9f1c1d62adc471661ca98b30c0250e9f3ce0cff7433830f149f5f48ea41c3da"
+  },
+  {
+    "id": "evidence-reported-base-rnafold-readme-md",
+    "name": "ViennaRNA/ViennaRNA README.md",
+    "review_status": "source_checked",
+    "url": "https://github.com/ViennaRNA/ViennaRNA/blob/1ffec79f5e258896160f7362ced8263450f371dc/README.md",
+    "version": "1ffec79f5e258896160f7362ced8263450f371dc",
+    "retrieved_at": "2026-09-16T20:00:00.820987+00:00",
+    "artifact_sha256": "d37146b01e4273062a5230c496a9af8414ee7ef14fcd905cf415959256d59c4e"
+  },
+  {
+    "id": "evidence-reported-base-scgpt-readme-md",
+    "name": "bowang-lab/scGPT README.md",
+    "review_status": "source_checked",
+    "url": "https://github.com/bowang-lab/scGPT/blob/cebd6fae655b9c585a4807daa3ac31bb764f06b4/README.md",
+    "version": "cebd6fae655b9c585a4807daa3ac31bb764f06b4",
+    "retrieved_at": "2026-09-16T20:00:00.816587+00:00",
+    "artifact_sha256": "b0503e8ca789f19f1fc2350c5aaf57b1b323bbae43b354655231b5f4a1586c83"
+  },
+  {
+    "id": "evidence-reported-base-scvi-readme-md",
+    "name": "scverse/scvi-tools README.md",
+    "review_status": "source_checked",
+    "url": "https://github.com/scverse/scvi-tools/blob/73b28e44223621470e582a81a102c107bb22678b/README.md",
+    "version": "73b28e44223621470e582a81a102c107bb22678b",
+    "retrieved_at": "2026-09-16T20:00:02.370441+00:00",
+    "artifact_sha256": "eb46b8a54e60643ca0cd8cb375ede05b01dcbd2380ca17ce8027a92ba13cebbb"
+  },
+  {
+    "id": "evidence-reported-base-ufold-readme-md",
+    "name": "uci-cbcl/UFold README.md",
+    "review_status": "source_checked",
+    "url": "https://github.com/uci-cbcl/UFold/blob/75bd9acc83826059682dfca9d3659df66b132cd1/README.md",
+    "version": "75bd9acc83826059682dfca9d3659df66b132cd1",
+    "retrieved_at": "2026-09-16T20:00:03.913031+00:00",
+    "artifact_sha256": "9ef66e737e1047f7028f8f636516f5d0144f9395fe5aceb1a387d1ba457c81f2"
+  },
+  {
+    "id": "evidence-reported-base-vina-readme-md",
+    "name": "ccsb-scripps/AutoDock-Vina README.md",
+    "review_status": "source_checked",
+    "url": "https://github.com/ccsb-scripps/AutoDock-Vina/blob/3c65c0b3e6c2c1d183f6a175ecb65e3c5ba91645/README.md",
+    "version": "3c65c0b3e6c2c1d183f6a175ecb65e3c5ba91645",
+    "retrieved_at": "2026-09-16T20:00:01.500953+00:00",
+    "artifact_sha256": "4f1728521ab79de1c33e1cf8605b31037effed5de2a2fbbccba58d7b0a005ae7"
+  },
+  {
+    "id": "evidence-reported-ipro70-original",
+    "name": "iPro70-FMWin original paper",
+    "review_status": "source_checked",
+    "url": "https://rafsanjani.pythonanywhere.com/static/Papers/iPro70.pdf",
+    "version": "10.1007/s00438-018-1487-5",
+    "retrieved_at": "2026-09-16T20:40:28.842295+00:00",
+    "artifact_sha256": "e4fa53c5574961acf4a93bf251b71c248025c64b1b79e74da40ff73091d8b205"
+  },
+  {
+    "id": "evidence-reported-rewire-run-baseline",
+    "name": "MFASS v2 run_baseline.py",
+    "review_status": "source_checked",
+    "url": "https://github.com/rewire-bio/rewire-benchmarks/blob/bee9133b83f3aedaf2bbb9013f1875515845607e/benchmarks/mfass/src/mfass/run_baseline.py",
+    "version": "bee9133b83f3aedaf2bbb9013f1875515845607e",
+    "retrieved_at": "2026-09-16T20:47:15.959417+00:00",
+    "artifact_sha256": "7066ae357aac960ddd6e95ee55a98dcd876b619edfadae1e1d9d03eb3f5b0acc"
+  },
+  {
+    "id": "evidence-reported-rewire-run-dnabert2",
+    "name": "MFASS v2 run_dnabert2.py",
+    "review_status": "source_checked",
+    "url": "https://github.com/rewire-bio/rewire-benchmarks/blob/bee9133b83f3aedaf2bbb9013f1875515845607e/benchmarks/mfass/src/mfass/run_dnabert2.py",
+    "version": "bee9133b83f3aedaf2bbb9013f1875515845607e",
+    "retrieved_at": "2026-09-16T20:47:15.959417+00:00",
+    "artifact_sha256": "b7ebb4324e22cb421482181c52722c64cac5fec7c43161c082fc34e9920c4a85"
+  },
+  {
+    "id": "evidence-reported-rewire-run-pangolin",
+    "name": "MFASS v2 run_pangolin.py",
+    "review_status": "source_checked",
+    "url": "https://github.com/rewire-bio/rewire-benchmarks/blob/bee9133b83f3aedaf2bbb9013f1875515845607e/benchmarks/mfass/src/mfass/run_pangolin.py",
+    "version": "bee9133b83f3aedaf2bbb9013f1875515845607e",
+    "retrieved_at": "2026-09-16T20:47:15.959417+00:00",
+    "artifact_sha256": "83e5b71d7265c63fb0874d7b493ac2c8d205f645c079b09f350d69b44e5c921b"
+  },
+  {
+    "id": "evidence-reported-rewire-run-spliceai",
+    "name": "MFASS v2 run_spliceai.py",
+    "review_status": "source_checked",
+    "url": "https://github.com/rewire-bio/rewire-benchmarks/blob/bee9133b83f3aedaf2bbb9013f1875515845607e/benchmarks/mfass/src/mfass/run_spliceai.py",
+    "version": "bee9133b83f3aedaf2bbb9013f1875515845607e",
+    "retrieved_at": "2026-09-16T20:47:15.959417+00:00",
+    "artifact_sha256": "3709bc12997744b77ce2f9ea4de79cdcafa6ffc136b61bb020f57e43acbe8685"
+  },
+  {
+    "id": "evidence-reported-structure-informed-current-html",
+    "name": "Structure-Informed Protein Language Models are Robust Predictors for Variant Effects (reviewed HTML snapshot)",
+    "review_status": "source_checked",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12068927/",
+    "version": "Human Genetics 2025 journal article (online 2024)",
+    "retrieved_at": "2026-09-16T19:58:11.209175+00:00",
+    "artifact_sha256": "6686d2646e7b1b1203a7ef6d48bacf966b4cd6b0895fd2855551937c6bb87111"
+  },
+  {
+    "id": "expansion-p3-flip",
+    "name": "flip primary benchmark evidence",
+    "review_status": "source_checked",
+    "url": "https://flip.protein.properties/assets/FLIP_2021_manuscript.pdf",
+    "version": "2021 manuscript",
+    "retrieved_at": "2026-09-16T21:07:13.889041+00:00",
+    "artifact_sha256": "afcf360c88a7a4ae153b3c2d8d4fa6d4ac0abe84f2131b94409abff6447ce363"
+  },
+  {
+    "id": "expansion-p3-genomic-benchmarks",
+    "name": "Genomic benchmarks: a collection of datasets for genomic sequence classification",
+    "review_status": "source_checked",
+    "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC10150520/fullTextXML",
+    "version": "PMC10150520",
+    "retrieved_at": "2026-09-16T21:07:13.681402+00:00",
+    "artifact_sha256": "bda6fe51e3363a5d2fc8d265ca536897d3e83eb76458fc95066c21933e3bd0c0"
+  },
+  {
+    "id": "expansion-p3-glycanml-2405-16206v1",
+    "name": "GlycanML: A Multi-Task and Multi-Structure Benchmark for Glycan Machine Learning",
+    "review_status": "source_checked",
+    "url": "https://arxiv.org/abs/2405.16206v1",
+    "version": "arXiv:2405.16206v1, 2024-05-25",
+    "retrieved_at": "2026-09-16T21:04:56.017006+00:00",
+    "artifact_sha256": "9ba3db678b4550898a612b42e8832bf9dee40935090fc4d969ba8f6ac5106979"
+  },
+  {
+    "id": "expansion-p3-mrnabench-2025",
+    "name": "mRNABench: A curated benchmark for mature mRNA property and function prediction",
+    "review_status": "source_checked",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12265608/",
+    "version": "preprint archived 2025-07-08",
+    "retrieved_at": "2026-09-16T10:41:16.497221+00:00",
+    "artifact_sha256": "79f6264ee883535203c63a313547e7c57baa85585f76b42f8d899eb17fb7e600"
+  },
+  {
+    "id": "expansion-p3-open-problems",
+    "name": "openproblems-label primary benchmark evidence",
+    "review_status": "source_checked",
+    "url": "https://www.openproblems.bio/benchmarks/label_projection/v1.0.0/",
+    "version": "v1.0.0",
+    "retrieved_at": "2026-09-16T21:16:30.026457+00:00",
+    "artifact_sha256": "e223ab712ff55997a3abe659f280d4ea2952700e767b87e02c434701da9833c1"
+  },
+  {
+    "id": "expansion-p3-pfmbench",
+    "name": "pfmbench primary benchmark evidence",
+    "review_status": "source_checked",
+    "url": "https://arxiv.org/html/2506.14796v1",
+    "version": "2506.14796v1",
+    "retrieved_at": "2026-09-16T21:06:29.716004+00:00",
+    "artifact_sha256": "59c7bbb888e8e91f33c1e2cabfde062c32381d6ca727d23b6655c977aabf97a2"
+  },
+  {
+    "id": "expansion-p3-proteinbench",
+    "name": "proteinbench primary benchmark evidence",
+    "review_status": "source_checked",
+    "url": "https://arxiv.org/html/2409.06744v1",
+    "version": "2409.06744v1",
+    "retrieved_at": "2026-09-16T21:07:13.231727+00:00",
+    "artifact_sha256": "4334d636223ad42bfb9ae68aae03f5a255c29ba1cebe7b8f9588fb3b9b5453b2"
+  },
+  {
+    "id": "fingerprint-scoring-2022",
+    "name": "Machine-Learning- and Knowledge-Based Scoring Functions Incorporating Ligand and Protein Fingerprints",
+    "review_status": "discovered",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9178954/",
+    "version": "PMC archival version PMC9178954.1",
+    "retrieved_at": "2026-09-15T23:29:32Z",
+    "artifact_sha256": "47bd60c6392b801095fdb604de06c0d4bda6f555bae58e9955e491a5abf60576"
+  },
+  {
+    "id": "fujisan-2024",
+    "name": "Enhanced prediction of protein functional identity through the integration of sequence and structural features",
+    "review_status": "discovered",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11609699/",
+    "version": "PMC11609699.1",
+    "retrieved_at": "2026-09-15T23:25:00Z",
+    "artifact_sha256": "db33e0542005ffae00cd644dfe697185b94c8823d5aee2768620a6db0c48e56f"
+  },
+  {
+    "id": "fusion-breakpoint-foundation-models-2026",
+    "name": "Benchmarking genomic foundation models for binary classification of gene fusion breakpoints from DNA sequences",
+    "review_status": "discovered",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13182013/",
+    "version": "journal full text in PMC",
+    "retrieved_at": "2026-09-15T23:33:26Z",
+    "artifact_sha256": "0f4d9de77f1e39cfd2164a20653d86370767da684dc22d17e09f589761abeb5f"
+  },
+  {
+    "id": "genept-2024",
+    "name": "GenePT: A Simple But Effective Foundation Model for Genes and Cells Built From ChatGPT",
+    "review_status": "discovered",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10614824/",
+    "version": "PMC archival version PMC10614824.2",
+    "retrieved_at": "2026-09-15T23:29:32Z",
+    "artifact_sha256": "230a2ec55458d9243eaeeebf3244df7409eb02d47f4b809ee56a06dcb6fdd047"
+  },
+  {
+    "id": "genomeocean-2025",
+    "name": "GenomeOcean: An Efficient Genome Foundation Model Trained on Large-Scale Metagenomic Assemblies",
+    "review_status": "discovered",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11838515/",
+    "version": "preprint archived 2025-02-05",
+    "retrieved_at": "2026-09-15T23:29:32Z",
+    "artifact_sha256": "3cc0df52522fccda23e3958f069c916b87ee50bb5c9a992fa37e25256546e145"
+  },
+  {
+    "id": "genomic-tokenizer-selection-2025",
+    "name": "The impact of tokenizer selection in genomic language models",
+    "review_status": "discovered",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12453675/",
+    "version": "journal full text in PMC",
+    "retrieved_at": "2026-09-15T23:33:26Z",
+    "artifact_sha256": "0a01c36fdd63f3f6db509777e61c3f87e8a298c810f8aef7974915aaa0655342"
+  },
+  {
+    "id": "gremln-2026",
+    "name": "GREmLN: A Cellular Graph Structure Aware Transcriptomics Foundation Model",
+    "review_status": "discovered",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13060794/",
+    "version": "preprint version in PMC",
+    "retrieved_at": "2026-09-15T23:37:05Z",
+    "artifact_sha256": "3a20c4ededb749fc3f1120baf16dcfebe3fcb30418a91c445cfd91a7b5fdf553"
+  },
+  {
+    "id": "gsmformer-ppi-2026",
+    "name": "Multimodal graph, surface, and language-based model for protein protein interaction prediction",
+    "review_status": "discovered",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12873117/",
+    "version": "journal full text in PMC",
+    "retrieved_at": "2026-09-15T23:33:26Z",
+    "artifact_sha256": "9b364b5d73d16f2787f93f78f17dbe98b954ab9c2c64c1df960eec2e615eb3b4"
+  },
+  {
+    "id": "hi-enhancer-2025",
+    "name": "Hi-Enhancer: a two-stage framework for prediction and localization of enhancers based on Blending-KAN and Stacking-Auto models",
+    "review_status": "discovered",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12758598/",
+    "version": "version of record",
+    "retrieved_at": "2026-09-15T23:37:05Z",
+    "artifact_sha256": "c86488c9f60329b7a3c4370598e7a0a9e4c8c45d1758b87007bfc8242376b009"
+  },
+  {
+    "id": "ibex-2025",
+    "name": "Conformation-aware structure prediction of antigen-recognizing immune proteins",
+    "review_status": "discovered",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12710905/",
+    "version": "PMC archival version PMC12710905.1",
+    "retrieved_at": "2026-09-15T23:29:32Z",
+    "artifact_sha256": "caa1109bd5fe7f6be703aa9d4afd6f4f1522bcbce6b7361650eb59618c2a9e14"
+  },
+  {
+    "id": "icctax-2025",
+    "name": "ICCTax: a hierarchical taxonomic classifier for metagenomic sequences on a large language model",
+    "review_status": "discovered",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12619997/",
+    "version": "version of record",
+    "retrieved_at": "2026-09-15T23:29:32Z",
+    "artifact_sha256": "2ce0b48f1cde3aea7e561d92f4d7dc1525af7439ccd16f80bec0773e8812c8ec"
+  },
+  {
+    "id": "insilico-perturbation-auprc-2025",
+    "name": "AUPRC: a metric for evaluating the performance of in-silico perturbation methods in identifying differentially expressed genes",
+    "review_status": "discovered",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12400816/",
+    "version": "PMC archival version PMC12400816.1",
+    "retrieved_at": "2026-09-15T23:37:05Z",
+    "artifact_sha256": "2715709d94f84744afa32cafdcaa72efd206d63af8c60afe7619b2cb90108b6b"
+  },
+  {
+    "id": "ipromp-2025",
+    "name": "iPro-MP: a BERT-based model to predict multiple prokaryotic promoters",
+    "review_status": "discovered",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12516880/",
+    "version": "version of record",
+    "retrieved_at": "2026-09-15T23:29:32Z",
+    "artifact_sha256": "d21541ee1f7a168da8e4a7c0f0e133c970cbe7bc41118f43a929f08b2fd2afd1"
+  },
+  {
+    "id": "kmetashot-2025",
+    "name": "kMetaShot: a fast and reliable taxonomy classifier for metagenome-assembled genomes",
+    "review_status": "discovered",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11695915/",
+    "version": "PMC archival version PMC11695915.1",
+    "retrieved_at": "2026-09-15T23:29:32Z",
+    "artifact_sha256": "4584e93ea035c1170b8756a0a52cbe99fe72e70bd09b5f1dee639ee104f78247"
+  },
+  {
+    "id": "lambda-prophage-2026",
+    "name": "LAMBDA: A Prophage Detection Benchmark for Genomic Language Models",
+    "review_status": "discovered",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13041943/",
+    "version": "PMC13041943.1",
+    "retrieved_at": "2026-09-15T23:25:00Z",
+    "artifact_sha256": "22c2e218e87dce757907f6086a0e2ad37c13f785b34fff5bea7cfa1a6c276b16"
+  },
+  {
+    "id": "lazypipe-2020",
+    "name": "Novel NGS pipeline for virus discovery from a wide spectrum of hosts and sample types",
+    "review_status": "discovered",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7772471/",
+    "version": "version of record",
+    "retrieved_at": "2026-09-15T23:29:32Z",
+    "artifact_sha256": "77842d8e4f6b419e331ab5a01fdf8f9eb8604f259425d79602be896aad3d0ad1"
+  },
+  {
+    "id": "lemur-magnet-2024",
+    "name": "Lightweight taxonomic profiling of long-read metagenomic datasets with Lemur and Magnet",
+    "review_status": "discovered",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11185576/",
+    "version": "PMC archival version PMC11185576.2",
+    "retrieved_at": "2026-09-15T23:29:32Z",
+    "artifact_sha256": "4afb9195da447916eb6f733816e3640741c7ade08ea8920d205c3be7b3cce27a"
+  },
+  {
+    "id": "ligand-affinity-meta-model-2024",
+    "name": "Improved Prediction of Ligand–Protein Binding Affinities by Meta-modeling",
+    "review_status": "discovered",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11632770/",
+    "version": "PMC archival version PMC11632770.1",
+    "retrieved_at": "2026-09-15T23:37:05Z",
+    "artifact_sha256": "0be25fe75bc0b2eb8065136555763bbae5964ea3a8fdb8c5de79ff96445f6a29"
+  },
+  {
+    "id": "lipp-2026",
+    "name": "The LiPP Benchmark Set for Modeling Lipid–Protein Complexes: Comparison of Co-Folding and Docking Methods",
+    "review_status": "discovered",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13292216/",
+    "version": "PMC13292216.1",
+    "retrieved_at": "2026-09-15T23:25:00Z",
+    "artifact_sha256": "6ff34f2f709a14858a3753abf9f8f6efa1e7e3c351f15c70cf64264193a9414e"
+  },
+  {
+    "id": "mdl4microbiome-2022",
+    "name": "Multimodal deep learning applied to classify healthy and disease states of human microbiome",
+    "review_status": "discovered",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8763943/",
+    "version": "PMC archival version PMC8763943.1",
+    "retrieved_at": "2026-09-15T23:37:05Z",
+    "artifact_sha256": "72330eda245ac97c5de5d47a491bb86d9b8f527a03ae25fa41cae5bfb637143b"
+  },
+  {
+    "id": "megsite-2025",
+    "name": "MegSite: an accurate nucleic acid-binding residue prediction method based on multimodal protein language model",
+    "review_status": "discovered",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12496013/",
+    "version": "journal full text in PMC",
+    "retrieved_at": "2026-09-15T23:33:26Z",
+    "artifact_sha256": "10d13122331813243d83b84fe6f9294eac7e7c03cde082ebed276191ac41089c"
+  },
+  {
+    "id": "metagenomic-pathogens-2025",
+    "name": "Enhancing pathogen identification through AI-assisted metagenomic sequencing",
+    "review_status": "discovered",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12493982/",
+    "version": "version of record",
+    "retrieved_at": "2026-09-15T23:37:05Z",
+    "artifact_sha256": "aa88de1b0f0fd7ba1fedc1074bba9ba6ce199a0b723072a04d531db4585ae77c"
+  },
+  {
+    "id": "molas-2026",
+    "name": "Molecular embedding-based algorithm selection in protein-ligand docking",
+    "review_status": "discovered",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13104262/",
+    "version": "PMC archival version PMC13104262.1",
+    "retrieved_at": "2026-09-15T23:29:32Z",
+    "artifact_sha256": "d556d47e0f7bbdc37eb62374b85ac9092dc7ff438fbae9e42892ac2cc784023f"
+  },
+  {
+    "id": "mouse-geneformer-2025",
+    "name": "Mouse-Geneformer: A deep learning model for mouse single-cell transcriptome and its cross-species utility",
+    "review_status": "discovered",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11964219/",
+    "version": "version of record",
+    "retrieved_at": "2026-09-15T23:29:32Z",
+    "artifact_sha256": "ef6c68f5c9b47c2f89598ddf647f05b72e4155e8b33609ebff23936a84bbd41d"
+  },
+  {
+    "id": "mpro-pose-affinity-2025",
+    "name": "A Comparative Study of Deep Learning and Classical Modeling Approaches for Protein–Ligand Binding Pose and Affinity Prediction in Coronavirus Main Proteases",
+    "review_status": "discovered",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12801289/",
+    "version": "version of record",
+    "retrieved_at": "2026-09-15T23:25:00Z",
+    "artifact_sha256": "c356a1c65a0033e5ae18a05d4afab5495856c5b6869328ff49e13547a4801a57"
+  },
+  {
+    "id": "mrna-lm-2025",
+    "name": "mRNA-LM: full-length integrated SLM for mRNA analysis",
+    "review_status": "discovered",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11962594/",
+    "version": "journal full text in PMC",
+    "retrieved_at": "2026-09-15T23:33:26Z",
+    "artifact_sha256": "3a23de3c672ec162d13561c483f180a73b550d717256deffdc9099accec205fd"
+  },
+  {
+    "id": "mrna-protein-diversity-2026",
+    "name": "Generalizable deep-learning-based mRNA-protein interaction prediction strongly depends on protein diversity",
+    "review_status": "discovered",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13235059/",
+    "version": "version of record",
+    "retrieved_at": "2026-09-15T23:37:05Z",
+    "artifact_sha256": "94f9fe22a5f0e6c8619e4af994eb4f6ded7417efcf0c1240380269280f97f9d1"
+  },
+  {
+    "id": "mrnabench-2025",
+    "name": "mRNABench: A curated benchmark for mature mRNA property and function prediction",
+    "review_status": "discovered",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12265608/",
+    "version": "preprint archived 2025-07-08",
+    "retrieved_at": "2026-09-15T23:25:00Z",
+    "artifact_sha256": "79f6264ee883535203c63a313547e7c57baa85585f76b42f8d899eb17fb7e600"
+  },
+  {
+    "id": "mrnabert-2025",
+    "name": "mRNABERT: advancing mRNA sequence design with a universal language model and comprehensive dataset",
+    "review_status": "discovered",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12644827/",
+    "version": "journal full text in PMC",
+    "retrieved_at": "2026-09-15T23:33:26Z",
+    "artifact_sha256": "ff08ba895b7080446c08a930548b48a0041ae990c222ebb07e6ba7dcaf48ad44"
+  },
+  {
+    "id": "mulan-2025",
+    "name": "MULAN: multimodal protein language model for sequence and structure encoding",
+    "review_status": "discovered",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12452268/",
+    "version": "journal full text in PMC",
+    "retrieved_at": "2026-09-15T23:33:26Z",
+    "artifact_sha256": "771a9a26ebda6f49ea266540e8dd6e6de0cbaef724de818ca6124a5f9c50d350"
+  },
+  {
+    "id": "nabas-plus-2025",
+    "name": "Advancing metagenomic classification with NABAS+: a novel alignment-based approach",
+    "review_status": "discovered",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12231603/",
+    "version": "PMC12231603.1",
+    "retrieved_at": "2026-09-15T23:25:00Z",
+    "artifact_sha256": "49903e751beb86f6744825d2fdb3ea2fbe327b52b1ce68c323bfa8b66dae71ec"
+  },
+  {
+    "id": "ncd-metagenomics-2026",
+    "name": "Normalized compression distance for DNA classification",
+    "review_status": "discovered",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12884959/",
+    "version": "version of record",
+    "retrieved_at": "2026-09-15T23:29:32Z",
+    "artifact_sha256": "10e9ba780c45e7787baff9b81ef7b45c014d7fe6c716d6c759e14d89a813dc1c"
+  },
+  {
+    "id": "nmdn-2025",
+    "name": "Normalized Protein–Ligand Distance Likelihood Score for End-to-End Blind Docking and Virtual Screening",
+    "review_status": "discovered",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11815853/",
+    "version": "version of record",
+    "retrieved_at": "2026-09-15T23:25:00Z",
+    "artifact_sha256": "194b21478aaedd9a7384cabb8b0040ca5b6a4938f4d275627b86a6b787affc20"
+  },
+  {
+    "id": "part2-clathrin-plm-2025",
+    "name": "Advancing the accuracy of clathrin protein prediction through multi-source protein language models",
+    "review_status": "source_checked",
+    "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC12238356/fullTextXML",
+    "version": "journal full text in PMC",
+    "retrieved_at": "2026-09-17T07:56:20.050842+00:00",
+    "artifact_sha256": "2edc86b25707c1b737d26117093ce8d856e79cc5d0b335f27c1c341f887f1c7e"
+  },
+  {
+    "id": "part2-esm2-amp-2025",
+    "name": "ESM2_AMP: an interpretable framework for protein–protein interactions prediction and biological mechanism discovery",
+    "review_status": "source_checked",
+    "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC12392411/fullTextXML",
+    "version": "version of record",
+    "retrieved_at": "2026-09-17T07:56:12.275470+00:00",
+    "artifact_sha256": "8e7ad6efb72ca28d73037cdf465b0e62f99cd6d0ee4ca9eaf96a4c48da22fd6c"
+  },
+  {
+    "id": "part2-fujisan-2024",
+    "name": "Enhanced prediction of protein functional identity through the integration of sequence and structural features",
+    "review_status": "source_checked",
+    "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC11609699/fullTextXML",
+    "version": "PMC11609699.1",
+    "retrieved_at": "2026-09-17T07:56:15.783679+00:00",
+    "artifact_sha256": "db33e0542005ffae00cd644dfe697185b94c8823d5aee2768620a6db0c48e56f"
+  },
+  {
+    "id": "part2-genomeocean-2025",
+    "name": "GenomeOcean: An Efficient Genome Foundation Model Trained on Large-Scale Metagenomic Assemblies",
+    "review_status": "source_checked",
+    "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC11838515/fullTextXML",
+    "version": "preprint archived 2025-02-05",
+    "retrieved_at": "2026-09-17T07:56:18.823068+00:00",
+    "artifact_sha256": "3cc0df52522fccda23e3958f069c916b87ee50bb5c9a992fa37e25256546e145"
+  },
+  {
+    "id": "part2-lambda-prophage-2026",
+    "name": "LAMBDA: A Prophage Detection Benchmark for Genomic Language Models",
+    "review_status": "source_checked",
+    "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC13041943/fullTextXML",
+    "version": "PMC13041943.1",
+    "retrieved_at": "2026-09-17T07:56:21.006973+00:00",
+    "artifact_sha256": "22c2e218e87dce757907f6086a0e2ad37c13f785b34fff5bea7cfa1a6c276b16"
+  },
+  {
+    "id": "part2-lemur-magnet-2024",
+    "name": "Lightweight taxonomic profiling of long-read metagenomic datasets with Lemur and Magnet",
+    "review_status": "source_checked",
+    "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC11185576/fullTextXML",
+    "version": "PMC archival version PMC11185576.2",
+    "retrieved_at": "2026-09-17T07:56:16.880151+00:00",
+    "artifact_sha256": "4afb9195da447916eb6f733816e3640741c7ade08ea8920d205c3be7b3cce27a"
+  },
+  {
+    "id": "part2-massspecgym-arxiv-v1",
+    "name": "MassSpecGym: A benchmark for the discovery and identification of molecules",
+    "review_status": "source_checked",
+    "url": "https://arxiv.org/pdf/2410.23326v1",
+    "version": "2410.23326v1",
+    "retrieved_at": "2026-09-17T07:56:11.146650+00:00",
+    "artifact_sha256": "82176d50e8947c8b9baa2a0d91493f5680c0e4c7e25a2266ff7879f48a58c40c"
+  },
+  {
+    "id": "part2-prokbert-2024",
+    "name": "ProkBERT family: genomic language models for microbiome applications",
+    "review_status": "source_checked",
+    "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC10810988/fullTextXML",
+    "version": "PMC10810988.1",
+    "retrieved_at": "2026-09-17T07:56:14.890826+00:00",
+    "artifact_sha256": "8610e2a54aa877c8dc565a9cdb6e82099f284c5e0907a52cab18d994ea732436"
+  },
+  {
+    "id": "part2-transbind-2026",
+    "name": "Integrating protein and DNA embeddings for improving genome-wide transcription factor binding site prediction",
+    "review_status": "source_checked",
+    "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC13145115/fullTextXML",
+    "version": "version of record",
+    "retrieved_at": "2026-09-17T07:56:18.711445+00:00",
+    "artifact_sha256": "5d777f5925e941b7d087035d5d87e79ef75ae8d6456a770ffe8c527da566fee0"
+  },
+  {
+    "id": "part2-vaxign-esm-2024",
+    "name": "Enhancing Vaxign-DL for Vaccine Candidate Prediction with added ESM-Generated Features",
+    "review_status": "source_checked",
+    "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC11398487/fullTextXML",
+    "version": "preprint version in PMC",
+    "retrieved_at": "2026-09-17T07:56:15.123850+00:00",
+    "artifact_sha256": "b76fff917addd0e9ff8a2fc843496132ecf832d3ceef248e3edf2dbc78baab5f"
+  },
+  {
+    "id": "part2-viral-immune-mimicry-2025",
+    "name": "Protein Language Models Expose Viral Immune Mimicry",
+    "review_status": "source_checked",
+    "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC12474240/fullTextXML",
+    "version": "version of record",
+    "retrieved_at": "2026-09-17T07:56:17.192528+00:00",
+    "artifact_sha256": "15250af2f75f70e2b6a3725d00bc7e276ed9d2d4a54f0ae9d6eaabf6be13e4a1"
+  },
+  {
+    "id": "pc-mer-2024",
+    "name": "PC-mer: An Ultra-fast memory-efficient tool for metagenomics profiling and classification",
+    "review_status": "discovered",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11293629/",
+    "version": "version of record",
+    "retrieved_at": "2026-09-15T23:37:05Z",
+    "artifact_sha256": "0b0a225fa6f5f3ba41dffc7b320c91f47738301cf45835260eecaa03b704a097"
+  },
+  {
+    "id": "phylogpn-2025",
+    "name": "A Phylogenetic Approach to Genomic Language Modeling",
+    "review_status": "discovered",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11908359/",
+    "version": "preprint version in PMC",
+    "retrieved_at": "2026-09-15T23:33:26Z",
+    "artifact_sha256": "807f3a26cbfa9b5ce238d92164bd523302c67d1c5794b08273c51cca1acd4224"
+  },
+  {
+    "id": "plantcad2-2025",
+    "name": "PlantCAD2: A Long-Context DNA Language Model for Cross-Species Functional Annotation in Angiosperms",
+    "review_status": "discovered",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12425018/",
+    "version": "preprint version in PMC",
+    "retrieved_at": "2026-09-15T23:37:05Z",
+    "artifact_sha256": "4891955edb33af61e36dad51110574aa242e77c2df36429f100ff5a54bd8bd4b"
+  },
+  {
+    "id": "polya-glm-2025",
+    "name": "PolyA-GLM: A comprehensive framework for De novo polyadenylation site prediction using genome language models",
+    "review_status": "discovered",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12799945/",
+    "version": "journal full text in PMC",
+    "retrieved_at": "2026-09-15T23:33:26Z",
+    "artifact_sha256": "e9ebd53d88837ad8d457881ffee918d2734dcae87d3c5cd03135947b6cf5dbde"
+  },
+  {
+    "id": "prime-2026",
+    "name": "PRIME: An evaluation framework for protein representation inference and generalization in viral mutation space",
+    "review_status": "discovered",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13425921/",
+    "version": "version of record",
+    "retrieved_at": "2026-09-15T23:25:00Z",
+    "artifact_sha256": "f6aac4c25dd93026f87ce9a2e327c95faf4c3014d7f9ae04bb11f208ce047971"
+  },
+  {
+    "id": "prokbert-2024",
+    "name": "ProkBERT family: genomic language models for microbiome applications",
+    "review_status": "discovered",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10810988/",
+    "version": "PMC10810988.1",
+    "retrieved_at": "2026-09-15T23:25:00Z",
+    "artifact_sha256": "8610e2a54aa877c8dc565a9cdb6e82099f284c5e0907a52cab18d994ea732436"
+  },
+  {
+    "id": "protein-binding-sites-2023",
+    "name": "Learning the protein language of proteome-wide protein-protein binding sites via explainable ensemble deep learning",
+    "review_status": "discovered",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9849350/",
+    "version": "version of record",
+    "retrieved_at": "2026-09-15T23:37:05Z",
+    "artifact_sha256": "491711aa7186e74bf33f6d601c4ea6a8f565e770938fe1f91a0cd347b8f06f3f"
+  },
+  {
+    "id": "proteingym-2023",
+    "name": "ProteinGym: Large-Scale Benchmarks for Protein Design and Fitness Prediction",
+    "review_status": "discovered",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10723403/",
+    "version": "PMC10723403.1",
+    "retrieved_at": "2026-09-15T23:25:00Z",
+    "artifact_sha256": "4519641f13271bdd09b166e7d93232f22542489bc52a25b5a1628c3df8badce1"
+  },
+  {
+    "id": "pst-2025",
+    "name": "Endowing protein language models with structural knowledge",
+    "review_status": "discovered",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12603367/",
+    "version": "PMC12603367.1",
+    "retrieved_at": "2026-09-15T23:25:00Z",
+    "artifact_sha256": "c21ad593de589a7188ca86a8b7ce617e301d48dd939ecc7da03efb22cbe8d7a3"
+  },
+  {
+    "id": "quadruplex-llm-benchmark-2025",
+    "name": "Benchmarking DNA large language models on quadruplexes",
+    "review_status": "discovered",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11953744/",
+    "version": "version of record",
+    "retrieved_at": "2026-09-15T23:25:00Z",
+    "artifact_sha256": "c3d7c6d068d3c11a9c8255a932197ece3804d94e8b2d4f858bea373a1b6eb32f"
+  },
+  {
+    "id": "r3design-2025",
+    "name": "R3Design: deep tertiary structure-based RNA sequence design and beyond",
+    "review_status": "discovered",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11685104/",
+    "version": "PMC archival version PMC11685104.1",
+    "retrieved_at": "2026-09-15T23:37:05Z",
+    "artifact_sha256": "b49c9ad846e46b11b240aace8e6bfaf953b842df166b69aee4843c02e9349779"
+  },
+  {
+    "id": "rewire-local-20260920-audit-source-flip2-composition",
+    "name": "Amino-acid composition + fixed ridge: automated execution audit",
+    "review_status": "source_checked",
+    "url": "https://github.com/rewire-bio/rewire-benchmarks/blob/ca73fa47136d182f2d4ddb083d084712198fc0e2/research/local-runs-2026-09-20/flip2-composition/audit.json",
+    "version": "ca73fa47136d182f2d4ddb083d084712198fc0e2",
+    "retrieved_at": "2026-09-20T20:54:03Z",
+    "artifact_sha256": "11ef7cddae136cf1f1a104eeb11701d690303c5873d5f705a08ae59c3d446826"
+  },
+  {
+    "id": "rewire-local-20260920-audit-source-flip2-train-mean",
+    "name": "Training-mean control: automated execution audit",
+    "review_status": "source_checked",
+    "url": "https://github.com/rewire-bio/rewire-benchmarks/blob/ca73fa47136d182f2d4ddb083d084712198fc0e2/research/local-runs-2026-09-20/flip2-train-mean/audit.json",
+    "version": "ca73fa47136d182f2d4ddb083d084712198fc0e2",
+    "retrieved_at": "2026-09-20T20:54:03Z",
+    "artifact_sha256": "9b3ed3267a1b8557bb67214594db1fa0044bd6d6ff41b57324b8d603a88ad974"
+  },
+  {
+    "id": "rewire-local-20260920-audit-source-mrnabench-composition",
+    "name": "Sequence composition + RidgeCV: automated execution audit",
+    "review_status": "source_checked",
+    "url": "https://github.com/rewire-bio/rewire-benchmarks/blob/ca73fa47136d182f2d4ddb083d084712198fc0e2/research/local-runs-2026-09-20/mrnabench-composition/audit.json",
+    "version": "ca73fa47136d182f2d4ddb083d084712198fc0e2",
+    "retrieved_at": "2026-09-20T20:54:03Z",
+    "artifact_sha256": "9f50fa70c15eeb38d2266015f766ac800dad4b2cc5e32202fb91d52b6f6670df"
+  },
+  {
+    "id": "rewire-local-20260920-audit-source-mrnabench-train-mean",
+    "name": "Training-mean control: automated execution audit",
+    "review_status": "source_checked",
+    "url": "https://github.com/rewire-bio/rewire-benchmarks/blob/ca73fa47136d182f2d4ddb083d084712198fc0e2/research/local-runs-2026-09-20/mrnabench-train-mean/audit.json",
+    "version": "ca73fa47136d182f2d4ddb083d084712198fc0e2",
+    "retrieved_at": "2026-09-20T20:54:03Z",
+    "artifact_sha256": "9aad168bcc131d8beb9fe152fe8550078ae03452128e339171761b8ac5911984"
+  },
+  {
+    "id": "rewire-local-20260920-instructions-flip2",
+    "name": "FLIP2 Rhomax by_wild_type: reproduction instructions",
+    "review_status": "source_checked",
+    "url": "https://github.com/rewire-bio/rewire-benchmarks/blob/ca73fa47136d182f2d4ddb083d084712198fc0e2/research/local-runs-2026-09-20/README.md",
+    "version": "ca73fa47136d182f2d4ddb083d084712198fc0e2",
+    "retrieved_at": "2026-09-20T20:54:03Z",
+    "artifact_sha256": "75f50703210dc556d77fdfe8f1d28c3200121b5b78c5c6592a096d928b4ff7cc"
+  },
+  {
+    "id": "rewire-local-20260920-instructions-mrnabench",
+    "name": "mRNABench Sample designed MRL: reproduction instructions",
+    "review_status": "source_checked",
+    "url": "https://github.com/rewire-bio/rewire-benchmarks/blob/ca73fa47136d182f2d4ddb083d084712198fc0e2/research/local-runs-2026-09-20/README.md",
+    "version": "ca73fa47136d182f2d4ddb083d084712198fc0e2",
+    "retrieved_at": "2026-09-20T20:54:03Z",
+    "artifact_sha256": "75f50703210dc556d77fdfe8f1d28c3200121b5b78c5c6592a096d928b4ff7cc"
+  },
+  {
+    "id": "rewire-local-20260920-instructions-proteingym",
+    "name": "ProteinGym v1.3 AMFR substitution assay: reproduction instructions",
+    "review_status": "source_checked",
+    "url": "https://github.com/rewire-bio/rewire-benchmarks/blob/ca73fa47136d182f2d4ddb083d084712198fc0e2/research/local-runs-2026-09-20/proteingym-esm2/README.md",
+    "version": "ca73fa47136d182f2d4ddb083d084712198fc0e2",
+    "retrieved_at": "2026-09-20T20:54:03Z",
+    "artifact_sha256": "5acb7b2769aae657d48d23c282319e7c69b8ed0424b3c02c875637df7f8dd9fb"
+  },
+  {
+    "id": "rewire-local-20260920-source-flip2-composition",
+    "name": "Amino-acid composition + fixed ridge: local execution report (20 September 2026)",
+    "review_status": "source_checked",
+    "url": "https://github.com/rewire-bio/rewire-benchmarks/blob/ca73fa47136d182f2d4ddb083d084712198fc0e2/research/local-runs-2026-09-20/flip2-composition/report.json",
+    "version": "ca73fa47136d182f2d4ddb083d084712198fc0e2",
+    "retrieved_at": "2026-09-20T20:54:03Z",
+    "artifact_sha256": "abd08d3f493428d06f43740c94e268575d755560e72120c73b294127acb395e6"
+  },
+  {
+    "id": "rewire-local-20260920-source-flip2-train-mean",
+    "name": "Training-mean control: local execution report (20 September 2026)",
+    "review_status": "source_checked",
+    "url": "https://github.com/rewire-bio/rewire-benchmarks/blob/ca73fa47136d182f2d4ddb083d084712198fc0e2/research/local-runs-2026-09-20/flip2-train-mean/report.json",
+    "version": "ca73fa47136d182f2d4ddb083d084712198fc0e2",
+    "retrieved_at": "2026-09-20T20:54:03Z",
+    "artifact_sha256": "eb89260f6e138bb9ae2fdf3b882a87fdf8aeabd54a0ac6f17a73f5671c96b4d8"
+  },
+  {
+    "id": "rewire-local-20260920-source-mrnabench-composition",
+    "name": "Sequence composition + RidgeCV: local execution report (20 September 2026)",
+    "review_status": "source_checked",
+    "url": "https://github.com/rewire-bio/rewire-benchmarks/blob/ca73fa47136d182f2d4ddb083d084712198fc0e2/research/local-runs-2026-09-20/mrnabench-composition/report.json",
+    "version": "ca73fa47136d182f2d4ddb083d084712198fc0e2",
+    "retrieved_at": "2026-09-20T20:54:03Z",
+    "artifact_sha256": "8b68dfe5725bf5d8c108265039e3787f4b3b55986eab8a430082c4d446a4f960"
+  },
+  {
+    "id": "rewire-local-20260920-source-mrnabench-train-mean",
+    "name": "Training-mean control: local execution report (20 September 2026)",
+    "review_status": "source_checked",
+    "url": "https://github.com/rewire-bio/rewire-benchmarks/blob/ca73fa47136d182f2d4ddb083d084712198fc0e2/research/local-runs-2026-09-20/mrnabench-train-mean/report.json",
+    "version": "ca73fa47136d182f2d4ddb083d084712198fc0e2",
+    "retrieved_at": "2026-09-20T20:54:03Z",
+    "artifact_sha256": "c036d9fa75b6ba4d5c65d31cd575ee2bfc357beec3ca7e6c80f07e3128a04e71"
+  },
+  {
+    "id": "rewire-local-20260920-source-proteingym-esm2",
+    "name": "ESM-2 8M masked-marginal scoring: local execution report (20 September 2026)",
+    "review_status": "source_checked",
+    "url": "https://github.com/rewire-bio/rewire-benchmarks/blob/ca73fa47136d182f2d4ddb083d084712198fc0e2/research/local-runs-2026-09-20/proteingym-esm2/report.json",
+    "version": "ca73fa47136d182f2d4ddb083d084712198fc0e2",
+    "retrieved_at": "2026-09-20T20:54:03Z",
+    "artifact_sha256": "6a14b3866141d5779c76da8071d85c73b7cce0dc4e101c93122706873e847d26"
+  },
+  {
+    "id": "rewire-mfass-v2-baseline-upstream-source",
+    "name": "MFASS v2 corrected k-mer baseline: pinned upstream result JSON",
+    "review_status": "source_checked",
+    "url": "https://raw.githubusercontent.com/rewire-bio/rewire-benchmarks/bee9133b83f3aedaf2bbb9013f1875515845607e/benchmarks/mfass/results/baseline-kmer-position-v2.json",
+    "version": "bee9133b83f3aedaf2bbb9013f1875515845607e",
+    "retrieved_at": "2026-09-19",
+    "artifact_sha256": "9a0b78674cc714177fec6e8c487588d6186d4fe93d6d7dbcb48bed6858885e15"
+  },
+  {
+    "id": "rewire-mfass-v2-source",
+    "name": "MFASS v2 pinned rewire artifacts",
+    "review_status": "source_checked",
+    "url": "https://github.com/timini/rewire-benchmarks/tree/bee9133b83f3aedaf2bbb9013f1875515845607e",
+    "version": "bee9133b83f3aedaf2bbb9013f1875515845607e",
+    "retrieved_at": "2026-09-16T10:50:02Z",
+    "artifact_sha256": "a3af693afc070b39b334e359beed7f9affd76f7456a4f9264e2d1e9dab26111d"
+  },
+  {
+    "id": "rlsite-rna-binding-2025",
+    "name": "RNA language model and graph attention network for RNA and small molecule binding sites prediction",
+    "review_status": "discovered",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12417085/",
+    "version": "journal full text in PMC",
+    "retrieved_at": "2026-09-15T23:33:26Z",
+    "artifact_sha256": "a50f344e253162ae43f51d7120cfb35a1d0f6114fd8176d760aceb6d05fd95bd"
+  },
+  {
+    "id": "rnaret-2026",
+    "name": "Retentive Network promotes efficient RNA language modeling of long sequences",
+    "review_status": "discovered",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13111708/",
+    "version": "journal full text in PMC",
+    "retrieved_at": "2026-09-15T23:33:26Z",
+    "artifact_sha256": "e970e7322e07fb3c9d12efd315691cc5de5575a3f2616f4b788614c8c706dd0b"
+  },
+  {
+    "id": "run-doc-mfass-pyproject-toml-68d1ee53",
+    "name": "rewire-bio/rewire-benchmarks / benchmarks/mfass/pyproject.toml",
+    "review_status": "source_checked",
+    "url": "https://github.com/rewire-bio/rewire-benchmarks/blob/68d1ee53a0fcd1104d9f427d68dedffdccf2c47f/benchmarks/mfass/pyproject.toml",
+    "version": "Git commit 68d1ee53a0fcd1104d9f427d68dedffdccf2c47f",
+    "retrieved_at": "2026-09-17T09:35:03.963911+00:00",
+    "artifact_sha256": "87857857a824fe69314e897d1f8c95a2d8f4036d6a08680cc4dc7b339509954d"
+  },
+  {
+    "id": "run-doc-mfass-readme-md-68d1ee53",
+    "name": "rewire-bio/rewire-benchmarks / benchmarks/mfass/README.md",
+    "review_status": "source_checked",
+    "url": "https://github.com/rewire-bio/rewire-benchmarks/blob/68d1ee53a0fcd1104d9f427d68dedffdccf2c47f/benchmarks/mfass/README.md",
+    "version": "Git commit 68d1ee53a0fcd1104d9f427d68dedffdccf2c47f",
+    "retrieved_at": "2026-09-17T09:35:03.736482+00:00",
+    "artifact_sha256": "62a9381484fd2360767e78b114d9aa6cd8a4fc6487a981881a4c4999f0ab1b23"
+  },
+  {
+    "id": "runner-recipe-docs-hpc-md-f80cef7f",
+    "name": "rewirebench: Containers and HPC",
+    "review_status": "source_checked",
+    "url": "https://github.com/rewire-bio/rewire-benchmarks/blob/f80cef7f818bec33e51b7f43ad499eb5078c8d87/docs/hpc.md",
+    "version": "f80cef7f818bec33e51b7f43ad499eb5078c8d87",
+    "retrieved_at": "2026-09-17",
+    "artifact_sha256": "b839ff35d6fbad6130e529bcbf42340ae405d91e874f3011fc6fa7179ad63b9b"
+  },
+  {
+    "id": "runner-recipe-docs-mfass-md-f80cef7f",
+    "name": "rewirebench: MFASS guide",
+    "review_status": "source_checked",
+    "url": "https://github.com/rewire-bio/rewire-benchmarks/blob/f80cef7f818bec33e51b7f43ad499eb5078c8d87/docs/mfass.md",
+    "version": "f80cef7f818bec33e51b7f43ad499eb5078c8d87",
+    "retrieved_at": "2026-09-17",
+    "artifact_sha256": "53f2d58c152be488bf1c7a322a4a09574e0c87192e9eac19aa1f780f8eb6559c"
+  },
+  {
+    "id": "runner-recipe-docs-proteingym-md-f80cef7f",
+    "name": "rewirebench: ProteinGym guide",
+    "review_status": "source_checked",
+    "url": "https://github.com/rewire-bio/rewire-benchmarks/blob/f80cef7f818bec33e51b7f43ad499eb5078c8d87/docs/proteingym.md",
+    "version": "f80cef7f818bec33e51b7f43ad499eb5078c8d87",
+    "retrieved_at": "2026-09-17",
+    "artifact_sha256": "d2b1fc009acc590b82ca125d886f3d52b07c2f36bbe0e9cb0d30776618166b5f"
+  },
+  {
+    "id": "runner-recipe-docs-sdk-md-f80cef7f",
+    "name": "rewirebench: Library guide",
+    "review_status": "source_checked",
+    "url": "https://github.com/rewire-bio/rewire-benchmarks/blob/f80cef7f818bec33e51b7f43ad499eb5078c8d87/docs/sdk.md",
+    "version": "f80cef7f818bec33e51b7f43ad499eb5078c8d87",
+    "retrieved_at": "2026-09-17",
+    "artifact_sha256": "798cc447f50b7a3c84e67d8eabe1a0dc148be3ae2ec2c9986f0181494c14da45"
+  },
+  {
+    "id": "runner-recipe-packages-rewirebench-src-rewirebench-adapters-esm-py-f80cef7f",
+    "name": "rewirebench: ESM-2 adapter code",
+    "review_status": "source_checked",
+    "url": "https://github.com/rewire-bio/rewire-benchmarks/blob/f80cef7f818bec33e51b7f43ad499eb5078c8d87/packages/rewirebench/src/rewirebench/adapters/esm.py",
+    "version": "f80cef7f818bec33e51b7f43ad499eb5078c8d87",
+    "retrieved_at": "2026-09-17",
+    "artifact_sha256": "4ff38cfbb91d718b52a44da53aa5594fe73d9d1d4d0ce43724807597c3929889"
+  },
+  {
+    "id": "runner-recipe-packages-rewirebench-src-rewirebench-adapters-mfass-py-f80cef7f",
+    "name": "rewirebench: MFASS adapter code",
+    "review_status": "source_checked",
+    "url": "https://github.com/rewire-bio/rewire-benchmarks/blob/f80cef7f818bec33e51b7f43ad499eb5078c8d87/packages/rewirebench/src/rewirebench/adapters/mfass.py",
+    "version": "f80cef7f818bec33e51b7f43ad499eb5078c8d87",
+    "retrieved_at": "2026-09-17",
+    "artifact_sha256": "5dc807e1274aa69d81ee2040cccaf17cbd36c9a5a01dfa1268e1a339654a6ad6"
+  },
+  {
+    "id": "runner-recipe-packages-rewirebench-src-rewirebench-protocols-mfass-py-f80cef7f",
+    "name": "rewirebench: MFASS protocol code",
+    "review_status": "source_checked",
+    "url": "https://github.com/rewire-bio/rewire-benchmarks/blob/f80cef7f818bec33e51b7f43ad499eb5078c8d87/packages/rewirebench/src/rewirebench/protocols/mfass.py",
+    "version": "f80cef7f818bec33e51b7f43ad499eb5078c8d87",
+    "retrieved_at": "2026-09-17",
+    "artifact_sha256": "6d090a6b1622fe571b8c48ecc213b9b6adf3cbf06cc2abc2d3bfc891a3f8ed93"
+  },
+  {
+    "id": "runner-recipe-packages-rewirebench-src-rewirebench-protocols-proteingym-py-f80cef7f",
+    "name": "rewirebench: ProteinGym scoring code",
+    "review_status": "source_checked",
+    "url": "https://github.com/rewire-bio/rewire-benchmarks/blob/f80cef7f818bec33e51b7f43ad499eb5078c8d87/packages/rewirebench/src/rewirebench/protocols/proteingym.py",
+    "version": "f80cef7f818bec33e51b7f43ad499eb5078c8d87",
+    "retrieved_at": "2026-09-17",
+    "artifact_sha256": "2d62959db5611b1c7c1c7e8e44056e96c90b3f52975b2080bc36da576f0ac871"
+  },
+  {
+    "id": "scalr-2025",
+    "name": "scaLR: a low-resource deep neural network-based platform for single cell analysis and biomarker discovery",
+    "review_status": "discovered",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12121358/",
+    "version": "version of record",
+    "retrieved_at": "2026-09-15T23:29:32Z",
+    "artifact_sha256": "829afab6a4e30997c608745d3eb280105b8c5c4e601020ffdc55c866144527ca"
+  },
+  {
+    "id": "scatac-llmda-2026",
+    "name": "Cell type annotation for scATAC-seq via DNA large language model and graph domain adaptation",
+    "review_status": "discovered",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13132462/",
+    "version": "version of record",
+    "retrieved_at": "2026-09-15T23:29:32Z",
+    "artifact_sha256": "f1cdc7d54c6b2d491e4a74a44a1188a3679c555262c988e95a1c0de4614fe3cb"
+  },
+  {
+    "id": "scelmo-2025",
+    "name": "scELMo: Embeddings from Language Models are Good Learners for Single-cell Data Analysis",
+    "review_status": "discovered",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12393277/",
+    "version": "preprint archived 2025-08-23",
+    "retrieved_at": "2026-09-15T23:25:00Z",
+    "artifact_sha256": "ef75f0d63a567f5e9d7132fd847f44838a82a9741ae55323437e1d1812d86316"
+  },
+  {
+    "id": "scregnet-2025",
+    "name": "Prediction of Gene Regulatory Connections with Joint Single-Cell Foundation Models and Graph-Based Learning",
+    "review_status": "discovered",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11838224/",
+    "version": "PMC11838224.2",
+    "retrieved_at": "2026-09-15T23:25:00Z",
+    "artifact_sha256": "65b3272d47bb9c4ee1e7a965169bef63add9dbeb31508d4076e5145b761af4ec"
+  },
+  {
+    "id": "scxdr-2026",
+    "name": "scXDR: drug response prediction across single-cell datasets via heterogeneous network transfer learning",
+    "review_status": "discovered",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12859067/",
+    "version": "PMC archival version PMC12859067.1",
+    "retrieved_at": "2026-09-15T23:29:32Z",
+    "artifact_sha256": "47b5925e9887d87fc8288d29288802b1d67d54f064d913151df92171f7c68d33"
+  },
+  {
+    "id": "single-cell-aging-probes-2026",
+    "name": "Inflammation-linked aging signals in frozen single-cell foundation models: donor-aware detection and robustness testing",
+    "review_status": "discovered",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13407579/",
+    "version": "PMC archival version PMC13407579.1",
+    "retrieved_at": "2026-09-15T23:29:32Z",
+    "artifact_sha256": "d6cfb13933ceefed630954f804e7dc979b747bc4aec4c8c5518232f25772736a"
+  },
+  {
+    "id": "single-cell-peft-2024",
+    "name": "Parameter-Efficient Fine-Tuning Enhances Adaptation of Single Cell Large Language Model for Cell Type Identification",
+    "review_status": "discovered",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10862733/",
+    "version": "preprint archived 2024-01-30",
+    "retrieved_at": "2026-09-15T23:25:00Z",
+    "artifact_sha256": "77a4a859010259eadf2187465db6ab385efa4927a5eadb95c1e01991044c283f"
+  },
+  {
+    "id": "single-cell-residual-geometry-2026",
+    "name": "Residual-stream geometry of single-cell foundation models carries incremental gene-regulatory signal across tissues",
+    "review_status": "discovered",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13418759/",
+    "version": "version of record",
+    "retrieved_at": "2026-09-15T23:37:05Z",
+    "artifact_sha256": "77546faec51cfb5c78b73c5943f940c4e0097d130b1ddde4ab8287b507b36df6"
+  },
+  {
+    "id": "source-alphagenome-nature2026-supplementary-methods",
+    "name": "AlphaGenome Nature 2026 supplementary methods",
+    "review_status": "source_checked",
+    "url": "https://media.springernature.com/original/springer-static/esm/art%3A10.1038%2Fs41586-025-10014-0/MediaObjects/41586_2025_10014_MOESM1_ESM.pdf",
+    "version": "Supplement to Nature version of record, 28 January 2026; content hash pinned",
+    "retrieved_at": "2026-09-17T06:37:01.778972+00:00",
+    "artifact_sha256": "86b2e6a07543e3c201e2e157a3e9c6eb5235ff13eb8a5224f6fcb6fe1808d4c0"
+  },
+  {
+    "id": "source-alphagenome-nature2026-tables",
+    "name": "AlphaGenome Nature 2026 supplementary comparison tables",
+    "review_status": "source_checked",
+    "url": "https://media.springernature.com/original/springer-static/esm/art%3A10.1038%2Fs41586-025-10014-0/MediaObjects/41586_2025_10014_MOESM3_ESM.xlsx",
+    "version": "Nature version of record, 28 January 2026",
+    "retrieved_at": "2026-09-17T06:31:06.887921+00:00",
+    "artifact_sha256": "833cb78b6ae6fe39415cfff296ac00c48d800326139f13eb307531a1cc133154"
+  },
+  {
+    "id": "source-beacon-arxiv-2406-10391",
+    "name": "BEACON: Benchmark for Comprehensive RNA Tasks and Language Models (arXiv:2406.10391v2)",
+    "review_status": "source_checked",
+    "url": "https://arxiv.org/abs/2406.10391",
+    "version": "v2, 12 December 2024",
+    "retrieved_at": "2026-09-18",
+    "artifact_sha256": "1370d75fe591bb8f994bc67f100a1a3fd557a62b9edb962b21f2fb038e9dea16"
+  },
+  {
+    "id": "spin-protein-function-2026",
+    "name": "Scaling the profile of life by function with SPIN",
+    "review_status": "discovered",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12970593/",
+    "version": "journal full text in PMC",
+    "retrieved_at": "2026-09-15T23:33:26Z",
+    "artifact_sha256": "9701843e93bf7fa3ead71e19693fb07d483f1022379871adfb04486783722a9d"
+  },
+  {
+    "id": "src-discovery-aertslab-genie3",
+    "name": "aertslab/GENIE3 official source",
+    "review_status": "source_checked",
+    "url": "https://github.com/aertslab/GENIE3/blob/54bc15636322e8773357de6e0b6683c6bc802825/README.md",
+    "version": "54bc15636322e8773357de6e0b6683c6bc802825",
+    "retrieved_at": "2026-09-16T10:31:32.390263+00:00",
+    "artifact_sha256": "045aa63715acf615327d45ff42a897e77fa6d4b88084d2ad4e2ea836eb5fb48a"
+  },
+  {
+    "id": "src-discovery-aertslab-grnboost",
+    "name": "aertslab/GRNBoost official source",
+    "review_status": "source_checked",
+    "url": "https://github.com/aertslab/GRNBoost/blob/26c836b3dcbb85852d3c6f4b8340e8655434da02/README.md",
+    "version": "26c836b3dcbb85852d3c6f4b8340e8655434da02",
+    "retrieved_at": "2026-09-16T10:30:28.363182+00:00",
+    "artifact_sha256": "f2befd99acf59576a22b8a44abd2345e8ed7304cf470609f27d311e08ed3f066"
+  },
+  {
+    "id": "src-discovery-aqlaboratory-genie3",
+    "name": "aqlaboratory/genie3 official source",
+    "review_status": "source_checked",
+    "url": "https://github.com/aqlaboratory/genie3/blob/d77ae5ac04212ff1e8b29b585859a3244c614804/README.md",
+    "version": "d77ae5ac04212ff1e8b29b585859a3244c614804",
+    "retrieved_at": "2026-09-16T10:31:33.087504+00:00",
+    "artifact_sha256": "50a634fe3236b6272b70928ac41bdebd4a230467b151f59597742ccd56ac8909"
+  },
+  {
+    "id": "src-discovery-aqlaboratory-openfold",
+    "name": "aqlaboratory/openfold official source",
+    "review_status": "source_checked",
+    "url": "https://github.com/aqlaboratory/openfold/blob/be2ec1841f16c966c65ae0e7599ebbadc725757d/README.md",
+    "version": "be2ec1841f16c966c65ae0e7599ebbadc725757d",
+    "retrieved_at": "2026-09-16T10:30:25.490370+00:00",
+    "artifact_sha256": "985b6dc09144ea14378dd2c543b288e8d2a05cb342a77cbc56b7a39c5170f638"
+  },
+  {
+    "id": "src-discovery-arcinstitute-evo2",
+    "name": "ArcInstitute/evo2 official source",
+    "review_status": "source_checked",
+    "url": "https://github.com/ArcInstitute/evo2/blob/53f195997257c56c00e5ef8d33a54f5baad143a6/README.md",
+    "version": "53f195997257c56c00e5ef8d33a54f5baad143a6",
+    "retrieved_at": "2026-09-16T10:30:24.685703+00:00",
+    "artifact_sha256": "58787c8ef5cb4fba4c04322a4ceb9f174e2233ec22d4193622fb6bc67d651d89"
+  },
+  {
+    "id": "src-discovery-arcinstitute-state",
+    "name": "ArcInstitute/state official source",
+    "review_status": "source_checked",
+    "url": "https://github.com/ArcInstitute/state/blob/9bbfe78a434a55205e4de834e1ea99f85f7a3add/README.md",
+    "version": "9bbfe78a434a55205e4de834e1ea99f85f7a3add",
+    "retrieved_at": "2026-09-16T10:31:32.302509+00:00",
+    "artifact_sha256": "568c0b4f9d93374f7ebc7467c226fdde0050abfd60147bce0b316163bf4199d6"
+  },
+  {
+    "id": "src-discovery-biobakery-humann",
+    "name": "biobakery/humann official source",
+    "review_status": "source_checked",
+    "url": "https://github.com/biobakery/humann/blob/e07b3a34d0b94c09a8ac5d28ff95009611178be2/readme.md",
+    "version": "e07b3a34d0b94c09a8ac5d28ff95009611178be2",
+    "retrieved_at": "2026-09-16T10:30:28.315898+00:00",
+    "artifact_sha256": "96260519b594ae22cba9f28d1f64622de001f2abf11d406c9da572bfaf145727"
+  },
+  {
+    "id": "src-discovery-biobakery-metaphlan",
+    "name": "biobakery/MetaPhlAn official source",
+    "review_status": "source_checked",
+    "url": "https://github.com/biobakery/MetaPhlAn/blob/424f3e6e30618266404353e1083c6405a9f02f48/README.md",
+    "version": "424f3e6e30618266404353e1083c6405a9f02f48",
+    "retrieved_at": "2026-09-16T10:30:27.980580+00:00",
+    "artifact_sha256": "ce491bb2d686145e0773c685d0d02e8a5fabc7daaea60eef07cf54298561fba7"
+  },
+  {
+    "id": "src-discovery-bojarlab-glycowork",
+    "name": "BojarLab/glycowork official source",
+    "review_status": "source_checked",
+    "url": "https://github.com/BojarLab/glycowork/blob/3d63f1ec25c850da3cde4d25cb602d50b6b5732b/README.md",
+    "version": "3d63f1ec25c850da3cde4d25cb602d50b6b5732b",
+    "retrieved_at": "2026-09-16T10:30:27.678733+00:00",
+    "artifact_sha256": "4d907a6723f3f56b14b13e35eeb0833ddf9a2f3512a1fafd07d79259105b264c"
+  },
+  {
+    "id": "src-discovery-bowang-lab-scgpt",
+    "name": "bowang-lab/scGPT official source",
+    "review_status": "source_checked",
+    "url": "https://github.com/bowang-lab/scGPT/blob/cebd6fae655b9c585a4807daa3ac31bb764f06b4/README.md",
+    "version": "cebd6fae655b9c585a4807daa3ac31bb764f06b4",
+    "retrieved_at": "2026-09-16T10:30:26.283123+00:00",
+    "artifact_sha256": "b0503e8ca789f19f1fc2350c5aaf57b1b323bbae43b354655231b5f4a1586c83"
+  },
+  {
+    "id": "src-discovery-calico-basenji",
+    "name": "calico/basenji official source",
+    "review_status": "source_checked",
+    "url": "https://github.com/calico/basenji/blob/06ce5d387e20b47184d05433b3983163c5f923cd/README.md",
+    "version": "06ce5d387e20b47184d05433b3983163c5f923cd",
+    "retrieved_at": "2026-09-16T10:30:27.117271+00:00",
+    "artifact_sha256": "b77d93b4ff352874ecd21e074357b0bb7f4f09e7bfd53d8f7f152d05063c30c1"
+  },
+  {
+    "id": "src-discovery-cami-challenge-camisim",
+    "name": "CAMI-challenge/CAMISIM official source",
+    "review_status": "source_checked",
+    "url": "https://github.com/CAMI-challenge/CAMISIM/blob/7ce6013c6d5a0fac8ba8a80e52a03560d3546fa6/README.md",
+    "version": "7ce6013c6d5a0fac8ba8a80e52a03560d3546fa6",
+    "retrieved_at": "2026-09-16T10:30:22.965882+00:00",
+    "artifact_sha256": "ec5309bf16daab6c9a0adb393b191a3e716b9c627834cf3e08655c250a63da61"
+  },
+  {
+    "id": "src-discovery-ccsb-scripps-autodock-vina",
+    "name": "ccsb-scripps/AutoDock-Vina official source",
+    "review_status": "source_checked",
+    "url": "https://github.com/ccsb-scripps/AutoDock-Vina/blob/3c65c0b3e6c2c1d183f6a175ecb65e3c5ba91645/README.md",
+    "version": "3c65c0b3e6c2c1d183f6a175ecb65e3c5ba91645",
+    "retrieved_at": "2026-09-16T10:30:28.428792+00:00",
+    "artifact_sha256": "4f1728521ab79de1c33e1cf8605b31037effed5de2a2fbbccba58d7b0a005ae7"
+  },
+  {
+    "id": "src-discovery-dauparas-proteinmpnn",
+    "name": "dauparas/ProteinMPNN official source",
+    "review_status": "source_checked",
+    "url": "https://github.com/dauparas/ProteinMPNN/blob/8907e6671bfbfc92303b5f79c4b5e6ce47cdef57/README.md",
+    "version": "8907e6671bfbfc92303b5f79c4b5e6ce47cdef57",
+    "retrieved_at": "2026-09-16T10:30:25.524269+00:00",
+    "artifact_sha256": "772ebe52d2ba5100a28a888910c6f0c9fd4ded1d1372e3d89f6f1c48707e0365"
+  },
+  {
+    "id": "src-discovery-derrickwood-kraken2",
+    "name": "DerrickWood/kraken2 official source",
+    "review_status": "source_checked",
+    "url": "https://github.com/DerrickWood/kraken2/blob/8c190b1b668825935dbf6dee5f969227dc8269bb/README.md",
+    "version": "8c190b1b668825935dbf6dee5f969227dc8269bb",
+    "retrieved_at": "2026-09-16T10:30:27.907349+00:00",
+    "artifact_sha256": "2ea33af266b4268a55fd750d0f3265cd3165d61f6be375c5ea3b3ff5c58c7c8c"
+  },
+  {
+    "id": "src-discovery-evolutionaryscale-esm",
+    "name": "evolutionaryscale/esm official source",
+    "review_status": "source_checked",
+    "url": "https://github.com/evolutionaryscale/esm/blob/bf343ba264b650dff7a073643725f9aaa1fdbe8d/README.md",
+    "version": "bf343ba264b650dff7a073643725f9aaa1fdbe8d",
+    "retrieved_at": "2026-09-16T10:30:25.632814+00:00",
+    "artifact_sha256": "74a897f0e97e3d4256f7cff11424dd264df4daaf8cabd9a6fb74b661421de038"
+  },
+  {
+    "id": "src-discovery-facebookresearch-esm",
+    "name": "facebookresearch/esm official source",
+    "review_status": "source_checked",
+    "url": "https://github.com/facebookresearch/esm/blob/2b369911bb5b4b0dda914521b9475cad1656b2ac/README.md",
+    "version": "2b369911bb5b4b0dda914521b9475cad1656b2ac",
+    "retrieved_at": "2026-09-16T10:30:24.844614+00:00",
+    "artifact_sha256": "8b273c21a322fc9473d1b68d0dd40c8166ab2f89e4a190aa26ca87251b97cba9"
+  },
+  {
+    "id": "src-discovery-google-deepmind-alphafold3",
+    "name": "google-deepmind/alphafold3 official source",
+    "review_status": "source_checked",
+    "url": "https://github.com/google-deepmind/alphafold3/blob/c0f97eda2f1f482fd94d3a38bece18c7069b4a5c/README.md",
+    "version": "c0f97eda2f1f482fd94d3a38bece18c7069b4a5c",
+    "retrieved_at": "2026-09-16T10:30:25.220155+00:00",
+    "artifact_sha256": "cc16ba436ea8a967c764ac034a655d632b4c1ef8b4065868b8d07914c7cb88be"
+  },
+  {
+    "id": "src-discovery-illumina-spliceai",
+    "name": "illumina/SpliceAI official source",
+    "review_status": "source_checked",
+    "url": "https://github.com/illumina/SpliceAI/blob/03f42437aaf56dc5dfd822c4ccee5aec1a705079/README.md",
+    "version": "03f42437aaf56dc5dfd822c4ccee5aec1a705079",
+    "retrieved_at": "2026-09-16T10:30:24.355879+00:00",
+    "artifact_sha256": "8e5203afe343100832391e6155c7112f15cfe60bf0c21681d64e3420f854ef4d"
+  },
+  {
+    "id": "src-discovery-instadeepai-nucleotide-transformer",
+    "name": "instadeepai/nucleotide-transformer official source",
+    "review_status": "source_checked",
+    "url": "https://github.com/instadeepai/nucleotide-transformer/blob/2dc37b86e16a6970fbc731751f7719d9f676f7f9/README.md",
+    "version": "2dc37b86e16a6970fbc731751f7719d9f676f7f9",
+    "retrieved_at": "2026-09-16T10:30:27.121929+00:00",
+    "artifact_sha256": "9f51bbb20c4c5c36e77fb03ca1c5c36236e287c48a1ee31f53150545d421ec25"
+  },
+  {
+    "id": "src-discovery-jwohlwend-boltz",
+    "name": "jwohlwend/boltz official source",
+    "review_status": "source_checked",
+    "url": "https://github.com/jwohlwend/boltz/blob/b1ebfc46ecf57f5414e0d1a6f9027bbb122c53bc/README.md",
+    "version": "b1ebfc46ecf57f5414e0d1a6f9027bbb122c53bc",
+    "retrieved_at": "2026-09-16T10:30:25.416237+00:00",
+    "artifact_sha256": "79149435313841e6f9cc0c8b581259f3952a2469cbe6f9a733f7143b557025c2"
+  },
+  {
+    "id": "src-discovery-kundajelab-chrombpnet",
+    "name": "kundajelab/chrombpnet official source",
+    "review_status": "source_checked",
+    "url": "https://github.com/kundajelab/chrombpnet/blob/09938fdb4397ec0006510e5251e48920a505d4de/README.md",
+    "version": "09938fdb4397ec0006510e5251e48920a505d4de",
+    "retrieved_at": "2026-09-16T10:30:27.172955+00:00",
+    "artifact_sha256": "058c4f98218ea2ed854681126b6f682c9f3beec91275781fb37e39c55d0c92ea"
+  },
+  {
+    "id": "src-discovery-lipidfinder",
+    "name": "lipidfinder official source",
+    "review_status": "source_checked",
+    "url": "https://www.lipidmaps.org/resources/tools/lipidfinder/",
+    "version": null,
+    "retrieved_at": "2026-09-16T10:31:54.464572+00:00",
+    "artifact_sha256": "cfd3a044e568f9465d4365d8aa5e182041720301d70006e9f8f561608c660e70"
+  },
+  {
+    "id": "src-discovery-magics-lab-dnabert-2",
+    "name": "MAGICS-LAB/DNABERT_2 official source",
+    "review_status": "source_checked",
+    "url": "https://github.com/MAGICS-LAB/DNABERT_2/blob/f25bed9ee20db966dff39e5c1571249d04e36404/README.md",
+    "version": "f25bed9ee20db966dff39e5c1571249d04e36404",
+    "retrieved_at": "2026-09-16T10:30:20.936532+00:00",
+    "artifact_sha256": "734a8cec5f667d74d421bf3b273ad7e256216109636da45aa7ceba21cd34de16"
+  },
+  {
+    "id": "src-discovery-matchms-matchms",
+    "name": "matchms/matchms official source",
+    "review_status": "source_checked",
+    "url": "https://github.com/matchms/matchms/blob/066608589587c8d089afd2e8d55ceadb2766ea62/README.rst",
+    "version": "066608589587c8d089afd2e8d55ceadb2766ea62",
+    "retrieved_at": "2026-09-16T10:30:29.085499+00:00",
+    "artifact_sha256": "06a0c6b7adf444d7af53d20ce94c3cef483bd7be8db02fd8960c0704680d61ee"
+  },
+  {
+    "id": "src-discovery-matsui-lab-glycangt",
+    "name": "matsui-lab/GlycanGT official source",
+    "review_status": "source_checked",
+    "url": "https://github.com/matsui-lab/GlycanGT/blob/96611518c971deb89215ca163deaf9de3a59fa32/README.md",
+    "version": "96611518c971deb89215ca163deaf9de3a59fa32",
+    "retrieved_at": "2026-09-16T10:30:27.482216+00:00",
+    "artifact_sha256": "fa39bffca31211baedb3b63df5dede775fcffff7b411d4261d5b18f526ae1153"
+  },
+  {
+    "id": "src-discovery-meme",
+    "name": "meme official source",
+    "review_status": "source_checked",
+    "url": "https://meme-suite.org/meme/tools/fimo",
+    "version": null,
+    "retrieved_at": "2026-09-16T10:31:56.576460+00:00",
+    "artifact_sha256": "c0acb8f22d51b718d5c3a253e81b9882d804fa2aa153b6fcf3e826e22f085dd3"
+  },
+  {
+    "id": "src-discovery-ml4bio-rna-fm",
+    "name": "ml4bio/RNA-FM official source",
+    "review_status": "source_checked",
+    "url": "https://github.com/ml4bio/RNA-FM/blob/348951516e0963d22bbb33b3c9fc18c89081d38e/README.md",
+    "version": "348951516e0963d22bbb33b3c9fc18c89081d38e",
+    "retrieved_at": "2026-09-16T10:30:26.372370+00:00",
+    "artifact_sha256": "f9f1c1d62adc471661ca98b30c0250e9f3ce0cff7433830f149f5f48ea41c3da"
+  },
+  {
+    "id": "src-discovery-msalign",
+    "name": "msalign official source",
+    "review_status": "source_checked",
+    "url": "https://arxiv.org/abs/2605.19752",
+    "version": null,
+    "retrieved_at": "2026-09-16T10:31:54.933176+00:00",
+    "artifact_sha256": "e503f496841fd1d3836ebdab573de645257fc92fe7b5479056592da512e0ef3f"
+  },
+  {
+    "id": "src-discovery-opencobra-cobrapy",
+    "name": "opencobra/cobrapy official source",
+    "review_status": "source_checked",
+    "url": "https://github.com/opencobra/cobrapy/blob/5aa19300fbf5dd632a9ac5c39ca28c1c621b943d/README.rst",
+    "version": "5aa19300fbf5dd632a9ac5c39ca28c1c621b943d",
+    "retrieved_at": "2026-09-16T10:30:28.394293+00:00",
+    "artifact_sha256": "ae2da4ad3ae1d822e0010b6c023b26ef1d02b97007e17611dd4b1e22c70d4998"
+  },
+  {
+    "id": "src-discovery-pluskal-lab-dreams",
+    "name": "pluskal-lab/DreaMS official source",
+    "review_status": "source_checked",
+    "url": "https://github.com/pluskal-lab/DreaMS/blob/dbec3a0b514a99e5056cfccde4559fda8cfe8129/README.md",
+    "version": "dbec3a0b514a99e5056cfccde4559fda8cfe8129",
+    "retrieved_at": "2026-09-16T10:30:27.232940+00:00",
+    "artifact_sha256": "a6afe934f9894cc71fb9b561c7a122d043b377c27b3fc6f18505fe65b6226256"
+  },
+  {
+    "id": "src-discovery-rosettacommons-rfdiffusion",
+    "name": "RosettaCommons/RFdiffusion official source",
+    "review_status": "source_checked",
+    "url": "https://github.com/RosettaCommons/RFdiffusion/blob/86507b6538f51fce57b5a72477165f03999ed7ae/README.md",
+    "version": "86507b6538f51fce57b5a72477165f03999ed7ae",
+    "retrieved_at": "2026-09-16T10:30:25.975464+00:00",
+    "artifact_sha256": "d89eb9790ce805ce23e1b1a6804f4d67c81056025e4852b875f8ddfd87a08125"
+  },
+  {
+    "id": "src-discovery-scverse-scvi-tools",
+    "name": "scverse/scvi-tools official source",
+    "review_status": "source_checked",
+    "url": "https://github.com/scverse/scvi-tools/blob/73b28e44223621470e582a81a102c107bb22678b/README.md",
+    "version": "73b28e44223621470e582a81a102c107bb22678b",
+    "retrieved_at": "2026-09-16T10:30:26.353619+00:00",
+    "artifact_sha256": "eb46b8a54e60643ca0cd8cb375ede05b01dcbd2380ca17ce8027a92ba13cebbb"
+  },
+  {
+    "id": "src-discovery-snap-stanford-gears",
+    "name": "snap-stanford/GEARS official source",
+    "review_status": "source_checked",
+    "url": "https://github.com/snap-stanford/GEARS/blob/f374e43e197b295016d80395d7a54ddb81cc6769/README.md",
+    "version": "f374e43e197b295016d80395d7a54ddb81cc6769",
+    "retrieved_at": "2026-09-16T10:30:26.451955+00:00",
+    "artifact_sha256": "fe78b7b1ede50c673b8f0d91fb2637707685c78b269ee157edb6cbc4d510d61b"
+  },
+  {
+    "id": "src-discovery-soedinglab-hh-suite",
+    "name": "soedinglab/hh-suite official source",
+    "review_status": "source_checked",
+    "url": "https://github.com/soedinglab/hh-suite/blob/43095e46ada4ec2a8a47d47ef5ad7e38b1429f7b/README.md",
+    "version": "43095e46ada4ec2a8a47d47ef5ad7e38b1429f7b",
+    "retrieved_at": "2026-09-16T10:30:28.898945+00:00",
+    "artifact_sha256": "2f8690d6a4a9767973ba9ea2af019d43d6108555ef0e9a69786033a71547d133"
+  },
+  {
+    "id": "src-discovery-soedinglab-mmseqs2",
+    "name": "soedinglab/MMseqs2 official source",
+    "review_status": "source_checked",
+    "url": "https://github.com/soedinglab/MMseqs2/blob/d401e78c2d18a822cdb1527d7464a043f6035a15/README.md",
+    "version": "d401e78c2d18a822cdb1527d7464a043f6035a15",
+    "retrieved_at": "2026-09-16T10:30:28.691617+00:00",
+    "artifact_sha256": "b6c591a763bf99c027857385f0e87ce5aa96caeaa74d71afd1fcec449eadb3d7"
+  },
+  {
+    "id": "src-discovery-sokrypton-colabfold",
+    "name": "sokrypton/ColabFold official source",
+    "review_status": "source_checked",
+    "url": "https://github.com/sokrypton/ColabFold/blob/84c27d9cc500489fd9b97545d2325b9d00f251d5/README.md",
+    "version": "84c27d9cc500489fd9b97545d2325b9d00f251d5",
+    "retrieved_at": "2026-09-16T10:30:25.578919+00:00",
+    "artifact_sha256": "a384ec62c86d568aeb0fe3e8a3b111f071fbcfacb937b407eb6da24fc70c823f"
+  },
+  {
+    "id": "src-discovery-songlab-cal-tape",
+    "name": "songlab-cal/tape official source",
+    "review_status": "source_checked",
+    "url": "https://github.com/songlab-cal/tape/blob/6d345c2b2bbf52cd32cf179325c222afd92aec7e/README.md",
+    "version": "6d345c2b2bbf52cd32cf179325c222afd92aec7e",
+    "retrieved_at": "2026-09-16T10:31:32.443187+00:00",
+    "artifact_sha256": "b28c74fe3cd6b69a8ba6d84891d0539e54dfef882abd5ed4d11ed0b029bb477a"
+  },
+  {
+    "id": "src-discovery-tkzeng-pangolin",
+    "name": "tkzeng/Pangolin official source",
+    "review_status": "source_checked",
+    "url": "https://github.com/tkzeng/Pangolin/blob/5cf94b8db938c658391b4305cd7ce33297d44ff7/README.md",
+    "version": "5cf94b8db938c658391b4305cd7ce33297d44ff7",
+    "retrieved_at": "2026-09-16T10:30:24.697521+00:00",
+    "artifact_sha256": "9117f9d255d6b6e810d224a600d381192bccccd3f0cd417fed9559d49ca8fffd"
+  },
+  {
+    "id": "src-discovery-viennarna-viennarna",
+    "name": "ViennaRNA/ViennaRNA official source",
+    "review_status": "source_checked",
+    "url": "https://github.com/ViennaRNA/ViennaRNA/blob/1ffec79f5e258896160f7362ced8263450f371dc/README.md",
+    "version": "1ffec79f5e258896160f7362ced8263450f371dc",
+    "retrieved_at": "2026-09-16T10:30:26.326355+00:00",
+    "artifact_sha256": "d37146b01e4273062a5230c496a9af8414ee7ef14fcd905cf415959256d59c4e"
+  },
+  {
+    "id": "structure-informed-plm-2025",
+    "name": "Structure-Informed Protein Language Models are Robust Predictors for Variant Effects",
+    "review_status": "discovered",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12068927/",
+    "version": "Human Genetics 2025 journal article (online 2024)",
+    "retrieved_at": "2026-09-15T23:33:26Z",
+    "artifact_sha256": "76082e1cd992d2c09c38f86d05aba575cc76c5022b53a297123b713bb1ce9267"
+  },
+  {
+    "id": "transbind-2026",
+    "name": "Integrating protein and DNA embeddings for improving genome-wide transcription factor binding site prediction",
+    "review_status": "discovered",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13145115/",
+    "version": "version of record",
+    "retrieved_at": "2026-09-15T23:37:05Z",
+    "artifact_sha256": "5d777f5925e941b7d087035d5d87e79ef75ae8d6456a770ffe8c527da566fee0"
+  },
+  {
+    "id": "tu-fold-2025",
+    "name": "RNA secondary structure prediction by conducting multi-class classifications",
+    "review_status": "discovered",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12008525/",
+    "version": "version of record",
+    "retrieved_at": "2026-09-15T23:25:00Z",
+    "artifact_sha256": "5aa376d6466daee83fc307baa39fd48da0f185ff30a178624025032d4cbe597d"
+  },
+  {
+    "id": "vaxign-esm-2024",
+    "name": "Enhancing Vaxign-DL for Vaccine Candidate Prediction with added ESM-Generated Features",
+    "review_status": "discovered",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11398487/",
+    "version": "preprint version in PMC",
+    "retrieved_at": "2026-09-15T23:37:05Z",
+    "artifact_sha256": "b76fff917addd0e9ff8a2fc843496132ecf832d3ceef248e3edf2dbc78baab5f"
+  },
+  {
+    "id": "viral-contig-simulation-2021",
+    "name": "Simulation study and comparative evaluation of viral contiguous sequence identification tools",
+    "review_status": "discovered",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8207588/",
+    "version": "version of record",
+    "retrieved_at": "2026-09-15T23:29:32Z",
+    "artifact_sha256": "93a24652edfa6d9f686862479df3addf50a2d5d432d2d5a31882075fa59dfdfd"
+  },
+  {
+    "id": "viral-immune-mimicry-2025",
+    "name": "Protein Language Models Expose Viral Immune Mimicry",
+    "review_status": "discovered",
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12474240/",
+    "version": "version of record",
+    "retrieved_at": "2026-09-15T23:37:05Z",
+    "artifact_sha256": "15250af2f75f70e2b6a3725d00bc7e276ed9d2d4a54f0ae9d6eaabf6be13e4a1"
+  }
+]

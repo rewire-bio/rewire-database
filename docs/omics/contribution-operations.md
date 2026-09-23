@@ -2,6 +2,8 @@
 
 Contributions are private review items. Acceptance does not publish a scientific result: the curator must prepare a reviewed release and associate the released record IDs with the submission before marking it published. Contributions must never be included in catalogue downloads, release fixtures, Git commits, CI artifacts or analytics.
 
+Current status: intake enabled, contribution notifications paused. The [23 September recovery receipt](submission-recovery-2026-09-23.md) distinguishes live read-only checks from synthetic emulator recovery.
+
 ## Access and retention
 
 - The API accesses `privateSubmissions`, its `revisions` subcollections, `privateIdempotency`, `privateRateLimits` and `privateOutbox`. The mail worker also uses `privateMailQuota`. Browser clients cannot read these collections directly.
@@ -13,18 +15,18 @@ Contributions are private review items. Acceptance does not publish a scientific
 
 ## Portable private backup
 
-The CLI takes an explicit project and copies only the private allowlist, including submission revisions whose parent document is missing. Public catalogue collections are excluded. Firestore timestamps retain nanosecond precision. Checksums detect accidental modification; they are not signatures or encryption.
+The CLI takes an explicit project and copies only the private allowlist, including submission revisions whose parent document is missing. Public catalogue collections are excluded. Firestore timestamps retain nanosecond precision. New backups reject document-reference fields because the Firestore SDK can discard their origin database during decoding. Current private submission data uses JSON and timestamps, not references. Legacy snapshot references decode as destination-local paths and require a separate provenance review before restoration. Checksums detect accidental modification; they are not signatures or encryption.
 
-Use an administrator workstation and an encrypted local volume outside every Git checkout. Require restricted OS access and a private encrypted off-device copy. The CLI creates the snapshot and checksum with mode `0600`, refuses existing output files and refuses paths inside Git. It does **not** configure encryption or a backup destination. Do not use ordinary CI artifacts, a shared Downloads directory or a public bucket.
+Use an administrator workstation and an encrypted local volume outside every Git checkout. Require restricted OS access and a private encrypted off-device copy. The CLI requires a private `0700` directory, creates the snapshot and checksum with mode `0600`, refuses existing output files and refuses paths inside Git. Restore also checks the resolved input locations and file permissions. It does **not** configure encryption or a backup destination. Do not use ordinary CI artifacts, a shared Downloads directory or a public bucket.
 
 For a consistent production snapshot, first disable new intake, pause curator writes and pause scheduled mail delivery. Wait for any in-flight request and mail lease to finish. Firestore reads span multiple queries; this portable tool is not a point-in-time backup while writes continue. A production activation must include a recorded successful recovery drill and a secured snapshot location.
 
-From `services/omics`, using application-default credentials with read access:
+Create the `rewire-private` directory with mode `0700` first. From `services/omics`, using application-default credentials with read access:
 
 ```sh
 npx tsx src/private-backup.ts backup \
   --project YOUR_FIREBASE_PROJECT \
-  --file /Volumes/YOUR_ENCRYPTED_VOLUME/rewire-private-YYYY-MM-DD.json \
+  --file /Volumes/YOUR_ENCRYPTED_VOLUME/rewire-private/rewire-private-YYYY-MM-DD.json \
   --writes-paused
 ```
 
@@ -42,7 +44,7 @@ With an emulator running on the address below:
 FIRESTORE_EMULATOR_HOST=127.0.0.1:8080 \
   npx tsx src/private-backup.ts restore \
   --project demo-rewire-private-recovery \
-  --file /Volumes/YOUR_ENCRYPTED_VOLUME/rewire-private-YYYY-MM-DD.json
+  --file /Volumes/YOUR_ENCRYPTED_VOLUME/rewire-private/rewire-private-YYYY-MM-DD.json
 ```
 
 Check collection and revision counts, timestamp values, submission ownership, idempotency records and pending/failed mail. Keep restored mail dispatch disabled so a drill cannot send receipts. The automated emulator test performs a synthetic roundtrip, including orphan revisions, and checks all values and exclusion of public data:
@@ -58,4 +60,6 @@ For a reviewed production recovery, unset `FIRESTORE_EMULATOR_HOST`, use a new e
 
 Check scheduled worker invocations, queue counts by state and oldest pending timestamp. Investigate failed messages and quota pauses without logging payloads or authentication tokens. Provider acceptance is not proof of inbox delivery: confirm the initial receipt arrives in the recipient's mailbox. Keep receipts and review messages transactional; do not add tracking or promotional content.
 
-Rollback intake through its persisted deployment setting while retaining private collections. Stop mail dispatch separately if delivery is faulty. Revert to the previous application deployment without deleting submissions. Re-enable only after authenticated ownership checks, a curator query, an SDK submission and a receipt have been verified. Production configuration and actual verification results must be recorded separately; this document alone is not evidence that a live backup, account or mail provider has been configured.
+Rollback intake through its persisted deployment setting while retaining private collections. Stop mail dispatch separately if delivery is faulty. Revert to the previous application deployment without deleting submissions. Re-enable only after authenticated ownership and curator checks, preserved idempotent retry behaviour and an API acknowledgement/tracking check have been verified. Reuse an existing contribution and its original stable key; do not create duplicate scientific evidence. Email delivery is a separate optional gate and must not block working intake. Production configuration and actual verification results must be recorded separately; this document alone is not evidence that a live backup, account or mail provider has been configured.
+
+Restore requests are planned before writes and bounded to 300 documents and a conservative 8,000,000-byte estimate, including tagged value encoding and 1,024 bytes of overhead per document. Large permitted contribution fields can exceed Firestore’s request limit even below 300 documents; the byte bound splits these safely. Create-only writes and refusal to overwrite remain in force. A 240-document synthetic emulator roundtrip exercises multiple byte-bounded batches.

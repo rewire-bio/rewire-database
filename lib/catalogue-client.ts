@@ -15,11 +15,19 @@ export function catalogueClient(releaseId: string) {
   const transport = createTRPCUntypedClient({
     links: [httpLink({ url: "/api/trpc" })],
   });
-  async function read<T>(procedure: string, input: object): Promise<T> {
-    const value = await transport.query(`catalogue.${procedure}`, {
-      ...input,
-      release_id: releaseId,
-    });
+  async function read<T>(
+    procedure: string,
+    input: object,
+    signal?: AbortSignal,
+  ): Promise<T> {
+    const value = await transport.query(
+      `catalogue.${procedure}`,
+      {
+        ...input,
+        release_id: releaseId,
+      },
+      { signal },
+    );
     if (
       value !== null &&
       (typeof value !== "object" ||
@@ -33,10 +41,9 @@ export function catalogueClient(releaseId: string) {
     return value as T;
   }
   return {
-    list: (input: Parameters<Query["list"]>[0]) =>
-      read<CataloguePage>("list", input || {}),
-    get: (input: { id: string }) =>
-      read<CatalogueDetail | null>("get", input),
+    list: (input: Parameters<Query["list"]>[0], signal?: AbortSignal) =>
+      read<CataloguePage>("list", input || {}, signal),
+    get: (input: { id: string }) => read<CatalogueDetail | null>("get", input),
     comparison: (input: Parameters<Query["comparison"]>[0]) =>
       read<ReturnType<Query["comparison"]>>("comparison", input),
     results: (input: Parameters<Query["results"]>[0]) =>

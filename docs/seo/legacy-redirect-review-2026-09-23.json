@@ -1,0 +1,705 @@
+{
+  "reviewed_at": "2026-09-23",
+  "review_method": "Automated exact historical-paper/source identity comparison; no new scientific claims",
+  "release_id": "2026-09-22-f58a0f1d267f",
+  "inputs": {
+    "data/omics/releases/2026-09-22-f58a0f1d267f/catalogue.json.gz": "48c47c6cf7c8e0c832def37350be0a53aa62cce06e39ea7f5b134e52add9934b",
+    "data/benchmark-literature/papers.json": "4b1a9385b89d3adfe7f20487c4c235f5f108bef95e5d8254bf4df16426483bab",
+    "data/omics/scope-audit.jsonl": "d88a7320f71f05adf5e43ed90ed0243a4a221ca8289d1aa1b03d8b3d03ca7e5c"
+  },
+  "mappings": [
+    {
+      "paper_id": "dna-foundation-models-2025",
+      "source_id": "dna-foundation-models-2025",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12663285/",
+      "source_version": "PMC12663285.1",
+      "destination": "/database/source/dna-foundation-models-2025/"
+    },
+    {
+      "paper_id": "enbed-2024",
+      "source_id": "enbed-2024",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11341122/",
+      "source_version": "version of record",
+      "destination": "/database/source/enbed-2024/"
+    },
+    {
+      "paper_id": "quadruplex-llm-benchmark-2025",
+      "source_id": "quadruplex-llm-benchmark-2025",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11953744/",
+      "source_version": "version of record",
+      "destination": "/database/source/quadruplex-llm-benchmark-2025/"
+    },
+    {
+      "paper_id": "dnalongbench-2025",
+      "source_id": "dnalongbench-2025",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11741265/",
+      "source_version": "PMC11741265.1",
+      "destination": "/database/source/dnalongbench-2025/"
+    },
+    {
+      "paper_id": "mrnabench-2025",
+      "source_id": "mrnabench-2025",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12265608/",
+      "source_version": "preprint archived 2025-07-08",
+      "destination": "/database/source/mrnabench-2025/"
+    },
+    {
+      "paper_id": "bpfold-2025",
+      "source_id": "bpfold-2025",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12216785/",
+      "source_version": "version of record",
+      "destination": "/database/source/bpfold-2025/"
+    },
+    {
+      "paper_id": "tu-fold-2025",
+      "source_id": "tu-fold-2025",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12008525/",
+      "source_version": "version of record",
+      "destination": "/database/source/tu-fold-2025/"
+    },
+    {
+      "paper_id": "debfold-2024",
+      "source_id": "debfold-2024",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11094721/",
+      "source_version": "PMC11094721.1",
+      "destination": "/database/source/debfold-2024/"
+    },
+    {
+      "paper_id": "proteingym-2023",
+      "source_id": "proteingym-2023",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10723403/",
+      "source_version": "PMC10723403.1",
+      "destination": "/database/source/proteingym-2023/"
+    },
+    {
+      "paper_id": "fujisan-2024",
+      "source_id": "fujisan-2024",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11609699/",
+      "source_version": "PMC11609699.1",
+      "destination": "/database/source/fujisan-2024/"
+    },
+    {
+      "paper_id": "prime-2026",
+      "source_id": "prime-2026",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13425921/",
+      "source_version": "version of record",
+      "destination": "/database/source/prime-2026/"
+    },
+    {
+      "paper_id": "pst-2025",
+      "source_id": "pst-2025",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12603367/",
+      "source_version": "PMC12603367.1",
+      "destination": "/database/source/pst-2025/"
+    },
+    {
+      "paper_id": "single-cell-peft-2024",
+      "source_id": "single-cell-peft-2024",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10862733/",
+      "source_version": "preprint archived 2024-01-30",
+      "destination": "/database/source/single-cell-peft-2024/"
+    },
+    {
+      "paper_id": "cell2sentence-2024",
+      "source_id": "cell2sentence-2024",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11565894/",
+      "source_version": "preprint archived 2024-10-29",
+      "destination": "/database/source/cell2sentence-2024/"
+    },
+    {
+      "paper_id": "scelmo-2025",
+      "source_id": "scelmo-2025",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12393277/",
+      "source_version": "preprint archived 2025-08-23",
+      "destination": "/database/source/scelmo-2025/"
+    },
+    {
+      "paper_id": "scregnet-2025",
+      "source_id": "scregnet-2025",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11838224/",
+      "source_version": "PMC11838224.2",
+      "destination": "/database/source/scregnet-2025/"
+    },
+    {
+      "paper_id": "prokbert-2024",
+      "source_id": "prokbert-2024",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10810988/",
+      "source_version": "PMC10810988.1",
+      "destination": "/database/source/prokbert-2024/"
+    },
+    {
+      "paper_id": "cyaprombert-2022",
+      "source_id": "cyaprombert-2022",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9745317/",
+      "source_version": "version of record",
+      "destination": "/database/source/cyaprombert-2022/"
+    },
+    {
+      "paper_id": "lambda-prophage-2026",
+      "source_id": "lambda-prophage-2026",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13041943/",
+      "source_version": "PMC13041943.1",
+      "destination": "/database/source/lambda-prophage-2026/"
+    },
+    {
+      "paper_id": "nabas-plus-2025",
+      "source_id": "nabas-plus-2025",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12231603/",
+      "source_version": "PMC12231603.1",
+      "destination": "/database/source/nabas-plus-2025/"
+    },
+    {
+      "paper_id": "lipp-2026",
+      "source_id": "lipp-2026",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13292216/",
+      "source_version": "PMC13292216.1",
+      "destination": "/database/source/lipp-2026/"
+    },
+    {
+      "paper_id": "nmdn-2025",
+      "source_id": "nmdn-2025",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11815853/",
+      "source_version": "version of record",
+      "destination": "/database/source/nmdn-2025/"
+    },
+    {
+      "paper_id": "boltz-stereochemistry-2025",
+      "source_id": "boltz-stereochemistry-2025",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12658688/",
+      "source_version": "version of record",
+      "destination": "/database/source/boltz-stereochemistry-2025/"
+    },
+    {
+      "paper_id": "mpro-pose-affinity-2025",
+      "source_id": "mpro-pose-affinity-2025",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12801289/",
+      "source_version": "version of record",
+      "destination": "/database/source/mpro-pose-affinity-2025/"
+    },
+    {
+      "paper_id": "dart-eval-regulatory-2024",
+      "source_id": "dart-eval-regulatory-2024",
+      "source_url": "https://proceedings.neurips.cc/paper_files/paper/2024/file/71998bfc3217ffe1cca1ee084dfadadd-Paper-Datasets_and_Benchmarks_Track.pdf",
+      "source_version": "NeurIPS 2024 Datasets and Benchmarks Track proceedings",
+      "destination": "/database/source/dart-eval-regulatory-2024/"
+    },
+    {
+      "paper_id": "fusion-breakpoint-foundation-models-2026",
+      "source_id": "fusion-breakpoint-foundation-models-2026",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13182013/",
+      "source_version": "journal full text in PMC",
+      "destination": "/database/source/fusion-breakpoint-foundation-models-2026/"
+    },
+    {
+      "paper_id": "polya-glm-2025",
+      "source_id": "polya-glm-2025",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12799945/",
+      "source_version": "journal full text in PMC",
+      "destination": "/database/source/polya-glm-2025/"
+    },
+    {
+      "paper_id": "phylogpn-2025",
+      "source_id": "phylogpn-2025",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11908359/",
+      "source_version": "preprint version in PMC",
+      "destination": "/database/source/phylogpn-2025/"
+    },
+    {
+      "paper_id": "dnabert2-enhancer-2025",
+      "source_id": "dnabert2-enhancer-2025",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11981215/",
+      "source_version": "journal full text in PMC",
+      "destination": "/database/source/dnabert2-enhancer-2025/"
+    },
+    {
+      "paper_id": "barcodebert-2026",
+      "source_id": "barcodebert-2026",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13008329/",
+      "source_version": "journal full text in PMC",
+      "destination": "/database/source/barcodebert-2026/"
+    },
+    {
+      "paper_id": "genomic-tokenizer-selection-2025",
+      "source_id": "genomic-tokenizer-selection-2025",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12453675/",
+      "source_version": "journal full text in PMC",
+      "destination": "/database/source/genomic-tokenizer-selection-2025/"
+    },
+    {
+      "paper_id": "eden-genomic-classification-2026",
+      "source_id": "eden-genomic-classification-2026",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12879454/",
+      "source_version": "journal full text in PMC",
+      "destination": "/database/source/eden-genomic-classification-2026/"
+    },
+    {
+      "paper_id": "cobra-rna-binding-2026",
+      "source_id": "cobra-rna-binding-2026",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12790621/",
+      "source_version": "journal full text in PMC",
+      "destination": "/database/source/cobra-rna-binding-2026/"
+    },
+    {
+      "paper_id": "ernie-rna-2025",
+      "source_id": "ernie-rna-2025",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12627772/",
+      "source_version": "journal full text in PMC",
+      "destination": "/database/source/ernie-rna-2025/"
+    },
+    {
+      "paper_id": "codonbert-vaccines-2024",
+      "source_id": "codonbert-vaccines-2024",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11368176/",
+      "source_version": "journal full text in PMC",
+      "destination": "/database/source/codonbert-vaccines-2024/"
+    },
+    {
+      "paper_id": "mrna-lm-2025",
+      "source_id": "mrna-lm-2025",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11962594/",
+      "source_version": "journal full text in PMC",
+      "destination": "/database/source/mrna-lm-2025/"
+    },
+    {
+      "paper_id": "rnaret-2026",
+      "source_id": "rnaret-2026",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13111708/",
+      "source_version": "journal full text in PMC",
+      "destination": "/database/source/rnaret-2026/"
+    },
+    {
+      "paper_id": "rlsite-rna-binding-2025",
+      "source_id": "rlsite-rna-binding-2025",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12417085/",
+      "source_version": "journal full text in PMC",
+      "destination": "/database/source/rlsite-rna-binding-2025/"
+    },
+    {
+      "paper_id": "birna-bert-2025",
+      "source_id": "birna-bert-2025",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12635123/",
+      "source_version": "journal full text in PMC",
+      "destination": "/database/source/birna-bert-2025/"
+    },
+    {
+      "paper_id": "mrnabert-2025",
+      "source_id": "mrnabert-2025",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12644827/",
+      "source_version": "journal full text in PMC",
+      "destination": "/database/source/mrnabert-2025/"
+    },
+    {
+      "paper_id": "2ome-lm-2025",
+      "source_id": "2ome-lm-2025",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12342186/",
+      "source_version": "journal full text in PMC",
+      "destination": "/database/source/2ome-lm-2025/"
+    },
+    {
+      "paper_id": "cathe2-2025",
+      "source_id": "cathe2-2025",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12631783/",
+      "source_version": "journal full text in PMC",
+      "destination": "/database/source/cathe2-2025/"
+    },
+    {
+      "paper_id": "clathrin-plm-2025",
+      "source_id": "clathrin-plm-2025",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12238356/",
+      "source_version": "journal full text in PMC",
+      "destination": "/database/source/clathrin-plm-2025/"
+    },
+    {
+      "paper_id": "gsmformer-ppi-2026",
+      "source_id": "gsmformer-ppi-2026",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12873117/",
+      "source_version": "journal full text in PMC",
+      "destination": "/database/source/gsmformer-ppi-2026/"
+    },
+    {
+      "paper_id": "antibody-deamidation-plm-2024",
+      "source_id": "antibody-deamidation-plm-2024",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11417914/",
+      "source_version": "journal full text in PMC",
+      "destination": "/database/source/antibody-deamidation-plm-2024/"
+    },
+    {
+      "paper_id": "spin-protein-function-2026",
+      "source_id": "spin-protein-function-2026",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12970593/",
+      "source_version": "journal full text in PMC",
+      "destination": "/database/source/spin-protein-function-2026/"
+    },
+    {
+      "paper_id": "mulan-2025",
+      "source_id": "mulan-2025",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12452268/",
+      "source_version": "journal full text in PMC",
+      "destination": "/database/source/mulan-2025/"
+    },
+    {
+      "paper_id": "megsite-2025",
+      "source_id": "megsite-2025",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12496013/",
+      "source_version": "journal full text in PMC",
+      "destination": "/database/source/megsite-2025/"
+    },
+    {
+      "paper_id": "esm2-ofs-fitness-2025",
+      "source_id": "esm2-ofs-fitness-2025",
+      "source_url": "https://journals.aps.org/prxlife/pdf/10.1103/zhx7-hcmm",
+      "source_version": "PRX Life 2025 journal article",
+      "destination": "/database/source/esm2-ofs-fitness-2025/"
+    },
+    {
+      "paper_id": "structure-informed-plm-2025",
+      "source_id": "structure-informed-plm-2025",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12068927/",
+      "source_version": "Human Genetics 2025 journal article (online 2024)",
+      "destination": "/database/source/structure-informed-plm-2025/"
+    },
+    {
+      "paper_id": "mouse-geneformer-2025",
+      "source_id": "mouse-geneformer-2025",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11964219/",
+      "source_version": "version of record",
+      "destination": "/database/source/mouse-geneformer-2025/"
+    },
+    {
+      "paper_id": "scatac-llmda-2026",
+      "source_id": "scatac-llmda-2026",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13132462/",
+      "source_version": "version of record",
+      "destination": "/database/source/scatac-llmda-2026/"
+    },
+    {
+      "paper_id": "genept-2024",
+      "source_id": "genept-2024",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10614824/",
+      "source_version": "PMC archival version PMC10614824.2",
+      "destination": "/database/source/genept-2024/"
+    },
+    {
+      "paper_id": "single-cell-aging-probes-2026",
+      "source_id": "single-cell-aging-probes-2026",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13407579/",
+      "source_version": "PMC archival version PMC13407579.1",
+      "destination": "/database/source/single-cell-aging-probes-2026/"
+    },
+    {
+      "paper_id": "scalr-2025",
+      "source_id": "scalr-2025",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12121358/",
+      "source_version": "version of record",
+      "destination": "/database/source/scalr-2025/"
+    },
+    {
+      "paper_id": "scxdr-2026",
+      "source_id": "scxdr-2026",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12859067/",
+      "source_version": "PMC archival version PMC12859067.1",
+      "destination": "/database/source/scxdr-2026/"
+    },
+    {
+      "paper_id": "cammiq-2022",
+      "source_id": "cammiq-2022",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9616933/",
+      "source_version": "version of record",
+      "destination": "/database/source/cammiq-2022/"
+    },
+    {
+      "paper_id": "lazypipe-2020",
+      "source_id": "lazypipe-2020",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7772471/",
+      "source_version": "version of record",
+      "destination": "/database/source/lazypipe-2020/"
+    },
+    {
+      "paper_id": "ncd-metagenomics-2026",
+      "source_id": "ncd-metagenomics-2026",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12884959/",
+      "source_version": "version of record",
+      "destination": "/database/source/ncd-metagenomics-2026/"
+    },
+    {
+      "paper_id": "viral-contig-simulation-2021",
+      "source_id": "viral-contig-simulation-2021",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8207588/",
+      "source_version": "version of record",
+      "destination": "/database/source/viral-contig-simulation-2021/"
+    },
+    {
+      "paper_id": "genomeocean-2025",
+      "source_id": "genomeocean-2025",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11838515/",
+      "source_version": "preprint archived 2025-02-05",
+      "destination": "/database/source/genomeocean-2025/"
+    },
+    {
+      "paper_id": "kmetashot-2025",
+      "source_id": "kmetashot-2025",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11695915/",
+      "source_version": "PMC archival version PMC11695915.1",
+      "destination": "/database/source/kmetashot-2025/"
+    },
+    {
+      "paper_id": "lemur-magnet-2024",
+      "source_id": "lemur-magnet-2024",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11185576/",
+      "source_version": "PMC archival version PMC11185576.2",
+      "destination": "/database/source/lemur-magnet-2024/"
+    },
+    {
+      "paper_id": "ipromp-2025",
+      "source_id": "ipromp-2025",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12516880/",
+      "source_version": "version of record",
+      "destination": "/database/source/ipromp-2025/"
+    },
+    {
+      "paper_id": "icctax-2025",
+      "source_id": "icctax-2025",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12619997/",
+      "source_version": "version of record",
+      "destination": "/database/source/icctax-2025/"
+    },
+    {
+      "paper_id": "antibody-flexibility-2025",
+      "source_id": "antibody-flexibility-2025",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12530544/",
+      "source_version": "version of record",
+      "destination": "/database/source/antibody-flexibility-2025/"
+    },
+    {
+      "paper_id": "boltz1-2025",
+      "source_id": "boltz1-2025",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11601547/",
+      "source_version": "PMC archival version PMC11601547.4",
+      "destination": "/database/source/boltz1-2025/"
+    },
+    {
+      "paper_id": "ibex-2025",
+      "source_id": "ibex-2025",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12710905/",
+      "source_version": "PMC archival version PMC12710905.1",
+      "destination": "/database/source/ibex-2025/"
+    },
+    {
+      "paper_id": "deelig-2021",
+      "source_id": "deelig-2021",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8274096/",
+      "source_version": "PMC archival version PMC8274096.1",
+      "destination": "/database/source/deelig-2021/"
+    },
+    {
+      "paper_id": "molas-2026",
+      "source_id": "molas-2026",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13104262/",
+      "source_version": "PMC archival version PMC13104262.1",
+      "destination": "/database/source/molas-2026/"
+    },
+    {
+      "paper_id": "ensemble-idp-docking-2025",
+      "source_id": "ensemble-idp-docking-2025",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11785235/",
+      "source_version": "preprint archived 2025-01-26",
+      "destination": "/database/source/ensemble-idp-docking-2025/"
+    },
+    {
+      "paper_id": "akscore-2020",
+      "source_id": "akscore-2020",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7697539/",
+      "source_version": "version of record",
+      "destination": "/database/source/akscore-2020/"
+    },
+    {
+      "paper_id": "fingerprint-scoring-2022",
+      "source_id": "fingerprint-scoring-2022",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9178954/",
+      "source_version": "PMC archival version PMC9178954.1",
+      "destination": "/database/source/fingerprint-scoring-2022/"
+    },
+    {
+      "paper_id": "arsenal-regulatory-dna-2026",
+      "source_id": "arsenal-regulatory-dna-2026",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12889687/",
+      "source_version": "preprint version in PMC",
+      "destination": "/database/source/arsenal-regulatory-dna-2026/"
+    },
+    {
+      "paper_id": "plantcad2-2025",
+      "source_id": "plantcad2-2025",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12425018/",
+      "source_version": "preprint version in PMC",
+      "destination": "/database/source/plantcad2-2025/"
+    },
+    {
+      "paper_id": "hi-enhancer-2025",
+      "source_id": "hi-enhancer-2025",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12758598/",
+      "source_version": "version of record",
+      "destination": "/database/source/hi-enhancer-2025/"
+    },
+    {
+      "paper_id": "enhancer-position-encoding-2024",
+      "source_id": "enhancer-position-encoding-2024",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11167433/",
+      "source_version": "version of record",
+      "destination": "/database/source/enhancer-position-encoding-2024/"
+    },
+    {
+      "paper_id": "adar-gpt-editing-2026",
+      "source_id": "adar-gpt-editing-2026",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12798952/",
+      "source_version": "version of record",
+      "destination": "/database/source/adar-gpt-editing-2026/"
+    },
+    {
+      "paper_id": "r3design-2025",
+      "source_id": "r3design-2025",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11685104/",
+      "source_version": "PMC archival version PMC11685104.1",
+      "destination": "/database/source/r3design-2025/"
+    },
+    {
+      "paper_id": "cupid-rna-interactions-2026",
+      "source_id": "cupid-rna-interactions-2026",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12957212/",
+      "source_version": "PMC archival version PMC12957212.1",
+      "destination": "/database/source/cupid-rna-interactions-2026/"
+    },
+    {
+      "paper_id": "mrna-protein-diversity-2026",
+      "source_id": "mrna-protein-diversity-2026",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13235059/",
+      "source_version": "version of record",
+      "destination": "/database/source/mrna-protein-diversity-2026/"
+    },
+    {
+      "paper_id": "viral-immune-mimicry-2025",
+      "source_id": "viral-immune-mimicry-2025",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12474240/",
+      "source_version": "version of record",
+      "destination": "/database/source/viral-immune-mimicry-2025/"
+    },
+    {
+      "paper_id": "protein-binding-sites-2023",
+      "source_id": "protein-binding-sites-2023",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9849350/",
+      "source_version": "version of record",
+      "destination": "/database/source/protein-binding-sites-2023/"
+    },
+    {
+      "paper_id": "clape-smb-2024",
+      "source_id": "clape-smb-2024",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11542454/",
+      "source_version": "version of record",
+      "destination": "/database/source/clape-smb-2024/"
+    },
+    {
+      "paper_id": "vaxign-esm-2024",
+      "source_id": "vaxign-esm-2024",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11398487/",
+      "source_version": "preprint version in PMC",
+      "destination": "/database/source/vaxign-esm-2024/"
+    },
+    {
+      "paper_id": "single-cell-residual-geometry-2026",
+      "source_id": "single-cell-residual-geometry-2026",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13418759/",
+      "source_version": "version of record",
+      "destination": "/database/source/single-cell-residual-geometry-2026/"
+    },
+    {
+      "paper_id": "gremln-2026",
+      "source_id": "gremln-2026",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13060794/",
+      "source_version": "preprint version in PMC",
+      "destination": "/database/source/gremln-2026/"
+    },
+    {
+      "paper_id": "cell-dino-2025",
+      "source_id": "cell-dino-2025",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12826486/",
+      "source_version": "version of record",
+      "destination": "/database/source/cell-dino-2025/"
+    },
+    {
+      "paper_id": "insilico-perturbation-auprc-2025",
+      "source_id": "insilico-perturbation-auprc-2025",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12400816/",
+      "source_version": "PMC archival version PMC12400816.1",
+      "destination": "/database/source/insilico-perturbation-auprc-2025/"
+    },
+    {
+      "paper_id": "metagenomic-pathogens-2025",
+      "source_id": "metagenomic-pathogens-2025",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12493982/",
+      "source_version": "version of record",
+      "destination": "/database/source/metagenomic-pathogens-2025/"
+    },
+    {
+      "paper_id": "detire-viral-metagenomes-2023",
+      "source_id": "detire-viral-metagenomes-2023",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10313334/",
+      "source_version": "PMC archival version PMC10313334.1",
+      "destination": "/database/source/detire-viral-metagenomes-2023/"
+    },
+    {
+      "paper_id": "pc-mer-2024",
+      "source_id": "pc-mer-2024",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11293629/",
+      "source_version": "version of record",
+      "destination": "/database/source/pc-mer-2024/"
+    },
+    {
+      "paper_id": "mdl4microbiome-2022",
+      "source_id": "mdl4microbiome-2022",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8763943/",
+      "source_version": "PMC archival version PMC8763943.1",
+      "destination": "/database/source/mdl4microbiome-2022/"
+    },
+    {
+      "paper_id": "ligand-affinity-meta-model-2024",
+      "source_id": "ligand-affinity-meta-model-2024",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11632770/",
+      "source_version": "PMC archival version PMC11632770.1",
+      "destination": "/database/source/ligand-affinity-meta-model-2024/"
+    },
+    {
+      "paper_id": "deepinteraware-2025",
+      "source_id": "deepinteraware-2025",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11967782/",
+      "source_version": "version of record",
+      "destination": "/database/source/deepinteraware-2025/"
+    },
+    {
+      "paper_id": "transbind-2026",
+      "source_id": "transbind-2026",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13145115/",
+      "source_version": "version of record",
+      "destination": "/database/source/transbind-2026/"
+    },
+    {
+      "paper_id": "esm2-amp-2025",
+      "source_id": "esm2-amp-2025",
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12392411/",
+      "source_version": "version of record",
+      "destination": "/database/source/esm2-amp-2025/"
+    }
+  ],
+  "excluded": [
+    {
+      "paper_id": "kidney-cell-segmentation-2025",
+      "reason": "Standalone kidney pathology cell segmentation, without an omics or molecular prediction endpoint."
+    },
+    {
+      "paper_id": "anndictionary-2025",
+      "reason": "General-purpose language-model annotation via textual prompts; outside specialist biological-model catalogue."
+    },
+    {
+      "paper_id": "llm-cell-identification-2025",
+      "reason": "General-purpose language-model identifier evaluated through textual annotation rather than a specialist biological model."
+    }
+  ]
+}

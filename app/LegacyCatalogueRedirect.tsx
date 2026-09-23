@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { legacyCatalogueDestination } from "@/lib/omics-navigation";
 
-/** Static hosts cannot issue a Next server redirect; retain a working no-JS link. */
+/** Firebase issues the permanent redirect first. Keep static-export and client-navigation fallbacks. */
 export default function LegacyCatalogueRedirect({
   target,
   label = "Open the benchmark database",

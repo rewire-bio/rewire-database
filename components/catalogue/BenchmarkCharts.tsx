@@ -2,6 +2,10 @@
 import { useId, useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import type { ResolvedComparison } from "@/services/omics/src/published-comparisons";
+import {
+  unpackComparisons,
+  type PackedComparisons,
+} from "@/lib/comparison-transport";
 import { catalogueClient, type ResultsPage } from "@/lib/catalogue-client";
 import { displayValue, originLabel, recordHref } from "@/lib/omics";
 import { testedEntities, singularKindLabels } from "@/lib/omics-browse";
@@ -35,11 +39,12 @@ type Option = {
   sources?: { id: string; name: string }[];
 };
 type Props = {
-  panels: ResolvedComparison[];
+  panels: ResolvedComparison[] | PackedComparisons;
   recordId?: string;
   releaseId?: string;
   options?: Option[];
   initialResults?: ResultsPage;
+  resultSummary?: Pick<ResultsPage, "total" | "evaluation_count">;
 };
 const defaults = {
   mode: "comparisons",
@@ -118,12 +123,20 @@ export function comparisonChoices(
 }
 
 export function ComparisonWorkspace({
-  panels,
+  panels: transportedPanels,
   recordId,
   releaseId,
   options,
   initialResults,
+  resultSummary,
 }: Props) {
+  const panels = useMemo(
+    () =>
+      Array.isArray(transportedPanels)
+        ? transportedPanels
+        : unpackComparisons(transportedPanels),
+    [transportedPanels],
+  );
   const heading = useId();
   const choices = options || panels;
   const { state, update, ready } = useResultsLocation(defaults);
@@ -132,6 +145,28 @@ export function ComparisonWorkspace({
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [retry, setRetry] = useState(0);
+  const mode = choices.length ? state.mode : "all";
+  const summary = resultSummary || initialResults;
+  const [allResults, setAllResults] = useState(initialResults);
+  const [resultsError, setResultsError] = useState(false);
+  const [resultsRetry, setResultsRetry] = useState(0);
+  useEffect(() => {
+    if (!ready || mode !== "all" || allResults || !recordId || !releaseId)
+      return;
+    let active = true;
+    setResultsError(false);
+    catalogueClient(releaseId)
+      .results({ id: recordId, limit: 25 })
+      .then((page) => {
+        if (active) setAllResults(page);
+      })
+      .catch(() => {
+        if (active) setResultsError(true);
+      });
+    return () => {
+      active = false;
+    };
+  }, [ready, mode, allResults, recordId, releaseId, resultsRetry]);
   useEffect(() => {
     if (!ready || !selected) return;
     let active = true;
@@ -193,12 +228,11 @@ export function ComparisonWorkspace({
     ? comparisonRange(panel.rows, panel.metric, panel.unit, state.zoom === "1")
     : [0, 1];
   const position = (value: number) => 3 + (94 * (value - low)) / (high - low);
-  const mode = choices.length ? state.mode : "all";
   return (
     <section id="results" className={styles.section} aria-labelledby={heading}>
       <span id="charts" className={ux.anchor} />
       <h2 id={heading}>Results</h2>
-      {choices.length > 0 && initialResults && (
+      {choices.length > 0 && summary && (
         <div
           className={ux.switches}
           role="group"
@@ -214,24 +248,36 @@ export function ComparisonWorkspace({
             aria-pressed={mode === "all"}
             onClick={() => update({ mode: "all" })}
           >
-            All evaluations ({initialResults.evaluation_count})
+            All evaluations ({summary.evaluation_count})
           </button>
         </div>
       )}
-      {mode === "all" && initialResults && recordId ? (
+      {mode === "all" && summary && recordId ? (
         <>
-          {!choices.length && initialResults.total > 0 && (
+          {!choices.length && summary.total > 0 && (
             <p>
               Results are available, but no reviewed comparison panel is linked
               in this release.
             </p>
           )}
-          <Results
-            id={recordId}
-            initial={initialResults}
-            title="All evaluations"
-            embedded
-          />
+          {allResults ? (
+            <Results
+              id={recordId}
+              initial={allResults}
+              title="All evaluations"
+              embedded
+            />
+          ) : resultsError ? (
+            <p role="alert">
+              All evaluations could not be loaded. The published comparison
+              remains available.{" "}
+              <button onClick={() => setResultsRetry((value) => value + 1)}>
+                Retry evaluations
+              </button>
+            </p>
+          ) : (
+            <p role="status">Loading all evaluations…</p>
+          )}
         </>
       ) : (
         <>

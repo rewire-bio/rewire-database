@@ -13,7 +13,7 @@ export default function Footer() {
             <h3>Research</h3>
             <a href="/">Benchmark database</a>
             <a href="/evidence/">Evidence and sources</a>
-            <a href="/literature/">Historical literature links</a>
+            <a href="/?kind=result&amp;origin=literature#browse">Published results</a>
             <a href="https://rewire.it/blog/">Articles</a>
           </div>
           <div className="col">

@@ -1,0 +1,43 @@
+{
+  "origin": "http://localhost:3016",
+  "at": "2026-09-23T18:51:24.814Z",
+  "browser": {
+    "Browser": "Chrome/153.0.8010.54",
+    "Protocol-Version": "1.3",
+    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.0.0 Safari/537.36",
+    "V8-Version": "15.3.76.13",
+    "WebKit-Version": "537.36 (@ab3ecba863fd7852cc9b0fe5736187e19ed52a1c)",
+    "webSocketDebuggerUrl": "ws://127.0.0.1:9360/devtools/browser/1d231211-9cb6-4b9a-a0a1-1cfae6718d34"
+  },
+  "views": [
+    {
+      "key": "narrow",
+      "width": 320,
+      "height": 900,
+      "mobile": true,
+      "deviceScaleFactor": 1
+    },
+    {
+      "key": "mobile",
+      "width": 390,
+      "height": 900,
+      "mobile": true,
+      "deviceScaleFactor": 1
+    },
+    {
+      "key": "desktop",
+      "width": 1440,
+      "height": 1100,
+      "mobile": false,
+      "deviceScaleFactor": 1
+    }
+  ],
+  "sourceHashes": {
+    "components/catalogue/BenchmarkCharts.tsx": "671ba3fdeefc234b0e534b7b4e990517568bc487aa555ae4afcd8800a14447f6",
+    "components/catalogue/comparison.module.css": "916d7f1b8bbc542e1b2c9f9f4db7ffb36a2b0b7b173ad602cba2a6328972229e",
+    "components/catalogue/Results.tsx": "beb95d472200bcfcbeca7f829b941c202ca217dc2cc1eea6955d5789524b2afc",
+    "app/database/database.module.css": "0b5e8f6be8ae4285fb63d1362a489d5361ba94b52cd704ae463981a0bfa0c00b"
+  },
+  "release": "2026-09-23-2b89723c6dd9",
+  "source": "current local UI; unchanged public catalogue; no API proxy or CSS override; separately labelled DOM text stress case"
+}

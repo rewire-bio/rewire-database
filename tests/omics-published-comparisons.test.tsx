@@ -1,5 +1,6 @@
-import { describe, it, expect } from "vitest";
+import { afterEach, beforeEach, describe, it, expect, vi } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
+import { act, create, type ReactTestRenderer } from "react-test-renderer";
 import {
   createCatalogueQuery,
   type CatalogueRecord,
@@ -7,6 +8,12 @@ import {
 } from "../services/omics/src/catalogue-query";
 import { type PublishedComparison } from "../services/omics/src/published-comparisons";
 import BenchmarkCharts from "../components/catalogue/BenchmarkCharts";
+
+vi.mock("next/link", () => ({
+  default: ({ children, ...props }: React.ComponentProps<"a">) => (
+    <a {...props}>{children}</a>
+  ),
+}));
 
 const record = (
   id: string,
@@ -185,6 +192,189 @@ describe("source-scoped comparison figures", () => {
   });
 });
 
+function exactValuePanel() {
+  const snapshot = fixture();
+  const values = [
+    "-0.037894589438910123",
+    "1.2345678901234567e-12",
+    null,
+    "0.9012345678901234567",
+    "-2.5000000000000000e-08",
+    "0.0000000000000000",
+  ];
+  values.forEach((value, index) => {
+    const result = snapshot.records.find((row) => row.id === `result-${index}`)!;
+    result.attributes.numeric_value = value;
+    result.attributes.printed_value = value ?? "N/A";
+  });
+  const panel = createCatalogueQuery(snapshot).get({ id: "benchmark" })!
+    .published_comparisons[0];
+  return { ...panel, rows: panel.rows.slice(0, values.length) };
+}
+
+describe("readable comparison evidence", () => {
+  it("retains exact printed decimals, exponent notation and missing values in descending chart order", () => {
+    const panel = exactValuePanel();
+    const html = renderToStaticMarkup(<BenchmarkCharts panels={[panel]} />);
+    const values = [...html.matchAll(/href="\/database\/result\/([^/\"]+)\/"[^>]*>([^<]*)<\/a>/g)];
+    expect(values.map((match) => [match[1], match[2]])).toEqual([
+      ["result-3", "0.9012345678901234567"],
+      ["result-1", "1.2345678901234567e-12"],
+      ["result-5", "0.0000000000000000"],
+      ["result-4", "-2.5000000000000000e-08"],
+      ["result-0", "-0.037894589438910123"],
+      ["result-2", "N/A"],
+    ]);
+    expect(html.match(/role="img"/g)).toHaveLength(5);
+    expect(html).toContain("Not available");
+    expect(html).toContain("1 unavailable value;");
+  });
+
+  it("omits missingness commentary when every score is available", () => {
+    const panels = createCatalogueQuery(fixture()).get({ id: "benchmark" })!
+      .published_comparisons;
+    const html = renderToStaticMarkup(<BenchmarkCharts panels={panels} />);
+    expect(html).not.toContain("unavailable value");
+    expect(html).not.toContain("missing scores remain labelled");
+  });
+
+  it("keeps the scope, evidence and material caveats visible while collapsing supporting details", () => {
+    const panel = exactValuePanel();
+    const genericCaveat = "Author-reported numbers, source checked but not independently reproduced.";
+    const trainingCaveat = "Training data overlap is unresolved and may inflate the reported scores.";
+    panel.caveats = [genericCaveat, ...panel.caveats, trainingCaveat];
+    const html = renderToStaticMarkup(<BenchmarkCharts panels={[panel]} />);
+    const header = html.match(/<header\b[^>]*>([\s\S]*?)<\/header>/)![1];
+    const details = header.match(/<details\b([^>]*)>([\s\S]*?)<\/details>/)!;
+    const summary = header.slice(0, details.index);
+    expect(summary).toContain("correlation (dimensionless)");
+    expect(summary).toContain("Higher values are better");
+    expect(summary).toContain("/database/benchmark/benchmark");
+    expect(summary).toContain("/database/dataset/dataset");
+    expect(summary).toContain('href="https://example.org/paper"');
+    expect(summary).toContain("Table 1");
+    expect(summary).toContain("Evidence origin:");
+    expect(summary).not.toContain(panel.context);
+    expect(summary).toContain(panel.caveats[1]);
+    expect(summary).toContain(trainingCaveat);
+    expect(summary).not.toContain(genericCaveat);
+    expect(details[1]).not.toMatch(/\bopen\b/);
+    expect(details[2]).toContain("Comparison details and limitations");
+    expect(details[2]).toContain(panel.context);
+    expect(details[2]).toContain(genericCaveat);
+    expect(details[2]).not.toContain(trainingCaveat);
+    expect(details[2]).toContain("2026-09-17");
+    expect(details[2]).toContain("Whiskers");
+    for (const caveat of panel.caveats)
+      expect(header.split(caveat)).toHaveLength(2);
+  });
+
+  it("collapses repeated BEELINE conditions only while retaining them in the visible protocol link", () => {
+    const panel = exactValuePanel();
+    const conditions = '{"reference_network":"ChIP-seq","gene_selection":"500 variable genes"}';
+    panel.protocol = { ...panel.protocol, name: `BEELINE protocol · ${conditions}` };
+    panel.caveats = [
+      `Source-specific evaluation. Input conditions: ${conditions}. No equivalence to other releases, protocols or model families is inferred.`,
+    ];
+    const html = renderToStaticMarkup(<BenchmarkCharts panels={[panel]} />);
+    const header = html.match(/<header\b[^>]*>([\s\S]*?)<\/header>/)![1];
+    const details = header.match(/<details\b[^>]*>([\s\S]*?)<\/details>/)!;
+    const summary = header.slice(0, details.index);
+    const protocolLink = summary.match(/href="\/database\/benchmark\/benchmark\/"[^>]*>([^<]*)<\/a>/)![1];
+    expect(protocolLink).toBe("BEELINE protocol · Reference network: ChIP-seq; Gene selection: 500 variable genes");
+    expect(summary).not.toContain("Input conditions:");
+    expect(details[1]).toContain("Input conditions: Reference network: ChIP-seq; Gene selection: 500 variable genes.");
+    expect(header.split("Source-specific evaluation.")).toHaveLength(2);
+  });
+
+  it.each([
+    ['Source-specific evaluation. Input conditions: {"reference_network":"Different network"}. No equivalence to other releases, protocols or model families is inferred.', "Input conditions: Reference network: Different network."],
+    ["Unreviewed input conditions may change this comparison's interpretation.", "Unreviewed input conditions may change"],
+  ])("keeps a nonidentical or unrecognized condition warning prominent: %s", (caveat, visibleText) => {
+    const panel = exactValuePanel();
+    panel.protocol = { ...panel.protocol, name: 'BEELINE protocol · {"reference_network":"ChIP-seq"}' };
+    panel.caveats = [caveat];
+    const html = renderToStaticMarkup(<BenchmarkCharts panels={[panel]} />);
+    const header = html.match(/<header\b[^>]*>([\s\S]*?)<\/header>/)![1];
+    const details = header.match(/<details\b[^>]*>([\s\S]*?)<\/details>/)!;
+    expect(header.slice(0, details.index)).toContain(visibleText);
+    expect(details[1]).not.toContain(visibleText);
+  });
+
+  it("retains generic scope and citation-label explanations in supporting details", () => {
+    const panel = exactValuePanel();
+    panel.caveats = [
+      "Source-specific evaluation. No equivalence to other releases, protocols or model families is inferred.",
+      "Comparison methods are named by the citation the table prints; the paper's text says which method each is.",
+    ];
+    const html = renderToStaticMarkup(<BenchmarkCharts panels={[panel]} />);
+    const header = html.match(/<header\b[^>]*>([\s\S]*?)<\/header>/)![1];
+    const details = header.match(/<details\b[^>]*>([\s\S]*?)<\/details>/)!;
+    for (const note of ["Source-specific evaluation.", "Comparison methods are named by the citation the table prints;"]) {
+      expect(header.slice(0, details.index)).not.toContain(note);
+      expect(details[1]).toContain(note);
+      expect(header.split(note)).toHaveLength(2);
+    }
+  });
+});
+
+describe("exact comparison values in table view", () => {
+  let tree: ReactTestRenderer | undefined;
+  beforeEach(() => {
+    let url = new URL("https://benchmarks.rewire.it/database/benchmark/benchmark/");
+    const events = new EventTarget();
+    vi.stubGlobal("window", {
+      get location() {
+        return url;
+      },
+      addEventListener: events.addEventListener.bind(events),
+      removeEventListener: events.removeEventListener.bind(events),
+      history: {
+        pushState: (_state: unknown, _title: string, next: URL) => {
+          url = new URL(next);
+        },
+      },
+    });
+  });
+  afterEach(() => {
+    if (tree) act(() => tree!.unmount());
+    tree = undefined;
+    vi.unstubAllGlobals();
+  });
+
+  it("switches between keyboard-accessible views without changing exact values or numeric order", async () => {
+    const panel = { ...exactValuePanel(), direction: "lower" as const };
+    await act(async () => {
+      tree = create(<BenchmarkCharts panels={[panel]} />);
+    });
+    const scoreLinks = () => tree!.root.findAllByType("a")
+      .filter((link) => link.props.href.startsWith("/database/result/"))
+      .map((link) => ({ href: link.props.href, text: link.children.join("") }));
+    const chartValues = scoreLinks();
+    expect(chartValues.map((value) => value.text)).toEqual([
+      "0.9012345678901234567", "1.2345678901234567e-12", "0.0000000000000000",
+      "-2.5000000000000000e-08", "-0.037894589438910123", "N/A",
+    ]);
+    expect(tree!.root.findAll((node) => node.props.role === "region")
+      .some((node) => node.props.tabIndex === 0 && node.props["aria-label"].includes("dot plot"))).toBe(true);
+    await act(async () => {
+      tree!.root.findAllByType("button")
+        .find((button) => button.children.join("") === "Table")!.props.onClick();
+    });
+    expect(scoreLinks()).toEqual(chartValues);
+    expect(tree!.root.findByType("caption").children.join("")).toBe("correlation: original source values");
+    const tableRegion = tree!.root.find((node) => node.props["aria-label"] === "Comparison values");
+    expect(tableRegion.props.role).toBe("region");
+    expect(tableRegion.props.tabIndex).toBe(0);
+    expect(tree!.root.findByType("tbody").findAllByType("tr")).toHaveLength(6);
+    await act(async () => {
+      tree!.root.findAllByType("button")
+        .find((button) => button.children.join("") === "Chart")!.props.onClick();
+    });
+    expect(scoreLinks()).toEqual(chartValues);
+  });
+});
+
 describe("comparison missingness and evidence safeguards", () => {
   it("keeps unavailable cells in the evidence table without plotting them as zero", () => {
     const snapshot = fixture();
@@ -199,7 +389,7 @@ describe("comparison missingness and evidence safeguards", () => {
     expect(html.match(/role="img"/g)).toHaveLength(12);
     expect(html).toContain("Show all 30");
     expect(html).not.toContain("N/A");
-    expect(html).toContain("1 unavailable values");
+    expect(html).toContain("1 unavailable value;");
     const smallPanel = { ...panels[0], rows: panels[0].rows.slice(0, 3) };
     const smallHtml = renderToStaticMarkup(
       <BenchmarkCharts panels={[smallPanel]} />,

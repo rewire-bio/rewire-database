@@ -331,6 +331,16 @@
   outline: 2px solid var(--accent);
   outline-offset: 3px;
 }
+.tableScroll a:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.numericValue {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  overflow-wrap: normal;
+  word-break: normal;
+}
 .resultTable {
   width: 100%;
   border-collapse: collapse;

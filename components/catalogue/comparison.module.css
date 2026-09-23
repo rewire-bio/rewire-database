@@ -70,6 +70,16 @@
 .panelHeader details {
   margin-top: 1.25rem;
 }
+.limitations {
+  max-width: 48rem;
+  padding-left: 1.25rem;
+  margin: 1rem 0;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+.limitations li + li {
+  margin-top: 0.4rem;
+}
 .toolbar {
   display: flex;
   flex-wrap: wrap;
@@ -93,18 +103,32 @@
 }
 .plot {
   max-height: 34rem;
-  overflow-y: auto;
+  overflow: auto;
   border: 1px solid var(--line);
   border-radius: 0.35rem;
   background: var(--paper, #fff);
 }
+.plot:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+.plot a:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+/* One intrinsic score column aligns every row without rounding source values.
+   Narrow viewports scroll this grid within the focusable plot region. */
+.plotContent {
+  display: grid;
+  grid-template-columns: minmax(10rem, 1fr) minmax(10rem, 1.3fr) max-content;
+  column-gap: 0.8rem;
+  min-width: min-content;
+}
 .axisRow,
 .plotRow {
   display: grid;
-  grid-template-columns: minmax(10rem, 1fr) minmax(10rem, 1.3fr) minmax(
-      5rem,
-      0.45fr
-    );
+  grid-column: 1 / -1;
+  grid-template-columns: subgrid;
   gap: 0.8rem;
   align-items: center;
   padding: 0.7rem 0.8rem;
@@ -137,6 +161,9 @@
   transform: translateX(-100%);
 }
 .rows {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: subgrid;
   list-style: none;
   padding: 0;
   margin: 0;
@@ -192,9 +219,17 @@
   right: 0;
 }
 .value {
+  justify-self: end;
+  scroll-margin-inline: 0.35rem;
   font-variant-numeric: tabular-nums;
-  overflow-wrap: anywhere;
+  white-space: nowrap;
+  overflow-wrap: normal;
+  word-break: normal;
   text-align: right;
+}
+.axisRow > :last-child {
+  text-align: right;
+  white-space: nowrap;
 }
 .unavailable {
   font-size: 0.8rem;
@@ -234,9 +269,12 @@
   .selectors {
     grid-template-columns: minmax(0, 1fr);
   }
+  .plotContent {
+    grid-template-columns: minmax(8rem, 1fr) max-content;
+    column-gap: 0.5rem;
+  }
   .axisRow,
   .plotRow {
-    grid-template-columns: minmax(0, 1fr) minmax(4rem, 0.35fr);
     gap: 0.5rem;
   }
   .axisRow > :first-child {

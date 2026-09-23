@@ -97,12 +97,21 @@ export default function Explorer({
   useEffect(() => {
     if (!ready) return;
     let active = true;
+    const controller = new AbortController();
+    let deadline: ReturnType<typeof setTimeout> | undefined;
     setLoading(true);
     setError("");
-    const timer = setTimeout(
-      () =>
-        client
-          .list({
+    const timer = setTimeout(() => {
+      deadline = setTimeout(() => {
+        if (!active) return;
+        active = false;
+        controller.abort();
+        setError("Loading these records took too long. Please retry.");
+        setLoading(false);
+      }, 15_000);
+      client
+        .list(
+          {
             ...filters,
             q: filters.q || undefined,
             area: filters.area || undefined,
@@ -110,27 +119,31 @@ export default function Explorer({
             origin: filters.origin || undefined,
             cursor,
             limit: 20,
-          })
-          .then((page) => {
-            if (active) {
-              setData(page);
-              setApplied({ filters, cursor });
-            }
-          })
-          .catch(() => {
-            if (active)
-              setError(
-                "The catalogue service is unavailable. Showing the last loaded page; requested filters have not been applied.",
-              );
-          })
-          .finally(() => {
-            if (active) setLoading(false);
-          }),
-      200,
-    );
+          },
+          controller.signal,
+        )
+        .then((page) => {
+          if (active) {
+            setData(page);
+            setApplied({ filters, cursor });
+          }
+        })
+        .catch(() => {
+          if (active)
+            setError(
+              "The catalogue service is unavailable. The requested records could not be loaded. Please retry.",
+            );
+        })
+        .finally(() => {
+          clearTimeout(deadline);
+          if (active) setLoading(false);
+        });
+    }, 200);
     return () => {
       active = false;
       clearTimeout(timer);
+      clearTimeout(deadline);
+      controller.abort();
     };
   }, [client, filters, cursor, retry, ready]);
   useEffect(() => {
@@ -171,6 +184,12 @@ export default function Explorer({
   const change = (key: keyof CatalogueFilters, value: string) => {
     navigate({ ...filters, [key]: value }, undefined, key === "q");
   };
+  // Controls reflect the requested URL immediately; rows belong to the last
+  // successful request. Never display that page under different filters.
+  const showResults =
+    catalogueSearch(filters, cursor) ===
+    catalogueSearch(applied.filters, applied.cursor);
+  const busy = loading || (!showResults && !error);
   const returnTo = `/${catalogueSearch(applied.filters, applied.cursor)}#browse`;
   const pageInfo = data as CataloguePage & {
     previous_cursor?: string | null;
@@ -296,19 +315,21 @@ export default function Explorer({
         </div>
       )}
       <div aria-live="polite">
-        {loading ? (
-          <p>Loading catalogue…</p>
-        ) : (
+        {busy ? (
+          <p>Loading {kindLabels[filters.kind].toLowerCase()}…</p>
+        ) : showResults ? (
           <p className={styles.muted}>
             {data.total.toLocaleString()} matching records
           </p>
-        )}
+        ) : null}
         {error && (
           <div className={styles.error}>
             <p>{error}</p>
-            <p>
-              <strong>Showing:</strong> {browseFilterSummary(applied.filters)}
-            </p>
+            {showResults && (
+              <p>
+                <strong>Showing:</strong> {browseFilterSummary(applied.filters)}
+              </p>
+            )}
             <button
               className={styles.button}
               onClick={() => setRetry(retry + 1)}
@@ -318,7 +339,7 @@ export default function Explorer({
           </div>
         )}
       </div>
-      {applied.filters.kind === "result" && (
+      {showResults && applied.filters.kind === "result" && (
         <div className={styles.notice}>
           <strong>Compare results</strong>
           <p>
@@ -350,7 +371,7 @@ export default function Explorer({
         </div>
       )}
       <div className={ui.rows} aria-busy={loading}>
-        {data.items.map((record) => (
+        {(showResults ? data.items : []).map((record) => (
           <article className={ui.row} key={record.id}>
             <span className={styles.tag}>
               {singularKindLabels[record.kind]} ·{" "}
@@ -415,7 +436,7 @@ export default function Explorer({
           </article>
         ))}
       </div>
-      {!data.total && !loading && !error && (
+      {showResults && !data.total && !loading && !error && (
         <div className={ui.empty}>
           <p>No records match these filters.</p>
           <button
@@ -426,33 +447,35 @@ export default function Explorer({
           </button>
         </div>
       )}
-      <nav className={ui.pagination} aria-label="Catalogue pages">
-        <button
-          className={styles.button}
-          disabled={
-            loading || Boolean(error) || pageInfo.previous_cursor == null
-          }
-          onClick={() =>
-            navigate(applied.filters, pageInfo.previous_cursor || undefined)
-          }
-        >
-          Previous
-        </button>
-        <span>
-          Showing {pageInfo.range_start ?? (data.items.length ? 1 : 0)}–
-          {pageInfo.range_end ?? data.items.length} of{" "}
-          {data.total.toLocaleString()}
-        </span>
-        <button
-          className={styles.button}
-          disabled={loading || Boolean(error) || !data.next_cursor}
-          onClick={() =>
-            navigate(applied.filters, data.next_cursor || undefined)
-          }
-        >
-          Next
-        </button>
-      </nav>
+      {showResults && (
+        <nav className={ui.pagination} aria-label="Catalogue pages">
+          <button
+            className={styles.button}
+            disabled={
+              loading || Boolean(error) || pageInfo.previous_cursor == null
+            }
+            onClick={() =>
+              navigate(applied.filters, pageInfo.previous_cursor || undefined)
+            }
+          >
+            Previous
+          </button>
+          <span>
+            Showing {pageInfo.range_start ?? (data.items.length ? 1 : 0)}–
+            {pageInfo.range_end ?? data.items.length} of{" "}
+            {data.total.toLocaleString()}
+          </span>
+          <button
+            className={styles.button}
+            disabled={loading || Boolean(error) || !data.next_cursor}
+            onClick={() =>
+              navigate(applied.filters, data.next_cursor || undefined)
+            }
+          >
+            Next
+          </button>
+        </nav>
+      )}
     </>
   );
 }

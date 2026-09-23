@@ -1,0 +1,13 @@
+Species	Model	Type	R2
+A. thaliana	Maize model	AgroNT	0.69
+GC	Maize model	AgroNT	0.68
+Z. mays	Maize model	AgroNT	0.65
+A. thaliana	Tobacco model	AgroNT	0.77
+GC	Tobacco model	AgroNT	0.67
+Z. mays	Tobacco model	AgroNT	0.76
+A. thaliana	Maize model	CNN (Gorjifard et al.)	0.68
+GC	Maize model	CNN (Gorjifard et al.)	0.64
+Z. mays	Maize model	CNN (Gorjifard et al.)	0.67
+A. thaliana	Tobacco model	CNN (Gorjifard et al.)	0.77
+GC	Tobacco model	CNN (Gorjifard et al.)	0.65
+Z. mays	Tobacco model	CNN (Gorjifard et al.)	0.76

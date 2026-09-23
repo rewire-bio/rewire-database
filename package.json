@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "npm run omics:release && npm run export:benchmark-literature && next dev",
-    "build": "npm run omics:release && npm run validate:benchmark-literature && npm run export:benchmark-literature && next build",
+    "build": "npm run omics:release && npm run validate:benchmark-literature && npm run export:benchmark-literature && node scripts/build-static.mjs",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "validate:benchmark-literature": "node scripts/validate-benchmark-literature.mjs",

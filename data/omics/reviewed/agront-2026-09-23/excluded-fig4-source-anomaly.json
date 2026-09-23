@@ -1,0 +1,218 @@
+{
+  "status": "excluded_from_initial_ingestion_pending_source_review",
+  "source_file": "Figures/Fig4_panelb.txt",
+  "source_rows": 190,
+  "observation": "All 15 AgroNT MH63 target scores repeat exactly under corresponding ZS97 targets. This is an observed source duplication, not a verified error or a justification for correction. Keep the two reference-genome identities distinct.",
+  "repeated_pairs": [
+    {
+      "first": {
+        "Species": "O. sativa",
+        "Tissue": "MH63_flag_leaf_1",
+        "Method": "AgroNT",
+        "AUC": "0.953557915779257"
+      },
+      "second": {
+        "Species": "O. sativa",
+        "Tissue": "ZS97_flag_leaf_1",
+        "Method": "AgroNT",
+        "AUC": "0.953557915779257"
+      }
+    },
+    {
+      "first": {
+        "Species": "O. sativa",
+        "Tissue": "MH63_flag_leaf_2",
+        "Method": "AgroNT",
+        "AUC": "0.949630325952582"
+      },
+      "second": {
+        "Species": "O. sativa",
+        "Tissue": "ZS97_flag_leaf_2",
+        "Method": "AgroNT",
+        "AUC": "0.949630325952582"
+      }
+    },
+    {
+      "first": {
+        "Species": "O. sativa",
+        "Tissue": "MH63_flower_1",
+        "Method": "AgroNT",
+        "AUC": "0.941272640332567"
+      },
+      "second": {
+        "Species": "O. sativa",
+        "Tissue": "ZS97_flower_1",
+        "Method": "AgroNT",
+        "AUC": "0.941272640332567"
+      }
+    },
+    {
+      "first": {
+        "Species": "O. sativa",
+        "Tissue": "MH63_flower_2",
+        "Method": "AgroNT",
+        "AUC": "0.940889495879432"
+      },
+      "second": {
+        "Species": "O. sativa",
+        "Tissue": "ZS97_flower_2",
+        "Method": "AgroNT",
+        "AUC": "0.940889495879432"
+      }
+    },
+    {
+      "first": {
+        "Species": "O. sativa",
+        "Tissue": "MH63_lemma_1",
+        "Method": "AgroNT",
+        "AUC": "0.960587051768769"
+      },
+      "second": {
+        "Species": "O. sativa",
+        "Tissue": "ZS97_lemma_1",
+        "Method": "AgroNT",
+        "AUC": "0.960587051768769"
+      }
+    },
+    {
+      "first": {
+        "Species": "O. sativa",
+        "Tissue": "MH63_lemma_2",
+        "Method": "AgroNT",
+        "AUC": "0.955992283046744"
+      },
+      "second": {
+        "Species": "O. sativa",
+        "Tissue": "ZS97_lemma_2",
+        "Method": "AgroNT",
+        "AUC": "0.955992283046744"
+      }
+    },
+    {
+      "first": {
+        "Species": "O. sativa",
+        "Tissue": "MH63_panicle_1",
+        "Method": "AgroNT",
+        "AUC": "0.96694647990786"
+      },
+      "second": {
+        "Species": "O. sativa",
+        "Tissue": "ZS97_panicle_1",
+        "Method": "AgroNT",
+        "AUC": "0.96694647990786"
+      }
+    },
+    {
+      "first": {
+        "Species": "O. sativa",
+        "Tissue": "MH63_panicle_2",
+        "Method": "AgroNT",
+        "AUC": "0.976575958888608"
+      },
+      "second": {
+        "Species": "O. sativa",
+        "Tissue": "ZS97_panicle_2",
+        "Method": "AgroNT",
+        "AUC": "0.976575958888608"
+      }
+    },
+    {
+      "first": {
+        "Species": "O. sativa",
+        "Tissue": "MH63_panicle_3",
+        "Method": "AgroNT",
+        "AUC": "0.967295262054253"
+      },
+      "second": {
+        "Species": "O. sativa",
+        "Tissue": "ZS97_panicle_3",
+        "Method": "AgroNT",
+        "AUC": "0.967295262054253"
+      }
+    },
+    {
+      "first": {
+        "Species": "O. sativa",
+        "Tissue": "MH63_panicle_4",
+        "Method": "AgroNT",
+        "AUC": "0.962823534116396"
+      },
+      "second": {
+        "Species": "O. sativa",
+        "Tissue": "ZS97_panicle_4",
+        "Method": "AgroNT",
+        "AUC": "0.962823534116396"
+      }
+    },
+    {
+      "first": {
+        "Species": "O. sativa",
+        "Tissue": "MH63_panicle_5",
+        "Method": "AgroNT",
+        "AUC": "0.961028854238987"
+      },
+      "second": {
+        "Species": "O. sativa",
+        "Tissue": "ZS97_panicle_5",
+        "Method": "AgroNT",
+        "AUC": "0.961028854238987"
+      }
+    },
+    {
+      "first": {
+        "Species": "O. sativa",
+        "Tissue": "MH63_root_1",
+        "Method": "AgroNT",
+        "AUC": "0.95042864895822"
+      },
+      "second": {
+        "Species": "O. sativa",
+        "Tissue": "ZS97_root_1",
+        "Method": "AgroNT",
+        "AUC": "0.95042864895822"
+      }
+    },
+    {
+      "first": {
+        "Species": "O. sativa",
+        "Tissue": "MH63_root_2",
+        "Method": "AgroNT",
+        "AUC": "0.9524977551959"
+      },
+      "second": {
+        "Species": "O. sativa",
+        "Tissue": "ZS97_root_2",
+        "Method": "AgroNT",
+        "AUC": "0.9524977551959"
+      }
+    },
+    {
+      "first": {
+        "Species": "O. sativa",
+        "Tissue": "MH63_young_leaf_1",
+        "Method": "AgroNT",
+        "AUC": "0.942603068013723"
+      },
+      "second": {
+        "Species": "O. sativa",
+        "Tissue": "ZS97_young_leaf_1",
+        "Method": "AgroNT",
+        "AUC": "0.942603068013723"
+      }
+    },
+    {
+      "first": {
+        "Species": "O. sativa",
+        "Tissue": "MH63_young_leaf_2",
+        "Method": "AgroNT",
+        "AUC": "0.963966771336426"
+      },
+      "second": {
+        "Species": "O. sativa",
+        "Tissue": "ZS97_young_leaf_2",
+        "Method": "AgroNT",
+        "AUC": "0.963966771336426"
+      }
+    }
+  ]
+}

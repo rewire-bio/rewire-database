@@ -1,0 +1,218 @@
+[
+  {
+    "file": "Figures/Fig3_panele.txt",
+    "line": 2,
+    "species_or_class": "A. thaliana",
+    "assay": "Maize model",
+    "method": "AgroNT",
+    "value": "0.62",
+    "status": "pass"
+  },
+  {
+    "file": "Figures/Fig3_panele.txt",
+    "line": 3,
+    "species_or_class": "S. bicolor",
+    "assay": "Maize model",
+    "method": "AgroNT",
+    "value": "0.68",
+    "status": "pass"
+  },
+  {
+    "file": "Figures/Fig3_panele.txt",
+    "line": 4,
+    "species_or_class": "Z. mays",
+    "assay": "Maize model",
+    "method": "AgroNT",
+    "value": "0.71",
+    "status": "pass"
+  },
+  {
+    "file": "Figures/Fig3_panele.txt",
+    "line": 5,
+    "species_or_class": "A. thaliana",
+    "assay": "Tobacco model",
+    "method": "AgroNT",
+    "value": "0.62",
+    "status": "pass"
+  },
+  {
+    "file": "Figures/Fig3_panele.txt",
+    "line": 6,
+    "species_or_class": "S. bicolor",
+    "assay": "Tobacco model",
+    "method": "AgroNT",
+    "value": "0.74",
+    "status": "pass"
+  },
+  {
+    "file": "Figures/Fig3_panele.txt",
+    "line": 7,
+    "species_or_class": "Z. mays",
+    "assay": "Tobacco model",
+    "method": "AgroNT",
+    "value": "0.75",
+    "status": "pass"
+  },
+  {
+    "file": "Figures/Fig3_panele.txt",
+    "line": 8,
+    "species_or_class": "A. thaliana",
+    "assay": "Maize model",
+    "method": "CNN (Jores et al.)",
+    "value": "0.58",
+    "status": "pass"
+  },
+  {
+    "file": "Figures/Fig3_panele.txt",
+    "line": 9,
+    "species_or_class": "S. bicolor",
+    "assay": "Maize model",
+    "method": "CNN (Jores et al.)",
+    "value": "0.65",
+    "status": "pass"
+  },
+  {
+    "file": "Figures/Fig3_panele.txt",
+    "line": 10,
+    "species_or_class": "Z. mays",
+    "assay": "Maize model",
+    "method": "CNN (Jores et al.)",
+    "value": "0.69",
+    "status": "pass"
+  },
+  {
+    "file": "Figures/Fig3_panele.txt",
+    "line": 11,
+    "species_or_class": "A. thaliana",
+    "assay": "Tobacco model",
+    "method": "CNN (Jores et al.)",
+    "value": "0.57",
+    "status": "pass"
+  },
+  {
+    "file": "Figures/Fig3_panele.txt",
+    "line": 12,
+    "species_or_class": "S. bicolor",
+    "assay": "Tobacco model",
+    "method": "CNN (Jores et al.)",
+    "value": "0.71",
+    "status": "pass"
+  },
+  {
+    "file": "Figures/Fig3_panele.txt",
+    "line": 13,
+    "species_or_class": "Z. mays",
+    "assay": "Tobacco model",
+    "method": "CNN (Jores et al.)",
+    "value": "0.73",
+    "status": "pass"
+  },
+  {
+    "file": "Figures/Fig3_panelf.txt",
+    "line": 2,
+    "species_or_class": "A. thaliana",
+    "assay": "Maize model",
+    "method": "AgroNT",
+    "value": "0.69",
+    "status": "pass"
+  },
+  {
+    "file": "Figures/Fig3_panelf.txt",
+    "line": 3,
+    "species_or_class": "GC",
+    "assay": "Maize model",
+    "method": "AgroNT",
+    "value": "0.68",
+    "status": "pass"
+  },
+  {
+    "file": "Figures/Fig3_panelf.txt",
+    "line": 4,
+    "species_or_class": "Z. mays",
+    "assay": "Maize model",
+    "method": "AgroNT",
+    "value": "0.65",
+    "status": "pass"
+  },
+  {
+    "file": "Figures/Fig3_panelf.txt",
+    "line": 5,
+    "species_or_class": "A. thaliana",
+    "assay": "Tobacco model",
+    "method": "AgroNT",
+    "value": "0.77",
+    "status": "pass"
+  },
+  {
+    "file": "Figures/Fig3_panelf.txt",
+    "line": 6,
+    "species_or_class": "GC",
+    "assay": "Tobacco model",
+    "method": "AgroNT",
+    "value": "0.67",
+    "status": "pass"
+  },
+  {
+    "file": "Figures/Fig3_panelf.txt",
+    "line": 7,
+    "species_or_class": "Z. mays",
+    "assay": "Tobacco model",
+    "method": "AgroNT",
+    "value": "0.76",
+    "status": "pass"
+  },
+  {
+    "file": "Figures/Fig3_panelf.txt",
+    "line": 8,
+    "species_or_class": "A. thaliana",
+    "assay": "Maize model",
+    "method": "CNN (Gorjifard et al.)",
+    "value": "0.68",
+    "status": "pass"
+  },
+  {
+    "file": "Figures/Fig3_panelf.txt",
+    "line": 9,
+    "species_or_class": "GC",
+    "assay": "Maize model",
+    "method": "CNN (Gorjifard et al.)",
+    "value": "0.64",
+    "status": "pass"
+  },
+  {
+    "file": "Figures/Fig3_panelf.txt",
+    "line": 10,
+    "species_or_class": "Z. mays",
+    "assay": "Maize model",
+    "method": "CNN (Gorjifard et al.)",
+    "value": "0.67",
+    "status": "pass"
+  },
+  {
+    "file": "Figures/Fig3_panelf.txt",
+    "line": 11,
+    "species_or_class": "A. thaliana",
+    "assay": "Tobacco model",
+    "method": "CNN (Gorjifard et al.)",
+    "value": "0.77",
+    "status": "pass"
+  },
+  {
+    "file": "Figures/Fig3_panelf.txt",
+    "line": 12,
+    "species_or_class": "GC",
+    "assay": "Tobacco model",
+    "method": "CNN (Gorjifard et al.)",
+    "value": "0.65",
+    "status": "pass"
+  },
+  {
+    "file": "Figures/Fig3_panelf.txt",
+    "line": 13,
+    "species_or_class": "Z. mays",
+    "assay": "Tobacco model",
+    "method": "CNN (Gorjifard et al.)",
+    "value": "0.76",
+    "status": "pass"
+  }
+]

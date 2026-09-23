@@ -1,0 +1,18 @@
+{
+  "status": "reviewed",
+  "review_method": "automated",
+  "reviewed_at": "2026-09-23",
+  "records_sha256": "00bc9232e34592f5f5e6c3976f9cb8a560e642db79a866fc29da4fba565c38cd",
+  "input_sha256": {
+    "Fig3_panele.txt": "9cea450b579aa1eb61ff3bcb70e017410402abd6261aef8fc270cafc926a7c7b",
+    "Fig3_panelf.txt": "2a72d3cfd8c0cd5611ef91f0fd5e3e958aec55e2abb58773992b677b3fb9f1ef",
+    "article.xml.gz": "8f994ba8dc8ebd6d2ef5f3f093d1e2c35b7639bd9a986b51914cc1175a7eb2a3",
+    "paper-method-locators.json": "06c00fa12bbf1bae9ce380d4a0b49586b1c3d408c5e53a86cc0b52ba74a7a55c",
+    "rows.json": "c2a34ed41991bdbe5e34d085a451b8b30d9b9a3a51a335e92fca4808da13edd5"
+  },
+  "result_rows": 24,
+  "agront_rows": 12,
+  "cnn_rows": 12,
+  "errors": [],
+  "scope": "Complete Figure 3e and 3f source tables; not independent reproduction. Figure 4b excluded pending duplicated rice-strain score review."
+}

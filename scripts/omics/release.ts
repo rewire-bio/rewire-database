@@ -1,3 +1,4 @@
+import { addAgroEvaluations, agroInputs } from "./agront-evaluations";
 import { writeBaselineAudit } from "./baseline-coverage";
 import { writeImmutableChunks } from "./stream-files";
 import { addLocalEvaluations, localEvaluationInputs, addBaselineEvaluations, baselineEvaluationInputs } from "./local-evaluations";
@@ -270,9 +271,9 @@ function main() {
         : [],
     ),
   );
-  const records = addBaselineEvaluations(addLocalEvaluations(applyAcquisitionCorrections(
+  const records = addAgroEvaluations(addBaselineEvaluations(addLocalEvaluations(applyAcquisitionCorrections(
     addAcquiredEvidence(addRunRecipes(separateEntities(profiled))),
-  )));
+  ))));
   const profiles = records
     .filter((record) => record.attributes.profile)
     .map((record) => record.attributes.profile as OmicsProfile);
@@ -388,6 +389,7 @@ function main() {
               "Recover 16 omitted ProteinBench percentage results and correct percent units; original printed and numeric values remain unchanged.",
               "Correct DART-Eval correlation units and remove unsupported standard-deviation labels from TDC printed plus/minus spreads.",
               "Recheck pinned extraction inputs, reject unrecognised cells and authenticate PDF-to-text transformations.",
+              "Add complete AgroNT promoter and terminator source tables with CNN baselines, source-backed family links and separate assay comparisons.",
               "Count reviewed metrics from the same source evaluation setup together, retaining all original record IDs and links.",
               "Load individual source-scoped charts, remove cross-protocol pooled rankings, and move findings before detailed instructions.",
               "Preserve archived release bytes, historical URLs and MFASS history. Contributions remain disabled.",
@@ -408,6 +410,7 @@ function main() {
         ...runRecipeInputs,
         ...localEvaluationInputs,
         ...baselineEvaluationInputs,
+        ...agroInputs,
         ...reviewInputFiles.filter((file) => fs.existsSync(file)),
         ...profileInputs.filter((file) => fs.existsSync(file)),
         ...associationInputs.filter((file) => fs.existsSync(file)),

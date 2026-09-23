@@ -1,3 +1,4 @@
+import Breadcrumbs from "./Breadcrumbs";
 import { catalogueText } from "@/lib/catalogue-text";
 import { recordHref, type OmicsCatalogue } from "@/lib/omics";
 import { researchAreaLabel } from "@/lib/omics-browse";
@@ -21,7 +22,11 @@ export default function StaticIndex({ catalogue, kind, page = 1 }: { catalogue: 
   ) : null;
   return <>
     <header className="page-head"><div className="wrap">
-      <nav className="breadcrumb" aria-label="Breadcrumb"><a href="/">Database</a><span aria-hidden="true">/</span><span>{benchmarks ? "Benchmarks" : "Models"}</span></nav>
+      <Breadcrumbs items={[
+        { name: "Database", path: "/" },
+        { name: benchmarks ? "Benchmarks" : "Models", path: benchmarks ? "/benchmarks/" : "/models/" },
+        ...(!benchmarks && page > 1 ? [{ name: `Page ${page}`, path: modelIndexHref(page) }] : []),
+      ]} />
       <h1>{benchmarks ? "Biological benchmarks" : "Biological models"}</h1>
       <p className="intro">{benchmarks ? "Explore evaluation suites and challenges, what they measure, and the models tested against them." : "Understand model architectures, biological inputs, access requirements and the evidence from linked evaluations."}</p>
       <nav className={styles.shortcuts} aria-label="Catalogue indexes"><a href="/benchmarks/" aria-current={benchmarks ? "page" : undefined}>Benchmarks</a><a href="/models/" aria-current={!benchmarks ? (page === 1 ? "page" : "location") : undefined}>Models</a><a href={`/?kind=${kind}#browse`}>Search and filter {benchmarks ? "benchmarks" : "models"}</a></nav>

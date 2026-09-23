@@ -1,14 +1,23 @@
+import { socialMetadata } from "@/lib/catalogue-sharing";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { buildCatalogue } from "@/lib/catalogue-build";
 import { createEvidenceIndex } from "@/services/omics/src/evidence-table";
 import styles from "@/app/database/database.module.css";
 
-export const metadata: Metadata = {
+const pageMetadata = {
   title: "Evidence and source origins",
   description:
     "Trace rewire catalogue statements to original sources, exact locations, reviewed artifacts and explicitly unresolved metadata.",
   alternates: { canonical: "https://benchmarks.rewire.it/evidence/" },
+};
+export const metadata: Metadata = {
+  ...pageMetadata,
+  ...socialMetadata({
+    title: pageMetadata.title,
+    description: pageMetadata.description,
+    path: pageMetadata.alternates.canonical,
+  }),
 };
 export default function EvidenceGuide() {
   const { catalogue } = buildCatalogue();

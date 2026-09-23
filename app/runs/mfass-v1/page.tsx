@@ -1,12 +1,21 @@
+import { socialMetadata } from "@/lib/catalogue-sharing";
 import type { Metadata } from "next";
 import Link from "next/link";
 import styles from "../../overview.module.css";
 
-export const metadata: Metadata = {
+const pageMetadata = {
   title: "MFASS v1 historical report",
   description: "Preserved MFASS v1 benchmark results and reproduction instructions, superseded by the corrected MFASS v2 evaluation.",
   alternates: { canonical: "https://benchmarks.rewire.it/runs/mfass-v1/" },
   robots: { index: false, follow: true },
+};
+export const metadata: Metadata = {
+  ...pageMetadata,
+  ...socialMetadata({
+    title: pageMetadata.title,
+    description: pageMetadata.description,
+    path: pageMetadata.alternates.canonical,
+  }),
 };
 
 const REPO = "https://github.com/rewire-bio/rewire-benchmarks";

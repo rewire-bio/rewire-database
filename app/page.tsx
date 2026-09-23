@@ -1,3 +1,4 @@
+import { catalogueWebsiteJsonLd, safeJsonLd, socialMetadata } from "@/lib/catalogue-sharing";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { buildCatalogue } from "@/lib/catalogue-build";
@@ -10,11 +11,19 @@ import {
 import { researchAreaLabel } from "@/lib/omics-browse";
 import { benchmarkCoverage } from "@/scripts/omics/audit-benchmark-evidence";
 
-export const metadata: Metadata = {
+const pageMetadata = {
   title: "Biological model benchmark database",
   description:
     "Explore specialist biological models, benchmarks, datasets, baselines and source-linked results in one database.",
   alternates: { canonical: "https://benchmarks.rewire.it/" },
+};
+export const metadata: Metadata = {
+  ...pageMetadata,
+  ...socialMetadata({
+    title: pageMetadata.title,
+    description: pageMetadata.description,
+    path: pageMetadata.alternates.canonical,
+  }),
 };
 
 export default function BenchmarksPage() {
@@ -52,6 +61,7 @@ export default function BenchmarksPage() {
 
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJsonLd(catalogueWebsiteJsonLd) }} />
       <header className="page-head">
         <div className="wrap">
           <span className="kick">Omics and molecular biology</span>

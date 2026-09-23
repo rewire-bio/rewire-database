@@ -1,4 +1,5 @@
 "use client";
+import { catalogueText } from "@/lib/catalogue-text";
 import { Fragment, useState, useMemo, useEffect } from "react";
 
 const runtimeLabel = (runtime: string) =>
@@ -119,7 +120,7 @@ export default function RunRecipes({
                 <Link
                   href={`${recordHref(protocol)}#${protocol.attributes.run_recipes ? "run-recipes" : "run"}`}
                 >
-                  {protocol.name}
+                  {catalogueText(protocol.name)}
                 </Link>
               </li>
             ))}

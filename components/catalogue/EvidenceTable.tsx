@@ -1,4 +1,5 @@
 "use client";
+import EvidenceValue from "./EvidenceValue";
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { catalogueClient, type EvidencePage } from "@/lib/catalogue-client";
@@ -170,9 +171,13 @@ export default function EvidenceTable({
                 <tr key={row.row_id}>
                   <th scope="row">
                     <strong>{row.property}</strong>
-                    <p className={styles.evidenceValue}>
-                      {row.value || "No value recorded"}
-                    </p>
+                    <div className={styles.evidenceValue}>
+                      <EvidenceValue
+                        valueJson={row.value_json}
+                        fallback={row.value}
+                        fieldPath={row.field_path}
+                      />
+                    </div>
                     <small>{scopes[row.evidence_scope]}</small>
                   </th>
                   <td>

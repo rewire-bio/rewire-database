@@ -1,3 +1,4 @@
+import { catalogueText } from "@/lib/catalogue-text";
 import Link from "next/link";
 import { Fragment } from "react";
 import {
@@ -111,7 +112,7 @@ export default function BaselineCoverage({
               .map((evaluation) => (
                 <p key={evaluation.id}>
                   <Link href={recordHref(evaluation)}>
-                    {evaluation.name}: methods, coverage and results
+                    {catalogueText(evaluation.name)}: methods, coverage and results
                   </Link>
                 </p>
               ))}
@@ -129,7 +130,7 @@ export default function BaselineCoverage({
               const statuses = rows.filter((row) => row.protocol_id === id);
               return (
                 <li key={id}>
-                  <Link href={recordHref(protocol)}>{protocol.name}</Link> ·{" "}
+                  <Link href={recordHref(protocol)}>{catalogueText(protocol.name)}</Link> ·{" "}
                   {statuses.every((row) => row.status === "historical")
                     ? "historical"
                     : `${statuses.filter((row) => row.status === "measured").length}/2 roles measured`}

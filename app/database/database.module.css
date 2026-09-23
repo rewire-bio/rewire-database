@@ -456,6 +456,24 @@
 }
 .evidenceValue {
   font-weight: normal;
+  margin: 8px 0;
+}
+.evidenceValue ul {
+  list-style: disc;
+  margin: 0.5rem 0;
+  padding-inline-start: 1.25rem;
+}
+.evidenceValue li + li {
+  margin-top: 0.5rem;
+}
+.evidenceValue dl {
+  margin: 0.5rem 0;
+}
+.evidenceValue dt {
+  font-weight: 600;
+}
+.evidenceValue dd {
+  margin: 0.125rem 0 0.75rem;
 }
 .chartSelect {
   display: block;

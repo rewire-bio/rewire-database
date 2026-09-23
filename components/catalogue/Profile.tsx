@@ -1,3 +1,4 @@
+import { catalogueText } from "@/lib/catalogue-text";
 import {
   isModelSubject,
   entityKindLabel,
@@ -68,7 +69,7 @@ export default function Profile({
       <section id="overview" className={styles.section}>
         <h2>Overview</h2>
         <p>
-          {record.description ||
+          {catalogueText(record.description) ||
             "An explanatory profile has not yet been reviewed for this record."}
         </p>
         <p className={styles.muted}>

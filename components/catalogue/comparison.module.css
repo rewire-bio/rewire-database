@@ -77,6 +77,11 @@
   align-items: end;
   margin-top: 1.5rem;
 }
+.toolbar .switches {
+  margin-bottom: 0;
+  align-self: flex-end;
+  font-size: 0.9rem;
+}
 .toolbar label:first-child {
   flex: 1 1 16rem;
 }

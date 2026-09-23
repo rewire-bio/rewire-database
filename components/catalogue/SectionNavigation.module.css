@@ -1,6 +1,7 @@
 .nav {
   position: sticky;
-  top: 62px;
+  top: var(--site-header-height);
+  min-height: var(--section-nav-height);
   z-index: 20;
   margin: 0 0 24px;
   padding: 10px 0;
@@ -40,9 +41,6 @@
 @media (max-width: 720px) {
   .links {
     display: none;
-  }
-  .nav {
-    top: 58px;
   }
   .mobile {
     display: flex;

@@ -124,11 +124,18 @@
   padding-right: 20px;
 }
 .section {
-  margin: 32px 0;
+  margin: 40px 0;
+}
+.section > p {
+  margin: 1rem 0;
+}
+.section > h3 {
+  margin: 1.5rem 0 0.75rem;
+  line-height: 1.4;
 }
 .section h2 {
   font-size: 25px;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
 }
 .list {
   list-style: disc;
@@ -400,7 +407,7 @@
 }
 .section p {
   line-height: 1.75;
-  max-width: 920px;
+  max-width: var(--section-prose-width, 80ch);
 }
 .section summary {
   cursor: pointer;

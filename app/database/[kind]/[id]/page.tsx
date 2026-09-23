@@ -160,6 +160,8 @@ export default function RecordPage({ params }: { params: Params }) {
       predictiveKinds.includes(item.record.kind) &&
       verifiedAssociation(record.id, item.relation, item.record.id),
   );
+  const familyResults = family ? query.results({ id: family.record.id, limit: 1 }) : null;
+  const broaderFamilyOnly = !!family && results.total === 0 && !!familyResults?.total;
   const localProfile = profileSchema.safeParse(record.attributes.profile);
   const shared =
     family &&
@@ -230,6 +232,9 @@ export default function RecordPage({ params }: { params: Params }) {
       item.relation === "uses_model" &&
       verifiedAssociation(item.record.id, item.relation, record.id),
   );
+  const evaluatedDownstream = downstream
+    .map(item => ({ ...item, counts: query.results({ id: item.record.id, limit: 1 }) }))
+    .filter(item => item.counts.total > 0);
   const protocolLinks = uniqueRecords([
     ...detail.direct
       .filter(
@@ -302,20 +307,38 @@ export default function RecordPage({ params }: { params: Params }) {
               )}
               {entity && results.total === 0 && (
                 <p className={styles.muted}>
-                  No reviewed evaluations are linked here in this release. See
-                  the sources and separately identified configurations below.
+                  {evaluatedDownstream.length
+                    ? "Results are available for configurations using this model. Their fitted heads, extra inputs and evaluation settings are kept separate below."
+                    : broaderFamilyOnly
+                      ? "The broader model family has published results, but their attribution to this exact checkpoint has not been verified."
+                      : "No reviewed evaluations are linked here in this release. See the sources and separately identified configurations below."}
                 </p>
               )}
               {entity && (
                 <p>
-                  <a href="#results" className={styles.resultCount}>
+                  {(results.total > 0 || (!evaluatedDownstream.length && !broaderFamilyOnly)) && (
+                    <a href="#results" className={styles.resultCount}>
                     {results.evaluation_count}{" "}
                     {results.evaluation_count === 1
                       ? "evaluation"
                       : "evaluations"}{" "}
                     · {results.total}{" "}
                     {results.total === 1 ? "metric row" : "metric rows"}
-                  </a>
+                    </a>
+                  )}
+                  {evaluatedDownstream.length > 0 && (
+                    <>
+                      {results.total > 0 ? " · " : ""}
+                      <a href="#configurations" className={styles.resultCount}>
+                        {evaluatedDownstream.length} evaluated {evaluatedDownstream.length === 1 ? "configuration" : "configurations"} using this model
+                      </a>
+                    </>
+                  )}
+                  {broaderFamilyOnly && !evaluatedDownstream.length && family && (
+                    <Link href={`${recordHref(family.record)}#results`} className={styles.resultCount}>
+                      View {familyResults!.total} metric rows for the broader family
+                    </Link>
+                  )}
                 </p>
               )}
             </div>
@@ -484,13 +507,45 @@ export default function RecordPage({ params }: { params: Params }) {
                 }
               />
             )}
-          {predictive && (
+          {predictive && (results.total > 0 || (!evaluatedDownstream.length && !broaderFamilyOnly)) && (
             <Results
               key={`${catalogue.release_id}:${record.id}`}
               id={record.id}
               initial={results}
               title="Evaluations and results"
             />
+          )}
+          {predictive && results.total === 0 && (evaluatedDownstream.length > 0 || broaderFamilyOnly) && <span id="results" />}
+          {predictive && broaderFamilyOnly && !evaluatedDownstream.length && family && (
+            <section className={styles.section}>
+              <h2>Results for the broader model family</h2>
+              <p>Published evaluations are available for {catalogueText(family.record.name)}. The cited sources do not establish that this exact checkpoint was used, so those scores are kept on the family profile.</p>
+              <Link href={`${recordHref(family.record)}#results`}>View the family’s evaluations and exact configurations</Link>
+            </section>
+          )}
+          {predictive && downstream.length > 0 && (
+            <section id="configurations" className={styles.section}>
+              <h2>Related configurations, pipelines and services</h2>
+              <p>
+                These configurations, services and pipelines use this model within their
+                own configurations. Their results, where available, are
+                not assigned to the underlying model.
+              </p>
+              <ul className={styles.configurationList}>
+                {downstream.map((item) => (
+                  <li key={item.record.id}>
+                    <Link href={`${recordHref(item.record)}#results`}>
+                      {catalogueText(item.record.name)}
+                    </Link>{" "}
+                    <span>
+                      {singularKindLabels[item.record.kind]} ·{" "}
+                      {query.results({ id: item.record.id, limit: 1 }).total}{" "}
+                      metric rows
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </section>
           )}
           {entity && (
             <section
@@ -527,33 +582,7 @@ export default function RecordPage({ params }: { params: Params }) {
                     evaluated settings.
                   </p>
                 )}
-                {downstream.length > 0 && (
-                  <section id="configurations" className={styles.section}>
-                    <h2>Configurations, pipelines and services</h2>
-                    <p>
-                      These services and pipelines use this model within their
-                      own configurations. Their results, where available, are
-                      not assigned to the underlying model.
-                    </p>
-                    <ul className={styles.configurationList}>
-                      {downstream.map((item) => (
-                        <li key={item.record.id}>
-                          <Link href={recordHref(item.record)}>
-                            {catalogueText(item.record.name)}
-                          </Link>{" "}
-                          <span>
-                            {singularKindLabels[item.record.kind]} ·{" "}
-                            {
-                              query.results({ id: item.record.id, limit: 1 })
-                                .total
-                            }{" "}
-                            metric rows
-                          </span>
-                        </li>
-                      ))}
-                    </ul>
-                  </section>
-                )}
+
 
                 {profileOwner.record.id !== record.id && (
                   <section className={styles.section}>
@@ -582,7 +611,7 @@ export default function RecordPage({ params }: { params: Params }) {
                     <ul className={styles.list}>
                       {memberLinks.map((item) => (
                         <li key={item.record.id}>
-                          <Link href={recordHref(item.record)}>
+                          <Link href={`${recordHref(item.record)}#results`}>
                             {catalogueText(item.record.name)}
                           </Link>{" "}
                           · {item.relation.replace(/_/g, " ")}

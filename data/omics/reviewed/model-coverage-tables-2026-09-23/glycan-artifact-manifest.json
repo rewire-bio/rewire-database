@@ -1,0 +1,19 @@
+{
+  "outer_archive": {
+    "file": "glycangt-supplementary.zip",
+    "sha256": "27748c6c0c0bb07b0105d274fb745fd4dfe702d34b9ee367d1ddacbc71c56ab0"
+  },
+  "inner_archive": {
+    "file": "supplement/btag147_supplementary_data.zip",
+    "sha256": "2ea67b6d3eebccf780774a11b8574d0e389fe8871c61727d7617b516b1d8d5fb"
+  },
+  "table_s4": {
+    "file": "tables/Table_S4.xlsx",
+    "sha256": "d7c35909bac6bcb78ca8fdb32c0463f05e692f15861a8184e65e415e7216f493"
+  },
+  "primary_xml": {
+    "file": "../../cells-other/evidence-official-87c70bddba97a72a5e5d.xml",
+    "source_id": "evidence-official-87c70bddba97a72a5e5d",
+    "sha256": "53e89a636c868c0329ee7eb6ae92f1028ec891940bc61730a148981b647fbbe5"
+  }
+}

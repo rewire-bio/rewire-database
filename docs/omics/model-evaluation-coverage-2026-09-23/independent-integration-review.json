@@ -1,0 +1,198 @@
+{
+  "status": "passed",
+  "review_method": "independent automated implementation and graph review",
+  "reviewed_at": "2026-09-23T11:50:19.663Z",
+  "scope": "Sealed loader positive/negative tests, graph validation, original source/result preservation and alias boundaries; no new independent model execution.",
+  "base_catalogue_sha256": "4c7b43739c508b654a4f906ebb89e45d309060375821137a11a43597989f6572",
+  "base_records": 22074,
+  "projected_records": 26045,
+  "new_records": 3971,
+  "new_results": 1620,
+  "new_evaluations": 1620,
+  "negative_tests": [
+    {
+      "name": "data/omics/reviewed/model-coverage-tables-2026-09-23 draft receipt",
+      "error": "Coverage table receipt mismatch"
+    },
+    {
+      "name": "data/omics/reviewed/model-coverage-tables-2026-09-23 missing receipt",
+      "error": "Coverage table receipt mismatch"
+    },
+    {
+      "name": "data/omics/reviewed/model-coverage-tables-2026-09-23 omitted reviewed inputs",
+      "error": "Unreviewed coverage input"
+    },
+    {
+      "name": "data/omics/reviewed/model-coverage-tables-2026-09-23 changed compressed artifact",
+      "error": "Coverage table reviewed input changed"
+    },
+    {
+      "name": "data/omics/reviewed/model-coverage-tables-2026-09-23 wrong original artifact hash",
+      "error": "Coverage table primary artifact mismatch"
+    },
+    {
+      "name": "data/omics/reviewed/model-evaluation-links-2026-09-23 draft receipt",
+      "error": "Model identity review receipt mismatch"
+    },
+    {
+      "name": "data/omics/reviewed/model-evaluation-links-2026-09-23 missing receipt",
+      "error": "Model identity review receipt mismatch"
+    },
+    {
+      "name": "data/omics/reviewed/model-evaluation-links-2026-09-23 omitted reviewed inputs",
+      "error": "Unreviewed identity input"
+    },
+    {
+      "name": "data/omics/reviewed/model-evaluation-links-2026-09-23 changed compressed artifact",
+      "error": "Reviewed identity input changed"
+    },
+    {
+      "name": "data/omics/reviewed/model-evaluation-links-2026-09-23 wrong original artifact hash",
+      "error": "Identity primary artifact mismatch"
+    },
+    {
+      "name": "coverage changed specs.json",
+      "error": "Coverage table reviewed input changed"
+    },
+    {
+      "name": "coverage changed records.jsonl",
+      "error": "Coverage table receipt mismatch"
+    },
+    {
+      "name": "identity changed links.json",
+      "error": "Model identity review receipt mismatch"
+    },
+    {
+      "name": "identity changed sources.jsonl",
+      "error": "Model identity review receipt mismatch"
+    },
+    {
+      "name": "coverage regeneration mismatch after new records hash",
+      "error": "Coverage table records differ from reviewed extraction"
+    },
+    {
+      "name": "missing lineage target",
+      "error": "Missing or duplicate experiment lineage target"
+    },
+    {
+      "name": "cannot load table records twice",
+      "error": "Coverage tables cannot overwrite or duplicate records"
+    },
+    {
+      "name": "cannot load identity sources twice",
+      "error": "Identity sources must be additive"
+    }
+  ],
+  "aliases": [
+    {
+      "subject": "catalog-model-dnabert-2",
+      "target": "discovery-model-dnabert-2",
+      "subjectRows": 128,
+      "targetRows": 128
+    },
+    {
+      "subject": "catalog-model-rna-fm",
+      "target": "discovery-model-rna-fm",
+      "subjectRows": 67,
+      "targetRows": 67
+    },
+    {
+      "subject": "catalog-model-spliceai",
+      "target": "discovery-model-spliceai",
+      "subjectRows": 6,
+      "targetRows": 6
+    },
+    {
+      "subject": "catalog-model-pangolin",
+      "target": "discovery-model-pangolin",
+      "subjectRows": 8,
+      "targetRows": 8
+    },
+    {
+      "subject": "discovery-model-gears",
+      "target": "catalog-model-gears",
+      "subjectRows": 2,
+      "targetRows": 2
+    },
+    {
+      "subject": "discovery-model-scgpt",
+      "target": "catalog-model-scgpt",
+      "subjectRows": 3,
+      "targetRows": 3
+    },
+    {
+      "subject": "discovery-model-scvi",
+      "target": "catalog-model-scvi",
+      "subjectRows": 24,
+      "targetRows": 24
+    }
+  ],
+  "input_record_mutation": false,
+  "original_result_fields_changed": false,
+  "tracked_historical_files_changed": false,
+  "dynamic_input_manifest_matches": true,
+  "coverage_input_count": 44,
+  "identity_input_count": 8,
+  "hashes": {
+    "data/omics/reviewed/model-coverage-tables-2026-09-23/basenji-basenji-artifact-manifest.json": "fc2afd59c8cfe58b3d65f6ca0e97eaea97d028c5f19c98364e2744373eb674dd",
+    "data/omics/reviewed/model-coverage-tables-2026-09-23/basenji-basenji-enformer-source-cells.json": "e6cd42511263359a3857a14c5d88dc11197bc66b059f7df335e6e6103ca1acfb",
+    "data/omics/reviewed/model-coverage-tables-2026-09-23/basenji-enformer-primary.xml.gz": "8a973ae696a0e42cf4a14aa056498b1022601c5501d257e43cf6caca674dc8e7",
+    "data/omics/reviewed/model-coverage-tables-2026-09-23/cell-gaps-gears-supp.pdf.gz": "2327bea033a6979d5ed7261646c99bfa9ee785cbc07e76aa85cb3fc1b7e26adc",
+    "data/omics/reviewed/model-coverage-tables-2026-09-23/cell-gaps-receipts.json": "c1fe41ee97e8f04c9ecaad26e7a917e4e192b055218eb67dbc3acbee19870923",
+    "data/omics/reviewed/model-coverage-tables-2026-09-23/cell-gaps-scfoundation-supp.pdf.gz": "1a404c45d19cee8fdc4dc0ae8255600a0fd268e67cc039c27ed0a85a6e831d6f",
+    "data/omics/reviewed/model-coverage-tables-2026-09-23/cell-gaps-table-review.json": "f744f8ec73249698e38ade8fc3e44b6032e59417ed3daf06124fbfeb13a86467",
+    "data/omics/reviewed/model-coverage-tables-2026-09-23/dreams.xml.gz": "599f4370c2c290ee821b0d473aa06ea4834bdf3e68e27b8bb6e151d3044db0a3",
+    "data/omics/reviewed/model-coverage-tables-2026-09-23/esmfold2.pdf.gz": "f3d0e7c52634065df203d6fd9dc0ff01991ee6dc146fd36db4cce6388f8041ea",
+    "data/omics/reviewed/model-coverage-tables-2026-09-23/genie3.pdf.gz": "5f589f5756f9dbe3e91282794d556cabbdf6fc8fcbc85235ff1cc0029c7b7450",
+    "data/omics/reviewed/model-coverage-tables-2026-09-23/glycan-artifact-manifest.json": "3d4871dee3ed0e8dbb44c5b527f31a897bafda8a27586779b90753079929e064",
+    "data/omics/reviewed/model-coverage-tables-2026-09-23/glycan-review.json": "6e964f650fac0d1081210d7a20be4ec91c19c2f18248191d47d39594b56a52c6",
+    "data/omics/reviewed/model-coverage-tables-2026-09-23/glycan-source-cells.json": "1ec8b93e906303f63e61a369a6b328e0a4df2352e725574e0e0fe138c62390a8",
+    "data/omics/reviewed/model-coverage-tables-2026-09-23/glycangt-primary.xml.gz": "d561ca10cab21d4c23ce918270f6ceef11710de7a31576cdce43b11feffa0f7d",
+    "data/omics/reviewed/model-coverage-tables-2026-09-23/glycangt-supplementary.zip.gz": "1a56af51b9a0b5292a902c83dde55ae9196afa2c2dc2073227d4407332b8d48f",
+    "data/omics/reviewed/model-coverage-tables-2026-09-23/initial-independent-review.json": "de4a2a3a72b567098b51064333ecd03a1ab4162d81de8c0ecc54c8bffea118b5",
+    "data/omics/reviewed/model-coverage-tables-2026-09-23/metagene-review.json": "ef678e58840b797365528f03ac74d5a8dbc59adafdac49413398e0b345c83137",
+    "data/omics/reviewed/model-coverage-tables-2026-09-23/metagene.html.gz": "4cf3e912946f7bcf8b453e5c2cfbe1a8750b7755204cac2bc5bff15bc2ba0445",
+    "data/omics/reviewed/model-coverage-tables-2026-09-23/mimic.html.gz": "1c619265f594443ee26e0b4c3706600a5620a2e233e827370c60ab53acee49e9",
+    "data/omics/reviewed/model-coverage-tables-2026-09-23/mrnabench-existing-lineage.json": "25d7ddc84f1d1a77b17a3aa69efc37cb850716d320dc8525641c16175b39c3e6",
+    "data/omics/reviewed/model-coverage-tables-2026-09-23/mrnabench.xml.gz": "f7de086fb1551a8cd5957f4a35f513ada3b7ed6b26826462b46df2a1494b68c1",
+    "data/omics/reviewed/model-coverage-tables-2026-09-23/msalign.pdf.gz": "2472dc4026225fce97148753eef64ce791a9e2df4c55b2235fc2ea8dc4eead92",
+    "data/omics/reviewed/model-coverage-tables-2026-09-23/protein-descriptive-composition.json": "9ddec4ce50c084a2ddf8e1231cdfae773adb9e2fcd0876f34d9d264801a488d3",
+    "data/omics/reviewed/model-coverage-tables-2026-09-23/protein-review.json": "95063c8da254d8aad7794667dc0b08e8b1b5ef97edbfbe08b2d251dcbc4dd19b",
+    "data/omics/reviewed/model-coverage-tables-2026-09-23/protein-source-cells.json": "1501b9cc28383bcc92811817c084c1ab6b47aeeae9aa9c427b1de1799348d3b6",
+    "data/omics/reviewed/model-coverage-tables-2026-09-23/records.jsonl": "06480701aae0b405b064add2ab28398dfd1d50e011d918638940928a636db11e",
+    "data/omics/reviewed/model-coverage-tables-2026-09-23/remaining-independent-cells.json": "0700e72be490385366e9736508a56909f894a1d1757ece6b12b6a776e40986ca",
+    "data/omics/reviewed/model-coverage-tables-2026-09-23/remaining-independent-records.json": "7e1453eb5849c087363dd8cf9bad10079f2c8bd33d3356b610389266233d26e9",
+    "data/omics/reviewed/model-coverage-tables-2026-09-23/remaining-mimic-tableS11-rows.json": "52b8a050df7bf48571aeb0548fc7b746ce642e9263b46d06f648997b560f1830",
+    "data/omics/reviewed/model-coverage-tables-2026-09-23/remaining-msalign-table3-rows.json": "fc9290a899a57a2bdec61912b24920989d946c40b93de2202cf84111d8b5314b",
+    "data/omics/reviewed/model-coverage-tables-2026-09-23/remaining-sources.json": "e6cd0595f02313682ce1d5cdd635a307b97b112206852ce1750d5dc35232c7fa",
+    "data/omics/reviewed/model-coverage-tables-2026-09-23/review.json": "a42dced620a0d60c477bc1838bec701e367e6c92921f9e7c535d3db187281e4d",
+    "data/omics/reviewed/model-coverage-tables-2026-09-23/rhofold-artifact-manifest.json": "6bb90dfbe7a13cf1a25183dde7e08917c5c889a4d755ae3d1ed9990fbea5d6e4",
+    "data/omics/reviewed/model-coverage-tables-2026-09-23/rhofold-rhofold-fig2.xlsx.gz": "2f1dfc5580965a237cdc709e94d979670450dca28af1bbf4e64888dcb99b862c",
+    "data/omics/reviewed/model-coverage-tables-2026-09-23/rhofold-rhofold-readme.md.gz": "8600ddb24ed7c09671ce036eabe876ecdf6ea34497b53d026b22f7e2f4f258fa",
+    "data/omics/reviewed/model-coverage-tables-2026-09-23/rhofold-rhofold.xml.gz": "57d1ae6be95d6dea08926853d8ab4828b5835b47f38281d353d29677e9c0ac28",
+    "data/omics/reviewed/model-coverage-tables-2026-09-23/rhofold-source-cells.json": "a616a29271db3572176dce05fc116fd6e1ee8bc9bcd70516e25f3580b70acc99",
+    "data/omics/reviewed/model-coverage-tables-2026-09-23/segmentnt-segmentnt-artifact-manifest.json": "55ebbf4599469d5cfc04eb83c1f191c1ac5e69d539121d58dc61084de01d611a",
+    "data/omics/reviewed/model-coverage-tables-2026-09-23/segmentnt-segmentnt-primary.xml.gz": "70e9e3b6a280cde14c69e01a91483865d6ff6523e76f5892aee99ab82484fefb",
+    "data/omics/reviewed/model-coverage-tables-2026-09-23/segmentnt-segmentnt-protocol.json": "7c8d82dc62ae397a95175645ef9cd6ba6182f5af446dbd66b04efb78092c69b3",
+    "data/omics/reviewed/model-coverage-tables-2026-09-23/segmentnt-segmentnt-supplement.pdf.gz": "4874954d65d8891ec7ba69beb2890bbc25c7441807801c143852e20e0b9a7397",
+    "data/omics/reviewed/model-coverage-tables-2026-09-23/segmentnt-segmentnt-tables-2-3-results.json": "fdd42f1f825f11639d215b1de47e17cc77d7c50e4936df7d91d05edc30e63acb",
+    "data/omics/reviewed/model-coverage-tables-2026-09-23/source-cells.json": "3f3ee5931832babd55a0461c71ae103f293e6f1027561f6d70f4e5df7c4b7ab4",
+    "data/omics/reviewed/model-coverage-tables-2026-09-23/specs.json": "22d52143891aa02620b0ff85bcd14df508909395e9138884091c218c995bae33",
+    "data/omics/reviewed/model-evaluation-links-2026-09-23/links.json": "306a3cf33f0216a69b0dfb76434c116c6fde52799d209fbf75578e810cd4fe60",
+    "data/omics/reviewed/model-evaluation-links-2026-09-23/peft.xml.gz": "7749840c6a031f515ba3615db5385d89e388f621064a82ae12e62c70531c1b06",
+    "data/omics/reviewed/model-evaluation-links-2026-09-23/retrieval-receipts.json": "3d8a840ac25c386dad935dbb4442bd87f586b115fc8a4afecc843f735c8556f4",
+    "data/omics/reviewed/model-evaluation-links-2026-09-23/review.json": "3d5e575fe41cb28574f63cca3c7325a933b2ebdb9b6718c5a5e34c948a8ce146",
+    "data/omics/reviewed/model-evaluation-links-2026-09-23/scib-labels.R.gz": "7b262fab9ec74f36012d185e05c1f0644c245739715c4fcced1a6b79793daad1",
+    "data/omics/reviewed/model-evaluation-links-2026-09-23/scib-method-map.R.gz": "b51a7822fd58868f62958f5d01099fcd102ea98203026008bb233657c5b6b92c",
+    "data/omics/reviewed/model-evaluation-links-2026-09-23/sources.jsonl": "94ce09c723a7cbdc506a4b370addb9ab92b0a8b96916a00a071d8ade46b891ab",
+    "data/omics/reviewed/model-evaluation-links-2026-09-23/vcc-description-review.json": "7ed0324ea755042f38529d4f6c9d4def3c5c6372bcd7e3b710f3fa8370d77dbb",
+    "scripts/omics/model-coverage-tables.ts": "6f34f33abb1f6ae798bb966eb778f61784a268e28533f4f1a30c75b812bff17b",
+    "scripts/omics/model-evaluation-links.ts": "733f011416ba78a515af57e4818677c18e1df650007a024d7a5f109e1d6bbc13",
+    "scripts/omics/release.ts": "2f986351c5ebf8fb07767bd493b13e95a60fad4fcb888d873d79cbe9f76549dd",
+    "services/omics/src/catalogue-query.ts": "12f8b881027a1788bf3142f06bf65ab4eeeecd4b0d3d1a6f260da77577541d78"
+  },
+  "errors": [],
+  "base_release_id": "2026-09-23-6c5e8b6b153f",
+  "base_matches_immutable_manifest": true,
+  "preservation_scope": "Input object immutability, original result fields and links, unchanged tracked historical release files and unchanged inputs.ts; complete archive restoration/export run belongs to parent release validation."
+}

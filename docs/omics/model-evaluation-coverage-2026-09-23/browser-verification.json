@@ -1,0 +1,113 @@
+{
+  "checks": [
+    {
+      "route": "model/discovery-model-agro-nucleotide-transformer",
+      "width": 1440,
+      "documentWidth": 1440,
+      "broaderFamily": false,
+      "hasDownstream": false,
+      "empty": false,
+      "links": 97
+    },
+    {
+      "route": "model/discovery-model-agro-nucleotide-transformer",
+      "width": 390,
+      "documentWidth": 390,
+      "broaderFamily": false,
+      "hasDownstream": false,
+      "empty": false,
+      "links": 97
+    },
+    {
+      "route": "model/catalog-model-mrna-fm",
+      "width": 1440,
+      "documentWidth": 1440,
+      "broaderFamily": false,
+      "hasDownstream": true,
+      "empty": false,
+      "links": 28
+    },
+    {
+      "route": "model/catalog-model-mrna-fm",
+      "width": 390,
+      "documentWidth": 390,
+      "broaderFamily": false,
+      "hasDownstream": true,
+      "empty": false,
+      "links": 28
+    },
+    {
+      "route": "model/catalog-model-proteinmpnn",
+      "width": 1440,
+      "documentWidth": 1440,
+      "broaderFamily": true,
+      "hasDownstream": false,
+      "empty": false,
+      "links": 29
+    },
+    {
+      "route": "model/catalog-model-proteinmpnn",
+      "width": 390,
+      "documentWidth": 390,
+      "broaderFamily": true,
+      "hasDownstream": false,
+      "empty": false,
+      "links": 29
+    },
+    {
+      "route": "model/discovery-model-alphafold-3",
+      "width": 1440,
+      "documentWidth": 1440,
+      "broaderFamily": false,
+      "hasDownstream": true,
+      "empty": false,
+      "links": 66
+    },
+    {
+      "route": "model/discovery-model-alphafold-3",
+      "width": 390,
+      "documentWidth": 390,
+      "broaderFamily": false,
+      "hasDownstream": true,
+      "empty": false,
+      "links": 66
+    },
+    {
+      "route": "model/catalog-model-esm-2",
+      "width": 1440,
+      "documentWidth": 1440,
+      "broaderFamily": false,
+      "hasDownstream": false,
+      "empty": false,
+      "links": 87
+    },
+    {
+      "route": "model/catalog-model-esm-2",
+      "width": 390,
+      "documentWidth": 390,
+      "broaderFamily": false,
+      "hasDownstream": false,
+      "empty": false,
+      "links": 87
+    },
+    {
+      "route": "benchmark/dreams-2025-mist-canopus-retrieval",
+      "width": 1440,
+      "documentWidth": 1440,
+      "broaderFamily": false,
+      "hasDownstream": false,
+      "empty": false,
+      "links": 47
+    },
+    {
+      "route": "benchmark/dreams-2025-mist-canopus-retrieval",
+      "width": 390,
+      "documentWidth": 390,
+      "broaderFamily": false,
+      "hasDownstream": false,
+      "empty": false,
+      "links": 47
+    }
+  ],
+  "errors": []
+}

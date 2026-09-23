@@ -1,0 +1,360 @@
+[
+  {
+    "source_id": "evidence-official-c037e3419c04936262a0",
+    "url": "https://raw.githubusercontent.com/snap-stanford/GEARS/f374e43e197b295016d80395d7a54ddb81cc6769/README.md",
+    "canonical_url": "https://github.com/snap-stanford/GEARS/blob/f374e43e197b295016d80395d7a54ddb81cc6769/README.md",
+    "retrieved_at": "2026-09-23T11:13:24.481452+00:00",
+    "sha256": "fe78b7b1ede50c673b8f0d91fb2637707685c78b269ee157edb6cbc4d510d61b",
+    "bytes": 3850,
+    "path": "workbench/model-evaluation-coverage/cells-other/evidence-official-c037e3419c04936262a0.txt",
+    "existing_hash_matches": true,
+    "status": "retrieved"
+  },
+  {
+    "source_id": "evidence-official-0e4dac85aa0e0ff1d4b2",
+    "url": "https://raw.githubusercontent.com/bowang-lab/scGPT/cebd6fae655b9c585a4807daa3ac31bb764f06b4/README.md",
+    "canonical_url": "https://github.com/bowang-lab/scGPT/blob/cebd6fae655b9c585a4807daa3ac31bb764f06b4/README.md",
+    "retrieved_at": "2026-09-23T11:13:24.478252+00:00",
+    "sha256": "b0503e8ca789f19f1fc2350c5aaf57b1b323bbae43b354655231b5f4a1586c83",
+    "bytes": 8908,
+    "path": "workbench/model-evaluation-coverage/cells-other/evidence-official-0e4dac85aa0e0ff1d4b2.txt",
+    "existing_hash_matches": true,
+    "status": "retrieved"
+  },
+  {
+    "source_id": "evidence-official-550f6719c2f22f4d57b3",
+    "url": "https://raw.githubusercontent.com/scverse/scvi-tools/73b28e44223621470e582a81a102c107bb22678b/README.md",
+    "canonical_url": "https://github.com/scverse/scvi-tools/blob/73b28e44223621470e582a81a102c107bb22678b/README.md",
+    "retrieved_at": "2026-09-23T11:13:24.454169+00:00",
+    "sha256": "eb46b8a54e60643ca0cd8cb375ede05b01dcbd2380ca17ce8027a92ba13cebbb",
+    "bytes": 6311,
+    "path": "workbench/model-evaluation-coverage/cells-other/evidence-official-550f6719c2f22f4d57b3.txt",
+    "existing_hash_matches": true,
+    "status": "retrieved"
+  },
+  {
+    "source_id": "evidence-official-0cbab80c2d1769287a1f",
+    "url": "https://raw.githubusercontent.com/scverse/scvi-tools/73b28e44223621470e582a81a102c107bb22678b/docs/user_guide/models/scvi.md",
+    "canonical_url": "https://github.com/scverse/scvi-tools/blob/73b28e44223621470e582a81a102c107bb22678b/docs/user_guide/models/scvi.md",
+    "retrieved_at": "2026-09-23T11:13:24.458392+00:00",
+    "sha256": "c81a5cfb30db1eca8c03af3d0db1a36a447a1bb5a27b270de5633ba73ebeeeef",
+    "bytes": 9709,
+    "path": "workbench/model-evaluation-coverage/cells-other/evidence-official-0cbab80c2d1769287a1f.txt",
+    "existing_hash_matches": true,
+    "status": "retrieved"
+  },
+  {
+    "source_id": "evidence-official-d3d9afa5c6172982ed01",
+    "url": "https://huggingface.co/ctheodoris/Geneformer/resolve/1f7fbae4e469a5f4f1af8c111a529cfe1b3829f5/README.md",
+    "canonical_url": "https://huggingface.co/ctheodoris/Geneformer/blob/1f7fbae4e469a5f4f1af8c111a529cfe1b3829f5/README.md",
+    "retrieved_at": "2026-09-23T11:13:24.489080+00:00",
+    "sha256": "56d6e570b349cbedae9a54634421c94e7af8ea467ce0fdd79193372ae3cbdbd8",
+    "bytes": 9470,
+    "path": "workbench/model-evaluation-coverage/cells-other/evidence-official-d3d9afa5c6172982ed01.txt",
+    "existing_hash_matches": true,
+    "status": "retrieved"
+  },
+  {
+    "source_id": "evidence-official-89de5de6fecdda12060d",
+    "url": "https://raw.githubusercontent.com/pluskal-lab/DreaMS/dbec3a0b514a99e5056cfccde4559fda8cfe8129/README.md",
+    "canonical_url": "https://github.com/pluskal-lab/DreaMS/blob/dbec3a0b514a99e5056cfccde4559fda8cfe8129/README.md",
+    "retrieved_at": "2026-09-23T11:13:24.449693+00:00",
+    "sha256": "a6afe934f9894cc71fb9b561c7a122d043b377c27b3fc6f18505fe65b6226256",
+    "bytes": 9295,
+    "path": "workbench/model-evaluation-coverage/cells-other/evidence-official-89de5de6fecdda12060d.txt",
+    "existing_hash_matches": true,
+    "status": "retrieved"
+  },
+  {
+    "source_id": "evidence-official-1df5b1865861177c0c75",
+    "url": "https://raw.githubusercontent.com/ArcInstitute/state/9bbfe78a434a55205e4de834e1ea99f85f7a3add/README.md",
+    "canonical_url": "https://github.com/ArcInstitute/state/blob/9bbfe78a434a55205e4de834e1ea99f85f7a3add/README.md",
+    "retrieved_at": "2026-09-23T11:13:24.450759+00:00",
+    "sha256": "568c0b4f9d93374f7ebc7467c226fdde0050abfd60147bce0b316163bf4199d6",
+    "bytes": 9208,
+    "path": "workbench/model-evaluation-coverage/cells-other/evidence-official-1df5b1865861177c0c75.txt",
+    "existing_hash_matches": true,
+    "status": "retrieved"
+  },
+  {
+    "source_id": "evidence-official-7c43b700aa87c22843a6",
+    "url": "https://raw.githubusercontent.com/BojarLab/glycowork/3d63f1ec25c850da3cde4d25cb602d50b6b5732b/README.md",
+    "canonical_url": "https://github.com/BojarLab/glycowork/blob/3d63f1ec25c850da3cde4d25cb602d50b6b5732b/README.md",
+    "retrieved_at": "2026-09-23T11:13:24.461371+00:00",
+    "sha256": "4d907a6723f3f56b14b13e35eeb0833ddf9a2f3512a1fafd07d79259105b264c",
+    "bytes": 17719,
+    "path": "workbench/model-evaluation-coverage/cells-other/evidence-official-7c43b700aa87c22843a6.txt",
+    "existing_hash_matches": true,
+    "status": "retrieved"
+  },
+  {
+    "source_id": "evidence-official-10a6550ca70fdeaf33cb",
+    "url": "https://raw.githubusercontent.com/matsui-lab/GlycanGT/96611518c971deb89215ca163deaf9de3a59fa32/README.md",
+    "canonical_url": "https://github.com/matsui-lab/GlycanGT/blob/96611518c971deb89215ca163deaf9de3a59fa32/README.md",
+    "retrieved_at": "2026-09-23T11:13:24.772027+00:00",
+    "sha256": "fa39bffca31211baedb3b63df5dede775fcffff7b411d4261d5b18f526ae1153",
+    "bytes": 5947,
+    "path": "workbench/model-evaluation-coverage/cells-other/evidence-official-10a6550ca70fdeaf33cb.txt",
+    "existing_hash_matches": true,
+    "status": "retrieved"
+  },
+  {
+    "source_id": "evidence-official-8e894fc6d180746a1808",
+    "url": "https://huggingface.co/metagene-ai/METAGENE-1/resolve/ad8a1e0ee62b85058bfc05d823d8e8d4759edc48/README.md",
+    "canonical_url": "https://huggingface.co/metagene-ai/METAGENE-1/blob/ad8a1e0ee62b85058bfc05d823d8e8d4759edc48/README.md",
+    "retrieved_at": "2026-09-23T11:13:24.674893+00:00",
+    "sha256": "277517aa69527fccaeb85c124f3ec9772c5508fadb5c6ad423bee39a3071ad17",
+    "bytes": 14004,
+    "path": "workbench/model-evaluation-coverage/cells-other/evidence-official-8e894fc6d180746a1808.txt",
+    "existing_hash_matches": true,
+    "status": "retrieved"
+  },
+  {
+    "source_id": "evidence-official-af8da643e933eae36a68",
+    "url": "https://huggingface.co/polymathic-ai/MIMIC/resolve/72e63a1ece34928422fd46f89b6a6580ace99a97/README.md",
+    "canonical_url": "https://huggingface.co/polymathic-ai/MIMIC/blob/72e63a1ece34928422fd46f89b6a6580ace99a97/README.md",
+    "retrieved_at": "2026-09-23T11:13:24.725914+00:00",
+    "sha256": "462acc643cba24d1d4c6f1419838402c5f3196e94260039baf61a59ef0a0a107",
+    "bytes": 9285,
+    "path": "workbench/model-evaluation-coverage/cells-other/evidence-official-af8da643e933eae36a68.txt",
+    "existing_hash_matches": true,
+    "status": "retrieved"
+  },
+  {
+    "source_id": "evidence-official-bfbc8babf3630ddb3ed7",
+    "url": "https://raw.githubusercontent.com/biomap-research/scFoundation/397631c495eddf9ad6644fc00c6ea8139e651245/README.md",
+    "canonical_url": "https://github.com/biomap-research/scFoundation/blob/397631c495eddf9ad6644fc00c6ea8139e651245/README.md",
+    "retrieved_at": "2026-09-23T11:13:24.738682+00:00",
+    "sha256": "02a7ae44cf2cc9948b5c1520b18a261b45abf9f17e3149e37d9f48072184f376",
+    "bytes": 8960,
+    "path": "workbench/model-evaluation-coverage/cells-other/evidence-official-bfbc8babf3630ddb3ed7.txt",
+    "existing_hash_matches": true,
+    "status": "retrieved"
+  },
+  {
+    "source_id": "evidence-expansion-perturbench-5c480456",
+    "url": "https://arxiv.org/html/2408.10609v1",
+    "canonical_url": "https://arxiv.org/html/2408.10609v1",
+    "retrieved_at": "2026-09-23T11:13:24.578707+00:00",
+    "sha256": "5c4804565dd9faa17a11853a79e9847dcb6da73715b4c91f62e5b274cc79f186",
+    "bytes": 476188,
+    "path": "workbench/model-evaluation-coverage/cells-other/evidence-expansion-perturbench-5c480456.txt",
+    "existing_hash_matches": true,
+    "status": "retrieved"
+  },
+  {
+    "source_id": "cell2sentence-2024",
+    "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC11565894/fullTextXML",
+    "canonical_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11565894/",
+    "retrieved_at": "2026-09-23T11:13:24.772278+00:00",
+    "sha256": "e088727d6e04857fccb7033a9b074e1850f775e86e7d2e99e603dde09558ab02",
+    "bytes": 207643,
+    "path": "workbench/model-evaluation-coverage/cells-other/cell2sentence-2024.xml",
+    "existing_hash_matches": true,
+    "status": "retrieved"
+  },
+  {
+    "source_id": "genept-2024",
+    "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC10614824/fullTextXML",
+    "canonical_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10614824/",
+    "retrieved_at": "2026-09-23T11:13:24.789597+00:00",
+    "sha256": "230a2ec55458d9243eaeeebf3244df7409eb02d47f4b809ee56a06dcb6fdd047",
+    "bytes": 201790,
+    "path": "workbench/model-evaluation-coverage/cells-other/genept-2024.xml",
+    "existing_hash_matches": true,
+    "status": "retrieved"
+  },
+  {
+    "source_id": "mouse-geneformer-2025",
+    "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC11964219/fullTextXML",
+    "canonical_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11964219/",
+    "retrieved_at": "2026-09-23T11:13:24.738078+00:00",
+    "sha256": "ef6c68f5c9b47c2f89598ddf647f05b72e4155e8b33609ebff23936a84bbd41d",
+    "bytes": 206291,
+    "path": "workbench/model-evaluation-coverage/cells-other/mouse-geneformer-2025.xml",
+    "existing_hash_matches": true,
+    "status": "retrieved"
+  },
+  {
+    "source_id": "scalr-2025",
+    "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC12121358/fullTextXML",
+    "canonical_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12121358/",
+    "retrieved_at": "2026-09-23T11:13:24.839010+00:00",
+    "sha256": "829afab6a4e30997c608745d3eb280105b8c5c4e601020ffdc55c866144527ca",
+    "bytes": 163363,
+    "path": "workbench/model-evaluation-coverage/cells-other/scalr-2025.xml",
+    "existing_hash_matches": true,
+    "status": "retrieved"
+  },
+  {
+    "source_id": "scelmo-2025",
+    "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC12393277/fullTextXML",
+    "canonical_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12393277/",
+    "retrieved_at": "2026-09-23T11:13:24.954154+00:00",
+    "sha256": "ef75f0d63a567f5e9d7132fd847f44838a82a9741ae55323437e1d1812d86316",
+    "bytes": 265163,
+    "path": "workbench/model-evaluation-coverage/cells-other/scelmo-2025.xml",
+    "existing_hash_matches": true,
+    "status": "retrieved"
+  },
+  {
+    "source_id": "scregnet-2025",
+    "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC11838224/fullTextXML",
+    "canonical_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11838224/",
+    "retrieved_at": "2026-09-23T11:13:25.253918+00:00",
+    "sha256": "65b3272d47bb9c4ee1e7a965169bef63add9dbeb31508d4076e5145b761af4ec",
+    "bytes": 132836,
+    "path": "workbench/model-evaluation-coverage/cells-other/scregnet-2025.xml",
+    "existing_hash_matches": true,
+    "status": "retrieved"
+  },
+  {
+    "source_id": "scxdr-2026",
+    "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC12859067/fullTextXML",
+    "canonical_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12859067/",
+    "retrieved_at": "2026-09-23T11:13:25.121500+00:00",
+    "sha256": "47b5925e9887d87fc8288d29288802b1d67d54f064d913151df92171f7c68d33",
+    "bytes": 308800,
+    "path": "workbench/model-evaluation-coverage/cells-other/scxdr-2026.xml",
+    "existing_hash_matches": true,
+    "status": "retrieved"
+  },
+  {
+    "source_id": "single-cell-peft-2024",
+    "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC10862733/fullTextXML",
+    "canonical_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10862733/",
+    "retrieved_at": "2026-09-23T11:13:25.021673+00:00",
+    "sha256": "c298ddb79e6fef6815993f9fcfcd108d0d81c8d5aa2b56f625bd1ed3c6d64138",
+    "bytes": 141492,
+    "path": "workbench/model-evaluation-coverage/cells-other/single-cell-peft-2024.xml",
+    "existing_hash_matches": false,
+    "status": "retrieved"
+  },
+  {
+    "source_id": "single-cell-residual-geometry-2026",
+    "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC13418759/fullTextXML",
+    "canonical_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13418759/",
+    "retrieved_at": "2026-09-23T11:13:25.094146+00:00",
+    "sha256": "77546faec51cfb5c78b73c5943f940c4e0097d130b1ddde4ab8287b507b36df6",
+    "bytes": 125631,
+    "path": "workbench/model-evaluation-coverage/cells-other/single-cell-residual-geometry-2026.xml",
+    "existing_hash_matches": true,
+    "status": "retrieved"
+  },
+  {
+    "source_id": "evidence-official-116050b81d03a38e3b6f",
+    "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC13090125/fullTextXML",
+    "canonical_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13090125/",
+    "retrieved_at": "2026-09-23T11:13:25.059178+00:00",
+    "sha256": "4bbe2ecff0ad75944b3aec5131369c1b2f75ff6f4b5dc257487a274fdd7b0fef",
+    "bytes": 395344,
+    "path": "workbench/model-evaluation-coverage/cells-other/evidence-official-116050b81d03a38e3b6f.xml",
+    "existing_hash_matches": true,
+    "status": "retrieved"
+  },
+  {
+    "source_id": "evidence-official-87c70bddba97a72a5e5d",
+    "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC13105845/fullTextXML",
+    "canonical_url": "https://europepmc.org/article/PMC/PMC13105845",
+    "retrieved_at": "2026-09-23T11:13:25.800385+00:00",
+    "sha256": "53e89a636c868c0329ee7eb6ae92f1028ec891940bc61730a148981b647fbbe5",
+    "bytes": 92849,
+    "path": "workbench/model-evaluation-coverage/cells-other/evidence-official-87c70bddba97a72a5e5d.xml",
+    "existing_hash_matches": true,
+    "status": "retrieved"
+  },
+  {
+    "source_id": "new-scib-website-R-load.R",
+    "url": "https://raw.githubusercontent.com/theislab/scib-reproducibility/3afbffd3674726e5146797be21cf6bd7470a2c5f/website/R/load.R",
+    "sha256": "87a0b609ab85f4d637d326a30d1fb5f55ba4dba4173e6c1c870cbf0651d7bcd6",
+    "retrieved_at": "2026-09-23T11:15:04.253617+00:00",
+    "path": "workbench/model-evaluation-coverage/cells-other/scib-website-R-load.R",
+    "status": "retrieved"
+  },
+  {
+    "source_id": "new-scib-website-R-tables.R",
+    "url": "https://raw.githubusercontent.com/theislab/scib-reproducibility/3afbffd3674726e5146797be21cf6bd7470a2c5f/website/R/tables.R",
+    "sha256": "18ec78c88d0ff41a583cd84fb34f08c27a0ccfb56e0279bc026c4126c96ab4ae",
+    "retrieved_at": "2026-09-23T11:15:04.494043+00:00",
+    "path": "workbench/model-evaluation-coverage/cells-other/scib-website-R-tables.R",
+    "status": "retrieved"
+  },
+  {
+    "source_id": "new-scib-visualization-exampleKeys.R",
+    "url": "https://raw.githubusercontent.com/theislab/scib-reproducibility/3afbffd3674726e5146797be21cf6bd7470a2c5f/visualization/exampleKeys.R",
+    "sha256": "f518ee8243adf961b2b2cd99032874c9c304c981c6b36b85d44dac8c2ce2e4ab",
+    "retrieved_at": "2026-09-23T11:15:04.764559+00:00",
+    "path": "workbench/model-evaluation-coverage/cells-other/scib-visualization-exampleKeys.R",
+    "status": "retrieved"
+  },
+  {
+    "source_id": "src-discovery-msalign",
+    "url": "https://arxiv.org/abs/2605.19752",
+    "sha256": "e503f496841fd1d3836ebdab573de645257fc92fe7b5479056592da512e0ef3f",
+    "retrieved_at": "2026-09-23T11:20:32.167191+00:00",
+    "status": "retrieved",
+    "path": "workbench/model-evaluation-coverage/cells-other/msalign-arxiv-abstract.html"
+  },
+  {
+    "source_id": "coverage-source-metagene-paper-v1",
+    "url": "https://arxiv.org/html/2501.02045v1",
+    "sha256": "a426c77d137138cfc33410a1e54a1cce521007bdc9e3176f4774d0105424a7fe",
+    "retrieved_at": "2026-09-23T11:22:00.101850+00:00",
+    "status": "retrieved",
+    "path": "workbench/model-evaluation-coverage/cells-other/metagene-paper-v1.html"
+  },
+  {
+    "source_id": "coverage-source-gene-mteb-humanmicrobiomeprojectdemonstrationclassification",
+    "url": "https://raw.githubusercontent.com/metagene-ai/gene-mteb/cdfacab370d8ec49370a78d3ab283f6a27d98cf0/mteb/tasks/Classification/metagene/HumanMicrobiomeProjectDemonstrationClassification.py",
+    "sha256": "8e89f9c3374502686bc710351d1e63531cd904b0bc9afd91edb5180947ce819d",
+    "retrieved_at": "2026-09-23T11:23:21.210203+00:00",
+    "status": "retrieved",
+    "path": "workbench/model-evaluation-coverage/cells-other/gene-mteb-HumanMicrobiomeProjectDemonstrationClassification.py",
+    "version": "cdfacab370d8ec49370a78d3ab283f6a27d98cf0"
+  },
+  {
+    "source_id": "coverage-source-gene-mteb-humanvirusclassification",
+    "url": "https://raw.githubusercontent.com/metagene-ai/gene-mteb/cdfacab370d8ec49370a78d3ab283f6a27d98cf0/mteb/tasks/Classification/metagene/HumanVirusClassification.py",
+    "sha256": "bae1e14f2c9f123933351868cb94beb490b2c5d314bf32d41f1e876fbb236598",
+    "retrieved_at": "2026-09-23T11:23:21.198014+00:00",
+    "status": "retrieved",
+    "path": "workbench/model-evaluation-coverage/cells-other/gene-mteb-HumanVirusClassification.py",
+    "version": "cdfacab370d8ec49370a78d3ab283f6a27d98cf0"
+  },
+  {
+    "source_id": "coverage-source-gene-mteb-humanmicrobiomeprojectreferenceclustering",
+    "url": "https://raw.githubusercontent.com/metagene-ai/gene-mteb/cdfacab370d8ec49370a78d3ab283f6a27d98cf0/mteb/tasks/Clustering/metagene/HumanMicrobiomeProjectReferenceClustering.py",
+    "sha256": "2d15a775c516f94556eb1a6aa21497f083ab8fff11dd289b00f9a069165ace07",
+    "retrieved_at": "2026-09-23T11:23:21.216188+00:00",
+    "status": "retrieved",
+    "path": "workbench/model-evaluation-coverage/cells-other/gene-mteb-HumanMicrobiomeProjectReferenceClustering.py",
+    "version": "cdfacab370d8ec49370a78d3ab283f6a27d98cf0"
+  },
+  {
+    "source_id": "coverage-source-gene-mteb-humanvirusreferenceclustering",
+    "url": "https://raw.githubusercontent.com/metagene-ai/gene-mteb/cdfacab370d8ec49370a78d3ab283f6a27d98cf0/mteb/tasks/Clustering/metagene/HumanVirusReferenceClustering.py",
+    "sha256": "636053517c0e0348fa8d0227a557597ff01c1efbfa4c332104a1af2b8c4b922f",
+    "retrieved_at": "2026-09-23T11:23:21.216266+00:00",
+    "status": "retrieved",
+    "path": "workbench/model-evaluation-coverage/cells-other/gene-mteb-HumanVirusReferenceClustering.py",
+    "version": "cdfacab370d8ec49370a78d3ab283f6a27d98cf0"
+  },
+  {
+    "source_id": "coverage-source-gene-mteb-classificationevaluator",
+    "url": "https://raw.githubusercontent.com/metagene-ai/gene-mteb/cdfacab370d8ec49370a78d3ab283f6a27d98cf0/mteb/evaluation/evaluators/ClassificationEvaluator.py",
+    "sha256": "54061562a709e796c41c25537b952171330303f2d4932659bf50db2fe6f5c471",
+    "retrieved_at": "2026-09-23T11:23:21.203372+00:00",
+    "status": "retrieved",
+    "path": "workbench/model-evaluation-coverage/cells-other/gene-mteb-ClassificationEvaluator.py",
+    "version": "cdfacab370d8ec49370a78d3ab283f6a27d98cf0"
+  },
+  {
+    "source_id": "coverage-source-gene-mteb-clusteringevaluator",
+    "url": "https://raw.githubusercontent.com/metagene-ai/gene-mteb/cdfacab370d8ec49370a78d3ab283f6a27d98cf0/mteb/evaluation/evaluators/ClusteringEvaluator.py",
+    "sha256": "f00870a8f897fd73e7f16b852e500cbb2ecb83f5b25c061b1e2c84b757c9684c",
+    "retrieved_at": "2026-09-23T11:23:21.196974+00:00",
+    "status": "retrieved",
+    "path": "workbench/model-evaluation-coverage/cells-other/gene-mteb-ClusteringEvaluator.py",
+    "version": "cdfacab370d8ec49370a78d3ab283f6a27d98cf0"
+  }
+]

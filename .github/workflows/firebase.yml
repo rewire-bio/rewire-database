@@ -26,8 +26,18 @@ jobs:
           df -h .
           # This Node/Python/Java project does not use these preinstalled SDKs.
           # Keep the scientific archives; reclaim only disposable runner tools.
-          sudo rm -rf -- /usr/local/lib/android /usr/share/dotnet
+          sudo rm -rf -- /usr/local/lib/android /usr/share/dotnet \
+            /usr/share/swift /usr/local/.ghcup /opt/ghc \
+            /opt/hostedtoolcache/CodeQL /usr/local/share/powershell
           df -h .
+          # Historical exports currently need 19 GiB, plus Next's current export,
+          # generated pages, dependencies and working files. Fail before building
+          # if a future runner image no longer leaves sufficient headroom.
+          available=$(df -PB1 . | awk 'NR == 2 { print $4 }')
+          if [ "$available" -lt 37580963840 ]; then
+            echo "Insufficient temporary build space: need at least 35 GiB free."
+            exit 1
+          fi
       - uses: actions/setup-node@v4
         with:
           node-version: 22

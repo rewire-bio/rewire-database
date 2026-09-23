@@ -22,6 +22,11 @@ if (process.env.NEXT_PUBLIC_GA_ID) {
 for (const paper of JSON.parse(read('data/benchmark-literature/papers.json'))) {
   assert.ok(fs.existsSync(`out/literature/papers/${paper.id}/index.html`), `Missing historical paper: ${paper.id}`);
 }
+for (const redirect of JSON.parse(read('firebase.json')).hosting.redirects || []) {
+  const destination = new URL(redirect.destination, 'https://benchmarks.rewire.it');
+  assert.equal(destination.origin, 'https://benchmarks.rewire.it', 'Unexpected external migration redirect');
+  assert.ok(fs.existsSync(path.join('out', destination.pathname, 'index.html')), `Redirect destination missing: ${redirect.destination}`);
+}
 for (const filename of ['papers.json', 'results.csv']) {
   assert.deepEqual(fs.readFileSync(`data/benchmark-literature/${filename}`), fs.readFileSync(`out/benchmark-literature/${filename}`));
 }

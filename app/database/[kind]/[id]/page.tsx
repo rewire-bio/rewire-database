@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Fragment } from "react";
 import { buildCatalogue } from "@/lib/catalogue-build";
+import { packComparisons } from "@/lib/comparison-transport";
 import {
   recordHref,
   recordRouteKinds,
@@ -432,8 +433,14 @@ export default function RecordPage({ params }: { params: Params }) {
           {evaluationDesign && (
             <ComparisonWorkspace
               key={`${catalogue.release_id}:${record.id}`}
-              initialResults={results}
-              panels={detail.published_comparisons}
+              initialResults={
+                detail.published_comparisons.length ? undefined : results
+              }
+              resultSummary={{
+                total: results.total,
+                evaluation_count: results.evaluation_count,
+              }}
+              panels={packComparisons(detail.published_comparisons)}
               options={detail.comparison_options}
               recordId={record.id}
               releaseId={catalogue.release_id}

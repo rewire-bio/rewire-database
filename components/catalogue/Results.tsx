@@ -74,6 +74,15 @@ export default function Results({
   const [retry, setRetry] = useState(0);
   useEffect(() => {
     if (!ready) return;
+    // The initial page is already pinned to this immutable release. Reuse it
+    // on first load and reset; only changed filters/pages or a retry need I/O.
+    if (!retry && Object.values(state).every((value) => value === "")) {
+      setData(initial);
+      setApplied(defaults);
+      setLoading(false);
+      setError("");
+      return;
+    }
     let active = true;
     setLoading(true);
     setError("");
@@ -107,7 +116,7 @@ export default function Results({
     return () => {
       active = false;
     };
-  }, [client, id, state, retry, ready]);
+  }, [client, id, state, retry, ready, initial]);
   const filter = (key: keyof typeof defaults, value: string) =>
     update({ [key]: value, cursor: "" });
   const filters = [

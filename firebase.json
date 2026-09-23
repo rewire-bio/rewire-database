@@ -13,7 +13,10 @@
       {
         "source": "/_analytics/**",
         "headers": [
-          {"key":"Content-Security-Policy", "value":"frame-ancestors https://benchmarks.rewire.it"},
+          {
+            "key": "Content-Security-Policy",
+            "value": "frame-ancestors https://benchmarks.rewire.it"
+          },
           {
             "key": "Cache-Control",
             "value": "no-store"
@@ -80,6 +83,533 @@
           "functionId": "contributions",
           "region": "europe-west2"
         }
+      }
+    ],
+    "redirects": [
+      {
+        "source": "/database{,/}",
+        "destination": "/",
+        "type": 301
+      },
+      {
+        "source": "/literature{,/}",
+        "destination": "/?kind=result&origin=literature",
+        "type": 301
+      },
+      {
+        "source": "/dna-genomes{,/}",
+        "destination": "/?kind=model&area=dna-genomes",
+        "type": 301
+      },
+      {
+        "source": "/rna-transcriptomes{,/}",
+        "destination": "/?kind=model&area=rna-transcriptomes",
+        "type": 301
+      },
+      {
+        "source": "/proteins-complexes{,/}",
+        "destination": "/?kind=model&area=proteins-complexes",
+        "type": 301
+      },
+      {
+        "source": "/cells-tissues{,/}",
+        "destination": "/?kind=model&area=cells-tissues",
+        "type": 301
+      },
+      {
+        "source": "/microbes-communities{,/}",
+        "destination": "/?kind=model&area=microbes-communities",
+        "type": 301
+      },
+      {
+        "source": "/molecular-interactions{,/}",
+        "destination": "/?kind=model&area=molecular-interactions",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/dna-foundation-models-2025{,/}",
+        "destination": "/database/source/dna-foundation-models-2025/",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/enbed-2024{,/}",
+        "destination": "/database/source/enbed-2024/",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/quadruplex-llm-benchmark-2025{,/}",
+        "destination": "/database/source/quadruplex-llm-benchmark-2025/",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/dnalongbench-2025{,/}",
+        "destination": "/database/source/dnalongbench-2025/",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/mrnabench-2025{,/}",
+        "destination": "/database/source/mrnabench-2025/",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/bpfold-2025{,/}",
+        "destination": "/database/source/bpfold-2025/",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/tu-fold-2025{,/}",
+        "destination": "/database/source/tu-fold-2025/",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/debfold-2024{,/}",
+        "destination": "/database/source/debfold-2024/",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/proteingym-2023{,/}",
+        "destination": "/database/source/proteingym-2023/",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/fujisan-2024{,/}",
+        "destination": "/database/source/fujisan-2024/",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/prime-2026{,/}",
+        "destination": "/database/source/prime-2026/",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/pst-2025{,/}",
+        "destination": "/database/source/pst-2025/",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/single-cell-peft-2024{,/}",
+        "destination": "/database/source/single-cell-peft-2024/",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/cell2sentence-2024{,/}",
+        "destination": "/database/source/cell2sentence-2024/",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/scelmo-2025{,/}",
+        "destination": "/database/source/scelmo-2025/",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/scregnet-2025{,/}",
+        "destination": "/database/source/scregnet-2025/",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/prokbert-2024{,/}",
+        "destination": "/database/source/prokbert-2024/",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/cyaprombert-2022{,/}",
+        "destination": "/database/source/cyaprombert-2022/",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/lambda-prophage-2026{,/}",
+        "destination": "/database/source/lambda-prophage-2026/",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/nabas-plus-2025{,/}",
+        "destination": "/database/source/nabas-plus-2025/",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/lipp-2026{,/}",
+        "destination": "/database/source/lipp-2026/",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/nmdn-2025{,/}",
+        "destination": "/database/source/nmdn-2025/",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/boltz-stereochemistry-2025{,/}",
+        "destination": "/database/source/boltz-stereochemistry-2025/",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/mpro-pose-affinity-2025{,/}",
+        "destination": "/database/source/mpro-pose-affinity-2025/",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/dart-eval-regulatory-2024{,/}",
+        "destination": "/database/source/dart-eval-regulatory-2024/",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/fusion-breakpoint-foundation-models-2026{,/}",
+        "destination": "/database/source/fusion-breakpoint-foundation-models-2026/",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/polya-glm-2025{,/}",
+        "destination": "/database/source/polya-glm-2025/",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/phylogpn-2025{,/}",
+        "destination": "/database/source/phylogpn-2025/",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/dnabert2-enhancer-2025{,/}",
+        "destination": "/database/source/dnabert2-enhancer-2025/",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/barcodebert-2026{,/}",
+        "destination": "/database/source/barcodebert-2026/",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/genomic-tokenizer-selection-2025{,/}",
+        "destination": "/database/source/genomic-tokenizer-selection-2025/",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/eden-genomic-classification-2026{,/}",
+        "destination": "/database/source/eden-genomic-classification-2026/",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/cobra-rna-binding-2026{,/}",
+        "destination": "/database/source/cobra-rna-binding-2026/",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/ernie-rna-2025{,/}",
+        "destination": "/database/source/ernie-rna-2025/",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/codonbert-vaccines-2024{,/}",
+        "destination": "/database/source/codonbert-vaccines-2024/",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/mrna-lm-2025{,/}",
+        "destination": "/database/source/mrna-lm-2025/",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/rnaret-2026{,/}",
+        "destination": "/database/source/rnaret-2026/",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/rlsite-rna-binding-2025{,/}",
+        "destination": "/database/source/rlsite-rna-binding-2025/",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/birna-bert-2025{,/}",
+        "destination": "/database/source/birna-bert-2025/",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/mrnabert-2025{,/}",
+        "destination": "/database/source/mrnabert-2025/",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/2ome-lm-2025{,/}",
+        "destination": "/database/source/2ome-lm-2025/",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/cathe2-2025{,/}",
+        "destination": "/database/source/cathe2-2025/",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/clathrin-plm-2025{,/}",
+        "destination": "/database/source/clathrin-plm-2025/",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/gsmformer-ppi-2026{,/}",
+        "destination": "/database/source/gsmformer-ppi-2026/",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/antibody-deamidation-plm-2024{,/}",
+        "destination": "/database/source/antibody-deamidation-plm-2024/",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/spin-protein-function-2026{,/}",
+        "destination": "/database/source/spin-protein-function-2026/",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/mulan-2025{,/}",
+        "destination": "/database/source/mulan-2025/",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/megsite-2025{,/}",
+        "destination": "/database/source/megsite-2025/",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/esm2-ofs-fitness-2025{,/}",
+        "destination": "/database/source/esm2-ofs-fitness-2025/",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/structure-informed-plm-2025{,/}",
+        "destination": "/database/source/structure-informed-plm-2025/",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/mouse-geneformer-2025{,/}",
+        "destination": "/database/source/mouse-geneformer-2025/",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/scatac-llmda-2026{,/}",
+        "destination": "/database/source/scatac-llmda-2026/",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/genept-2024{,/}",
+        "destination": "/database/source/genept-2024/",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/single-cell-aging-probes-2026{,/}",
+        "destination": "/database/source/single-cell-aging-probes-2026/",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/scalr-2025{,/}",
+        "destination": "/database/source/scalr-2025/",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/scxdr-2026{,/}",
+        "destination": "/database/source/scxdr-2026/",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/cammiq-2022{,/}",
+        "destination": "/database/source/cammiq-2022/",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/lazypipe-2020{,/}",
+        "destination": "/database/source/lazypipe-2020/",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/ncd-metagenomics-2026{,/}",
+        "destination": "/database/source/ncd-metagenomics-2026/",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/viral-contig-simulation-2021{,/}",
+        "destination": "/database/source/viral-contig-simulation-2021/",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/genomeocean-2025{,/}",
+        "destination": "/database/source/genomeocean-2025/",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/kmetashot-2025{,/}",
+        "destination": "/database/source/kmetashot-2025/",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/lemur-magnet-2024{,/}",
+        "destination": "/database/source/lemur-magnet-2024/",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/ipromp-2025{,/}",
+        "destination": "/database/source/ipromp-2025/",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/icctax-2025{,/}",
+        "destination": "/database/source/icctax-2025/",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/antibody-flexibility-2025{,/}",
+        "destination": "/database/source/antibody-flexibility-2025/",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/boltz1-2025{,/}",
+        "destination": "/database/source/boltz1-2025/",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/ibex-2025{,/}",
+        "destination": "/database/source/ibex-2025/",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/deelig-2021{,/}",
+        "destination": "/database/source/deelig-2021/",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/molas-2026{,/}",
+        "destination": "/database/source/molas-2026/",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/ensemble-idp-docking-2025{,/}",
+        "destination": "/database/source/ensemble-idp-docking-2025/",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/akscore-2020{,/}",
+        "destination": "/database/source/akscore-2020/",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/fingerprint-scoring-2022{,/}",
+        "destination": "/database/source/fingerprint-scoring-2022/",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/arsenal-regulatory-dna-2026{,/}",
+        "destination": "/database/source/arsenal-regulatory-dna-2026/",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/plantcad2-2025{,/}",
+        "destination": "/database/source/plantcad2-2025/",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/hi-enhancer-2025{,/}",
+        "destination": "/database/source/hi-enhancer-2025/",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/enhancer-position-encoding-2024{,/}",
+        "destination": "/database/source/enhancer-position-encoding-2024/",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/adar-gpt-editing-2026{,/}",
+        "destination": "/database/source/adar-gpt-editing-2026/",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/r3design-2025{,/}",
+        "destination": "/database/source/r3design-2025/",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/cupid-rna-interactions-2026{,/}",
+        "destination": "/database/source/cupid-rna-interactions-2026/",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/mrna-protein-diversity-2026{,/}",
+        "destination": "/database/source/mrna-protein-diversity-2026/",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/viral-immune-mimicry-2025{,/}",
+        "destination": "/database/source/viral-immune-mimicry-2025/",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/protein-binding-sites-2023{,/}",
+        "destination": "/database/source/protein-binding-sites-2023/",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/clape-smb-2024{,/}",
+        "destination": "/database/source/clape-smb-2024/",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/vaxign-esm-2024{,/}",
+        "destination": "/database/source/vaxign-esm-2024/",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/single-cell-residual-geometry-2026{,/}",
+        "destination": "/database/source/single-cell-residual-geometry-2026/",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/gremln-2026{,/}",
+        "destination": "/database/source/gremln-2026/",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/cell-dino-2025{,/}",
+        "destination": "/database/source/cell-dino-2025/",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/insilico-perturbation-auprc-2025{,/}",
+        "destination": "/database/source/insilico-perturbation-auprc-2025/",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/metagenomic-pathogens-2025{,/}",
+        "destination": "/database/source/metagenomic-pathogens-2025/",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/detire-viral-metagenomes-2023{,/}",
+        "destination": "/database/source/detire-viral-metagenomes-2023/",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/pc-mer-2024{,/}",
+        "destination": "/database/source/pc-mer-2024/",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/mdl4microbiome-2022{,/}",
+        "destination": "/database/source/mdl4microbiome-2022/",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/ligand-affinity-meta-model-2024{,/}",
+        "destination": "/database/source/ligand-affinity-meta-model-2024/",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/deepinteraware-2025{,/}",
+        "destination": "/database/source/deepinteraware-2025/",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/transbind-2026{,/}",
+        "destination": "/database/source/transbind-2026/",
+        "type": 301
+      },
+      {
+        "source": "/literature/papers/esm2-amp-2025{,/}",
+        "destination": "/database/source/esm2-amp-2025/",
+        "type": 301
       }
     ]
   },

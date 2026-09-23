@@ -37,6 +37,14 @@ export default function EvidenceTable({
   const [error, setError] = useState("");
   const [retry, setRetry] = useState(0);
   useEffect(() => {
+    // Static rows belong to a pinned release, so refreshing the identical
+    // first page cannot add evidence. Keep requests for deliberate changes.
+    if (!q && scope === initialScope && !cursor && !retry) {
+      setData(initial);
+      setLoading(false);
+      setError("");
+      return;
+    }
     let active = true;
     setLoading(true);
     setError("");
@@ -63,7 +71,7 @@ export default function EvidenceTable({
     return () => {
       active = false;
     };
-  }, [client, id, q, scope, cursor, retry]);
+  }, [client, id, q, scope, cursor, retry, initial, initialScope]);
   const release = `/omics/releases/${initial.release_id}`;
   return (
     <section

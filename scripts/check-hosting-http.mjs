@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
+import { checkLegacyRedirects } from './check-legacy-redirects.mjs';
 
 const origin = process.argv[2] || 'http://127.0.0.1:5055';
 async function check(path, status, type) {
@@ -11,7 +12,7 @@ async function check(path, status, type) {
 
 const home = await check('/', 200, 'text/html');
 assert.match(await home.text(), /id="mfass-v1"/);
-await check('/literature/?q=splice', 200, 'text/html');
+await checkLegacyRedirects(origin, { encodedQueries: !['127.0.0.1', 'localhost'].includes(new URL(origin).hostname) });
 await check('/runs/mfass-v2/', 200, 'text/html');
 await check('/sitemap.xml', 200, 'xml');
 await check('/benchmarks/', 200, 'text/html');

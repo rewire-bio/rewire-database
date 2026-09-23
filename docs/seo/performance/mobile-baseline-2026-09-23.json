@@ -1,0 +1,645 @@
+{
+  "schema_version": 1,
+  "phase": "before",
+  "issue": "https://github.com/rewire-bio/rewire-database/issues/39",
+  "deployment": {
+    "revision": "4f354d9df8037e61b187a15831d88c4bef8d0026",
+    "hosting_version": "32f3ab9d36d4e615",
+    "hosting_identity_source": "parent deployment verification",
+    "catalogue_release": "2026-09-22-f58a0f1d267f"
+  },
+  "started_at": "2026-09-23T06:55:13.336Z",
+  "browser": {
+    "Browser": "Chrome/153.0.8010.54",
+    "Protocol-Version": "1.3",
+    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/153.0.0.0 Safari/537.36",
+    "V8-Version": "15.3.76.13"
+  },
+  "host": {
+    "platform": "darwin",
+    "release": "25.6.0",
+    "arch": "arm64",
+    "cpuModel": "Apple M4",
+    "logicalCpuCount": 10,
+    "totalMemoryBytes": 17179869184,
+    "nodeVersion": "v26.8.2"
+  },
+  "conditions": {
+    "viewport": {
+      "width": 390,
+      "height": 844,
+      "deviceScaleFactor": 1,
+      "mobile": true
+    },
+    "cpuSlowdown": 4,
+    "network": {
+      "offline": false,
+      "latency": 150,
+      "downloadThroughput": 200000,
+      "uploadThroughput": 93750,
+      "connectionType": "cellular4g"
+    },
+    "sampleMinimumMilliseconds": 20000,
+    "afterLoadMilliseconds": 5000,
+    "maxMilliseconds": 60000,
+    "runs": 3,
+    "cache": "new isolated browser context per navigation; cache disabled; no service workers",
+    "consent": "first visit; no analytics consent or interaction",
+    "note": "Lab observations on this host, not field data, TBT or INP. Network latency150ms; throughput bytes per second."
+  },
+  "field_data": {
+    "available": false,
+    "request": "unauthenticated public PageSpeed Insights, homepage mobile",
+    "status": 429,
+    "reason": "quota exceeded; URL and origin loadingExperience absent",
+    "no_authentication_or_payment_attempted": true
+  },
+  "limitations": [
+    "Lab data, not field Core Web Vitals; TBT and INP not measured.",
+    "Final LCP element is consent text except scIB intro paragraph.",
+    "Cold browser cache does not guarantee cold CDN/DNS/connections.",
+    "Three samples characterize this host/conditions, not a mobile population."
+  ],
+  "raw_evidence": {
+    "directory": "workbench/performance-2026-09-23/before",
+    "manifest_sha256": "2bc1e3d1ab51b8a0fe785b8c180fc71baa3195b5a4d933ac6baa11f41f5b4dfa",
+    "tracked_raw_receipts": false
+  },
+  "pages": [
+    {
+      "key": "home",
+      "url": "https://benchmarks.rewire.it/",
+      "runs": 3,
+      "metrics": {
+        "fcpMilliseconds": {
+          "n": 3,
+          "median": 1204,
+          "min": 1192,
+          "max": 1232
+        },
+        "lcpMilliseconds": {
+          "n": 3,
+          "median": 2036,
+          "min": 2016,
+          "max": 2036
+        },
+        "cls": {
+          "n": 3,
+          "median": 0.0002220720332064557,
+          "min": 0.0002220720332064557,
+          "max": 0.0002220720332064557
+        },
+        "longTaskCount": {
+          "n": 3,
+          "median": 0,
+          "min": 0,
+          "max": 0
+        },
+        "longTaskTotalMilliseconds": {
+          "n": 3,
+          "median": 0,
+          "min": 0,
+          "max": 0
+        },
+        "maxLongTaskMilliseconds": {
+          "n": 3,
+          "median": 0,
+          "min": 0,
+          "max": 0
+        },
+        "totalWireBytes": {
+          "n": 3,
+          "median": 634511,
+          "min": 634508,
+          "max": 634527
+        },
+        "javascriptWireBytes": {
+          "n": 3,
+          "median": 133093,
+          "min": 133076,
+          "max": 133124
+        },
+        "javascriptDecodedBytes": {
+          "n": 3,
+          "median": 506290,
+          "min": 506290,
+          "max": 506290
+        }
+      },
+      "payload": {
+        "html_decoded_bytes": 417321,
+        "html_encoded_body_bytes": 38214,
+        "inline_flight_script_bytes": 342381,
+        "decoded_flight_bytes": 322458,
+        "exact_duplicate_record_surplus_json_bytes": 0,
+        "full_record_occurrences": 20,
+        "unique_record_ids": 20,
+        "rsc_prefetch_decoded_bytes_median": 564211,
+        "rsc_prefetch_wire_bytes_median": 26779
+      },
+      "lcp_element": {
+        "tag": "P",
+        "id": "",
+        "cls": "",
+        "text": "With your permission, Google Analytics counts visits to public pages. Search terms, URL parameters and contribution pages are excluded. Google privacy policy"
+      },
+      "errors": 0,
+      "network_failures": 0,
+      "individual_runs": [
+        {
+          "run": 1,
+          "fcpMilliseconds": 1204,
+          "lcpMilliseconds": 2036,
+          "cls": 0.0002220720332064557,
+          "longTaskCount": 0,
+          "longTaskTotalMilliseconds": 0,
+          "maxLongTaskMilliseconds": 0,
+          "documentWireBytes": 38582,
+          "totalWireBytes": 634527
+        },
+        {
+          "run": 2,
+          "fcpMilliseconds": 1232,
+          "lcpMilliseconds": 2036,
+          "cls": 0.0002220720332064557,
+          "longTaskCount": 0,
+          "longTaskTotalMilliseconds": 0,
+          "maxLongTaskMilliseconds": 0,
+          "documentWireBytes": 38585,
+          "totalWireBytes": 634508
+        },
+        {
+          "run": 3,
+          "fcpMilliseconds": 1192,
+          "lcpMilliseconds": 2016,
+          "cls": 0.0002220720332064557,
+          "longTaskCount": 0,
+          "longTaskTotalMilliseconds": 0,
+          "maxLongTaskMilliseconds": 0,
+          "documentWireBytes": 38585,
+          "totalWireBytes": 634511
+        }
+      ]
+    },
+    {
+      "key": "vcc",
+      "url": "https://benchmarks.rewire.it/database/benchmark/discovery-benchmark-virtual-cell-challenge-2026/",
+      "runs": 3,
+      "metrics": {
+        "fcpMilliseconds": {
+          "n": 3,
+          "median": 1340,
+          "min": 1320,
+          "max": 1448
+        },
+        "lcpMilliseconds": {
+          "n": 3,
+          "median": 2696,
+          "min": 2656,
+          "max": 2828
+        },
+        "cls": {
+          "n": 3,
+          "median": 0,
+          "min": 0,
+          "max": 0
+        },
+        "longTaskCount": {
+          "n": 3,
+          "median": 0,
+          "min": 0,
+          "max": 0
+        },
+        "longTaskTotalMilliseconds": {
+          "n": 3,
+          "median": 0,
+          "min": 0,
+          "max": 0
+        },
+        "maxLongTaskMilliseconds": {
+          "n": 3,
+          "median": 0,
+          "min": 0,
+          "max": 0
+        },
+        "totalWireBytes": {
+          "n": 3,
+          "median": 498026,
+          "min": 498011,
+          "max": 498268
+        },
+        "javascriptWireBytes": {
+          "n": 3,
+          "median": 132698,
+          "min": 132677,
+          "max": 132888
+        },
+        "javascriptDecodedBytes": {
+          "n": 3,
+          "median": 506290,
+          "min": 506290,
+          "max": 506290
+        }
+      },
+      "payload": {
+        "html_decoded_bytes": 1523180,
+        "html_encoded_body_bytes": 107036,
+        "inline_flight_script_bytes": 1436203,
+        "decoded_flight_bytes": 1334050,
+        "exact_duplicate_record_surplus_json_bytes": 340763,
+        "full_record_occurrences": 1003,
+        "unique_record_ids": 318,
+        "rsc_prefetch_decoded_bytes_median": 321518,
+        "rsc_prefetch_wire_bytes_median": 32603
+      },
+      "lcp_element": {
+        "tag": "P",
+        "id": "",
+        "cls": "",
+        "text": "With your permission, Google Analytics counts visits to public pages. Search terms, URL parameters and contribution pages are excluded. Google privacy policy"
+      },
+      "errors": 0,
+      "network_failures": 0,
+      "individual_runs": [
+        {
+          "run": 1,
+          "fcpMilliseconds": 1340,
+          "lcpMilliseconds": 2656,
+          "cls": 0,
+          "longTaskCount": 0,
+          "longTaskTotalMilliseconds": 0,
+          "maxLongTaskMilliseconds": 0,
+          "documentWireBytes": 107441,
+          "totalWireBytes": 498011
+        },
+        {
+          "run": 2,
+          "fcpMilliseconds": 1448,
+          "lcpMilliseconds": 2828,
+          "cls": 0,
+          "longTaskCount": 0,
+          "longTaskTotalMilliseconds": 0,
+          "maxLongTaskMilliseconds": 0,
+          "documentWireBytes": 107444,
+          "totalWireBytes": 498026
+        },
+        {
+          "run": 3,
+          "fcpMilliseconds": 1320,
+          "lcpMilliseconds": 2696,
+          "cls": 0,
+          "longTaskCount": 0,
+          "longTaskTotalMilliseconds": 0,
+          "maxLongTaskMilliseconds": 0,
+          "documentWireBytes": 107443,
+          "totalWireBytes": 498268
+        }
+      ]
+    },
+    {
+      "key": "cafa",
+      "url": "https://benchmarks.rewire.it/database/benchmark/discovery-benchmark-cafa/",
+      "runs": 3,
+      "metrics": {
+        "fcpMilliseconds": {
+          "n": 3,
+          "median": 1292,
+          "min": 1256,
+          "max": 1372
+        },
+        "lcpMilliseconds": {
+          "n": 3,
+          "median": 2260,
+          "min": 2228,
+          "max": 2268
+        },
+        "cls": {
+          "n": 3,
+          "median": 0,
+          "min": 0,
+          "max": 0
+        },
+        "longTaskCount": {
+          "n": 3,
+          "median": 1,
+          "min": 1,
+          "max": 1
+        },
+        "longTaskTotalMilliseconds": {
+          "n": 3,
+          "median": 55,
+          "min": 54,
+          "max": 55
+        },
+        "maxLongTaskMilliseconds": {
+          "n": 3,
+          "median": 55,
+          "min": 54,
+          "max": 55
+        },
+        "totalWireBytes": {
+          "n": 3,
+          "median": 433788,
+          "min": 433751,
+          "max": 433875
+        },
+        "javascriptWireBytes": {
+          "n": 3,
+          "median": 132850,
+          "min": 132690,
+          "max": 133010
+        },
+        "javascriptDecodedBytes": {
+          "n": 3,
+          "median": 506290,
+          "min": 506290,
+          "max": 506290
+        }
+      },
+      "payload": {
+        "html_decoded_bytes": 1304674,
+        "html_encoded_body_bytes": 44565,
+        "inline_flight_script_bytes": 1224562,
+        "decoded_flight_bytes": 1130357,
+        "exact_duplicate_record_surplus_json_bytes": 358147,
+        "full_record_occurrences": 981,
+        "unique_record_ids": 324,
+        "rsc_prefetch_decoded_bytes_median": 321518,
+        "rsc_prefetch_wire_bytes_median": 32602
+      },
+      "lcp_element": {
+        "tag": "P",
+        "id": "",
+        "cls": "",
+        "text": "With your permission, Google Analytics counts visits to public pages. Search terms, URL parameters and contribution pages are excluded. Google privacy policy"
+      },
+      "errors": 0,
+      "network_failures": 0,
+      "individual_runs": [
+        {
+          "run": 1,
+          "fcpMilliseconds": 1372,
+          "lcpMilliseconds": 2268,
+          "cls": 0,
+          "longTaskCount": 1,
+          "longTaskTotalMilliseconds": 55,
+          "maxLongTaskMilliseconds": 55,
+          "documentWireBytes": 44936,
+          "totalWireBytes": 433788
+        },
+        {
+          "run": 2,
+          "fcpMilliseconds": 1256,
+          "lcpMilliseconds": 2228,
+          "cls": 0,
+          "longTaskCount": 1,
+          "longTaskTotalMilliseconds": 54,
+          "maxLongTaskMilliseconds": 54,
+          "documentWireBytes": 44936,
+          "totalWireBytes": 433875
+        },
+        {
+          "run": 3,
+          "fcpMilliseconds": 1292,
+          "lcpMilliseconds": 2260,
+          "cls": 0,
+          "longTaskCount": 1,
+          "longTaskTotalMilliseconds": 55,
+          "maxLongTaskMilliseconds": 55,
+          "documentWireBytes": 44944,
+          "totalWireBytes": 433751
+        }
+      ]
+    },
+    {
+      "key": "scib",
+      "url": "https://benchmarks.rewire.it/database/benchmark/discovery-benchmark-scib/",
+      "runs": 3,
+      "metrics": {
+        "fcpMilliseconds": {
+          "n": 3,
+          "median": 1324,
+          "min": 1248,
+          "max": 1352
+        },
+        "lcpMilliseconds": {
+          "n": 3,
+          "median": 1324,
+          "min": 1248,
+          "max": 1352
+        },
+        "cls": {
+          "n": 3,
+          "median": 0,
+          "min": 0,
+          "max": 0
+        },
+        "longTaskCount": {
+          "n": 3,
+          "median": 2,
+          "min": 2,
+          "max": 2
+        },
+        "longTaskTotalMilliseconds": {
+          "n": 3,
+          "median": 108,
+          "min": 108,
+          "max": 125
+        },
+        "maxLongTaskMilliseconds": {
+          "n": 3,
+          "median": 56,
+          "min": 55,
+          "max": 66
+        },
+        "totalWireBytes": {
+          "n": 3,
+          "median": 426552,
+          "min": 426513,
+          "max": 426643
+        },
+        "javascriptWireBytes": {
+          "n": 3,
+          "median": 132850,
+          "min": 132795,
+          "max": 132888
+        },
+        "javascriptDecodedBytes": {
+          "n": 3,
+          "median": 506290,
+          "min": 506290,
+          "max": 506290
+        }
+      },
+      "payload": {
+        "html_decoded_bytes": 1086903,
+        "html_encoded_body_bytes": 35910,
+        "inline_flight_script_bytes": 984106,
+        "decoded_flight_bytes": 905449,
+        "exact_duplicate_record_surplus_json_bytes": 345664,
+        "full_record_occurrences": 905,
+        "unique_record_ids": 242,
+        "rsc_prefetch_decoded_bytes_median": 321518,
+        "rsc_prefetch_wire_bytes_median": 32602
+      },
+      "lcp_element": {
+        "tag": "P",
+        "id": "",
+        "cls": "intro",
+        "text": "scIB is an atlas-level single-cell integration benchmark study covering RNA, chromatin-accessibility and simulated datasets. It compares batch removal with pres"
+      },
+      "errors": 0,
+      "network_failures": 0,
+      "individual_runs": [
+        {
+          "run": 1,
+          "fcpMilliseconds": 1352,
+          "lcpMilliseconds": 1352,
+          "cls": 0,
+          "longTaskCount": 2,
+          "longTaskTotalMilliseconds": 108,
+          "maxLongTaskMilliseconds": 56,
+          "documentWireBytes": 36280,
+          "totalWireBytes": 426552
+        },
+        {
+          "run": 2,
+          "fcpMilliseconds": 1324,
+          "lcpMilliseconds": 1324,
+          "cls": 0,
+          "longTaskCount": 2,
+          "longTaskTotalMilliseconds": 108,
+          "maxLongTaskMilliseconds": 55,
+          "documentWireBytes": 36281,
+          "totalWireBytes": 426513
+        },
+        {
+          "run": 3,
+          "fcpMilliseconds": 1248,
+          "lcpMilliseconds": 1248,
+          "cls": 0,
+          "longTaskCount": 2,
+          "longTaskTotalMilliseconds": 125,
+          "maxLongTaskMilliseconds": 66,
+          "documentWireBytes": 36281,
+          "totalWireBytes": 426643
+        }
+      ]
+    },
+    {
+      "key": "casp",
+      "url": "https://benchmarks.rewire.it/database/benchmark/discovery-benchmark-casp/",
+      "runs": 3,
+      "metrics": {
+        "fcpMilliseconds": {
+          "n": 3,
+          "median": 1228,
+          "min": 1208,
+          "max": 1260
+        },
+        "lcpMilliseconds": {
+          "n": 3,
+          "median": 2184,
+          "min": 2176,
+          "max": 2244
+        },
+        "cls": {
+          "n": 3,
+          "median": 0,
+          "min": 0,
+          "max": 0
+        },
+        "longTaskCount": {
+          "n": 3,
+          "median": 2,
+          "min": 2,
+          "max": 2
+        },
+        "longTaskTotalMilliseconds": {
+          "n": 3,
+          "median": 103,
+          "min": 103,
+          "max": 104
+        },
+        "maxLongTaskMilliseconds": {
+          "n": 3,
+          "median": 52,
+          "min": 52,
+          "max": 53
+        },
+        "totalWireBytes": {
+          "n": 3,
+          "median": 422694,
+          "min": 422580,
+          "max": 422708
+        },
+        "javascriptWireBytes": {
+          "n": 3,
+          "median": 132873,
+          "min": 132854,
+          "max": 132877
+        },
+        "javascriptDecodedBytes": {
+          "n": 3,
+          "median": 506290,
+          "min": 506290,
+          "max": 506290
+        }
+      },
+      "payload": {
+        "html_decoded_bytes": 1081746,
+        "html_encoded_body_bytes": 33778,
+        "inline_flight_script_bytes": 1003563,
+        "decoded_flight_bytes": 916878,
+        "exact_duplicate_record_surplus_json_bytes": 330271,
+        "full_record_occurrences": 979,
+        "unique_record_ids": 276,
+        "rsc_prefetch_decoded_bytes_median": 321518,
+        "rsc_prefetch_wire_bytes_median": 32603
+      },
+      "lcp_element": {
+        "tag": "P",
+        "id": "",
+        "cls": "",
+        "text": "With your permission, Google Analytics counts visits to public pages. Search terms, URL parameters and contribution pages are excluded. Google privacy policy"
+      },
+      "errors": 0,
+      "network_failures": 0,
+      "individual_runs": [
+        {
+          "run": 1,
+          "fcpMilliseconds": 1260,
+          "lcpMilliseconds": 2244,
+          "cls": 0,
+          "longTaskCount": 2,
+          "longTaskTotalMilliseconds": 103,
+          "maxLongTaskMilliseconds": 52,
+          "documentWireBytes": 34149,
+          "totalWireBytes": 422694
+        },
+        {
+          "run": 2,
+          "fcpMilliseconds": 1208,
+          "lcpMilliseconds": 2184,
+          "cls": 0,
+          "longTaskCount": 2,
+          "longTaskTotalMilliseconds": 104,
+          "maxLongTaskMilliseconds": 53,
+          "documentWireBytes": 34148,
+          "totalWireBytes": 422580
+        },
+        {
+          "run": 3,
+          "fcpMilliseconds": 1228,
+          "lcpMilliseconds": 2176,
+          "cls": 0,
+          "longTaskCount": 2,
+          "longTaskTotalMilliseconds": 103,
+          "maxLongTaskMilliseconds": 52,
+          "documentWireBytes": 34148,
+          "totalWireBytes": 422708
+        }
+      ]
+    }
+  ]
+}

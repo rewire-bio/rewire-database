@@ -1,0 +1,1730 @@
+[
+  {
+    "spec": "mimic-2026-mrnabench",
+    "method": "MIMIC",
+    "task": "eCLIP",
+    "source_printed": "0.470",
+    "spec_printed": "0.470",
+    "spec_value": "0.470",
+    "pass": true
+  },
+  {
+    "spec": "mimic-2026-mrnabench",
+    "method": "MIMIC",
+    "task": "GO",
+    "source_printed": "0.475",
+    "spec_printed": "0.475",
+    "spec_value": "0.475",
+    "pass": true
+  },
+  {
+    "spec": "mimic-2026-mrnabench",
+    "method": "MIMIC",
+    "task": "Protein Localization",
+    "source_printed": "0.415",
+    "spec_printed": "0.415",
+    "spec_value": "0.415",
+    "pass": true
+  },
+  {
+    "spec": "mimic-2026-mrnabench",
+    "method": "MIMIC",
+    "task": "RNA Localization",
+    "source_printed": "0.756",
+    "spec_printed": "0.756",
+    "spec_value": "0.756",
+    "pass": true
+  },
+  {
+    "spec": "mimic-2026-mrnabench",
+    "method": "MIMIC",
+    "task": "MRL (LBKWK)",
+    "source_printed": "0.585",
+    "spec_printed": "0.585",
+    "spec_value": "0.585",
+    "pass": true
+  },
+  {
+    "spec": "mimic-2026-mrnabench",
+    "method": "MIMIC",
+    "task": "MRL (Sugimoto)",
+    "source_printed": "0.496",
+    "spec_printed": "0.496",
+    "spec_value": "0.496",
+    "pass": true
+  },
+  {
+    "spec": "mimic-2026-mrnabench",
+    "method": "MIMIC",
+    "task": "RNA Half Life",
+    "source_printed": "0.623",
+    "spec_printed": "0.623",
+    "spec_value": "0.623",
+    "pass": true
+  },
+  {
+    "spec": "mimic-2026-mrnabench",
+    "method": "AIDO-RNA",
+    "task": "eCLIP",
+    "source_printed": "0.420",
+    "spec_printed": "0.420",
+    "spec_value": "0.420",
+    "pass": true
+  },
+  {
+    "spec": "mimic-2026-mrnabench",
+    "method": "AIDO-RNA",
+    "task": "GO",
+    "source_printed": "0.366",
+    "spec_printed": "0.366",
+    "spec_value": "0.366",
+    "pass": true
+  },
+  {
+    "spec": "mimic-2026-mrnabench",
+    "method": "AIDO-RNA",
+    "task": "Protein Localization",
+    "source_printed": "0.343",
+    "spec_printed": "0.343",
+    "spec_value": "0.343",
+    "pass": true
+  },
+  {
+    "spec": "mimic-2026-mrnabench",
+    "method": "AIDO-RNA",
+    "task": "RNA Localization",
+    "source_printed": "0.734",
+    "spec_printed": "0.734",
+    "spec_value": "0.734",
+    "pass": true
+  },
+  {
+    "spec": "mimic-2026-mrnabench",
+    "method": "AIDO-RNA",
+    "task": "MRL (LBKWK)",
+    "source_printed": "0.534",
+    "spec_printed": "0.534",
+    "spec_value": "0.534",
+    "pass": true
+  },
+  {
+    "spec": "mimic-2026-mrnabench",
+    "method": "AIDO-RNA",
+    "task": "MRL (Sugimoto)",
+    "source_printed": "0.360",
+    "spec_printed": "0.360",
+    "spec_value": "0.360",
+    "pass": true
+  },
+  {
+    "spec": "mimic-2026-mrnabench",
+    "method": "AIDO-RNA",
+    "task": "RNA Half Life",
+    "source_printed": "0.555",
+    "spec_printed": "0.555",
+    "spec_value": "0.555",
+    "pass": true
+  },
+  {
+    "spec": "mimic-2026-mrnabench",
+    "method": "Dilated ResNet",
+    "task": "eCLIP",
+    "source_printed": "0.421",
+    "spec_printed": "0.421",
+    "spec_value": "0.421",
+    "pass": true
+  },
+  {
+    "spec": "mimic-2026-mrnabench",
+    "method": "Dilated ResNet",
+    "task": "GO",
+    "source_printed": "0.155",
+    "spec_printed": "0.155",
+    "spec_value": "0.155",
+    "pass": true
+  },
+  {
+    "spec": "mimic-2026-mrnabench",
+    "method": "Dilated ResNet",
+    "task": "Protein Localization",
+    "source_printed": "0.169",
+    "spec_printed": "0.169",
+    "spec_value": "0.169",
+    "pass": true
+  },
+  {
+    "spec": "mimic-2026-mrnabench",
+    "method": "Dilated ResNet",
+    "task": "RNA Localization",
+    "source_printed": "0.645",
+    "spec_printed": "0.645",
+    "spec_value": "0.645",
+    "pass": true
+  },
+  {
+    "spec": "mimic-2026-mrnabench",
+    "method": "Dilated ResNet",
+    "task": "MRL (LBKWK)",
+    "source_printed": "0.411",
+    "spec_printed": "0.411",
+    "spec_value": "0.411",
+    "pass": true
+  },
+  {
+    "spec": "mimic-2026-mrnabench",
+    "method": "Dilated ResNet",
+    "task": "MRL (Sugimoto)",
+    "source_printed": "0.448",
+    "spec_printed": "0.448",
+    "spec_value": "0.448",
+    "pass": true
+  },
+  {
+    "spec": "mimic-2026-mrnabench",
+    "method": "Dilated ResNet",
+    "task": "RNA Half Life",
+    "source_printed": "0.647",
+    "spec_printed": "0.647",
+    "spec_value": "0.647",
+    "pass": true
+  },
+  {
+    "spec": "mimic-2026-mrnabench",
+    "method": "DNABERT2",
+    "task": "eCLIP",
+    "source_printed": "0.371",
+    "spec_printed": "0.371",
+    "spec_value": "0.371",
+    "pass": true
+  },
+  {
+    "spec": "mimic-2026-mrnabench",
+    "method": "DNABERT2",
+    "task": "GO",
+    "source_printed": "0.326",
+    "spec_printed": "0.326",
+    "spec_value": "0.326",
+    "pass": true
+  },
+  {
+    "spec": "mimic-2026-mrnabench",
+    "method": "DNABERT2",
+    "task": "Protein Localization",
+    "source_printed": "0.325",
+    "spec_printed": "0.325",
+    "spec_value": "0.325",
+    "pass": true
+  },
+  {
+    "spec": "mimic-2026-mrnabench",
+    "method": "DNABERT2",
+    "task": "RNA Localization",
+    "source_printed": "0.675",
+    "spec_printed": "0.675",
+    "spec_value": "0.675",
+    "pass": true
+  },
+  {
+    "spec": "mimic-2026-mrnabench",
+    "method": "DNABERT2",
+    "task": "MRL (LBKWK)",
+    "source_printed": "0.534",
+    "spec_printed": "0.534",
+    "spec_value": "0.534",
+    "pass": true
+  },
+  {
+    "spec": "mimic-2026-mrnabench",
+    "method": "DNABERT2",
+    "task": "MRL (Sugimoto)",
+    "source_printed": "0.286",
+    "spec_printed": "0.286",
+    "spec_value": "0.286",
+    "pass": true
+  },
+  {
+    "spec": "mimic-2026-mrnabench",
+    "method": "DNABERT2",
+    "task": "RNA Half Life",
+    "source_printed": "0.475",
+    "spec_printed": "0.475",
+    "spec_value": "0.475",
+    "pass": true
+  },
+  {
+    "spec": "mimic-2026-mrnabench",
+    "method": "DNABERT-S",
+    "task": "eCLIP",
+    "source_printed": "0.374",
+    "spec_printed": "0.374",
+    "spec_value": "0.374",
+    "pass": true
+  },
+  {
+    "spec": "mimic-2026-mrnabench",
+    "method": "DNABERT-S",
+    "task": "GO",
+    "source_printed": "0.318",
+    "spec_printed": "0.318",
+    "spec_value": "0.318",
+    "pass": true
+  },
+  {
+    "spec": "mimic-2026-mrnabench",
+    "method": "DNABERT-S",
+    "task": "Protein Localization",
+    "source_printed": "0.311",
+    "spec_printed": "0.311",
+    "spec_value": "0.311",
+    "pass": true
+  },
+  {
+    "spec": "mimic-2026-mrnabench",
+    "method": "DNABERT-S",
+    "task": "RNA Localization",
+    "source_printed": "0.685",
+    "spec_printed": "0.685",
+    "spec_value": "0.685",
+    "pass": true
+  },
+  {
+    "spec": "mimic-2026-mrnabench",
+    "method": "DNABERT-S",
+    "task": "MRL (LBKWK)",
+    "source_printed": "0.393",
+    "spec_printed": "0.393",
+    "spec_value": "0.393",
+    "pass": true
+  },
+  {
+    "spec": "mimic-2026-mrnabench",
+    "method": "DNABERT-S",
+    "task": "MRL (Sugimoto)",
+    "source_printed": "0.292",
+    "spec_printed": "0.292",
+    "spec_value": "0.292",
+    "pass": true
+  },
+  {
+    "spec": "mimic-2026-mrnabench",
+    "method": "DNABERT-S",
+    "task": "RNA Half Life",
+    "source_printed": "0.467",
+    "spec_printed": "0.467",
+    "spec_value": "0.467",
+    "pass": true
+  },
+  {
+    "spec": "mimic-2026-mrnabench",
+    "method": "ERNIE-RNA",
+    "task": "eCLIP",
+    "source_printed": "0.373",
+    "spec_printed": "0.373",
+    "spec_value": "0.373",
+    "pass": true
+  },
+  {
+    "spec": "mimic-2026-mrnabench",
+    "method": "ERNIE-RNA",
+    "task": "GO",
+    "source_printed": "0.341",
+    "spec_printed": "0.341",
+    "spec_value": "0.341",
+    "pass": true
+  },
+  {
+    "spec": "mimic-2026-mrnabench",
+    "method": "ERNIE-RNA",
+    "task": "Protein Localization",
+    "source_printed": "0.338",
+    "spec_printed": "0.338",
+    "spec_value": "0.338",
+    "pass": true
+  },
+  {
+    "spec": "mimic-2026-mrnabench",
+    "method": "ERNIE-RNA",
+    "task": "RNA Localization",
+    "source_printed": "0.691",
+    "spec_printed": "0.691",
+    "spec_value": "0.691",
+    "pass": true
+  },
+  {
+    "spec": "mimic-2026-mrnabench",
+    "method": "ERNIE-RNA",
+    "task": "MRL (LBKWK)",
+    "source_printed": "0.503",
+    "spec_printed": "0.503",
+    "spec_value": "0.503",
+    "pass": true
+  },
+  {
+    "spec": "mimic-2026-mrnabench",
+    "method": "ERNIE-RNA",
+    "task": "MRL (Sugimoto)",
+    "source_printed": "0.328",
+    "spec_printed": "0.328",
+    "spec_value": "0.328",
+    "pass": true
+  },
+  {
+    "spec": "mimic-2026-mrnabench",
+    "method": "ERNIE-RNA",
+    "task": "RNA Half Life",
+    "source_printed": "0.518",
+    "spec_printed": "0.518",
+    "spec_value": "0.518",
+    "pass": true
+  },
+  {
+    "spec": "mimic-2026-mrnabench",
+    "method": "Evo2",
+    "task": "eCLIP",
+    "source_printed": "0.473",
+    "spec_printed": "0.473",
+    "spec_value": "0.473",
+    "pass": true
+  },
+  {
+    "spec": "mimic-2026-mrnabench",
+    "method": "Evo2",
+    "task": "GO",
+    "source_printed": "0.467",
+    "spec_printed": "0.467",
+    "spec_value": "0.467",
+    "pass": true
+  },
+  {
+    "spec": "mimic-2026-mrnabench",
+    "method": "Evo2",
+    "task": "Protein Localization",
+    "source_printed": "0.408",
+    "spec_printed": "0.408",
+    "spec_value": "0.408",
+    "pass": true
+  },
+  {
+    "spec": "mimic-2026-mrnabench",
+    "method": "Evo2",
+    "task": "RNA Localization",
+    "source_printed": "0.767",
+    "spec_printed": "0.767",
+    "spec_value": "0.767",
+    "pass": true
+  },
+  {
+    "spec": "mimic-2026-mrnabench",
+    "method": "Evo2",
+    "task": "MRL (LBKWK)",
+    "source_printed": "0.507",
+    "spec_printed": "0.507",
+    "spec_value": "0.507",
+    "pass": true
+  },
+  {
+    "spec": "mimic-2026-mrnabench",
+    "method": "Evo2",
+    "task": "MRL (Sugimoto)",
+    "source_printed": "0.455",
+    "spec_printed": "0.455",
+    "spec_value": "0.455",
+    "pass": true
+  },
+  {
+    "spec": "mimic-2026-mrnabench",
+    "method": "Evo2",
+    "task": "RNA Half Life",
+    "source_printed": "0.661",
+    "spec_printed": "0.661",
+    "spec_value": "0.661",
+    "pass": true
+  },
+  {
+    "spec": "mimic-2026-mrnabench",
+    "method": "HyenaDNA",
+    "task": "eCLIP",
+    "source_printed": "0.374",
+    "spec_printed": "0.374",
+    "spec_value": "0.374",
+    "pass": true
+  },
+  {
+    "spec": "mimic-2026-mrnabench",
+    "method": "HyenaDNA",
+    "task": "GO",
+    "source_printed": "0.308",
+    "spec_printed": "0.308",
+    "spec_value": "0.308",
+    "pass": true
+  },
+  {
+    "spec": "mimic-2026-mrnabench",
+    "method": "HyenaDNA",
+    "task": "Protein Localization",
+    "source_printed": "0.311",
+    "spec_printed": "0.311",
+    "spec_value": "0.311",
+    "pass": true
+  },
+  {
+    "spec": "mimic-2026-mrnabench",
+    "method": "HyenaDNA",
+    "task": "RNA Localization",
+    "source_printed": "0.670",
+    "spec_printed": "0.670",
+    "spec_value": "0.670",
+    "pass": true
+  },
+  {
+    "spec": "mimic-2026-mrnabench",
+    "method": "HyenaDNA",
+    "task": "MRL (LBKWK)",
+    "source_printed": "0.506",
+    "spec_printed": "0.506",
+    "spec_value": "0.506",
+    "pass": true
+  },
+  {
+    "spec": "mimic-2026-mrnabench",
+    "method": "HyenaDNA",
+    "task": "MRL (Sugimoto)",
+    "source_printed": "0.287",
+    "spec_printed": "0.287",
+    "spec_value": "0.287",
+    "pass": true
+  },
+  {
+    "spec": "mimic-2026-mrnabench",
+    "method": "HyenaDNA",
+    "task": "RNA Half Life",
+    "source_printed": "0.462",
+    "spec_printed": "0.462",
+    "spec_value": "0.462",
+    "pass": true
+  },
+  {
+    "spec": "mimic-2026-mrnabench",
+    "method": "NT-v2",
+    "task": "eCLIP",
+    "source_printed": "0.391",
+    "spec_printed": "0.391",
+    "spec_value": "0.391",
+    "pass": true
+  },
+  {
+    "spec": "mimic-2026-mrnabench",
+    "method": "NT-v2",
+    "task": "GO",
+    "source_printed": "0.350",
+    "spec_printed": "0.350",
+    "spec_value": "0.350",
+    "pass": true
+  },
+  {
+    "spec": "mimic-2026-mrnabench",
+    "method": "NT-v2",
+    "task": "Protein Localization",
+    "source_printed": "0.336",
+    "spec_printed": "0.336",
+    "spec_value": "0.336",
+    "pass": true
+  },
+  {
+    "spec": "mimic-2026-mrnabench",
+    "method": "NT-v2",
+    "task": "RNA Localization",
+    "source_printed": "0.719",
+    "spec_printed": "0.719",
+    "spec_value": "0.719",
+    "pass": true
+  },
+  {
+    "spec": "mimic-2026-mrnabench",
+    "method": "NT-v2",
+    "task": "MRL (LBKWK)",
+    "source_printed": "0.512",
+    "spec_printed": "0.512",
+    "spec_value": "0.512",
+    "pass": true
+  },
+  {
+    "spec": "mimic-2026-mrnabench",
+    "method": "NT-v2",
+    "task": "MRL (Sugimoto)",
+    "source_printed": "0.297",
+    "spec_printed": "0.297",
+    "spec_value": "0.297",
+    "pass": true
+  },
+  {
+    "spec": "mimic-2026-mrnabench",
+    "method": "NT-v2",
+    "task": "RNA Half Life",
+    "source_printed": "0.530",
+    "spec_printed": "0.530",
+    "spec_value": "0.530",
+    "pass": true
+  },
+  {
+    "spec": "mimic-2026-mrnabench",
+    "method": "Orthrus",
+    "task": "eCLIP",
+    "source_printed": "0.465",
+    "spec_printed": "0.465",
+    "spec_value": "0.465",
+    "pass": true
+  },
+  {
+    "spec": "mimic-2026-mrnabench",
+    "method": "Orthrus",
+    "task": "GO",
+    "source_printed": "0.435",
+    "spec_printed": "0.435",
+    "spec_value": "0.435",
+    "pass": true
+  },
+  {
+    "spec": "mimic-2026-mrnabench",
+    "method": "Orthrus",
+    "task": "Protein Localization",
+    "source_printed": "0.396",
+    "spec_printed": "0.396",
+    "spec_value": "0.396",
+    "pass": true
+  },
+  {
+    "spec": "mimic-2026-mrnabench",
+    "method": "Orthrus",
+    "task": "RNA Localization",
+    "source_printed": "0.789",
+    "spec_printed": "0.789",
+    "spec_value": "0.789",
+    "pass": true
+  },
+  {
+    "spec": "mimic-2026-mrnabench",
+    "method": "Orthrus",
+    "task": "MRL (LBKWK)",
+    "source_printed": "0.633",
+    "spec_printed": "0.633",
+    "spec_value": "0.633",
+    "pass": true
+  },
+  {
+    "spec": "mimic-2026-mrnabench",
+    "method": "Orthrus",
+    "task": "MRL (Sugimoto)",
+    "source_printed": "0.460",
+    "spec_printed": "0.460",
+    "spec_value": "0.460",
+    "pass": true
+  },
+  {
+    "spec": "mimic-2026-mrnabench",
+    "method": "Orthrus",
+    "task": "RNA Half Life",
+    "source_printed": "0.696",
+    "spec_printed": "0.696",
+    "spec_value": "0.696",
+    "pass": true
+  },
+  {
+    "spec": "mimic-2026-mrnabench",
+    "method": "RiNALMo",
+    "task": "eCLIP",
+    "source_printed": "0.393",
+    "spec_printed": "0.393",
+    "spec_value": "0.393",
+    "pass": true
+  },
+  {
+    "spec": "mimic-2026-mrnabench",
+    "method": "RiNALMo",
+    "task": "GO",
+    "source_printed": "0.347",
+    "spec_printed": "0.347",
+    "spec_value": "0.347",
+    "pass": true
+  },
+  {
+    "spec": "mimic-2026-mrnabench",
+    "method": "RiNALMo",
+    "task": "Protein Localization",
+    "source_printed": "0.327",
+    "spec_printed": "0.327",
+    "spec_value": "0.327",
+    "pass": true
+  },
+  {
+    "spec": "mimic-2026-mrnabench",
+    "method": "RiNALMo",
+    "task": "RNA Localization",
+    "source_printed": "0.690",
+    "spec_printed": "0.690",
+    "spec_value": "0.690",
+    "pass": true
+  },
+  {
+    "spec": "mimic-2026-mrnabench",
+    "method": "RiNALMo",
+    "task": "MRL (LBKWK)",
+    "source_printed": "0.466",
+    "spec_printed": "0.466",
+    "spec_value": "0.466",
+    "pass": true
+  },
+  {
+    "spec": "mimic-2026-mrnabench",
+    "method": "RiNALMo",
+    "task": "MRL (Sugimoto)",
+    "source_printed": "0.416",
+    "spec_printed": "0.416",
+    "spec_value": "0.416",
+    "pass": true
+  },
+  {
+    "spec": "mimic-2026-mrnabench",
+    "method": "RiNALMo",
+    "task": "RNA Half Life",
+    "source_printed": "0.532",
+    "spec_printed": "0.532",
+    "spec_value": "0.532",
+    "pass": true
+  },
+  {
+    "spec": "mimic-2026-mrnabench",
+    "method": "SpliceBERT",
+    "task": "eCLIP",
+    "source_printed": "0.377",
+    "spec_printed": "0.377",
+    "spec_value": "0.377",
+    "pass": true
+  },
+  {
+    "spec": "mimic-2026-mrnabench",
+    "method": "SpliceBERT",
+    "task": "GO",
+    "source_printed": "0.382",
+    "spec_printed": "0.382",
+    "spec_value": "0.382",
+    "pass": true
+  },
+  {
+    "spec": "mimic-2026-mrnabench",
+    "method": "SpliceBERT",
+    "task": "Protein Localization",
+    "source_printed": "0.360",
+    "spec_printed": "0.360",
+    "spec_value": "0.360",
+    "pass": true
+  },
+  {
+    "spec": "mimic-2026-mrnabench",
+    "method": "SpliceBERT",
+    "task": "RNA Localization",
+    "source_printed": "0.726",
+    "spec_printed": "0.726",
+    "spec_value": "0.726",
+    "pass": true
+  },
+  {
+    "spec": "mimic-2026-mrnabench",
+    "method": "SpliceBERT",
+    "task": "MRL (LBKWK)",
+    "source_printed": "0.514",
+    "spec_printed": "0.514",
+    "spec_value": "0.514",
+    "pass": true
+  },
+  {
+    "spec": "mimic-2026-mrnabench",
+    "method": "SpliceBERT",
+    "task": "MRL (Sugimoto)",
+    "source_printed": "0.336",
+    "spec_printed": "0.336",
+    "spec_value": "0.336",
+    "pass": true
+  },
+  {
+    "spec": "mimic-2026-mrnabench",
+    "method": "SpliceBERT",
+    "task": "RNA Half Life",
+    "source_printed": "0.531",
+    "spec_printed": "0.531",
+    "spec_value": "0.531",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "FFN",
+    "task": "NPLIB1: no formula, R@1",
+    "source_printed": "8.9",
+    "spec_printed": "8.9",
+    "spec_value": "8.9",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "DeepSets",
+    "task": "NPLIB1: no formula, R@1",
+    "source_printed": "11.1",
+    "spec_printed": "11.1",
+    "spec_value": "11.1",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "JESTR",
+    "task": "NPLIB1: no formula, R@1",
+    "source_printed": "11.2",
+    "spec_printed": "11.2",
+    "spec_value": "11.2",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "Emb-Cos",
+    "task": "NPLIB1: no formula, R@1",
+    "source_printed": "22.5",
+    "spec_printed": "22.5",
+    "spec_value": "22.5",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "SAIL",
+    "task": "NPLIB1: no formula, R@1",
+    "source_printed": "18.6",
+    "spec_printed": "18.6",
+    "spec_value": "18.6",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "MSAlign",
+    "task": "NPLIB1: no formula, R@1",
+    "source_printed": "31.8",
+    "spec_printed": "31.8",
+    "spec_value": "31.8",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "MIST",
+    "task": "NPLIB1: formula supplied, R@1",
+    "source_printed": "27.2",
+    "spec_printed": "27.2",
+    "spec_value": "27.2",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "FLARE",
+    "task": "NPLIB1: formula supplied, R@1",
+    "source_printed": "19.6",
+    "spec_printed": "19.6",
+    "spec_value": "19.6",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "MSAlign (+Filter)",
+    "task": "NPLIB1: formula supplied, R@1",
+    "source_printed": "34.7",
+    "spec_printed": "34.7",
+    "spec_value": "34.7",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "FFN",
+    "task": "NPLIB1: no formula, R@5",
+    "source_printed": "22.0",
+    "spec_printed": "22.0",
+    "spec_value": "22.0",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "DeepSets",
+    "task": "NPLIB1: no formula, R@5",
+    "source_printed": "30.4",
+    "spec_printed": "30.4",
+    "spec_value": "30.4",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "JESTR",
+    "task": "NPLIB1: no formula, R@5",
+    "source_printed": "33.1",
+    "spec_printed": "33.1",
+    "spec_value": "33.1",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "Emb-Cos",
+    "task": "NPLIB1: no formula, R@5",
+    "source_printed": "48.3",
+    "spec_printed": "48.3",
+    "spec_value": "48.3",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "SAIL",
+    "task": "NPLIB1: no formula, R@5",
+    "source_printed": "46.4",
+    "spec_printed": "46.4",
+    "spec_value": "46.4",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "MSAlign",
+    "task": "NPLIB1: no formula, R@5",
+    "source_printed": "60.4",
+    "spec_printed": "60.4",
+    "spec_value": "60.4",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "MIST",
+    "task": "NPLIB1: formula supplied, R@5",
+    "source_printed": "52.0",
+    "spec_printed": "52.0",
+    "spec_value": "52.0",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "FLARE",
+    "task": "NPLIB1: formula supplied, R@5",
+    "source_printed": "50.8",
+    "spec_printed": "50.8",
+    "spec_value": "50.8",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "MSAlign (+Filter)",
+    "task": "NPLIB1: formula supplied, R@5",
+    "source_printed": "64.7",
+    "spec_printed": "64.7",
+    "spec_value": "64.7",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "FFN",
+    "task": "NPLIB1: no formula, R@20",
+    "source_printed": "44.4",
+    "spec_printed": "44.4",
+    "spec_value": "44.4",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "DeepSets",
+    "task": "NPLIB1: no formula, R@20",
+    "source_printed": "56.5",
+    "spec_printed": "56.5",
+    "spec_value": "56.5",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "JESTR",
+    "task": "NPLIB1: no formula, R@20",
+    "source_printed": "62.0",
+    "spec_printed": "62.0",
+    "spec_value": "62.0",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "Emb-Cos",
+    "task": "NPLIB1: no formula, R@20",
+    "source_printed": "72.7",
+    "spec_printed": "72.7",
+    "spec_value": "72.7",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "SAIL",
+    "task": "NPLIB1: no formula, R@20",
+    "source_printed": "75.8",
+    "spec_printed": "75.8",
+    "spec_value": "75.8",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "MSAlign",
+    "task": "NPLIB1: no formula, R@20",
+    "source_printed": "82.9",
+    "spec_printed": "82.9",
+    "spec_value": "82.9",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "MIST",
+    "task": "NPLIB1: formula supplied, R@20",
+    "source_printed": "73.8",
+    "spec_printed": "73.8",
+    "spec_value": "73.8",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "FLARE",
+    "task": "NPLIB1: formula supplied, R@20",
+    "source_printed": "76.6",
+    "spec_printed": "76.6",
+    "spec_value": "76.6",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "MSAlign (+Filter)",
+    "task": "NPLIB1: formula supplied, R@20",
+    "source_printed": "87.9",
+    "spec_printed": "87.9",
+    "spec_value": "87.9",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "FFN",
+    "task": "Spectraverse: no formula, R@1",
+    "source_printed": "9.5",
+    "spec_printed": "9.5",
+    "spec_value": "9.5",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "DeepSets",
+    "task": "Spectraverse: no formula, R@1",
+    "source_printed": "12.7",
+    "spec_printed": "12.7",
+    "spec_value": "12.7",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "JESTR",
+    "task": "Spectraverse: no formula, R@1",
+    "source_printed": "11.3",
+    "spec_printed": "11.3",
+    "spec_value": "11.3",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "Emb-Cos",
+    "task": "Spectraverse: no formula, R@1",
+    "source_printed": "27.1",
+    "spec_printed": "27.1",
+    "spec_value": "27.1",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "SAIL",
+    "task": "Spectraverse: no formula, R@1",
+    "source_printed": "14.5",
+    "spec_printed": "14.5",
+    "spec_value": "14.5",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "MSAlign",
+    "task": "Spectraverse: no formula, R@1",
+    "source_printed": "32.3",
+    "spec_printed": "32.3",
+    "spec_value": "32.3",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "MIST",
+    "task": "Spectraverse: formula supplied, R@1",
+    "source_printed": "20.2",
+    "spec_printed": "20.2",
+    "spec_value": "20.2",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "FLARE",
+    "task": "Spectraverse: formula supplied, R@1",
+    "source_printed": "12.3",
+    "spec_printed": "12.3",
+    "spec_value": "12.3",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "MSAlign (+Filter)",
+    "task": "Spectraverse: formula supplied, R@1",
+    "source_printed": "39.4",
+    "spec_printed": "39.4",
+    "spec_value": "39.4",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "FFN",
+    "task": "Spectraverse: no formula, R@5",
+    "source_printed": "18.9",
+    "spec_printed": "18.9",
+    "spec_value": "18.9",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "DeepSets",
+    "task": "Spectraverse: no formula, R@5",
+    "source_printed": "24.4",
+    "spec_printed": "24.4",
+    "spec_value": "24.4",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "JESTR",
+    "task": "Spectraverse: no formula, R@5",
+    "source_printed": "32.9",
+    "spec_printed": "32.9",
+    "spec_value": "32.9",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "Emb-Cos",
+    "task": "Spectraverse: no formula, R@5",
+    "source_printed": "51.8",
+    "spec_printed": "51.8",
+    "spec_value": "51.8",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "SAIL",
+    "task": "Spectraverse: no formula, R@5",
+    "source_printed": "34.3",
+    "spec_printed": "34.3",
+    "spec_value": "34.3",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "MSAlign",
+    "task": "Spectraverse: no formula, R@5",
+    "source_printed": "59.1",
+    "spec_printed": "59.1",
+    "spec_value": "59.1",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "MIST",
+    "task": "Spectraverse: formula supplied, R@5",
+    "source_printed": "40.9",
+    "spec_printed": "40.9",
+    "spec_value": "40.9",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "FLARE",
+    "task": "Spectraverse: formula supplied, R@5",
+    "source_printed": "33.7",
+    "spec_printed": "33.7",
+    "spec_value": "33.7",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "MSAlign (+Filter)",
+    "task": "Spectraverse: formula supplied, R@5",
+    "source_printed": "69.0",
+    "spec_printed": "69.0",
+    "spec_value": "69.0",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "FFN",
+    "task": "Spectraverse: no formula, R@20",
+    "source_printed": "34.7",
+    "spec_printed": "34.7",
+    "spec_value": "34.7",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "DeepSets",
+    "task": "Spectraverse: no formula, R@20",
+    "source_printed": "44.3",
+    "spec_printed": "44.3",
+    "spec_value": "44.3",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "JESTR",
+    "task": "Spectraverse: no formula, R@20",
+    "source_printed": "60.1",
+    "spec_printed": "60.1",
+    "spec_value": "60.1",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "Emb-Cos",
+    "task": "Spectraverse: no formula, R@20",
+    "source_printed": "72.2",
+    "spec_printed": "72.2",
+    "spec_value": "72.2",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "SAIL",
+    "task": "Spectraverse: no formula, R@20",
+    "source_printed": "57.4",
+    "spec_printed": "57.4",
+    "spec_value": "57.4",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "MSAlign",
+    "task": "Spectraverse: no formula, R@20",
+    "source_printed": "79.6",
+    "spec_printed": "79.6",
+    "spec_value": "79.6",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "MIST",
+    "task": "Spectraverse: formula supplied, R@20",
+    "source_printed": "63.8",
+    "spec_printed": "63.8",
+    "spec_value": "63.8",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "FLARE",
+    "task": "Spectraverse: formula supplied, R@20",
+    "source_printed": "62.5",
+    "spec_printed": "62.5",
+    "spec_value": "62.5",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "MSAlign (+Filter)",
+    "task": "Spectraverse: formula supplied, R@20",
+    "source_printed": "87.1",
+    "spec_printed": "87.1",
+    "spec_value": "87.1",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "FFN",
+    "task": "MassSpecGym formula split: no formula, R@1",
+    "source_printed": "16.9",
+    "spec_printed": "16.9",
+    "spec_value": "16.9",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "DeepSets",
+    "task": "MassSpecGym formula split: no formula, R@1",
+    "source_printed": "22.2",
+    "spec_printed": "22.2",
+    "spec_value": "22.2",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "JESTR",
+    "task": "MassSpecGym formula split: no formula, R@1",
+    "source_printed": "20.0",
+    "spec_printed": "20.0",
+    "spec_value": "20.0",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "Emb-Cos",
+    "task": "MassSpecGym formula split: no formula, R@1",
+    "source_printed": "41.2",
+    "spec_printed": "41.2",
+    "spec_value": "41.2",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "SAIL",
+    "task": "MassSpecGym formula split: no formula, R@1",
+    "source_printed": "29.5",
+    "spec_printed": "29.5",
+    "spec_value": "29.5",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "MSAlign",
+    "task": "MassSpecGym formula split: no formula, R@1",
+    "source_printed": "53.8",
+    "spec_printed": "53.8",
+    "spec_value": "53.8",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "MIST",
+    "task": "MassSpecGym formula split: formula supplied, R@1",
+    "source_printed": "46.8",
+    "spec_printed": "46.8",
+    "spec_value": "46.8",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "FLARE",
+    "task": "MassSpecGym formula split: formula supplied, R@1",
+    "source_printed": "31.8",
+    "spec_printed": "31.8",
+    "spec_value": "31.8",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "MSAlign (+Filter)",
+    "task": "MassSpecGym formula split: formula supplied, R@1",
+    "source_printed": "61.3",
+    "spec_printed": "61.3",
+    "spec_value": "61.3",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "FFN",
+    "task": "MassSpecGym formula split: no formula, R@5",
+    "source_printed": "27.8",
+    "spec_printed": "27.8",
+    "spec_value": "27.8",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "DeepSets",
+    "task": "MassSpecGym formula split: no formula, R@5",
+    "source_printed": "36.1",
+    "spec_printed": "36.1",
+    "spec_value": "36.1",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "JESTR",
+    "task": "MassSpecGym formula split: no formula, R@5",
+    "source_printed": "40.5",
+    "spec_printed": "40.5",
+    "spec_value": "40.5",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "Emb-Cos",
+    "task": "MassSpecGym formula split: no formula, R@5",
+    "source_printed": "63.4",
+    "spec_printed": "63.4",
+    "spec_value": "63.4",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "SAIL",
+    "task": "MassSpecGym formula split: no formula, R@5",
+    "source_printed": "51.3",
+    "spec_printed": "51.3",
+    "spec_value": "51.3",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "MSAlign",
+    "task": "MassSpecGym formula split: no formula, R@5",
+    "source_printed": "73.1",
+    "spec_printed": "73.1",
+    "spec_value": "73.1",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "MIST",
+    "task": "MassSpecGym formula split: formula supplied, R@5",
+    "source_printed": "66.1",
+    "spec_printed": "66.1",
+    "spec_value": "66.1",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "FLARE",
+    "task": "MassSpecGym formula split: formula supplied, R@5",
+    "source_printed": "64.5",
+    "spec_printed": "64.5",
+    "spec_value": "64.5",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "MSAlign (+Filter)",
+    "task": "MassSpecGym formula split: formula supplied, R@5",
+    "source_printed": "82.0",
+    "spec_printed": "82.0",
+    "spec_value": "82.0",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "FFN",
+    "task": "MassSpecGym formula split: no formula, R@20",
+    "source_printed": "40.4",
+    "spec_printed": "40.4",
+    "spec_value": "40.4",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "DeepSets",
+    "task": "MassSpecGym formula split: no formula, R@20",
+    "source_printed": "50.9",
+    "spec_printed": "50.9",
+    "spec_value": "50.9",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "JESTR",
+    "task": "MassSpecGym formula split: no formula, R@20",
+    "source_printed": "60.9",
+    "spec_printed": "60.9",
+    "spec_value": "60.9",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "Emb-Cos",
+    "task": "MassSpecGym formula split: no formula, R@20",
+    "source_printed": "79.6",
+    "spec_printed": "79.6",
+    "spec_value": "79.6",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "SAIL",
+    "task": "MassSpecGym formula split: no formula, R@20",
+    "source_printed": "73.0",
+    "spec_printed": "73.0",
+    "spec_value": "73.0",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "MSAlign",
+    "task": "MassSpecGym formula split: no formula, R@20",
+    "source_printed": "87.1",
+    "spec_printed": "87.1",
+    "spec_value": "87.1",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "MIST",
+    "task": "MassSpecGym formula split: formula supplied, R@20",
+    "source_printed": "79.3",
+    "spec_printed": "79.3",
+    "spec_value": "79.3",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "FLARE",
+    "task": "MassSpecGym formula split: formula supplied, R@20",
+    "source_printed": "84.1",
+    "spec_printed": "84.1",
+    "spec_value": "84.1",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "MSAlign (+Filter)",
+    "task": "MassSpecGym formula split: formula supplied, R@20",
+    "source_printed": "93.0",
+    "spec_printed": "93.0",
+    "spec_value": "93.0",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "FFN",
+    "task": "MassSpecGym MCES split: no formula, R@1",
+    "source_printed": "2.54",
+    "spec_printed": "2.54",
+    "spec_value": "2.54",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "DeepSets",
+    "task": "MassSpecGym MCES split: no formula, R@1",
+    "source_printed": "5.24",
+    "spec_printed": "5.24",
+    "spec_value": "5.24",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "JESTR",
+    "task": "MassSpecGym MCES split: no formula, R@1",
+    "source_printed": "11.8",
+    "spec_printed": "11.8",
+    "spec_value": "11.8",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "Emb-Cos",
+    "task": "MassSpecGym MCES split: no formula, R@1",
+    "source_printed": "12.3",
+    "spec_printed": "12.3",
+    "spec_value": "12.3",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "SAIL",
+    "task": "MassSpecGym MCES split: no formula, R@1",
+    "source_printed": "09.5",
+    "spec_printed": "09.5",
+    "spec_value": "09.5",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "MSAlign",
+    "task": "MassSpecGym MCES split: no formula, R@1",
+    "source_printed": "16.2",
+    "spec_printed": "16.2",
+    "spec_value": "16.2",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "MIST",
+    "task": "MassSpecGym MCES split: formula supplied, R@1",
+    "source_printed": "14.6",
+    "spec_printed": "14.6",
+    "spec_value": "14.6",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "FLARE",
+    "task": "MassSpecGym MCES split: formula supplied, R@1",
+    "source_printed": "27.2",
+    "spec_printed": "27.2",
+    "spec_value": "27.2",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "MSAlign (+Filter)",
+    "task": "MassSpecGym MCES split: formula supplied, R@1",
+    "source_printed": "32.3",
+    "spec_printed": "32.3",
+    "spec_value": "32.3",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "FFN",
+    "task": "MassSpecGym MCES split: no formula, R@5",
+    "source_printed": "7.59",
+    "spec_printed": "7.59",
+    "spec_value": "7.59",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "DeepSets",
+    "task": "MassSpecGym MCES split: no formula, R@5",
+    "source_printed": "12.58",
+    "spec_printed": "12.58",
+    "spec_value": "12.58",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "JESTR",
+    "task": "MassSpecGym MCES split: no formula, R@5",
+    "source_printed": "25.3",
+    "spec_printed": "25.3",
+    "spec_value": "25.3",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "Emb-Cos",
+    "task": "MassSpecGym MCES split: no formula, R@5",
+    "source_printed": "26.2",
+    "spec_printed": "26.2",
+    "spec_value": "26.2",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "SAIL",
+    "task": "MassSpecGym MCES split: no formula, R@5",
+    "source_printed": "23.9",
+    "spec_printed": "23.9",
+    "spec_value": "23.9",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "MSAlign",
+    "task": "MassSpecGym MCES split: no formula, R@5",
+    "source_printed": "35.6",
+    "spec_printed": "35.6",
+    "spec_value": "35.6",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "MIST",
+    "task": "MassSpecGym MCES split: formula supplied, R@5",
+    "source_printed": "34.9",
+    "spec_printed": "34.9",
+    "spec_value": "34.9",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "FLARE",
+    "task": "MassSpecGym MCES split: formula supplied, R@5",
+    "source_printed": "53.8",
+    "spec_printed": "53.8",
+    "spec_value": "53.8",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "MSAlign (+Filter)",
+    "task": "MassSpecGym MCES split: formula supplied, R@5",
+    "source_printed": "61.8",
+    "spec_printed": "61.8",
+    "spec_value": "61.8",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "FFN",
+    "task": "MassSpecGym MCES split: no formula, R@20",
+    "source_printed": "20.00",
+    "spec_printed": "20.00",
+    "spec_value": "20.00",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "DeepSets",
+    "task": "MassSpecGym MCES split: no formula, R@20",
+    "source_printed": "28.21",
+    "spec_printed": "28.21",
+    "spec_value": "28.21",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "JESTR",
+    "task": "MassSpecGym MCES split: no formula, R@20",
+    "source_printed": "49.7",
+    "spec_printed": "49.7",
+    "spec_value": "49.7",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "Emb-Cos",
+    "task": "MassSpecGym MCES split: no formula, R@20",
+    "source_printed": "46.4",
+    "spec_printed": "46.4",
+    "spec_value": "46.4",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "SAIL",
+    "task": "MassSpecGym MCES split: no formula, R@20",
+    "source_printed": "45.2",
+    "spec_printed": "45.2",
+    "spec_value": "45.2",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "MSAlign",
+    "task": "MassSpecGym MCES split: no formula, R@20",
+    "source_printed": "59.9",
+    "spec_printed": "59.9",
+    "spec_value": "59.9",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "MIST",
+    "task": "MassSpecGym MCES split: formula supplied, R@20",
+    "source_printed": "59.1",
+    "spec_printed": "59.1",
+    "spec_value": "59.1",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "FLARE",
+    "task": "MassSpecGym MCES split: formula supplied, R@20",
+    "source_printed": "80.2",
+    "spec_printed": "80.2",
+    "spec_value": "80.2",
+    "pass": true
+  },
+  {
+    "spec": "msalign-2026-table3",
+    "method": "MSAlign (+Filter)",
+    "task": "MassSpecGym MCES split: formula supplied, R@20",
+    "source_printed": "85.5",
+    "spec_printed": "85.5",
+    "spec_value": "85.5",
+    "pass": true
+  }
+]

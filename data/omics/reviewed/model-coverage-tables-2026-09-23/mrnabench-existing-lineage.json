@@ -1,0 +1,3818 @@
+[
+  {
+    "result_id": "lit-009",
+    "source_locator": "Table 2, RiNALMo row, MRL MPRA column",
+    "printed_value": "0.74",
+    "metric": "Pearson R",
+    "unit": "unitless",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "evaluation-lit-009"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "lit-010",
+    "source_locator": "Table 2, RNA-FM row, MRL MPRA column",
+    "printed_value": "0.49",
+    "metric": "Pearson R",
+    "unit": "unitless",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "evaluation-lit-010"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-3utrbert-eclip-auprc",
+    "source_locator": "Table 2, row(3UTRBERT), column(eCLIP)",
+    "printed_value": "31.1",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-3utrbert-eclip"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-3utrbert-go-auprc",
+    "source_locator": "Table 2, row(3UTRBERT), column(GO)",
+    "printed_value": "27.5",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-3utrbert-go"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-3utrbert-hl-pearson-r",
+    "source_locator": "Table 2, row(3UTRBERT), column(HL)",
+    "printed_value": "0.41",
+    "metric": "pearson_r",
+    "unit": "correlation",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-3utrbert-hl"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-3utrbert-mrl-hl-pair-pearson-r",
+    "source_locator": "Table 2, row(3UTRBERT), column(MRL-HL-Pair)",
+    "printed_value": "0.50",
+    "metric": "pearson_r",
+    "unit": "correlation",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-3utrbert-mrl-hl-pair"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-3utrbert-mrl-mpra-pearson-r",
+    "source_locator": "Table 2, row(3UTRBERT), column(MRL MPRA)",
+    "printed_value": "0.60",
+    "metric": "pearson_r",
+    "unit": "correlation",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-3utrbert-mrl-mpra"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-3utrbert-mrl-pearson-r",
+    "source_locator": "Table 2, row(3UTRBERT), column(MRL)",
+    "printed_value": "0.19",
+    "metric": "pearson_r",
+    "unit": "correlation",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-3utrbert-mrl"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-3utrbert-mrna-loc-lr-auprc",
+    "source_locator": "Table 2, row(3UTRBERT), column(mRNA Loc-LR)",
+    "printed_value": "70.1",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-3utrbert-mrna-loc-lr"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-3utrbert-mrna-loc-sr-auprc",
+    "source_locator": "Table 2, row(3UTRBERT), column(mRNA Loc-SR)",
+    "printed_value": "63.3",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-3utrbert-mrna-loc-sr"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-3utrbert-prot-loc-auprc",
+    "source_locator": "Table 2, row(3UTRBERT), column(Prot Loc)",
+    "printed_value": "27.0",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-3utrbert-prot-loc"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-3utrbert-vep-auprc",
+    "source_locator": "Table 2, row(3UTRBERT), column(VEP)",
+    "printed_value": "31.2",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-3utrbert-vep"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-aido-rna-eclip-auprc",
+    "source_locator": "Table 2, row(AIDO.RNA), column(eCLIP)",
+    "printed_value": "41.1",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-aido-rna-eclip"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-aido-rna-go-auprc",
+    "source_locator": "Table 2, row(AIDO.RNA), column(GO)",
+    "printed_value": "42.3",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-aido-rna-go"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-aido-rna-hl-pearson-r",
+    "source_locator": "Table 2, row(AIDO.RNA), column(HL)",
+    "printed_value": "0.57",
+    "metric": "pearson_r",
+    "unit": "correlation",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-aido-rna-hl"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-aido-rna-mrl-hl-pair-pearson-r",
+    "source_locator": "Table 2, row(AIDO.RNA), column(MRL-HL-Pair)",
+    "printed_value": "0.51",
+    "metric": "pearson_r",
+    "unit": "correlation",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-aido-rna-mrl-hl-pair"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-aido-rna-mrl-mpra-pearson-r",
+    "source_locator": "Table 2, row(AIDO.RNA), column(MRL MPRA)",
+    "printed_value": "0.65",
+    "metric": "pearson_r",
+    "unit": "correlation",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-aido-rna-mrl-mpra"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-aido-rna-mrl-pearson-r",
+    "source_locator": "Table 2, row(AIDO.RNA), column(MRL)",
+    "printed_value": "0.38",
+    "metric": "pearson_r",
+    "unit": "correlation",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-aido-rna-mrl"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-aido-rna-mrna-loc-lr-auprc",
+    "source_locator": "Table 2, row(AIDO.RNA), column(mRNA Loc-LR)",
+    "printed_value": "77.0",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-aido-rna-mrna-loc-lr"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-aido-rna-mrna-loc-sr-auprc",
+    "source_locator": "Table 2, row(AIDO.RNA), column(mRNA Loc-SR)",
+    "printed_value": "73.8",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-aido-rna-mrna-loc-sr"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-aido-rna-prot-loc-auprc",
+    "source_locator": "Table 2, row(AIDO.RNA), column(Prot Loc)",
+    "printed_value": "38.0",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-aido-rna-prot-loc"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-aido-rna-vep-auprc",
+    "source_locator": "Table 2, row(AIDO.RNA), column(VEP)",
+    "printed_value": "30.4",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-aido-rna-vep"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-dnabert-s-eclip-auprc",
+    "source_locator": "Table 2, row(DNABERT-S), column(eCLIP)",
+    "printed_value": "37.4",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-dnabert-s-eclip"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-dnabert-s-go-auprc",
+    "source_locator": "Table 2, row(DNABERT-S), column(GO)",
+    "printed_value": "31.8",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-dnabert-s-go"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-dnabert-s-hl-pearson-r",
+    "source_locator": "Table 2, row(DNABERT-S), column(HL)",
+    "printed_value": "0.47",
+    "metric": "pearson_r",
+    "unit": "correlation",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-dnabert-s-hl"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-dnabert-s-mrl-hl-pair-pearson-r",
+    "source_locator": "Table 2, row(DNABERT-S), column(MRL-HL-Pair)",
+    "printed_value": "0.39",
+    "metric": "pearson_r",
+    "unit": "correlation",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-dnabert-s-mrl-hl-pair"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-dnabert-s-mrl-mpra-pearson-r",
+    "source_locator": "Table 2, row(DNABERT-S), column(MRL MPRA)",
+    "printed_value": "0.52",
+    "metric": "pearson_r",
+    "unit": "correlation",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-dnabert-s-mrl-mpra"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-dnabert-s-mrl-pearson-r",
+    "source_locator": "Table 2, row(DNABERT-S), column(MRL)",
+    "printed_value": "0.29",
+    "metric": "pearson_r",
+    "unit": "correlation",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-dnabert-s-mrl"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-dnabert-s-mrna-loc-lr-auprc",
+    "source_locator": "Table 2, row(DNABERT-S), column(mRNA Loc-LR)",
+    "printed_value": "75.3",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-dnabert-s-mrna-loc-lr"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-dnabert-s-mrna-loc-sr-auprc",
+    "source_locator": "Table 2, row(DNABERT-S), column(mRNA Loc-SR)",
+    "printed_value": "68.4",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-dnabert-s-mrna-loc-sr"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-dnabert-s-prot-loc-auprc",
+    "source_locator": "Table 2, row(DNABERT-S), column(Prot Loc)",
+    "printed_value": "31.1",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-dnabert-s-prot-loc"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-dnabert-s-vep-auprc",
+    "source_locator": "Table 2, row(DNABERT-S), column(VEP)",
+    "printed_value": "30.6",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-dnabert-s-vep"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-dnabert2-eclip-auprc",
+    "source_locator": "Table 2, row(DNABERT2), column(eCLIP)",
+    "printed_value": "37.1",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-dnabert2-eclip"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-dnabert2-go-auprc",
+    "source_locator": "Table 2, row(DNABERT2), column(GO)",
+    "printed_value": "32.6",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-dnabert2-go"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-dnabert2-hl-pearson-r",
+    "source_locator": "Table 2, row(DNABERT2), column(HL)",
+    "printed_value": "0.48",
+    "metric": "pearson_r",
+    "unit": "correlation",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-dnabert2-hl"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-dnabert2-mrl-hl-pair-pearson-r",
+    "source_locator": "Table 2, row(DNABERT2), column(MRL-HL-Pair)",
+    "printed_value": "0.53",
+    "metric": "pearson_r",
+    "unit": "correlation",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-dnabert2-mrl-hl-pair"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-dnabert2-mrl-mpra-pearson-r",
+    "source_locator": "Table 2, row(DNABERT2), column(MRL MPRA)",
+    "printed_value": "0.57",
+    "metric": "pearson_r",
+    "unit": "correlation",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-dnabert2-mrl-mpra"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-dnabert2-mrl-pearson-r",
+    "source_locator": "Table 2, row(DNABERT2), column(MRL)",
+    "printed_value": "0.29",
+    "metric": "pearson_r",
+    "unit": "correlation",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-dnabert2-mrl"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-dnabert2-mrna-loc-lr-auprc",
+    "source_locator": "Table 2, row(DNABERT2), column(mRNA Loc-LR)",
+    "printed_value": "76.2",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-dnabert2-mrna-loc-lr"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-dnabert2-mrna-loc-sr-auprc",
+    "source_locator": "Table 2, row(DNABERT2), column(mRNA Loc-SR)",
+    "printed_value": "67.4",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-dnabert2-mrna-loc-sr"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-dnabert2-prot-loc-auprc",
+    "source_locator": "Table 2, row(DNABERT2), column(Prot Loc)",
+    "printed_value": "32.5",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-dnabert2-prot-loc"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-dnabert2-vep-auprc",
+    "source_locator": "Table 2, row(DNABERT2), column(VEP)",
+    "printed_value": "26.4",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-dnabert2-vep"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-ernie-rna-eclip-auprc",
+    "source_locator": "Table 2, row(ERNIE-RNA), column(eCLIP)",
+    "printed_value": "37.3",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-ernie-rna-eclip"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-ernie-rna-go-auprc",
+    "source_locator": "Table 2, row(ERNIE-RNA), column(GO)",
+    "printed_value": "34.1",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-ernie-rna-go"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-ernie-rna-hl-pearson-r",
+    "source_locator": "Table 2, row(ERNIE-RNA), column(HL)",
+    "printed_value": "0.52",
+    "metric": "pearson_r",
+    "unit": "correlation",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-ernie-rna-hl"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-ernie-rna-mrl-hl-pair-pearson-r",
+    "source_locator": "Table 2, row(ERNIE-RNA), column(MRL-HL-Pair)",
+    "printed_value": "0.50",
+    "metric": "pearson_r",
+    "unit": "correlation",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-ernie-rna-mrl-hl-pair"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-ernie-rna-mrl-mpra-pearson-r",
+    "source_locator": "Table 2, row(ERNIE-RNA), column(MRL MPRA)",
+    "printed_value": "0.58",
+    "metric": "pearson_r",
+    "unit": "correlation",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-ernie-rna-mrl-mpra"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-ernie-rna-mrl-pearson-r",
+    "source_locator": "Table 2, row(ERNIE-RNA), column(MRL)",
+    "printed_value": "0.33",
+    "metric": "pearson_r",
+    "unit": "correlation",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-ernie-rna-mrl"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-ernie-rna-mrna-loc-lr-auprc",
+    "source_locator": "Table 2, row(ERNIE-RNA), column(mRNA Loc-LR)",
+    "printed_value": "75.3",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-ernie-rna-mrna-loc-lr"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-ernie-rna-mrna-loc-sr-auprc",
+    "source_locator": "Table 2, row(ERNIE-RNA), column(mRNA Loc-SR)",
+    "printed_value": "69.1",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-ernie-rna-mrna-loc-sr"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-ernie-rna-prot-loc-auprc",
+    "source_locator": "Table 2, row(ERNIE-RNA), column(Prot Loc)",
+    "printed_value": "33.8",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-ernie-rna-prot-loc"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-ernie-rna-vep-auprc",
+    "source_locator": "Table 2, row(ERNIE-RNA), column(VEP)",
+    "printed_value": "28.9",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-ernie-rna-vep"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-evo1-eclip-auprc",
+    "source_locator": "Table 2, row(Evo1), column(eCLIP)",
+    "printed_value": "26.7",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-evo1-eclip"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-evo1-go-auprc",
+    "source_locator": "Table 2, row(Evo1), column(GO)",
+    "printed_value": "27.6",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-evo1-go"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-evo1-hl-pearson-r",
+    "source_locator": "Table 2, row(Evo1), column(HL)",
+    "printed_value": "0.33",
+    "metric": "pearson_r",
+    "unit": "correlation",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-evo1-hl"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-evo1-mrl-hl-pair-pearson-r",
+    "source_locator": "Table 2, row(Evo1), column(MRL-HL-Pair)",
+    "printed_value": "0.38",
+    "metric": "pearson_r",
+    "unit": "correlation",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-evo1-mrl-hl-pair"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-evo1-mrl-mpra-pearson-r",
+    "source_locator": "Table 2, row(Evo1), column(MRL MPRA)",
+    "printed_value": "0.28",
+    "metric": "pearson_r",
+    "unit": "correlation",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-evo1-mrl-mpra"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-evo1-mrl-pearson-r",
+    "source_locator": "Table 2, row(Evo1), column(MRL)",
+    "printed_value": "0.19",
+    "metric": "pearson_r",
+    "unit": "correlation",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-evo1-mrl"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-evo1-mrna-loc-lr-auprc",
+    "source_locator": "Table 2, row(Evo1), column(mRNA Loc-LR)",
+    "printed_value": "70.5",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-evo1-mrna-loc-lr"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-evo1-mrna-loc-sr-auprc",
+    "source_locator": "Table 2, row(Evo1), column(mRNA Loc-SR)",
+    "printed_value": "63.3",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-evo1-mrna-loc-sr"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-evo1-prot-loc-auprc",
+    "source_locator": "Table 2, row(Evo1), column(Prot Loc)",
+    "printed_value": "29.1",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-evo1-prot-loc"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-evo1-vep-auprc",
+    "source_locator": "Table 2, row(Evo1), column(VEP)",
+    "printed_value": "12.0",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-evo1-vep"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-evo2-eclip-auprc",
+    "source_locator": "Table 2, row(Evo2), column(eCLIP)",
+    "printed_value": "47.3",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-evo2-eclip"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-evo2-go-auprc",
+    "source_locator": "Table 2, row(Evo2), column(GO)",
+    "printed_value": "46.7",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-evo2-go"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-evo2-hl-pearson-r",
+    "source_locator": "Table 2, row(Evo2), column(HL)",
+    "printed_value": "0.66",
+    "metric": "pearson_r",
+    "unit": "correlation",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-evo2-hl"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-evo2-mrl-hl-pair-pearson-r",
+    "source_locator": "Table 2, row(Evo2), column(MRL-HL-Pair)",
+    "printed_value": "0.51",
+    "metric": "pearson_r",
+    "unit": "correlation",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-evo2-mrl-hl-pair"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-evo2-mrl-mpra-pearson-r",
+    "source_locator": "Table 2, row(Evo2), column(MRL MPRA)",
+    "printed_value": "0.70",
+    "metric": "pearson_r",
+    "unit": "correlation",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-evo2-mrl-mpra"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-evo2-mrl-pearson-r",
+    "source_locator": "Table 2, row(Evo2), column(MRL)",
+    "printed_value": "0.45",
+    "metric": "pearson_r",
+    "unit": "correlation",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-evo2-mrl"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-evo2-mrna-loc-lr-auprc",
+    "source_locator": "Table 2, row(Evo2), column(mRNA Loc-LR)",
+    "printed_value": "79.5",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-evo2-mrna-loc-lr"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-evo2-mrna-loc-sr-auprc",
+    "source_locator": "Table 2, row(Evo2), column(mRNA Loc-SR)",
+    "printed_value": "76.7",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-evo2-mrna-loc-sr"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-evo2-prot-loc-auprc",
+    "source_locator": "Table 2, row(Evo2), column(Prot Loc)",
+    "printed_value": "40.8",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-evo2-prot-loc"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-evo2-vep-auprc",
+    "source_locator": "Table 2, row(Evo2), column(VEP)",
+    "printed_value": "32.1",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-evo2-vep"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-helix-mrna-eclip-auprc",
+    "source_locator": "Table 2, row(Helix-mRNA), column(eCLIP)",
+    "printed_value": "29.1",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-helix-mrna-eclip"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-helix-mrna-go-auprc",
+    "source_locator": "Table 2, row(Helix-mRNA), column(GO)",
+    "printed_value": "25.7",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-helix-mrna-go"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-helix-mrna-hl-pearson-r",
+    "source_locator": "Table 2, row(Helix-mRNA), column(HL)",
+    "printed_value": "0.40",
+    "metric": "pearson_r",
+    "unit": "correlation",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-helix-mrna-hl"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-helix-mrna-mrl-hl-pair-pearson-r",
+    "source_locator": "Table 2, row(Helix-mRNA), column(MRL-HL-Pair)",
+    "printed_value": "0.26",
+    "metric": "pearson_r",
+    "unit": "correlation",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-helix-mrna-mrl-hl-pair"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-helix-mrna-mrl-mpra-pearson-r",
+    "source_locator": "Table 2, row(Helix-mRNA), column(MRL MPRA)",
+    "printed_value": "0.44",
+    "metric": "pearson_r",
+    "unit": "correlation",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-helix-mrna-mrl-mpra"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-helix-mrna-mrl-pearson-r",
+    "source_locator": "Table 2, row(Helix-mRNA), column(MRL)",
+    "printed_value": "0.24",
+    "metric": "pearson_r",
+    "unit": "correlation",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-helix-mrna-mrl"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-helix-mrna-mrna-loc-lr-auprc",
+    "source_locator": "Table 2, row(Helix-mRNA), column(mRNA Loc-LR)",
+    "printed_value": "73.9",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-helix-mrna-mrna-loc-lr"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-helix-mrna-mrna-loc-sr-auprc",
+    "source_locator": "Table 2, row(Helix-mRNA), column(mRNA Loc-SR)",
+    "printed_value": "61.2",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-helix-mrna-mrna-loc-sr"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-helix-mrna-prot-loc-auprc",
+    "source_locator": "Table 2, row(Helix-mRNA), column(Prot Loc)",
+    "printed_value": "29.3",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-helix-mrna-prot-loc"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-helix-mrna-vep-auprc",
+    "source_locator": "Table 2, row(Helix-mRNA), column(VEP)",
+    "printed_value": "7.6",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-helix-mrna-vep"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-hyenadna-eclip-auprc",
+    "source_locator": "Table 2, row(HyenaDNA), column(eCLIP)",
+    "printed_value": "37.4",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-hyenadna-eclip"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-hyenadna-go-auprc",
+    "source_locator": "Table 2, row(HyenaDNA), column(GO)",
+    "printed_value": "31.0",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-hyenadna-go"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-hyenadna-hl-pearson-r",
+    "source_locator": "Table 2, row(HyenaDNA), column(HL)",
+    "printed_value": "0.45",
+    "metric": "pearson_r",
+    "unit": "correlation",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-hyenadna-hl"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-hyenadna-mrl-hl-pair-pearson-r",
+    "source_locator": "Table 2, row(HyenaDNA), column(MRL-HL-Pair)",
+    "printed_value": "0.60",
+    "metric": "pearson_r",
+    "unit": "correlation",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-hyenadna-mrl-hl-pair"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-hyenadna-mrl-mpra-pearson-r",
+    "source_locator": "Table 2, row(HyenaDNA), column(MRL MPRA)",
+    "printed_value": "0.49",
+    "metric": "pearson_r",
+    "unit": "correlation",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-hyenadna-mrl-mpra"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-hyenadna-mrl-pearson-r",
+    "source_locator": "Table 2, row(HyenaDNA), column(MRL)",
+    "printed_value": "0.28",
+    "metric": "pearson_r",
+    "unit": "correlation",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-hyenadna-mrl"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-hyenadna-mrna-loc-lr-auprc",
+    "source_locator": "Table 2, row(HyenaDNA), column(mRNA Loc-LR)",
+    "printed_value": "76.0",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-hyenadna-mrna-loc-lr"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-hyenadna-mrna-loc-sr-auprc",
+    "source_locator": "Table 2, row(HyenaDNA), column(mRNA Loc-SR)",
+    "printed_value": "67.2",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-hyenadna-mrna-loc-sr"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-hyenadna-prot-loc-auprc",
+    "source_locator": "Table 2, row(HyenaDNA), column(Prot Loc)",
+    "printed_value": "31.8",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-hyenadna-prot-loc"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-hyenadna-vep-auprc",
+    "source_locator": "Table 2, row(HyenaDNA), column(VEP)",
+    "printed_value": "23.2",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-hyenadna-vep"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-naive-baseline-eclip-auprc",
+    "source_locator": "Table 2, row(Naive Baseline), column(eCLIP)",
+    "printed_value": "43.4",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-naive-baseline-eclip"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-naive-baseline-go-auprc",
+    "source_locator": "Table 2, row(Naive Baseline), column(GO)",
+    "printed_value": "23.4",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-naive-baseline-go"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-naive-baseline-hl-pearson-r",
+    "source_locator": "Table 2, row(Naive Baseline), column(HL)",
+    "printed_value": "0.20",
+    "metric": "pearson_r",
+    "unit": "correlation",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-naive-baseline-hl"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-naive-baseline-mrl-hl-pair-pearson-r",
+    "source_locator": "Table 2, row(Naive Baseline), column(MRL-HL-Pair)",
+    "printed_value": "0.51",
+    "metric": "pearson_r",
+    "unit": "correlation",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-naive-baseline-mrl-hl-pair"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-naive-baseline-mrl-mpra-pearson-r",
+    "source_locator": "Table 2, row(Naive Baseline), column(MRL MPRA)",
+    "printed_value": "0.64",
+    "metric": "pearson_r",
+    "unit": "correlation",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-naive-baseline-mrl-mpra"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-naive-baseline-mrl-pearson-r",
+    "source_locator": "Table 2, row(Naive Baseline), column(MRL)",
+    "printed_value": "0.14",
+    "metric": "pearson_r",
+    "unit": "correlation",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-naive-baseline-mrl"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-naive-baseline-mrna-loc-lr-auprc",
+    "source_locator": "Table 2, row(Naive Baseline), column(mRNA Loc-LR)",
+    "printed_value": "62.2",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-naive-baseline-mrna-loc-lr"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-naive-baseline-mrna-loc-sr-auprc",
+    "source_locator": "Table 2, row(Naive Baseline), column(mRNA Loc-SR)",
+    "printed_value": "60.1",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-naive-baseline-mrna-loc-sr"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-naive-baseline-prot-loc-auprc",
+    "source_locator": "Table 2, row(Naive Baseline), column(Prot Loc)",
+    "printed_value": "21.5",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-naive-baseline-prot-loc"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-naive-baseline-vep-auprc",
+    "source_locator": "Table 2, row(Naive Baseline), column(VEP)",
+    "printed_value": "19.5",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-naive-baseline-vep"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-naive-mamba-eclip-auprc",
+    "source_locator": "Table 2, row(Naive Mamba), column(eCLIP)",
+    "printed_value": "26.5",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-naive-mamba-eclip"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-naive-mamba-go-auprc",
+    "source_locator": "Table 2, row(Naive Mamba), column(GO)",
+    "printed_value": "26.6",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-naive-mamba-go"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-naive-mamba-hl-pearson-r",
+    "source_locator": "Table 2, row(Naive Mamba), column(HL)",
+    "printed_value": "0.57",
+    "metric": "pearson_r",
+    "unit": "correlation",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-naive-mamba-hl"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-naive-mamba-mrl-hl-pair-pearson-r",
+    "source_locator": "Table 2, row(Naive Mamba), column(MRL-HL-Pair)",
+    "printed_value": "0.44",
+    "metric": "pearson_r",
+    "unit": "correlation",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-naive-mamba-mrl-hl-pair"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-naive-mamba-mrl-mpra-pearson-r",
+    "source_locator": "Table 2, row(Naive Mamba), column(MRL MPRA)",
+    "printed_value": "0.50",
+    "metric": "pearson_r",
+    "unit": "correlation",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-naive-mamba-mrl-mpra"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-naive-mamba-mrl-pearson-r",
+    "source_locator": "Table 2, row(Naive Mamba), column(MRL)",
+    "printed_value": "0.19",
+    "metric": "pearson_r",
+    "unit": "correlation",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-naive-mamba-mrl"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-naive-mamba-mrna-loc-lr-auprc",
+    "source_locator": "Table 2, row(Naive Mamba), column(mRNA Loc-LR)",
+    "printed_value": "70.4",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-naive-mamba-mrna-loc-lr"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-naive-mamba-mrna-loc-sr-auprc",
+    "source_locator": "Table 2, row(Naive Mamba), column(mRNA Loc-SR)",
+    "printed_value": "63.1",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-naive-mamba-mrna-loc-sr"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-naive-mamba-prot-loc-auprc",
+    "source_locator": "Table 2, row(Naive Mamba), column(Prot Loc)",
+    "printed_value": "29.4",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-naive-mamba-prot-loc"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-naive-mamba-vep-auprc",
+    "source_locator": "Table 2, row(Naive Mamba), column(VEP)",
+    "printed_value": "10.2",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-naive-mamba-vep"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-nt-eclip-auprc",
+    "source_locator": "Table 2, row(NT), column(eCLIP)",
+    "printed_value": "40.5",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-nt-eclip"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-nt-go-auprc",
+    "source_locator": "Table 2, row(NT), column(GO)",
+    "printed_value": "36.0",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-nt-go"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-nt-hl-pearson-r",
+    "source_locator": "Table 2, row(NT), column(HL)",
+    "printed_value": "0.57",
+    "metric": "pearson_r",
+    "unit": "correlation",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-nt-hl"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-nt-mrl-hl-pair-pearson-r",
+    "source_locator": "Table 2, row(NT), column(MRL-HL-Pair)",
+    "printed_value": "0.57",
+    "metric": "pearson_r",
+    "unit": "correlation",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-nt-mrl-hl-pair"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-nt-mrl-mpra-pearson-r",
+    "source_locator": "Table 2, row(NT), column(MRL MPRA)",
+    "printed_value": "0.60",
+    "metric": "pearson_r",
+    "unit": "correlation",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-nt-mrl-mpra"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-nt-mrl-pearson-r",
+    "source_locator": "Table 2, row(NT), column(MRL)",
+    "printed_value": "0.34",
+    "metric": "pearson_r",
+    "unit": "correlation",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-nt-mrl"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-nt-mrna-loc-lr-auprc",
+    "source_locator": "Table 2, row(NT), column(mRNA Loc-LR)",
+    "printed_value": "76.6",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-nt-mrna-loc-lr"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-nt-mrna-loc-sr-auprc",
+    "source_locator": "Table 2, row(NT), column(mRNA Loc-SR)",
+    "printed_value": "72.2",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-nt-mrna-loc-sr"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-nt-prot-loc-auprc",
+    "source_locator": "Table 2, row(NT), column(Prot Loc)",
+    "printed_value": "32.0",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-nt-prot-loc"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-nt-vep-auprc",
+    "source_locator": "Table 2, row(NT), column(VEP)",
+    "printed_value": "31.8",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-nt-vep"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-orthrus-eclip-auprc",
+    "source_locator": "Table 2, row(Orthrus), column(eCLIP)",
+    "printed_value": "43.6",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-orthrus-eclip"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-orthrus-go-auprc",
+    "source_locator": "Table 2, row(Orthrus), column(GO)",
+    "printed_value": "42.9",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-orthrus-go"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-orthrus-hl-pearson-r",
+    "source_locator": "Table 2, row(Orthrus), column(HL)",
+    "printed_value": "0.67",
+    "metric": "pearson_r",
+    "unit": "correlation",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-orthrus-hl"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-orthrus-mrl-hl-pair-pearson-r",
+    "source_locator": "Table 2, row(Orthrus), column(MRL-HL-Pair)",
+    "printed_value": "0.51",
+    "metric": "pearson_r",
+    "unit": "correlation",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-orthrus-mrl-hl-pair"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-orthrus-mrl-mpra-pearson-r",
+    "source_locator": "Table 2, row(Orthrus), column(MRL MPRA)",
+    "printed_value": "0.63",
+    "metric": "pearson_r",
+    "unit": "correlation",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-orthrus-mrl-mpra"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-orthrus-mrl-pearson-r",
+    "source_locator": "Table 2, row(Orthrus), column(MRL)",
+    "printed_value": "0.43",
+    "metric": "pearson_r",
+    "unit": "correlation",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-orthrus-mrl"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-orthrus-mrna-loc-lr-auprc",
+    "source_locator": "Table 2, row(Orthrus), column(mRNA Loc-LR)",
+    "printed_value": "79.8",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-orthrus-mrna-loc-lr"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-orthrus-mrna-loc-sr-auprc",
+    "source_locator": "Table 2, row(Orthrus), column(mRNA Loc-SR)",
+    "printed_value": "77.9",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-orthrus-mrna-loc-sr"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-orthrus-prot-loc-auprc",
+    "source_locator": "Table 2, row(Orthrus), column(Prot Loc)",
+    "printed_value": "39.3",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-orthrus-prot-loc"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-orthrus-vep-auprc",
+    "source_locator": "Table 2, row(Orthrus), column(VEP)",
+    "printed_value": "27.0",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-orthrus-vep"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-rinalmo-eclip-auprc",
+    "source_locator": "Table 2, row(RiNALMo), column(eCLIP)",
+    "printed_value": "39.2",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-rinalmo-eclip"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-rinalmo-go-auprc",
+    "source_locator": "Table 2, row(RiNALMo), column(GO)",
+    "printed_value": "34.7",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-rinalmo-go"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-rinalmo-hl-pearson-r",
+    "source_locator": "Table 2, row(RiNALMo), column(HL)",
+    "printed_value": "0.53",
+    "metric": "pearson_r",
+    "unit": "correlation",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-rinalmo-hl"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-rinalmo-mrl-hl-pair-pearson-r",
+    "source_locator": "Table 2, row(RiNALMo), column(MRL-HL-Pair)",
+    "printed_value": "0.47",
+    "metric": "pearson_r",
+    "unit": "correlation",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-rinalmo-mrl-hl-pair"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-rinalmo-mrl-mpra-pearson-r",
+    "source_locator": "Table 2, row(RiNALMo), column(MRL MPRA)",
+    "printed_value": "0.74",
+    "metric": "pearson_r",
+    "unit": "correlation",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-rinalmo-mrl-mpra"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-rinalmo-mrl-pearson-r",
+    "source_locator": "Table 2, row(RiNALMo), column(MRL)",
+    "printed_value": "0.42",
+    "metric": "pearson_r",
+    "unit": "correlation",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-rinalmo-mrl"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-rinalmo-mrna-loc-lr-auprc",
+    "source_locator": "Table 2, row(RiNALMo), column(mRNA Loc-LR)",
+    "printed_value": "79.5",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-rinalmo-mrna-loc-lr"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-rinalmo-mrna-loc-sr-auprc",
+    "source_locator": "Table 2, row(RiNALMo), column(mRNA Loc-SR)",
+    "printed_value": "69.0",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-rinalmo-mrna-loc-sr"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-rinalmo-prot-loc-auprc",
+    "source_locator": "Table 2, row(RiNALMo), column(Prot Loc)",
+    "printed_value": "32.7",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-rinalmo-prot-loc"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-rinalmo-vep-auprc",
+    "source_locator": "Table 2, row(RiNALMo), column(VEP)",
+    "printed_value": "31.6",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-rinalmo-vep"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-rna-fm-eclip-auprc",
+    "source_locator": "Table 2, row(RNA-FM), column(eCLIP)",
+    "printed_value": "35.0",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-rna-fm-eclip"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-rna-fm-go-auprc",
+    "source_locator": "Table 2, row(RNA-FM), column(GO)",
+    "printed_value": "32.2",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-rna-fm-go"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-rna-fm-hl-pearson-r",
+    "source_locator": "Table 2, row(RNA-FM), column(HL)",
+    "printed_value": "0.47",
+    "metric": "pearson_r",
+    "unit": "correlation",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-rna-fm-hl"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-rna-fm-mrl-hl-pair-pearson-r",
+    "source_locator": "Table 2, row(RNA-FM), column(MRL-HL-Pair)",
+    "printed_value": "0.49",
+    "metric": "pearson_r",
+    "unit": "correlation",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-rna-fm-mrl-hl-pair"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-rna-fm-mrl-mpra-pearson-r",
+    "source_locator": "Table 2, row(RNA-FM), column(MRL MPRA)",
+    "printed_value": "0.49",
+    "metric": "pearson_r",
+    "unit": "correlation",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-rna-fm-mrl-mpra"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-rna-fm-mrl-pearson-r",
+    "source_locator": "Table 2, row(RNA-FM), column(MRL)",
+    "printed_value": "0.29",
+    "metric": "pearson_r",
+    "unit": "correlation",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-rna-fm-mrl"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-rna-fm-mrna-loc-lr-auprc",
+    "source_locator": "Table 2, row(RNA-FM), column(mRNA Loc-LR)",
+    "printed_value": "74.3",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-rna-fm-mrna-loc-lr"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-rna-fm-mrna-loc-sr-auprc",
+    "source_locator": "Table 2, row(RNA-FM), column(mRNA Loc-SR)",
+    "printed_value": "67.0",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-rna-fm-mrna-loc-sr"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-rna-fm-prot-loc-auprc",
+    "source_locator": "Table 2, row(RNA-FM), column(Prot Loc)",
+    "printed_value": "32.2",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-rna-fm-prot-loc"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-rna-fm-vep-auprc",
+    "source_locator": "Table 2, row(RNA-FM), column(VEP)",
+    "printed_value": "25.7",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-rna-fm-vep"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-rna-msm-eclip-auprc",
+    "source_locator": "Table 2, row(RNA-MSM), column(eCLIP)",
+    "printed_value": "28.1",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-rna-msm-eclip"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-rna-msm-go-auprc",
+    "source_locator": "Table 2, row(RNA-MSM), column(GO)",
+    "printed_value": "27.5",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-rna-msm-go"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-rna-msm-hl-pearson-r",
+    "source_locator": "Table 2, row(RNA-MSM), column(HL)",
+    "printed_value": "0.34",
+    "metric": "pearson_r",
+    "unit": "correlation",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-rna-msm-hl"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-rna-msm-mrl-hl-pair-pearson-r",
+    "source_locator": "Table 2, row(RNA-MSM), column(MRL-HL-Pair)",
+    "printed_value": "0.47",
+    "metric": "pearson_r",
+    "unit": "correlation",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-rna-msm-mrl-hl-pair"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-rna-msm-mrl-mpra-pearson-r",
+    "source_locator": "Table 2, row(RNA-MSM), column(MRL MPRA)",
+    "printed_value": "0.36",
+    "metric": "pearson_r",
+    "unit": "correlation",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-rna-msm-mrl-mpra"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-rna-msm-mrl-pearson-r",
+    "source_locator": "Table 2, row(RNA-MSM), column(MRL)",
+    "printed_value": "0.16",
+    "metric": "pearson_r",
+    "unit": "correlation",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-rna-msm-mrl"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-rna-msm-mrna-loc-lr-auprc",
+    "source_locator": "Table 2, row(RNA-MSM), column(mRNA Loc-LR)",
+    "printed_value": "72.6",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-rna-msm-mrna-loc-lr"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-rna-msm-mrna-loc-sr-auprc",
+    "source_locator": "Table 2, row(RNA-MSM), column(mRNA Loc-SR)",
+    "printed_value": "63.7",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-rna-msm-mrna-loc-sr"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-rna-msm-prot-loc-auprc",
+    "source_locator": "Table 2, row(RNA-MSM), column(Prot Loc)",
+    "printed_value": "29.6",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-rna-msm-prot-loc"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-rna-msm-vep-auprc",
+    "source_locator": "Table 2, row(RNA-MSM), column(VEP)",
+    "printed_value": "16.5",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-rna-msm-vep"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-rnabert-eclip-auprc",
+    "source_locator": "Table 2, row(RNABERT), column(eCLIP)",
+    "printed_value": "19.2",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-rnabert-eclip"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-rnabert-go-auprc",
+    "source_locator": "Table 2, row(RNABERT), column(GO)",
+    "printed_value": "23.8",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-rnabert-go"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-rnabert-hl-pearson-r",
+    "source_locator": "Table 2, row(RNABERT), column(HL)",
+    "printed_value": "0.21",
+    "metric": "pearson_r",
+    "unit": "correlation",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-rnabert-hl"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-rnabert-mrl-hl-pair-pearson-r",
+    "source_locator": "Table 2, row(RNABERT), column(MRL-HL-Pair)",
+    "printed_value": "0.32",
+    "metric": "pearson_r",
+    "unit": "correlation",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-rnabert-mrl-hl-pair"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-rnabert-mrl-mpra-pearson-r",
+    "source_locator": "Table 2, row(RNABERT), column(MRL MPRA)",
+    "printed_value": "0.24",
+    "metric": "pearson_r",
+    "unit": "correlation",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-rnabert-mrl-mpra"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-rnabert-mrl-pearson-r",
+    "source_locator": "Table 2, row(RNABERT), column(MRL)",
+    "printed_value": "0.06",
+    "metric": "pearson_r",
+    "unit": "correlation",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-rnabert-mrl"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-rnabert-mrna-loc-lr-auprc",
+    "source_locator": "Table 2, row(RNABERT), column(mRNA Loc-LR)",
+    "printed_value": "68.3",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-rnabert-mrna-loc-lr"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-rnabert-mrna-loc-sr-auprc",
+    "source_locator": "Table 2, row(RNABERT), column(mRNA Loc-SR)",
+    "printed_value": "57.5",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-rnabert-mrna-loc-sr"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-rnabert-prot-loc-auprc",
+    "source_locator": "Table 2, row(RNABERT), column(Prot Loc)",
+    "printed_value": "28.0",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-rnabert-prot-loc"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-rnabert-vep-auprc",
+    "source_locator": "Table 2, row(RNABERT), column(VEP)",
+    "printed_value": "19.2",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-rnabert-vep"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-rnaernie-eclip-auprc",
+    "source_locator": "Table 2, row(RNAErnie), column(eCLIP)",
+    "printed_value": "29.0",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-rnaernie-eclip"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-rnaernie-go-auprc",
+    "source_locator": "Table 2, row(RNAErnie), column(GO)",
+    "printed_value": "27.8",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-rnaernie-go"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-rnaernie-hl-pearson-r",
+    "source_locator": "Table 2, row(RNAErnie), column(HL)",
+    "printed_value": "0.33",
+    "metric": "pearson_r",
+    "unit": "correlation",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-rnaernie-hl"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-rnaernie-mrl-hl-pair-pearson-r",
+    "source_locator": "Table 2, row(RNAErnie), column(MRL-HL-Pair)",
+    "printed_value": "0.55",
+    "metric": "pearson_r",
+    "unit": "correlation",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-rnaernie-mrl-hl-pair"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-rnaernie-mrl-mpra-pearson-r",
+    "source_locator": "Table 2, row(RNAErnie), column(MRL MPRA)",
+    "printed_value": "0.33",
+    "metric": "pearson_r",
+    "unit": "correlation",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-rnaernie-mrl-mpra"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-rnaernie-mrl-pearson-r",
+    "source_locator": "Table 2, row(RNAErnie), column(MRL)",
+    "printed_value": "0.14",
+    "metric": "pearson_r",
+    "unit": "correlation",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-rnaernie-mrl"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-rnaernie-mrna-loc-lr-auprc",
+    "source_locator": "Table 2, row(RNAErnie), column(mRNA Loc-LR)",
+    "printed_value": "72.7",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-rnaernie-mrna-loc-lr"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-rnaernie-mrna-loc-sr-auprc",
+    "source_locator": "Table 2, row(RNAErnie), column(mRNA Loc-SR)",
+    "printed_value": "63.7",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-rnaernie-mrna-loc-sr"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-rnaernie-prot-loc-auprc",
+    "source_locator": "Table 2, row(RNAErnie), column(Prot Loc)",
+    "printed_value": "29.8",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-rnaernie-prot-loc"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-rnaernie-vep-auprc",
+    "source_locator": "Table 2, row(RNAErnie), column(VEP)",
+    "printed_value": "17.3",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-rnaernie-vep"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-splicebert-eclip-auprc",
+    "source_locator": "Table 2, row(SpliceBERT), column(eCLIP)",
+    "printed_value": "37.7",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-splicebert-eclip"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-splicebert-go-auprc",
+    "source_locator": "Table 2, row(SpliceBERT), column(GO)",
+    "printed_value": "38.2",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-splicebert-go"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-splicebert-hl-pearson-r",
+    "source_locator": "Table 2, row(SpliceBERT), column(HL)",
+    "printed_value": "0.53",
+    "metric": "pearson_r",
+    "unit": "correlation",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-splicebert-hl"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-splicebert-mrl-hl-pair-pearson-r",
+    "source_locator": "Table 2, row(SpliceBERT), column(MRL-HL-Pair)",
+    "printed_value": "0.51",
+    "metric": "pearson_r",
+    "unit": "correlation",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-splicebert-mrl-hl-pair"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-splicebert-mrl-mpra-pearson-r",
+    "source_locator": "Table 2, row(SpliceBERT), column(MRL MPRA)",
+    "printed_value": "0.53",
+    "metric": "pearson_r",
+    "unit": "correlation",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-splicebert-mrl-mpra"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-splicebert-mrl-pearson-r",
+    "source_locator": "Table 2, row(SpliceBERT), column(MRL)",
+    "printed_value": "0.34",
+    "metric": "pearson_r",
+    "unit": "correlation",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-splicebert-mrl"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-splicebert-mrna-loc-lr-auprc",
+    "source_locator": "Table 2, row(SpliceBERT), column(mRNA Loc-LR)",
+    "printed_value": "76.1",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-splicebert-mrna-loc-lr"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-splicebert-mrna-loc-sr-auprc",
+    "source_locator": "Table 2, row(SpliceBERT), column(mRNA Loc-SR)",
+    "printed_value": "72.6",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-splicebert-mrna-loc-sr"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-splicebert-prot-loc-auprc",
+    "source_locator": "Table 2, row(SpliceBERT), column(Prot Loc)",
+    "printed_value": "36.0",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-splicebert-prot-loc"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-splicebert-vep-auprc",
+    "source_locator": "Table 2, row(SpliceBERT), column(VEP)",
+    "printed_value": "28.2",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-splicebert-vep"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-supervised-cnn-eclip-auprc",
+    "source_locator": "Table 2, row(Supervised CNN), column(eCLIP)",
+    "printed_value": "42.0",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-supervised-cnn-eclip"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-supervised-cnn-go-auprc",
+    "source_locator": "Table 2, row(Supervised CNN), column(GO)",
+    "printed_value": "15.5",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-supervised-cnn-go"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-supervised-cnn-hl-pearson-r",
+    "source_locator": "Table 2, row(Supervised CNN), column(HL)",
+    "printed_value": "0.65",
+    "metric": "pearson_r",
+    "unit": "correlation",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-supervised-cnn-hl"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-supervised-cnn-mrl-hl-pair-pearson-r",
+    "source_locator": "Table 2, row(Supervised CNN), column(MRL-HL-Pair)",
+    "printed_value": "0.41",
+    "metric": "pearson_r",
+    "unit": "correlation",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-supervised-cnn-mrl-hl-pair"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-supervised-cnn-mrl-mpra-pearson-r",
+    "source_locator": "Table 2, row(Supervised CNN), column(MRL MPRA)",
+    "printed_value": "0.77",
+    "metric": "pearson_r",
+    "unit": "correlation",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-supervised-cnn-mrl-mpra"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-supervised-cnn-mrl-pearson-r",
+    "source_locator": "Table 2, row(Supervised CNN), column(MRL)",
+    "printed_value": "0.45",
+    "metric": "pearson_r",
+    "unit": "correlation",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-supervised-cnn-mrl"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-supervised-cnn-mrna-loc-lr-auprc",
+    "source_locator": "Table 2, row(Supervised CNN), column(mRNA Loc-LR)",
+    "printed_value": "73.7",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-supervised-cnn-mrna-loc-lr"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-supervised-cnn-mrna-loc-sr-auprc",
+    "source_locator": "Table 2, row(Supervised CNN), column(mRNA Loc-SR)",
+    "printed_value": "64.5",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-supervised-cnn-mrna-loc-sr"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-supervised-cnn-prot-loc-auprc",
+    "source_locator": "Table 2, row(Supervised CNN), column(Prot Loc)",
+    "printed_value": "17.0",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-supervised-cnn-prot-loc"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-supervised-cnn-vep-auprc",
+    "source_locator": "Table 2, row(Supervised CNN), column(VEP)",
+    "printed_value": "33.2",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-supervised-cnn-vep"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-utr-lm-eclip-auprc",
+    "source_locator": "Table 2, row(UTR-LM), column(eCLIP)",
+    "printed_value": "33.7",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-utr-lm-eclip"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-utr-lm-go-auprc",
+    "source_locator": "Table 2, row(UTR-LM), column(GO)",
+    "printed_value": "31.3",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-utr-lm-go"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-utr-lm-hl-pearson-r",
+    "source_locator": "Table 2, row(UTR-LM), column(HL)",
+    "printed_value": "0.44",
+    "metric": "pearson_r",
+    "unit": "correlation",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-utr-lm-hl"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-utr-lm-mrl-hl-pair-pearson-r",
+    "source_locator": "Table 2, row(UTR-LM), column(MRL-HL-Pair)",
+    "printed_value": "0.38",
+    "metric": "pearson_r",
+    "unit": "correlation",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-utr-lm-mrl-hl-pair"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-utr-lm-mrl-mpra-pearson-r",
+    "source_locator": "Table 2, row(UTR-LM), column(MRL MPRA)",
+    "printed_value": "0.54",
+    "metric": "pearson_r",
+    "unit": "correlation",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-utr-lm-mrl-mpra"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-utr-lm-mrl-pearson-r",
+    "source_locator": "Table 2, row(UTR-LM), column(MRL)",
+    "printed_value": "0.25",
+    "metric": "pearson_r",
+    "unit": "correlation",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-utr-lm-mrl"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-utr-lm-mrna-loc-lr-auprc",
+    "source_locator": "Table 2, row(UTR-LM), column(mRNA Loc-LR)",
+    "printed_value": "74.4",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-utr-lm-mrna-loc-lr"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-utr-lm-mrna-loc-sr-auprc",
+    "source_locator": "Table 2, row(UTR-LM), column(mRNA Loc-SR)",
+    "printed_value": "65.8",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-utr-lm-mrna-loc-sr"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-utr-lm-prot-loc-auprc",
+    "source_locator": "Table 2, row(UTR-LM), column(Prot Loc)",
+    "printed_value": "32.0",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-utr-lm-prot-loc"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  },
+  {
+    "result_id": "mrnabench-result-utr-lm-vep-auprc",
+    "source_locator": "Table 2, row(UTR-LM), column(VEP)",
+    "printed_value": "21.3",
+    "metric": "auprc",
+    "unit": "percent",
+    "links": [
+      {
+        "relation": "evaluation",
+        "target_id": "mrnabench-evaluation-utr-lm-vep"
+      }
+    ],
+    "same_paper_experiment_set": "mrnabench-2025-linear-probing-default-splits",
+    "source_statistic": "selected best-overall configuration within family (Table2 summary), not an independent experiment",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025"
+    ]
+  }
+]

@@ -1,0 +1,668 @@
+{
+  "scope": "First three specs only: DreaMS, mRNABench, METAGENE. Later protein additions not reviewed.",
+  "review_method": "Independent automated exact-cell parsing of primary XML/HTML, with semantic source review; no model execution.",
+  "inputs": {
+    "specs.json": "b820faa877cda071dacdaff5deca1e50fb8c09652c711fba219fc9f071accb87",
+    "records.jsonl": "437d4e7649dda2049ef9e7b59dd2fc069e55d2f785fc11f13aff868dbed40b1a",
+    "dreams.xml.gz": "599f4370c2c290ee821b0d473aa06ea4834bdf3e68e27b8bb6e151d3044db0a3",
+    "mrnabench.xml.gz": "f7de086fb1551a8cd5957f4a35f513ada3b7ed6b26826462b46df2a1494b68c1",
+    "metagene.html.gz": "4cf3e912946f7bcf8b453e5c2cfbe1a8750b7755204cac2bc5bff15bc2ba0445"
+  },
+  "checks": [
+    {
+      "key": "dreams-mist-retrieval",
+      "source_sha256": "4bbe2ecff0ad75944b3aec5131369c1b2f75ff6f4b5dc257487a274fdd7b0fef",
+      "source_cells": 48,
+      "numeric_cells": 45,
+      "excluded_cells": 0,
+      "excluded_rows": [],
+      "methods": 6
+    },
+    {
+      "key": "mrnabench-variants-2025",
+      "source_sha256": "79f6264ee883535203c63a313547e7c57baa85585f76b42f8d899eb17fb7e600",
+      "source_cells": 400,
+      "numeric_cells": 400,
+      "excluded_cells": 100,
+      "excluded_rows": [
+        [
+          "aido-rna-1b600m",
+          "mRNA-Loc-SR",
+          "0.734 \u00b1 0.008"
+        ],
+        [
+          "aido-rna-1b600m",
+          "mRNA-Loc-LR",
+          "0.772 \u00b1 0.004"
+        ],
+        [
+          "aido-rna-1b600m-cds",
+          "mRNA-Loc-SR",
+          "0.738 \u00b1 0.009"
+        ],
+        [
+          "aido-rna-1b600m-cds",
+          "mRNA-Loc-LR",
+          "0.770 \u00b1 0.005"
+        ],
+        [
+          "aido-rna-650m",
+          "mRNA-Loc-SR",
+          "0.730 \u00b1 0.009"
+        ],
+        [
+          "aido-rna-650m",
+          "mRNA-Loc-LR",
+          "0.767 \u00b1 0.005"
+        ],
+        [
+          "aido-rna-650m-cds",
+          "mRNA-Loc-SR",
+          "0.740 \u00b1 0.007"
+        ],
+        [
+          "aido-rna-650m-cds",
+          "mRNA-Loc-LR",
+          "0.771 \u00b1 0.004"
+        ],
+        [
+          "dnabert-s",
+          "mRNA-Loc-SR",
+          "0.685 \u00b1 0.005"
+        ],
+        [
+          "dnabert-s",
+          "mRNA-Loc-LR",
+          "0.753 \u00b1 0.004"
+        ],
+        [
+          "dnabert2",
+          "mRNA-Loc-SR",
+          "0.675 \u00b1 0.008"
+        ],
+        [
+          "dnabert2",
+          "mRNA-Loc-LR",
+          "0.762 \u00b1 0.006"
+        ],
+        [
+          "ernierna",
+          "mRNA-Loc-SR",
+          "0.691 \u00b1 0.008"
+        ],
+        [
+          "ernierna",
+          "mRNA-Loc-LR",
+          "0.753 \u00b1 0.006"
+        ],
+        [
+          "ernierna-ss",
+          "mRNA-Loc-SR",
+          "0.670 \u00b1 0.007"
+        ],
+        [
+          "ernierna-ss",
+          "mRNA-Loc-LR",
+          "0.754 \u00b1 0.005"
+        ],
+        [
+          "evo-1\u2013131k-base",
+          "mRNA-Loc-SR",
+          "0.633 \u00b1 0.007"
+        ],
+        [
+          "evo-1\u2013131k-base",
+          "mRNA-Loc-LR",
+          "0.705 \u00b1 0.004"
+        ],
+        [
+          "evo-1\u20138k-base",
+          "mRNA-Loc-SR",
+          "0.634 \u00b1 0.008"
+        ],
+        [
+          "evo-1\u20138k-base",
+          "mRNA-Loc-LR",
+          "0.706 \u00b1 0.004"
+        ],
+        [
+          "evo-1.5\u20138k-base",
+          "mRNA-Loc-SR",
+          "0.633 \u00b1 0.008"
+        ],
+        [
+          "evo-1.5\u20138k-base",
+          "mRNA-Loc-LR",
+          "0.706 \u00b1 0.004"
+        ],
+        [
+          "evo2\u20131b-base",
+          "mRNA-Loc-SR",
+          "0.770 \u00b1 0.006"
+        ],
+        [
+          "evo2\u20131b-base",
+          "mRNA-Loc-LR",
+          "0.808 \u00b1 0.005"
+        ],
+        [
+          "evo2\u20137b",
+          "mRNA-Loc-SR",
+          "0.760 \u00b1 0.007"
+        ],
+        [
+          "evo2\u20137b",
+          "mRNA-Loc-LR",
+          "0.796 \u00b1 0.004"
+        ],
+        [
+          "evo2\u20137b-base",
+          "mRNA-Loc-SR",
+          "0.767 \u00b1 0.007"
+        ],
+        [
+          "evo2\u20137b-base",
+          "mRNA-Loc-LR",
+          "0.795 \u00b1 0.004"
+        ],
+        [
+          "helix-mrna",
+          "mRNA-Loc-SR",
+          "0.612 \u00b1 0.008"
+        ],
+        [
+          "helix-mrna",
+          "mRNA-Loc-LR",
+          "0.739 \u00b1 0.005"
+        ],
+        [
+          "hyenadna-large-1m",
+          "mRNA-Loc-SR",
+          "0.670 \u00b1 0.007"
+        ],
+        [
+          "hyenadna-large-1m",
+          "mRNA-Loc-LR",
+          "0.762 \u00b1 0.005"
+        ],
+        [
+          "hyenadna-medium-160k",
+          "mRNA-Loc-SR",
+          "0.672 \u00b1 0.009"
+        ],
+        [
+          "hyenadna-medium-160k",
+          "mRNA-Loc-LR",
+          "0.760 \u00b1 0.005"
+        ],
+        [
+          "hyenadna-medium-450k",
+          "mRNA-Loc-SR",
+          "0.674 \u00b1 0.007"
+        ],
+        [
+          "hyenadna-medium-450k",
+          "mRNA-Loc-LR",
+          "0.759 \u00b1 0.004"
+        ],
+        [
+          "hyenadna-small-32k",
+          "mRNA-Loc-SR",
+          "0.658 \u00b1 0.008"
+        ],
+        [
+          "hyenadna-small-32k",
+          "mRNA-Loc-LR",
+          "0.740 \u00b1 0.005"
+        ],
+        [
+          "hyenadna-tiny-16k-d128",
+          "mRNA-Loc-SR",
+          "0.639 \u00b1 0.006"
+        ],
+        [
+          "hyenadna-tiny-16k-d128",
+          "mRNA-Loc-LR",
+          "0.724 \u00b1 0.004"
+        ],
+        [
+          "mrna-fm",
+          "mRNA-Loc-SR",
+          "0.694 \u00b1 0.007"
+        ],
+        [
+          "mrna-fm",
+          "mRNA-Loc-LR",
+          "0.758 \u00b1 0.004"
+        ],
+        [
+          "naive-4",
+          "mRNA-Loc-SR",
+          "0.596 \u00b1 0.007"
+        ],
+        [
+          "naive-4",
+          "mRNA-Loc-LR",
+          "0.626 \u00b1 0.004"
+        ],
+        [
+          "naive-6",
+          "mRNA-Loc-SR",
+          "0.601 \u00b1 0.006"
+        ],
+        [
+          "naive-6",
+          "mRNA-Loc-LR",
+          "0.622 \u00b1 0.004"
+        ],
+        [
+          "naive-mamba",
+          "mRNA-Loc-SR",
+          "0.631 \u00b1 0.006"
+        ],
+        [
+          "naive-mamba",
+          "mRNA-Loc-LR",
+          "0.704 \u00b1 0.005"
+        ],
+        [
+          "nt-2.5b-1000g",
+          "mRNA-Loc-SR",
+          "0.699 \u00b1 0.008"
+        ],
+        [
+          "nt-2.5b-1000g",
+          "mRNA-Loc-LR",
+          "0.771 \u00b1 0.004"
+        ],
+        [
+          "nt-2.5b-multi-species",
+          "mRNA-Loc-SR",
+          "0.722 \u00b1 0.008"
+        ],
+        [
+          "nt-2.5b-multi-species",
+          "mRNA-Loc-LR",
+          "0.765 \u00b1 0.005"
+        ],
+        [
+          "nt-500m-1000g",
+          "mRNA-Loc-SR",
+          "0.656 \u00b1 0.008"
+        ],
+        [
+          "nt-500m-1000g",
+          "mRNA-Loc-LR",
+          "0.739 \u00b1 0.004"
+        ],
+        [
+          "nt-500m-human-ref",
+          "mRNA-Loc-SR",
+          "0.669 \u00b1 0.009"
+        ],
+        [
+          "nt-500m-human-ref",
+          "mRNA-Loc-LR",
+          "0.742 \u00b1 0.005"
+        ],
+        [
+          "nt-v2\u2013100m-multi-species",
+          "mRNA-Loc-SR",
+          "0.704 \u00b1 0.007"
+        ],
+        [
+          "nt-v2\u2013100m-multi-species",
+          "mRNA-Loc-LR",
+          "0.753 \u00b1 0.005"
+        ],
+        [
+          "nt-v2\u2013250m-multi-species",
+          "mRNA-Loc-SR",
+          "0.714 \u00b1 0.009"
+        ],
+        [
+          "nt-v2\u2013250m-multi-species",
+          "mRNA-Loc-LR",
+          "0.763 \u00b1 0.004"
+        ],
+        [
+          "nt-v2\u2013500m-multi-species",
+          "mRNA-Loc-SR",
+          "0.719 \u00b1 0.008"
+        ],
+        [
+          "nt-v2\u2013500m-multi-species",
+          "mRNA-Loc-LR",
+          "0.763 \u00b1 0.005"
+        ],
+        [
+          "nt-v2\u201350m-multi-species",
+          "mRNA-Loc-SR",
+          "0.691 \u00b1 0.008"
+        ],
+        [
+          "nt-v2\u201350m-multi-species",
+          "mRNA-Loc-LR",
+          "0.761 \u00b1 0.004"
+        ],
+        [
+          "orthrus-base-4",
+          "mRNA-Loc-SR",
+          "0.750 \u00b1 0.007"
+        ],
+        [
+          "orthrus-base-4",
+          "mRNA-Loc-LR",
+          "0.787 \u00b1 0.004"
+        ],
+        [
+          "orthrus-large-6",
+          "mRNA-Loc-SR",
+          "0.779 \u00b1 0.006"
+        ],
+        [
+          "orthrus-large-6",
+          "mRNA-Loc-LR",
+          "0.798 \u00b1 0.005"
+        ],
+        [
+          "orthrus-mlm",
+          "mRNA-Loc-SR",
+          "0.789 \u00b1 0.005"
+        ],
+        [
+          "orthrus-mlm",
+          "mRNA-Loc-LR",
+          "0.812 \u00b1 0.005"
+        ],
+        [
+          "rinalmo",
+          "mRNA-Loc-SR",
+          "0.690 \u00b1 0.009"
+        ],
+        [
+          "rinalmo",
+          "mRNA-Loc-LR",
+          "0.795 \u00b1 0.004"
+        ],
+        [
+          "rna-fm",
+          "mRNA-Loc-SR",
+          "0.670 \u00b1 0.006"
+        ],
+        [
+          "rna-fm",
+          "mRNA-Loc-LR",
+          "0.743 \u00b1 0.005"
+        ],
+        [
+          "rnabert",
+          "mRNA-Loc-SR",
+          "0.575 \u00b1 0.006"
+        ],
+        [
+          "rnabert",
+          "mRNA-Loc-LR",
+          "0.683 \u00b1 0.004"
+        ],
+        [
+          "rnaernie",
+          "mRNA-Loc-SR",
+          "0.637 \u00b1 0.005"
+        ],
+        [
+          "rnaernie",
+          "mRNA-Loc-LR",
+          "0.727 \u00b1 0.004"
+        ],
+        [
+          "rnamsm",
+          "mRNA-Loc-SR",
+          "0.637 \u00b1 0.006"
+        ],
+        [
+          "rnamsm",
+          "mRNA-Loc-LR",
+          "0.726 \u00b1 0.005"
+        ],
+        [
+          "splicebert-h-510nt",
+          "mRNA-Loc-SR",
+          "0.720 \u00b1 0.009"
+        ],
+        [
+          "splicebert-h-510nt",
+          "mRNA-Loc-LR",
+          "0.750 \u00b1 0.003"
+        ],
+        [
+          "splicebert-v-1024nt",
+          "mRNA-Loc-SR",
+          "0.726 \u00b1 0.010"
+        ],
+        [
+          "splicebert-v-1024nt",
+          "mRNA-Loc-LR",
+          "0.761 \u00b1 0.004"
+        ],
+        [
+          "splicebert-v-510nt",
+          "mRNA-Loc-SR",
+          "0.679 \u00b1 0.007"
+        ],
+        [
+          "splicebert-v-510nt",
+          "mRNA-Loc-LR",
+          "0.733 \u00b1 0.003"
+        ],
+        [
+          "supervised-cnn",
+          "mRNA-Loc-SR",
+          "0.645 \u00b1 0.005"
+        ],
+        [
+          "supervised-cnn",
+          "mRNA-Loc-LR",
+          "0.737 \u00b1 0.009"
+        ],
+        [
+          "utrbert-3mer",
+          "mRNA-Loc-SR",
+          "0.629 \u00b1 0.008"
+        ],
+        [
+          "utrbert-3mer",
+          "mRNA-Loc-LR",
+          "0.709 \u00b1 0.006"
+        ],
+        [
+          "utrbert-4mer",
+          "mRNA-Loc-SR",
+          "0.623 \u00b1 0.013"
+        ],
+        [
+          "utrbert-4mer",
+          "mRNA-Loc-LR",
+          "0.699 \u00b1 0.005"
+        ],
+        [
+          "utrbert-5mer",
+          "mRNA-Loc-SR",
+          "0.639 \u00b1 0.009"
+        ],
+        [
+          "utrbert-5mer",
+          "mRNA-Loc-LR",
+          "0.720 \u00b1 0.004"
+        ],
+        [
+          "utrbert-6mer",
+          "mRNA-Loc-SR",
+          "0.633 \u00b1 0.011"
+        ],
+        [
+          "utrbert-6mer",
+          "mRNA-Loc-LR",
+          "0.701 \u00b1 0.005"
+        ],
+        [
+          "utrlm-mrl",
+          "mRNA-Loc-SR",
+          "0.648 \u00b1 0.007"
+        ],
+        [
+          "utrlm-mrl",
+          "mRNA-Loc-LR",
+          "0.732 \u00b1 0.004"
+        ],
+        [
+          "utrlm-te-el",
+          "mRNA-Loc-SR",
+          "0.658 \u00b1 0.007"
+        ],
+        [
+          "utrlm-te-el",
+          "mRNA-Loc-LR",
+          "0.743 \u00b1 0.005"
+        ]
+      ],
+      "methods": 50
+    },
+    {
+      "key": "metagene-gene-mteb",
+      "source_sha256": "a426c77d137138cfc33410a1e54a1cce521007bdc9e3176f4774d0105424a7fe",
+      "source_cells": 80,
+      "numeric_cells": 80,
+      "excluded_cells": 25,
+      "excluded_rows": [
+        [
+          "DNABERT-2",
+          "Human-Virus (avg.)",
+          "0.564"
+        ],
+        [
+          "DNABERT-S",
+          "Human-Virus (avg.)",
+          "0.570"
+        ],
+        [
+          "NT-2.5b-Multi",
+          "Human-Virus (avg.)",
+          "0.675"
+        ],
+        [
+          "NT-2.5b-1000g",
+          "Human-Virus (avg.)",
+          "0.710"
+        ],
+        [
+          "METAGENE-1",
+          "Human-Virus (avg.)",
+          "0.775"
+        ],
+        [
+          "DNABERT-2",
+          "HMPD (avg.)",
+          "0.397"
+        ],
+        [
+          "DNABERT-S",
+          "HMPD (avg.)",
+          "0.403"
+        ],
+        [
+          "NT-2.5b-Multi",
+          "HMPD (avg.)",
+          "0.449"
+        ],
+        [
+          "NT-2.5b-1000g",
+          "HMPD (avg.)",
+          "0.451"
+        ],
+        [
+          "METAGENE-1",
+          "HMPD (avg.)",
+          "0.465"
+        ],
+        [
+          "DNABERT-2",
+          "HVR (avg.)",
+          "0.479"
+        ],
+        [
+          "DNABERT-S",
+          "HVR (avg.)",
+          "0.479"
+        ],
+        [
+          "NT-2.5b-Multi",
+          "HVR (avg.)",
+          "0.546"
+        ],
+        [
+          "NT-2.5b-1000g",
+          "HVR (avg.)",
+          "0.524"
+        ],
+        [
+          "METAGENE-1",
+          "HVR (avg.)",
+          "0.550"
+        ],
+        [
+          "DNABERT-2",
+          "HMPR (avg.)",
+          "0.347"
+        ],
+        [
+          "DNABERT-S",
+          "HMPR (avg.)",
+          "0.351"
+        ],
+        [
+          "NT-2.5b-Multi",
+          "HMPR (avg.)",
+          "0.348"
+        ],
+        [
+          "NT-2.5b-1000g",
+          "HMPR (avg.)",
+          "0.403"
+        ],
+        [
+          "METAGENE-1",
+          "HMPR (avg.)",
+          "0.476"
+        ],
+        [
+          "DNABERT-2",
+          "Global Average",
+          "0.475"
+        ],
+        [
+          "DNABERT-S",
+          "Global Average",
+          "0.479"
+        ],
+        [
+          "NT-2.5b-Multi",
+          "Global Average",
+          "0.525"
+        ],
+        [
+          "NT-2.5b-1000g",
+          "Global Average",
+          "0.545"
+        ],
+        [
+          "METAGENE-1",
+          "Global Average",
+          "0.590"
+        ]
+      ],
+      "methods": 5
+    }
+  ],
+  "errors": []
+}

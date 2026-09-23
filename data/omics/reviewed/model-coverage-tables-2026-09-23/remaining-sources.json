@@ -1,0 +1,13 @@
+[
+  {
+    "file": "mimic",
+    "error": "IncompleteRead(4194304 bytes read, 6909478 more expected)"
+  },
+  {
+    "file": "msalign.pdf",
+    "url": "https://arxiv.org/pdf/2605.19752",
+    "sha256": "7395a55141ee7916741b7d9e6d4f42a1d3a03217a36ce6824ac3ff48afd4f26f",
+    "bytes": 1345640,
+    "retrieved_at": "2026-09-23T11:30:09.734910+00:00"
+  }
+]

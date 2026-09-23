@@ -1,0 +1,1598 @@
+[
+  {
+    "subject_id": "bend-method-dnabert-2",
+    "relation": "family",
+    "target_id": "discovery-model-dnabert-2",
+    "source_ids": [
+      "evidence-expansion-bend-final-f709b6be",
+      "evidence-official-96b5c3a31a50f7c259d6"
+    ],
+    "source_locator": "BEND Table 3 row DNABERT-2; Related work DNABERT-2 paragraph; official DNABERT-2 README; source-labelled configuration DNABERT-2 | Existing reviewed locator: Table 3, row(DNABERT-2)",
+    "explanation": "Paper explicitly distinguishes DNABERT-2 from original DNABERT. Family attribution only; no checkpoint equivalence."
+  },
+  {
+    "subject_id": "gue-method-dnabert-2",
+    "relation": "family",
+    "target_id": "discovery-model-dnabert-2",
+    "source_ids": [
+      "evidence-expansion-gue-49300ace",
+      "evidence-official-96b5c3a31a50f7c259d6"
+    ],
+    "source_locator": "DNABERT-2 paper GUE result tables; further pre-training setting retained; official README GUE benchmark; source-labelled configuration DNABERT-2 | Existing reviewed locator: Table 6, row(DNABERT-2)",
+    "explanation": "Both configurations are explicitly DNABERT-2; retain further pretraining as a distinct configuration."
+  },
+  {
+    "subject_id": "gue-method-dnabert-2-further-pre-trained-on-gue",
+    "relation": "family",
+    "target_id": "discovery-model-dnabert-2",
+    "source_ids": [
+      "evidence-expansion-gue-49300ace",
+      "evidence-official-96b5c3a31a50f7c259d6"
+    ],
+    "source_locator": "DNABERT-2 paper GUE result tables; further pre-training setting retained; official README GUE benchmark; source-labelled configuration DNABERT-2 (further pre-trained on GUE) | Existing reviewed locator: Table 6, row(DNABERT-2\u2666)",
+    "explanation": "Both configurations are explicitly DNABERT-2; retain further pretraining as a distinct configuration."
+  },
+  {
+    "subject_id": "dart-eval-method-dnabert-2-fine-tuned",
+    "relation": "family",
+    "target_id": "discovery-model-dnabert-2",
+    "source_ids": [
+      "evidence-expansion-p2-evidence-discovery-final-dart-4194b137ba55",
+      "evidence-official-96b5c3a31a50f7c259d6"
+    ],
+    "source_locator": "DART-Eval Table 1 (DNABERT-2, 117M) and adaptation-specific result tables; source-labelled configuration DNABERT-2 (fine-tuned) | Existing reviewed locator: Table 1, row(DNABERT-2)",
+    "explanation": "Official paper fixes backbone identity and separates fine-tuning/probing/zero-shot conditions. Family link does not pool scores."
+  },
+  {
+    "subject_id": "dart-eval-method-dnabert-2-probed",
+    "relation": "family",
+    "target_id": "discovery-model-dnabert-2",
+    "source_ids": [
+      "evidence-expansion-p2-evidence-discovery-final-dart-4194b137ba55",
+      "evidence-official-96b5c3a31a50f7c259d6"
+    ],
+    "source_locator": "DART-Eval Table 1 (DNABERT-2, 117M) and adaptation-specific result tables; source-labelled configuration DNABERT-2 (probed) | Existing reviewed locator: Table 1, row(DNABERT-2)",
+    "explanation": "Official paper fixes backbone identity and separates fine-tuning/probing/zero-shot conditions. Family link does not pool scores."
+  },
+  {
+    "subject_id": "dart-eval-method-dnabert-2-zero-shot",
+    "relation": "family",
+    "target_id": "discovery-model-dnabert-2",
+    "source_ids": [
+      "evidence-expansion-p2-evidence-discovery-final-dart-4194b137ba55",
+      "evidence-official-96b5c3a31a50f7c259d6"
+    ],
+    "source_locator": "DART-Eval Table 1 (DNABERT-2, 117M) and adaptation-specific result tables; source-labelled configuration DNABERT-2 (zero-shot) | Existing reviewed locator: Table 1, row(DNABERT-2)",
+    "explanation": "Official paper fixes backbone identity and separates fine-tuning/probing/zero-shot conditions. Family link does not pool scores."
+  },
+  {
+    "subject_id": "dart-eval-method-dnabert-2-zero-shot-embedding",
+    "relation": "family",
+    "target_id": "discovery-model-dnabert-2",
+    "source_ids": [
+      "evidence-expansion-p2-evidence-discovery-final-dart-4194b137ba55",
+      "evidence-official-96b5c3a31a50f7c259d6"
+    ],
+    "source_locator": "DART-Eval Table 1 (DNABERT-2, 117M) and adaptation-specific result tables; source-labelled configuration DNABERT-2 (zero-shot embedding) | Existing reviewed locator: Table 1, row(DNABERT-2)",
+    "explanation": "Official paper fixes backbone identity and separates fine-tuning/probing/zero-shot conditions. Family link does not pool scores."
+  },
+  {
+    "subject_id": "reported-model-28413ae1766316",
+    "relation": "family",
+    "target_id": "discovery-model-dnabert-2",
+    "source_ids": [
+      "dart-eval-regulatory-2024",
+      "evidence-reported-base-dnabert2-readme-md",
+      "evidence-official-96b5c3a31a50f7c259d6"
+    ],
+    "source_locator": "DART-Eval Table 1 and model selection paragraph; official DNABERT-2 README; source-labelled configuration DNABERT-2 | Existing reviewed locator: Table 2 (models); Section 3.2 zero-shot analysis; Table 3 regulatory-element identification; Appendix B evaluation procedures",
+    "explanation": "Published source explicitly names the DNABERT-2 backbone; retain paper-specific configuration."
+  },
+  {
+    "subject_id": "reported-model-2cb8118b4c77c0",
+    "relation": "family",
+    "target_id": "discovery-model-dnabert-2",
+    "source_ids": [
+      "eden-genomic-classification-2026",
+      "evidence-reported-base-dnabert2-readme-md",
+      "evidence-official-96b5c3a31a50f7c259d6"
+    ],
+    "source_locator": "Cited primary paper comparison table and DNABERT-2 methods; official DNABERT-2 README; source-labelled configuration DNABERT-2 | Existing reviewed locator: Experimental setup, results, and discussion/Comparison with state-of-the-art methods (paragraph 12); Experimental setup, results, and discussion/Comparison with state-of-the-art methods (paragraph 2)",
+    "explanation": "Reviewed primary source identifies DNABERT-2 as the evaluated backbone; no equivalence of adaptations or checkpoints inferred."
+  },
+  {
+    "subject_id": "reported-model-7f1165b35f10e2",
+    "relation": "family",
+    "target_id": "discovery-model-dnabert-2",
+    "source_ids": [
+      "genomeocean-2025",
+      "evidence-reported-base-dnabert2-readme-md",
+      "evidence-official-96b5c3a31a50f7c259d6"
+    ],
+    "source_locator": "Cited primary paper comparison table and DNABERT-2 methods; official DNABERT-2 README; source-labelled configuration DNABERT-2 | Existing reviewed locator: Results/Model Safety (paragraph 1); Results/GenomeOcean Learns Protein-coding Principles from DNA Alone (paragraph 4)",
+    "explanation": "Reviewed primary source identifies DNABERT-2 as the evaluated backbone; no equivalence of adaptations or checkpoints inferred."
+  },
+  {
+    "subject_id": "reported-model-ade36035f58f27",
+    "relation": "family",
+    "target_id": "discovery-model-dnabert-2",
+    "source_ids": [
+      "quadruplex-llm-benchmark-2025",
+      "evidence-reported-base-dnabert2-readme-md",
+      "evidence-official-96b5c3a31a50f7c259d6"
+    ],
+    "source_locator": "Cited primary paper comparison table and DNABERT-2 methods; official DNABERT-2 README; source-labelled configuration DNABERT-2 | Existing reviewed locator: Discussion and conclusions (paragraph 6); Results/LLM performance at the genome-wide level (paragraph 4)",
+    "explanation": "Reviewed primary source identifies DNABERT-2 as the evaluated backbone; no equivalence of adaptations or checkpoints inferred."
+  },
+  {
+    "subject_id": "paper-model-5382c82497e0171114",
+    "relation": "family",
+    "target_id": "discovery-model-dnabert-2",
+    "source_ids": [
+      "part2-transbind-2026",
+      "evidence-official-96b5c3a31a50f7c259d6"
+    ],
+    "source_locator": "Cited primary paper comparison table and DNABERT-2 methods; official DNABERT-2 README; source-labelled configuration finetuned DNABERT-2 | Existing reviewed locator: Table 2., row finetuned DNABERT-2, column AUROC; XML row5 column2",
+    "explanation": "Reviewed primary source identifies DNABERT-2 as the evaluated backbone; no equivalence of adaptations or checkpoints inferred."
+  },
+  {
+    "subject_id": "mrnabench-method-dnabert2",
+    "relation": "family",
+    "target_id": "discovery-model-dnabert-2",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025",
+      "evidence-official-96b5c3a31a50f7c259d6"
+    ],
+    "source_locator": "mRNABench Table 2 DNABERT2 row; Appendix model inventory T1 DNABERT2 description; source-labelled configuration DNABERT2 | Existing reviewed locator: Table 2, row(DNABERT2)",
+    "explanation": "Family-level best-model summary remains its original protocol; not a universal checkpoint result."
+  },
+  {
+    "subject_id": "mrnabench-method-evo2",
+    "relation": "family",
+    "target_id": "discovery-model-evo-2",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025",
+      "evidence-official-a248990b44d481814f47"
+    ],
+    "source_locator": "Primary paper model-inventory and results tables: mRNABench Table 2; NABench model inventory; LAMBDA Table 1 (EVO2 7B); source-labelled configuration Evo2 | Existing reviewed locator: Table 2, row(Evo2)",
+    "explanation": "Explicit Evo2/EVO2 identity supported by cited paper and official Evo2 checkpoint list; base and context-extended configurations remain distinct."
+  },
+  {
+    "subject_id": "nabench-method-evo2-7b",
+    "relation": "family",
+    "target_id": "discovery-model-evo-2",
+    "source_ids": [
+      "evidence-expansion-nabench-fefd48d5",
+      "evidence-official-a248990b44d481814f47"
+    ],
+    "source_locator": "Primary paper model-inventory and results tables: mRNABench Table 2; NABench model inventory; LAMBDA Table 1 (EVO2 7B); source-labelled configuration Evo2-7B | Existing reviewed locator: Table 7, row(Evo2-7B)",
+    "explanation": "Explicit Evo2/EVO2 identity supported by cited paper and official Evo2 checkpoint list; base and context-extended configurations remain distinct."
+  },
+  {
+    "subject_id": "nabench-method-evo2-7b-base",
+    "relation": "family",
+    "target_id": "discovery-model-evo-2",
+    "source_ids": [
+      "evidence-expansion-nabench-fefd48d5",
+      "evidence-official-a248990b44d481814f47"
+    ],
+    "source_locator": "Primary paper model-inventory and results tables: mRNABench Table 2; NABench model inventory; LAMBDA Table 1 (EVO2 7B); source-labelled configuration Evo2-7B-base | Existing reviewed locator: Table 7, row(Evo2-7B-base)",
+    "explanation": "Explicit Evo2/EVO2 identity supported by cited paper and official Evo2 checkpoint list; base and context-extended configurations remain distinct."
+  },
+  {
+    "subject_id": "reported-model-aa763db2cfdeff",
+    "relation": "family",
+    "target_id": "discovery-model-evo-2",
+    "source_ids": [
+      "lambda-prophage-2026",
+      "evidence-reported-base-evo2-readme-md",
+      "evidence-official-a248990b44d481814f47"
+    ],
+    "source_locator": "Primary paper model-inventory and results tables: mRNABench Table 2; NABench model inventory; LAMBDA Table 1 (EVO2 7B); source-labelled configuration EVO2 | Existing reviewed locator: Materials and Methods/LAMBDA Benchmark Dataset Construction. (paragraph 1); Abstract (paragraph 1)",
+    "explanation": "Explicit Evo2/EVO2 identity supported by cited paper and official Evo2 checkpoint list; base and context-extended configurations remain distinct."
+  },
+  {
+    "subject_id": "bend-method-nt-1000g",
+    "relation": "family",
+    "target_id": "discovery-model-nucleotide-transformer",
+    "source_ids": [
+      "evidence-expansion-bend-final-f709b6be",
+      "evidence-official-657e83427ab59f3aec83"
+    ],
+    "source_locator": "BEND Table 2 model inventory, Table 3 NT-1000G/NT-V2 rows and Related work NT paragraph; source-labelled configuration NT-1000G | Existing reviewed locator: Table 3, row(NT-1000G)",
+    "explanation": "NT-1000G and NT-V2 explicitly expanded to Nucleotide Transformer in paper; no 50M checkpoint attribution."
+  },
+  {
+    "subject_id": "bend-method-nt-v2",
+    "relation": "family",
+    "target_id": "discovery-model-nucleotide-transformer",
+    "source_ids": [
+      "evidence-expansion-bend-final-f709b6be",
+      "evidence-official-657e83427ab59f3aec83"
+    ],
+    "source_locator": "BEND Table 2 model inventory, Table 3 NT-1000G/NT-V2 rows and Related work NT paragraph; source-labelled configuration NT-V2 | Existing reviewed locator: Table 3, row(NT-V2)",
+    "explanation": "NT-1000G and NT-V2 explicitly expanded to Nucleotide Transformer in paper; no 50M checkpoint attribution."
+  },
+  {
+    "subject_id": "gue-method-nt-2500m-1000g",
+    "relation": "family",
+    "target_id": "discovery-model-nucleotide-transformer",
+    "source_ids": [
+      "evidence-expansion-gue-49300ace",
+      "evidence-official-657e83427ab59f3aec83"
+    ],
+    "source_locator": "DNABERT-2 paper GUE tables labelled NT-500M/2500M; official NT documentation Pre-trained models; source-labelled configuration NT-2500M-1000g | Existing reviewed locator: Table 6, row(NT-2500M-1000g)",
+    "explanation": "Named NT training-corpus/parameter variants belong to broad NT family, not the catalog 50M v2 checkpoint."
+  },
+  {
+    "subject_id": "gue-method-nt-2500m-multi",
+    "relation": "family",
+    "target_id": "discovery-model-nucleotide-transformer",
+    "source_ids": [
+      "evidence-expansion-gue-49300ace",
+      "evidence-official-657e83427ab59f3aec83"
+    ],
+    "source_locator": "DNABERT-2 paper GUE tables labelled NT-500M/2500M; official NT documentation Pre-trained models; source-labelled configuration NT-2500M-multi | Existing reviewed locator: Table 6, row(NT-2500M-multi)",
+    "explanation": "Named NT training-corpus/parameter variants belong to broad NT family, not the catalog 50M v2 checkpoint."
+  },
+  {
+    "subject_id": "gue-method-nt-500m-1000g",
+    "relation": "family",
+    "target_id": "discovery-model-nucleotide-transformer",
+    "source_ids": [
+      "evidence-expansion-gue-49300ace",
+      "evidence-official-657e83427ab59f3aec83"
+    ],
+    "source_locator": "DNABERT-2 paper GUE tables labelled NT-500M/2500M; official NT documentation Pre-trained models; source-labelled configuration NT-500M-1000g | Existing reviewed locator: Table 6, row(NT-500M-1000g)",
+    "explanation": "Named NT training-corpus/parameter variants belong to broad NT family, not the catalog 50M v2 checkpoint."
+  },
+  {
+    "subject_id": "gue-method-nt-500m-human",
+    "relation": "family",
+    "target_id": "discovery-model-nucleotide-transformer",
+    "source_ids": [
+      "evidence-expansion-gue-49300ace",
+      "evidence-official-657e83427ab59f3aec83"
+    ],
+    "source_locator": "DNABERT-2 paper GUE tables labelled NT-500M/2500M; official NT documentation Pre-trained models; source-labelled configuration NT-500M-human | Existing reviewed locator: Table 6, row(NT-500M-human)",
+    "explanation": "Named NT training-corpus/parameter variants belong to broad NT family, not the catalog 50M v2 checkpoint."
+  },
+  {
+    "subject_id": "dart-eval-method-nucleotide-transformer-fine-tuned",
+    "relation": "family",
+    "target_id": "discovery-model-nucleotide-transformer",
+    "source_ids": [
+      "evidence-expansion-p2-evidence-discovery-final-dart-4194b137ba55",
+      "evidence-official-657e83427ab59f3aec83"
+    ],
+    "source_locator": "DART-Eval Table 1: Nucleotide Transformer, v2-500m-multi-species; adaptation-specific result tables; source-labelled configuration Nucleotide Transformer (fine-tuned) | Existing reviewed locator: Table 1, row(Nucleotide Transformer)",
+    "explanation": "Explicit 500M-v2 backbone. Link broad NT family; do not attribute these scores to catalog-model-nt-v2, which documents 50M."
+  },
+  {
+    "subject_id": "dart-eval-method-nucleotide-transformer-probed",
+    "relation": "family",
+    "target_id": "discovery-model-nucleotide-transformer",
+    "source_ids": [
+      "evidence-expansion-p2-evidence-discovery-final-dart-4194b137ba55",
+      "evidence-official-657e83427ab59f3aec83"
+    ],
+    "source_locator": "DART-Eval Table 1: Nucleotide Transformer, v2-500m-multi-species; adaptation-specific result tables; source-labelled configuration Nucleotide Transformer (probed) | Existing reviewed locator: Table 1, row(Nucleotide Transformer)",
+    "explanation": "Explicit 500M-v2 backbone. Link broad NT family; do not attribute these scores to catalog-model-nt-v2, which documents 50M."
+  },
+  {
+    "subject_id": "dart-eval-method-nucleotide-transformer-zero-shot",
+    "relation": "family",
+    "target_id": "discovery-model-nucleotide-transformer",
+    "source_ids": [
+      "evidence-expansion-p2-evidence-discovery-final-dart-4194b137ba55",
+      "evidence-official-657e83427ab59f3aec83"
+    ],
+    "source_locator": "DART-Eval Table 1: Nucleotide Transformer, v2-500m-multi-species; adaptation-specific result tables; source-labelled configuration Nucleotide Transformer (zero-shot) | Existing reviewed locator: Table 1, row(Nucleotide Transformer)",
+    "explanation": "Explicit 500M-v2 backbone. Link broad NT family; do not attribute these scores to catalog-model-nt-v2, which documents 50M."
+  },
+  {
+    "subject_id": "dart-eval-method-nucleotide-transformer-zero-shot-embedding",
+    "relation": "family",
+    "target_id": "discovery-model-nucleotide-transformer",
+    "source_ids": [
+      "evidence-expansion-p2-evidence-discovery-final-dart-4194b137ba55",
+      "evidence-official-657e83427ab59f3aec83"
+    ],
+    "source_locator": "DART-Eval Table 1: Nucleotide Transformer, v2-500m-multi-species; adaptation-specific result tables; source-labelled configuration Nucleotide Transformer (zero-shot embedding) | Existing reviewed locator: Table 1, row(Nucleotide Transformer)",
+    "explanation": "Explicit 500M-v2 backbone. Link broad NT family; do not attribute these scores to catalog-model-nt-v2, which documents 50M."
+  },
+  {
+    "subject_id": "dart-eval-method-nucleotide-transformer-zero-shot-likelihood",
+    "relation": "family",
+    "target_id": "discovery-model-nucleotide-transformer",
+    "source_ids": [
+      "evidence-expansion-p2-evidence-discovery-final-dart-4194b137ba55",
+      "evidence-official-657e83427ab59f3aec83"
+    ],
+    "source_locator": "DART-Eval Table 1: Nucleotide Transformer, v2-500m-multi-species; adaptation-specific result tables; source-labelled configuration Nucleotide Transformer (zero-shot likelihood) | Existing reviewed locator: Table 1, row(Nucleotide Transformer)",
+    "explanation": "Explicit 500M-v2 backbone. Link broad NT family; do not attribute these scores to catalog-model-nt-v2, which documents 50M."
+  },
+  {
+    "subject_id": "mrnabench-method-nt",
+    "relation": "family",
+    "target_id": "discovery-model-nucleotide-transformer",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025",
+      "evidence-official-657e83427ab59f3aec83"
+    ],
+    "source_locator": "mRNABench Table 2/Appendix model inventory; GenomeOcean Table 2; respective model methods; NABench model inventory; GENEB Table 8; source-labelled configuration NT | Existing reviewed locator: Table 2, row(NT)",
+    "explanation": "Only family identity is shared. Preserve size, v1/v2, corpus and adaptation distinctions; generic NT summary selects a best-overall family variant, without supplying checkpoint identity."
+  },
+  {
+    "subject_id": "paper-model-1ed48b3f09b2cf8027",
+    "relation": "family",
+    "target_id": "discovery-model-nucleotide-transformer",
+    "source_ids": [
+      "part2-genomeocean-2025",
+      "evidence-official-657e83427ab59f3aec83"
+    ],
+    "source_locator": "mRNABench Table 2/Appendix model inventory; GenomeOcean Table 2; respective model methods; NABench model inventory; GENEB Table 8; source-labelled configuration Nucleotide Transformers V2 | Existing reviewed locator: Table 2:, row Nucleotide Transformers V2, column Precision; XML row3 column2",
+    "explanation": "Only family identity is shared. Preserve size, v1/v2, corpus and adaptation distinctions; generic NT summary selects a best-overall family variant, without supplying checkpoint identity."
+  },
+  {
+    "subject_id": "reported-model-3af86cb274f658",
+    "relation": "family",
+    "target_id": "discovery-model-nucleotide-transformer",
+    "source_ids": [
+      "dna-foundation-models-2025",
+      "evidence-official-657e83427ab59f3aec83"
+    ],
+    "source_locator": "mRNABench Table 2/Appendix model inventory; GenomeOcean Table 2; respective model methods; NABench model inventory; GENEB Table 8; source-labelled configuration NT-v2 | Existing reviewed locator: Abstract (paragraph 1); Introduction (paragraph 4)",
+    "explanation": "Only family identity is shared. Preserve size, v1/v2, corpus and adaptation distinctions; generic NT summary selects a best-overall family variant, without supplying checkpoint identity."
+  },
+  {
+    "subject_id": "nabench-method-n-t-500m",
+    "relation": "family",
+    "target_id": "discovery-model-nucleotide-transformer",
+    "source_ids": [
+      "evidence-expansion-nabench-fefd48d5",
+      "evidence-official-657e83427ab59f3aec83"
+    ],
+    "source_locator": "mRNABench Table 2/Appendix model inventory; GenomeOcean Table 2; respective model methods; NABench model inventory; GENEB Table 8; source-labelled configuration N.T.-500m | Existing reviewed locator: Table 7, row(N.T.-500m)",
+    "explanation": "Only family identity is shared. Preserve size, v1/v2, corpus and adaptation distinctions; generic NT summary selects a best-overall family variant, without supplying checkpoint identity."
+  },
+  {
+    "subject_id": "nabench-method-n-t-v2-500m",
+    "relation": "family",
+    "target_id": "discovery-model-nucleotide-transformer",
+    "source_ids": [
+      "evidence-expansion-nabench-fefd48d5",
+      "evidence-official-657e83427ab59f3aec83"
+    ],
+    "source_locator": "mRNABench Table 2/Appendix model inventory; GenomeOcean Table 2; respective model methods; NABench model inventory; GENEB Table 8; source-labelled configuration N.T.-v2-500m | Existing reviewed locator: Table 7, row(N.T.-v2-500m)",
+    "explanation": "Only family identity is shared. Preserve size, v1/v2, corpus and adaptation distinctions; generic NT summary selects a best-overall family variant, without supplying checkpoint identity."
+  },
+  {
+    "subject_id": "nabench-method-n-t-v2-50m",
+    "relation": "family",
+    "target_id": "discovery-model-nucleotide-transformer",
+    "source_ids": [
+      "evidence-expansion-nabench-fefd48d5",
+      "evidence-official-657e83427ab59f3aec83"
+    ],
+    "source_locator": "mRNABench Table 2/Appendix model inventory; GenomeOcean Table 2; respective model methods; NABench model inventory; GENEB Table 8; source-labelled configuration N.T.-v2-50m | Existing reviewed locator: Table 7, row(N.T.-v2-50m)",
+    "explanation": "Only family identity is shared. Preserve size, v1/v2, corpus and adaptation distinctions; generic NT summary selects a best-overall family variant, without supplying checkpoint identity."
+  },
+  {
+    "subject_id": "geneb-method-nt-v2-50m-ms",
+    "relation": "family",
+    "target_id": "discovery-model-nucleotide-transformer",
+    "source_ids": [
+      "evidence-expansion-p2-evidence-discovery-final-geneb-47975089c0ca",
+      "evidence-official-657e83427ab59f3aec83"
+    ],
+    "source_locator": "mRNABench Table 2/Appendix model inventory; GenomeOcean Table 2; respective model methods; NABench model inventory; GENEB Table 8; source-labelled configuration NT-v2-50M-MS | Existing reviewed locator: Table 8, row(NT-v2-50M-MS)",
+    "explanation": "Only family identity is shared. Preserve size, v1/v2, corpus and adaptation distinctions; generic NT summary selects a best-overall family variant, without supplying checkpoint identity."
+  },
+  {
+    "subject_id": "beacon-model-rna-fm",
+    "relation": "family",
+    "target_id": "discovery-model-rna-fm",
+    "source_ids": [
+      "source-beacon-arxiv-2406-10391",
+      "evidence-official-fd8e332abdf04a75195b"
+    ],
+    "source_locator": "BEACON Table 2 and Appendix A.3.2 RNAcentral ncRNA model, Table 3; mRNABench Table 2 and Appendix inventory; NABench model inventory; source-labelled configuration RNA-FM | Existing reviewed locator: Table3,p.8,row(RNA-FM)",
+    "explanation": "RNA-FM ncRNA backbone explicitly identified; mRNA-FM is distinct and must not inherit these scores."
+  },
+  {
+    "subject_id": "mrnabench-method-rna-fm",
+    "relation": "family",
+    "target_id": "discovery-model-rna-fm",
+    "source_ids": [
+      "expansion-p3-mrnabench-2025",
+      "evidence-official-fd8e332abdf04a75195b"
+    ],
+    "source_locator": "BEACON Table 2 and Appendix A.3.2 RNAcentral ncRNA model, Table 3; mRNABench Table 2 and Appendix inventory; NABench model inventory; source-labelled configuration RNA-FM | Existing reviewed locator: Table 2, row(RNA-FM)",
+    "explanation": "RNA-FM ncRNA backbone explicitly identified; mRNA-FM is distinct and must not inherit these scores."
+  },
+  {
+    "subject_id": "nabench-method-rna-fm",
+    "relation": "family",
+    "target_id": "discovery-model-rna-fm",
+    "source_ids": [
+      "evidence-expansion-nabench-fefd48d5",
+      "evidence-official-fd8e332abdf04a75195b"
+    ],
+    "source_locator": "BEACON Table 2 and Appendix A.3.2 RNAcentral ncRNA model, Table 3; mRNABench Table 2 and Appendix inventory; NABench model inventory; source-labelled configuration RNA-FM | Existing reviewed locator: Table 7, row(RNA-FM)",
+    "explanation": "RNA-FM ncRNA backbone explicitly identified; mRNA-FM is distinct and must not inherit these scores."
+  },
+  {
+    "subject_id": "reported-model-43cf51abca83d1",
+    "relation": "family",
+    "target_id": "discovery-model-rna-fm",
+    "source_ids": [
+      "mrnabench-2025",
+      "evidence-reported-base-rnafm-readme-md",
+      "evidence-official-fd8e332abdf04a75195b"
+    ],
+    "source_locator": "BEACON Table 2 and Appendix A.3.2 RNAcentral ncRNA model, Table 3; mRNABench Table 2 and Appendix inventory; NABench model inventory; source-labelled configuration RNA-FM | Existing reviewed locator: Introduction/Sequence Compressibility: (paragraph 1); Conclusion (paragraph 1)",
+    "explanation": "RNA-FM ncRNA backbone explicitly identified; mRNA-FM is distinct and must not inherit these scores."
+  },
+  {
+    "subject_id": "alphagenome-2026-comparator-008ec353f70606c2",
+    "relation": "family",
+    "target_id": "discovery-model-chrombpnet",
+    "source_ids": [
+      "source-alphagenome-nature2026-tables",
+      "source-alphagenome-nature2026-supplementary-methods",
+      "evidence-official-56e5abfb5f12f1cd3b20"
+    ],
+    "source_locator": "AlphaGenome supplementary Tables 3/4 comparator-labelled rows; Supplementary Methods Benchmarking Against Existing Methods; source-labelled configuration ChromBPNet (paper Table 3) | Existing reviewed locator: 'Suppl Table 3 Track performance'!A22:N22; Supplementary Methods p.21, Benchmarking Against Existing Methods; Main paper Extended Data Fig.3f,g caption",
+    "explanation": "The comparator is explicitly ChromBPNet; retain track and variant effect protocol-specific configuration."
+  },
+  {
+    "subject_id": "alphagenome-2026-comparator-7f204b96b993dca1",
+    "relation": "family",
+    "target_id": "discovery-model-chrombpnet",
+    "source_ids": [
+      "source-alphagenome-nature2026-tables",
+      "source-alphagenome-nature2026-supplementary-methods",
+      "evidence-official-56e5abfb5f12f1cd3b20"
+    ],
+    "source_locator": "AlphaGenome supplementary Tables 3/4 comparator-labelled rows; Supplementary Methods Benchmarking Against Existing Methods; source-labelled configuration chrombpnet (paper Table 4) | Existing reviewed locator: 'Suppl Table 4 Variant performan'!A10:P10; Supplementary Methods p.30, Chromosome Splits for Variant Benchmarks; Supplementary Methods p.40, Benchmarking on CAGI5 MPRA; Table10 cell-type matching; ExtendedDataFig8 caption",
+    "explanation": "The comparator is explicitly ChromBPNet; retain track and variant effect protocol-specific configuration."
+  },
+  {
+    "subject_id": "alphagenome-2026-comparator-9f73332b9e8ed9a8",
+    "relation": "family",
+    "target_id": "discovery-model-spliceai",
+    "source_ids": [
+      "source-alphagenome-nature2026-tables",
+      "source-alphagenome-nature2026-supplementary-methods",
+      "evidence-official-56e5abfb5f12f1cd3b20"
+    ],
+    "source_locator": "AlphaGenome supplementary Table 3, SpliceAI comparator row; primary paper comparator descriptions; source-labelled configuration SpliceAI (paper Table 3) | Existing reviewed locator: 'Suppl Table 3 Track performance'!A2:N2; Supplementary Methods p.22, Splice Site Classification",
+    "explanation": "Named SpliceAI comparator supports family only; table does not establish version 1.3.1."
+  },
+  {
+    "subject_id": "alphagenome-2026-comparator-a547052f2798e278",
+    "relation": "family",
+    "target_id": "discovery-model-pangolin",
+    "source_ids": [
+      "source-alphagenome-nature2026-tables",
+      "source-alphagenome-nature2026-supplementary-methods",
+      "evidence-official-56e5abfb5f12f1cd3b20"
+    ],
+    "source_locator": "AlphaGenome supplementary Table 4, Pangolin comparator rows; primary paper comparator descriptions; source-labelled configuration Pangolin (paper Table 4) | Existing reviewed locator: 'Suppl Table 4 Variant performan'!A3:P3; Supplementary Methods p.30, Chromosome Splits for Variant Benchmarks; Supplementary Methods pp.30\u201331, ClinVar Variants",
+    "explanation": "Named Pangolin comparator supports family only, not equivalence with MFASS configuration."
+  },
+  {
+    "subject_id": "paper-model-369c31a2f0b608a34a",
+    "relation": "uses_model",
+    "target_id": "discovery-model-dnabert-2",
+    "source_ids": [
+      "part2-lambda-prophage-2026",
+      "evidence-official-96b5c3a31a50f7c259d6"
+    ],
+    "source_locator": "LAMBDA Table 1 DNABERT-2 and Table 5 DNABERT-2 dagger; genome scanning and filtering methods | Existing reviewed locator: Table 5., row DNABERT-2\u2020, column Precision; XML row18 column2",
+    "explanation": "Genome-scanning/postprocessing pipeline uses DNABERT-2; its pipeline score is not an isolated backbone evaluation."
+  },
+  {
+    "subject_id": "paper-model-984c6b7cbb3e92f1d0",
+    "relation": "uses_model",
+    "target_id": "discovery-model-nucleotide-transformer",
+    "source_ids": [
+      "part2-lambda-prophage-2026",
+      "evidence-official-657e83427ab59f3aec83"
+    ],
+    "source_locator": "LAMBDA Table 1 Nucleotide Transformer v2 500M and Table 5 NTv2 dagger | Existing reviewed locator: Table 5., row NTv2\u2020, column Precision; XML row10 column2",
+    "explanation": "Composite genome scanner uses NT-v2 500M; do not link catalog 50M variant."
+  },
+  {
+    "subject_id": "reported-model-1a67087ac262c5",
+    "relation": "uses_model",
+    "target_id": "discovery-model-nucleotide-transformer",
+    "source_ids": [
+      "fusion-breakpoint-foundation-models-2026",
+      "evidence-official-657e83427ab59f3aec83"
+    ],
+    "source_locator": "Fusion breakpoint primary paper Classification performance and Discussion; frozen Nucleotide Transformer embeddings + trained NN head | Existing reviewed locator: Discussion (paragraph 2); Results/Classification performance (paragraph 2)",
+    "explanation": "Explicit two-component pipeline; uses relationship preserves identity of the neural-network head."
+  },
+  {
+    "subject_id": "reported-model-ee1ae8162c7d67",
+    "relation": "uses_model",
+    "target_id": "discovery-model-chrombpnet",
+    "source_ids": [
+      "arsenal-regulatory-dna-2026"
+    ],
+    "source_locator": "ARSENAL primary paper ChromBPNet-based supervised models and Table 1 | Existing reviewed locator: Results/ARSENAL embeddings improve supervised sequence models of chromatin accessibility (paragraph 2); Results/ARSENAL embeddings improve supervised sequence models of chromatin accessibility (paragraph 1)",
+    "explanation": "ARSENAL embedding input replaces one-hot input in ChromBPNet-like architecture; retain composite pipeline identity. Current XML snapshot differs in hash from catalogue; receipt records new hash for review."
+  },
+  {
+    "subject_id": "paper-model-3627ef7080a5afc255",
+    "relation": "uses_model",
+    "target_id": "discovery-model-dnabert-2",
+    "source_ids": [
+      "part2-transbind-2026",
+      "evidence-official-96b5c3a31a50f7c259d6"
+    ],
+    "source_locator": "TransBind introduction EPBD\u00d7DNABERT-2 paragraph and Table 2 | Existing reviewed locator: Table 2., row EPBDXDNABERT-2, column AUROC; XML row6 column2",
+    "explanation": "Hybrid of DNABERT-2 embeddings and biophysical EPBD features. Currently typed configuration; use component relation, not family; consider separate pipeline reclassification review."
+  },
+  {
+    "subject_id": "reported-model-d0e594ec3c0430",
+    "relation": "uses_model",
+    "target_id": "discovery-model-dnabert-2",
+    "source_ids": [
+      "dnabert2-enhancer-2025",
+      "evidence-reported-base-dnabert2-readme-md",
+      "evidence-official-96b5c3a31a50f7c259d6"
+    ],
+    "source_locator": "DNABERT2-Enhancer architecture and methods: fine-tuned DNABERT-2 plus CNN | Existing reviewed locator: Abstract (paragraph 1); Results/Comparison of the proposed model with existing methods (paragraph 4)",
+    "explanation": "Composite transformer/CNN system. Currently typed configuration; use component relation, not family; consider separate pipeline reclassification review."
+  },
+  {
+    "subject_id": "catalog-model-evo-2",
+    "relation": "variant_of",
+    "target_id": "discovery-model-evo-2",
+    "source_ids": [
+      "catalog-source-evo-2",
+      "evidence-official-a248990b44d481814f47",
+      "evidence-official-849b751ed4bf88622749",
+      "evidence-official-b8df803e8f55324a4eb5",
+      "evidence-official-8717ffb993cc8f7eddec"
+    ],
+    "source_locator": "Official Evo2 README checkpoint list: evo2_7b and evo2_7b_base; catalogue card cites evo2_7b | Existing reviewed locator: Evo 2 paper: architecture, training, and data, Figure 1 and Discussion; official checkpoints table and evo2_7b licence metadata",
+    "explanation": "Catalog record documents the 7B variant of the broader Evo2 family; relation is directional, not symmetric identity."
+  },
+  {
+    "subject_id": "catalog-model-nt-v2",
+    "relation": "variant_of",
+    "target_id": "discovery-model-nucleotide-transformer",
+    "source_ids": [
+      "catalog-source-nt-v2",
+      "evidence-official-4abb9affb1a9e5438c91",
+      "evidence-official-6b79ddfdd330693bf4fb",
+      "evidence-official-18d8f4d5fc3f6616922d",
+      "evidence-official-657e83427ab59f3aec83",
+      "evidence-official-56f02d45976d011d80aa",
+      "evidence-official-4920952f9b3c4b8909a0",
+      "evidence-official-aadbeb0f10ec55d34f5f"
+    ],
+    "source_locator": "Official NT docs v2 pretrained model list and catalogue pinned 50M card | Existing reviewed locator: README.md: Model Summary, Training data and licence metadata; config.json; Nucleotide Transformer paper Methods: Architecture and Training (v2); source conflict with 50M card retained",
+    "explanation": "Catalog record documents v2 50M while discovery record spans broader NT family. Directional variant relationship must not grant 500M/v1 scores to a 50M-specific view."
+  },
+  {
+    "subject_id": "geneb-method-nt-v2-50m-ms",
+    "relation": "family",
+    "target_id": "catalog-model-nt-v2",
+    "source_ids": [
+      "evidence-expansion-p2-evidence-discovery-final-geneb-47975089c0ca"
+    ],
+    "source_locator": "GENEB Table 8 NT-v2-50M-MS; NABench model inventory N.T.v2 50M; official v2-50m-multi-species model card | Existing reviewed locator: Table 8, row(NT-v2-50M-MS)",
+    "explanation": "Same named size/version checkpoint family supported, but exact revision remains unreported. Do not equate weights or adaptations."
+  },
+  {
+    "subject_id": "nabench-method-n-t-v2-50m",
+    "relation": "family",
+    "target_id": "catalog-model-nt-v2",
+    "source_ids": [
+      "evidence-expansion-nabench-fefd48d5"
+    ],
+    "source_locator": "GENEB Table 8 NT-v2-50M-MS; NABench model inventory N.T.v2 50M; official v2-50m-multi-species model card | Existing reviewed locator: Table 7, row(N.T.-v2-50m)",
+    "explanation": "Same named size/version checkpoint family supported, but exact revision remains unreported. Do not equate weights or adaptations."
+  },
+  {
+    "subject_id": "rewire-model-spliceai-1-3-1",
+    "relation": "family",
+    "target_id": "catalog-model-spliceai",
+    "source_ids": [
+      "evidence-reported-rewire-run-spliceai",
+      "evidence-official-864a2c5ea6e61aa310f9"
+    ],
+    "source_locator": "Pinned run_spliceai.py lines 1\u20134 and official SpliceAI README; source declares 1.3.1 and official five-model ensemble | Existing reviewed locator: run_spliceai.py module documentation and recorded runner configuration",
+    "explanation": "Exact package version and named model family match catalog record; preserve MFASS mask and scoring conditions."
+  },
+  {
+    "subject_id": "rewire-model-pangolin-maskfalse",
+    "relation": "family",
+    "target_id": "catalog-model-pangolin",
+    "source_ids": [
+      "evidence-reported-rewire-run-pangolin",
+      "evidence-official-eaf3efab8850672f44e4"
+    ],
+    "source_locator": "Pinned run_pangolin.py _load_models lines 42\u201364; output metadata lines 167\u2013192; official Pangolin README | Existing reviewed locator: run_pangolin.py module documentation and recorded runner configuration",
+    "explanation": "Official 12-model ensemble explicitly loaded; mask=False remains configuration-specific."
+  },
+  {
+    "subject_id": "nabench-method-evo2-7b",
+    "relation": "family",
+    "target_id": "catalog-model-evo-2",
+    "source_ids": [
+      "evidence-expansion-nabench-fefd48d5"
+    ],
+    "source_locator": "NABench model inventory explicit Evo2-7B / Evo2-7B-base; LAMBDA Table 1 explicit EVO2 7B; official Evo2 7B checkpoint list | Existing reviewed locator: Table 7, row(Evo2-7B)",
+    "explanation": "7B size explicitly established; base and context-extended weights remain separate configurations, no immutable checkpoint equality inferred."
+  },
+  {
+    "subject_id": "nabench-method-evo2-7b-base",
+    "relation": "family",
+    "target_id": "catalog-model-evo-2",
+    "source_ids": [
+      "evidence-expansion-nabench-fefd48d5"
+    ],
+    "source_locator": "NABench model inventory explicit Evo2-7B / Evo2-7B-base; LAMBDA Table 1 explicit EVO2 7B; official Evo2 7B checkpoint list | Existing reviewed locator: Table 7, row(Evo2-7B-base)",
+    "explanation": "7B size explicitly established; base and context-extended weights remain separate configurations, no immutable checkpoint equality inferred."
+  },
+  {
+    "subject_id": "reported-model-aa763db2cfdeff",
+    "relation": "family",
+    "target_id": "catalog-model-evo-2",
+    "source_ids": [
+      "lambda-prophage-2026",
+      "evidence-reported-base-evo2-readme-md"
+    ],
+    "source_locator": "NABench model inventory explicit Evo2-7B / Evo2-7B-base; LAMBDA Table 1 explicit EVO2 7B; official Evo2 7B checkpoint list | Existing reviewed locator: Materials and Methods/LAMBDA Benchmark Dataset Construction. (paragraph 1); Abstract (paragraph 1)",
+    "explanation": "7B size explicitly established; base and context-extended weights remain separate configurations, no immutable checkpoint equality inferred."
+  },
+  {
+    "subject_id": "paper-model-0996ef6d1e7e0b03ee",
+    "relation": "uses_model",
+    "target_id": "catalog-model-prokbert",
+    "source_ids": [
+      "part2-lambda-prophage-2026",
+      "evidence-official-2efbfaba5a1c09f4f7fa"
+    ],
+    "source_locator": "Table 5., row ProkBERT-mini-long\u2020, column Precision; XML row13 column2; ProkBERT official README variant list and primary paper Table 1",
+    "explanation": "Catalog model explicitly describes the microbial encoder family including mini, mini-c and mini-long. Preserve paper-specific variant and pipeline identity."
+  },
+  {
+    "subject_id": "paper-model-67baf1dec1a017ac4b",
+    "relation": "uses_model",
+    "target_id": "catalog-model-prokbert",
+    "source_ids": [
+      "part2-lambda-prophage-2026",
+      "evidence-official-2efbfaba5a1c09f4f7fa"
+    ],
+    "source_locator": "Table 5., row ProkBERT-mini-c\u2020, column Precision; XML row16 column2; ProkBERT official README variant list and primary paper Table 1",
+    "explanation": "Catalog model explicitly describes the microbial encoder family including mini, mini-c and mini-long. Preserve paper-specific variant and pipeline identity."
+  },
+  {
+    "subject_id": "paper-model-779b487305cf463659",
+    "relation": "family",
+    "target_id": "catalog-model-prokbert",
+    "source_ids": [
+      "part2-prokbert-2024",
+      "evidence-official-2efbfaba5a1c09f4f7fa"
+    ],
+    "source_locator": "Table 3, row ProkBERT-mini-c, column Accuracy; XML row3 column2; ProkBERT official README variant list and primary paper Table 1",
+    "explanation": "Catalog model explicitly describes the microbial encoder family including mini, mini-c and mini-long. Preserve paper-specific variant and pipeline identity."
+  },
+  {
+    "subject_id": "paper-model-ebe8e20b92526285d9",
+    "relation": "uses_model",
+    "target_id": "catalog-model-prokbert",
+    "source_ids": [
+      "part2-lambda-prophage-2026",
+      "evidence-official-2efbfaba5a1c09f4f7fa"
+    ],
+    "source_locator": "Table 5., row ProkBERT-mini\u2020, column Precision; XML row9 column2; ProkBERT official README variant list and primary paper Table 1",
+    "explanation": "Catalog model explicitly describes the microbial encoder family including mini, mini-c and mini-long. Preserve paper-specific variant and pipeline identity."
+  },
+  {
+    "subject_id": "paper-model-ef8a085cfffb544c16",
+    "relation": "family",
+    "target_id": "catalog-model-prokbert",
+    "source_ids": [
+      "part2-prokbert-2024",
+      "evidence-official-2efbfaba5a1c09f4f7fa"
+    ],
+    "source_locator": "Table 3, row ProkBERT-mini-long, column Accuracy; XML row4 column2; ProkBERT official README variant list and primary paper Table 1",
+    "explanation": "Catalog model explicitly describes the microbial encoder family including mini, mini-c and mini-long. Preserve paper-specific variant and pipeline identity."
+  },
+  {
+    "subject_id": "reported-model-4438513d9cd42c",
+    "relation": "family",
+    "target_id": "catalog-model-prokbert",
+    "source_ids": [
+      "prokbert-2024",
+      "evidence-official-2efbfaba5a1c09f4f7fa"
+    ],
+    "source_locator": "2 Materials and methods/2.1 Sequence data/2.1.1 Sequence segmentation and tokenization (paragraph 6); 4 Conclusion (paragraph 5); ProkBERT official README variant list and primary paper Table 1",
+    "explanation": "Catalog model explicitly describes the microbial encoder family including mini, mini-c and mini-long. Preserve paper-specific variant and pipeline identity."
+  },
+  {
+    "subject_id": "catalog-model-dnabert-2",
+    "relation": "alias_of",
+    "target_id": "discovery-model-dnabert-2",
+    "source_ids": [
+      "evidence-official-96b5c3a31a50f7c259d6"
+    ],
+    "source_locator": "Official README DNABERT-2-117M model and GUE usage; both catalogue profiles describe the same 117M model family.",
+    "explanation": "Family-level duplicate identity only, not configuration/checkpoint equivalence. Reviewed scientific profiles are identical and point at the same official implementation. Retain configuration parameters/versions."
+  },
+  {
+    "subject_id": "catalog-model-rna-fm",
+    "relation": "alias_of",
+    "target_id": "discovery-model-rna-fm",
+    "source_ids": [
+      "evidence-official-fd8e332abdf04a75195b",
+      "evidence-official-e17e3864c464d981afc7"
+    ],
+    "source_locator": "Official README RNA-FM ncRNA 99M table and pretrained.py rna_fm_t12 interface. mRNA-FM is separately typed and excluded.",
+    "explanation": "Family-level duplicate identity only, not configuration/checkpoint equivalence. Reviewed scientific profiles are identical and point at the same official implementation. Retain configuration parameters/versions."
+  },
+  {
+    "subject_id": "catalog-model-spliceai",
+    "relation": "alias_of",
+    "target_id": "discovery-model-spliceai",
+    "source_ids": [
+      "evidence-official-864a2c5ea6e61aa310f9"
+    ],
+    "source_locator": "Same pinned SpliceAI repository/paper architecture and ensemble family. Version 1.3.1 describes library access; package-specific configurations stay separate.",
+    "explanation": "Family-level duplicate identity only, not configuration/checkpoint equivalence. Reviewed scientific profiles are identical and point at the same official implementation. Retain configuration parameters/versions."
+  },
+  {
+    "subject_id": "catalog-model-pangolin",
+    "relation": "alias_of",
+    "target_id": "discovery-model-pangolin",
+    "source_ids": [
+      "evidence-official-eaf3efab8850672f44e4"
+    ],
+    "source_locator": "Same pinned Pangolin implementation and published ensemble family; no alternative model family identity.",
+    "explanation": "Family-level duplicate identity only, not configuration/checkpoint equivalence. Reviewed scientific profiles are identical and point at the same official implementation. Retain configuration parameters/versions."
+  },
+  {
+    "subject_id": "proteinbench-method-esm-if1",
+    "relation": "family",
+    "target_id": "discovery-model-esm-if1",
+    "source_ids": [
+      "expansion-p3-proteinbench"
+    ],
+    "source_locator": "Tables 2; task methods and corresponding named row",
+    "explanation": "Paper evaluates this named model under its ProteinBench harness. Association is to the family, not an assertion of checkpoint equivalence or cross-task comparability."
+  },
+  {
+    "subject_id": "proteinbench-method-esm3",
+    "relation": "family",
+    "target_id": "discovery-model-esm3",
+    "source_ids": [
+      "expansion-p3-proteinbench"
+    ],
+    "source_locator": "Tables 2 and 5; task methods and corresponding named row",
+    "explanation": "Paper evaluates this named model under its ProteinBench harness. Association is to the family, not an assertion of checkpoint equivalence or cross-task comparability."
+  },
+  {
+    "subject_id": "proteinbench-method-esm3-1-4b",
+    "relation": "family",
+    "target_id": "discovery-model-esm3",
+    "source_ids": [
+      "expansion-p3-proteinbench"
+    ],
+    "source_locator": "Tables 4; task methods and corresponding named row",
+    "explanation": "Paper evaluates this named model under its ProteinBench harness. Association is to the family, not an assertion of checkpoint equivalence or cross-task comparability."
+  },
+  {
+    "subject_id": "proteinbench-method-esmfold",
+    "relation": "family",
+    "target_id": "discovery-model-esmfold",
+    "source_ids": [
+      "expansion-p3-proteinbench"
+    ],
+    "source_locator": "Tables 7; task methods and corresponding named row",
+    "explanation": "Paper evaluates this named model under its ProteinBench harness. Association is to the family, not an assertion of checkpoint equivalence or cross-task comparability."
+  },
+  {
+    "subject_id": "proteinbench-method-openfold",
+    "relation": "family",
+    "target_id": "discovery-model-openfold",
+    "source_ids": [
+      "expansion-p3-proteinbench"
+    ],
+    "source_locator": "Tables 7; task methods and corresponding named row",
+    "explanation": "Paper evaluates this named model under its ProteinBench harness. Association is to the family, not an assertion of checkpoint equivalence or cross-task comparability."
+  },
+  {
+    "subject_id": "proteinbench-method-proteinmpnn",
+    "relation": "family",
+    "target_id": "discovery-model-proteinmpnn",
+    "source_ids": [
+      "expansion-p3-proteinbench"
+    ],
+    "source_locator": "Tables 2; task methods and corresponding named row",
+    "explanation": "Paper evaluates this named model under its ProteinBench harness. Association is to the family, not an assertion of checkpoint equivalence or cross-task comparability."
+  },
+  {
+    "subject_id": "proteinbench-method-rfdiffusion",
+    "relation": "family",
+    "target_id": "discovery-model-rfdiffusion",
+    "source_ids": [
+      "expansion-p3-proteinbench"
+    ],
+    "source_locator": "Tables 3; task methods and corresponding named row",
+    "explanation": "Paper evaluates this named model under its ProteinBench harness. Association is to the family, not an assertion of checkpoint equivalence or cross-task comparability."
+  },
+  {
+    "subject_id": "pfmbench-method-esm-2",
+    "relation": "family",
+    "target_id": "discovery-model-esm-2",
+    "source_ids": [
+      "expansion-p3-pfmbench"
+    ],
+    "source_locator": "Section 3.3 Supported Models; Table 2 model identity and Table 3 named row",
+    "explanation": "Source identifies ESM-2 650M, ESM-C 600M and ESM3 as the respective foundation models evaluated with adapter tuning. Retain per-task configurations and metrics."
+  },
+  {
+    "subject_id": "pfmbench-method-esm-c",
+    "relation": "family",
+    "target_id": "discovery-model-esmc",
+    "source_ids": [
+      "expansion-p3-pfmbench"
+    ],
+    "source_locator": "Section 3.3 Supported Models; Table 2 model identity and Table 3 named row",
+    "explanation": "Source identifies ESM-2 650M, ESM-C 600M and ESM3 as the respective foundation models evaluated with adapter tuning. Retain per-task configurations and metrics."
+  },
+  {
+    "subject_id": "pfmbench-method-esm3",
+    "relation": "family",
+    "target_id": "discovery-model-esm3",
+    "source_ids": [
+      "expansion-p3-pfmbench"
+    ],
+    "source_locator": "Section 3.3 Supported Models; Table 2 model identity and Table 3 named row",
+    "explanation": "Source identifies ESM-2 650M, ESM-C 600M and ESM3 as the respective foundation models evaluated with adapter tuning. Retain per-task configurations and metrics."
+  },
+  {
+    "subject_id": "proteingym-method-esm-1v-ensemble",
+    "relation": "family",
+    "target_id": "discovery-model-esm-1v",
+    "source_ids": [
+      "evidence-expansion-proteingym-a3b08cc4"
+    ],
+    "source_locator": "Section 4.1 Zero-shot benchmarks; Table 2 named model row",
+    "explanation": "The primary table and baseline descriptions identify the evaluated family. ESM-1v remains an ensemble; ESM-2 remains 15B; inverse-folding conditions remain distinct."
+  },
+  {
+    "subject_id": "proteingym-method-esm-2-15b",
+    "relation": "family",
+    "target_id": "discovery-model-esm-2",
+    "source_ids": [
+      "evidence-expansion-proteingym-a3b08cc4"
+    ],
+    "source_locator": "Section 4.1 Zero-shot benchmarks; Table 2 named model row",
+    "explanation": "The primary table and baseline descriptions identify the evaluated family. ESM-1v remains an ensemble; ESM-2 remains 15B; inverse-folding conditions remain distinct."
+  },
+  {
+    "subject_id": "proteingym-method-esm-if1",
+    "relation": "family",
+    "target_id": "discovery-model-esm-if1",
+    "source_ids": [
+      "evidence-expansion-proteingym-a3b08cc4"
+    ],
+    "source_locator": "Section 4.1 Zero-shot benchmarks; Table 2 named model row",
+    "explanation": "The primary table and baseline descriptions identify the evaluated family. ESM-1v remains an ensemble; ESM-2 remains 15B; inverse-folding conditions remain distinct."
+  },
+  {
+    "subject_id": "proteingym-method-proteinmpnn",
+    "relation": "family",
+    "target_id": "discovery-model-proteinmpnn",
+    "source_ids": [
+      "evidence-expansion-proteingym-a3b08cc4"
+    ],
+    "source_locator": "Section 4.1 Zero-shot benchmarks; Table 2 named model row",
+    "explanation": "The primary table and baseline descriptions identify the evaluated family. ESM-1v remains an ensemble; ESM-2 remains 15B; inverse-folding conditions remain distinct."
+  },
+  {
+    "subject_id": "proteingym-method-embed-esm-1v",
+    "relation": "uses_model",
+    "target_id": "discovery-model-esm-1v",
+    "source_ids": [
+      "evidence-expansion-proteingym-a3b08cc4"
+    ],
+    "source_locator": "Section 4.2 Supervised benchmarks, Baselines; Table 3",
+    "explanation": "These supervised estimators consume ESM-1v predictions and/or embeddings alongside other features. The full estimator uses ESM-1v; it is not identical to ESM-1v."
+  },
+  {
+    "subject_id": "proteingym-method-ohe-esm-1v",
+    "relation": "uses_model",
+    "target_id": "discovery-model-esm-1v",
+    "source_ids": [
+      "evidence-expansion-proteingym-a3b08cc4"
+    ],
+    "source_locator": "Section 4.2 Supervised benchmarks, Baselines; Table 3",
+    "explanation": "These supervised estimators consume ESM-1v predictions and/or embeddings alongside other features. The full estimator uses ESM-1v; it is not identical to ESM-1v."
+  },
+  {
+    "subject_id": "flip-method-esm-1v-mean",
+    "relation": "uses_model",
+    "target_id": "discovery-model-esm-1v",
+    "source_ids": [
+      "expansion-p3-flip"
+    ],
+    "source_locator": "Table 3 Baseline methods; pooling methods immediately below; Tables 4\u20136",
+    "explanation": "FLIP uses one ESM-1v ensemble member to produce frozen embeddings for a separately trained pooling/prediction model. Preserve composition with uses_model despite current configuration kind."
+  },
+  {
+    "subject_id": "flip-method-esm-1v-mut-mean",
+    "relation": "uses_model",
+    "target_id": "discovery-model-esm-1v",
+    "source_ids": [
+      "expansion-p3-flip"
+    ],
+    "source_locator": "Table 3 Baseline methods; pooling methods immediately below; Tables 4\u20136",
+    "explanation": "FLIP uses one ESM-1v ensemble member to produce frozen embeddings for a separately trained pooling/prediction model. Preserve composition with uses_model despite current configuration kind."
+  },
+  {
+    "subject_id": "flip-method-esm-1v-per-aa",
+    "relation": "uses_model",
+    "target_id": "discovery-model-esm-1v",
+    "source_ids": [
+      "expansion-p3-flip"
+    ],
+    "source_locator": "Table 3 Baseline methods; pooling methods immediately below; Tables 4\u20136",
+    "explanation": "FLIP uses one ESM-1v ensemble member to produce frozen embeddings for a separately trained pooling/prediction model. Preserve composition with uses_model despite current configuration kind."
+  },
+  {
+    "subject_id": "acquired-configuration-51e435f059eca0154ccf",
+    "relation": "family",
+    "target_id": "discovery-model-esmc",
+    "source_ids": [
+      "evidence-expansion-flip2-d0e61ca2"
+    ],
+    "source_locator": "Section 4.3 Fine-Tuned Protein Language Models; Figure 4 and ESMC-300M supervised tables",
+    "explanation": "Pretrained ESMC-300M is fine-tuned for each FLIP2 split. This excludes the distinct naive/random-initialized control."
+  },
+  {
+    "subject_id": "acquired-configuration-e2c25d673da23695973b",
+    "relation": "family",
+    "target_id": "discovery-model-esm-2",
+    "source_ids": [
+      "evidence-expansion-flip2-d0e61ca2"
+    ],
+    "source_locator": "Section 4.1 zero-shot likelihoods; ESM2-650M table rows",
+    "explanation": "Source explicitly identifies pretrained ESM2-650M masked-language-model likelihood scoring."
+  },
+  {
+    "subject_id": "acquired-configuration-6fbf59308dbcfe6d2df2",
+    "relation": "family",
+    "target_id": "discovery-model-boltz",
+    "source_ids": [
+      "boltz-stereochemistry-2025"
+    ],
+    "source_locator": "Methods: Molecular Structure Prediction; Results: Structure Prediction Using Restraint-Guided Inference; Table 1",
+    "explanation": "The paper explicitly identifies Boltz-1 and Boltz R/Rc/R1 as Boltz-1 inference configurations. Restraint settings remain separate; this is not a link to Boltz-2."
+  },
+  {
+    "subject_id": "acquired-configuration-8dee6d3246424cb4fbbd",
+    "relation": "family",
+    "target_id": "discovery-model-boltz",
+    "source_ids": [
+      "boltz-stereochemistry-2025"
+    ],
+    "source_locator": "Methods: Molecular Structure Prediction; Results: Structure Prediction Using Restraint-Guided Inference; Table 1",
+    "explanation": "The paper explicitly identifies Boltz-1 and Boltz R/Rc/R1 as Boltz-1 inference configurations. Restraint settings remain separate; this is not a link to Boltz-2."
+  },
+  {
+    "subject_id": "acquired-configuration-99a4fc6b56aa7b9aefe7",
+    "relation": "family",
+    "target_id": "discovery-model-boltz",
+    "source_ids": [
+      "boltz-stereochemistry-2025"
+    ],
+    "source_locator": "Methods: Molecular Structure Prediction; Results: Structure Prediction Using Restraint-Guided Inference; Table 1",
+    "explanation": "The paper explicitly identifies Boltz-1 and Boltz R/Rc/R1 as Boltz-1 inference configurations. Restraint settings remain separate; this is not a link to Boltz-2."
+  },
+  {
+    "subject_id": "acquired-configuration-c2036a20264cefb04794",
+    "relation": "family",
+    "target_id": "discovery-model-boltz",
+    "source_ids": [
+      "boltz-stereochemistry-2025"
+    ],
+    "source_locator": "Methods: Molecular Structure Prediction; Results: Structure Prediction Using Restraint-Guided Inference; Table 1",
+    "explanation": "The paper explicitly identifies Boltz-1 and Boltz R/Rc/R1 as Boltz-1 inference configurations. Restraint settings remain separate; this is not a link to Boltz-2."
+  },
+  {
+    "subject_id": "reported-model-d9a06805b36b8a",
+    "relation": "family",
+    "target_id": "discovery-model-boltz",
+    "source_ids": [
+      "boltz-stereochemistry-2025"
+    ],
+    "source_locator": "Methods: Molecular Structure Prediction; Results: Structure Prediction Using Restraint-Guided Inference; Table 1",
+    "explanation": "The paper explicitly identifies Boltz-1 and Boltz R/Rc/R1 as Boltz-1 inference configurations. Restraint settings remain separate; this is not a link to Boltz-2."
+  },
+  {
+    "subject_id": "acquired-configuration-359fd4eb92fb3f85c4a5",
+    "relation": "family",
+    "target_id": "discovery-model-alphafold-3",
+    "source_ids": [
+      "boltz-stereochemistry-2025"
+    ],
+    "source_locator": "Molecular Structure Prediction; Table 1 AF3 row; Figure 2 caption",
+    "explanation": "The source explicitly expands AF3 as AlphaFold3 and states default input parameters. This is not AlphaFold2."
+  },
+  {
+    "subject_id": "reported-model-4058c43eb73b90",
+    "relation": "family",
+    "target_id": "discovery-model-boltz",
+    "source_ids": [
+      "boltz1-2025"
+    ],
+    "source_locator": "Section 5 Results; Benchmarks and Baselines",
+    "explanation": "The Boltz-1 primary report evaluates Boltz-1 on CASP15 and its recent-PDB test set. Keep source-version and procedure qualifiers; no Boltz-2 equivalence."
+  },
+  {
+    "subject_id": "reported-model-884582fb0c70dc",
+    "relation": "family",
+    "target_id": "discovery-model-boltz",
+    "source_ids": [
+      "antibody-flexibility-2025"
+    ],
+    "source_locator": "Results: general protein structure prediction methods comparison; 49 Ab\u2013Ag complexes; Table 1",
+    "explanation": "The source identifies Boltz-1 run from source code without MSA/templates for this experiment."
+  },
+  {
+    "subject_id": "reported-model-cdc9aabf4efc04",
+    "relation": "family",
+    "target_id": "catalog-model-boltz-2",
+    "source_ids": [
+      "mpro-pose-affinity-2025"
+    ],
+    "source_locator": "Methods: Deep Learning-Based Modeling with Boltz-2",
+    "explanation": "The source explicitly uses Boltz-2 with official MSA server and diffusion sampling parameter 10. This supports Boltz-2 specifically, not Boltz-1."
+  },
+  {
+    "subject_id": "reported-model-70c732770a200f",
+    "relation": "family",
+    "target_id": "catalog-model-chai-1",
+    "source_ids": [
+      "ibex-2025"
+    ],
+    "source_locator": "Structure prediction model comparison; Chai-1 using a single seed and diffusion trajectory",
+    "explanation": "The primary study explicitly names and describes its evaluated Chai-1 configuration. Preserve each study\u2019s input and inference settings."
+  },
+  {
+    "subject_id": "reported-model-b3fdf259d51533",
+    "relation": "family",
+    "target_id": "catalog-model-chai-1",
+    "source_ids": [
+      "antibody-flexibility-2025"
+    ],
+    "source_locator": "Results: general protein structure prediction methods; Chai-1 source-code run without MSA/templates",
+    "explanation": "The primary study explicitly names and describes its evaluated Chai-1 configuration. Preserve each study\u2019s input and inference settings."
+  },
+  {
+    "subject_id": "reported-model-eae60780097101",
+    "relation": "family",
+    "target_id": "catalog-model-chai-1",
+    "source_ids": [
+      "lipp-2026"
+    ],
+    "source_locator": "Methods: Chai-1, package version 0.2.0",
+    "explanation": "The primary study explicitly names and describes its evaluated Chai-1 configuration. Preserve each study\u2019s input and inference settings."
+  },
+  {
+    "subject_id": "reported-model-51ed86132346a0",
+    "relation": "family",
+    "target_id": "catalog-model-diffdock-l",
+    "source_ids": [
+      "lipp-2026"
+    ],
+    "source_locator": "Methods: DiffDock-L, version 1.1.3; no predefined pocket",
+    "explanation": "Explicit DiffDock-L identity and version in source. Generic DiffDock configurations are deliberately excluded."
+  },
+  {
+    "subject_id": "paper-model-6cb80dfa2a3b65637a",
+    "relation": "family",
+    "target_id": "discovery-model-esm-2",
+    "source_ids": [
+      "viral-immune-mimicry-2025"
+    ],
+    "source_locator": "Methods: ESM2 models, mean pooling and fine-tuning; result rows 8M/35M/150M/650M",
+    "explanation": "Source explicitly fine-tunes the pretrained ESM2 models for human-versus-virus protein classification. Preserve parameter size and study split."
+  },
+  {
+    "subject_id": "paper-model-7f7501ed5419a254ba",
+    "relation": "family",
+    "target_id": "discovery-model-esm-2",
+    "source_ids": [
+      "viral-immune-mimicry-2025"
+    ],
+    "source_locator": "Methods: ESM2 models, mean pooling and fine-tuning; result rows 8M/35M/150M/650M",
+    "explanation": "Source explicitly fine-tunes the pretrained ESM2 models for human-versus-virus protein classification. Preserve parameter size and study split."
+  },
+  {
+    "subject_id": "paper-model-8166d7ff51878cf32e",
+    "relation": "family",
+    "target_id": "discovery-model-esm-2",
+    "source_ids": [
+      "viral-immune-mimicry-2025"
+    ],
+    "source_locator": "Methods: ESM2 models, mean pooling and fine-tuning; result rows 8M/35M/150M/650M",
+    "explanation": "Source explicitly fine-tunes the pretrained ESM2 models for human-versus-virus protein classification. Preserve parameter size and study split."
+  },
+  {
+    "subject_id": "reported-model-4c73500c39e9d0",
+    "relation": "family",
+    "target_id": "discovery-model-esm-2",
+    "source_ids": [
+      "viral-immune-mimicry-2025"
+    ],
+    "source_locator": "Methods: ESM2 models, mean pooling and fine-tuning; result rows 8M/35M/150M/650M",
+    "explanation": "Source explicitly fine-tunes the pretrained ESM2 models for human-versus-virus protein classification. Preserve parameter size and study split."
+  },
+  {
+    "subject_id": "reported-model-40ce004270dee4",
+    "relation": "uses_model",
+    "target_id": "discovery-model-esm-2",
+    "source_ids": [
+      "esm2-ofs-fitness-2025"
+    ],
+    "source_locator": "One Fell Swoop sequence-profile procedure; ESM2 650M unmasked residue embeddings",
+    "explanation": "Source describes ESM-2 as an encoder/backbone/component of the evaluated estimator. Preserve the composite method as uses_model, not a family-equivalent ESM-2 score."
+  },
+  {
+    "subject_id": "reported-model-4921459942b45f",
+    "relation": "uses_model",
+    "target_id": "discovery-model-esm-2",
+    "source_ids": [
+      "antibody-deamidation-plm-2024"
+    ],
+    "source_locator": "Section 3.2 The Use of ESM-2 Embedding for Deamidation Site Prediction",
+    "explanation": "Source describes ESM-2 as an encoder/backbone/component of the evaluated estimator. Preserve the composite method as uses_model, not a family-equivalent ESM-2 score."
+  },
+  {
+    "subject_id": "reported-model-57dbab30462150",
+    "relation": "uses_model",
+    "target_id": "discovery-model-esm-2",
+    "source_ids": [
+      "clape-smb-2024"
+    ],
+    "source_locator": "Methods: esm2_t33_650M_UR50D frozen embeddings followed by 5-layer MLP",
+    "explanation": "Source describes ESM-2 as an encoder/backbone/component of the evaluated estimator. Preserve the composite method as uses_model, not a family-equivalent ESM-2 score."
+  },
+  {
+    "subject_id": "reported-model-67ea6bd77b2ed1",
+    "relation": "uses_model",
+    "target_id": "discovery-model-esm-2",
+    "source_ids": [
+      "esm2-amp-2025"
+    ],
+    "source_locator": "Methods: ESM2_AMP framework and ESM2_AMPS feature fusion",
+    "explanation": "Source describes ESM-2 as an encoder/backbone/component of the evaluated estimator. Preserve the composite method as uses_model, not a family-equivalent ESM-2 score."
+  },
+  {
+    "subject_id": "paper-model-0036d81124876d3435",
+    "relation": "uses_model",
+    "target_id": "discovery-model-esm-2",
+    "source_ids": [
+      "esm2-amp-2025"
+    ],
+    "source_locator": "Methods: ESM2_AMP_CSE and Transformer fusion of ESM2 features",
+    "explanation": "Source describes ESM-2 as an encoder/backbone/component of the evaluated estimator. Preserve the composite method as uses_model, not a family-equivalent ESM-2 score."
+  },
+  {
+    "subject_id": "paper-model-1818d535d17a5ccea8",
+    "relation": "uses_model",
+    "target_id": "discovery-model-esm-2",
+    "source_ids": [
+      "esm2-amp-2025"
+    ],
+    "source_locator": "Methods: ESM2_AMPS and Transformer fusion of ESM2 segment features",
+    "explanation": "Source describes ESM-2 as an encoder/backbone/component of the evaluated estimator. Preserve the composite method as uses_model, not a family-equivalent ESM-2 score."
+  },
+  {
+    "subject_id": "paper-model-acf005a7d7196e1846",
+    "relation": "uses_model",
+    "target_id": "discovery-model-esm-2",
+    "source_ids": [
+      "esm2-amp-2025"
+    ],
+    "source_locator": "Methods: ESM2_DPM baseline; ESM2 feature representations",
+    "explanation": "Source describes ESM-2 as an encoder/backbone/component of the evaluated estimator. Preserve the composite method as uses_model, not a family-equivalent ESM-2 score."
+  },
+  {
+    "subject_id": "reported-model-ccd1160ad4ec27",
+    "relation": "uses_model",
+    "target_id": "discovery-model-esm-2",
+    "source_ids": [
+      "fujisan-2024"
+    ],
+    "source_locator": "Section Prediction with ESM-2; esm2_t33_650M_UR50D embeddings followed by cosine similarity",
+    "explanation": "Source describes ESM-2 as an encoder/backbone/component of the evaluated estimator. Preserve the composite method as uses_model, not a family-equivalent ESM-2 score."
+  },
+  {
+    "subject_id": "reported-model-a29203c09857ef",
+    "relation": "uses_model",
+    "target_id": "discovery-model-esm-2",
+    "source_ids": [
+      "mulan-2025"
+    ],
+    "source_locator": "Methods: MULAN architecture; ESM2 initialization and added Structure Adapter",
+    "explanation": "Source describes ESM-2 as an encoder/backbone/component of the evaluated estimator. Preserve the composite method as uses_model, not a family-equivalent ESM-2 score."
+  },
+  {
+    "subject_id": "reported-model-d25dab1a9c4fff",
+    "relation": "uses_model",
+    "target_id": "discovery-model-esm-2",
+    "source_ids": [
+      "pst-2025"
+    ],
+    "source_locator": "Methods: frozen representations followed by task-specific MLP or linear classifier",
+    "explanation": "Source describes ESM-2 as an encoder/backbone/component of the evaluated estimator. Preserve the composite method as uses_model, not a family-equivalent ESM-2 score."
+  },
+  {
+    "subject_id": "reported-model-e4710b1c3facf2",
+    "relation": "uses_model",
+    "target_id": "discovery-model-esm-2",
+    "source_ids": [
+      "clathrin-plm-2025"
+    ],
+    "source_locator": "Methods: ESM2_t33_650M_UR50D feature extraction; feature-specific LSTM classifiers",
+    "explanation": "Source describes ESM-2 as an encoder/backbone/component of the evaluated estimator. Preserve the composite method as uses_model, not a family-equivalent ESM-2 score."
+  },
+  {
+    "subject_id": "reported-model-86393c76dd8fa9",
+    "relation": "uses_model",
+    "target_id": "discovery-model-esm3",
+    "source_ids": [
+      "megsite-2025"
+    ],
+    "source_locator": "Methods: MegSite architecture; ESM3 multimodal embeddings integrated with EGNN",
+    "explanation": "MegSite combines ESM3 with other features and EGNN; this is a component-use relationship, not ESM3 family identity."
+  },
+  {
+    "subject_id": "reported-model-d326e3c4e3ba20",
+    "relation": "family",
+    "target_id": "discovery-model-esm-2",
+    "source_ids": [
+      "evidence-expansion-proteingym-a3b08cc4"
+    ],
+    "source_locator": "Section 4.1 zero-shot baselines; Table 2 ESM-2 (15B) and ProteinMPNN rows",
+    "explanation": "The paper-specific record cites ProteinGym and the original primary table explicitly identifies the model family. Preserve its existing numerical scope and locator; do not merge with independently transcribed table-cell records."
+  },
+  {
+    "subject_id": "reported-model-e0443048c6e110",
+    "relation": "family",
+    "target_id": "discovery-model-proteinmpnn",
+    "source_ids": [
+      "evidence-expansion-proteingym-a3b08cc4"
+    ],
+    "source_locator": "Section 4.1 zero-shot baselines; Table 2 ESM-2 (15B) and ProteinMPNN rows",
+    "explanation": "The paper-specific record cites ProteinGym and the original primary table explicitly identifies the model family. Preserve its existing numerical scope and locator; do not merge with independently transcribed table-cell records."
+  },
+  {
+    "subject_id": "reported-model-d0d5df2beb02b2",
+    "relation": "uses_model",
+    "target_id": "discovery-model-esm-2",
+    "source_ids": [
+      "prime-2026"
+    ],
+    "source_locator": "Results: Optimization of neural architectures; Table 1; Methods: Model architecture and scale",
+    "explanation": "PRIME uses ESM-2/ESM-C embeddings with downstream regression and distinguishes base/fine-tuned embeddings. Generic paper-specific records do not justify relabelling all scores as an exact pretrained checkpoint; use component provenance."
+  },
+  {
+    "subject_id": "reported-model-f83c0b833411a7",
+    "relation": "uses_model",
+    "target_id": "discovery-model-esmc",
+    "source_ids": [
+      "prime-2026"
+    ],
+    "source_locator": "Results: Optimization of neural architectures; Table 1; Methods: Model architecture and scale",
+    "explanation": "PRIME uses ESM-2/ESM-C embeddings with downstream regression and distinguishes base/fine-tuned embeddings. Generic paper-specific records do not justify relabelling all scores as an exact pretrained checkpoint; use component provenance."
+  },
+  {
+    "subject_id": "discovery-model-gears",
+    "relation": "alias_of",
+    "target_id": "catalog-model-gears",
+    "source_ids": [
+      "evidence-official-c037e3419c04936262a0"
+    ],
+    "source_locator": "Pinned official README introduction and model identity; scVI additionally docs/user_guide/models/scvi.md heading",
+    "explanation": "Both registry records cite the identical pinned official implementation and describe the same model family. This alias does not equate distinct checkpoints or later study-specific pipelines."
+  },
+  {
+    "subject_id": "discovery-model-scgpt",
+    "relation": "alias_of",
+    "target_id": "catalog-model-scgpt",
+    "source_ids": [
+      "evidence-official-0e4dac85aa0e0ff1d4b2"
+    ],
+    "source_locator": "Pinned official README introduction and model identity; scVI additionally docs/user_guide/models/scvi.md heading",
+    "explanation": "Both registry records cite the identical pinned official implementation and describe the same model family. This alias does not equate distinct checkpoints or later study-specific pipelines."
+  },
+  {
+    "subject_id": "discovery-model-scvi",
+    "relation": "alias_of",
+    "target_id": "catalog-model-scvi",
+    "source_ids": [
+      "evidence-official-0cbab80c2d1769287a1f"
+    ],
+    "source_locator": "Pinned official README introduction and model identity; scVI additionally docs/user_guide/models/scvi.md heading",
+    "explanation": "Both registry records cite the identical pinned official implementation and describe the same model family. This alias does not equate distinct checkpoints or later study-specific pipelines."
+  },
+  {
+    "subject_id": "reported-model-06816ce9073144",
+    "relation": "family",
+    "target_id": "catalog-model-geneformer",
+    "source_ids": [
+      "cell2sentence-2024",
+      "evidence-official-d3d9afa5c6172982ed01"
+    ],
+    "source_locator": "Downstream cell-label classification comparison; Table 3 and Geneformer comparison methods",
+    "explanation": "Source identifies the evaluated Geneformer model and expression-ranking representation. Preserve the source-specific adaptation and unknown checkpoint. Family membership adds no independent evidence and does not remove quoted-result caveats."
+  },
+  {
+    "subject_id": "reported-model-b46ae14b9927ac",
+    "relation": "family",
+    "target_id": "catalog-model-geneformer",
+    "source_ids": [
+      "coverage-source-peft-2026-09-23",
+      "evidence-official-d3d9afa5c6172982ed01"
+    ],
+    "source_locator": "Section on zero-shot cell type identification and Table 2; Geneformer reference Genecorpus-30M",
+    "explanation": "Source identifies the evaluated Geneformer model and expression-ranking representation. Preserve the source-specific adaptation and unknown checkpoint. Family membership adds no independent evidence and does not remove quoted-result caveats."
+  },
+  {
+    "subject_id": "reported-model-d60f505aabb19c",
+    "relation": "family",
+    "target_id": "catalog-model-geneformer",
+    "source_ids": [
+      "scelmo-2025",
+      "evidence-official-d3d9afa5c6172982ed01"
+    ],
+    "source_locator": "Cell-type annotation methods; Table 1 Geneformer columns (some results explicitly quoted from GenePT)",
+    "explanation": "Source identifies the evaluated Geneformer model and expression-ranking representation. Preserve the source-specific adaptation and unknown checkpoint. Family membership adds no independent evidence and does not remove quoted-result caveats."
+  },
+  {
+    "subject_id": "reported-model-10d85f2a035720",
+    "relation": "variant_of",
+    "target_id": "catalog-model-geneformer",
+    "source_ids": [
+      "mouse-geneformer-2025"
+    ],
+    "source_locator": "Human cell type classification using mouse-Geneformer; paragraph describing human Geneformer pretrained by these authors on Genecorpus-30M; Table 4",
+    "explanation": "This human-Geneformer was pretrained by the study authors. It is an architecture/model variant, not proven identical to an upstream released checkpoint."
+  },
+  {
+    "subject_id": "reported-model-e2f2f0d4830bb0",
+    "relation": "variant_of",
+    "target_id": "catalog-model-geneformer",
+    "source_ids": [
+      "mouse-geneformer-2025"
+    ],
+    "source_locator": "Abstract; Construction of mouse-Geneformer / Pretraining / Architecture; Tables 1 and 4",
+    "explanation": "Mouse-specific retraining of Geneformer on 21 million mouse profiles is explicitly described. Preserve distinct organism, checkpoint, and cross-species conversion; do not alias to human Geneformer."
+  },
+  {
+    "subject_id": "reported-model-399b1ce87a3f6d",
+    "relation": "family",
+    "target_id": "catalog-model-scgpt",
+    "source_ids": [
+      "genept-2024",
+      "evidence-official-0e4dac85aa0e0ff1d4b2"
+    ],
+    "source_locator": "Cell-type annotation experiments, Table 4 scGPT comparison and scGPT citation",
+    "explanation": "Primary study identifies scGPT and its cell-expression embeddings. Keep exact study configuration, probe/fitting procedure and evidence origin; no checkpoint revision is inferred."
+  },
+  {
+    "subject_id": "reported-model-3bdb3093e8d531",
+    "relation": "family",
+    "target_id": "catalog-model-scgpt",
+    "source_ids": [
+      "coverage-source-peft-2026-09-23",
+      "evidence-official-0e4dac85aa0e0ff1d4b2"
+    ],
+    "source_locator": "Zero-shot baseline methods and Table 2; scGPT pretrained on 33 million CELLxGENE cells",
+    "explanation": "Primary study identifies scGPT and its cell-expression embeddings. Keep exact study configuration, probe/fitting procedure and evidence origin; no checkpoint revision is inferred."
+  },
+  {
+    "subject_id": "reported-model-77ad27d4098177",
+    "relation": "family",
+    "target_id": "catalog-model-scgpt",
+    "source_ids": [
+      "scelmo-2025",
+      "evidence-official-0e4dac85aa0e0ff1d4b2"
+    ],
+    "source_locator": "Cell-type annotation methods and Table 1; scGPT embedding baseline",
+    "explanation": "Primary study identifies scGPT and its cell-expression embeddings. Keep exact study configuration, probe/fitting procedure and evidence origin; no checkpoint revision is inferred."
+  },
+  {
+    "subject_id": "acquired-configuration-443f13e04b2137ec85e4",
+    "relation": "family",
+    "target_id": "catalog-model-scvi",
+    "source_ids": [
+      "acquired-source-5eabf9f83e79b736479d",
+      "coverage-source-scib-labels",
+      "evidence-official-0cbab80c2d1769287a1f",
+      "coverage-source-scib-method-map"
+    ],
+    "source_locator": "scIB pinned metrics.csv method scvi_embed; visualization/exampleKeys.R scVI_embed and scVI_embed_HVG_unscaled; website/R/load.R mapping scVI to scvi; website/R/load.R lines 91-93, 106-114 and 175-180",
+    "explanation": "The official benchmark maps the scVI method identity and embedding/full-feature/HVG variants. Keep full_feature versus hvg, unscaled inputs and source version distinct; this establishes method family, not fitted weights."
+  },
+  {
+    "subject_id": "acquired-configuration-ad6e8cb9486fa77b3173",
+    "relation": "family",
+    "target_id": "catalog-model-scvi",
+    "source_ids": [
+      "acquired-source-5eabf9f83e79b736479d",
+      "coverage-source-scib-labels",
+      "evidence-official-0cbab80c2d1769287a1f",
+      "coverage-source-scib-method-map"
+    ],
+    "source_locator": "scIB pinned metrics.csv method scvi_embed; visualization/exampleKeys.R scVI_embed and scVI_embed_HVG_unscaled; website/R/load.R mapping scVI to scvi; website/R/load.R lines 91-93, 106-114 and 175-180",
+    "explanation": "The official benchmark maps the scVI method identity and embedding/full-feature/HVG variants. Keep full_feature versus hvg, unscaled inputs and source version distinct; this establishes method family, not fitted weights."
+  },
+  {
+    "subject_id": "perturbench-method-cpa-scgpt",
+    "relation": "uses_model",
+    "target_id": "catalog-model-scgpt",
+    "source_ids": [
+      "evidence-expansion-perturbench-5c480456"
+    ],
+    "source_locator": "Section 3.2 Models, paragraph S3.SS2.p1.1 and Appendix E.5 scGPT Embeddings",
+    "explanation": "CPA* is fed scGPT embeddings; this is a downstream perturbation pipeline, not a scGPT checkpoint."
+  },
+  {
+    "subject_id": "perturbench-method-la-scgpt",
+    "relation": "uses_model",
+    "target_id": "catalog-model-scgpt",
+    "source_ids": [
+      "evidence-expansion-perturbench-5c480456"
+    ],
+    "source_locator": "Section 3.2 Models, paragraph S3.SS2.p1.1 and Appendix E.5 scGPT Embeddings",
+    "explanation": "Latent additive predictor consumes scGPT embeddings; results must remain a downstream pipeline."
+  },
+  {
+    "subject_id": "reported-model-60455ff7cc0c15",
+    "relation": "uses_model",
+    "target_id": "catalog-model-geneformer",
+    "source_ids": [
+      "scregnet-2025"
+    ],
+    "source_locator": "Methods scFM encoder and GNN encoder; Tables 2 and 3 scRegNet(w/ Geneformer)",
+    "explanation": "Graph learning is combined with a Geneformer backbone; full scRegNet pipeline results are not standalone Geneformer results."
+  },
+  {
+    "subject_id": "reported-model-1be5c4b7c52a41",
+    "relation": "uses_model",
+    "target_id": "catalog-model-scvi",
+    "source_ids": [
+      "scalr-2025"
+    ],
+    "source_locator": "Tables 2 and 3 footnote b: scVI epochs 100 and scANVI epochs 25; Results comparison paragraphs",
+    "explanation": "Sequential scVI and scANVI procedure is explicitly parameterized; keep pipeline separate from scVI alone."
+  },
+  {
+    "subject_id": "reported-model-f23306b94dc7b6",
+    "relation": "uses_model",
+    "target_id": "catalog-model-scvi",
+    "source_ids": [
+      "scxdr-2026"
+    ],
+    "source_locator": "Methods / Comparison experiments at individual cell level; scVI comparator paragraph",
+    "explanation": "scVI batch correction followed by a trained MLP predicts drug response. Current configuration label should be clarified as a pipeline; relation uses_model avoids importing it as standalone scVI performance."
+  },
+  {
+    "subject_id": "reported-model-d6a7fa854437e8",
+    "relation": "uses_model",
+    "target_id": "catalog-model-scgpt",
+    "source_ids": [
+      "single-cell-residual-geometry-2026"
+    ],
+    "source_locator": "Methods residual stream feature extraction and nested classifier procedure; Tables 6, 9 and 10",
+    "explanation": "scGPT representations are combined with residual-geometry features and fitted downstream estimators; preserve composite pipeline identity."
+  },
+  {
+    "subject_id": "discovery-model-msalign",
+    "relation": "uses_model",
+    "target_id": "discovery-model-dreams",
+    "source_ids": [
+      "src-discovery-msalign"
+    ],
+    "source_locator": "arXiv:2605.19752v1 abstract, second contribution: alignment of frozen DreaMS and ChemBERTa by trained MLP projections",
+    "explanation": "MSAlign is a composite molecule/spectrum alignment pipeline consuming frozen DreaMS embeddings. This is not a DreaMS checkpoint or standalone evaluation, and introduces no numerical evidence."
+  },
+  {
+    "subject_id": "acquired-configuration-886dd0092b836fa3f6bd",
+    "relation": "uses_model",
+    "target_id": "discovery-model-state",
+    "source_ids": [
+      "acquired-source-f3795f9b2fe16e3605bb",
+      "evidence-official-1df5b1865861177c0c75"
+    ],
+    "source_locator": "JSON entries[852].description; submission M9DkSYMrvCMqlp2lbfRX; official ArcInstitute/state README model identity and linked Adduri et al. paper",
+    "explanation": "Submitter explicitly identifies Arc STATE ESM2 representations plus an adaptive-gating/manifold pipeline. Exact weight revision remains unreported. This is verified transcription of an explicit author declaration, not proof the submitted predictions were generated using that code or weights."
+  },
+  {
+    "subject_id": "acquired-configuration-31f1ea6e3cad2b0d80c1",
+    "relation": "uses_model",
+    "target_id": "discovery-model-state",
+    "source_ids": [
+      "acquired-source-f3795f9b2fe16e3605bb",
+      "evidence-official-1df5b1865861177c0c75"
+    ],
+    "source_locator": "JSON entries[856].description; submission 8VtfKKCtALf6cDkh4fqB; official ArcInstitute/state README model identity and linked Adduri et al. paper",
+    "explanation": "Submitter explicitly identifies Arc Institute STATE trained on Replogle cells, protein features and response calibration. These are pipeline results, not an upstream checkpoint benchmark. This is verified transcription of an explicit author declaration, not proof the submitted predictions were generated using that code or weights."
+  },
+  {
+    "subject_id": "acquired-configuration-fd90f976c4b033658217",
+    "relation": "uses_model",
+    "target_id": "discovery-model-state",
+    "source_ids": [
+      "acquired-source-f3795f9b2fe16e3605bb",
+      "evidence-official-1df5b1865861177c0c75"
+    ],
+    "source_locator": "JSON entries[955].description; submission vUSQaMGSF6bXuCMEYu18; official ArcInstitute/state README model identity and linked Adduri et al. paper",
+    "explanation": "Submitter explicitly cites Adduri et al. 2025 State paper, a frozen SE-600M component and GenePT-adapted ST. Most output genes remain control counts; keep coverage/fallback limitation visible. This is verified transcription of an explicit author declaration, not proof the submitted predictions were generated using that code or weights."
+  },
+  {
+    "subject_id": "acquired-configuration-dc8effc5b7dc603dc503",
+    "relation": "uses_model",
+    "target_id": "discovery-model-state",
+    "source_ids": [
+      "acquired-source-f3795f9b2fe16e3605bb",
+      "evidence-official-1df5b1865861177c0c75"
+    ],
+    "source_locator": "JSON entries[1030].description; submission jACV1avJMLtZvNBU61Uj; official ArcInstitute/state README model identity and linked Adduri et al. paper",
+    "explanation": "Submitter explicitly identifies Arc Institute STATE with a 30-step ESM2-conditioned technical baseline across contexts. Exact code/weight revision and independent execution verification remain unreported. This is verified transcription of an explicit author declaration, not proof the submitted predictions were generated using that code or weights."
+  },
+  {
+    "subject_id": "rewire-local-20260920-configuration-proteingym-esm2",
+    "relation": "family",
+    "target_id": "catalog-model-esm-2",
+    "source_ids": [
+      "rewire-local-20260920-source-proteingym-esm2"
+    ],
+    "source_locator": "report.json: model.checkpoint and artifacts checkpoint_url/checkpoint_sha256; esm2_t6_8M_UR50D",
+    "explanation": "Pinned run report explicitly identifies the 8M checkpoint and exact weight hash. Preserve masked-marginal ProteinGym assay protocol; this supports the size-qualified8M record without aliasing650M/15B variants."
+  },
+  {
+    "subject_id": "rewire-local-20260921-configuration-esm2-8m",
+    "relation": "family",
+    "target_id": "catalog-model-esm-2",
+    "source_ids": [
+      "rewire-local-20260921-source-esm2-8m"
+    ],
+    "source_locator": "report.json: model.checkpoint and artifacts checkpoint_url/checkpoint_sha256; esm2_t6_8M_UR50D",
+    "explanation": "Pinned run report explicitly identifies8M weights. The existing evaluated configuration remains frozen residue-mean embeddings plus fixed ridge, and must retain this complete protocol label; no other parameter size is equivalent."
+  },
+  {
+    "subject_id": "paper-model-6cb80dfa2a3b65637a",
+    "relation": "family",
+    "target_id": "catalog-model-esm-2",
+    "source_ids": [
+      "viral-immune-mimicry-2025"
+    ],
+    "source_locator": "Methods: pretrained ESM2 variants and fine-tuning; results table row ESM2 8M",
+    "explanation": "Original study explicitly distinguishes8M/35M/150M/650M fine-tuned configurations; only the8M row supports the size-qualified target."
+  },
+  {
+    "subject_id": "proteinbench-method-esmfold",
+    "relation": "family",
+    "target_id": "catalog-model-esmfold",
+    "source_ids": [
+      "expansion-p3-proteinbench"
+    ],
+    "source_locator": "Appendix B.2.3 Model implementations, ESMFold; Table7 CAMEO2022",
+    "explanation": "Primary paper explicitly states esm.pretrained.esmfold_v1() and one deterministic structure per protein. This is an exact v1 identity statement, not inferred from the current default API."
+  }
+]

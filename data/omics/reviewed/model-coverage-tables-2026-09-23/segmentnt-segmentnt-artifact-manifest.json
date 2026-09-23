@@ -1,0 +1,10 @@
+{
+  "segmentnt-supplement.pdf.gz": {
+    "raw_sha256": "c4ad23a62ab161a464fe789e5dd167cf2bfe9f43a91a9c3fb1261b99a5594b0f",
+    "raw_bytes": 1110728
+  },
+  "segmentnt-primary.xml.gz": {
+    "raw_sha256": "b9bddff89c5f8898fc677008205a47b960ea569f3887cc15845e2547b92aaa70",
+    "raw_bytes": 192293
+  }
+}

@@ -1,3 +1,5 @@
+import { addCoverageTables, coverageTableInputs } from "./model-coverage-tables";
+import { addModelEvaluationLinks, modelLinkInputs } from "./model-evaluation-links";
 import { addAgroEvaluations, agroInputs } from "./agront-evaluations";
 import { writeBaselineAudit } from "./baseline-coverage";
 import { writeImmutableChunks } from "./stream-files";
@@ -271,9 +273,10 @@ function main() {
         : [],
     ),
   );
-  const records = addAgroEvaluations(addBaselineEvaluations(addLocalEvaluations(applyAcquisitionCorrections(
+  const evaluated = addAgroEvaluations(addBaselineEvaluations(addLocalEvaluations(applyAcquisitionCorrections(
     addAcquiredEvidence(addRunRecipes(separateEntities(profiled))),
   ))));
+  const records = addModelEvaluationLinks(addCoverageTables(evaluated));
   const profiles = records
     .filter((record) => record.attributes.profile)
     .map((record) => record.attributes.profile as OmicsProfile);
@@ -390,6 +393,7 @@ function main() {
               "Correct DART-Eval correlation units and remove unsupported standard-deviation labels from TDC printed plus/minus spreads.",
               "Recheck pinned extraction inputs, reject unrecognised cells and authenticate PDF-to-text transformations.",
               "Add complete AgroNT promoter and terminator source tables with CNN baselines, source-backed family links and separate assay comparisons.",
+              "Link verified model identities and expose downstream evaluations separately; add 1,620 source-checked numerical rows from 13 bounded primary-source comparisons. Preserve quoted evidence and quarantine conflicting mRNABench localization cells.",
               "Count reviewed metrics from the same source evaluation setup together, retaining all original record IDs and links.",
               "Load individual source-scoped charts, remove cross-protocol pooled rankings, and move findings before detailed instructions.",
               "Preserve archived release bytes, historical URLs and MFASS history. Contributions remain disabled.",
@@ -411,6 +415,8 @@ function main() {
         ...localEvaluationInputs,
         ...baselineEvaluationInputs,
         ...agroInputs,
+        ...coverageTableInputs,
+        ...modelLinkInputs,
         ...reviewInputFiles.filter((file) => fs.existsSync(file)),
         ...profileInputs.filter((file) => fs.existsSync(file)),
         ...associationInputs.filter((file) => fs.existsSync(file)),

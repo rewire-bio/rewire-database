@@ -268,7 +268,9 @@ export function createCatalogueQuery(snapshot: CatalogueSnapshot) {
       )
     )
       return false;
-    if (["family", "variant_of", "alias_of"].includes(link.relation))
+    if (link.relation === "alias_of")
+      return isModelSubject(record.kind) && record.kind === target.kind;
+    if (["family", "variant_of"].includes(link.relation))
       return isModelSubject(record.kind) && isModelSubject(target.kind);
     if (["part_of", "evaluates_task"].includes(link.relation))
       return (
@@ -335,6 +337,33 @@ export function createCatalogueQuery(snapshot: CatalogueSnapshot) {
       list.push(row);
       rowIndex.set(id, list);
     }
+  }
+  // A verified alias is the same entity, so historical alias URLs must expose
+  // the canonical entity's results too. Family/variant/uses_model edges are
+  // deliberately excluded: their results must never flow back into siblings.
+  const aliasNeighbors = new Map<string, Set<string>>();
+  for (const record of records) for (const link of record.links) {
+    if (link.relation !== "alias_of" || !verifiedAssociation(record, link)) continue;
+    for (const [from, to] of [[record.id, link.target_id], [link.target_id, record.id]]) {
+      const neighbors = aliasNeighbors.get(from) || new Set<string>();
+      neighbors.add(to);
+      aliasNeighbors.set(from, neighbors);
+    }
+  }
+  const visitedAliases = new Set<string>();
+  for (const id of aliasNeighbors.keys()) {
+    if (visitedAliases.has(id)) continue;
+    const component: string[] = [], pending = [id];
+    while (pending.length) {
+      const current = pending.pop()!;
+      if (visitedAliases.has(current)) continue;
+      visitedAliases.add(current);
+      component.push(current);
+      pending.push(...(aliasNeighbors.get(current) || []));
+    }
+    const shared = [...new Map(component.flatMap(member => rowIndex.get(member) || [])
+      .map(row => [row.result.id, row])).values()].sort((a, b) => a.result.id.localeCompare(b.result.id));
+    for (const member of component) rowIndex.set(member, shared);
   }
   const release_id = snapshot.release_id;
   function page<T>(

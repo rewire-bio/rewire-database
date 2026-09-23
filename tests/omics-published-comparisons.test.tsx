@@ -107,7 +107,7 @@ describe("source-scoped comparison figures", () => {
     expect(html).toContain("/database/result/result-18");
     expect(panels[0].rows[29].result.id).toBe("result-29");
     expect(html).toContain('role="img"');
-    expect(html).toContain("Highest scores first.");
+    expect(html).not.toMatch(/Highest scores first|Lowest scores first|Score, best first/);
     expect(panels[0].rows[0].result.attributes.printed_value).toBe(
       "-0.16666666666666666",
     );
@@ -426,7 +426,7 @@ describe("source-scoped comparison view", () => {
     const html = renderToStaticMarkup(
       <BenchmarkCharts panels={detail.published_comparisons} />,
     );
-    expect(html).toContain("Highest scores first.");
+    expect(html).not.toMatch(/Highest scores first|Lowest scores first|Score, best first/);
     expect(html).not.toContain("Pooled by metric");
     expect(html).toContain("without a pooled ranking");
   });

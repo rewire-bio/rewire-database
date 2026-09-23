@@ -1,0 +1,33 @@
+{
+  "release_id": "2026-09-23-cda1ab0e8294",
+  "scope": "All profile facts and declared record metadata gaps; result coverage/uncertainty fields absent without a declaration are marked unextracted, not unreported.",
+  "method": "automated_release_inventory",
+  "independent_scientific_review": false,
+  "profiles": 690,
+  "profile_fact_count": 4840,
+  "profile_fact_states": {
+    "source_checked": 3846,
+    "unextracted": 47,
+    "unreported": 701,
+    "inapplicable": 246
+  },
+  "record_gap_count": 80240,
+  "record_gap_states": {
+    "unreported": 36863,
+    "unextracted": 42990,
+    "unavailable": 25,
+    "inapplicable": 362
+  },
+  "record_gap_kinds": {
+    "configuration": 4156,
+    "method": 54,
+    "dataset_subset": 624,
+    "evaluation": 29354,
+    "result": 45648,
+    "benchmark": 8,
+    "baseline": 48,
+    "dataset": 79,
+    "source": 121,
+    "pipeline": 148
+  }
+}

@@ -47,6 +47,29 @@ type Props = {
   initialResults?: ResultsPage;
   resultSummary?: Pick<ResultsPage, "total" | "evaluation_count">;
 };
+// Only known, generic display guidance is collapsed. New or source-specific
+// caveats remain prominent until reviewed; their array order is not a risk rank.
+const genericComparisonNotes = new Set([
+  "Author-reported numbers, source checked but not independently reproduced.",
+  "Exact source-defined evaluation scope; reported scores are not rewire reproductions.",
+  "No interval assigned unless printed in source cell.",
+  "Source-specific evaluation. No equivalence to other releases, protocols or model families is inferred.",
+  "Comparison methods are named by the citation the table prints; the paper's text says which method each is.",
+  "This is the AlphaGenome paper’s comparison. Source-checked scores are not independent reproductions.",
+  "MAE and RMSE are errors, better when lower. The other metrics are better when higher.",
+]);
+function supportingComparisonNote(caveat: string, panel: ResolvedComparison) {
+  if (genericComparisonNotes.has(caveat)) return true;
+  // Generated acquisition notes repeat the conditions already in the visible
+  // protocol link. Collapse only when those exact conditions remain visible.
+  const repeatedConditions = caveat.match(
+    /^Source-specific evaluation\. Input conditions: (.+)\. No equivalence to other releases, protocols or model families is inferred\.$/,
+  );
+  return Boolean(
+    repeatedConditions &&
+    panel.protocol.name.endsWith(` · ${repeatedConditions[1]}`),
+  );
+}
 const defaults = {
   mode: "comparisons",
   panel: "",
@@ -221,6 +244,9 @@ export function ComparisonWorkspace({
     return filtered;
   }, [panel, state.search]);
   const visible = state.all === "1" ? rows : rows.slice(0, 12);
+  const unavailableCount = (panel?.rows || []).filter(
+    (row) => numericScore(row.result.attributes.numeric_value) === null,
+  ).length;
   const [low, high] = panel
     ? comparisonRange(panel.rows, panel.metric, panel.unit, state.zoom === "1")
     : [0, 1];
@@ -381,7 +407,6 @@ export function ComparisonWorkspace({
                   {panel.direction === "higher" ? "Higher" : "Lower"} values are
                   better.
                 </p>
-                <p>{catalogueText(panel.context)}</p>
                 <p>
                   <Link href={recordHref(panel.protocol)}>
                     {catalogueText(panel.protocol.name)}
@@ -398,27 +423,56 @@ export function ComparisonWorkspace({
                       panel.rows.map((row) => originLabel(row.origin)),
                     ),
                   ].join(", ")}
-                  . Numerical source review does not establish independent
-                  reproduction.
+                  .
                 </p>
                 <Evidence
                   ids={panel.source_ids}
                   locator={panel.source_locator}
                   sources={panel.sources}
                 />
-                <p className={styles.muted}>
-                  {catalogueText(panel.caveats[0] || "")}
-                </p>
-                <details>
-                  <summary>
-                    All comparison limitations ({panel.caveats.length})
-                  </summary>
-                  <ul>
-                    {panel.caveats.map((caveat, index) => (
-                      <li key={index}>{catalogueText(caveat)}</li>
-                    ))}
+                {panel.caveats.some(
+                  (caveat) => !supportingComparisonNote(caveat, panel),
+                ) && (
+                  <ul
+                    className={ux.limitations}
+                    aria-label="Comparison limitations"
+                  >
+                    {panel.caveats
+                      .filter(
+                        (caveat) => !supportingComparisonNote(caveat, panel),
+                      )
+                      .map((caveat, index) => (
+                        <li key={index}>{catalogueText(caveat)}</li>
+                      ))}
                   </ul>
-                  <p>Automated source review: {panel.review.date}.</p>
+                )}
+                <details>
+                  <summary>Comparison details and limitations</summary>
+                  {panel.context && <p>{catalogueText(panel.context)}</p>}
+                  {panel.caveats.some((caveat) =>
+                    supportingComparisonNote(caveat, panel),
+                  ) && (
+                    <ul>
+                      {panel.caveats
+                        .filter((caveat) =>
+                          supportingComparisonNote(caveat, panel),
+                        )
+                        .map((caveat, index) => (
+                          <li key={index}>{catalogueText(caveat)}</li>
+                        ))}
+                    </ul>
+                  )}
+                  <p>
+                    Automated source review: {panel.review.date}. Numerical
+                    source review does not establish independent reproduction.
+                  </p>
+                  <p>
+                    Dots show point estimates. Whiskers show only explicitly
+                    defined uncertainty (standard deviation, standard error or a
+                    labelled interval); their definitions remain in Table.
+                    Unresolved uncertainty is not plotted. Differences do not
+                    establish statistical significance.
+                  </p>
                 </details>
               </header>
               {(error || loading) && (
@@ -457,14 +511,13 @@ export function ComparisonWorkspace({
                   </button>
                 </div>
               </div>
-              <p className={styles.muted}>
-                {panel.rows.filter(
-                  (row) =>
-                    numericScore(row.result.attributes.numeric_value) === null,
-                ).length || "No"}{" "}
-                unavailable values; missing scores remain labelled and are never
-                plotted as zero.
-              </p>
+              {unavailableCount > 0 && (
+                <p className={styles.muted}>
+                  {unavailableCount} unavailable value
+                  {unavailableCount === 1 ? "" : "s"}; missing scores remain
+                  labelled and are never plotted as zero.
+                </p>
+              )}
               <p aria-live="polite">
                 Showing {visible.length} of {rows.length} matching rows
                 {state.search
@@ -503,7 +556,10 @@ export function ComparisonWorkspace({
                             <Entity row={row} />
                           </th>
                           <td>
-                            <Link href={recordHref(row.result)}>
+                            <Link
+                              className={styles.numericValue}
+                              href={recordHref(row.result)}
+                            >
                               {String(row.result.attributes.printed_value)}
                             </Link>
                           </td>
@@ -544,79 +600,76 @@ export function ComparisonWorkspace({
                     tabIndex={0}
                     aria-label={`${panel.metric} dot plot; use Table for the same rows as a table`}
                   >
-                    <div className={ux.axisRow}>
-                      <span>Tested configuration</span>
-                      <div className={ux.axis}>
-                        {[0, 1, 2, 3, 4].map((tick) => (
-                          <span
-                            key={tick}
-                            style={{ left: `${3 + 23.5 * tick}%` }}
-                          >
-                            {Number(
-                              (low + ((high - low) * tick) / 4).toPrecision(3),
-                            )}
-                          </span>
-                        ))}
-                      </div>
-                      <span>Reported score</span>
-                    </div>
-                    <ol className={ux.rows}>
-                      {visible.map((row) => {
-                        const value = numericScore(
-                          row.result.attributes.numeric_value,
-                        );
-                        const interval = scoreInterval(row);
-                        return (
-                          <li key={row.result.id} className={ux.plotRow}>
-                            <span className={ux.modelLabel}>
-                              <Entity row={row} />
-                            </span>
-                            <div
-                              className={ux.track}
-                              role={value === null ? undefined : "img"}
-                              aria-label={`${testedName(row)}: ${String(row.result.attributes.printed_value)} ${panel.unit}${interval ? `; ${interval.label} ${interval.low} to ${interval.high}` : "; no supported uncertainty interval plotted"}`}
+                    <div className={ux.plotContent}>
+                      <div className={ux.axisRow}>
+                        <span>Tested configuration</span>
+                        <div className={ux.axis}>
+                          {[0, 1, 2, 3, 4].map((tick) => (
+                            <span
+                              key={tick}
+                              style={{ left: `${3 + 23.5 * tick}%` }}
                             >
-                              {value !== null ? (
-                                <>
-                                  {interval && (
-                                    <span
-                                      className={ux.interval}
-                                      title={interval.label}
-                                      style={{
-                                        left: `${position(interval.low)}%`,
-                                        width: `${position(interval.high) - position(interval.low)}%`,
-                                      }}
-                                    />
-                                  )}
-                                  <span
-                                    className={ux.dot}
-                                    style={{ left: `${position(value)}%` }}
-                                  />
-                                </>
-                              ) : (
-                                <span className={ux.unavailable}>
-                                  Not available
-                                </span>
+                              {Number(
+                                (low + ((high - low) * tick) / 4).toPrecision(
+                                  3,
+                                ),
                               )}
-                            </div>
-                            <Link
-                              className={ux.value}
-                              href={recordHref(row.result)}
-                            >
-                              {String(row.result.attributes.printed_value)}
-                            </Link>
-                          </li>
-                        );
-                      })}
-                    </ol>
+                            </span>
+                          ))}
+                        </div>
+                        <span>Reported score</span>
+                      </div>
+                      <ol className={ux.rows}>
+                        {visible.map((row) => {
+                          const value = numericScore(
+                            row.result.attributes.numeric_value,
+                          );
+                          const interval = scoreInterval(row);
+                          return (
+                            <li key={row.result.id} className={ux.plotRow}>
+                              <span className={ux.modelLabel}>
+                                <Entity row={row} />
+                              </span>
+                              <div
+                                className={ux.track}
+                                role={value === null ? undefined : "img"}
+                                aria-label={`${testedName(row)}: ${String(row.result.attributes.printed_value)} ${panel.unit}${interval ? `; ${interval.label} ${interval.low} to ${interval.high}` : "; no supported uncertainty interval plotted"}`}
+                              >
+                                {value !== null ? (
+                                  <>
+                                    {interval && (
+                                      <span
+                                        className={ux.interval}
+                                        title={interval.label}
+                                        style={{
+                                          left: `${position(interval.low)}%`,
+                                          width: `${position(interval.high) - position(interval.low)}%`,
+                                        }}
+                                      />
+                                    )}
+                                    <span
+                                      className={ux.dot}
+                                      style={{ left: `${position(value)}%` }}
+                                    />
+                                  </>
+                                ) : (
+                                  <span className={ux.unavailable}>
+                                    Not available
+                                  </span>
+                                )}
+                              </div>
+                              <Link
+                                className={ux.value}
+                                href={recordHref(row.result)}
+                              >
+                                {String(row.result.attributes.printed_value)}
+                              </Link>
+                            </li>
+                          );
+                        })}
+                      </ol>
+                    </div>
                   </div>
-                  <p className={styles.muted}>
-                    Dots show point estimates. Whiskers show only explicitly
-                    defined uncertainty (standard deviation, standard error or a
-                    labelled interval); their definitions remain in Table.
-                    Unresolved uncertainty is not plotted. Differences do not
-                    establish statistical significance.
-                  </p>
                 </>
               )}
               {rows.length > 12 && (

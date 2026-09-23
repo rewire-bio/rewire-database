@@ -280,7 +280,7 @@ export default function Results({
                   </td>
                   <td>
                     <Link href={recordHref(row.result)}>
-                      <strong>
+                      <strong className={styles.numericValue}>
                         {displayValue(row.result.attributes.printed_value)}
                         {row.result.attributes.unit === "percent" &&
                         !/%/.test(String(row.result.attributes.printed_value))

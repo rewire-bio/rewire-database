@@ -1,0 +1,5955 @@
+{
+  "checks": [
+    {
+      "pass": true,
+      "name": "narrow-beeline-chart no page overflow",
+      "detail": 320
+    },
+    {
+      "pass": true,
+      "name": "narrow-beeline-chart exact values single line",
+      "detail": [
+        {
+          "text": "1.09",
+          "id": "/database/result/acquired-result-1aabb1785acb4beefbfc/",
+          "rect": {
+            "top": 2948.609375,
+            "bottom": 2971.65625,
+            "left": 257.65625,
+            "right": 286.203125,
+            "width": 28.546875,
+            "height": 23.046875
+          },
+          "textRect": {
+            "top": 2951.609375,
+            "bottom": 2967.609375,
+            "left": 257.65625,
+            "right": 286.203125,
+            "width": 28.546875,
+            "height": 16
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "1.06",
+          "id": "/database/result/acquired-result-dbea759bf5cee5e11543/",
+          "rect": {
+            "top": 3019.984375,
+            "bottom": 3043.03125,
+            "left": 257.65625,
+            "right": 286.203125,
+            "width": 28.546875,
+            "height": 23.046875
+          },
+          "textRect": {
+            "top": 3022.984375,
+            "bottom": 3038.984375,
+            "left": 257.65625,
+            "right": 286.203125,
+            "width": 28.546875,
+            "height": 16
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "1.05",
+          "id": "/database/result/acquired-result-bd9b0e09b9ab71e773ed/",
+          "rect": {
+            "top": 3091.359375,
+            "bottom": 3114.40625,
+            "left": 257.65625,
+            "right": 286.203125,
+            "width": 28.546875,
+            "height": 23.046875
+          },
+          "textRect": {
+            "top": 3094.359375,
+            "bottom": 3110.359375,
+            "left": 257.65625,
+            "right": 286.203125,
+            "width": 28.546875,
+            "height": 16
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "1.02",
+          "id": "/database/result/acquired-result-4c5bf4bd4db845f3977b/",
+          "rect": {
+            "top": 3162.734375,
+            "bottom": 3185.78125,
+            "left": 257.65625,
+            "right": 286.203125,
+            "width": 28.546875,
+            "height": 23.046875
+          },
+          "textRect": {
+            "top": 3165.734375,
+            "bottom": 3181.734375,
+            "left": 257.65625,
+            "right": 286.203125,
+            "width": 28.546875,
+            "height": 16
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "1.01",
+          "id": "/database/result/acquired-result-1b8baf7f46b4c6469251/",
+          "rect": {
+            "top": 3234.109375,
+            "bottom": 3257.15625,
+            "left": 257.65625,
+            "right": 286.203125,
+            "width": 28.546875,
+            "height": 23.046875
+          },
+          "textRect": {
+            "top": 3237.109375,
+            "bottom": 3253.109375,
+            "left": 257.65625,
+            "right": 286.203125,
+            "width": 28.546875,
+            "height": 16
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "1",
+          "id": "/database/result/acquired-result-3c431bbfa4dc9e4b203b/",
+          "rect": {
+            "top": 3305.484375,
+            "bottom": 3328.53125,
+            "left": 278.015625,
+            "right": 286.203125,
+            "width": 8.1875,
+            "height": 23.046875
+          },
+          "textRect": {
+            "top": 3308.484375,
+            "bottom": 3324.484375,
+            "left": 278.015625,
+            "right": 286.203125,
+            "width": 8.1875,
+            "height": 16
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        }
+      ]
+    },
+    {
+      "pass": true,
+      "name": "narrow-beeline-chart values contained or locally scrollable"
+    },
+    {
+      "pass": true,
+      "name": "narrow-beeline-chart descending exact row identity"
+    },
+    {
+      "pass": true,
+      "name": "narrow-beeline-chart no zero missingness boilerplate"
+    },
+    {
+      "pass": true,
+      "name": "narrow-beeline-chart details initially collapsed"
+    },
+    {
+      "pass": true,
+      "name": "narrow-beeline-chart evidence origin visible"
+    },
+    {
+      "pass": true,
+      "name": "narrow-beeline-chart review metadata collapsed"
+    },
+    {
+      "pass": true,
+      "name": "narrow-beeline-chart axis no wrap"
+    },
+    {
+      "pass": true,
+      "name": "narrow-beeline-chart axis contained and distinct",
+      "detail": [
+        {
+          "text": "0.995",
+          "rect": {
+            "top": 2875.96875,
+            "bottom": 2895.15625,
+            "left": 38.671875,
+            "right": 69.28125,
+            "width": 30.609375,
+            "height": 19.1875
+          },
+          "fragments": 1
+        },
+        {
+          "text": "1.05",
+          "rect": {
+            "top": 2875.96875,
+            "bottom": 2895.15625,
+            "left": 103.1640625,
+            "right": 126.9609375,
+            "width": 23.796875,
+            "height": 19.1875
+          },
+          "fragments": 1
+        },
+        {
+          "text": "1.1",
+          "rect": {
+            "top": 2875.96875,
+            "bottom": 2895.15625,
+            "left": 174.484375,
+            "right": 191.453125,
+            "width": 16.96875,
+            "height": 19.1875
+          },
+          "fragments": 1
+        }
+      ]
+    },
+    {
+      "pass": true,
+      "name": "narrow-beeline-chart keyboard region focus visible",
+      "detail": {
+        "active": true,
+        "outline": "2px",
+        "style": "solid"
+      }
+    },
+    {
+      "pass": true,
+      "name": "narrow-beeline-chart score link focus visible",
+      "detail": {
+        "text": "1.09",
+        "outline": "2px",
+        "rect": {
+          "top": 2948.609375,
+          "bottom": 2971.65625,
+          "left": 257.65625,
+          "right": 286.203125,
+          "width": 28.546875,
+          "height": 23.046875
+        }
+      }
+    },
+    {
+      "pass": true,
+      "name": "narrow-beeline-chart keyboard can expose complete exact value",
+      "detail": {
+        "text": "1.09",
+        "id": "/database/result/acquired-result-1aabb1785acb4beefbfc/",
+        "rect": {
+          "top": 2948.609375,
+          "bottom": 2971.65625,
+          "left": 257.65625,
+          "right": 286.203125,
+          "width": 28.546875,
+          "height": 23.046875
+        },
+        "textRect": {
+          "top": 2951.609375,
+          "bottom": 2967.609375,
+          "left": 257.65625,
+          "right": 286.203125,
+          "width": 28.546875,
+          "height": 16
+        },
+        "fragments": 1,
+        "whiteSpace": "nowrap"
+      }
+    },
+    {
+      "pass": true,
+      "name": "narrow-beeline-table no page overflow",
+      "detail": 320
+    },
+    {
+      "pass": true,
+      "name": "narrow-beeline-table exact values single line",
+      "detail": [
+        {
+          "text": "1.09",
+          "id": "/database/result/acquired-result-1aabb1785acb4beefbfc/",
+          "rect": {
+            "top": 452.109375,
+            "bottom": 466.109375,
+            "left": 183,
+            "right": 208.78125,
+            "width": 25.78125,
+            "height": 14
+          },
+          "textRect": {
+            "top": 452.109375,
+            "bottom": 466.109375,
+            "left": 183,
+            "right": 208.78125,
+            "width": 25.78125,
+            "height": 14
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "1.06",
+          "id": "/database/result/acquired-result-dbea759bf5cee5e11543/",
+          "rect": {
+            "top": 676.203125,
+            "bottom": 690.203125,
+            "left": 183,
+            "right": 208.78125,
+            "width": 25.78125,
+            "height": 14
+          },
+          "textRect": {
+            "top": 676.203125,
+            "bottom": 690.203125,
+            "left": 183,
+            "right": 208.78125,
+            "width": 25.78125,
+            "height": 14
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "1.05",
+          "id": "/database/result/acquired-result-bd9b0e09b9ab71e773ed/",
+          "rect": {
+            "top": 900.296875,
+            "bottom": 914.296875,
+            "left": 183,
+            "right": 208.78125,
+            "width": 25.78125,
+            "height": 14
+          },
+          "textRect": {
+            "top": 900.296875,
+            "bottom": 914.296875,
+            "left": 183,
+            "right": 208.78125,
+            "width": 25.78125,
+            "height": 14
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "1.02",
+          "id": "/database/result/acquired-result-4c5bf4bd4db845f3977b/",
+          "rect": {
+            "top": 1124.390625,
+            "bottom": 1138.390625,
+            "left": 183,
+            "right": 208.78125,
+            "width": 25.78125,
+            "height": 14
+          },
+          "textRect": {
+            "top": 1124.390625,
+            "bottom": 1138.390625,
+            "left": 183,
+            "right": 208.78125,
+            "width": 25.78125,
+            "height": 14
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "1.01",
+          "id": "/database/result/acquired-result-1b8baf7f46b4c6469251/",
+          "rect": {
+            "top": 1348.484375,
+            "bottom": 1362.484375,
+            "left": 183,
+            "right": 208.78125,
+            "width": 25.78125,
+            "height": 14
+          },
+          "textRect": {
+            "top": 1348.484375,
+            "bottom": 1362.484375,
+            "left": 183,
+            "right": 208.78125,
+            "width": 25.78125,
+            "height": 14
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "1",
+          "id": "/database/result/acquired-result-3c431bbfa4dc9e4b203b/",
+          "rect": {
+            "top": 1572.578125,
+            "bottom": 1586.578125,
+            "left": 183,
+            "right": 190.390625,
+            "width": 7.390625,
+            "height": 14
+          },
+          "textRect": {
+            "top": 1572.578125,
+            "bottom": 1586.578125,
+            "left": 183,
+            "right": 190.390625,
+            "width": 7.390625,
+            "height": 14
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        }
+      ]
+    },
+    {
+      "pass": true,
+      "name": "narrow-beeline-table values contained or locally scrollable"
+    },
+    {
+      "pass": true,
+      "name": "narrow-beeline-table descending exact row identity"
+    },
+    {
+      "pass": true,
+      "name": "narrow-beeline-table no zero missingness boilerplate"
+    },
+    {
+      "pass": true,
+      "name": "narrow-beeline-table details initially collapsed"
+    },
+    {
+      "pass": true,
+      "name": "narrow-beeline-table evidence origin visible"
+    },
+    {
+      "pass": true,
+      "name": "narrow-beeline-table review metadata collapsed"
+    },
+    {
+      "pass": true,
+      "name": "narrow-beeline-table keyboard region focus visible",
+      "detail": {
+        "active": true,
+        "outline": "2px",
+        "style": "solid"
+      }
+    },
+    {
+      "pass": true,
+      "name": "narrow-beeline-table arrow scroll contained",
+      "detail": {
+        "before": 0,
+        "after": 40
+      }
+    },
+    {
+      "pass": true,
+      "name": "narrow-beeline-table score link focus visible",
+      "detail": {
+        "text": "1.09",
+        "outline": "2px",
+        "rect": {
+          "top": 114.109375,
+          "bottom": 128.109375,
+          "left": 147,
+          "right": 172.78125,
+          "width": 25.78125,
+          "height": 14
+        }
+      }
+    },
+    {
+      "pass": true,
+      "name": "narrow-beeline-table keyboard can expose complete exact value",
+      "detail": {
+        "text": "1.09",
+        "id": "/database/result/acquired-result-1aabb1785acb4beefbfc/",
+        "rect": {
+          "top": 114.109375,
+          "bottom": 128.109375,
+          "left": 147,
+          "right": 172.78125,
+          "width": 25.78125,
+          "height": 14
+        },
+        "textRect": {
+          "top": 114.109375,
+          "bottom": 128.109375,
+          "left": 147,
+          "right": 172.78125,
+          "width": 25.78125,
+          "height": 14
+        },
+        "fragments": 1,
+        "whiteSpace": "nowrap"
+      }
+    },
+    {
+      "pass": true,
+      "name": "narrow-synthetic-text-stress no page overflow",
+      "detail": 320
+    },
+    {
+      "pass": true,
+      "name": "narrow-synthetic-text-stress exact values single line",
+      "detail": [
+        {
+          "text": "-0.16666666666666666",
+          "id": "/database/result/acquired-result-1aabb1785acb4beefbfc/",
+          "rect": {
+            "top": 447.609375,
+            "bottom": 470.65625,
+            "left": 197.640625,
+            "right": 353.765625,
+            "width": 156.125,
+            "height": 23.046875
+          },
+          "textRect": {
+            "top": 450.609375,
+            "bottom": 466.609375,
+            "left": 197.640625,
+            "right": 353.765625,
+            "width": 156.125,
+            "height": 16
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "1.234567890123456789e-120",
+          "id": "/database/result/acquired-result-dbea759bf5cee5e11543/",
+          "rect": {
+            "top": 518.984375,
+            "bottom": 542.03125,
+            "left": 157,
+            "right": 353.765625,
+            "width": 196.765625,
+            "height": 23.046875
+          },
+          "textRect": {
+            "top": 521.984375,
+            "bottom": 537.984375,
+            "left": 157,
+            "right": 353.765625,
+            "width": 196.765625,
+            "height": 16
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "N/A",
+          "id": "/database/result/acquired-result-bd9b0e09b9ab71e773ed/",
+          "rect": {
+            "top": 590.359375,
+            "bottom": 613.40625,
+            "left": 329.109375,
+            "right": 353.765625,
+            "width": 24.65625,
+            "height": 23.046875
+          },
+          "textRect": {
+            "top": 593.359375,
+            "bottom": 609.359375,
+            "left": 329.109375,
+            "right": 353.765625,
+            "width": 24.65625,
+            "height": 16
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "1.02",
+          "id": "/database/result/acquired-result-4c5bf4bd4db845f3977b/",
+          "rect": {
+            "top": 661.734375,
+            "bottom": 684.78125,
+            "left": 325.21875,
+            "right": 353.765625,
+            "width": 28.546875,
+            "height": 23.046875
+          },
+          "textRect": {
+            "top": 664.734375,
+            "bottom": 680.734375,
+            "left": 325.21875,
+            "right": 353.765625,
+            "width": 28.546875,
+            "height": 16
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "1.01",
+          "id": "/database/result/acquired-result-1b8baf7f46b4c6469251/",
+          "rect": {
+            "top": 733.109375,
+            "bottom": 756.15625,
+            "left": 325.21875,
+            "right": 353.765625,
+            "width": 28.546875,
+            "height": 23.046875
+          },
+          "textRect": {
+            "top": 736.109375,
+            "bottom": 752.109375,
+            "left": 325.21875,
+            "right": 353.765625,
+            "width": 28.546875,
+            "height": 16
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "1",
+          "id": "/database/result/acquired-result-3c431bbfa4dc9e4b203b/",
+          "rect": {
+            "top": 804.484375,
+            "bottom": 827.53125,
+            "left": 345.578125,
+            "right": 353.765625,
+            "width": 8.1875,
+            "height": 23.046875
+          },
+          "textRect": {
+            "top": 807.484375,
+            "bottom": 823.484375,
+            "left": 345.578125,
+            "right": 353.765625,
+            "width": 8.1875,
+            "height": 16
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        }
+      ]
+    },
+    {
+      "pass": true,
+      "name": "narrow-synthetic-text-stress values contained or locally scrollable"
+    },
+    {
+      "pass": true,
+      "name": "narrow-synthetic-text-stress no zero missingness boilerplate"
+    },
+    {
+      "pass": true,
+      "name": "narrow-synthetic-text-stress details initially collapsed"
+    },
+    {
+      "pass": true,
+      "name": "narrow-synthetic-text-stress evidence origin visible"
+    },
+    {
+      "pass": true,
+      "name": "narrow-synthetic-text-stress review metadata collapsed"
+    },
+    {
+      "pass": true,
+      "name": "narrow-synthetic-text-stress axis no wrap"
+    },
+    {
+      "pass": true,
+      "name": "narrow-synthetic-text-stress axis contained and distinct",
+      "detail": [
+        {
+          "text": "0.995",
+          "rect": {
+            "top": 374.96875,
+            "bottom": 394.15625,
+            "left": 37.25,
+            "right": 67.859375,
+            "width": 30.609375,
+            "height": 19.1875
+          },
+          "fragments": 1
+        },
+        {
+          "text": "1.05",
+          "rect": {
+            "top": 374.96875,
+            "bottom": 394.15625,
+            "left": 79.4921875,
+            "right": 103.2890625,
+            "width": 23.796875,
+            "height": 19.1875
+          },
+          "fragments": 1
+        },
+        {
+          "text": "1.1",
+          "rect": {
+            "top": 374.96875,
+            "bottom": 394.15625,
+            "left": 128.5625,
+            "right": 145.53125,
+            "width": 16.96875,
+            "height": 19.1875
+          },
+          "fragments": 1
+        }
+      ]
+    },
+    {
+      "pass": true,
+      "name": "narrow-synthetic-text-stress keyboard region focus visible",
+      "detail": {
+        "active": true,
+        "outline": "2px",
+        "style": "solid"
+      }
+    },
+    {
+      "pass": true,
+      "name": "narrow-synthetic-text-stress arrow scroll contained",
+      "detail": {
+        "before": 0,
+        "after": 40
+      }
+    },
+    {
+      "pass": true,
+      "name": "narrow-synthetic-text-stress score link focus visible",
+      "detail": {
+        "text": "-0.16666666666666666",
+        "outline": "2px",
+        "rect": {
+          "top": 447.609375,
+          "bottom": 470.65625,
+          "left": 129.640625,
+          "right": 285.765625,
+          "width": 156.125,
+          "height": 23.046875
+        }
+      }
+    },
+    {
+      "pass": true,
+      "name": "narrow-synthetic-text-stress keyboard can expose complete exact value",
+      "detail": {
+        "text": "-0.16666666666666666",
+        "id": "/database/result/acquired-result-1aabb1785acb4beefbfc/",
+        "rect": {
+          "top": 447.609375,
+          "bottom": 470.65625,
+          "left": 129.640625,
+          "right": 285.765625,
+          "width": 156.125,
+          "height": 23.046875
+        },
+        "textRect": {
+          "top": 450.609375,
+          "bottom": 466.609375,
+          "left": 129.640625,
+          "right": 285.765625,
+          "width": 156.125,
+          "height": 16
+        },
+        "fragments": 1,
+        "whiteSpace": "nowrap"
+      }
+    },
+    {
+      "pass": true,
+      "name": "narrow-atom3d-chart no page overflow",
+      "detail": 320
+    },
+    {
+      "pass": true,
+      "name": "narrow-atom3d-chart exact values single line",
+      "detail": [
+        {
+          "text": "1.893",
+          "id": "/database/result/atom3d-result-karimi-et-al-2019-lba-rmse-rmse/",
+          "rect": {
+            "top": 2938.875,
+            "bottom": 2961.921875,
+            "left": 249.46875,
+            "right": 286.203125,
+            "width": 36.734375,
+            "height": 23.046875
+          },
+          "textRect": {
+            "top": 2941.875,
+            "bottom": 2957.875,
+            "left": 249.46875,
+            "right": 286.203125,
+            "width": 36.734375,
+            "height": 16
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "1.601",
+          "id": "/database/result/atom3d-result-gnn-lba-rmse-rmse/",
+          "rect": {
+            "top": 3010.25,
+            "bottom": 3033.296875,
+            "left": 249.46875,
+            "right": 286.203125,
+            "width": 36.734375,
+            "height": 23.046875
+          },
+          "textRect": {
+            "top": 3013.25,
+            "bottom": 3029.25,
+            "left": 249.46875,
+            "right": 286.203125,
+            "width": 36.734375,
+            "height": 16
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "1.568",
+          "id": "/database/result/atom3d-result-enn-lba-rmse-rmse/",
+          "rect": {
+            "top": 3081.625,
+            "bottom": 3104.671875,
+            "left": 249.46875,
+            "right": 286.203125,
+            "width": 36.734375,
+            "height": 23.046875
+          },
+          "textRect": {
+            "top": 3084.625,
+            "bottom": 3100.625,
+            "left": 249.46875,
+            "right": 286.203125,
+            "width": 36.734375,
+            "height": 16
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "1.565",
+          "id": "/database/result/atom3d-result-zt-rk-et-al-2018-lba-rmse-rmse/",
+          "rect": {
+            "top": 3153,
+            "bottom": 3176.046875,
+            "left": 249.46875,
+            "right": 286.203125,
+            "width": 36.734375,
+            "height": 23.046875
+          },
+          "textRect": {
+            "top": 3156,
+            "bottom": 3172,
+            "left": 249.46875,
+            "right": 286.203125,
+            "width": 36.734375,
+            "height": 16
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "1.416",
+          "id": "/database/result/atom3d-result-3dcnn-lba-rmse-rmse/",
+          "rect": {
+            "top": 3224.375,
+            "bottom": 3247.421875,
+            "left": 249.46875,
+            "right": 286.203125,
+            "width": 36.734375,
+            "height": 23.046875
+          },
+          "textRect": {
+            "top": 3227.375,
+            "bottom": 3243.375,
+            "left": 249.46875,
+            "right": 286.203125,
+            "width": 36.734375,
+            "height": 16
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        }
+      ]
+    },
+    {
+      "pass": true,
+      "name": "narrow-atom3d-chart values contained or locally scrollable"
+    },
+    {
+      "pass": true,
+      "name": "narrow-atom3d-chart descending exact row identity"
+    },
+    {
+      "pass": true,
+      "name": "narrow-atom3d-chart no zero missingness boilerplate"
+    },
+    {
+      "pass": true,
+      "name": "narrow-atom3d-chart details initially collapsed"
+    },
+    {
+      "pass": true,
+      "name": "narrow-atom3d-chart evidence origin visible"
+    },
+    {
+      "pass": true,
+      "name": "narrow-atom3d-chart review metadata collapsed"
+    },
+    {
+      "pass": true,
+      "name": "narrow-atom3d-chart axis no wrap"
+    },
+    {
+      "pass": true,
+      "name": "narrow-atom3d-chart axis contained and distinct",
+      "detail": [
+        {
+          "text": "1.39",
+          "rect": {
+            "top": 2866.234375,
+            "bottom": 2885.421875,
+            "left": 38.671875,
+            "right": 62.46875,
+            "width": 23.796875,
+            "height": 19.1875
+          },
+          "fragments": 1
+        },
+        {
+          "text": "1.65",
+          "rect": {
+            "top": 2866.234375,
+            "bottom": 2885.421875,
+            "left": 103.1640625,
+            "right": 126.9609375,
+            "width": 23.796875,
+            "height": 19.1875
+          },
+          "fragments": 1
+        },
+        {
+          "text": "1.92",
+          "rect": {
+            "top": 2866.234375,
+            "bottom": 2885.421875,
+            "left": 167.65625,
+            "right": 191.453125,
+            "width": 23.796875,
+            "height": 19.1875
+          },
+          "fragments": 1
+        }
+      ]
+    },
+    {
+      "pass": true,
+      "name": "narrow-atom3d-chart keyboard region focus visible",
+      "detail": {
+        "active": true,
+        "outline": "2px",
+        "style": "solid"
+      }
+    },
+    {
+      "pass": true,
+      "name": "narrow-atom3d-chart score link focus visible",
+      "detail": {
+        "text": "1.893",
+        "outline": "2px",
+        "rect": {
+          "top": 2938.875,
+          "bottom": 2961.921875,
+          "left": 249.46875,
+          "right": 286.203125,
+          "width": 36.734375,
+          "height": 23.046875
+        }
+      }
+    },
+    {
+      "pass": true,
+      "name": "narrow-atom3d-chart keyboard can expose complete exact value",
+      "detail": {
+        "text": "1.893",
+        "id": "/database/result/atom3d-result-karimi-et-al-2019-lba-rmse-rmse/",
+        "rect": {
+          "top": 2938.875,
+          "bottom": 2961.921875,
+          "left": 249.46875,
+          "right": 286.203125,
+          "width": 36.734375,
+          "height": 23.046875
+        },
+        "textRect": {
+          "top": 2941.875,
+          "bottom": 2957.875,
+          "left": 249.46875,
+          "right": 286.203125,
+          "width": 36.734375,
+          "height": 16
+        },
+        "fragments": 1,
+        "whiteSpace": "nowrap"
+      }
+    },
+    {
+      "pass": true,
+      "name": "narrow details keyboard accessible"
+    },
+    {
+      "pass": true,
+      "name": "narrow-atom3d-table no page overflow",
+      "detail": 320
+    },
+    {
+      "pass": true,
+      "name": "narrow-atom3d-table exact values single line",
+      "detail": [
+        {
+          "text": "1.893",
+          "id": "/database/result/atom3d-result-karimi-et-al-2019-lba-rmse-rmse/",
+          "rect": {
+            "top": 1019.375,
+            "bottom": 1033.375,
+            "left": 183,
+            "right": 216.171875,
+            "width": 33.171875,
+            "height": 14
+          },
+          "textRect": {
+            "top": 1019.375,
+            "bottom": 1033.375,
+            "left": 183,
+            "right": 216.171875,
+            "width": 33.171875,
+            "height": 14
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "1.601",
+          "id": "/database/result/atom3d-result-gnn-lba-rmse-rmse/",
+          "rect": {
+            "top": 1243.46875,
+            "bottom": 1257.46875,
+            "left": 183,
+            "right": 216.171875,
+            "width": 33.171875,
+            "height": 14
+          },
+          "textRect": {
+            "top": 1243.46875,
+            "bottom": 1257.46875,
+            "left": 183,
+            "right": 216.171875,
+            "width": 33.171875,
+            "height": 14
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "1.568",
+          "id": "/database/result/atom3d-result-enn-lba-rmse-rmse/",
+          "rect": {
+            "top": 1447.765625,
+            "bottom": 1461.765625,
+            "left": 183,
+            "right": 216.171875,
+            "width": 33.171875,
+            "height": 14
+          },
+          "textRect": {
+            "top": 1447.765625,
+            "bottom": 1461.765625,
+            "left": 183,
+            "right": 216.171875,
+            "width": 33.171875,
+            "height": 14
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "1.565",
+          "id": "/database/result/atom3d-result-zt-rk-et-al-2018-lba-rmse-rmse/",
+          "rect": {
+            "top": 1652.0625,
+            "bottom": 1666.0625,
+            "left": 183,
+            "right": 216.171875,
+            "width": 33.171875,
+            "height": 14
+          },
+          "textRect": {
+            "top": 1652.0625,
+            "bottom": 1666.0625,
+            "left": 183,
+            "right": 216.171875,
+            "width": 33.171875,
+            "height": 14
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "1.416",
+          "id": "/database/result/atom3d-result-3dcnn-lba-rmse-rmse/",
+          "rect": {
+            "top": 1876.15625,
+            "bottom": 1890.15625,
+            "left": 183,
+            "right": 216.171875,
+            "width": 33.171875,
+            "height": 14
+          },
+          "textRect": {
+            "top": 1876.15625,
+            "bottom": 1890.15625,
+            "left": 183,
+            "right": 216.171875,
+            "width": 33.171875,
+            "height": 14
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        }
+      ]
+    },
+    {
+      "pass": true,
+      "name": "narrow-atom3d-table values contained or locally scrollable"
+    },
+    {
+      "pass": true,
+      "name": "narrow-atom3d-table descending exact row identity"
+    },
+    {
+      "pass": true,
+      "name": "narrow-atom3d-table no zero missingness boilerplate"
+    },
+    {
+      "pass": true,
+      "name": "narrow-atom3d-table details initially collapsed"
+    },
+    {
+      "pass": true,
+      "name": "narrow-atom3d-table evidence origin visible"
+    },
+    {
+      "pass": true,
+      "name": "narrow-atom3d-table review metadata collapsed"
+    },
+    {
+      "pass": true,
+      "name": "narrow-atom3d-table keyboard region focus visible",
+      "detail": {
+        "active": true,
+        "outline": "2px",
+        "style": "solid"
+      }
+    },
+    {
+      "pass": true,
+      "name": "narrow-atom3d-table arrow scroll contained",
+      "detail": {
+        "before": 0,
+        "after": 40
+      }
+    },
+    {
+      "pass": true,
+      "name": "narrow-atom3d-table score link focus visible",
+      "detail": {
+        "text": "1.893",
+        "outline": "2px",
+        "rect": {
+          "top": -15.625,
+          "bottom": -1.625,
+          "left": 143,
+          "right": 176.171875,
+          "width": 33.171875,
+          "height": 14
+        }
+      }
+    },
+    {
+      "pass": true,
+      "name": "narrow-atom3d-table keyboard can expose complete exact value",
+      "detail": {
+        "text": "1.893",
+        "id": "/database/result/atom3d-result-karimi-et-al-2019-lba-rmse-rmse/",
+        "rect": {
+          "top": -15.625,
+          "bottom": -1.625,
+          "left": 143,
+          "right": 176.171875,
+          "width": 33.171875,
+          "height": 14
+        },
+        "textRect": {
+          "top": -15.625,
+          "bottom": -1.625,
+          "left": 143,
+          "right": 176.171875,
+          "width": 33.171875,
+          "height": 14
+        },
+        "fragments": 1,
+        "whiteSpace": "nowrap"
+      }
+    },
+    {
+      "pass": true,
+      "name": "narrow-long-values-chart no page overflow",
+      "detail": 320
+    },
+    {
+      "pass": true,
+      "name": "narrow-long-values-chart exact values single line",
+      "detail": [
+        {
+          "text": "0.3452228016183431",
+          "id": "/database/result/acquired-result-dc116904277b3e1ba2a7/",
+          "rect": {
+            "top": 2517.265625,
+            "bottom": 2540.3125,
+            "left": 165.171875,
+            "right": 308.328125,
+            "width": 143.15625,
+            "height": 23.046875
+          },
+          "textRect": {
+            "top": 2520.265625,
+            "bottom": 2536.265625,
+            "left": 165.171875,
+            "right": 308.328125,
+            "width": 143.15625,
+            "height": 16
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "0.28065901722124237",
+          "id": "/database/result/acquired-result-65f7ef8bcb8f5bb978f0/",
+          "rect": {
+            "top": 2608.796875,
+            "bottom": 2631.84375,
+            "left": 157,
+            "right": 308.328125,
+            "width": 151.328125,
+            "height": 23.046875
+          },
+          "textRect": {
+            "top": 2611.796875,
+            "bottom": 2627.796875,
+            "left": 157,
+            "right": 308.328125,
+            "width": 151.328125,
+            "height": 16
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "0.2610692147804768",
+          "id": "/database/result/acquired-result-e432d9e0c9c166763dd0/",
+          "rect": {
+            "top": 2700.328125,
+            "bottom": 2723.375,
+            "left": 165.171875,
+            "right": 308.328125,
+            "width": 143.15625,
+            "height": 23.046875
+          },
+          "textRect": {
+            "top": 2703.328125,
+            "bottom": 2719.328125,
+            "left": 165.171875,
+            "right": 308.328125,
+            "width": 143.15625,
+            "height": 16
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "0.25442022176759105",
+          "id": "/database/result/acquired-result-6bae6118e71a42300876/",
+          "rect": {
+            "top": 2791.859375,
+            "bottom": 2814.90625,
+            "left": 157,
+            "right": 308.328125,
+            "width": 151.328125,
+            "height": 23.046875
+          },
+          "textRect": {
+            "top": 2794.859375,
+            "bottom": 2810.859375,
+            "left": 157,
+            "right": 308.328125,
+            "width": 151.328125,
+            "height": 16
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "0.23791327322756758",
+          "id": "/database/result/acquired-result-02f5550f6c8104aa6d3d/",
+          "rect": {
+            "top": 2883.390625,
+            "bottom": 2906.4375,
+            "left": 157,
+            "right": 308.328125,
+            "width": 151.328125,
+            "height": 23.046875
+          },
+          "textRect": {
+            "top": 2886.390625,
+            "bottom": 2902.390625,
+            "left": 157,
+            "right": 308.328125,
+            "width": 151.328125,
+            "height": 16
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "0.23713673288595002",
+          "id": "/database/result/acquired-result-1ec9cd6219ece8dd642a/",
+          "rect": {
+            "top": 2974.921875,
+            "bottom": 2997.96875,
+            "left": 157,
+            "right": 308.328125,
+            "width": 151.328125,
+            "height": 23.046875
+          },
+          "textRect": {
+            "top": 2977.921875,
+            "bottom": 2993.921875,
+            "left": 157,
+            "right": 308.328125,
+            "width": 151.328125,
+            "height": 16
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "0.23285717331095024",
+          "id": "/database/result/acquired-result-f7d1c76d83014e8486fb/",
+          "rect": {
+            "top": 3066.453125,
+            "bottom": 3089.5,
+            "left": 157,
+            "right": 308.328125,
+            "width": 151.328125,
+            "height": 23.046875
+          },
+          "textRect": {
+            "top": 3069.453125,
+            "bottom": 3085.453125,
+            "left": 157,
+            "right": 308.328125,
+            "width": 151.328125,
+            "height": 16
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "0.23243991676359685",
+          "id": "/database/result/acquired-result-69d1fb1102037843451c/",
+          "rect": {
+            "top": 3157.984375,
+            "bottom": 3181.03125,
+            "left": 157,
+            "right": 308.328125,
+            "width": 151.328125,
+            "height": 23.046875
+          },
+          "textRect": {
+            "top": 3160.984375,
+            "bottom": 3176.984375,
+            "left": 157,
+            "right": 308.328125,
+            "width": 151.328125,
+            "height": 16
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "0.23146482134704682",
+          "id": "/database/result/acquired-result-5c4ce0f1236d0fdd7634/",
+          "rect": {
+            "top": 3249.515625,
+            "bottom": 3272.5625,
+            "left": 157,
+            "right": 308.328125,
+            "width": 151.328125,
+            "height": 23.046875
+          },
+          "textRect": {
+            "top": 3252.515625,
+            "bottom": 3268.515625,
+            "left": 157,
+            "right": 308.328125,
+            "width": 151.328125,
+            "height": 16
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "0.23119630838352237",
+          "id": "/database/result/acquired-result-9d5bdffbd8959fa30f5b/",
+          "rect": {
+            "top": 3341.046875,
+            "bottom": 3364.09375,
+            "left": 157,
+            "right": 308.328125,
+            "width": 151.328125,
+            "height": 23.046875
+          },
+          "textRect": {
+            "top": 3344.046875,
+            "bottom": 3360.046875,
+            "left": 157,
+            "right": 308.328125,
+            "width": 151.328125,
+            "height": 16
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "0.23088734410967257",
+          "id": "/database/result/acquired-result-72f2ba10bda6a999c2e6/",
+          "rect": {
+            "top": 3432.578125,
+            "bottom": 3455.625,
+            "left": 157,
+            "right": 308.328125,
+            "width": 151.328125,
+            "height": 23.046875
+          },
+          "textRect": {
+            "top": 3435.578125,
+            "bottom": 3451.578125,
+            "left": 157,
+            "right": 308.328125,
+            "width": 151.328125,
+            "height": 16
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "0.23020876921084255",
+          "id": "/database/result/acquired-result-35c3b2d321fe6aa6ec48/",
+          "rect": {
+            "top": 3524.109375,
+            "bottom": 3547.15625,
+            "left": 157,
+            "right": 308.328125,
+            "width": 151.328125,
+            "height": 23.046875
+          },
+          "textRect": {
+            "top": 3527.109375,
+            "bottom": 3543.109375,
+            "left": 157,
+            "right": 308.328125,
+            "width": 151.328125,
+            "height": 16
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        }
+      ]
+    },
+    {
+      "pass": true,
+      "name": "narrow-long-values-chart values contained or locally scrollable"
+    },
+    {
+      "pass": true,
+      "name": "narrow-long-values-chart descending exact row identity"
+    },
+    {
+      "pass": true,
+      "name": "narrow-long-values-chart no zero missingness boilerplate"
+    },
+    {
+      "pass": true,
+      "name": "narrow-long-values-chart details initially collapsed"
+    },
+    {
+      "pass": true,
+      "name": "narrow-long-values-chart evidence origin visible"
+    },
+    {
+      "pass": true,
+      "name": "narrow-long-values-chart review metadata collapsed"
+    },
+    {
+      "pass": true,
+      "name": "narrow-long-values-chart axis no wrap"
+    },
+    {
+      "pass": true,
+      "name": "narrow-long-values-chart axis contained and distinct",
+      "detail": [
+        {
+          "text": "0.168",
+          "rect": {
+            "top": 2424.46875,
+            "bottom": 2443.65625,
+            "left": 37.25,
+            "right": 67.859375,
+            "width": 30.609375,
+            "height": 19.1875
+          },
+          "fragments": 1
+        },
+        {
+          "text": "0.261",
+          "rect": {
+            "top": 2424.46875,
+            "bottom": 2443.65625,
+            "left": 76.0859375,
+            "right": 106.6953125,
+            "width": 30.609375,
+            "height": 19.1875
+          },
+          "fragments": 1
+        },
+        {
+          "text": "0.355",
+          "rect": {
+            "top": 2424.46875,
+            "bottom": 2443.65625,
+            "left": 114.921875,
+            "right": 145.53125,
+            "width": 30.609375,
+            "height": 19.1875
+          },
+          "fragments": 1
+        }
+      ]
+    },
+    {
+      "pass": true,
+      "name": "narrow-long-values-chart keyboard region focus visible",
+      "detail": {
+        "active": true,
+        "outline": "2px",
+        "style": "solid"
+      }
+    },
+    {
+      "pass": true,
+      "name": "narrow-long-values-chart arrow scroll contained",
+      "detail": {
+        "before": 0,
+        "after": 22
+      }
+    },
+    {
+      "pass": true,
+      "name": "narrow-long-values-chart score link focus visible",
+      "detail": {
+        "text": "0.3452228016183431",
+        "outline": "2px",
+        "rect": {
+          "top": 389.265625,
+          "bottom": 412.3125,
+          "left": 143.171875,
+          "right": 286.328125,
+          "width": 143.15625,
+          "height": 23.046875
+        }
+      }
+    },
+    {
+      "pass": true,
+      "name": "narrow-long-values-chart keyboard can expose complete exact value",
+      "detail": {
+        "text": "0.3452228016183431",
+        "id": "/database/result/acquired-result-dc116904277b3e1ba2a7/",
+        "rect": {
+          "top": 389.265625,
+          "bottom": 412.3125,
+          "left": 143.171875,
+          "right": 286.328125,
+          "width": 143.15625,
+          "height": 23.046875
+        },
+        "textRect": {
+          "top": 392.265625,
+          "bottom": 408.265625,
+          "left": 143.171875,
+          "right": 286.328125,
+          "width": 143.15625,
+          "height": 16
+        },
+        "fragments": 1,
+        "whiteSpace": "nowrap"
+      }
+    },
+    {
+      "pass": true,
+      "name": "narrow-long-values-table no page overflow",
+      "detail": 320
+    },
+    {
+      "pass": true,
+      "name": "narrow-long-values-table exact values single line",
+      "detail": [
+        {
+          "text": "0.3452228016183431",
+          "id": "/database/result/acquired-result-dc116904277b3e1ba2a7/",
+          "rect": {
+            "top": 434.609375,
+            "bottom": 448.609375,
+            "left": 183,
+            "right": 312.234375,
+            "width": 129.234375,
+            "height": 14
+          },
+          "textRect": {
+            "top": 434.609375,
+            "bottom": 448.609375,
+            "left": 183,
+            "right": 312.234375,
+            "width": 129.234375,
+            "height": 14
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "0.28065901722124237",
+          "id": "/database/result/acquired-result-65f7ef8bcb8f5bb978f0/",
+          "rect": {
+            "top": 678.5,
+            "bottom": 692.5,
+            "left": 183,
+            "right": 319.625,
+            "width": 136.625,
+            "height": 14
+          },
+          "textRect": {
+            "top": 678.5,
+            "bottom": 692.5,
+            "left": 183,
+            "right": 319.625,
+            "width": 136.625,
+            "height": 14
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "0.2610692147804768",
+          "id": "/database/result/acquired-result-e432d9e0c9c166763dd0/",
+          "rect": {
+            "top": 942.1875,
+            "bottom": 956.1875,
+            "left": 183,
+            "right": 312.234375,
+            "width": 129.234375,
+            "height": 14
+          },
+          "textRect": {
+            "top": 942.1875,
+            "bottom": 956.1875,
+            "left": 183,
+            "right": 312.234375,
+            "width": 129.234375,
+            "height": 14
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "0.25442022176759105",
+          "id": "/database/result/acquired-result-6bae6118e71a42300876/",
+          "rect": {
+            "top": 1205.875,
+            "bottom": 1219.875,
+            "left": 183,
+            "right": 319.625,
+            "width": 136.625,
+            "height": 14
+          },
+          "textRect": {
+            "top": 1205.875,
+            "bottom": 1219.875,
+            "left": 183,
+            "right": 319.625,
+            "width": 136.625,
+            "height": 14
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "0.23791327322756758",
+          "id": "/database/result/acquired-result-02f5550f6c8104aa6d3d/",
+          "rect": {
+            "top": 1469.5625,
+            "bottom": 1483.5625,
+            "left": 183,
+            "right": 319.625,
+            "width": 136.625,
+            "height": 14
+          },
+          "textRect": {
+            "top": 1469.5625,
+            "bottom": 1483.5625,
+            "left": 183,
+            "right": 319.625,
+            "width": 136.625,
+            "height": 14
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "0.23713673288595002",
+          "id": "/database/result/acquired-result-1ec9cd6219ece8dd642a/",
+          "rect": {
+            "top": 1733.25,
+            "bottom": 1747.25,
+            "left": 183,
+            "right": 319.625,
+            "width": 136.625,
+            "height": 14
+          },
+          "textRect": {
+            "top": 1733.25,
+            "bottom": 1747.25,
+            "left": 183,
+            "right": 319.625,
+            "width": 136.625,
+            "height": 14
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "0.23285717331095024",
+          "id": "/database/result/acquired-result-f7d1c76d83014e8486fb/",
+          "rect": {
+            "top": 1996.9375,
+            "bottom": 2010.9375,
+            "left": 183,
+            "right": 319.625,
+            "width": 136.625,
+            "height": 14
+          },
+          "textRect": {
+            "top": 1996.9375,
+            "bottom": 2010.9375,
+            "left": 183,
+            "right": 319.625,
+            "width": 136.625,
+            "height": 14
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "0.23243991676359685",
+          "id": "/database/result/acquired-result-69d1fb1102037843451c/",
+          "rect": {
+            "top": 2260.625,
+            "bottom": 2274.625,
+            "left": 183,
+            "right": 319.625,
+            "width": 136.625,
+            "height": 14
+          },
+          "textRect": {
+            "top": 2260.625,
+            "bottom": 2274.625,
+            "left": 183,
+            "right": 319.625,
+            "width": 136.625,
+            "height": 14
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "0.23146482134704682",
+          "id": "/database/result/acquired-result-5c4ce0f1236d0fdd7634/",
+          "rect": {
+            "top": 2524.3125,
+            "bottom": 2538.3125,
+            "left": 183,
+            "right": 319.625,
+            "width": 136.625,
+            "height": 14
+          },
+          "textRect": {
+            "top": 2524.3125,
+            "bottom": 2538.3125,
+            "left": 183,
+            "right": 319.625,
+            "width": 136.625,
+            "height": 14
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "0.23119630838352237",
+          "id": "/database/result/acquired-result-9d5bdffbd8959fa30f5b/",
+          "rect": {
+            "top": 2788,
+            "bottom": 2802,
+            "left": 183,
+            "right": 319.625,
+            "width": 136.625,
+            "height": 14
+          },
+          "textRect": {
+            "top": 2788,
+            "bottom": 2802,
+            "left": 183,
+            "right": 319.625,
+            "width": 136.625,
+            "height": 14
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "0.23088734410967257",
+          "id": "/database/result/acquired-result-72f2ba10bda6a999c2e6/",
+          "rect": {
+            "top": 3051.6875,
+            "bottom": 3065.6875,
+            "left": 183,
+            "right": 319.625,
+            "width": 136.625,
+            "height": 14
+          },
+          "textRect": {
+            "top": 3051.6875,
+            "bottom": 3065.6875,
+            "left": 183,
+            "right": 319.625,
+            "width": 136.625,
+            "height": 14
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "0.23020876921084255",
+          "id": "/database/result/acquired-result-35c3b2d321fe6aa6ec48/",
+          "rect": {
+            "top": 3315.375,
+            "bottom": 3329.375,
+            "left": 183,
+            "right": 319.625,
+            "width": 136.625,
+            "height": 14
+          },
+          "textRect": {
+            "top": 3315.375,
+            "bottom": 3329.375,
+            "left": 183,
+            "right": 319.625,
+            "width": 136.625,
+            "height": 14
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        }
+      ]
+    },
+    {
+      "pass": true,
+      "name": "narrow-long-values-table values contained or locally scrollable"
+    },
+    {
+      "pass": true,
+      "name": "narrow-long-values-table descending exact row identity"
+    },
+    {
+      "pass": true,
+      "name": "narrow-long-values-table no zero missingness boilerplate"
+    },
+    {
+      "pass": true,
+      "name": "narrow-long-values-table details initially collapsed"
+    },
+    {
+      "pass": true,
+      "name": "narrow-long-values-table evidence origin visible"
+    },
+    {
+      "pass": true,
+      "name": "narrow-long-values-table review metadata collapsed"
+    },
+    {
+      "pass": true,
+      "name": "narrow-long-values-table keyboard region focus visible",
+      "detail": {
+        "active": true,
+        "outline": "2px",
+        "style": "solid"
+      }
+    },
+    {
+      "pass": true,
+      "name": "narrow-long-values-table arrow scroll contained",
+      "detail": {
+        "before": 0,
+        "after": 40
+      }
+    },
+    {
+      "pass": true,
+      "name": "narrow-long-values-table score link focus visible",
+      "detail": {
+        "text": "0.3452228016183431",
+        "outline": "2px",
+        "rect": {
+          "top": 114.609375,
+          "bottom": 128.609375,
+          "left": 95,
+          "right": 224.234375,
+          "width": 129.234375,
+          "height": 14
+        }
+      }
+    },
+    {
+      "pass": true,
+      "name": "narrow-long-values-table keyboard can expose complete exact value",
+      "detail": {
+        "text": "0.3452228016183431",
+        "id": "/database/result/acquired-result-dc116904277b3e1ba2a7/",
+        "rect": {
+          "top": 114.609375,
+          "bottom": 128.609375,
+          "left": 95,
+          "right": 224.234375,
+          "width": 129.234375,
+          "height": 14
+        },
+        "textRect": {
+          "top": 114.609375,
+          "bottom": 128.609375,
+          "left": 95,
+          "right": 224.234375,
+          "width": 129.234375,
+          "height": 14
+        },
+        "fragments": 1,
+        "whiteSpace": "nowrap"
+      }
+    },
+    {
+      "pass": true,
+      "name": "mobile-beeline-chart no page overflow",
+      "detail": 390
+    },
+    {
+      "pass": true,
+      "name": "mobile-beeline-chart exact values single line",
+      "detail": [
+        {
+          "text": "1.09",
+          "id": "/database/result/acquired-result-1aabb1785acb4beefbfc/",
+          "rect": {
+            "top": 2729.59375,
+            "bottom": 2752.640625,
+            "left": 327.65625,
+            "right": 356.203125,
+            "width": 28.546875,
+            "height": 23.046875
+          },
+          "textRect": {
+            "top": 2732.59375,
+            "bottom": 2748.59375,
+            "left": 327.65625,
+            "right": 356.203125,
+            "width": 28.546875,
+            "height": 16
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "1.06",
+          "id": "/database/result/acquired-result-dbea759bf5cee5e11543/",
+          "rect": {
+            "top": 2800.96875,
+            "bottom": 2824.015625,
+            "left": 327.65625,
+            "right": 356.203125,
+            "width": 28.546875,
+            "height": 23.046875
+          },
+          "textRect": {
+            "top": 2803.96875,
+            "bottom": 2819.96875,
+            "left": 327.65625,
+            "right": 356.203125,
+            "width": 28.546875,
+            "height": 16
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "1.05",
+          "id": "/database/result/acquired-result-bd9b0e09b9ab71e773ed/",
+          "rect": {
+            "top": 2872.34375,
+            "bottom": 2895.390625,
+            "left": 327.65625,
+            "right": 356.203125,
+            "width": 28.546875,
+            "height": 23.046875
+          },
+          "textRect": {
+            "top": 2875.34375,
+            "bottom": 2891.34375,
+            "left": 327.65625,
+            "right": 356.203125,
+            "width": 28.546875,
+            "height": 16
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "1.02",
+          "id": "/database/result/acquired-result-4c5bf4bd4db845f3977b/",
+          "rect": {
+            "top": 2943.71875,
+            "bottom": 2966.765625,
+            "left": 327.65625,
+            "right": 356.203125,
+            "width": 28.546875,
+            "height": 23.046875
+          },
+          "textRect": {
+            "top": 2946.71875,
+            "bottom": 2962.71875,
+            "left": 327.65625,
+            "right": 356.203125,
+            "width": 28.546875,
+            "height": 16
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "1.01",
+          "id": "/database/result/acquired-result-1b8baf7f46b4c6469251/",
+          "rect": {
+            "top": 3015.09375,
+            "bottom": 3038.140625,
+            "left": 327.65625,
+            "right": 356.203125,
+            "width": 28.546875,
+            "height": 23.046875
+          },
+          "textRect": {
+            "top": 3018.09375,
+            "bottom": 3034.09375,
+            "left": 327.65625,
+            "right": 356.203125,
+            "width": 28.546875,
+            "height": 16
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "1",
+          "id": "/database/result/acquired-result-3c431bbfa4dc9e4b203b/",
+          "rect": {
+            "top": 3086.46875,
+            "bottom": 3109.515625,
+            "left": 348.015625,
+            "right": 356.203125,
+            "width": 8.1875,
+            "height": 23.046875
+          },
+          "textRect": {
+            "top": 3089.46875,
+            "bottom": 3105.46875,
+            "left": 348.015625,
+            "right": 356.203125,
+            "width": 8.1875,
+            "height": 16
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        }
+      ]
+    },
+    {
+      "pass": true,
+      "name": "mobile-beeline-chart values contained or locally scrollable"
+    },
+    {
+      "pass": true,
+      "name": "mobile-beeline-chart descending exact row identity"
+    },
+    {
+      "pass": true,
+      "name": "mobile-beeline-chart no zero missingness boilerplate"
+    },
+    {
+      "pass": true,
+      "name": "mobile-beeline-chart details initially collapsed"
+    },
+    {
+      "pass": true,
+      "name": "mobile-beeline-chart evidence origin visible"
+    },
+    {
+      "pass": true,
+      "name": "mobile-beeline-chart review metadata collapsed"
+    },
+    {
+      "pass": true,
+      "name": "mobile-beeline-chart axis no wrap"
+    },
+    {
+      "pass": true,
+      "name": "mobile-beeline-chart axis contained and distinct",
+      "detail": [
+        {
+          "text": "0.995",
+          "rect": {
+            "top": 2656.953125,
+            "bottom": 2676.140625,
+            "left": 40.765625,
+            "right": 71.375,
+            "width": 30.609375,
+            "height": 19.1875
+          },
+          "fragments": 1
+        },
+        {
+          "text": "1.05",
+          "rect": {
+            "top": 2656.953125,
+            "bottom": 2676.140625,
+            "left": 138.1640625,
+            "right": 161.9609375,
+            "width": 23.796875,
+            "height": 19.1875
+          },
+          "fragments": 1
+        },
+        {
+          "text": "1.1",
+          "rect": {
+            "top": 2656.953125,
+            "bottom": 2676.140625,
+            "left": 242.390625,
+            "right": 259.359375,
+            "width": 16.96875,
+            "height": 19.1875
+          },
+          "fragments": 1
+        }
+      ]
+    },
+    {
+      "pass": true,
+      "name": "mobile-beeline-chart keyboard region focus visible",
+      "detail": {
+        "active": true,
+        "outline": "2px",
+        "style": "solid"
+      }
+    },
+    {
+      "pass": true,
+      "name": "mobile-beeline-chart score link focus visible",
+      "detail": {
+        "text": "1.09",
+        "outline": "2px",
+        "rect": {
+          "top": 2729.59375,
+          "bottom": 2752.640625,
+          "left": 327.65625,
+          "right": 356.203125,
+          "width": 28.546875,
+          "height": 23.046875
+        }
+      }
+    },
+    {
+      "pass": true,
+      "name": "mobile-beeline-chart keyboard can expose complete exact value",
+      "detail": {
+        "text": "1.09",
+        "id": "/database/result/acquired-result-1aabb1785acb4beefbfc/",
+        "rect": {
+          "top": 2729.59375,
+          "bottom": 2752.640625,
+          "left": 327.65625,
+          "right": 356.203125,
+          "width": 28.546875,
+          "height": 23.046875
+        },
+        "textRect": {
+          "top": 2732.59375,
+          "bottom": 2748.59375,
+          "left": 327.65625,
+          "right": 356.203125,
+          "width": 28.546875,
+          "height": 16
+        },
+        "fragments": 1,
+        "whiteSpace": "nowrap"
+      }
+    },
+    {
+      "pass": true,
+      "name": "mobile-beeline-table no page overflow",
+      "detail": 390
+    },
+    {
+      "pass": true,
+      "name": "mobile-beeline-table exact values single line",
+      "detail": [
+        {
+          "text": "1.09",
+          "id": "/database/result/acquired-result-1aabb1785acb4beefbfc/",
+          "rect": {
+            "top": 450.09375,
+            "bottom": 464.09375,
+            "left": 183,
+            "right": 208.78125,
+            "width": 25.78125,
+            "height": 14
+          },
+          "textRect": {
+            "top": 450.09375,
+            "bottom": 464.09375,
+            "left": 183,
+            "right": 208.78125,
+            "width": 25.78125,
+            "height": 14
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "1.06",
+          "id": "/database/result/acquired-result-dbea759bf5cee5e11543/",
+          "rect": {
+            "top": 674.1875,
+            "bottom": 688.1875,
+            "left": 183,
+            "right": 208.78125,
+            "width": 25.78125,
+            "height": 14
+          },
+          "textRect": {
+            "top": 674.1875,
+            "bottom": 688.1875,
+            "left": 183,
+            "right": 208.78125,
+            "width": 25.78125,
+            "height": 14
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "1.05",
+          "id": "/database/result/acquired-result-bd9b0e09b9ab71e773ed/",
+          "rect": {
+            "top": 898.28125,
+            "bottom": 912.28125,
+            "left": 183,
+            "right": 208.78125,
+            "width": 25.78125,
+            "height": 14
+          },
+          "textRect": {
+            "top": 898.28125,
+            "bottom": 912.28125,
+            "left": 183,
+            "right": 208.78125,
+            "width": 25.78125,
+            "height": 14
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "1.02",
+          "id": "/database/result/acquired-result-4c5bf4bd4db845f3977b/",
+          "rect": {
+            "top": 1122.375,
+            "bottom": 1136.375,
+            "left": 183,
+            "right": 208.78125,
+            "width": 25.78125,
+            "height": 14
+          },
+          "textRect": {
+            "top": 1122.375,
+            "bottom": 1136.375,
+            "left": 183,
+            "right": 208.78125,
+            "width": 25.78125,
+            "height": 14
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "1.01",
+          "id": "/database/result/acquired-result-1b8baf7f46b4c6469251/",
+          "rect": {
+            "top": 1346.46875,
+            "bottom": 1360.46875,
+            "left": 183,
+            "right": 208.78125,
+            "width": 25.78125,
+            "height": 14
+          },
+          "textRect": {
+            "top": 1346.46875,
+            "bottom": 1360.46875,
+            "left": 183,
+            "right": 208.78125,
+            "width": 25.78125,
+            "height": 14
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "1",
+          "id": "/database/result/acquired-result-3c431bbfa4dc9e4b203b/",
+          "rect": {
+            "top": 1570.5625,
+            "bottom": 1584.5625,
+            "left": 183,
+            "right": 190.390625,
+            "width": 7.390625,
+            "height": 14
+          },
+          "textRect": {
+            "top": 1570.5625,
+            "bottom": 1584.5625,
+            "left": 183,
+            "right": 190.390625,
+            "width": 7.390625,
+            "height": 14
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        }
+      ]
+    },
+    {
+      "pass": true,
+      "name": "mobile-beeline-table values contained or locally scrollable"
+    },
+    {
+      "pass": true,
+      "name": "mobile-beeline-table descending exact row identity"
+    },
+    {
+      "pass": true,
+      "name": "mobile-beeline-table no zero missingness boilerplate"
+    },
+    {
+      "pass": true,
+      "name": "mobile-beeline-table details initially collapsed"
+    },
+    {
+      "pass": true,
+      "name": "mobile-beeline-table evidence origin visible"
+    },
+    {
+      "pass": true,
+      "name": "mobile-beeline-table review metadata collapsed"
+    },
+    {
+      "pass": true,
+      "name": "mobile-beeline-table keyboard region focus visible",
+      "detail": {
+        "active": true,
+        "outline": "2px",
+        "style": "solid"
+      }
+    },
+    {
+      "pass": true,
+      "name": "mobile-beeline-table arrow scroll contained",
+      "detail": {
+        "before": 0,
+        "after": 40
+      }
+    },
+    {
+      "pass": true,
+      "name": "mobile-beeline-table score link focus visible",
+      "detail": {
+        "text": "1.09",
+        "outline": "2px",
+        "rect": {
+          "top": 114.09375,
+          "bottom": 128.09375,
+          "left": 182,
+          "right": 207.78125,
+          "width": 25.78125,
+          "height": 14
+        }
+      }
+    },
+    {
+      "pass": true,
+      "name": "mobile-beeline-table keyboard can expose complete exact value",
+      "detail": {
+        "text": "1.09",
+        "id": "/database/result/acquired-result-1aabb1785acb4beefbfc/",
+        "rect": {
+          "top": 114.09375,
+          "bottom": 128.09375,
+          "left": 182,
+          "right": 207.78125,
+          "width": 25.78125,
+          "height": 14
+        },
+        "textRect": {
+          "top": 114.09375,
+          "bottom": 128.09375,
+          "left": 182,
+          "right": 207.78125,
+          "width": 25.78125,
+          "height": 14
+        },
+        "fragments": 1,
+        "whiteSpace": "nowrap"
+      }
+    },
+    {
+      "pass": true,
+      "name": "mobile-synthetic-text-stress no page overflow",
+      "detail": 390
+    },
+    {
+      "pass": true,
+      "name": "mobile-synthetic-text-stress exact values single line",
+      "detail": [
+        {
+          "text": "-0.16666666666666666",
+          "id": "/database/result/acquired-result-1aabb1785acb4beefbfc/",
+          "rect": {
+            "top": 447.59375,
+            "bottom": 470.640625,
+            "left": 200.078125,
+            "right": 356.203125,
+            "width": 156.125,
+            "height": 23.046875
+          },
+          "textRect": {
+            "top": 450.59375,
+            "bottom": 466.59375,
+            "left": 200.078125,
+            "right": 356.203125,
+            "width": 156.125,
+            "height": 16
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "1.234567890123456789e-120",
+          "id": "/database/result/acquired-result-dbea759bf5cee5e11543/",
+          "rect": {
+            "top": 518.96875,
+            "bottom": 542.015625,
+            "left": 159.4375,
+            "right": 356.203125,
+            "width": 196.765625,
+            "height": 23.046875
+          },
+          "textRect": {
+            "top": 521.96875,
+            "bottom": 537.96875,
+            "left": 159.4375,
+            "right": 356.203125,
+            "width": 196.765625,
+            "height": 16
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "N/A",
+          "id": "/database/result/acquired-result-bd9b0e09b9ab71e773ed/",
+          "rect": {
+            "top": 590.34375,
+            "bottom": 613.390625,
+            "left": 331.546875,
+            "right": 356.203125,
+            "width": 24.65625,
+            "height": 23.046875
+          },
+          "textRect": {
+            "top": 593.34375,
+            "bottom": 609.34375,
+            "left": 331.546875,
+            "right": 356.203125,
+            "width": 24.65625,
+            "height": 16
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "1.02",
+          "id": "/database/result/acquired-result-4c5bf4bd4db845f3977b/",
+          "rect": {
+            "top": 661.71875,
+            "bottom": 684.765625,
+            "left": 327.65625,
+            "right": 356.203125,
+            "width": 28.546875,
+            "height": 23.046875
+          },
+          "textRect": {
+            "top": 664.71875,
+            "bottom": 680.71875,
+            "left": 327.65625,
+            "right": 356.203125,
+            "width": 28.546875,
+            "height": 16
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "1.01",
+          "id": "/database/result/acquired-result-1b8baf7f46b4c6469251/",
+          "rect": {
+            "top": 733.09375,
+            "bottom": 756.140625,
+            "left": 327.65625,
+            "right": 356.203125,
+            "width": 28.546875,
+            "height": 23.046875
+          },
+          "textRect": {
+            "top": 736.09375,
+            "bottom": 752.09375,
+            "left": 327.65625,
+            "right": 356.203125,
+            "width": 28.546875,
+            "height": 16
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "1",
+          "id": "/database/result/acquired-result-3c431bbfa4dc9e4b203b/",
+          "rect": {
+            "top": 804.46875,
+            "bottom": 827.515625,
+            "left": 348.015625,
+            "right": 356.203125,
+            "width": 8.1875,
+            "height": 23.046875
+          },
+          "textRect": {
+            "top": 807.46875,
+            "bottom": 823.46875,
+            "left": 348.015625,
+            "right": 356.203125,
+            "width": 8.1875,
+            "height": 16
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        }
+      ]
+    },
+    {
+      "pass": true,
+      "name": "mobile-synthetic-text-stress values contained or locally scrollable"
+    },
+    {
+      "pass": true,
+      "name": "mobile-synthetic-text-stress no zero missingness boilerplate"
+    },
+    {
+      "pass": true,
+      "name": "mobile-synthetic-text-stress details initially collapsed"
+    },
+    {
+      "pass": true,
+      "name": "mobile-synthetic-text-stress evidence origin visible"
+    },
+    {
+      "pass": true,
+      "name": "mobile-synthetic-text-stress review metadata collapsed"
+    },
+    {
+      "pass": true,
+      "name": "mobile-synthetic-text-stress axis no wrap"
+    },
+    {
+      "pass": true,
+      "name": "mobile-synthetic-text-stress axis contained and distinct",
+      "detail": [
+        {
+          "text": "0.995",
+          "rect": {
+            "top": 374.953125,
+            "bottom": 394.140625,
+            "left": 37.3125,
+            "right": 67.921875,
+            "width": 30.609375,
+            "height": 19.1875
+          },
+          "fragments": 1
+        },
+        {
+          "text": "1.05",
+          "rect": {
+            "top": 374.953125,
+            "bottom": 394.140625,
+            "left": 80.7109375,
+            "right": 104.5078125,
+            "width": 23.796875,
+            "height": 19.1875
+          },
+          "fragments": 1
+        },
+        {
+          "text": "1.1",
+          "rect": {
+            "top": 374.953125,
+            "bottom": 394.140625,
+            "left": 130.9375,
+            "right": 147.90625,
+            "width": 16.96875,
+            "height": 19.1875
+          },
+          "fragments": 1
+        }
+      ]
+    },
+    {
+      "pass": true,
+      "name": "mobile-synthetic-text-stress keyboard region focus visible",
+      "detail": {
+        "active": true,
+        "outline": "2px",
+        "style": "solid"
+      }
+    },
+    {
+      "pass": true,
+      "name": "mobile-synthetic-text-stress score link focus visible",
+      "detail": {
+        "text": "-0.16666666666666666",
+        "outline": "2px",
+        "rect": {
+          "top": 447.59375,
+          "bottom": 470.640625,
+          "left": 200.078125,
+          "right": 356.203125,
+          "width": 156.125,
+          "height": 23.046875
+        }
+      }
+    },
+    {
+      "pass": true,
+      "name": "mobile-synthetic-text-stress keyboard can expose complete exact value",
+      "detail": {
+        "text": "-0.16666666666666666",
+        "id": "/database/result/acquired-result-1aabb1785acb4beefbfc/",
+        "rect": {
+          "top": 447.59375,
+          "bottom": 470.640625,
+          "left": 200.078125,
+          "right": 356.203125,
+          "width": 156.125,
+          "height": 23.046875
+        },
+        "textRect": {
+          "top": 450.59375,
+          "bottom": 466.59375,
+          "left": 200.078125,
+          "right": 356.203125,
+          "width": 156.125,
+          "height": 16
+        },
+        "fragments": 1,
+        "whiteSpace": "nowrap"
+      }
+    },
+    {
+      "pass": true,
+      "name": "mobile-atom3d-chart no page overflow",
+      "detail": 390
+    },
+    {
+      "pass": true,
+      "name": "mobile-atom3d-chart exact values single line",
+      "detail": [
+        {
+          "text": "1.893",
+          "id": "/database/result/atom3d-result-karimi-et-al-2019-lba-rmse-rmse/",
+          "rect": {
+            "top": 2722.875,
+            "bottom": 2745.921875,
+            "left": 319.46875,
+            "right": 356.203125,
+            "width": 36.734375,
+            "height": 23.046875
+          },
+          "textRect": {
+            "top": 2725.875,
+            "bottom": 2741.875,
+            "left": 319.46875,
+            "right": 356.203125,
+            "width": 36.734375,
+            "height": 16
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "1.601",
+          "id": "/database/result/atom3d-result-gnn-lba-rmse-rmse/",
+          "rect": {
+            "top": 2794.25,
+            "bottom": 2817.296875,
+            "left": 319.46875,
+            "right": 356.203125,
+            "width": 36.734375,
+            "height": 23.046875
+          },
+          "textRect": {
+            "top": 2797.25,
+            "bottom": 2813.25,
+            "left": 319.46875,
+            "right": 356.203125,
+            "width": 36.734375,
+            "height": 16
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "1.568",
+          "id": "/database/result/atom3d-result-enn-lba-rmse-rmse/",
+          "rect": {
+            "top": 2865.625,
+            "bottom": 2888.671875,
+            "left": 319.46875,
+            "right": 356.203125,
+            "width": 36.734375,
+            "height": 23.046875
+          },
+          "textRect": {
+            "top": 2868.625,
+            "bottom": 2884.625,
+            "left": 319.46875,
+            "right": 356.203125,
+            "width": 36.734375,
+            "height": 16
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "1.565",
+          "id": "/database/result/atom3d-result-zt-rk-et-al-2018-lba-rmse-rmse/",
+          "rect": {
+            "top": 2937,
+            "bottom": 2960.046875,
+            "left": 319.46875,
+            "right": 356.203125,
+            "width": 36.734375,
+            "height": 23.046875
+          },
+          "textRect": {
+            "top": 2940,
+            "bottom": 2956,
+            "left": 319.46875,
+            "right": 356.203125,
+            "width": 36.734375,
+            "height": 16
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "1.416",
+          "id": "/database/result/atom3d-result-3dcnn-lba-rmse-rmse/",
+          "rect": {
+            "top": 3008.375,
+            "bottom": 3031.421875,
+            "left": 319.46875,
+            "right": 356.203125,
+            "width": 36.734375,
+            "height": 23.046875
+          },
+          "textRect": {
+            "top": 3011.375,
+            "bottom": 3027.375,
+            "left": 319.46875,
+            "right": 356.203125,
+            "width": 36.734375,
+            "height": 16
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        }
+      ]
+    },
+    {
+      "pass": true,
+      "name": "mobile-atom3d-chart values contained or locally scrollable"
+    },
+    {
+      "pass": true,
+      "name": "mobile-atom3d-chart descending exact row identity"
+    },
+    {
+      "pass": true,
+      "name": "mobile-atom3d-chart no zero missingness boilerplate"
+    },
+    {
+      "pass": true,
+      "name": "mobile-atom3d-chart details initially collapsed"
+    },
+    {
+      "pass": true,
+      "name": "mobile-atom3d-chart evidence origin visible"
+    },
+    {
+      "pass": true,
+      "name": "mobile-atom3d-chart review metadata collapsed"
+    },
+    {
+      "pass": true,
+      "name": "mobile-atom3d-chart axis no wrap"
+    },
+    {
+      "pass": true,
+      "name": "mobile-atom3d-chart axis contained and distinct",
+      "detail": [
+        {
+          "text": "1.39",
+          "rect": {
+            "top": 2650.234375,
+            "bottom": 2669.421875,
+            "left": 40.765625,
+            "right": 64.5625,
+            "width": 23.796875,
+            "height": 19.1875
+          },
+          "fragments": 1
+        },
+        {
+          "text": "1.65",
+          "rect": {
+            "top": 2650.234375,
+            "bottom": 2669.421875,
+            "left": 138.1640625,
+            "right": 161.9609375,
+            "width": 23.796875,
+            "height": 19.1875
+          },
+          "fragments": 1
+        },
+        {
+          "text": "1.92",
+          "rect": {
+            "top": 2650.234375,
+            "bottom": 2669.421875,
+            "left": 235.5625,
+            "right": 259.359375,
+            "width": 23.796875,
+            "height": 19.1875
+          },
+          "fragments": 1
+        }
+      ]
+    },
+    {
+      "pass": true,
+      "name": "mobile-atom3d-chart keyboard region focus visible",
+      "detail": {
+        "active": true,
+        "outline": "2px",
+        "style": "solid"
+      }
+    },
+    {
+      "pass": true,
+      "name": "mobile-atom3d-chart score link focus visible",
+      "detail": {
+        "text": "1.893",
+        "outline": "2px",
+        "rect": {
+          "top": 2722.875,
+          "bottom": 2745.921875,
+          "left": 319.46875,
+          "right": 356.203125,
+          "width": 36.734375,
+          "height": 23.046875
+        }
+      }
+    },
+    {
+      "pass": true,
+      "name": "mobile-atom3d-chart keyboard can expose complete exact value",
+      "detail": {
+        "text": "1.893",
+        "id": "/database/result/atom3d-result-karimi-et-al-2019-lba-rmse-rmse/",
+        "rect": {
+          "top": 2722.875,
+          "bottom": 2745.921875,
+          "left": 319.46875,
+          "right": 356.203125,
+          "width": 36.734375,
+          "height": 23.046875
+        },
+        "textRect": {
+          "top": 2725.875,
+          "bottom": 2741.875,
+          "left": 319.46875,
+          "right": 356.203125,
+          "width": 36.734375,
+          "height": 16
+        },
+        "fragments": 1,
+        "whiteSpace": "nowrap"
+      }
+    },
+    {
+      "pass": true,
+      "name": "mobile details keyboard accessible"
+    },
+    {
+      "pass": true,
+      "name": "mobile-atom3d-table no page overflow",
+      "detail": 390
+    },
+    {
+      "pass": true,
+      "name": "mobile-atom3d-table exact values single line",
+      "detail": [
+        {
+          "text": "1.893",
+          "id": "/database/result/atom3d-result-karimi-et-al-2019-lba-rmse-rmse/",
+          "rect": {
+            "top": 942.375,
+            "bottom": 956.375,
+            "left": 183,
+            "right": 216.171875,
+            "width": 33.171875,
+            "height": 14
+          },
+          "textRect": {
+            "top": 942.375,
+            "bottom": 956.375,
+            "left": 183,
+            "right": 216.171875,
+            "width": 33.171875,
+            "height": 14
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "1.601",
+          "id": "/database/result/atom3d-result-gnn-lba-rmse-rmse/",
+          "rect": {
+            "top": 1166.46875,
+            "bottom": 1180.46875,
+            "left": 183,
+            "right": 216.171875,
+            "width": 33.171875,
+            "height": 14
+          },
+          "textRect": {
+            "top": 1166.46875,
+            "bottom": 1180.46875,
+            "left": 183,
+            "right": 216.171875,
+            "width": 33.171875,
+            "height": 14
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "1.568",
+          "id": "/database/result/atom3d-result-enn-lba-rmse-rmse/",
+          "rect": {
+            "top": 1370.765625,
+            "bottom": 1384.765625,
+            "left": 183,
+            "right": 216.171875,
+            "width": 33.171875,
+            "height": 14
+          },
+          "textRect": {
+            "top": 1370.765625,
+            "bottom": 1384.765625,
+            "left": 183,
+            "right": 216.171875,
+            "width": 33.171875,
+            "height": 14
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "1.565",
+          "id": "/database/result/atom3d-result-zt-rk-et-al-2018-lba-rmse-rmse/",
+          "rect": {
+            "top": 1575.0625,
+            "bottom": 1589.0625,
+            "left": 183,
+            "right": 216.171875,
+            "width": 33.171875,
+            "height": 14
+          },
+          "textRect": {
+            "top": 1575.0625,
+            "bottom": 1589.0625,
+            "left": 183,
+            "right": 216.171875,
+            "width": 33.171875,
+            "height": 14
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "1.416",
+          "id": "/database/result/atom3d-result-3dcnn-lba-rmse-rmse/",
+          "rect": {
+            "top": 1799.15625,
+            "bottom": 1813.15625,
+            "left": 183,
+            "right": 216.171875,
+            "width": 33.171875,
+            "height": 14
+          },
+          "textRect": {
+            "top": 1799.15625,
+            "bottom": 1813.15625,
+            "left": 183,
+            "right": 216.171875,
+            "width": 33.171875,
+            "height": 14
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        }
+      ]
+    },
+    {
+      "pass": true,
+      "name": "mobile-atom3d-table values contained or locally scrollable"
+    },
+    {
+      "pass": true,
+      "name": "mobile-atom3d-table descending exact row identity"
+    },
+    {
+      "pass": true,
+      "name": "mobile-atom3d-table no zero missingness boilerplate"
+    },
+    {
+      "pass": true,
+      "name": "mobile-atom3d-table details initially collapsed"
+    },
+    {
+      "pass": true,
+      "name": "mobile-atom3d-table evidence origin visible"
+    },
+    {
+      "pass": true,
+      "name": "mobile-atom3d-table review metadata collapsed"
+    },
+    {
+      "pass": true,
+      "name": "mobile-atom3d-table keyboard region focus visible",
+      "detail": {
+        "active": true,
+        "outline": "2px",
+        "style": "solid"
+      }
+    },
+    {
+      "pass": true,
+      "name": "mobile-atom3d-table arrow scroll contained",
+      "detail": {
+        "before": 0,
+        "after": 40
+      }
+    },
+    {
+      "pass": true,
+      "name": "mobile-atom3d-table score link focus visible",
+      "detail": {
+        "text": "1.893",
+        "outline": "2px",
+        "rect": {
+          "top": 114.375,
+          "bottom": 128.375,
+          "left": 178,
+          "right": 211.171875,
+          "width": 33.171875,
+          "height": 14
+        }
+      }
+    },
+    {
+      "pass": true,
+      "name": "mobile-atom3d-table keyboard can expose complete exact value",
+      "detail": {
+        "text": "1.893",
+        "id": "/database/result/atom3d-result-karimi-et-al-2019-lba-rmse-rmse/",
+        "rect": {
+          "top": 114.375,
+          "bottom": 128.375,
+          "left": 178,
+          "right": 211.171875,
+          "width": 33.171875,
+          "height": 14
+        },
+        "textRect": {
+          "top": 114.375,
+          "bottom": 128.375,
+          "left": 178,
+          "right": 211.171875,
+          "width": 33.171875,
+          "height": 14
+        },
+        "fragments": 1,
+        "whiteSpace": "nowrap"
+      }
+    },
+    {
+      "pass": true,
+      "name": "mobile-long-values-chart no page overflow",
+      "detail": 390
+    },
+    {
+      "pass": true,
+      "name": "mobile-long-values-chart exact values single line",
+      "detail": [
+        {
+          "text": "0.3452228016183431",
+          "id": "/database/result/acquired-result-dc116904277b3e1ba2a7/",
+          "rect": {
+            "top": 2367.375,
+            "bottom": 2390.421875,
+            "left": 213.046875,
+            "right": 356.203125,
+            "width": 143.15625,
+            "height": 23.046875
+          },
+          "textRect": {
+            "top": 2370.375,
+            "bottom": 2386.375,
+            "left": 213.046875,
+            "right": 356.203125,
+            "width": 143.15625,
+            "height": 16
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "0.28065901722124237",
+          "id": "/database/result/acquired-result-65f7ef8bcb8f5bb978f0/",
+          "rect": {
+            "top": 2458.90625,
+            "bottom": 2481.953125,
+            "left": 204.875,
+            "right": 356.203125,
+            "width": 151.328125,
+            "height": 23.046875
+          },
+          "textRect": {
+            "top": 2461.90625,
+            "bottom": 2477.90625,
+            "left": 204.875,
+            "right": 356.203125,
+            "width": 151.328125,
+            "height": 16
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "0.2610692147804768",
+          "id": "/database/result/acquired-result-e432d9e0c9c166763dd0/",
+          "rect": {
+            "top": 2550.4375,
+            "bottom": 2573.484375,
+            "left": 213.046875,
+            "right": 356.203125,
+            "width": 143.15625,
+            "height": 23.046875
+          },
+          "textRect": {
+            "top": 2553.4375,
+            "bottom": 2569.4375,
+            "left": 213.046875,
+            "right": 356.203125,
+            "width": 143.15625,
+            "height": 16
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "0.25442022176759105",
+          "id": "/database/result/acquired-result-6bae6118e71a42300876/",
+          "rect": {
+            "top": 2641.96875,
+            "bottom": 2665.015625,
+            "left": 204.875,
+            "right": 356.203125,
+            "width": 151.328125,
+            "height": 23.046875
+          },
+          "textRect": {
+            "top": 2644.96875,
+            "bottom": 2660.96875,
+            "left": 204.875,
+            "right": 356.203125,
+            "width": 151.328125,
+            "height": 16
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "0.23791327322756758",
+          "id": "/database/result/acquired-result-02f5550f6c8104aa6d3d/",
+          "rect": {
+            "top": 2733.5,
+            "bottom": 2756.546875,
+            "left": 204.875,
+            "right": 356.203125,
+            "width": 151.328125,
+            "height": 23.046875
+          },
+          "textRect": {
+            "top": 2736.5,
+            "bottom": 2752.5,
+            "left": 204.875,
+            "right": 356.203125,
+            "width": 151.328125,
+            "height": 16
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "0.23713673288595002",
+          "id": "/database/result/acquired-result-1ec9cd6219ece8dd642a/",
+          "rect": {
+            "top": 2804.875,
+            "bottom": 2827.921875,
+            "left": 204.875,
+            "right": 356.203125,
+            "width": 151.328125,
+            "height": 23.046875
+          },
+          "textRect": {
+            "top": 2807.875,
+            "bottom": 2823.875,
+            "left": 204.875,
+            "right": 356.203125,
+            "width": 151.328125,
+            "height": 16
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "0.23285717331095024",
+          "id": "/database/result/acquired-result-f7d1c76d83014e8486fb/",
+          "rect": {
+            "top": 2896.40625,
+            "bottom": 2919.453125,
+            "left": 204.875,
+            "right": 356.203125,
+            "width": 151.328125,
+            "height": 23.046875
+          },
+          "textRect": {
+            "top": 2899.40625,
+            "bottom": 2915.40625,
+            "left": 204.875,
+            "right": 356.203125,
+            "width": 151.328125,
+            "height": 16
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "0.23243991676359685",
+          "id": "/database/result/acquired-result-69d1fb1102037843451c/",
+          "rect": {
+            "top": 2987.9375,
+            "bottom": 3010.984375,
+            "left": 204.875,
+            "right": 356.203125,
+            "width": 151.328125,
+            "height": 23.046875
+          },
+          "textRect": {
+            "top": 2990.9375,
+            "bottom": 3006.9375,
+            "left": 204.875,
+            "right": 356.203125,
+            "width": 151.328125,
+            "height": 16
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "0.23146482134704682",
+          "id": "/database/result/acquired-result-5c4ce0f1236d0fdd7634/",
+          "rect": {
+            "top": 3079.46875,
+            "bottom": 3102.515625,
+            "left": 204.875,
+            "right": 356.203125,
+            "width": 151.328125,
+            "height": 23.046875
+          },
+          "textRect": {
+            "top": 3082.46875,
+            "bottom": 3098.46875,
+            "left": 204.875,
+            "right": 356.203125,
+            "width": 151.328125,
+            "height": 16
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "0.23119630838352237",
+          "id": "/database/result/acquired-result-9d5bdffbd8959fa30f5b/",
+          "rect": {
+            "top": 3171,
+            "bottom": 3194.046875,
+            "left": 204.875,
+            "right": 356.203125,
+            "width": 151.328125,
+            "height": 23.046875
+          },
+          "textRect": {
+            "top": 3174,
+            "bottom": 3190,
+            "left": 204.875,
+            "right": 356.203125,
+            "width": 151.328125,
+            "height": 16
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "0.23088734410967257",
+          "id": "/database/result/acquired-result-72f2ba10bda6a999c2e6/",
+          "rect": {
+            "top": 3262.53125,
+            "bottom": 3285.578125,
+            "left": 204.875,
+            "right": 356.203125,
+            "width": 151.328125,
+            "height": 23.046875
+          },
+          "textRect": {
+            "top": 3265.53125,
+            "bottom": 3281.53125,
+            "left": 204.875,
+            "right": 356.203125,
+            "width": 151.328125,
+            "height": 16
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "0.23020876921084255",
+          "id": "/database/result/acquired-result-35c3b2d321fe6aa6ec48/",
+          "rect": {
+            "top": 3354.0625,
+            "bottom": 3377.109375,
+            "left": 204.875,
+            "right": 356.203125,
+            "width": 151.328125,
+            "height": 23.046875
+          },
+          "textRect": {
+            "top": 3357.0625,
+            "bottom": 3373.0625,
+            "left": 204.875,
+            "right": 356.203125,
+            "width": 151.328125,
+            "height": 16
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        }
+      ]
+    },
+    {
+      "pass": true,
+      "name": "mobile-long-values-chart values contained or locally scrollable"
+    },
+    {
+      "pass": true,
+      "name": "mobile-long-values-chart descending exact row identity"
+    },
+    {
+      "pass": true,
+      "name": "mobile-long-values-chart no zero missingness boilerplate"
+    },
+    {
+      "pass": true,
+      "name": "mobile-long-values-chart details initially collapsed"
+    },
+    {
+      "pass": true,
+      "name": "mobile-long-values-chart evidence origin visible"
+    },
+    {
+      "pass": true,
+      "name": "mobile-long-values-chart review metadata collapsed"
+    },
+    {
+      "pass": true,
+      "name": "mobile-long-values-chart axis no wrap"
+    },
+    {
+      "pass": true,
+      "name": "mobile-long-values-chart axis contained and distinct",
+      "detail": [
+        {
+          "text": "0.168",
+          "rect": {
+            "top": 2274.578125,
+            "bottom": 2293.765625,
+            "left": 38.6875,
+            "right": 69.296875,
+            "width": 30.609375,
+            "height": 19.1875
+          },
+          "fragments": 1
+        },
+        {
+          "text": "0.261",
+          "rect": {
+            "top": 2274.578125,
+            "bottom": 2293.765625,
+            "left": 100.0234375,
+            "right": 130.6328125,
+            "width": 30.609375,
+            "height": 19.1875
+          },
+          "fragments": 1
+        },
+        {
+          "text": "0.355",
+          "rect": {
+            "top": 2274.578125,
+            "bottom": 2293.765625,
+            "left": 161.359375,
+            "right": 191.96875,
+            "width": 30.609375,
+            "height": 19.1875
+          },
+          "fragments": 1
+        }
+      ]
+    },
+    {
+      "pass": true,
+      "name": "mobile-long-values-chart keyboard region focus visible",
+      "detail": {
+        "active": true,
+        "outline": "2px",
+        "style": "solid"
+      }
+    },
+    {
+      "pass": true,
+      "name": "mobile-long-values-chart score link focus visible",
+      "detail": {
+        "text": "0.3452228016183431",
+        "outline": "2px",
+        "rect": {
+          "top": 2367.375,
+          "bottom": 2390.421875,
+          "left": 213.046875,
+          "right": 356.203125,
+          "width": 143.15625,
+          "height": 23.046875
+        }
+      }
+    },
+    {
+      "pass": true,
+      "name": "mobile-long-values-chart keyboard can expose complete exact value",
+      "detail": {
+        "text": "0.3452228016183431",
+        "id": "/database/result/acquired-result-dc116904277b3e1ba2a7/",
+        "rect": {
+          "top": 2367.375,
+          "bottom": 2390.421875,
+          "left": 213.046875,
+          "right": 356.203125,
+          "width": 143.15625,
+          "height": 23.046875
+        },
+        "textRect": {
+          "top": 2370.375,
+          "bottom": 2386.375,
+          "left": 213.046875,
+          "right": 356.203125,
+          "width": 143.15625,
+          "height": 16
+        },
+        "fragments": 1,
+        "whiteSpace": "nowrap"
+      }
+    },
+    {
+      "pass": true,
+      "name": "mobile-long-values-table no page overflow",
+      "detail": 390
+    },
+    {
+      "pass": true,
+      "name": "mobile-long-values-table exact values single line",
+      "detail": [
+        {
+          "text": "0.3452228016183431",
+          "id": "/database/result/acquired-result-dc116904277b3e1ba2a7/",
+          "rect": {
+            "top": 451.71875,
+            "bottom": 465.71875,
+            "left": 183,
+            "right": 312.234375,
+            "width": 129.234375,
+            "height": 14
+          },
+          "textRect": {
+            "top": 451.71875,
+            "bottom": 465.71875,
+            "left": 183,
+            "right": 312.234375,
+            "width": 129.234375,
+            "height": 14
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "0.28065901722124237",
+          "id": "/database/result/acquired-result-65f7ef8bcb8f5bb978f0/",
+          "rect": {
+            "top": 695.609375,
+            "bottom": 709.609375,
+            "left": 183,
+            "right": 319.625,
+            "width": 136.625,
+            "height": 14
+          },
+          "textRect": {
+            "top": 695.609375,
+            "bottom": 709.609375,
+            "left": 183,
+            "right": 319.625,
+            "width": 136.625,
+            "height": 14
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "0.2610692147804768",
+          "id": "/database/result/acquired-result-e432d9e0c9c166763dd0/",
+          "rect": {
+            "top": 959.296875,
+            "bottom": 973.296875,
+            "left": 183,
+            "right": 312.234375,
+            "width": 129.234375,
+            "height": 14
+          },
+          "textRect": {
+            "top": 959.296875,
+            "bottom": 973.296875,
+            "left": 183,
+            "right": 312.234375,
+            "width": 129.234375,
+            "height": 14
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "0.25442022176759105",
+          "id": "/database/result/acquired-result-6bae6118e71a42300876/",
+          "rect": {
+            "top": 1222.984375,
+            "bottom": 1236.984375,
+            "left": 183,
+            "right": 319.625,
+            "width": 136.625,
+            "height": 14
+          },
+          "textRect": {
+            "top": 1222.984375,
+            "bottom": 1236.984375,
+            "left": 183,
+            "right": 319.625,
+            "width": 136.625,
+            "height": 14
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "0.23791327322756758",
+          "id": "/database/result/acquired-result-02f5550f6c8104aa6d3d/",
+          "rect": {
+            "top": 1486.671875,
+            "bottom": 1500.671875,
+            "left": 183,
+            "right": 319.625,
+            "width": 136.625,
+            "height": 14
+          },
+          "textRect": {
+            "top": 1486.671875,
+            "bottom": 1500.671875,
+            "left": 183,
+            "right": 319.625,
+            "width": 136.625,
+            "height": 14
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "0.23713673288595002",
+          "id": "/database/result/acquired-result-1ec9cd6219ece8dd642a/",
+          "rect": {
+            "top": 1750.359375,
+            "bottom": 1764.359375,
+            "left": 183,
+            "right": 319.625,
+            "width": 136.625,
+            "height": 14
+          },
+          "textRect": {
+            "top": 1750.359375,
+            "bottom": 1764.359375,
+            "left": 183,
+            "right": 319.625,
+            "width": 136.625,
+            "height": 14
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "0.23285717331095024",
+          "id": "/database/result/acquired-result-f7d1c76d83014e8486fb/",
+          "rect": {
+            "top": 2014.046875,
+            "bottom": 2028.046875,
+            "left": 183,
+            "right": 319.625,
+            "width": 136.625,
+            "height": 14
+          },
+          "textRect": {
+            "top": 2014.046875,
+            "bottom": 2028.046875,
+            "left": 183,
+            "right": 319.625,
+            "width": 136.625,
+            "height": 14
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "0.23243991676359685",
+          "id": "/database/result/acquired-result-69d1fb1102037843451c/",
+          "rect": {
+            "top": 2277.734375,
+            "bottom": 2291.734375,
+            "left": 183,
+            "right": 319.625,
+            "width": 136.625,
+            "height": 14
+          },
+          "textRect": {
+            "top": 2277.734375,
+            "bottom": 2291.734375,
+            "left": 183,
+            "right": 319.625,
+            "width": 136.625,
+            "height": 14
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "0.23146482134704682",
+          "id": "/database/result/acquired-result-5c4ce0f1236d0fdd7634/",
+          "rect": {
+            "top": 2541.421875,
+            "bottom": 2555.421875,
+            "left": 183,
+            "right": 319.625,
+            "width": 136.625,
+            "height": 14
+          },
+          "textRect": {
+            "top": 2541.421875,
+            "bottom": 2555.421875,
+            "left": 183,
+            "right": 319.625,
+            "width": 136.625,
+            "height": 14
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "0.23119630838352237",
+          "id": "/database/result/acquired-result-9d5bdffbd8959fa30f5b/",
+          "rect": {
+            "top": 2805.109375,
+            "bottom": 2819.109375,
+            "left": 183,
+            "right": 319.625,
+            "width": 136.625,
+            "height": 14
+          },
+          "textRect": {
+            "top": 2805.109375,
+            "bottom": 2819.109375,
+            "left": 183,
+            "right": 319.625,
+            "width": 136.625,
+            "height": 14
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "0.23088734410967257",
+          "id": "/database/result/acquired-result-72f2ba10bda6a999c2e6/",
+          "rect": {
+            "top": 3068.796875,
+            "bottom": 3082.796875,
+            "left": 183,
+            "right": 319.625,
+            "width": 136.625,
+            "height": 14
+          },
+          "textRect": {
+            "top": 3068.796875,
+            "bottom": 3082.796875,
+            "left": 183,
+            "right": 319.625,
+            "width": 136.625,
+            "height": 14
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "0.23020876921084255",
+          "id": "/database/result/acquired-result-35c3b2d321fe6aa6ec48/",
+          "rect": {
+            "top": 3332.484375,
+            "bottom": 3346.484375,
+            "left": 183,
+            "right": 319.625,
+            "width": 136.625,
+            "height": 14
+          },
+          "textRect": {
+            "top": 3332.484375,
+            "bottom": 3346.484375,
+            "left": 183,
+            "right": 319.625,
+            "width": 136.625,
+            "height": 14
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        }
+      ]
+    },
+    {
+      "pass": true,
+      "name": "mobile-long-values-table values contained or locally scrollable"
+    },
+    {
+      "pass": true,
+      "name": "mobile-long-values-table descending exact row identity"
+    },
+    {
+      "pass": true,
+      "name": "mobile-long-values-table no zero missingness boilerplate"
+    },
+    {
+      "pass": true,
+      "name": "mobile-long-values-table details initially collapsed"
+    },
+    {
+      "pass": true,
+      "name": "mobile-long-values-table evidence origin visible"
+    },
+    {
+      "pass": true,
+      "name": "mobile-long-values-table review metadata collapsed"
+    },
+    {
+      "pass": true,
+      "name": "mobile-long-values-table keyboard region focus visible",
+      "detail": {
+        "active": true,
+        "outline": "2px",
+        "style": "solid"
+      }
+    },
+    {
+      "pass": true,
+      "name": "mobile-long-values-table arrow scroll contained",
+      "detail": {
+        "before": 0,
+        "after": 40
+      }
+    },
+    {
+      "pass": true,
+      "name": "mobile-long-values-table score link focus visible",
+      "detail": {
+        "text": "0.3452228016183431",
+        "outline": "2px",
+        "rect": {
+          "top": 114.71875,
+          "bottom": 128.71875,
+          "left": 40,
+          "right": 169.234375,
+          "width": 129.234375,
+          "height": 14
+        }
+      }
+    },
+    {
+      "pass": true,
+      "name": "mobile-long-values-table keyboard can expose complete exact value",
+      "detail": {
+        "text": "0.3452228016183431",
+        "id": "/database/result/acquired-result-dc116904277b3e1ba2a7/",
+        "rect": {
+          "top": 114.71875,
+          "bottom": 128.71875,
+          "left": 40,
+          "right": 169.234375,
+          "width": 129.234375,
+          "height": 14
+        },
+        "textRect": {
+          "top": 114.71875,
+          "bottom": 128.71875,
+          "left": 40,
+          "right": 169.234375,
+          "width": 129.234375,
+          "height": 14
+        },
+        "fragments": 1,
+        "whiteSpace": "nowrap"
+      }
+    },
+    {
+      "pass": true,
+      "name": "desktop-beeline-chart no page overflow",
+      "detail": 1440
+    },
+    {
+      "pass": true,
+      "name": "desktop-beeline-chart exact values single line",
+      "detail": [
+        {
+          "text": "1.09",
+          "id": "/database/result/acquired-result-1aabb1785acb4beefbfc/",
+          "rect": {
+            "top": 1986.28125,
+            "bottom": 2009.328125,
+            "left": 1205.65625,
+            "right": 1234.203125,
+            "width": 28.546875,
+            "height": 23.046875
+          },
+          "textRect": {
+            "top": 1989.28125,
+            "bottom": 2005.28125,
+            "left": 1205.65625,
+            "right": 1234.203125,
+            "width": 28.546875,
+            "height": 16
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "1.06",
+          "id": "/database/result/acquired-result-dbea759bf5cee5e11543/",
+          "rect": {
+            "top": 2035.875,
+            "bottom": 2058.921875,
+            "left": 1205.65625,
+            "right": 1234.203125,
+            "width": 28.546875,
+            "height": 23.046875
+          },
+          "textRect": {
+            "top": 2038.875,
+            "bottom": 2054.875,
+            "left": 1205.65625,
+            "right": 1234.203125,
+            "width": 28.546875,
+            "height": 16
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "1.05",
+          "id": "/database/result/acquired-result-bd9b0e09b9ab71e773ed/",
+          "rect": {
+            "top": 2085.46875,
+            "bottom": 2108.515625,
+            "left": 1205.65625,
+            "right": 1234.203125,
+            "width": 28.546875,
+            "height": 23.046875
+          },
+          "textRect": {
+            "top": 2088.46875,
+            "bottom": 2104.46875,
+            "left": 1205.65625,
+            "right": 1234.203125,
+            "width": 28.546875,
+            "height": 16
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "1.02",
+          "id": "/database/result/acquired-result-4c5bf4bd4db845f3977b/",
+          "rect": {
+            "top": 2135.0625,
+            "bottom": 2158.109375,
+            "left": 1205.65625,
+            "right": 1234.203125,
+            "width": 28.546875,
+            "height": 23.046875
+          },
+          "textRect": {
+            "top": 2138.0625,
+            "bottom": 2154.0625,
+            "left": 1205.65625,
+            "right": 1234.203125,
+            "width": 28.546875,
+            "height": 16
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "1.01",
+          "id": "/database/result/acquired-result-1b8baf7f46b4c6469251/",
+          "rect": {
+            "top": 2184.65625,
+            "bottom": 2207.703125,
+            "left": 1205.65625,
+            "right": 1234.203125,
+            "width": 28.546875,
+            "height": 23.046875
+          },
+          "textRect": {
+            "top": 2187.65625,
+            "bottom": 2203.65625,
+            "left": 1205.65625,
+            "right": 1234.203125,
+            "width": 28.546875,
+            "height": 16
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "1",
+          "id": "/database/result/acquired-result-3c431bbfa4dc9e4b203b/",
+          "rect": {
+            "top": 2234.25,
+            "bottom": 2257.296875,
+            "left": 1226.015625,
+            "right": 1234.203125,
+            "width": 8.1875,
+            "height": 23.046875
+          },
+          "textRect": {
+            "top": 2237.25,
+            "bottom": 2253.25,
+            "left": 1226.015625,
+            "right": 1234.203125,
+            "width": 8.1875,
+            "height": 16
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        }
+      ]
+    },
+    {
+      "pass": true,
+      "name": "desktop-beeline-chart values contained or locally scrollable"
+    },
+    {
+      "pass": true,
+      "name": "desktop-beeline-chart descending exact row identity"
+    },
+    {
+      "pass": true,
+      "name": "desktop-beeline-chart no zero missingness boilerplate"
+    },
+    {
+      "pass": true,
+      "name": "desktop-beeline-chart details initially collapsed"
+    },
+    {
+      "pass": true,
+      "name": "desktop-beeline-chart evidence origin visible"
+    },
+    {
+      "pass": true,
+      "name": "desktop-beeline-chart review metadata collapsed"
+    },
+    {
+      "pass": true,
+      "name": "desktop-beeline-chart axis no wrap"
+    },
+    {
+      "pass": true,
+      "name": "desktop-beeline-chart axis contained and distinct",
+      "detail": [
+        {
+          "text": "0.995",
+          "rect": {
+            "top": 1937.015625,
+            "bottom": 1957.484375,
+            "left": 625.125,
+            "right": 657.78125,
+            "width": 32.65625,
+            "height": 20.46875
+          },
+          "fragments": 1
+        },
+        {
+          "text": "1.02",
+          "rect": {
+            "top": 1937.015625,
+            "bottom": 1957.484375,
+            "left": 735.734375,
+            "right": 761.109375,
+            "width": 25.375,
+            "height": 20.46875
+          },
+          "fragments": 1
+        },
+        {
+          "text": "1.05",
+          "rect": {
+            "top": 1937.015625,
+            "bottom": 1957.484375,
+            "left": 859.046875,
+            "right": 884.421875,
+            "width": 25.375,
+            "height": 20.46875
+          },
+          "fragments": 1
+        },
+        {
+          "text": "1.07",
+          "rect": {
+            "top": 1937.015625,
+            "bottom": 1957.484375,
+            "left": 982.359375,
+            "right": 1007.734375,
+            "width": 25.375,
+            "height": 20.46875
+          },
+          "fragments": 1
+        },
+        {
+          "text": "1.1",
+          "rect": {
+            "top": 1937.015625,
+            "bottom": 1957.484375,
+            "left": 1100.234375,
+            "right": 1118.34375,
+            "width": 18.109375,
+            "height": 20.46875
+          },
+          "fragments": 1
+        }
+      ]
+    },
+    {
+      "pass": true,
+      "name": "desktop-beeline-chart keyboard region focus visible",
+      "detail": {
+        "active": true,
+        "outline": "2px",
+        "style": "solid"
+      }
+    },
+    {
+      "pass": true,
+      "name": "desktop-beeline-chart score link focus visible",
+      "detail": {
+        "text": "1.09",
+        "outline": "2px",
+        "rect": {
+          "top": 1986.28125,
+          "bottom": 2009.328125,
+          "left": 1205.65625,
+          "right": 1234.203125,
+          "width": 28.546875,
+          "height": 23.046875
+        }
+      }
+    },
+    {
+      "pass": true,
+      "name": "desktop-beeline-chart keyboard can expose complete exact value",
+      "detail": {
+        "text": "1.09",
+        "id": "/database/result/acquired-result-1aabb1785acb4beefbfc/",
+        "rect": {
+          "top": 1986.28125,
+          "bottom": 2009.328125,
+          "left": 1205.65625,
+          "right": 1234.203125,
+          "width": 28.546875,
+          "height": 23.046875
+        },
+        "textRect": {
+          "top": 1989.28125,
+          "bottom": 2005.28125,
+          "left": 1205.65625,
+          "right": 1234.203125,
+          "width": 28.546875,
+          "height": 16
+        },
+        "fragments": 1,
+        "whiteSpace": "nowrap"
+      }
+    },
+    {
+      "pass": true,
+      "name": "desktop-beeline-table no page overflow",
+      "detail": 1440
+    },
+    {
+      "pass": true,
+      "name": "desktop-beeline-table exact values single line",
+      "detail": [
+        {
+          "text": "1.09",
+          "id": "/database/result/acquired-result-1aabb1785acb4beefbfc/",
+          "rect": {
+            "top": 424.609375,
+            "bottom": 439.609375,
+            "left": 364.421875,
+            "right": 392.1875,
+            "width": 27.765625,
+            "height": 15
+          },
+          "textRect": {
+            "top": 424.609375,
+            "bottom": 439.609375,
+            "left": 364.421875,
+            "right": 392.1875,
+            "width": 27.765625,
+            "height": 15
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "1.06",
+          "id": "/database/result/acquired-result-dbea759bf5cee5e11543/",
+          "rect": {
+            "top": 534.296875,
+            "bottom": 549.296875,
+            "left": 364.421875,
+            "right": 392.1875,
+            "width": 27.765625,
+            "height": 15
+          },
+          "textRect": {
+            "top": 534.296875,
+            "bottom": 549.296875,
+            "left": 364.421875,
+            "right": 392.1875,
+            "width": 27.765625,
+            "height": 15
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "1.05",
+          "id": "/database/result/acquired-result-bd9b0e09b9ab71e773ed/",
+          "rect": {
+            "top": 643.984375,
+            "bottom": 658.984375,
+            "left": 364.421875,
+            "right": 392.1875,
+            "width": 27.765625,
+            "height": 15
+          },
+          "textRect": {
+            "top": 643.984375,
+            "bottom": 658.984375,
+            "left": 364.421875,
+            "right": 392.1875,
+            "width": 27.765625,
+            "height": 15
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "1.02",
+          "id": "/database/result/acquired-result-4c5bf4bd4db845f3977b/",
+          "rect": {
+            "top": 753.671875,
+            "bottom": 768.671875,
+            "left": 364.421875,
+            "right": 392.1875,
+            "width": 27.765625,
+            "height": 15
+          },
+          "textRect": {
+            "top": 753.671875,
+            "bottom": 768.671875,
+            "left": 364.421875,
+            "right": 392.1875,
+            "width": 27.765625,
+            "height": 15
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "1.01",
+          "id": "/database/result/acquired-result-1b8baf7f46b4c6469251/",
+          "rect": {
+            "top": 863.359375,
+            "bottom": 878.359375,
+            "left": 364.421875,
+            "right": 392.1875,
+            "width": 27.765625,
+            "height": 15
+          },
+          "textRect": {
+            "top": 863.359375,
+            "bottom": 878.359375,
+            "left": 364.421875,
+            "right": 392.1875,
+            "width": 27.765625,
+            "height": 15
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "1",
+          "id": "/database/result/acquired-result-3c431bbfa4dc9e4b203b/",
+          "rect": {
+            "top": 973.046875,
+            "bottom": 988.046875,
+            "left": 364.421875,
+            "right": 372.390625,
+            "width": 7.96875,
+            "height": 15
+          },
+          "textRect": {
+            "top": 973.046875,
+            "bottom": 988.046875,
+            "left": 364.421875,
+            "right": 372.390625,
+            "width": 7.96875,
+            "height": 15
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        }
+      ]
+    },
+    {
+      "pass": true,
+      "name": "desktop-beeline-table values contained or locally scrollable"
+    },
+    {
+      "pass": true,
+      "name": "desktop-beeline-table descending exact row identity"
+    },
+    {
+      "pass": true,
+      "name": "desktop-beeline-table no zero missingness boilerplate"
+    },
+    {
+      "pass": true,
+      "name": "desktop-beeline-table details initially collapsed"
+    },
+    {
+      "pass": true,
+      "name": "desktop-beeline-table evidence origin visible"
+    },
+    {
+      "pass": true,
+      "name": "desktop-beeline-table review metadata collapsed"
+    },
+    {
+      "pass": true,
+      "name": "desktop-beeline-table keyboard region focus visible",
+      "detail": {
+        "active": true,
+        "outline": "2px",
+        "style": "solid"
+      }
+    },
+    {
+      "pass": true,
+      "name": "desktop-beeline-table score link focus visible",
+      "detail": {
+        "text": "1.09",
+        "outline": "2px",
+        "rect": {
+          "top": 424.609375,
+          "bottom": 439.609375,
+          "left": 364.421875,
+          "right": 392.1875,
+          "width": 27.765625,
+          "height": 15
+        }
+      }
+    },
+    {
+      "pass": true,
+      "name": "desktop-beeline-table keyboard can expose complete exact value",
+      "detail": {
+        "text": "1.09",
+        "id": "/database/result/acquired-result-1aabb1785acb4beefbfc/",
+        "rect": {
+          "top": 424.609375,
+          "bottom": 439.609375,
+          "left": 364.421875,
+          "right": 392.1875,
+          "width": 27.765625,
+          "height": 15
+        },
+        "textRect": {
+          "top": 424.609375,
+          "bottom": 439.609375,
+          "left": 364.421875,
+          "right": 392.1875,
+          "width": 27.765625,
+          "height": 15
+        },
+        "fragments": 1,
+        "whiteSpace": "nowrap"
+      }
+    },
+    {
+      "pass": true,
+      "name": "desktop-synthetic-text-stress no page overflow",
+      "detail": 1440
+    },
+    {
+      "pass": true,
+      "name": "desktop-synthetic-text-stress exact values single line",
+      "detail": [
+        {
+          "text": "-0.16666666666666666",
+          "id": "/database/result/acquired-result-1aabb1785acb4beefbfc/",
+          "rect": {
+            "top": 367.28125,
+            "bottom": 390.328125,
+            "left": 1078.078125,
+            "right": 1234.203125,
+            "width": 156.125,
+            "height": 23.046875
+          },
+          "textRect": {
+            "top": 370.28125,
+            "bottom": 386.28125,
+            "left": 1078.078125,
+            "right": 1234.203125,
+            "width": 156.125,
+            "height": 16
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "1.234567890123456789e-120",
+          "id": "/database/result/acquired-result-dbea759bf5cee5e11543/",
+          "rect": {
+            "top": 416.875,
+            "bottom": 439.921875,
+            "left": 1037.4375,
+            "right": 1234.203125,
+            "width": 196.765625,
+            "height": 23.046875
+          },
+          "textRect": {
+            "top": 419.875,
+            "bottom": 435.875,
+            "left": 1037.4375,
+            "right": 1234.203125,
+            "width": 196.765625,
+            "height": 16
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "N/A",
+          "id": "/database/result/acquired-result-bd9b0e09b9ab71e773ed/",
+          "rect": {
+            "top": 466.46875,
+            "bottom": 489.515625,
+            "left": 1209.546875,
+            "right": 1234.203125,
+            "width": 24.65625,
+            "height": 23.046875
+          },
+          "textRect": {
+            "top": 469.46875,
+            "bottom": 485.46875,
+            "left": 1209.546875,
+            "right": 1234.203125,
+            "width": 24.65625,
+            "height": 16
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "1.02",
+          "id": "/database/result/acquired-result-4c5bf4bd4db845f3977b/",
+          "rect": {
+            "top": 516.0625,
+            "bottom": 539.109375,
+            "left": 1205.65625,
+            "right": 1234.203125,
+            "width": 28.546875,
+            "height": 23.046875
+          },
+          "textRect": {
+            "top": 519.0625,
+            "bottom": 535.0625,
+            "left": 1205.65625,
+            "right": 1234.203125,
+            "width": 28.546875,
+            "height": 16
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "1.01",
+          "id": "/database/result/acquired-result-1b8baf7f46b4c6469251/",
+          "rect": {
+            "top": 565.65625,
+            "bottom": 588.703125,
+            "left": 1205.65625,
+            "right": 1234.203125,
+            "width": 28.546875,
+            "height": 23.046875
+          },
+          "textRect": {
+            "top": 568.65625,
+            "bottom": 584.65625,
+            "left": 1205.65625,
+            "right": 1234.203125,
+            "width": 28.546875,
+            "height": 16
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "1",
+          "id": "/database/result/acquired-result-3c431bbfa4dc9e4b203b/",
+          "rect": {
+            "top": 615.25,
+            "bottom": 638.296875,
+            "left": 1226.015625,
+            "right": 1234.203125,
+            "width": 8.1875,
+            "height": 23.046875
+          },
+          "textRect": {
+            "top": 618.25,
+            "bottom": 634.25,
+            "left": 1226.015625,
+            "right": 1234.203125,
+            "width": 8.1875,
+            "height": 16
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        }
+      ]
+    },
+    {
+      "pass": true,
+      "name": "desktop-synthetic-text-stress values contained or locally scrollable"
+    },
+    {
+      "pass": true,
+      "name": "desktop-synthetic-text-stress no zero missingness boilerplate"
+    },
+    {
+      "pass": true,
+      "name": "desktop-synthetic-text-stress details initially collapsed"
+    },
+    {
+      "pass": true,
+      "name": "desktop-synthetic-text-stress evidence origin visible"
+    },
+    {
+      "pass": true,
+      "name": "desktop-synthetic-text-stress review metadata collapsed"
+    },
+    {
+      "pass": true,
+      "name": "desktop-synthetic-text-stress axis no wrap"
+    },
+    {
+      "pass": true,
+      "name": "desktop-synthetic-text-stress axis contained and distinct",
+      "detail": [
+        {
+          "text": "0.995",
+          "rect": {
+            "top": 318.015625,
+            "bottom": 338.484375,
+            "left": 575.6875,
+            "right": 608.34375,
+            "width": 32.65625,
+            "height": 20.46875
+          },
+          "fragments": 1
+        },
+        {
+          "text": "1.02",
+          "rect": {
+            "top": 318.015625,
+            "bottom": 338.484375,
+            "left": 671.765625,
+            "right": 697.140625,
+            "width": 25.375,
+            "height": 20.46875
+          },
+          "fragments": 1
+        },
+        {
+          "text": "1.05",
+          "rect": {
+            "top": 318.015625,
+            "bottom": 338.484375,
+            "left": 780.53125,
+            "right": 805.90625,
+            "width": 25.375,
+            "height": 20.46875
+          },
+          "fragments": 1
+        },
+        {
+          "text": "1.07",
+          "rect": {
+            "top": 318.015625,
+            "bottom": 338.484375,
+            "left": 889.296875,
+            "right": 914.671875,
+            "width": 25.375,
+            "height": 20.46875
+          },
+          "fragments": 1
+        },
+        {
+          "text": "1.1",
+          "rect": {
+            "top": 318.015625,
+            "bottom": 338.484375,
+            "left": 992.640625,
+            "right": 1010.75,
+            "width": 18.109375,
+            "height": 20.46875
+          },
+          "fragments": 1
+        }
+      ]
+    },
+    {
+      "pass": true,
+      "name": "desktop-synthetic-text-stress keyboard region focus visible",
+      "detail": {
+        "active": true,
+        "outline": "2px",
+        "style": "solid"
+      }
+    },
+    {
+      "pass": true,
+      "name": "desktop-synthetic-text-stress score link focus visible",
+      "detail": {
+        "text": "-0.16666666666666666",
+        "outline": "2px",
+        "rect": {
+          "top": 367.28125,
+          "bottom": 390.328125,
+          "left": 1078.078125,
+          "right": 1234.203125,
+          "width": 156.125,
+          "height": 23.046875
+        }
+      }
+    },
+    {
+      "pass": true,
+      "name": "desktop-synthetic-text-stress keyboard can expose complete exact value",
+      "detail": {
+        "text": "-0.16666666666666666",
+        "id": "/database/result/acquired-result-1aabb1785acb4beefbfc/",
+        "rect": {
+          "top": 367.28125,
+          "bottom": 390.328125,
+          "left": 1078.078125,
+          "right": 1234.203125,
+          "width": 156.125,
+          "height": 23.046875
+        },
+        "textRect": {
+          "top": 370.28125,
+          "bottom": 386.28125,
+          "left": 1078.078125,
+          "right": 1234.203125,
+          "width": 156.125,
+          "height": 16
+        },
+        "fragments": 1,
+        "whiteSpace": "nowrap"
+      }
+    },
+    {
+      "pass": true,
+      "name": "desktop-atom3d-chart no page overflow",
+      "detail": 1440
+    },
+    {
+      "pass": true,
+      "name": "desktop-atom3d-chart exact values single line",
+      "detail": [
+        {
+          "text": "1.893",
+          "id": "/database/result/atom3d-result-karimi-et-al-2019-lba-rmse-rmse/",
+          "rect": {
+            "top": 1954.578125,
+            "bottom": 1977.625,
+            "left": 1197.46875,
+            "right": 1234.203125,
+            "width": 36.734375,
+            "height": 23.046875
+          },
+          "textRect": {
+            "top": 1957.578125,
+            "bottom": 1973.578125,
+            "left": 1197.46875,
+            "right": 1234.203125,
+            "width": 36.734375,
+            "height": 16
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "1.601",
+          "id": "/database/result/atom3d-result-gnn-lba-rmse-rmse/",
+          "rect": {
+            "top": 2004.171875,
+            "bottom": 2027.21875,
+            "left": 1197.46875,
+            "right": 1234.203125,
+            "width": 36.734375,
+            "height": 23.046875
+          },
+          "textRect": {
+            "top": 2007.171875,
+            "bottom": 2023.171875,
+            "left": 1197.46875,
+            "right": 1234.203125,
+            "width": 36.734375,
+            "height": 16
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "1.568",
+          "id": "/database/result/atom3d-result-enn-lba-rmse-rmse/",
+          "rect": {
+            "top": 2053.765625,
+            "bottom": 2076.8125,
+            "left": 1197.46875,
+            "right": 1234.203125,
+            "width": 36.734375,
+            "height": 23.046875
+          },
+          "textRect": {
+            "top": 2056.765625,
+            "bottom": 2072.765625,
+            "left": 1197.46875,
+            "right": 1234.203125,
+            "width": 36.734375,
+            "height": 16
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "1.565",
+          "id": "/database/result/atom3d-result-zt-rk-et-al-2018-lba-rmse-rmse/",
+          "rect": {
+            "top": 2103.359375,
+            "bottom": 2126.40625,
+            "left": 1197.46875,
+            "right": 1234.203125,
+            "width": 36.734375,
+            "height": 23.046875
+          },
+          "textRect": {
+            "top": 2106.359375,
+            "bottom": 2122.359375,
+            "left": 1197.46875,
+            "right": 1234.203125,
+            "width": 36.734375,
+            "height": 16
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "1.416",
+          "id": "/database/result/atom3d-result-3dcnn-lba-rmse-rmse/",
+          "rect": {
+            "top": 2152.953125,
+            "bottom": 2176,
+            "left": 1197.46875,
+            "right": 1234.203125,
+            "width": 36.734375,
+            "height": 23.046875
+          },
+          "textRect": {
+            "top": 2155.953125,
+            "bottom": 2171.953125,
+            "left": 1197.46875,
+            "right": 1234.203125,
+            "width": 36.734375,
+            "height": 16
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        }
+      ]
+    },
+    {
+      "pass": true,
+      "name": "desktop-atom3d-chart values contained or locally scrollable"
+    },
+    {
+      "pass": true,
+      "name": "desktop-atom3d-chart descending exact row identity"
+    },
+    {
+      "pass": true,
+      "name": "desktop-atom3d-chart no zero missingness boilerplate"
+    },
+    {
+      "pass": true,
+      "name": "desktop-atom3d-chart details initially collapsed"
+    },
+    {
+      "pass": true,
+      "name": "desktop-atom3d-chart evidence origin visible"
+    },
+    {
+      "pass": true,
+      "name": "desktop-atom3d-chart review metadata collapsed"
+    },
+    {
+      "pass": true,
+      "name": "desktop-atom3d-chart axis no wrap"
+    },
+    {
+      "pass": true,
+      "name": "desktop-atom3d-chart axis contained and distinct",
+      "detail": [
+        {
+          "text": "1.39",
+          "rect": {
+            "top": 1905.3125,
+            "bottom": 1925.78125,
+            "left": 625.125,
+            "right": 650.5,
+            "width": 25.375,
+            "height": 20.46875
+          },
+          "fragments": 1
+        },
+        {
+          "text": "1.52",
+          "rect": {
+            "top": 1905.3125,
+            "bottom": 1925.78125,
+            "left": 735.734375,
+            "right": 761.109375,
+            "width": 25.375,
+            "height": 20.46875
+          },
+          "fragments": 1
+        },
+        {
+          "text": "1.65",
+          "rect": {
+            "top": 1905.3125,
+            "bottom": 1925.78125,
+            "left": 859.046875,
+            "right": 884.421875,
+            "width": 25.375,
+            "height": 20.46875
+          },
+          "fragments": 1
+        },
+        {
+          "text": "1.79",
+          "rect": {
+            "top": 1905.3125,
+            "bottom": 1925.78125,
+            "left": 982.359375,
+            "right": 1007.734375,
+            "width": 25.375,
+            "height": 20.46875
+          },
+          "fragments": 1
+        },
+        {
+          "text": "1.92",
+          "rect": {
+            "top": 1905.3125,
+            "bottom": 1925.78125,
+            "left": 1092.96875,
+            "right": 1118.34375,
+            "width": 25.375,
+            "height": 20.46875
+          },
+          "fragments": 1
+        }
+      ]
+    },
+    {
+      "pass": true,
+      "name": "desktop-atom3d-chart keyboard region focus visible",
+      "detail": {
+        "active": true,
+        "outline": "2px",
+        "style": "solid"
+      }
+    },
+    {
+      "pass": true,
+      "name": "desktop-atom3d-chart score link focus visible",
+      "detail": {
+        "text": "1.893",
+        "outline": "2px",
+        "rect": {
+          "top": 1954.578125,
+          "bottom": 1977.625,
+          "left": 1197.46875,
+          "right": 1234.203125,
+          "width": 36.734375,
+          "height": 23.046875
+        }
+      }
+    },
+    {
+      "pass": true,
+      "name": "desktop-atom3d-chart keyboard can expose complete exact value",
+      "detail": {
+        "text": "1.893",
+        "id": "/database/result/atom3d-result-karimi-et-al-2019-lba-rmse-rmse/",
+        "rect": {
+          "top": 1954.578125,
+          "bottom": 1977.625,
+          "left": 1197.46875,
+          "right": 1234.203125,
+          "width": 36.734375,
+          "height": 23.046875
+        },
+        "textRect": {
+          "top": 1957.578125,
+          "bottom": 1973.578125,
+          "left": 1197.46875,
+          "right": 1234.203125,
+          "width": 36.734375,
+          "height": 16
+        },
+        "fragments": 1,
+        "whiteSpace": "nowrap"
+      }
+    },
+    {
+      "pass": true,
+      "name": "desktop details keyboard accessible"
+    },
+    {
+      "pass": true,
+      "name": "desktop-atom3d-table no page overflow",
+      "detail": 1440
+    },
+    {
+      "pass": true,
+      "name": "desktop-atom3d-table exact values single line",
+      "detail": [
+        {
+          "text": "1.893",
+          "id": "/database/result/atom3d-result-karimi-et-al-2019-lba-rmse-rmse/",
+          "rect": {
+            "top": 772.109375,
+            "bottom": 787.109375,
+            "left": 375.640625,
+            "right": 411.359375,
+            "width": 35.71875,
+            "height": 15
+          },
+          "textRect": {
+            "top": 772.109375,
+            "bottom": 787.109375,
+            "left": 375.640625,
+            "right": 411.359375,
+            "width": 35.71875,
+            "height": 15
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "1.601",
+          "id": "/database/result/atom3d-result-gnn-lba-rmse-rmse/",
+          "rect": {
+            "top": 881.796875,
+            "bottom": 896.796875,
+            "left": 375.640625,
+            "right": 411.359375,
+            "width": 35.71875,
+            "height": 15
+          },
+          "textRect": {
+            "top": 881.796875,
+            "bottom": 896.796875,
+            "left": 375.640625,
+            "right": 411.359375,
+            "width": 35.71875,
+            "height": 15
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "1.568",
+          "id": "/database/result/atom3d-result-enn-lba-rmse-rmse/",
+          "rect": {
+            "top": 971.6875,
+            "bottom": 986.6875,
+            "left": 375.640625,
+            "right": 411.359375,
+            "width": 35.71875,
+            "height": 15
+          },
+          "textRect": {
+            "top": 971.6875,
+            "bottom": 986.6875,
+            "left": 375.640625,
+            "right": 411.359375,
+            "width": 35.71875,
+            "height": 15
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "1.565",
+          "id": "/database/result/atom3d-result-zt-rk-et-al-2018-lba-rmse-rmse/",
+          "rect": {
+            "top": 1061.578125,
+            "bottom": 1076.578125,
+            "left": 375.640625,
+            "right": 411.359375,
+            "width": 35.71875,
+            "height": 15
+          },
+          "textRect": {
+            "top": 1061.578125,
+            "bottom": 1076.578125,
+            "left": 375.640625,
+            "right": 411.359375,
+            "width": 35.71875,
+            "height": 15
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "1.416",
+          "id": "/database/result/atom3d-result-3dcnn-lba-rmse-rmse/",
+          "rect": {
+            "top": 1171.265625,
+            "bottom": 1186.265625,
+            "left": 375.640625,
+            "right": 411.359375,
+            "width": 35.71875,
+            "height": 15
+          },
+          "textRect": {
+            "top": 1171.265625,
+            "bottom": 1186.265625,
+            "left": 375.640625,
+            "right": 411.359375,
+            "width": 35.71875,
+            "height": 15
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        }
+      ]
+    },
+    {
+      "pass": true,
+      "name": "desktop-atom3d-table values contained or locally scrollable"
+    },
+    {
+      "pass": true,
+      "name": "desktop-atom3d-table descending exact row identity"
+    },
+    {
+      "pass": true,
+      "name": "desktop-atom3d-table no zero missingness boilerplate"
+    },
+    {
+      "pass": true,
+      "name": "desktop-atom3d-table details initially collapsed"
+    },
+    {
+      "pass": true,
+      "name": "desktop-atom3d-table evidence origin visible"
+    },
+    {
+      "pass": true,
+      "name": "desktop-atom3d-table review metadata collapsed"
+    },
+    {
+      "pass": true,
+      "name": "desktop-atom3d-table keyboard region focus visible",
+      "detail": {
+        "active": true,
+        "outline": "2px",
+        "style": "solid"
+      }
+    },
+    {
+      "pass": true,
+      "name": "desktop-atom3d-table score link focus visible",
+      "detail": {
+        "text": "1.893",
+        "outline": "2px",
+        "rect": {
+          "top": 772.109375,
+          "bottom": 787.109375,
+          "left": 375.640625,
+          "right": 411.359375,
+          "width": 35.71875,
+          "height": 15
+        }
+      }
+    },
+    {
+      "pass": true,
+      "name": "desktop-atom3d-table keyboard can expose complete exact value",
+      "detail": {
+        "text": "1.893",
+        "id": "/database/result/atom3d-result-karimi-et-al-2019-lba-rmse-rmse/",
+        "rect": {
+          "top": 772.109375,
+          "bottom": 787.109375,
+          "left": 375.640625,
+          "right": 411.359375,
+          "width": 35.71875,
+          "height": 15
+        },
+        "textRect": {
+          "top": 772.109375,
+          "bottom": 787.109375,
+          "left": 375.640625,
+          "right": 411.359375,
+          "width": 35.71875,
+          "height": 15
+        },
+        "fragments": 1,
+        "whiteSpace": "nowrap"
+      }
+    },
+    {
+      "pass": true,
+      "name": "desktop-long-values-chart no page overflow",
+      "detail": 1440
+    },
+    {
+      "pass": true,
+      "name": "desktop-long-values-chart exact values single line",
+      "detail": [
+        {
+          "text": "0.3452228016183431",
+          "id": "/database/result/acquired-result-dc116904277b3e1ba2a7/",
+          "rect": {
+            "top": 1766.6875,
+            "bottom": 1789.734375,
+            "left": 1091.046875,
+            "right": 1234.203125,
+            "width": 143.15625,
+            "height": 23.046875
+          },
+          "textRect": {
+            "top": 1769.6875,
+            "bottom": 1785.6875,
+            "left": 1091.046875,
+            "right": 1234.203125,
+            "width": 143.15625,
+            "height": 16
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "0.28065901722124237",
+          "id": "/database/result/acquired-result-65f7ef8bcb8f5bb978f0/",
+          "rect": {
+            "top": 1830.375,
+            "bottom": 1853.421875,
+            "left": 1082.875,
+            "right": 1234.203125,
+            "width": 151.328125,
+            "height": 23.046875
+          },
+          "textRect": {
+            "top": 1833.375,
+            "bottom": 1849.375,
+            "left": 1082.875,
+            "right": 1234.203125,
+            "width": 151.328125,
+            "height": 16
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "0.2610692147804768",
+          "id": "/database/result/acquired-result-e432d9e0c9c166763dd0/",
+          "rect": {
+            "top": 1887.015625,
+            "bottom": 1910.0625,
+            "left": 1091.046875,
+            "right": 1234.203125,
+            "width": 143.15625,
+            "height": 23.046875
+          },
+          "textRect": {
+            "top": 1890.015625,
+            "bottom": 1906.015625,
+            "left": 1091.046875,
+            "right": 1234.203125,
+            "width": 143.15625,
+            "height": 16
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "0.25442022176759105",
+          "id": "/database/result/acquired-result-6bae6118e71a42300876/",
+          "rect": {
+            "top": 1943.65625,
+            "bottom": 1966.703125,
+            "left": 1082.875,
+            "right": 1234.203125,
+            "width": 151.328125,
+            "height": 23.046875
+          },
+          "textRect": {
+            "top": 1946.65625,
+            "bottom": 1962.65625,
+            "left": 1082.875,
+            "right": 1234.203125,
+            "width": 151.328125,
+            "height": 16
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "0.23791327322756758",
+          "id": "/database/result/acquired-result-02f5550f6c8104aa6d3d/",
+          "rect": {
+            "top": 2007.34375,
+            "bottom": 2030.390625,
+            "left": 1082.875,
+            "right": 1234.203125,
+            "width": 151.328125,
+            "height": 23.046875
+          },
+          "textRect": {
+            "top": 2010.34375,
+            "bottom": 2026.34375,
+            "left": 1082.875,
+            "right": 1234.203125,
+            "width": 151.328125,
+            "height": 16
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "0.23713673288595002",
+          "id": "/database/result/acquired-result-1ec9cd6219ece8dd642a/",
+          "rect": {
+            "top": 2063.984375,
+            "bottom": 2087.03125,
+            "left": 1082.875,
+            "right": 1234.203125,
+            "width": 151.328125,
+            "height": 23.046875
+          },
+          "textRect": {
+            "top": 2066.984375,
+            "bottom": 2082.984375,
+            "left": 1082.875,
+            "right": 1234.203125,
+            "width": 151.328125,
+            "height": 16
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "0.23285717331095024",
+          "id": "/database/result/acquired-result-f7d1c76d83014e8486fb/",
+          "rect": {
+            "top": 2113.578125,
+            "bottom": 2136.625,
+            "left": 1082.875,
+            "right": 1234.203125,
+            "width": 151.328125,
+            "height": 23.046875
+          },
+          "textRect": {
+            "top": 2116.578125,
+            "bottom": 2132.578125,
+            "left": 1082.875,
+            "right": 1234.203125,
+            "width": 151.328125,
+            "height": 16
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "0.23243991676359685",
+          "id": "/database/result/acquired-result-69d1fb1102037843451c/",
+          "rect": {
+            "top": 2163.171875,
+            "bottom": 2186.21875,
+            "left": 1082.875,
+            "right": 1234.203125,
+            "width": 151.328125,
+            "height": 23.046875
+          },
+          "textRect": {
+            "top": 2166.171875,
+            "bottom": 2182.171875,
+            "left": 1082.875,
+            "right": 1234.203125,
+            "width": 151.328125,
+            "height": 16
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "0.23146482134704682",
+          "id": "/database/result/acquired-result-5c4ce0f1236d0fdd7634/",
+          "rect": {
+            "top": 2212.765625,
+            "bottom": 2235.8125,
+            "left": 1082.875,
+            "right": 1234.203125,
+            "width": 151.328125,
+            "height": 23.046875
+          },
+          "textRect": {
+            "top": 2215.765625,
+            "bottom": 2231.765625,
+            "left": 1082.875,
+            "right": 1234.203125,
+            "width": 151.328125,
+            "height": 16
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "0.23119630838352237",
+          "id": "/database/result/acquired-result-9d5bdffbd8959fa30f5b/",
+          "rect": {
+            "top": 2269.40625,
+            "bottom": 2292.453125,
+            "left": 1082.875,
+            "right": 1234.203125,
+            "width": 151.328125,
+            "height": 23.046875
+          },
+          "textRect": {
+            "top": 2272.40625,
+            "bottom": 2288.40625,
+            "left": 1082.875,
+            "right": 1234.203125,
+            "width": 151.328125,
+            "height": 16
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "0.23088734410967257",
+          "id": "/database/result/acquired-result-72f2ba10bda6a999c2e6/",
+          "rect": {
+            "top": 2333.09375,
+            "bottom": 2356.140625,
+            "left": 1082.875,
+            "right": 1234.203125,
+            "width": 151.328125,
+            "height": 23.046875
+          },
+          "textRect": {
+            "top": 2336.09375,
+            "bottom": 2352.09375,
+            "left": 1082.875,
+            "right": 1234.203125,
+            "width": 151.328125,
+            "height": 16
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "0.23020876921084255",
+          "id": "/database/result/acquired-result-35c3b2d321fe6aa6ec48/",
+          "rect": {
+            "top": 2396.78125,
+            "bottom": 2419.828125,
+            "left": 1082.875,
+            "right": 1234.203125,
+            "width": 151.328125,
+            "height": 23.046875
+          },
+          "textRect": {
+            "top": 2399.78125,
+            "bottom": 2415.78125,
+            "left": 1082.875,
+            "right": 1234.203125,
+            "width": 151.328125,
+            "height": 16
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        }
+      ]
+    },
+    {
+      "pass": true,
+      "name": "desktop-long-values-chart values contained or locally scrollable"
+    },
+    {
+      "pass": true,
+      "name": "desktop-long-values-chart descending exact row identity"
+    },
+    {
+      "pass": true,
+      "name": "desktop-long-values-chart no zero missingness boilerplate"
+    },
+    {
+      "pass": true,
+      "name": "desktop-long-values-chart details initially collapsed"
+    },
+    {
+      "pass": true,
+      "name": "desktop-long-values-chart evidence origin visible"
+    },
+    {
+      "pass": true,
+      "name": "desktop-long-values-chart review metadata collapsed"
+    },
+    {
+      "pass": true,
+      "name": "desktop-long-values-chart axis no wrap"
+    },
+    {
+      "pass": true,
+      "name": "desktop-long-values-chart axis contained and distinct",
+      "detail": [
+        {
+          "text": "0.168",
+          "rect": {
+            "top": 1710.375,
+            "bottom": 1730.84375,
+            "left": 596.203125,
+            "right": 628.859375,
+            "width": 32.65625,
+            "height": 20.46875
+          },
+          "fragments": 1
+        },
+        {
+          "text": "0.215",
+          "rect": {
+            "top": 1710.375,
+            "bottom": 1730.84375,
+            "left": 694.6875,
+            "right": 727.34375,
+            "width": 32.65625,
+            "height": 20.46875
+          },
+          "fragments": 1
+        },
+        {
+          "text": "0.261",
+          "rect": {
+            "top": 1710.375,
+            "bottom": 1730.84375,
+            "left": 809.484375,
+            "right": 842.140625,
+            "width": 32.65625,
+            "height": 20.46875
+          },
+          "fragments": 1
+        },
+        {
+          "text": "0.308",
+          "rect": {
+            "top": 1710.375,
+            "bottom": 1730.84375,
+            "left": 924.28125,
+            "right": 956.9375,
+            "width": 32.65625,
+            "height": 20.46875
+          },
+          "fragments": 1
+        },
+        {
+          "text": "0.355",
+          "rect": {
+            "top": 1710.375,
+            "bottom": 1730.84375,
+            "left": 1022.765625,
+            "right": 1055.421875,
+            "width": 32.65625,
+            "height": 20.46875
+          },
+          "fragments": 1
+        }
+      ]
+    },
+    {
+      "pass": true,
+      "name": "desktop-long-values-chart keyboard region focus visible",
+      "detail": {
+        "active": true,
+        "outline": "2px",
+        "style": "solid"
+      }
+    },
+    {
+      "pass": true,
+      "name": "desktop-long-values-chart score link focus visible",
+      "detail": {
+        "text": "0.3452228016183431",
+        "outline": "2px",
+        "rect": {
+          "top": 1766.6875,
+          "bottom": 1789.734375,
+          "left": 1091.046875,
+          "right": 1234.203125,
+          "width": 143.15625,
+          "height": 23.046875
+        }
+      }
+    },
+    {
+      "pass": true,
+      "name": "desktop-long-values-chart keyboard can expose complete exact value",
+      "detail": {
+        "text": "0.3452228016183431",
+        "id": "/database/result/acquired-result-dc116904277b3e1ba2a7/",
+        "rect": {
+          "top": 1766.6875,
+          "bottom": 1789.734375,
+          "left": 1091.046875,
+          "right": 1234.203125,
+          "width": 143.15625,
+          "height": 23.046875
+        },
+        "textRect": {
+          "top": 1769.6875,
+          "bottom": 1785.6875,
+          "left": 1091.046875,
+          "right": 1234.203125,
+          "width": 143.15625,
+          "height": 16
+        },
+        "fragments": 1,
+        "whiteSpace": "nowrap"
+      }
+    },
+    {
+      "pass": true,
+      "name": "desktop-long-values-table no page overflow",
+      "detail": 1440
+    },
+    {
+      "pass": true,
+      "name": "desktop-long-values-table exact values single line",
+      "detail": [
+        {
+          "text": "0.3452228016183431",
+          "id": "/database/result/acquired-result-dc116904277b3e1ba2a7/",
+          "rect": {
+            "top": 406.171875,
+            "bottom": 421.171875,
+            "left": 516.046875,
+            "right": 655.21875,
+            "width": 139.171875,
+            "height": 15
+          },
+          "textRect": {
+            "top": 406.171875,
+            "bottom": 421.171875,
+            "left": 516.046875,
+            "right": 655.21875,
+            "width": 139.171875,
+            "height": 15
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "0.28065901722124237",
+          "id": "/database/result/acquired-result-65f7ef8bcb8f5bb978f0/",
+          "rect": {
+            "top": 515.859375,
+            "bottom": 530.859375,
+            "left": 516.046875,
+            "right": 663.171875,
+            "width": 147.125,
+            "height": 15
+          },
+          "textRect": {
+            "top": 515.859375,
+            "bottom": 530.859375,
+            "left": 516.046875,
+            "right": 663.171875,
+            "width": 147.125,
+            "height": 15
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "0.2610692147804768",
+          "id": "/database/result/acquired-result-e432d9e0c9c166763dd0/",
+          "rect": {
+            "top": 625.546875,
+            "bottom": 640.546875,
+            "left": 516.046875,
+            "right": 655.21875,
+            "width": 139.171875,
+            "height": 15
+          },
+          "textRect": {
+            "top": 625.546875,
+            "bottom": 640.546875,
+            "left": 516.046875,
+            "right": 655.21875,
+            "width": 139.171875,
+            "height": 15
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "0.25442022176759105",
+          "id": "/database/result/acquired-result-6bae6118e71a42300876/",
+          "rect": {
+            "top": 735.234375,
+            "bottom": 750.234375,
+            "left": 516.046875,
+            "right": 663.171875,
+            "width": 147.125,
+            "height": 15
+          },
+          "textRect": {
+            "top": 735.234375,
+            "bottom": 750.234375,
+            "left": 516.046875,
+            "right": 663.171875,
+            "width": 147.125,
+            "height": 15
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "0.23791327322756758",
+          "id": "/database/result/acquired-result-02f5550f6c8104aa6d3d/",
+          "rect": {
+            "top": 844.921875,
+            "bottom": 859.921875,
+            "left": 516.046875,
+            "right": 663.171875,
+            "width": 147.125,
+            "height": 15
+          },
+          "textRect": {
+            "top": 844.921875,
+            "bottom": 859.921875,
+            "left": 516.046875,
+            "right": 663.171875,
+            "width": 147.125,
+            "height": 15
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "0.23713673288595002",
+          "id": "/database/result/acquired-result-1ec9cd6219ece8dd642a/",
+          "rect": {
+            "top": 954.609375,
+            "bottom": 969.609375,
+            "left": 516.046875,
+            "right": 663.171875,
+            "width": 147.125,
+            "height": 15
+          },
+          "textRect": {
+            "top": 954.609375,
+            "bottom": 969.609375,
+            "left": 516.046875,
+            "right": 663.171875,
+            "width": 147.125,
+            "height": 15
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "0.23285717331095024",
+          "id": "/database/result/acquired-result-f7d1c76d83014e8486fb/",
+          "rect": {
+            "top": 1064.296875,
+            "bottom": 1079.296875,
+            "left": 516.046875,
+            "right": 663.171875,
+            "width": 147.125,
+            "height": 15
+          },
+          "textRect": {
+            "top": 1064.296875,
+            "bottom": 1079.296875,
+            "left": 516.046875,
+            "right": 663.171875,
+            "width": 147.125,
+            "height": 15
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "0.23243991676359685",
+          "id": "/database/result/acquired-result-69d1fb1102037843451c/",
+          "rect": {
+            "top": 1173.984375,
+            "bottom": 1188.984375,
+            "left": 516.046875,
+            "right": 663.171875,
+            "width": 147.125,
+            "height": 15
+          },
+          "textRect": {
+            "top": 1173.984375,
+            "bottom": 1188.984375,
+            "left": 516.046875,
+            "right": 663.171875,
+            "width": 147.125,
+            "height": 15
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "0.23146482134704682",
+          "id": "/database/result/acquired-result-5c4ce0f1236d0fdd7634/",
+          "rect": {
+            "top": 1283.671875,
+            "bottom": 1298.671875,
+            "left": 516.046875,
+            "right": 663.171875,
+            "width": 147.125,
+            "height": 15
+          },
+          "textRect": {
+            "top": 1283.671875,
+            "bottom": 1298.671875,
+            "left": 516.046875,
+            "right": 663.171875,
+            "width": 147.125,
+            "height": 15
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "0.23119630838352237",
+          "id": "/database/result/acquired-result-9d5bdffbd8959fa30f5b/",
+          "rect": {
+            "top": 1393.359375,
+            "bottom": 1408.359375,
+            "left": 516.046875,
+            "right": 663.171875,
+            "width": 147.125,
+            "height": 15
+          },
+          "textRect": {
+            "top": 1393.359375,
+            "bottom": 1408.359375,
+            "left": 516.046875,
+            "right": 663.171875,
+            "width": 147.125,
+            "height": 15
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "0.23088734410967257",
+          "id": "/database/result/acquired-result-72f2ba10bda6a999c2e6/",
+          "rect": {
+            "top": 1522.84375,
+            "bottom": 1537.84375,
+            "left": 516.046875,
+            "right": 663.171875,
+            "width": 147.125,
+            "height": 15
+          },
+          "textRect": {
+            "top": 1522.84375,
+            "bottom": 1537.84375,
+            "left": 516.046875,
+            "right": 663.171875,
+            "width": 147.125,
+            "height": 15
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        },
+        {
+          "text": "0.23020876921084255",
+          "id": "/database/result/acquired-result-35c3b2d321fe6aa6ec48/",
+          "rect": {
+            "top": 1632.53125,
+            "bottom": 1647.53125,
+            "left": 516.046875,
+            "right": 663.171875,
+            "width": 147.125,
+            "height": 15
+          },
+          "textRect": {
+            "top": 1632.53125,
+            "bottom": 1647.53125,
+            "left": 516.046875,
+            "right": 663.171875,
+            "width": 147.125,
+            "height": 15
+          },
+          "fragments": 1,
+          "whiteSpace": "nowrap"
+        }
+      ]
+    },
+    {
+      "pass": true,
+      "name": "desktop-long-values-table values contained or locally scrollable"
+    },
+    {
+      "pass": true,
+      "name": "desktop-long-values-table descending exact row identity"
+    },
+    {
+      "pass": true,
+      "name": "desktop-long-values-table no zero missingness boilerplate"
+    },
+    {
+      "pass": true,
+      "name": "desktop-long-values-table details initially collapsed"
+    },
+    {
+      "pass": true,
+      "name": "desktop-long-values-table evidence origin visible"
+    },
+    {
+      "pass": true,
+      "name": "desktop-long-values-table review metadata collapsed"
+    },
+    {
+      "pass": true,
+      "name": "desktop-long-values-table keyboard region focus visible",
+      "detail": {
+        "active": true,
+        "outline": "2px",
+        "style": "solid"
+      }
+    },
+    {
+      "pass": true,
+      "name": "desktop-long-values-table score link focus visible",
+      "detail": {
+        "text": "0.3452228016183431",
+        "outline": "2px",
+        "rect": {
+          "top": 406.171875,
+          "bottom": 421.171875,
+          "left": 516.046875,
+          "right": 655.21875,
+          "width": 139.171875,
+          "height": 15
+        }
+      }
+    },
+    {
+      "pass": true,
+      "name": "desktop-long-values-table keyboard can expose complete exact value",
+      "detail": {
+        "text": "0.3452228016183431",
+        "id": "/database/result/acquired-result-dc116904277b3e1ba2a7/",
+        "rect": {
+          "top": 406.171875,
+          "bottom": 421.171875,
+          "left": 516.046875,
+          "right": 655.21875,
+          "width": 139.171875,
+          "height": 15
+        },
+        "textRect": {
+          "top": 406.171875,
+          "bottom": 421.171875,
+          "left": 516.046875,
+          "right": 655.21875,
+          "width": 139.171875,
+          "height": 15
+        },
+        "fragments": 1,
+        "whiteSpace": "nowrap"
+      }
+    }
+  ],
+  "errors": []
+}

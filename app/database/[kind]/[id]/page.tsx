@@ -1,4 +1,5 @@
 import { formatScore } from "@/lib/score-display";
+import { recordSearchMetadata } from "@/lib/catalogue-seo";
 import { catalogueText } from "@/lib/catalogue-text";
 import type { Metadata } from "next";
 import Link from "next/link";
@@ -63,16 +64,7 @@ export function generateMetadata({ params }: { params: Params }): Metadata {
     !recordRouteKinds(item.record).some((kind) => kind === params.kind)
   )
     return {};
-  return {
-    title: catalogueText(item.record.name),
-    description: catalogueText(
-      (item.record.attributes.profile as { summary?: string } | undefined)
-        ?.summary || item.record.description,
-    ),
-    alternates: {
-      canonical: `https://benchmarks.rewire.it${recordHref(item.record)}`,
-    },
-  };
+  return recordSearchMetadata(item.record, buildCatalogue().catalogue.records);
 }
 function Links({ records }: { records: OmicsRecord[] }) {
   return (

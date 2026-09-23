@@ -1,0 +1,1368 @@
+{
+  "release_id": "2026-09-23-cda1ab0e8294",
+  "catalogue_sha256": "02b31c13d3d5199ad5eb0dd55902c127d51f6d12d803c46ff177bc74d64b3200",
+  "scope": "Computed metadata for every non-excluded record; no scientific records changed. This does not measure Google indexing or search performance. Duplicate counts include every member of a same-kind group, including empty descriptions.",
+  "by_kind": [
+    {
+      "kind": "baseline",
+      "records": 27,
+      "indexable": 27,
+      "before": {
+        "missing_descriptions": 3,
+        "repeated_descriptions": 27,
+        "repeated_titles": 0
+      },
+      "after": {
+        "missing_descriptions": 0,
+        "repeated_descriptions": 0,
+        "repeated_titles": 0
+      }
+    },
+    {
+      "kind": "benchmark",
+      "records": 39,
+      "indexable": 39,
+      "before": {
+        "missing_descriptions": 0,
+        "repeated_descriptions": 0,
+        "repeated_titles": 0
+      },
+      "after": {
+        "missing_descriptions": 0,
+        "repeated_descriptions": 0,
+        "repeated_titles": 0
+      }
+    },
+    {
+      "kind": "claim",
+      "records": 1112,
+      "indexable": 0,
+      "before": {
+        "missing_descriptions": 143,
+        "repeated_descriptions": 555,
+        "repeated_titles": 128
+      },
+      "after": {
+        "missing_descriptions": 0,
+        "repeated_descriptions": 101,
+        "repeated_titles": 128
+      }
+    },
+    {
+      "kind": "configuration",
+      "records": 2389,
+      "indexable": 2389,
+      "before": {
+        "missing_descriptions": 0,
+        "repeated_descriptions": 2115,
+        "repeated_titles": 576
+      },
+      "after": {
+        "missing_descriptions": 0,
+        "repeated_descriptions": 485,
+        "repeated_titles": 548
+      }
+    },
+    {
+      "kind": "dataset",
+      "records": 138,
+      "indexable": 138,
+      "before": {
+        "missing_descriptions": 98,
+        "repeated_descriptions": 136,
+        "repeated_titles": 8
+      },
+      "after": {
+        "missing_descriptions": 0,
+        "repeated_descriptions": 6,
+        "repeated_titles": 8
+      }
+    },
+    {
+      "kind": "dataset_subset",
+      "records": 334,
+      "indexable": 334,
+      "before": {
+        "missing_descriptions": 0,
+        "repeated_descriptions": 110,
+        "repeated_titles": 0
+      },
+      "after": {
+        "missing_descriptions": 0,
+        "repeated_descriptions": 0,
+        "repeated_titles": 0
+      }
+    },
+    {
+      "kind": "evaluation",
+      "records": 8726,
+      "indexable": 8726,
+      "before": {
+        "missing_descriptions": 147,
+        "repeated_descriptions": 3073,
+        "repeated_titles": 336
+      },
+      "after": {
+        "missing_descriptions": 0,
+        "repeated_descriptions": 0,
+        "repeated_titles": 332
+      }
+    },
+    {
+      "kind": "evaluator",
+      "records": 4,
+      "indexable": 4,
+      "before": {
+        "missing_descriptions": 0,
+        "repeated_descriptions": 0,
+        "repeated_titles": 0
+      },
+      "after": {
+        "missing_descriptions": 0,
+        "repeated_descriptions": 0,
+        "repeated_titles": 0
+      }
+    },
+    {
+      "kind": "method",
+      "records": 42,
+      "indexable": 42,
+      "before": {
+        "missing_descriptions": 0,
+        "repeated_descriptions": 32,
+        "repeated_titles": 8
+      },
+      "after": {
+        "missing_descriptions": 0,
+        "repeated_descriptions": 0,
+        "repeated_titles": 4
+      }
+    },
+    {
+      "kind": "model",
+      "records": 59,
+      "indexable": 59,
+      "before": {
+        "missing_descriptions": 0,
+        "repeated_descriptions": 24,
+        "repeated_titles": 22
+      },
+      "after": {
+        "missing_descriptions": 0,
+        "repeated_descriptions": 0,
+        "repeated_titles": 0
+      }
+    },
+    {
+      "kind": "pipeline",
+      "records": 124,
+      "indexable": 124,
+      "before": {
+        "missing_descriptions": 0,
+        "repeated_descriptions": 62,
+        "repeated_titles": 2
+      },
+      "after": {
+        "missing_descriptions": 0,
+        "repeated_descriptions": 0,
+        "repeated_titles": 2
+      }
+    },
+    {
+      "kind": "protocol",
+      "records": 334,
+      "indexable": 334,
+      "before": {
+        "missing_descriptions": 0,
+        "repeated_descriptions": 102,
+        "repeated_titles": 0
+      },
+      "after": {
+        "missing_descriptions": 0,
+        "repeated_descriptions": 0,
+        "repeated_titles": 0
+      }
+    },
+    {
+      "kind": "result",
+      "records": 11291,
+      "indexable": 11291,
+      "before": {
+        "missing_descriptions": 155,
+        "repeated_descriptions": 11291,
+        "repeated_titles": 1379
+      },
+      "after": {
+        "missing_descriptions": 0,
+        "repeated_descriptions": 0,
+        "repeated_titles": 117
+      }
+    },
+    {
+      "kind": "service",
+      "records": 1,
+      "indexable": 1,
+      "before": {
+        "missing_descriptions": 0,
+        "repeated_descriptions": 0,
+        "repeated_titles": 0
+      },
+      "after": {
+        "missing_descriptions": 0,
+        "repeated_descriptions": 0,
+        "repeated_titles": 0
+      }
+    },
+    {
+      "kind": "source",
+      "records": 951,
+      "indexable": 951,
+      "before": {
+        "missing_descriptions": 38,
+        "repeated_descriptions": 942,
+        "repeated_titles": 235
+      },
+      "after": {
+        "missing_descriptions": 0,
+        "repeated_descriptions": 12,
+        "repeated_titles": 212
+      }
+    },
+    {
+      "kind": "task",
+      "records": 495,
+      "indexable": 495,
+      "before": {
+        "missing_descriptions": 0,
+        "repeated_descriptions": 2,
+        "repeated_titles": 12
+      },
+      "after": {
+        "missing_descriptions": 0,
+        "repeated_descriptions": 0,
+        "repeated_titles": 12
+      }
+    }
+  ],
+  "samples": [
+    {
+      "id": "catalog-baseline-kraken2",
+      "kind": "baseline",
+      "path": "/database/baseline/catalog-baseline-kraken2/",
+      "before": {
+        "title": "Kraken2",
+        "description": ""
+      },
+      "after": {
+        "title": "Kraken2 | baseline",
+        "description": "Kraken2: baseline record in the biological benchmark database. Method: Kraken2. Source: Kraken2 official resource; DerrickWood/kraken2: README.md.",
+        "alternates": {
+          "canonical": "https://benchmarks.rewire.it/database/baseline/catalog-baseline-kraken2/"
+        },
+        "robots": {
+          "index": true,
+          "follow": true
+        }
+      }
+    },
+    {
+      "id": "agront-2024-plant-genomic-benchmark",
+      "kind": "benchmark",
+      "path": "/database/benchmark/agront-2024-plant-genomic-benchmark/",
+      "before": {
+        "title": "Plant Genomic Benchmark (PGB)",
+        "description": "Plant genomic evaluations introduced with AgroNT. This release contains the complete promoter and terminator comparison tables from Figure 3e and 3f; other tasks remain unextracted."
+      },
+      "after": {
+        "title": "Plant Genomic Benchmark (PGB) | benchmark",
+        "description": "Plant Genomic Benchmark (PGB): Plant genomic evaluations introduced with AgroNT. This release contains the complete promoter and terminator comparison tables from Figure 3e and 3f; other tasks remain unextracted.",
+        "alternates": {
+          "canonical": "https://benchmarks.rewire.it/database/benchmark/agront-2024-plant-genomic-benchmark/"
+        },
+        "robots": {
+          "index": true,
+          "follow": true
+        }
+      }
+    },
+    {
+      "id": "acquired-membership-02830fa05b2a2c08d0eb",
+      "kind": "claim",
+      "path": "/database/claim/acquired-membership-02830fa05b2a2c08d0eb/",
+      "before": {
+        "title": "FLIP2 NucB two-to-many; held-out test set: benchmark membership",
+        "description": "The cited source identifies this evaluation with the named benchmark."
+      },
+      "after": {
+        "title": "FLIP2 NucB two-to-many; held-out test set: benchmark membership | evidence claim",
+        "description": "FLIP2 NucB two-to-many; held-out test set: benchmark membership: The cited source identifies this evaluation with the named benchmark.",
+        "alternates": {
+          "canonical": "https://benchmarks.rewire.it/database/claim/acquired-membership-02830fa05b2a2c08d0eb/"
+        },
+        "robots": {
+          "index": false,
+          "follow": true
+        }
+      }
+    },
+    {
+      "id": "claim-b2-2ome-lm-2025",
+      "kind": "claim",
+      "path": "/database/claim/claim-b2-2ome-lm-2025/",
+      "before": {
+        "title": "Reported AUC for 2OMe-LM",
+        "description": ""
+      },
+      "after": {
+        "title": "Reported AUC for 2OMe-LM | evidence claim",
+        "description": "Reported AUC for 2OMe-LM: evidence claim record in the biological benchmark database.",
+        "alternates": {
+          "canonical": "https://benchmarks.rewire.it/database/claim/claim-b2-2ome-lm-2025/"
+        },
+        "robots": {
+          "index": false,
+          "follow": true
+        }
+      }
+    },
+    {
+      "id": "acquired-configuration-0001306f30f482dea283",
+      "kind": "configuration",
+      "path": "/database/configuration/acquired-configuration-0001306f30f482dea283/",
+      "before": {
+        "title": "cqawesome: m0922b_valpins_m03 [submission E2fqRNEv3JZyi7qX4ozM]",
+        "description": "Exact source-reported configuration or submission label. Family membership, checkpoint identity and aliases have not been inferred."
+      },
+      "after": {
+        "title": "cqawesome: m0922b_valpins_m03 [submission E2fqRNEv3JZyi7qX4ozM] | configuration",
+        "description": "cqawesome: m0922b_valpins_m03 [submission E2fqRNEv3JZyi7qX4ozM]: Exact source-reported configuration or submission label. Family membership, checkpoint identity and aliases have not been inferred. Source: Virtual Cell Challenge 2026: 2026-09-19 snapshot; panel vcc2026-val-1.",
+        "alternates": {
+          "canonical": "https://benchmarks.rewire.it/database/configuration/acquired-configuration-0001306f30f482dea283/"
+        },
+        "robots": {
+          "index": true,
+          "follow": true
+        }
+      }
+    },
+    {
+      "id": "discovery-dataset-lipid-maps-standards-spectra",
+      "kind": "dataset",
+      "path": "/database/dataset/discovery-dataset-lipid-maps-standards-spectra/",
+      "before": {
+        "title": "LIPID MAPS Standards Spectra",
+        "description": "Experimental lipid reference spectra for identification assessment."
+      },
+      "after": {
+        "title": "LIPID MAPS Standards Spectra | dataset",
+        "description": "LIPID MAPS Standards Spectra: Experimental lipid reference spectra for identification assessment. Source: lipidmaps-spectra official source.",
+        "alternates": {
+          "canonical": "https://benchmarks.rewire.it/database/dataset/discovery-dataset-lipid-maps-standards-spectra/"
+        },
+        "robots": {
+          "index": true,
+          "follow": true
+        }
+      }
+    },
+    {
+      "id": "reported-dataset-00201f65c32f6d",
+      "kind": "dataset",
+      "path": "/database/dataset/reported-dataset-00201f65c32f6d/",
+      "before": {
+        "title": "α-synuclein Ligand 47 MD ensemble",
+        "description": ""
+      },
+      "after": {
+        "title": "α-synuclein Ligand 47 MD ensemble | dataset",
+        "description": "α-synuclein Ligand 47 MD ensemble: dataset record in the biological benchmark database. Source: Ensemble docking for intrinsically disordered proteins.",
+        "alternates": {
+          "canonical": "https://benchmarks.rewire.it/database/dataset/reported-dataset-00201f65c32f6d/"
+        },
+        "robots": {
+          "index": true,
+          "follow": true
+        }
+      }
+    },
+    {
+      "id": "acquired-dataset-03bede40fb43bb3fe678",
+      "kind": "dataset_subset",
+      "path": "/database/dataset_subset/acquired-dataset-03bede40fb43bb3fe678/",
+      "before": {
+        "title": "BFC",
+        "description": "Source-defined subset: BFC. Exact membership and scoring coverage remain as reported in the cited artifact."
+      },
+      "after": {
+        "title": "BFC | dataset subset",
+        "description": "BFC: Source-defined subset: BFC. Exact membership and scoring coverage remain as reported in the cited artifact. Source: BEELINE: 10.1038/s41592-019-0690-6 source data published 2020.",
+        "alternates": {
+          "canonical": "https://benchmarks.rewire.it/database/dataset_subset/acquired-dataset-03bede40fb43bb3fe678/"
+        },
+        "robots": {
+          "index": true,
+          "follow": true
+        }
+      }
+    },
+    {
+      "id": "acquired-evaluation-004bc283e8210996b8a0",
+      "kind": "evaluation",
+      "path": "/database/evaluation/acquired-evaluation-004bc283e8210996b8a0/",
+      "before": {
+        "title": "potato: S3-ratio-centered-plateau350 [submission 1W7ccve4e0Ijsi6KbgxQ] · vcc2026-val-1 · 2026 validation contexts A, B and C",
+        "description": "vcc2026-val-1; 2026 validation contexts A, B and C. Source checked, not independently reproduced."
+      },
+      "after": {
+        "title": "potato: S3-ratio-centered-plateau350 [submission 1W7ccve4e0Ijsi6KbgxQ] · vcc2026-val-1 · 2026 validation contexts A, B and C | evaluation",
+        "description": "potato: S3-ratio-centered-plateau350 [submission 1W7ccve4e0Ijsi6KbgxQ] · vcc2026-val-1 · 2026 validation contexts A, B and C: Configuration: potato: S3-ratio-centered-plateau350 [submission 1W7ccve4e0Ijsi6KbgxQ]; Protocol: vcc2026-val-1 · 2026 validation contexts A, B and C; Dataset subset: 2026 validation contexts A, B and C. Protocol: vcc2026-val-1; Split: 2026 validation contexts A, B and C; Inputs: unreported; Adaptation: unreported. Record status: discovered; independent reproduction is not established by this record.",
+        "alternates": {
+          "canonical": "https://benchmarks.rewire.it/database/evaluation/acquired-evaluation-004bc283e8210996b8a0/"
+        },
+        "robots": {
+          "index": true,
+          "follow": true
+        }
+      }
+    },
+    {
+      "id": "evaluation-b2-2ome-lm-2025",
+      "kind": "evaluation",
+      "path": "/database/evaluation/evaluation-b2-2ome-lm-2025/",
+      "before": {
+        "title": "2OMe-LM: human RNA 2-prime-O-methylation site prediction",
+        "description": ""
+      },
+      "after": {
+        "title": "2OMe-LM: human RNA 2-prime-O-methylation site prediction; Paper-specific predictor; checkpoint not specified | evaluation",
+        "description": "2OMe-LM: human RNA 2-prime-O-methylation site prediction; Paper-specific predictor; checkpoint not specified: Configuration: 2OMe-LM; Protocol: Human RNA 2OMe sites, five-fold cross-validation (human RNA 2-prime-O-methylation site prediction); Dataset: human RNA 2OMe sites. Protocol: 41-nt centred RNA windows; balanced 8,037 positive and 8,037 negative samples after 80% identity filtering, then 8:2 train/test division. Average of five validation folds of the training set.; Split: 41-nt centred RNA windows; balanced 8,037 positive and 8,037 negative samples after 80% identity filtering, then 8:2 train/test division. Average of five validation folds of the training set.; Adaptation: Paper-specific predictor; checkpoint not specified. Record status: needs review; independent reproduction is not established by this record.",
+        "alternates": {
+          "canonical": "https://benchmarks.rewire.it/database/evaluation/evaluation-b2-2ome-lm-2025/"
+        },
+        "robots": {
+          "index": true,
+          "follow": true
+        }
+      }
+    },
+    {
+      "id": "discovery-benchmark-amber",
+      "kind": "evaluator",
+      "path": "/database/evaluator/discovery-benchmark-amber/",
+      "before": {
+        "title": "AMBER",
+        "description": "AMBER assesses metagenomic genome bins and taxonomic assignments against gold-standard assignments."
+      },
+      "after": {
+        "title": "AMBER | evaluator",
+        "description": "AMBER: AMBER assesses metagenomic genome bins and taxonomic assignments against gold-standard assignments.",
+        "alternates": {
+          "canonical": "https://benchmarks.rewire.it/database/evaluator/discovery-benchmark-amber/"
+        },
+        "robots": {
+          "index": true,
+          "follow": true
+        }
+      }
+    },
+    {
+      "id": "acquired-configuration-c7901cd0e9a2eb889951",
+      "kind": "method",
+      "path": "/database/method/acquired-configuration-c7901cd0e9a2eb889951/",
+      "before": {
+        "title": "Gold standard",
+        "description": "Gold-standard reference output supplied by the assessment. This is an experimental reference, not a competing predictive model."
+      },
+      "after": {
+        "title": "Gold standard | method",
+        "description": "Gold standard: Gold-standard reference output supplied by the assessment. This is an experimental reference, not a competing predictive model.",
+        "alternates": {
+          "canonical": "https://benchmarks.rewire.it/database/method/acquired-configuration-c7901cd0e9a2eb889951/"
+        },
+        "robots": {
+          "index": true,
+          "follow": true
+        }
+      }
+    },
+    {
+      "id": "catalog-model-alphagenome",
+      "kind": "model",
+      "path": "/database/model/catalog-model-alphagenome/",
+      "before": {
+        "title": "AlphaGenome",
+        "description": "AlphaGenome predicts regulatory activity and variant effects from long DNA sequences, with outputs for expression, splicing, chromatin and contact maps."
+      },
+      "after": {
+        "title": "AlphaGenome; API / released weights | model",
+        "description": "AlphaGenome; API / released weights: AlphaGenome predicts regulatory activity and variant effects from long DNA sequences, with outputs for expression, splicing, chromatin and contact maps.",
+        "alternates": {
+          "canonical": "https://benchmarks.rewire.it/database/model/catalog-model-alphagenome/"
+        },
+        "robots": {
+          "index": true,
+          "follow": true
+        }
+      }
+    },
+    {
+      "id": "alphagenome-2026-comparator-5b70f2a000382e2d",
+      "kind": "pipeline",
+      "path": "/database/pipeline/alphagenome-2026-comparator-5b70f2a000382e2d/",
+      "before": {
+        "title": "ENCODE e2g extended: ENCODE-rE2G extended logistic regression (paper Table 4)",
+        "description": "ENCODE e2g extended: ENCODE-rE2G extended logistic regression (paper Table 4). A comparator reported by the AlphaGenome authors; protocol pages specify the dataset and adaptation."
+      },
+      "after": {
+        "title": "ENCODE e2g extended: ENCODE-rE2G extended logistic regression (paper Table 4) | pipeline",
+        "description": "ENCODE e2g extended: ENCODE-rE2G extended logistic regression (paper Table 4): ENCODE e2g extended: ENCODE-rE2G extended logistic regression (paper Table 4). A comparator reported by the AlphaGenome authors; protocol pages specify the dataset and adaptation.",
+        "alternates": {
+          "canonical": "https://benchmarks.rewire.it/database/pipeline/alphagenome-2026-comparator-5b70f2a000382e2d/"
+        },
+        "robots": {
+          "index": true,
+          "follow": true
+        }
+      }
+    },
+    {
+      "id": "acquired-protocol-024f47659eb7e75f56dc",
+      "kind": "protocol",
+      "path": "/database/protocol/acquired-protocol-024f47659eb7e75f56dc/",
+      "before": {
+        "title": "BEELINE 2020 Figure 5 · mESC · Reference network: Cell-type specific ChIP-Seq; Gene selection: TFs+500",
+        "description": "Source-specific evaluation. Input conditions: Reference network: Cell-type specific ChIP-Seq; Gene selection: TFs+500. No equivalence to other releases, protocols or model families is inferred."
+      },
+      "after": {
+        "title": "BEELINE 2020 Figure 5 · mESC · Reference network: Cell-type specific ChIP-Seq; Gene selection: TFs+500 | protocol",
+        "description": "BEELINE 2020 Figure 5 · mESC · Reference network: Cell-type specific ChIP-Seq; Gene selection: TFs+500: Source-specific evaluation. Input conditions: Reference network: Cell-type specific ChIP-Seq; Gene selection: TFs+500. No equivalence to other releases, protocols or model families is inferred.",
+        "alternates": {
+          "canonical": "https://benchmarks.rewire.it/database/protocol/acquired-protocol-024f47659eb7e75f56dc/"
+        },
+        "robots": {
+          "index": true,
+          "follow": true
+        }
+      }
+    },
+    {
+      "id": "acquired-result-0026c4a8b6cd78310b80",
+      "kind": "result",
+      "path": "/database/result/acquired-result-0026c4a8b6cd78310b80/",
+      "before": {
+        "title": "Schneidman [P13] · dockq · CAPRI round 61 T315.1",
+        "description": "Reported measurement transcribed from the pinned source. Not independently reproduced."
+      },
+      "after": {
+        "title": "Schneidman [P13] · dockq · CAPRI round 61 T315.1: 0.05 fraction | result",
+        "description": "dockq: 0.05 fraction. Configuration: Schneidman [P13]; Protocol: CAPRI round 61 predictor; submitted model 1; T315.1 · CAPRI round 61 T315.1; Dataset subset: CAPRI round 61 T315.1. Split: CAPRI round 61 T315.1; Aggregation: one interface; no pooling. Source checked; not independently reproduced.",
+        "alternates": {
+          "canonical": "https://benchmarks.rewire.it/database/result/acquired-result-0026c4a8b6cd78310b80/"
+        },
+        "robots": {
+          "index": true,
+          "follow": true
+        }
+      }
+    },
+    {
+      "id": "b2-2ome-lm-2025",
+      "kind": "result",
+      "path": "/database/result/b2-2ome-lm-2025/",
+      "before": {
+        "title": "2OMe-LM · AUC · human RNA 2OMe sites",
+        "description": ""
+      },
+      "after": {
+        "title": "2OMe-LM · AUC · human RNA 2OMe sites: 0.919 fraction | result",
+        "description": "AUC: 0.919 fraction. Configuration: 2OMe-LM; Protocol: Human RNA 2OMe sites, five-fold cross-validation (human RNA 2-prime-O-methylation site prediction); Dataset: human RNA 2OMe sites. Split: 41-nt centred RNA windows; balanced 8,037 positive and 8,037 negative samples after 80% identity filtering, then 8:2 train/test division. Average of five validation folds of the training set. Source checked; not independently reproduced.",
+        "alternates": {
+          "canonical": "https://benchmarks.rewire.it/database/result/b2-2ome-lm-2025/"
+        },
+        "robots": {
+          "index": true,
+          "follow": true
+        }
+      }
+    },
+    {
+      "id": "catalog-model-alphafold-3-server",
+      "kind": "service",
+      "path": "/database/service/catalog-model-alphafold-3-server/",
+      "before": {
+        "title": "AlphaFold 3 Server",
+        "description": "AlphaFold Server is Google DeepMind’s hosted interface to AlphaFold 3. It predicts molecular complex structures without a local installation and returns confidence estimates. Its service limits, supported inputs and output terms are separate from the downloadable model."
+      },
+      "after": {
+        "title": "AlphaFold 3 Server; hosted server | service",
+        "description": "AlphaFold 3 Server; hosted server: AlphaFold Server is Google DeepMind’s hosted interface to AlphaFold 3. It predicts molecular complex structures without a local installation and returns confidence estimates. Its service limits, supported inputs and output terms are separate from the downloadable model.",
+        "alternates": {
+          "canonical": "https://benchmarks.rewire.it/database/service/catalog-model-alphafold-3-server/"
+        },
+        "robots": {
+          "index": true,
+          "follow": true
+        }
+      }
+    },
+    {
+      "id": "2ome-lm-2025",
+      "kind": "source",
+      "path": "/database/source/2ome-lm-2025/",
+      "before": {
+        "title": "2OMe-LM: predicting 2′-O-methylation sites in human RNA using a pre-trained RNA language model",
+        "description": "Primary paper retained with its original identifier. Metadata inherited from the literature collection; individual result checks are separate."
+      },
+      "after": {
+        "title": "2OMe-LM: predicting 2′-O-methylation sites in human RNA using a pre-trained RNA language model; journal full text in PMC | source",
+        "description": "2OMe-LM: predicting 2′-O-methylation sites in human RNA using a pre-trained RNA language model; journal full text in PMC (2025): source record. DOI: 10.1093/bioinformatics/btaf417. Primary paper retained with its original identifier. Metadata inherited from the literature collection; individual result checks are separate.",
+        "alternates": {
+          "canonical": "https://benchmarks.rewire.it/database/source/2ome-lm-2025/"
+        },
+        "robots": {
+          "index": true,
+          "follow": true
+        }
+      }
+    },
+    {
+      "id": "catalog-source-alphafold-3-server",
+      "kind": "source",
+      "path": "/database/source/catalog-source-alphafold-3-server/",
+      "before": {
+        "title": "AlphaFold 3 Server official resource",
+        "description": ""
+      },
+      "after": {
+        "title": "AlphaFold 3 Server official resource | source",
+        "description": "AlphaFold 3 Server official resource: source record. Linked evidence and source metadata in the biological benchmark database.",
+        "alternates": {
+          "canonical": "https://benchmarks.rewire.it/database/source/catalog-source-alphafold-3-server/"
+        },
+        "robots": {
+          "index": true,
+          "follow": true
+        }
+      }
+    },
+    {
+      "id": "atom3d-task-lba-rmse",
+      "kind": "task",
+      "path": "/database/task/atom3d-task-lba-rmse/",
+      "before": {
+        "title": "ATOM3D LBA-RMSE: Ligand binding affinity, root mean squared error",
+        "description": "Ligand binding affinity, root mean squared error. Scored with RMSE on ATOM3D LBA. Trained and scored under the ATOM3D split for this task. Asterisks in the paper mark a run whose training data differed."
+      },
+      "after": {
+        "title": "ATOM3D LBA-RMSE: Ligand binding affinity, root mean squared error | task",
+        "description": "ATOM3D LBA-RMSE: Ligand binding affinity, root mean squared error: Ligand binding affinity, root mean squared error. Scored with RMSE on ATOM3D LBA. Trained and scored under the ATOM3D split for this task. Asterisks in the paper mark a run whose training data differed.",
+        "alternates": {
+          "canonical": "https://benchmarks.rewire.it/database/task/atom3d-task-lba-rmse/"
+        },
+        "robots": {
+          "index": true,
+          "follow": true
+        }
+      }
+    }
+  ],
+  "same_name_models": [
+    {
+      "name": "DNABERT-2",
+      "decision": "Retain separate IDs and self-canonicals; source/version/relationship evidence does not authorize a scientific record merge in this presentation change.",
+      "records": [
+        {
+          "id": "catalog-model-dnabert-2",
+          "version": "117M",
+          "checkpoint": null,
+          "source_ids": [
+            "catalog-source-dnabert-2",
+            "evidence-official-7267eabca7c4a7945878",
+            "evidence-official-2cf0a41fec83ee9c5cc9",
+            "evidence-official-96b5c3a31a50f7c259d6",
+            "evidence-official-a48ae27aa000bdab7442",
+            "evidence-official-3aa749d3205c0a768b22"
+          ],
+          "links": [
+            {
+              "relation": "variant_of",
+              "target_id": "discovery-model-dnabert-2"
+            },
+            {
+              "relation": "alias_of",
+              "target_id": "discovery-model-dnabert-2"
+            }
+          ],
+          "metadata": {
+            "title": "DNABERT-2; 117M | model",
+            "description": "DNABERT-2; 117M: DNABERT-2 learns DNA representations that can be adapted to genomic prediction tasks.",
+            "alternates": {
+              "canonical": "https://benchmarks.rewire.it/database/model/catalog-model-dnabert-2/"
+            },
+            "robots": {
+              "index": true,
+              "follow": true
+            }
+          }
+        },
+        {
+          "id": "discovery-model-dnabert-2",
+          "version": null,
+          "checkpoint": null,
+          "source_ids": [
+            "src-discovery-magics-lab-dnabert-2",
+            "evidence-official-96b5c3a31a50f7c259d6",
+            "evidence-official-25b222d11900e0e88a51",
+            "evidence-official-3aa749d3205c0a768b22"
+          ],
+          "links": [
+            {
+              "relation": "applicable_to",
+              "target_id": "discovery-benchmark-gue"
+            }
+          ],
+          "metadata": {
+            "title": "DNABERT-2 | model",
+            "description": "DNABERT-2: DNABERT-2 learns DNA representations that can be adapted to genomic prediction tasks.",
+            "alternates": {
+              "canonical": "https://benchmarks.rewire.it/database/model/discovery-model-dnabert-2/"
+            },
+            "robots": {
+              "index": true,
+              "follow": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "ESM-2",
+      "decision": "Retain separate IDs and self-canonicals; source/version/relationship evidence does not authorize a scientific record merge in this presentation change.",
+      "records": [
+        {
+          "id": "catalog-model-esm-2",
+          "version": "8M",
+          "checkpoint": null,
+          "source_ids": [
+            "catalog-source-esm-2",
+            "evidence-official-29d4b229a3aa426a6dfb",
+            "evidence-official-d7e5c63feb0e0e627625",
+            "evidence-official-28fc17fbe0c1d99da219"
+          ],
+          "links": [
+            {
+              "relation": "variant_of",
+              "target_id": "discovery-model-esm-2"
+            }
+          ],
+          "metadata": {
+            "title": "ESM-2; 8M | model",
+            "description": "ESM-2; 8M: ESM-2 is a family of protein sequence encoders that produce representations for downstream protein analyses.",
+            "alternates": {
+              "canonical": "https://benchmarks.rewire.it/database/model/catalog-model-esm-2/"
+            },
+            "robots": {
+              "index": true,
+              "follow": true
+            }
+          }
+        },
+        {
+          "id": "discovery-model-esm-2",
+          "version": null,
+          "checkpoint": null,
+          "source_ids": [
+            "src-discovery-facebookresearch-esm",
+            "evidence-official-29d4b229a3aa426a6dfb",
+            "evidence-official-d7e5c63feb0e0e627625",
+            "evidence-official-28fc17fbe0c1d99da219"
+          ],
+          "links": [
+            {
+              "relation": "applicable_to",
+              "target_id": "discovery-benchmark-proteingym"
+            }
+          ],
+          "metadata": {
+            "title": "ESM-2 | model",
+            "description": "ESM-2: ESM-2 is a family of protein sequence encoders that produce representations for downstream protein analyses.",
+            "alternates": {
+              "canonical": "https://benchmarks.rewire.it/database/model/discovery-model-esm-2/"
+            },
+            "robots": {
+              "index": true,
+              "follow": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "ESMFold",
+      "decision": "Retain separate IDs and self-canonicals; source/version/relationship evidence does not authorize a scientific record merge in this presentation change.",
+      "records": [
+        {
+          "id": "catalog-model-esmfold",
+          "version": "v1",
+          "checkpoint": null,
+          "source_ids": [
+            "catalog-source-esmfold",
+            "evidence-official-29d4b229a3aa426a6dfb",
+            "evidence-official-fa53ab621979fb5f37c8",
+            "evidence-official-867f2d1dcb4084248daa"
+          ],
+          "links": [
+            {
+              "relation": "variant_of",
+              "target_id": "discovery-model-esmfold"
+            }
+          ],
+          "metadata": {
+            "title": "ESMFold; v1 | model",
+            "description": "ESMFold; v1: ESMFold predicts protein structures directly from amino-acid sequence using ESM-2 representations.",
+            "alternates": {
+              "canonical": "https://benchmarks.rewire.it/database/model/catalog-model-esmfold/"
+            },
+            "robots": {
+              "index": true,
+              "follow": true
+            }
+          }
+        },
+        {
+          "id": "discovery-model-esmfold",
+          "version": null,
+          "checkpoint": null,
+          "source_ids": [
+            "src-discovery-facebookresearch-esm",
+            "evidence-official-29d4b229a3aa426a6dfb",
+            "evidence-official-fa53ab621979fb5f37c8",
+            "evidence-official-867f2d1dcb4084248daa"
+          ],
+          "links": [
+            {
+              "relation": "applicable_to",
+              "target_id": "discovery-benchmark-proteinbench"
+            }
+          ],
+          "metadata": {
+            "title": "ESMFold | model",
+            "description": "ESMFold: ESMFold predicts protein structures directly from amino-acid sequence using ESM-2 representations.",
+            "alternates": {
+              "canonical": "https://benchmarks.rewire.it/database/model/discovery-model-esmfold/"
+            },
+            "robots": {
+              "index": true,
+              "follow": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Evo 2",
+      "decision": "Retain separate IDs and self-canonicals; source/version/relationship evidence does not authorize a scientific record merge in this presentation change.",
+      "records": [
+        {
+          "id": "catalog-model-evo-2",
+          "version": "7B",
+          "checkpoint": null,
+          "source_ids": [
+            "catalog-source-evo-2",
+            "evidence-official-a248990b44d481814f47",
+            "evidence-official-849b751ed4bf88622749",
+            "evidence-official-b8df803e8f55324a4eb5",
+            "evidence-official-8717ffb993cc8f7eddec"
+          ],
+          "links": [
+            {
+              "relation": "variant_of",
+              "target_id": "discovery-model-evo-2"
+            }
+          ],
+          "metadata": {
+            "title": "Evo 2; 7B | model",
+            "description": "Evo 2; 7B: Evo 2 models and generates DNA over long contexts at single-nucleotide resolution.",
+            "alternates": {
+              "canonical": "https://benchmarks.rewire.it/database/model/catalog-model-evo-2/"
+            },
+            "robots": {
+              "index": true,
+              "follow": true
+            }
+          }
+        },
+        {
+          "id": "discovery-model-evo-2",
+          "version": null,
+          "checkpoint": null,
+          "source_ids": [
+            "src-discovery-arcinstitute-evo2",
+            "evidence-official-a248990b44d481814f47",
+            "evidence-official-849b751ed4bf88622749",
+            "evidence-official-b8df803e8f55324a4eb5",
+            "evidence-official-8717ffb993cc8f7eddec"
+          ],
+          "links": [
+            {
+              "relation": "applicable_to",
+              "target_id": "discovery-benchmark-geneb"
+            }
+          ],
+          "metadata": {
+            "title": "Evo 2 | model",
+            "description": "Evo 2: Evo 2 models and generates DNA over long contexts at single-nucleotide resolution.",
+            "alternates": {
+              "canonical": "https://benchmarks.rewire.it/database/model/discovery-model-evo-2/"
+            },
+            "robots": {
+              "index": true,
+              "follow": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "GEARS",
+      "decision": "Retain separate IDs and self-canonicals; source/version/relationship evidence does not authorize a scientific record merge in this presentation change.",
+      "records": [
+        {
+          "id": "catalog-model-gears",
+          "version": "published implementation",
+          "checkpoint": null,
+          "source_ids": [
+            "catalog-source-gears",
+            "evidence-official-c037e3419c04936262a0",
+            "evidence-official-b5e81b2c497214b18f8a",
+            "evidence-official-f464cd407a6a9d031720"
+          ],
+          "links": [
+            {
+              "relation": "family",
+              "target_id": "discovery-model-gears"
+            }
+          ],
+          "metadata": {
+            "title": "GEARS; published implementation | model",
+            "description": "GEARS; published implementation: GEARS predicts transcriptional responses to single- and multi-gene perturbations from single-cell perturbation screens.",
+            "alternates": {
+              "canonical": "https://benchmarks.rewire.it/database/model/catalog-model-gears/"
+            },
+            "robots": {
+              "index": true,
+              "follow": true
+            }
+          }
+        },
+        {
+          "id": "discovery-model-gears",
+          "version": null,
+          "checkpoint": null,
+          "source_ids": [
+            "src-discovery-snap-stanford-gears",
+            "evidence-official-c037e3419c04936262a0",
+            "evidence-official-b5e81b2c497214b18f8a",
+            "evidence-official-f464cd407a6a9d031720"
+          ],
+          "links": [
+            {
+              "relation": "applicable_to",
+              "target_id": "discovery-benchmark-perturbench"
+            },
+            {
+              "relation": "alias_of",
+              "target_id": "catalog-model-gears"
+            }
+          ],
+          "metadata": {
+            "title": "GEARS | model",
+            "description": "GEARS: GEARS predicts transcriptional responses to single- and multi-gene perturbations from single-cell perturbation screens.",
+            "alternates": {
+              "canonical": "https://benchmarks.rewire.it/database/model/discovery-model-gears/"
+            },
+            "robots": {
+              "index": true,
+              "follow": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Pangolin",
+      "decision": "Retain separate IDs and self-canonicals; source/version/relationship evidence does not authorize a scientific record merge in this presentation change.",
+      "records": [
+        {
+          "id": "catalog-model-pangolin",
+          "version": "published checkpoints",
+          "checkpoint": null,
+          "source_ids": [
+            "catalog-source-pangolin",
+            "evidence-official-eaf3efab8850672f44e4",
+            "evidence-official-de1ee43bdd6f04de9850"
+          ],
+          "links": [
+            {
+              "relation": "family",
+              "target_id": "discovery-model-pangolin"
+            },
+            {
+              "relation": "alias_of",
+              "target_id": "discovery-model-pangolin"
+            }
+          ],
+          "metadata": {
+            "title": "Pangolin; published checkpoints | model",
+            "description": "Pangolin; published checkpoints: Pangolin predicts splice-site strength and changes caused by genetic variants.",
+            "alternates": {
+              "canonical": "https://benchmarks.rewire.it/database/model/catalog-model-pangolin/"
+            },
+            "robots": {
+              "index": true,
+              "follow": true
+            }
+          }
+        },
+        {
+          "id": "discovery-model-pangolin",
+          "version": null,
+          "checkpoint": null,
+          "source_ids": [
+            "src-discovery-tkzeng-pangolin",
+            "evidence-official-eaf3efab8850672f44e4",
+            "evidence-official-de1ee43bdd6f04de9850"
+          ],
+          "links": [],
+          "metadata": {
+            "title": "Pangolin | model",
+            "description": "Pangolin: Pangolin predicts splice-site strength and changes caused by genetic variants.",
+            "alternates": {
+              "canonical": "https://benchmarks.rewire.it/database/model/discovery-model-pangolin/"
+            },
+            "robots": {
+              "index": true,
+              "follow": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "ProteinMPNN",
+      "decision": "Retain separate IDs and self-canonicals; source/version/relationship evidence does not authorize a scientific record merge in this presentation change.",
+      "records": [
+        {
+          "id": "catalog-model-proteinmpnn",
+          "version": "v_48_020",
+          "checkpoint": null,
+          "source_ids": [
+            "catalog-source-proteinmpnn",
+            "evidence-official-ea568a52ea3ab476db6a",
+            "evidence-official-7b6fdf915d9c6950ad0d",
+            "evidence-official-019aff235ae2c3cf29d6",
+            "evidence-official-92b0ae57a020cbc40fe7",
+            "evidence-official-0b8003691827eb09b0a4"
+          ],
+          "links": [
+            {
+              "relation": "variant_of",
+              "target_id": "discovery-model-proteinmpnn"
+            }
+          ],
+          "metadata": {
+            "title": "ProteinMPNN; v_48_020 | model",
+            "description": "ProteinMPNN; v_48_020: ProteinMPNN designs amino-acid sequences for a supplied protein backbone.",
+            "alternates": {
+              "canonical": "https://benchmarks.rewire.it/database/model/catalog-model-proteinmpnn/"
+            },
+            "robots": {
+              "index": true,
+              "follow": true
+            }
+          }
+        },
+        {
+          "id": "discovery-model-proteinmpnn",
+          "version": null,
+          "checkpoint": null,
+          "source_ids": [
+            "src-discovery-dauparas-proteinmpnn",
+            "evidence-official-ea568a52ea3ab476db6a",
+            "evidence-official-7b6fdf915d9c6950ad0d",
+            "evidence-official-019aff235ae2c3cf29d6",
+            "evidence-official-92b0ae57a020cbc40fe7",
+            "evidence-official-0b8003691827eb09b0a4"
+          ],
+          "links": [
+            {
+              "relation": "applicable_to",
+              "target_id": "discovery-benchmark-proteinbench"
+            }
+          ],
+          "metadata": {
+            "title": "ProteinMPNN | model",
+            "description": "ProteinMPNN: ProteinMPNN designs amino-acid sequences for a supplied protein backbone.",
+            "alternates": {
+              "canonical": "https://benchmarks.rewire.it/database/model/discovery-model-proteinmpnn/"
+            },
+            "robots": {
+              "index": true,
+              "follow": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "RNA-FM",
+      "decision": "Retain separate IDs and self-canonicals; source/version/relationship evidence does not authorize a scientific record merge in this presentation change.",
+      "records": [
+        {
+          "id": "catalog-model-rna-fm",
+          "version": "ncRNA",
+          "checkpoint": null,
+          "source_ids": [
+            "catalog-source-rna-fm",
+            "evidence-final-model-rna-fm-paper",
+            "evidence-official-fd8e332abdf04a75195b",
+            "evidence-official-e17e3864c464d981afc7"
+          ],
+          "links": [
+            {
+              "relation": "family",
+              "target_id": "discovery-model-rna-fm"
+            },
+            {
+              "relation": "alias_of",
+              "target_id": "discovery-model-rna-fm"
+            }
+          ],
+          "metadata": {
+            "title": "RNA-FM; ncRNA | model",
+            "description": "RNA-FM; ncRNA: RNA-FM learns contextual representations of RNA nucleotides for downstream RNA analyses.",
+            "alternates": {
+              "canonical": "https://benchmarks.rewire.it/database/model/catalog-model-rna-fm/"
+            },
+            "robots": {
+              "index": true,
+              "follow": true
+            }
+          }
+        },
+        {
+          "id": "discovery-model-rna-fm",
+          "version": null,
+          "checkpoint": null,
+          "source_ids": [
+            "src-discovery-ml4bio-rna-fm",
+            "evidence-final-model-rna-fm-paper",
+            "evidence-official-fd8e332abdf04a75195b",
+            "evidence-official-e17e3864c464d981afc7"
+          ],
+          "links": [
+            {
+              "relation": "applicable_to",
+              "target_id": "discovery-benchmark-beacon"
+            }
+          ],
+          "metadata": {
+            "title": "RNA-FM | model",
+            "description": "RNA-FM: RNA-FM learns contextual representations of RNA nucleotides for downstream RNA analyses.",
+            "alternates": {
+              "canonical": "https://benchmarks.rewire.it/database/model/discovery-model-rna-fm/"
+            },
+            "robots": {
+              "index": true,
+              "follow": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "scGPT",
+      "decision": "Retain separate IDs and self-canonicals; source/version/relationship evidence does not authorize a scientific record merge in this presentation change.",
+      "records": [
+        {
+          "id": "catalog-model-scgpt",
+          "version": "whole-human",
+          "checkpoint": null,
+          "source_ids": [
+            "catalog-source-scgpt",
+            "evidence-official-0e4dac85aa0e0ff1d4b2",
+            "evidence-official-d8e2d4f2e752370b6565",
+            "evidence-official-efa6ec9d886a21534a20"
+          ],
+          "links": [
+            {
+              "relation": "variant_of",
+              "target_id": "discovery-model-scgpt"
+            }
+          ],
+          "metadata": {
+            "title": "scGPT; whole-human | model",
+            "description": "scGPT; whole-human: scGPT learns representations of single-cell molecular measurements and supports task-specific adaptation.",
+            "alternates": {
+              "canonical": "https://benchmarks.rewire.it/database/model/catalog-model-scgpt/"
+            },
+            "robots": {
+              "index": true,
+              "follow": true
+            }
+          }
+        },
+        {
+          "id": "discovery-model-scgpt",
+          "version": null,
+          "checkpoint": null,
+          "source_ids": [
+            "src-discovery-bowang-lab-scgpt",
+            "evidence-official-0e4dac85aa0e0ff1d4b2",
+            "evidence-official-d8e2d4f2e752370b6565",
+            "evidence-official-efa6ec9d886a21534a20"
+          ],
+          "links": [
+            {
+              "relation": "applicable_to",
+              "target_id": "discovery-benchmark-perturbench"
+            },
+            {
+              "relation": "alias_of",
+              "target_id": "catalog-model-scgpt"
+            }
+          ],
+          "metadata": {
+            "title": "scGPT | model",
+            "description": "scGPT: scGPT learns representations of single-cell molecular measurements and supports task-specific adaptation.",
+            "alternates": {
+              "canonical": "https://benchmarks.rewire.it/database/model/discovery-model-scgpt/"
+            },
+            "robots": {
+              "index": true,
+              "follow": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "scVI",
+      "decision": "Retain separate IDs and self-canonicals; source/version/relationship evidence does not authorize a scientific record merge in this presentation change.",
+      "records": [
+        {
+          "id": "catalog-model-scvi",
+          "version": "scvi-tools",
+          "checkpoint": null,
+          "source_ids": [
+            "catalog-source-scvi",
+            "evidence-official-550f6719c2f22f4d57b3",
+            "evidence-official-0cbab80c2d1769287a1f"
+          ],
+          "links": [],
+          "metadata": {
+            "title": "scVI; scvi-tools | model",
+            "description": "scVI; scvi-tools: scVI models single-cell RNA counts with a probabilistic latent-variable model that accounts for observed covariates.",
+            "alternates": {
+              "canonical": "https://benchmarks.rewire.it/database/model/catalog-model-scvi/"
+            },
+            "robots": {
+              "index": true,
+              "follow": true
+            }
+          }
+        },
+        {
+          "id": "discovery-model-scvi",
+          "version": null,
+          "checkpoint": null,
+          "source_ids": [
+            "src-discovery-scverse-scvi-tools",
+            "evidence-official-550f6719c2f22f4d57b3",
+            "evidence-official-0cbab80c2d1769287a1f"
+          ],
+          "links": [
+            {
+              "relation": "applicable_to",
+              "target_id": "discovery-benchmark-scib"
+            },
+            {
+              "relation": "alias_of",
+              "target_id": "catalog-model-scvi"
+            }
+          ],
+          "metadata": {
+            "title": "scVI | model",
+            "description": "scVI: scVI models single-cell RNA counts with a probabilistic latent-variable model that accounts for observed covariates.",
+            "alternates": {
+              "canonical": "https://benchmarks.rewire.it/database/model/discovery-model-scvi/"
+            },
+            "robots": {
+              "index": true,
+              "follow": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "SpliceAI",
+      "decision": "Retain separate IDs and self-canonicals; source/version/relationship evidence does not authorize a scientific record merge in this presentation change.",
+      "records": [
+        {
+          "id": "catalog-model-spliceai",
+          "version": "1.3.1",
+          "checkpoint": null,
+          "source_ids": [
+            "catalog-source-spliceai",
+            "evidence-official-864a2c5ea6e61aa310f9",
+            "evidence-official-ded281404bd1a0f3fdb7"
+          ],
+          "links": [
+            {
+              "relation": "variant_of",
+              "target_id": "discovery-model-spliceai"
+            },
+            {
+              "relation": "alias_of",
+              "target_id": "discovery-model-spliceai"
+            }
+          ],
+          "metadata": {
+            "title": "SpliceAI; 1.3.1 | model",
+            "description": "SpliceAI; 1.3.1: SpliceAI annotates sequence variants with predicted splice acceptor and donor changes.",
+            "alternates": {
+              "canonical": "https://benchmarks.rewire.it/database/model/catalog-model-spliceai/"
+            },
+            "robots": {
+              "index": true,
+              "follow": true
+            }
+          }
+        },
+        {
+          "id": "discovery-model-spliceai",
+          "version": null,
+          "checkpoint": null,
+          "source_ids": [
+            "src-discovery-illumina-spliceai",
+            "evidence-official-9b820532ba8e3965f64e",
+            "evidence-official-ded281404bd1a0f3fdb7"
+          ],
+          "links": [],
+          "metadata": {
+            "title": "SpliceAI | model",
+            "description": "SpliceAI: SpliceAI annotates sequence variants with predicted splice acceptor and donor changes.",
+            "alternates": {
+              "canonical": "https://benchmarks.rewire.it/database/model/discovery-model-spliceai/"
+            },
+            "robots": {
+              "index": true,
+              "follow": true
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

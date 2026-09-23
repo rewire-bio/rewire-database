@@ -25,8 +25,13 @@ for (const paper of JSON.parse(read('data/benchmark-literature/papers.json'))) {
 for (const filename of ['papers.json', 'results.csv']) {
   assert.deepEqual(fs.readFileSync(`data/benchmark-literature/${filename}`), fs.readFileSync(`out/benchmark-literature/${filename}`));
 }
-for (const excluded of ['blog', 'benchmarks']) {
+for (const excluded of ['blog']) {
   assert.equal(fs.existsSync(path.join('out', excluded)), false, `Unexpected content: ${excluded}`);
+}
+// /benchmarks/ is now a deliberate index, not the old prefixed application.
+assert.ok(fs.existsSync('out/benchmarks/index.html'), 'Benchmark index missing');
+for (const entry of fs.readdirSync('out/benchmarks', { withFileTypes: true })) {
+  assert.ok(entry.isFile() && ['index.html', 'index.txt'].includes(entry.name), `Obsolete benchmark-prefixed content: ${entry.name}`);
 }
 assert.equal(read('out/sitemap.xml').includes('https://rewire.it/'), false, 'Blog URL in database sitemap');
 console.log('Extraction hashes, historical paper routes, MFASS, downloads and review-branch export verified.');

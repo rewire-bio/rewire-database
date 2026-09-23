@@ -80,6 +80,8 @@ export default function BenchmarksPage() {
             style={{ marginTop: 24 }}
           >
             <a href="#browse">Browse records</a>
+            <a href="/benchmarks/">All benchmarks</a>
+            <a href="/models/">Model index</a>
             <a href="#evidence">About the evidence</a>
             <a href="#downloads">Downloads</a>
             <a href="/contribute/">Contribute evidence</a>

@@ -50,7 +50,9 @@ async function render(search = "?kind=benchmark") {
       <Explorer initial={page() as never} release={release as never} />,
     );
   });
-  await act(async () => vi.advanceTimersByTime(200));
+  await act(async () => {
+    vi.advanceTimersByTime(200);
+  });
 }
 async function click(label: string) {
   const button = tree.root
@@ -58,7 +60,9 @@ async function click(label: string) {
     .find((b) => b.children[0] === label);
   expect(button, label).toBeTruthy();
   await act(async () => button!.props.onClick());
-  await act(async () => vi.advanceTimersByTime(200));
+  await act(async () => {
+    vi.advanceTimersByTime(200);
+  });
 }
 function rows() {
   return tree.root.findAllByType("article");
@@ -110,7 +114,9 @@ describe("requested catalogue results", () => {
     expect(rows()).toHaveLength(1);
     expect(text()).toContain("Benchmark result");
     expect(text()).not.toContain("Loading benchmarks");
-    await act(async () => vi.advanceTimersByTime(15_000));
+    await act(async () => {
+      vi.advanceTimersByTime(15_000);
+    });
     expect(text()).not.toContain("took too long");
   });
 
@@ -122,7 +128,9 @@ describe("requested catalogue results", () => {
       .mockReturnValueOnce(retried.promise);
     await render();
     const signal = list.mock.calls[0][1] as AbortSignal;
-    await act(async () => vi.advanceTimersByTime(15_000));
+    await act(async () => {
+      vi.advanceTimersByTime(15_000);
+    });
     expect(signal.aborted).toBe(true);
     expect(text()).toContain("took too long");
     expect(text()).not.toContain("Loading benchmarks");
@@ -181,7 +189,9 @@ describe("requested catalogue results", () => {
       events.dispatchEvent(new Event("popstate"));
     });
     expect(rows()).toHaveLength(0);
-    await act(async () => vi.advanceTimersByTime(200));
+    await act(async () => {
+      vi.advanceTimersByTime(200);
+    });
     expect(list.mock.calls[1][0]).toMatchObject({
       kind: "benchmark",
       q: "other",

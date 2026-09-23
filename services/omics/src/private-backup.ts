@@ -29,14 +29,18 @@ type Snapshot = {
 };
 const digest = (value: string) =>
   createHash("sha256").update(value).digest("hex");
-export function encode(value: unknown): Encoded {
+export function encode(value: unknown, db?: Firestore): Encoded {
   if (value instanceof Timestamp)
     return { type: "timestamp", value: [value.seconds, value.nanoseconds] };
-  if (value instanceof Date) return encode(Timestamp.fromDate(value));
+  if (value instanceof Date) return encode(Timestamp.fromDate(value), db);
   if (value instanceof GeoPoint)
     return { type: "geopoint", value: [value.latitude, value.longitude] };
-  if (value instanceof DocumentReference)
+  if (value instanceof DocumentReference) {
+    // Firestore's decoder discards the origin project from reference values.
+    // Reject all references in portable snapshots rather than silently rebind one.
+    if (db) throw new Error("Document references are unsupported in private backups");
     return { type: "reference", value: value.path };
+  }
   if (Buffer.isBuffer(value) || value instanceof Uint8Array)
     return { type: "bytes", value: Buffer.from(value).toString("base64") };
   if (value === null || typeof value === "string" || typeof value === "boolean")
@@ -46,7 +50,7 @@ export function encode(value: unknown): Encoded {
       type: "number",
       value: Number.isFinite(value) ? value : String(value),
     };
-  if (Array.isArray(value)) return { type: "array", value: value.map(encode) };
+  if (Array.isArray(value)) return { type: "array", value: value.map(item => encode(item, db)) };
   if (
     value &&
     typeof value === "object" &&
@@ -55,7 +59,7 @@ export function encode(value: unknown): Encoded {
     return {
       type: "map",
       value: Object.fromEntries(
-        Object.entries(value).map(([k, v]) => [k, encode(v)]),
+        Object.entries(value).map(([k, v]) => [k, encode(v, db)]),
       ),
     };
   throw new Error("Unsupported Firestore value; no snapshot written");
@@ -149,6 +153,19 @@ async function outsideRepository(path: string) {
     throw new Error("Private snapshots must be outside Git repositories");
   }
 }
+async function privateDirectory(path: string) {
+  await outsideRepository(path);
+  if ((await stat(dirname(path))).mode & 0o077)
+    throw new Error("Private snapshot directory must exclude group and other access (0700)");
+}
+async function privateInput(path: string) {
+  if (!isAbsolute(path)) throw new Error("Use an absolute private snapshot path");
+  const actual = await realpath(path);
+  await privateDirectory(actual);
+  const info = await stat(actual);
+  if (!info.isFile() || (info.mode & 0o077))
+    throw new Error("Private snapshot and checksum must be regular restricted files (0600)");
+}
 export async function backupPrivate(
   db: Firestore,
   project: string,
@@ -159,14 +176,14 @@ export async function backupPrivate(
     (db as Firestore & { readonly projectId: string }).projectId !== project
   )
     throw new Error("Explicit project must match Firestore project");
-  await outsideRepository(output);
+  await privateDirectory(output);
   const documents: Snapshot["documents"] = [];
   for (const collection of privateCollections) {
     // listDocuments includes missing parent documents with surviving revision subcollections.
     for (const ref of await db.collection(collection).listDocuments()) {
       const doc = await ref.get();
       if (doc.exists)
-        documents.push({ path: ref.path, data: encode(doc.data()) });
+        documents.push({ path: ref.path, data: encode(doc.data(), db) });
       for (const child of await ref.listCollections()) {
         if (collection !== "privateSubmissions" || child.id !== "revisions")
           throw new Error(
@@ -177,7 +194,7 @@ export async function backupPrivate(
             throw new Error("Nested revision collections are not supported");
           documents.push({
             path: revision.ref.path,
-            data: encode(revision.data()),
+            data: encode(revision.data(), db),
           });
         }
       }
@@ -229,6 +246,8 @@ export async function restorePrivate(
     throw new Error(
       "Restore defaults to emulator-only; production requires --allow-production-restore",
     );
+  await privateInput(input);
+  await privateInput(`${input}.sha256`);
   const content = await readFile(input, "utf8");
   if (digest(content) !== (await readFile(`${input}.sha256`, "utf8")).trim())
     throw new Error("Snapshot checksum mismatch");

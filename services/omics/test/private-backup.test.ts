@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { mkdtemp, readFile, rm, stat, writeFile } from "node:fs/promises";
+import { chmod, mkdir, mkdtemp, readFile, rm, stat, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { createHash, randomUUID } from "node:crypto";
@@ -81,6 +81,9 @@ test(
         .doc("privateSubmissions/orphan/revisions/revision")
         .set({ previous: "orphan private value" });
       await source.doc("catalogueReleases/public").set({ must_not_copy: true });
+      await source.doc("privateSubmissions/foreign").set({ nested: [target.doc("privateSubmissions/record")] });
+      await assert.rejects(backupPrivate(source, sourceProject, file), /Document references are unsupported/);
+      await source.doc("privateSubmissions/foreign").delete();
       const saved = await backupPrivate(source, sourceProject, file);
       assert.equal(saved.documents, privateCollections.length + 2);
       assert.equal((await stat(file)).mode & 0o777, 0o600);
@@ -97,6 +100,22 @@ test(
         backupPrivate(source, "wrong-project", join(dir, "wrong.json")),
         /project/,
       );
+      await chmod(file, 0o644);
+      await assert.rejects(restorePrivate(target, targetProject, file), /restricted files/);
+      await chmod(file, 0o600);
+      await chmod(`${file}.sha256`, 0o644);
+      await assert.rejects(restorePrivate(target, targetProject, file), /restricted files/);
+      await chmod(`${file}.sha256`, 0o600);
+      await chmod(dir, 0o755);
+      await assert.rejects(backupPrivate(source, sourceProject, join(dir, "public.json")), /0700/);
+      await assert.rejects(restorePrivate(target, targetProject, file), /0700/);
+      await chmod(dir, 0o700);
+      const checkout = join(dir, "fake-checkout");
+      await mkdir(join(checkout, ".git"), { recursive: true, mode: 0o700 });
+      await chmod(checkout, 0o700);
+      await writeFile(join(checkout, "private.json"), await readFile(file), { mode: 0o600 });
+      await writeFile(join(checkout, "private.json.sha256"), await readFile(`${file}.sha256`), { mode: 0o600 });
+      await assert.rejects(restorePrivate(target, targetProject, join(checkout, "private.json")), /outside Git/);
       const restored = await restorePrivate(target, targetProject, file);
       assert.equal(restored.documents, saved.documents);
       for (const collection of privateCollections)

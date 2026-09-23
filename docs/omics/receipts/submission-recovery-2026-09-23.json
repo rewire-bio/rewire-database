@@ -1,0 +1,47 @@
+{
+  "schema_version": "1.0",
+  "checked_at": "2026-09-23T05:14:45.652697+00:00",
+  "issue": "https://github.com/rewire-bio/rewire-database/issues/34",
+  "method": "automated_emulator_tests_and_authenticated_production_read_only_checks",
+  "base_revision": "1894c0e82f537b4f9a2639c65ac7abf2979e6d38",
+  "production": {
+    "authenticated_owner_reads": true,
+    "authenticated_curator_reads": true,
+    "exact_retained_bundles_matched": 10,
+    "published_review_items": 10,
+    "new_submissions": 0,
+    "state_transitions": 0,
+    "configuration_writes": 0,
+    "backend_intake_enabled": true,
+    "frontend_intake_enabled": true,
+    "notification_delivery_enabled": false,
+    "emails_sent": 0,
+    "catalogue_release": "2026-09-22-f58a0f1d267f",
+    "hosting_version": "b69a29991d28e6bd",
+    "deployment_run": "35791831212"
+  },
+  "local": {
+    "website_tests_passed": 505,
+    "service_emulator_tests_passed": 290,
+    "service_emulator_tests_skipped": 0,
+    "backup_restore": "synthetic_same_project_private_collection_loss_and_restore",
+    "owner_tracking_preserved": true,
+    "curator_review_preserved": true,
+    "idempotency_preserved": true,
+    "paused_mail_preserved": true,
+    "public_catalogue_preserved": true,
+    "private_files_outside_git": true,
+    "directory_mode": "0700",
+    "file_modes": "0600",
+    "temporary_private_files_removed": true
+  },
+  "not_performed": [
+    "production_backup_or_restore",
+    "production_intake_pause",
+    "live_token_revocation",
+    "cross_project_auth_restoration",
+    "off_device_backup_scheduling",
+    "gmail_delegation_or_mailbox_delivery_test"
+  ],
+  "public_receipt_contains_private_identifiers": false
+}

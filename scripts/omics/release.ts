@@ -1,3 +1,4 @@
+import { validateSnapshot } from "../../services/omics/src/validation";
 import { addCoverageTables, coverageTableInputs } from "./model-coverage-tables";
 import { addModelEvaluationLinks, modelLinkInputs } from "./model-evaluation-links";
 import { addAgroEvaluations, agroInputs } from "./agront-evaluations";
@@ -427,6 +428,8 @@ function main() {
     },
     true,
   );
+  // Enforce the live API contract before writing or building a new release.
+  validateSnapshot(output.snapshot);
   writeArchive(output);
   fs.writeFileSync(
     "public/omics/catalogue.json",

@@ -5,6 +5,7 @@
   "errors": [],
   "scope": "Primary-source transcription and identity review by automated agents; not human review or independent model reproduction.",
   "inputs": {
+    "api-metadata-review.json": "4b4372329dafbe041a79fdcb0a6d343d2c1b831b4b8421683471651611be2f4c",
     "basenji-basenji-artifact-manifest.json": "fc2afd59c8cfe58b3d65f6ca0e97eaea97d028c5f19c98364e2744373eb674dd",
     "basenji-basenji-enformer-source-cells.json": "e6cd42511263359a3857a14c5d88dc11197bc66b059f7df335e6e6103ca1acfb",
     "basenji-enformer-primary.xml.gz": "8a973ae696a0e42cf4a14aa056498b1022601c5501d257e43cf6caca674dc8e7",
@@ -46,7 +47,7 @@
     "segmentnt-segmentnt-supplement.pdf.gz": "4874954d65d8891ec7ba69beb2890bbc25c7441807801c143852e20e0b9a7397",
     "segmentnt-segmentnt-tables-2-3-results.json": "fdd42f1f825f11639d215b1de47e17cc77d7c50e4936df7d91d05edc30e63acb",
     "source-cells.json": "3f3ee5931832babd55a0461c71ae103f293e6f1027561f6d70f4e5df7c4b7ab4",
-    "specs.json": "22d52143891aa02620b0ff85bcd14df508909395e9138884091c218c995bae33"
+    "specs.json": "0b5ba06758198a66421523a8090bdbe2aa5748f9d22988646b5abf90c7607c37"
   },
   "source_artifacts": {
     "basenji-enformer-primary.xml.gz": "354632b465ccce978c56e049a314134cb74ad78a5301c8c8bf3127aa06d6c3b0",
@@ -67,7 +68,7 @@
     "segmentnt-segmentnt-primary.xml.gz": "b9bddff89c5f8898fc677008205a47b960ea569f3887cc15845e2547b92aaa70",
     "segmentnt-segmentnt-supplement.pdf.gz": "c4ad23a62ab161a464fe789e5dd167cf2bfe9f43a91a9c3fb1261b99a5594b0f"
   },
-  "records_sha256": "06480701aae0b405b064add2ab28398dfd1d50e011d918638940928a636db11e",
+  "records_sha256": "5fe1b6c2f9d582813c429a5a208e9c0076115f75e0a22293177bf64782e3fa8a",
   "batches": [
     {
       "key": "dreams-mist-retrieval",

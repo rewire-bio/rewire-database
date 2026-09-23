@@ -207,6 +207,7 @@ export const recordSchema = z
           "independent_paper",
           "paper_compilation",
           "rewire_run",
+          "unreported",
         ].includes(String(a.origin))
       )
         issue("Evaluation origin is required");

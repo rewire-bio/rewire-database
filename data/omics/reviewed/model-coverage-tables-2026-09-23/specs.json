@@ -535,7 +535,8 @@
           ],
           "source_locator": "Methods: Molecular fingerprint prediction",
           "summary": "The paper describes MIST CANOPUS data and PubChem candidate retrieval. Rewire has no tested runner for this evaluation. Exact split manifest, fitted checkpoints and comparator execution provenance remain unresolved."
-        }
+        },
+        "entity_level": "suite"
       }
     }
   },
@@ -7179,7 +7180,8 @@
           ],
           "source_locator": "Section 5.3",
           "summary": "The paper describes frozen embedding probes and references Gene-MTEB. Rewire has no maintained runner for this published evaluation. Original split hashes, checkpoint revisions and evaluator revision are not established."
-        }
+        },
+        "entity_level": "suite"
       }
     }
   },
@@ -13376,7 +13378,8 @@
           ],
           "source_locator": "Primary article Sec16\u201317",
           "summary": "Test chromosomes 20 and 21; validation chromosome 22; training remaining chromosomes. Test chunks with genes homologous to train/validation genes excluded using Ensembl BioMart accessed 2024-05-08; homologous distal regulatory elements not excluded. Rewire has not executed this evaluation; exact sequence manifests and checkpoint hashes remain unextracted."
-        }
+        },
+        "entity_level": "suite"
       }
     },
     "modelLinks": {
@@ -16598,7 +16601,8 @@
           ],
           "source_locator": "Section 5.1; Table 3",
           "summary": "The paper describes its common evaluation implementation and candidate pools. Rewire has not executed this benchmark and has no verified pinned runner recipe; original split and evaluator revisions remain unextracted."
-        }
+        },
+        "entity_level": "suite"
       }
     }
   },
@@ -17835,7 +17839,7 @@
     ],
     "benchmarkRecord": {
       "id": "enformer-cage-gene-expression-2021",
-      "kind": "benchmark",
+      "kind": "protocol",
       "name": "Enformer CAGE gene-expression comparison",
       "description": "Complete two-model across-genes CAGE expression comparison reported numerically in the Enformer paper text for Figure 1b left. This bounded panel is not the entire paper evaluation suite.",
       "status": "source_checked",
@@ -17858,7 +17862,11 @@
           ],
           "source_locator": "Methods Par32\u201336",
           "summary": "Human held-out test-set protein-coding genes; CAGE read counts summed over all unique TSS locations, using TSS-overlapping 128-bp bin plus two neighboring bins, log(1+x)-transformed and standardized across genes separately per experiment. Pearson correlation across genes per CAGE experiment, then mean across experiments. Same Basenji2 dataset and genomic intervals; human split 34,021 training/2,213 validation/1,937 test sequences. Cross-species homologous 1 Mb regions partitioned by connected components. Test-time mean of 8 random \u22643 bp shift/reverse-complement augmentations. Enformer input 196,608 bp, Basenji2 131,072 bp; receptive fields differ. Validation used for tuning; main comparison on test set. No independent Rewire execution; exact checkpoint and split artifact hashes remain unextracted."
-        }
+        },
+        "entity_level": "protocol",
+        "legacy_kinds": [
+          "benchmark"
+        ]
       }
     },
     "modelLinks": {
@@ -18082,7 +18090,7 @@
     },
     "benchmarkRecord": {
       "id": "model-coverage-gears-norman-cpa-controls",
-      "kind": "benchmark",
+      "kind": "protocol",
       "name": "GEARS Norman2019 CPA-control comparison",
       "description": "Source-specific reported comparison. Protocol details, fitted configurations and limitations are retained separately from other evaluations.",
       "status": "source_checked",
@@ -18104,7 +18112,11 @@
           ],
           "source_locator": "Supplementary Table6, printed p34 / PDF p35; metric definitions Table1; Supplementary Note5.",
           "summary": "The supplementary table reports this evaluation. Rewire has not run it and has no maintained reproduction recipe. Exact evaluator and split revisions remain unextracted."
-        }
+        },
+        "entity_level": "protocol",
+        "legacy_kinds": [
+          "benchmark"
+        ]
       }
     }
   },
@@ -18344,7 +18356,8 @@
           ],
           "source_locator": "Supplementary Table4, PDF p16; Supplementary Note3, Macro F1 score.",
           "summary": "The supplementary table reports this evaluation. Rewire has not run it and has no maintained reproduction recipe. Exact evaluator and split revisions remain unextracted."
-        }
+        },
+        "entity_level": "suite"
       }
     }
   }

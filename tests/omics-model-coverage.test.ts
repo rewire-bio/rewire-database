@@ -1,3 +1,4 @@
+import { validateSnapshot, recordSchema as apiRecordSchema } from "../services/omics/src/validation";
 import fs from "node:fs";
 import { gunzipSync } from "node:zlib";
 import { describe, expect, it } from "vitest";
@@ -17,6 +18,7 @@ const addedResults = added.filter(record => record.kind === "result");
 describe("source-reviewed model evaluation coverage", () => {
   it("validates the complete graph and deterministic, sealed extraction", () => {
     expect(validateRecords(records)).toHaveLength(records.length);
+    expect(validateSnapshot(snapshot).records).toHaveLength(records.length);
     expect(added.map(record => JSON.stringify(record)).join("\n") + "\n").toBe(fs.readFileSync(`${coverageTableRoot}/records.jsonl`, "utf8"));
     expect(addedResults).toHaveLength(1620);
     for (const record of addedResults) {
@@ -61,6 +63,14 @@ describe("source-reviewed model evaluation coverage", () => {
     const mimic = added.filter(record => record.kind === "evaluation" && record.id.startsWith("mimic-2026-mrnabench-"));
     expect(mimic.filter(record => record.attributes.origin === "paper_compilation")).toHaveLength(77);
     expect(mimic.filter(record => record.attributes.origin === "author_reported")).toHaveLength(7);
+  });
+  it("retains explicit unknown evaluation origins while rejecting missing or invented origins", () => {
+    const unknown = added.find(record => record.kind === "evaluation" && record.attributes.origin === "unreported")!;
+    expect(unknown).toBeTruthy();
+    expect(apiRecordSchema.safeParse(unknown).success).toBe(true);
+    for (const origin of [undefined, "verified_somehow"]) {
+      expect(apiRecordSchema.safeParse({ ...unknown, attributes: { ...unknown.attributes, origin } }).success).toBe(false);
+    }
   });
   it("fails repeated ingestion instead of duplicating scientific evidence", () => {
     expect(() => addCoverageTables(records)).toThrow(/overwrite|duplicate/);

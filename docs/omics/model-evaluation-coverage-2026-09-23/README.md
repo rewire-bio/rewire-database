@@ -1,6 +1,6 @@
 # Model evaluation coverage, 23 September 2026
 
-Release: `2026-09-23-ce6577e737b6`. Audited all **59 existing model records**, including historical aliases and checkpoint-specific records, using the same reviewed relationship graph as the website and API.
+Release: `2026-09-23-2b89723c6dd9`. The earlier `2026-09-23-ce6577e737b6` archive is preserved; this follow-up adds explicit suite/protocol metadata and retains unknown evaluation provenance. Audited all **59 existing model records**, including historical aliases and checkpoint-specific records, using the same reviewed relationship graph as the website and API.
 
 | Coverage | Before | After |
 |---|---:|---:|
@@ -67,11 +67,15 @@ npm run lint
 npm run typecheck
 ```
 
-The current-only generator validates this new release locally without expanding every historical download. Full release restoration/static export remains a CI acceptance step. The local preview runs at `http://localhost:3016/`. Public publication is pending the stacked correction PRs and required checks; GitHub currently rejects the workflow jobs because of the account billing/spending limit. No checks or billing controls are bypassed.
+The current-only generator validates the new release against both the extraction schema and the live API contract. Full historical export/build remains a CI acceptance step. The local preview runs at `http://localhost:3016/`. Publication requires the correction PR checks; no checks are bypassed.
 
 ## Validation receipt
 
-- Full local suite: 579 tests passed; four additional page-rendering tests also pass (583 total).
-- Lint and TypeScript checks passed. Desktop 1,440 px and mobile 390 px browser checks passed for six representative model/benchmark routes, with no runtime errors or horizontal overflow.
-- New release generation and all 407 export hashes passed; the independent sealed-loader review also passed all 18 rejection cases.
-- An isolated experimental compile-only probe compiled the production source, then exited at Next.js’s static-export/image-loader check. This is **not** a passing production build. Full historical export/build remains unverified locally because the machine has approximately 2 GB free; the GitHub workflow cannot start until its billing restriction is resolved.
+- Full local suite: 594 tests passed. Lint, TypeScript checks and API compilation passed.
+- Full 26,045-record API snapshot validation passed. Missing or invented origins remain rejected; explicit `unreported` preserves uncertainty.
+- Seven new comparison parents now have explicit suite/protocol classifications. Enformer CAGE and GEARS CPA controls are protocols, with their previous benchmark routes retained. [Independent follow-up review](api-validator-review.md).
+- Desktop 1,440 px and mobile 390 px browser checks passed for six representative model/benchmark routes, with no runtime errors or horizontal overflow.
+- All 407 new export hashes are checked before deterministic archival; the independent sealed-loader review passed all 18 rejection cases.
+- The preceding CI attempt completed the production build and export checks, then caught the API mismatch. The corrected release requires a fresh passing CI run before merge. Disk-safe historical export handling from #50 is retained.
+
+Original review receipts retain the revisions they checked. Metadata corrections do not change result values, source artifacts, model identity links or coverage counts. The earlier archive remains available for inspection.

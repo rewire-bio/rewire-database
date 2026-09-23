@@ -1,0 +1,239 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-09-23T10:39:39.565Z",
+  "release_id": "2026-09-22-f58a0f1d267f",
+  "scope": "Every catalogue string leaf and record reference; every typed evidence row; URL-field syntax only. No HTTP link health, browser verification, scientific source re-verification, or mutation.",
+  "records": 21974,
+  "string_fields": 594599,
+  "record_kinds": {
+    "source": 914,
+    "configuration": 2300,
+    "method": 42,
+    "dataset_subset": 254,
+    "evaluation": 7082,
+    "claim": 747,
+    "protocol": 184,
+    "result": 9647,
+    "pipeline": 50,
+    "task": 495,
+    "baseline": 27,
+    "service": 1,
+    "model": 59,
+    "evaluator": 4,
+    "benchmark": 30,
+    "dataset": 138
+  },
+  "candidate_counts": {
+    "null_token": 74,
+    "json_object": 518,
+    "empty_json_object": 196,
+    "undefined_token": 4,
+    "json_array": 72,
+    "empty_json_array": 1,
+    "html_tag": 64,
+    "literal_newline": 5
+  },
+  "candidate_field_groups": {
+    "null_token": {
+      "configuration:name": 3,
+      "configuration:attributes.reported_configuration": 3,
+      "evaluation:name": 3,
+      "evaluation:attributes.conditions.model_name_reported": 3,
+      "result:name": 3,
+      "result:attributes.scoring_conditions.model_name_reported": 3,
+      "baseline:attributes.baseline_type": 4,
+      "baseline:attributes.entity_classification.rationale": 4,
+      "dataset:attributes.entity_classification.source_locator": 1,
+      "configuration:attributes.profile.facts.*.source_locator": 4,
+      "configuration:attributes.profile.sections.*.source_locator": 1,
+      "configuration:attributes.profile.diagram.source_locator": 1,
+      "configuration:attributes.entity_classification.source_locator": 1,
+      "task:attributes.benchmark_research.inspected_locators.*": 1,
+      "task:attributes.profile.summary_source_locator": 1,
+      "task:attributes.profile.sections.*.body": 1,
+      "task:attributes.profile.sections.*.source_locator": 1,
+      "task:attributes.profile.facts.*.source_locator": 11,
+      "task:attributes.profile.facts.*.value": 1,
+      "task:attributes.profile.strengths.*.source_locator": 1,
+      "task:attributes.profile.limitations.*.source_locator": 1,
+      "task:attributes.profile.diagram.steps.*": 1,
+      "task:attributes.profile.diagram.source_locator": 1,
+      "task:attributes.entity_classification.source_locator": 1,
+      "source:attributes.url": 6,
+      "source:attributes.artifact_url": 6,
+      "configuration:attributes.method_role": 2,
+      "evaluation:attributes.run_url": 2,
+      "evaluation:attributes.reproduction_url": 2,
+      "protocol:attributes.reproduction_url": 1
+    },
+    "json_object": {
+      "evaluation:attributes.comparison.inputs": 264,
+      "protocol:name": 44,
+      "protocol:description": 44,
+      "protocol:attributes.comparison_panels.*.title": 44,
+      "protocol:attributes.comparison_panels.*.caveats.*": 44,
+      "benchmark:attributes.run_recipes.*.instructions.*.code": 6,
+      "result:attributes.review.evidence": 64,
+      "protocol:attributes.run_recipes.*.instructions.*.code": 8
+    },
+    "empty_json_object": {
+      "evaluation:attributes.comparison.inputs": 120,
+      "protocol:name": 10,
+      "protocol:description": 10,
+      "protocol:attributes.comparison_panels.*.title": 27,
+      "protocol:attributes.comparison_panels.*.caveats.*": 27,
+      "benchmark:attributes.run_recipes.*.instructions.*.code": 2
+    },
+    "undefined_token": {
+      "task:attributes.profile.strengths.*.text": 1,
+      "result:attributes.printed_value": 3
+    },
+    "json_array": {
+      "benchmark:attributes.run_recipes.*.instructions.*.code": 2,
+      "benchmark:attributes.run_guide.steps.*.shell": 1,
+      "benchmark:attributes.run_guide.prerequisites.*": 1,
+      "result:attributes.review.evidence": 64,
+      "protocol:attributes.run_recipes.*.instructions.*.code": 4
+    },
+    "empty_json_array": {
+      "benchmark:attributes.run_recipes.*.instructions.*.code": 1
+    },
+    "html_tag": {
+      "result:attributes.review.evidence": 64
+    },
+    "literal_newline": {
+      "result:attributes.review.evidence": 5
+    }
+  },
+  "condition_fields": {
+    "evaluation:attributes.comparison.inputs": 384,
+    "protocol:name": 54,
+    "protocol:description": 54,
+    "protocol:attributes.comparison_panels.*.title": 71,
+    "protocol:attributes.comparison_panels.*.caveats.*": 71
+  },
+  "condition_forms": {
+    "populated-condition": 440,
+    "empty-condition": 194
+  },
+  "empty_direct_attribute_objects": 8,
+  "valid_undefined_scores": 3,
+  "result_numeric_types": {
+    "string": 9629,
+    "null": 18
+  },
+  "catalogue_url_counts": {
+    "valid-http": 6296,
+    "missing-metadata-note": 163,
+    "valid-root-relative": 4
+  },
+  "evidence_url_counts": {
+    "valid-http": 662090,
+    "missing-empty": 1013113
+  },
+  "evidence_rows": 558401,
+  "evidence_value_types": {
+    "string": 465218,
+    "number": 7410,
+    "array": 55958,
+    "object": 10004,
+    "boolean": 2498,
+    "null": 17313
+  },
+  "structured_evidence_fields": {
+    "facets.areas": 12734,
+    "source_ids": 21974,
+    "facets": 9214,
+    "attributes.conditions.cell_counts": 120,
+    "attributes.comparison_panels": 728,
+    "attributes.scoring_conditions.cell_counts": 324,
+    "attributes.entity_classification.ambiguities": 905,
+    "attributes.entity_classification.source_ids": 905,
+    "attributes.legacy_kinds": 652,
+    "attributes.profile.gaps": 690,
+    "attributes.profile.review": 690,
+    "attributes.source_cells": 130,
+    "attributes.source_warnings": 130,
+    "attributes.reported_dataset_counts": 153,
+    "attributes.benchmark_research.gaps": 732,
+    "attributes.benchmark_research.inspected_locators": 732,
+    "attributes.benchmark_research.primary_sources": 732,
+    "attributes.benchmark_research.searched_queries": 732,
+    "attributes.profile.diagram.steps": 783,
+    "attributes.reference_levels": 153,
+    "facets.tasks": 10056,
+    "facets.method_types": 40,
+    "facets.domain": 26,
+    "attributes.historical_entity_links": 1,
+    "attributes.run_documentation.source_ids": 160,
+    "attributes.run_recipes": 115,
+    "attributes.run_recipes.0.inputs": 42,
+    "attributes.run_recipes.0.limitations": 42,
+    "attributes.run_recipes.0.outputs": 42,
+    "attributes.run_recipes.0.requirements": 42,
+    "attributes.run_guide.limitations": 41,
+    "attributes.run_guide.outputs": 41,
+    "attributes.run_guide.prerequisites": 41,
+    "attributes.run_guide.source_ids": 41,
+    "attributes.run_guide.steps": 41,
+    "attributes.run_recipes.1.inputs": 31,
+    "attributes.run_recipes.1.limitations": 31,
+    "attributes.run_recipes.1.outputs": 31,
+    "attributes.run_recipes.1.requirements": 31,
+    "attributes.run_recipes.2.inputs": 6,
+    "attributes.run_recipes.2.limitations": 6,
+    "attributes.run_recipes.2.outputs": 6,
+    "attributes.run_recipes.2.requirements": 6,
+    "attributes.candidate_benchmark_ids": 171,
+    "attributes.evidence_concerns": 1,
+    "attributes.reported_population.train_validation_test": 217,
+    "attributes.comparison.population.train_validation_test": 206,
+    "attributes.source_occurrences": 1137,
+    "attributes.profile_correction.source_ids": 2,
+    "attributes.provenance.expected_hashes_checked": 8,
+    "attributes.reproduction": 13,
+    "attributes.reproduction.source_ids": 22,
+    "attributes.configuration.alphas": 1,
+    "attributes.packages": 1,
+    "attributes.limitations": 25,
+    "attributes.model_configuration.alphas": 2,
+    "attributes.protocol_configuration.metrics": 9,
+    "attributes.historical_missing_metadata": 6,
+    "attributes.missing_metadata": 1,
+    "attributes.procedure.metrics": 2,
+    "attributes.procedure.excluded": 2,
+    "attributes.procedure.head.alphas": 2,
+    "attributes.procedure.split_ratios": 2
+  },
+  "narrative_evidence_fields": {
+    "attributes.profile.gaps": 690,
+    "attributes.benchmark_research.gaps": 732,
+    "attributes.profile.diagram.steps": 783
+  },
+  "evidence_condition_strings": 492,
+  "evidence_condition_forms": {
+    "populated-condition": 352,
+    "empty-condition": 140
+  },
+  "integrity_errors": 0,
+  "source_verification": "Unchanged; prior reviewed source claims are not reverified by this presentation audit.",
+  "files": {
+    "catalogue.json.gz": {
+      "sha256": "48c47c6cf7c8e0c832def37350be0a53aa62cce06e39ea7f5b134e52add9934b",
+      "compressed_bytes": 2940249
+    },
+    "evidence.jsonl.gz": {
+      "sha256": "0c791d2e0034d8ea23d2adb05595f63b8a937d13f188b7a13ea5a9b1c4ab3408",
+      "compressed_bytes": 22945030
+    }
+  },
+  "condition_records": 438,
+  "narrative_records": 690,
+  "records_with_presentation_cases": 1130,
+  "typed_structured_evidence_rows": 65962,
+  "record_status_counts": {
+    "no-targeted-presentation-pattern": 20841,
+    "presentation-case": 1130,
+    "valid-undefined-measurement": 3
+  }
+}

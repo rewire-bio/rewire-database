@@ -1,3 +1,4 @@
+import { catalogueText } from "@/lib/catalogue-text";
 import { Fragment } from "react";
 import Link from "next/link";
 import { reproductionSchema } from "@/services/omics/src/run-recipe";
@@ -57,14 +58,16 @@ export default function Reproduction({
       <h2 id="reproduction-title">
         {compact ? "Reproduction" : "Methods and reproduction"}
       </h2>
-      {!compact && <p>{evaluation.description}</p>}
+      {!compact && <p>{catalogueText(evaluation.description)}</p>}
       <dl className={styles.details}>
         {!compact &&
           context.map((record) => (
             <Fragment key={`${record.role}-${record.id}`}>
               <dt>{record.kind.replace(/_/g, " ")}</dt>
               <dd>
-                <Link href={recordHref(record)}>{record.name}</Link>
+                <Link href={recordHref(record)}>
+                  {catalogueText(record.name)}
+                </Link>
               </dd>
             </Fragment>
           ))}
@@ -109,7 +112,8 @@ export default function Reproduction({
               <Link
                 href={`${recordHref(design)}#${design.attributes.run_recipes ? "run-recipes" : "run"}`}
               >
-                Access requirements and official instructions: {design.name}
+                Access requirements and official instructions:{" "}
+                {catalogueText(design.name)}
               </Link>
             </li>
           ))}

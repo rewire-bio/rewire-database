@@ -41,3 +41,31 @@ describe("public audit table", () => {
       expect(html).toContain(label);
   });
 });
+
+it("formats protocol labels without changing the archived audit item", () => {
+  const item = {
+    record_id: "beeline-protocol",
+    record_kind: "protocol",
+    record_name:
+      'BEELINE · {"reference_network":"ChIP-Seq","gene_selection":"TFs+500"}',
+    run_ids: [],
+    outcomes: ["supported"],
+    categories: ["metadata"],
+    checks_filter: [],
+    check_count: 1,
+    latest_check_at: "2026-09-19",
+  };
+  const before = JSON.stringify(item);
+  const html = renderToStaticMarkup(
+    createElement(AuditExplorer, {
+      releaseId: "test",
+      runs: [],
+      initial: { items: [item], total: 1, next_cursor: null },
+    }),
+  );
+  expect(html).toContain(
+    "Reference network: ChIP-Seq; Gene selection: TFs+500",
+  );
+  expect(html).not.toContain("reference_network");
+  expect(JSON.stringify(item)).toBe(before);
+});

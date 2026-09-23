@@ -1,4 +1,5 @@
 "use client";
+import { catalogueText } from "@/lib/catalogue-text";
 import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import type {
@@ -261,7 +262,7 @@ export default function AuditExplorer({
                       if (!busy) void history(r.record_id);
                     }}
                   >
-                    {r.record_name}
+                    {catalogueText(r.record_name)}
                   </a>
                   <br />
                   {r.record_kind}

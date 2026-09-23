@@ -1,3 +1,4 @@
+import { catalogueText } from "@/lib/catalogue-text";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -62,10 +63,11 @@ export function generateMetadata({ params }: { params: Params }): Metadata {
   )
     return {};
   return {
-    title: item.record.name,
-    description:
+    title: catalogueText(item.record.name),
+    description: catalogueText(
       (item.record.attributes.profile as { summary?: string } | undefined)
         ?.summary || item.record.description,
+    ),
     alternates: {
       canonical: `https://benchmarks.rewire.it${recordHref(item.record)}`,
     },
@@ -78,20 +80,28 @@ function Links({ records }: { records: OmicsRecord[] }) {
         ? records.map((record, i) => (
             <span key={record.id}>
               {i > 0 ? "; " : ""}
-              <Link href={recordHref(record)}>{record.name}</Link>
+              <Link href={recordHref(record)}>
+                {catalogueText(record.name)}
+              </Link>
             </span>
           ))
         : "Not reported"}
     </>
   );
 }
-function Fields({ fields }: { fields: Record<string, unknown> }) {
+function Fields({
+  fields,
+  verbatim = false,
+}: {
+  fields: Record<string, unknown>;
+  verbatim?: boolean;
+}) {
   return (
     <dl className={styles.details}>
       {Object.entries(fields).map(([key, value]) => (
         <Fragment key={key}>
           <dt>{key.replace(/_/g, " ")}</dt>
-          <dd>{displayValue(value)}</dd>
+          <dd>{displayValue(value, verbatim)}</dd>
         </Fragment>
       ))}
     </dl>
@@ -162,13 +172,14 @@ export default function RecordPage({ params }: { params: Params }) {
   const profile = profileSchema.safeParse(
     profileOwner.record.attributes.profile,
   );
-  const summary =
+  const summary = catalogueText(
     (profileOwner.record.attributes.profile as { summary?: string } | undefined)
-      ?.summary || record.description;
+      ?.summary || record.description,
+  );
   const finding =
     record.kind === "result"
       ? `${displayValue(record.attributes.printed_value)}${record.attributes.unit === "percent" && !/%/.test(String(record.attributes.printed_value)) ? "%" : ""} ${displayValue(record.attributes.metric)}`
-      : record.name;
+      : catalogueText(record.name);
   const modelLinks = first
     ? testedEntities(first)
     : detail.direct
@@ -278,7 +289,9 @@ export default function RecordPage({ params }: { params: Params }) {
                 sources={record.kind === "source" ? [record] : detail.sources}
               />
               <p className="intro">
-                {record.kind === "result" ? record.name : summary}
+                {record.kind === "result"
+                  ? catalogueText(record.name)
+                  : summary}
               </p>
               {profile.success && profile.data.summary_source_ids && (
                 <ProfileEvidence
@@ -392,7 +405,9 @@ export default function RecordPage({ params }: { params: Params }) {
                 <dt>Evaluation</dt>
                 <dd>
                   {evaluated ? (
-                    <Link href={recordHref(evaluated)}>{evaluated.name}</Link>
+                    <Link href={recordHref(evaluated)}>
+                      {catalogueText(evaluated.name)}
+                    </Link>
                   ) : (
                     "Not linked"
                   )}
@@ -497,7 +512,7 @@ export default function RecordPage({ params }: { params: Params }) {
                   <p className={styles.notice}>
                     Related profile:{" "}
                     <Link href={recordHref(family.record)}>
-                      {family.record.name}
+                      {catalogueText(family.record.name)}
                     </Link>
                     . This page retains the exact record and its evaluation
                     context.
@@ -524,7 +539,7 @@ export default function RecordPage({ params }: { params: Params }) {
                       {downstream.map((item) => (
                         <li key={item.record.id}>
                           <Link href={recordHref(item.record)}>
-                            {item.record.name}
+                            {catalogueText(item.record.name)}
                           </Link>{" "}
                           <span>
                             {singularKindLabels[item.record.kind]} ·{" "}
@@ -544,9 +559,11 @@ export default function RecordPage({ params }: { params: Params }) {
                   <section className={styles.section}>
                     <h2>This configuration</h2>
                     <p>
-                      {localProfile.success
-                        ? localProfile.data.summary
-                        : record.description}
+                      {catalogueText(
+                        localProfile.success
+                          ? localProfile.data.summary
+                          : record.description,
+                      )}
                     </p>
                     <Fields
                       fields={{
@@ -566,7 +583,7 @@ export default function RecordPage({ params }: { params: Params }) {
                       {memberLinks.map((item) => (
                         <li key={item.record.id}>
                           <Link href={recordHref(item.record)}>
-                            {item.record.name}
+                            {catalogueText(item.record.name)}
                           </Link>{" "}
                           · {item.relation.replace(/_/g, " ")}
                         </li>
@@ -597,7 +614,9 @@ export default function RecordPage({ params }: { params: Params }) {
                           <ul className={styles.list}>
                             {group.records.map((item) => (
                               <li key={item.id}>
-                                <Link href={recordHref(item)}>{item.name}</Link>
+                                <Link href={recordHref(item)}>
+                                  {catalogueText(item.name)}
+                                </Link>
                               </li>
                             ))}
                           </ul>
@@ -620,7 +639,9 @@ export default function RecordPage({ params }: { params: Params }) {
                     <ul className={styles.list}>
                       {linkedEvaluations.slice(0, 12).map((item) => (
                         <li key={item.id}>
-                          <Link href={recordHref(item)}>{item.name}</Link>
+                          <Link href={recordHref(item)}>
+                            {catalogueText(item.name)}
+                          </Link>
                         </li>
                       ))}
                     </ul>
@@ -657,7 +678,9 @@ export default function RecordPage({ params }: { params: Params }) {
                       <ul className={styles.list}>
                         {group.records.map((item) => (
                           <li key={item.id}>
-                            <Link href={recordHref(item)}>{item.name}</Link>
+                            <Link href={recordHref(item)}>
+                              {catalogueText(item.name)}
+                            </Link>
                           </li>
                         ))}
                       </ul>
@@ -750,7 +773,7 @@ export default function RecordPage({ params }: { params: Params }) {
                 {proposals.map((item, i) => (
                   <li key={i}>
                     <Link href={recordHref(item.record)}>
-                      {item.record.name}
+                      {catalogueText(item.record.name)}
                     </Link>{" "}
                     ·{" "}
                     {String(
@@ -808,7 +831,9 @@ export default function RecordPage({ params }: { params: Params }) {
                   <ul className={styles.list}>
                     {detail.sources.map((source) => (
                       <li key={source.id}>
-                        <Link href={recordHref(source)}>{source.name}</Link>
+                        <Link href={recordHref(source)}>
+                          {catalogueText(source.name)}
+                        </Link>
                         {safeSourceUrl(source.attributes.url) && (
                           <>
                             {" "}
@@ -831,7 +856,7 @@ export default function RecordPage({ params }: { params: Params }) {
                     <p key={item.record.id}>
                       Supersedes{" "}
                       <Link href={recordHref(item.record)}>
-                        {item.record.name}
+                        {catalogueText(item.record.name)}
                       </Link>
                     </p>
                   ))}
@@ -841,7 +866,7 @@ export default function RecordPage({ params }: { params: Params }) {
                     <p key={item.record.id}>
                       Superseded by{" "}
                       <Link href={recordHref(item.record)}>
-                        {item.record.name}
+                        {catalogueText(item.record.name)}
                       </Link>
                     </p>
                   ))}
@@ -865,6 +890,7 @@ export default function RecordPage({ params }: { params: Params }) {
               <summary>Technical metadata and extraction receipts</summary>
               <p>Stable ID: {record.id}</p>
               <Fields
+                verbatim
                 fields={{
                   ...record.facets,
                   ...Object.fromEntries(
@@ -882,7 +908,7 @@ export default function RecordPage({ params }: { params: Params }) {
                   <li key={i}>
                     {item.relation.replace(/_/g, " ")}:{" "}
                     <Link href={recordHref(item.record)}>
-                      {item.record.name}
+                      {catalogueText(item.record.name)}
                     </Link>
                   </li>
                 ))}

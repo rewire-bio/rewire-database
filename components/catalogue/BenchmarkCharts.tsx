@@ -1,4 +1,5 @@
 "use client";
+import { catalogueText } from "@/lib/catalogue-text";
 import { useId, useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import type { ResolvedComparison } from "@/services/omics/src/published-comparisons";
@@ -58,7 +59,7 @@ const defaults = {
 };
 function testedName(row: ResolvedComparison["rows"][number]) {
   return testedEntities(row)
-    .map((record) => record.name)
+    .map((record) => catalogueText(record.name))
     .join(", ");
 }
 function Entity({ row }: { row: ResolvedComparison["rows"][number] }) {
@@ -67,7 +68,7 @@ function Entity({ row }: { row: ResolvedComparison["rows"][number] }) {
       {testedEntities(row).map((record, index) => (
         <span key={record.id}>
           {index > 0 ? ", " : ""}
-          <Link href={recordHref(record)}>{record.name}</Link>
+          <Link href={recordHref(record)}>{catalogueText(record.name)}</Link>
         </span>
       ))}
     </>
@@ -80,8 +81,8 @@ function scopeKey(option: Option) {
 }
 function panelScope(option: Option) {
   return option.protocol && option.dataset
-    ? `${option.protocol.kind ? singularKindLabels[option.protocol.kind] + ": " : ""}${option.protocol.name} · ${option.dataset.name}`
-    : option.title;
+    ? `${option.protocol.kind ? singularKindLabels[option.protocol.kind] + ": " : ""}${catalogueText(option.protocol.name)} · ${catalogueText(option.dataset.name)}`
+    : catalogueText(option.title);
 }
 
 /** Search scopes and metric choices together; selecting a scope must select a matching panel. */
@@ -94,7 +95,7 @@ export function comparisonChoices(
   const selectedScope = currentOption ? scopeKey(currentOption) : "";
   const needle = search.trim().toLowerCase();
   const scopeOptions = choices.filter((option) =>
-    `${panelScope(option)} ${option.title} ${option.metric} ${option.context || ""} ${(option.sources || []).map((source) => source.name).join(" ")}`
+    `${panelScope(option)} ${catalogueText(option.title)} ${option.metric} ${option.context || ""} ${(option.sources || []).map((source) => source.name).join(" ")}`
       .toLowerCase()
       .includes(needle),
   );
@@ -322,7 +323,7 @@ export function ComparisonWorkspace({
                     )}
                   {scopes.map((scope) => (
                     <option key={scope.id} value={scope.id}>
-                      {scope.name}
+                      {catalogueText(scope.name)}
                     </option>
                   ))}
                 </select>
@@ -338,14 +339,17 @@ export function ComparisonWorkspace({
                   {currentOption &&
                     !metricOptions.some((option) => option.id === selected) && (
                       <option value={selected}>
-                        {currentOption.metric} · {currentOption.title} (current,
-                        outside search)
+                        {currentOption.metric} ·{" "}
+                        {catalogueText(currentOption.title)} (current, outside
+                        search)
                       </option>
                     )}
                   {metricOptions.map((option) => (
                     <option value={option.id} key={option.id}>
-                      {option.metric} · {option.title}
-                      {option.context ? ` · ${option.context}` : ""}
+                      {option.metric} · {catalogueText(option.title)}
+                      {option.context
+                        ? ` · ${catalogueText(option.context)}`
+                        : ""}
                       {option.sources?.length
                         ? ` · ${option.sources.map((source) => source.name).join(", ")}`
                         : ""}
@@ -375,20 +379,20 @@ export function ComparisonWorkspace({
           {panel ? (
             <div aria-busy={loading}>
               <header className={ux.panelHeader}>
-                <h3>{panel.title}</h3>
+                <h3>{catalogueText(panel.title)}</h3>
                 <p>
                   {panel.metric} ({panel.unit}) ·{" "}
                   {panel.direction === "higher" ? "Higher" : "Lower"} values are
                   better.
                 </p>
-                <p>{panel.context}</p>
+                <p>{catalogueText(panel.context)}</p>
                 <p>
                   <Link href={recordHref(panel.protocol)}>
-                    {panel.protocol.name}
+                    {catalogueText(panel.protocol.name)}
                   </Link>{" "}
                   ·{" "}
                   <Link href={recordHref(panel.dataset)}>
-                    {panel.dataset.name}
+                    {catalogueText(panel.dataset.name)}
                   </Link>
                 </p>
                 <p>
@@ -406,14 +410,16 @@ export function ComparisonWorkspace({
                   locator={panel.source_locator}
                   sources={panel.sources}
                 />
-                <p className={styles.muted}>{panel.caveats[0]}</p>
+                <p className={styles.muted}>
+                  {catalogueText(panel.caveats[0] || "")}
+                </p>
                 <details>
                   <summary>
                     All comparison limitations ({panel.caveats.length})
                   </summary>
                   <ul>
                     {panel.caveats.map((caveat, index) => (
-                      <li key={index}>{caveat}</li>
+                      <li key={index}>{catalogueText(caveat)}</li>
                     ))}
                   </ul>
                   <p>Automated source review: {panel.review.date}.</p>
@@ -421,8 +427,8 @@ export function ComparisonWorkspace({
               </header>
               {(error || loading) && (
                 <p>
-                  <strong>Displayed comparison:</strong> {panel.title} ·{" "}
-                  {panel.metric}
+                  <strong>Displayed comparison:</strong>{" "}
+                  {catalogueText(panel.title)} · {panel.metric}
                 </p>
               )}
               <div className={ux.toolbar}>
@@ -529,7 +535,7 @@ export function ComparisonWorkspace({
                             <Evidence
                               ids={row.result.source_ids}
                               locator={String(
-                                row.result.attributes.source_locator,
+                                row.result.attributes.source_locator ?? "",
                               )}
                               sources={row.sources}
                             />

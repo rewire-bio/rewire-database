@@ -1,4 +1,5 @@
 "use client";
+import { catalogueText } from "@/lib/catalogue-text";
 import { useEffect, useId, useMemo, useState } from "react";
 import Link from "next/link";
 import { catalogueClient, type ResultsPage } from "@/lib/catalogue-client";
@@ -43,7 +44,9 @@ function RecordLinks({ records }: { records: OmicsRecord[] }) {
               <span className={styles.muted}>
                 {singularKindLabels[record.kind]}:{" "}
               </span>
-              <Link href={recordHref(record)}>{record.name}</Link>
+              <Link href={recordHref(record)}>
+                {catalogueText(record.name)}
+              </Link>
             </span>
           ))
         : "Not reported"}
@@ -159,7 +162,7 @@ export default function Results({
       .flatMap((item) =>
         applied[item.key]
           ? [
-              `${item.label}: ${item.options.find((option) => option.id === applied[item.key])?.name || applied[item.key]}`,
+              `${item.label}: ${catalogueText(item.options.find((option) => option.id === applied[item.key])?.name || applied[item.key])}`,
             ]
           : [],
       )
@@ -198,7 +201,7 @@ export default function Results({
                   <option value="">All</option>
                   {item.options.map((option) => (
                     <option key={option.id} value={option.id}>
-                      {option.name}
+                      {catalogueText(option.name)}
                     </option>
                   ))}
                 </select>
@@ -307,7 +310,7 @@ export default function Results({
                       {row.evaluation && (
                         <p>
                           <Link href={recordHref(row.evaluation)}>
-                            {row.evaluation.name}
+                            {catalogueText(row.evaluation.name)}
                           </Link>
                         </p>
                       )}

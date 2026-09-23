@@ -1,3 +1,4 @@
+import { catalogueText } from "@/lib/catalogue-text";
 import { recordHref, type OmicsCatalogue } from "@/lib/omics";
 import { researchAreaLabel } from "@/lib/omics-browse";
 import { indexRecords, indexSummary, modelIndexHref, modelPageCount, MODEL_PAGE_SIZE, type IndexKind } from "@/lib/catalogue-index";
@@ -30,7 +31,7 @@ export default function StaticIndex({ catalogue, kind, page = 1 }: { catalogue: 
       <p className={styles.context}>{benchmarks ? <>Broad <a href="/?kind=task#browse">tasks</a>, specific <a href="/?kind=protocol#browse">protocols</a> and <a href="/?kind=evaluator#browse">evaluators</a> have their own records. Follow each benchmark to its procedures and results.</> : <>Evaluated <a href="/?kind=configuration#browse">configurations</a>, <a href="/?kind=method#browse">methods</a> and <a href="/?kind=pipeline#browse">pipelines</a> are listed separately. Names alone do not establish equivalent models or checkpoints.</>}</p>
       {pagination}
       <ul className={styles.records}>{records.map((record) => <li key={record.id}>
-        <h2><a href={recordHref(record)}>{record.name}</a></h2>
+        <h2><a href={recordHref(record)}>{catalogueText(record.name)}</a></h2>
         {record.facets.areas?.length > 0 && <p className={styles.areas}>{record.facets.areas.map(researchAreaLabel).join(" · ")}</p>}
         <p>{indexSummary(record)}</p>
         {duplicateNames.has(record.name) && <p className={styles.identity}>Record: {record.id}</p>}

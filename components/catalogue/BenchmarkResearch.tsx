@@ -1,3 +1,4 @@
+import { catalogueText } from "@/lib/catalogue-text";
 import Link from "next/link";
 import { recordHref, safeSourceUrl, type OmicsRecord } from "@/lib/omics";
 import styles from "@/app/database/database.module.css";
@@ -42,7 +43,7 @@ export default function BenchmarkResearch({
               {papers.map((source) => (
                 <tr key={source.id}>
                   <th scope="row">
-                    <Link href={recordHref(source)}>{source.name}</Link>
+                    <Link href={recordHref(source)}>{catalogueText(source.name)}</Link>
                   </th>
                   <td>{String(source.attributes.version || "Not recorded")}</td>
                   <td>

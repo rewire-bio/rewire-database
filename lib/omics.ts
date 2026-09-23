@@ -1,3 +1,4 @@
+import { catalogueText } from "./catalogue-text";
 import { assertNoPrivateFields } from "../services/omics/src/private-fields";
 import {
   entityKinds,
@@ -90,16 +91,23 @@ export function safeSourceUrl(value: unknown): string | undefined {
     /* Not a URL. */
   }
 }
-export function displayValue(value: unknown): string {
+export function displayValue(value: unknown, verbatim = false): string {
   if (value === null || value === undefined || value === "")
     return "Not reported";
   if (Array.isArray(value))
-    return value.length ? value.map(displayValue).join("; ") : "None recorded";
+    return value.length
+      ? value.map((item) => displayValue(item, verbatim)).join("; ")
+      : "None recorded";
   if (typeof value === "object")
-    return Object.entries(value as object)
-      .map(([key, item]) => `${key.replace(/_/g, " ")}: ${displayValue(item)}`)
-      .join("; ");
-  return String(value);
+    return Object.keys(value).length
+      ? Object.entries(value as object)
+          .map(
+            ([key, item]) =>
+              `${key.replace(/_/g, " ")}: ${displayValue(item, verbatim)}`,
+          )
+          .join("; ")
+      : "None recorded";
+  return verbatim ? String(value) : catalogueText(String(value));
 }
 export function originLabel(origin: unknown): string {
   return (
@@ -251,8 +259,7 @@ export function compareResults(
       (evaluation) =>
         (
           evaluation?.attributes.comparison as
-            | Record<string, unknown>
-            | undefined
+            Record<string, unknown> | undefined
         )?.[field],
     );
     if (values.some((value) => !known(value)))

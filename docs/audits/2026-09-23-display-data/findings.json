@@ -1,0 +1,4504 @@
+{
+  "release_id": "2026-09-22-f58a0f1d267f",
+  "conditions": [
+    {
+      "record_id": "acquired-evaluation-0082accf1085696769ca",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-00d505fa09645f9adc8a",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-00f17045cf92b165a0dd",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-02cbd3c520ac91580f86",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-02fba78f8de73dcd6d68",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-039cd4b734565e7824d9",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-0581506b8a2684f2c643",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-05d0f441bcc1023a0fa1",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-0654917de15c36247e85",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-069bfc00865dced25398",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-06a6bb729931de4bbdf2",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-0863c0539cd3f170e03e",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-09a92c9d9b0c9f490df9",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-09a99fd1215ba51e7cbe",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-0aa61c806853161b2b75",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-0c8c2e121ad0c0a79cbd",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-0ccdcdec2251bb7e25ee",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-0e79684344c1cdb8c8f4",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-0f7dfba633fca9331a32",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-103172dfee819f49a609",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-103d39f6ef6661320b38",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-114a9dd70392fb77aa86",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-114fbf93d3c7a1a6f80d",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-119a21c8e78bb5743df1",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-11a4a74a06ade20c44b4",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-11bfbe4be4c8f3fef6f5",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-12379ac6119fd58c0612",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-12d999b6731c333c7e21",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-1410990581ec3ec42adc",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-142ad729b9549c7a352e",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-14616530432d8d1fe5f8",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-17600a2385454bc35280",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-177f13c04c004dcb8ac0",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-1873945dea4b22268852",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-19474442008818b0a059",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-19d64db771db15364ba8",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"log/gof\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-1a2926c6ec0f5704a85b",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-1a29e6e9d959cc25678a",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-1b9935d6d1ffe2f228e3",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-1bce36e988dd7cf90b08",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-1be4a7630f75ab06f0aa",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-1bf5bddca94ca0e93f99",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-1c0e51f368083f11a098",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-1c5acd91f6ddfa379d30",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-1cce69a02f2be6590ab5",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-1cd978eb43a296c9c3be",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-1ce28946b227fdf0b15f",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-1d1ed812ca24d79696d0",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"log/gof\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-237117c05ed24125e4e7",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-23e9ea20fcdb2b1b80fb",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-241ecbd839c012c9b889",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-2476ffd6f49205c55c7c",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-2534320d19c2e9634258",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-25acfe5355c836570264",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"log/gof\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-25f8f63a60ad76cc30ad",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-2692beab4a82a90be75f",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-270d626bb17ba72fed29",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-27f61c4b4dc9986f7d2c",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-29f6ce9750417c14bc96",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-2a10d100440333682e63",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-2a4e68995411c8254b06",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-2c27014bf00c5249ef80",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-2ca5c26ef3b189c69d06",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-2cc7e1923ba381e47917",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-2d076e6210836184b953",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-2d712cdd036eab854cd3",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-2e87e0052df510ce3cdc",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-2f2105661be84ae42eac",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-2f338cfa8d7df278e911",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-2fa177e4324b68cda1f3",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-2fb3808d2b69e807a664",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-2fc518c8e0898650de0f",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-2fe99d96a24e328f46dc",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-300bf35686a3d0642db0",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-323c349694aee8dee131",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-33af4efea16173f1e2ed",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-398dff71eb4fbba6cf2c",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-3abb7a36e6f64eb190a3",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-3b1cf32851a8c56afe15",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-3d8a68c3b3dfa6a08407",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-3d9c05758cb906614135",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-3e31fc9076d7773cb467",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-3fa84fed87de3b5972f0",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-402a077bf08d8d2f5d0a",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-402d040889acad933945",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-414e7538cf6723b1d9e9",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-41c231b70f82b4bf20b5",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-42a1144a4e0095b1cb83",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-42c0a4521030975d7595",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-436894bf1207e9886f4c",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-436add5e541c63ad1502",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-442e9b267e239d2d0cf0",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-450f86308f27807f3679",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-455dbd406a10f6dc4910",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-461bf2886bdbd71e0652",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-4723ec0bad9f0795e4f3",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-478614a0cc9ee365cb6b",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-47e46152b6ab46e4047e",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-48287308ea833f095e9e",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-49ef5b159473e566051c",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-4a515bfd6fd929c38fc5",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-4b2cb5185d55d2a817f0",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-4b8fb9873ec29c79f877",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-4b9917a93ec4b070e37f",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-4c0de5745d4a2d4caadb",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-4d141a168936f1cda5c9",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-4d69282ba665dbc7344b",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-4de9f3c67ea10a9890f1",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-4e3810db1407350a5b00",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-4e649beac7c2b26813a2",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-4e8ae475ebc5b96fc380",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-4e9d06401bfde24bc5ba",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-4f4a04dbac23d16d0936",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-4f6a3f37d89d6f5c4c99",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-4fd0058db5a6c258c286",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-4ffba044a72efb6742b0",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-502014e410602e1c72f1",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-5106bc262ae4f6263f4c",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-51950761e2859753c04c",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-53235459bcb8e107f220",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-5371ef72ac1a480a4b1d",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-53ee2f872e699438edbc",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-5402e3d5faeac60b0506",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-54800a3ce9842e0a6beb",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-54c87f2340dcec8959a0",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-552c25040f11d1ab9e38",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-56bb88ceb77c151f2076",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-597fcd336f6d6fa757ee",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"log/gof\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-5abedc5b4e4f26e4464f",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-5c1e4571d7a378806663",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-5d7547bd136c69c58a6a",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-5f9013012c8adf18fbe0",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-614316b036a76996a1cd",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-61f41d4c38d2fa7dc8c7",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-61f462eccde300163502",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-6345970717a2cb72bd4c",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-6395ffa5462c3926a17d",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-63ff661b097222667b94",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-644d2926e9f9db8999a9",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-650649e5f13807ac0882",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-651717218bd814143a75",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-658958d06363a5d95899",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-66327e31f00eaf1f0e6a",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-67c48ba144fda2a794ad",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-69341b73132f87a7ed82",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-6a62785cfc6f1b554d9e",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-6b3c10c263a95d156a30",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-6c20de4f7004dd759ec2",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-6c64444ccd8050805e74",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-6ec893f143a61b315db0",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-6edb32169b6da791e66b",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-6f82e7ecf340c4f9210c",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-6fdc74f4cca8df7a46ea",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-70b73f9fcf82b4977a64",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-70be524ab9be45747b62",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-7115db226d02c8fa5f9b",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-71c8ee066b85515625a1",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-722faee37642af408fb8",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-72ace9b828a54fd8f0bc",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-7437ed2a6e130eec5494",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-749abcfed2dc3233c32f",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"log/gof\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-75016f8ab5b157d53915",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-7556014c91885152a77e",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"log/gof\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-75f4a38d7e5677110266",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-76000705161d5c609425",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-762ac096344270bcfba5",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-76c3526bf5a6535bf204",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-771136143e9b269c7ff4",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-782d226f144bacefe241",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-7aec3f31fef41066dbcd",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-7b1671e5ffc3035553fc",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-7b3134602ba32008e8ea",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-7b3253afc3d8ee65a892",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-7b6fa101d5688d1be4fe",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-7b7451990c51e9b60e5c",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-7bee3bcdbbba15f10101",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-7d7e4865c7722976860b",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-7d9b9a910ffc05993c61",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-7e2c0a9dc297c6529ad5",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-7f5250f86c9f1d92ac53",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-7f55ebb0334a00ab7de4",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-7fccb999d7dfb1489383",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-802ed5db2dd4a58bc011",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-81a017005ee38a0edcdd",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-82431b90a8d728202169",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-824a7727bfebbeab44a6",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-82aa7942a66f187f4cbc",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-8358b01541d084a1f4a5",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-83b23d2719fc074abc58",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"log/gof\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-83f6232ffb2398c775ae",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-84ad9edcaf8b263bd4f8",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-85bb09eaf7780a2457de",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-8804f8b399730770250a",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-884bf21ccfa381aa6a3f",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-885435da8a2976619231",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-8982553e4e0fea2a77f3",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-89d2041593d18c66d18f",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-8a66dc3d39c42a61e1ed",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-8b044b0e3a319cbf0e3f",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-8c143e7399caac27ac6a",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"log/gof\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-8cd254d1d9d98f4a015c",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-8d664782b8045bd1a57d",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-8db68a617541e9b93f3d",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-8e6670e4aa90c48a5367",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-905eb9877b0473781b77",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-9270c3bb0a27407bf85a",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-92b7e6b8756710cd4c1d",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-9448ed20240e92cf01d5",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-94a6c373ceb85123a91a",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-94fc7b027e800389d36c",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-964557eb6c9d6fd059bd",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-966121fb0a4ab1b4b4eb",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-96a00877a02f2ea86c96",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-96d7baaca9acdf72a15e",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-97326e73581e85cf4339",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-989ebbb6111fbd7c7311",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-9a8abdf0825b816bfc7d",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-9c234e5a0fafbd0c3ffa",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-9c4a6a3904705a34a003",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-9fe17715297a7776df74",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-a0416e28a8539a90475b",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-a0695aa4eec786d7d1a1",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-a09eee43be4f79815e03",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-a0a2f8ddb6cd88f5466e",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-a0d4a7b9f24a5028830d",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-a130d4238d7f0b0f4efa",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-a198fc478c502800d257",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-a2842c38e3f05ff4f2de",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-a51488fa9cddda12b9a0",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-a54e61a8a8e201697e70",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"log/gof\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-a5b22b18cda87cecac2f",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-a5f88078ebe2fa23c62f",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-a6ce86f93a9608759dda",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-a6e364190b64616a0bd2",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-a7615a1e4c7511fabe92",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-a7818a6763e9d190fd07",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-a78a9bdc9e6f665fc410",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-a7b74e5566a9b9a56e21",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-a7d46d179b9e21cb9fcb",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-a8d64d5b6db97a1dba6b",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-a931ed6a5adff3bd0ba8",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-a9aadeb210095a16382e",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-aa145e001d0c6807f727",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-aaae0d5d9c6285249e70",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-aae0cbd0a1ba0d71bb52",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-ac7a1e6733a9fd687ffc",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-ac9113aacb3f7db7f6d7",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-ad222bb74f44ffa21efb",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-ad3c10e03bbab33fb8f7",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-ad68a209f37d2e5ffc31",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-adae32fe192e3e789044",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-ae73209dd1d2f4655f80",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-aedfbad3f23e0bafbbaa",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-afc1bef2884e1f990d48",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-b03ebe3e5ff4a1272120",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-b18efad375ba2e467161",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-b2069048772c36c16f4a",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-b212c2524ec0af5bea41",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-b21b2568912bb7f47d96",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-b3465076cf4b1be4c1b1",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-b3d33482f2f27c0b8bef",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-b454d845a0a722ecef7f",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-b512d06ea8f8c1365a9d",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-b518d4856ddfd07f8097",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-b59739145955dc1e0bea",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-b6595ecc2aad09ca4e80",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-b679e625236a27ceb1b5",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-b68e97c282f1ae4fac19",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"log/gof\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-b6b699415b558e2025a8",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-b6c7e3ea291f4e4afb8a",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-b6d6bb74578edcc4ba5a",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-b6e3d809769497e0cd70",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-b82fbf29931132a08185",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-b8ad91ae065fba4b9f2c",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-b8e985800186748e63a1",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-b9d5043404da3803c7d3",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-ba360d6d2bf75c946cb2",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-ba42e4f17c53146a718d",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-ba940016481f4cb55342",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-bae89532f74b615413a7",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-bb4c91cf679bee6f540c",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-bbb0267f24c283aac327",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-bbcb856f0aef3c929555",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-bd114e6bc8571c45e792",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-bd643e9bb77e4b238aa9",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-be6ceefb536329991033",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-bea25aa672983ba9969a",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-bf95a0e928da09fb4688",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-c09622ce9ddcbdbeec87",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-c284c9ce4e8b1b1fb90e",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-c2d4332221f6e389aa64",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-c3e70734f0a834fd6006",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-c3fe438e018b65a6420a",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-c64d898c2a15ac2335bb",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-c664e90914bd3954d976",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-c67f6584b41a3e7b68a1",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-c74c1dee6c5e8cf884c4",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-c7586a5abd7db5841d0a",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-c7a20eed88460d27fa43",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-c7d85849267ca0601c0e",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-c909e3de997182803131",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-c9b848dbef8cf45e3410",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-ca01e83df3fd858a0209",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-ca8dbce41689583633c6",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-cbd47f826fd3d916d3ed",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-cd35e775254d1f433a78",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-cef833fede4a3f5e7a63",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-cfc4ba527f00aed37c66",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-cfd4eff317713d9380bb",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-d01a72519b932b34ebe8",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-d01d8a1a1c30d65b14a4",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-d02f498c9a0ba51680c8",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-d1742642c6211f0fc56c",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-d19225cd459b53c23d58",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-d2c03b64cc6e1761ea48",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-d3932b4d52b29e375c36",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-d3ff63ed99557b915c18",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-d40ade27bdd159c0e172",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-d535a7a37f0c47db7c5e",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"log/gof\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-d535f96da42e2ca64628",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-d5bb0fbde7220d2ea90d",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-d83249bb33adf8464e85",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-d8c8d1d5b42509512ab4",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-d8e4397e100522e6b13c",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-d92fba4247313e23331e",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-dbad5357e1c8ec6609c6",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-dc2d9a2629c34deccb82",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-dda02b4579a27b0bb4ea",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-ddbce723bc0a62ed7037",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-de034989389125d195fc",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-dec52effcc7f42ff5d23",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-deed6ac4b1beac526492",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-df158977e97033eca896",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-df8c009dc6c2a8669121",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-e0c8938d24567aae6aa9",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-e0d1ab6f1149218a568e",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"log/gof\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-e0f1ff132eecb1003cf1",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-e13c3f59d596213ae13a",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-e15000ec430f5a028511",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-e1c079520b768443a8cc",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-e27226baafb24bed984e",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-e299c1dc79d17fcddf46",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-e457aa348a37f892c1a2",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-e54c489b3b183ab67d05",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-e60572b44abeac9dc403",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-e67d932b955d76db39ee",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-e6ff7d604fd371f20a25",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-e720006cf52e9c8b7076",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-e8b77f5acb8cfbb95bc1",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-e93ada9d4e5f34e053c4",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-ea7dda7a59e361c675d2",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-eb59e73989c4b1d38aa8",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-eb89fa1aaea67313195f",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-ec4e4acf5625da8787c0",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-ec94959d8d993f5040e0",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-ecd677e63a6e50f82bac",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-ed0bff0241e650ad0c1d",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-ed49d0081d22759539a5",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-edf28b91e063542ae056",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-ee76470712b9f67b6570",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-ee823ad59dae480361a4",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-eeacc14780ae56dbda58",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-ef143ae631ace0d5eda9",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-ef1c131bc54e27cf7f39",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-efff8e89e87685cdcd11",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-f05b8f2e2e2c879c55c5",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-f08fd2ffdcff11558116",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-f166b49ab1584bc2f750",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-f24204da33a9f515c432",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-f24c481269adc9193b6d",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-f2b0f128f5acadbceb99",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-f4383cfde8c70807e7f3",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-f526a48b7108c81a28ab",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-f798cfe34465babd1673",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-f8996d1664ffcb68e95d",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-fa18f4cf97ad22ff22b4",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-fa320e9af06f4fa520e6",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-faf6a91fd0329eacf6f2",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-fb3be1a5cb48862191e0",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-fb52ef65e1f8b7972066",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-fe0a22bad2348eab1bbe",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-fe567d821cbef7d5c5b1",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-fe6a78b21ef67d8b1e0f",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-evaluation-ff46ec515b57d4a65ad4",
+      "kind": "evaluation",
+      "path": "attributes.comparison.inputs",
+      "value": "{\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-024f47659eb7e75f56dc",
+      "kind": "protocol",
+      "path": "name",
+      "value": "BEELINE 2020 Figure 5 · mESC · {\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-024f47659eb7e75f56dc",
+      "kind": "protocol",
+      "path": "description",
+      "value": "Source-specific evaluation. Input conditions: {\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-024f47659eb7e75f56dc",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.title",
+      "value": "BEELINE 2020 Figure 5 · mESC · {\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}: Early Precision Ratio",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-024f47659eb7e75f56dc",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.caveats.0",
+      "value": "Source-specific evaluation. Input conditions: {\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-1227fd691dca8a3aa41d",
+      "kind": "protocol",
+      "path": "name",
+      "value": "BEELINE 2020 Figure 5 · mDC · {\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-1227fd691dca8a3aa41d",
+      "kind": "protocol",
+      "path": "description",
+      "value": "Source-specific evaluation. Input conditions: {\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-1227fd691dca8a3aa41d",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.title",
+      "value": "BEELINE 2020 Figure 5 · mDC · {\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}: Early Precision Ratio",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-1227fd691dca8a3aa41d",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.caveats.0",
+      "value": "Source-specific evaluation. Input conditions: {\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-174f1a5acdc3c13db7b2",
+      "kind": "protocol",
+      "path": "name",
+      "value": "BEELINE 2020 Figure 5 · mESC · {\"reference_network\":\"log/gof\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-174f1a5acdc3c13db7b2",
+      "kind": "protocol",
+      "path": "description",
+      "value": "Source-specific evaluation. Input conditions: {\"reference_network\":\"log/gof\",\"gene_selection\":\"TFs+500\"}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-174f1a5acdc3c13db7b2",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.title",
+      "value": "BEELINE 2020 Figure 5 · mESC · {\"reference_network\":\"log/gof\",\"gene_selection\":\"TFs+500\"}: Early Precision Ratio",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-174f1a5acdc3c13db7b2",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.caveats.0",
+      "value": "Source-specific evaluation. Input conditions: {\"reference_network\":\"log/gof\",\"gene_selection\":\"TFs+500\"}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-18da78ff7de51ffb5605",
+      "kind": "protocol",
+      "path": "name",
+      "value": "BEELINE 2020 Figure 2 · LI · {}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-protocol-18da78ff7de51ffb5605",
+      "kind": "protocol",
+      "path": "description",
+      "value": "Source-specific evaluation. Input conditions: {}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-protocol-18da78ff7de51ffb5605",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.title",
+      "value": "BEELINE 2020 Figure 2 · LI · {}: AUPRC Ratio",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-protocol-18da78ff7de51ffb5605",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.caveats.0",
+      "value": "Source-specific evaluation. Input conditions: {}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-protocol-18da78ff7de51ffb5605",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.1.title",
+      "value": "BEELINE 2020 Figure 2 · LI · {}: Stability Across Datasets",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-protocol-18da78ff7de51ffb5605",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.1.caveats.0",
+      "value": "Source-specific evaluation. Input conditions: {}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-protocol-19f8c76e99a986094a6f",
+      "kind": "protocol",
+      "path": "name",
+      "value": "BEELINE 2020 Figure 2 · TF · {}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-protocol-19f8c76e99a986094a6f",
+      "kind": "protocol",
+      "path": "description",
+      "value": "Source-specific evaluation. Input conditions: {}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-protocol-19f8c76e99a986094a6f",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.title",
+      "value": "BEELINE 2020 Figure 2 · TF · {}: AUPRC Ratio",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-protocol-19f8c76e99a986094a6f",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.caveats.0",
+      "value": "Source-specific evaluation. Input conditions: {}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-protocol-19f8c76e99a986094a6f",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.1.title",
+      "value": "BEELINE 2020 Figure 2 · TF · {}: Stability Across Datasets",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-protocol-19f8c76e99a986094a6f",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.1.caveats.0",
+      "value": "Source-specific evaluation. Input conditions: {}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-protocol-1b09d04bdd84c0554bd1",
+      "kind": "protocol",
+      "path": "name",
+      "value": "BEELINE 2020 Figure 2 · CY · {}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-protocol-1b09d04bdd84c0554bd1",
+      "kind": "protocol",
+      "path": "description",
+      "value": "Source-specific evaluation. Input conditions: {}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-protocol-1b09d04bdd84c0554bd1",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.title",
+      "value": "BEELINE 2020 Figure 2 · CY · {}: AUPRC Ratio",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-protocol-1b09d04bdd84c0554bd1",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.caveats.0",
+      "value": "Source-specific evaluation. Input conditions: {}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-protocol-1b09d04bdd84c0554bd1",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.1.title",
+      "value": "BEELINE 2020 Figure 2 · CY · {}: Stability Across Datasets",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-protocol-1b09d04bdd84c0554bd1",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.1.caveats.0",
+      "value": "Source-specific evaluation. Input conditions: {}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-protocol-25210daa0dccd840d2fb",
+      "kind": "protocol",
+      "path": "name",
+      "value": "BEELINE 2020 Figure 4 · GSD · {}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-protocol-25210daa0dccd840d2fb",
+      "kind": "protocol",
+      "path": "description",
+      "value": "Source-specific evaluation. Input conditions: {}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-protocol-25210daa0dccd840d2fb",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.title",
+      "value": "BEELINE 2020 Figure 4 · GSD · {}: AUPRC Ratio",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-protocol-25210daa0dccd840d2fb",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.caveats.0",
+      "value": "Source-specific evaluation. Input conditions: {}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-protocol-25210daa0dccd840d2fb",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.1.title",
+      "value": "BEELINE 2020 Figure 4 · GSD · {}: Early Precision Ratio",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-protocol-25210daa0dccd840d2fb",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.1.caveats.0",
+      "value": "Source-specific evaluation. Input conditions: {}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-protocol-25210daa0dccd840d2fb",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.2.title",
+      "value": "BEELINE 2020 Figure 4 · GSD · {}: EPR Activation",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-protocol-25210daa0dccd840d2fb",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.2.caveats.0",
+      "value": "Source-specific evaluation. Input conditions: {}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-protocol-25210daa0dccd840d2fb",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.3.title",
+      "value": "BEELINE 2020 Figure 4 · GSD · {}: EPR Inhibition",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-protocol-25210daa0dccd840d2fb",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.3.caveats.0",
+      "value": "Source-specific evaluation. Input conditions: {}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-protocol-2a8b0faaeabb2b42f8fb",
+      "kind": "protocol",
+      "path": "name",
+      "value": "BEELINE 2020 Figure 5 · hHep · {\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-2a8b0faaeabb2b42f8fb",
+      "kind": "protocol",
+      "path": "description",
+      "value": "Source-specific evaluation. Input conditions: {\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+1000\"}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-2a8b0faaeabb2b42f8fb",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.title",
+      "value": "BEELINE 2020 Figure 5 · hHep · {\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+1000\"}: Early Precision Ratio",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-2a8b0faaeabb2b42f8fb",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.caveats.0",
+      "value": "Source-specific evaluation. Input conditions: {\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+1000\"}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-30ca92be5250d3347718",
+      "kind": "protocol",
+      "path": "name",
+      "value": "BEELINE 2020 Figure 5 · hESC · {\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-30ca92be5250d3347718",
+      "kind": "protocol",
+      "path": "description",
+      "value": "Source-specific evaluation. Input conditions: {\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-30ca92be5250d3347718",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.title",
+      "value": "BEELINE 2020 Figure 5 · hESC · {\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}: Early Precision Ratio",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-30ca92be5250d3347718",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.caveats.0",
+      "value": "Source-specific evaluation. Input conditions: {\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-34109c3e92506dce8489",
+      "kind": "protocol",
+      "path": "name",
+      "value": "BEELINE 2020 Figure 5 · hHep · {\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-34109c3e92506dce8489",
+      "kind": "protocol",
+      "path": "description",
+      "value": "Source-specific evaluation. Input conditions: {\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-34109c3e92506dce8489",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.title",
+      "value": "BEELINE 2020 Figure 5 · hHep · {\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}: Early Precision Ratio",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-34109c3e92506dce8489",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.caveats.0",
+      "value": "Source-specific evaluation. Input conditions: {\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-37b5599b7d976211e8c1",
+      "kind": "protocol",
+      "path": "name",
+      "value": "BEELINE 2020 Figure 4 · VSC · {}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-protocol-37b5599b7d976211e8c1",
+      "kind": "protocol",
+      "path": "description",
+      "value": "Source-specific evaluation. Input conditions: {}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-protocol-37b5599b7d976211e8c1",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.title",
+      "value": "BEELINE 2020 Figure 4 · VSC · {}: AUPRC Ratio",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-protocol-37b5599b7d976211e8c1",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.caveats.0",
+      "value": "Source-specific evaluation. Input conditions: {}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-protocol-37b5599b7d976211e8c1",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.1.title",
+      "value": "BEELINE 2020 Figure 4 · VSC · {}: Early Precision Ratio",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-protocol-37b5599b7d976211e8c1",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.1.caveats.0",
+      "value": "Source-specific evaluation. Input conditions: {}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-protocol-37b5599b7d976211e8c1",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.2.title",
+      "value": "BEELINE 2020 Figure 4 · VSC · {}: EPR Inhibition",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-protocol-37b5599b7d976211e8c1",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.2.caveats.0",
+      "value": "Source-specific evaluation. Input conditions: {}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-protocol-3c4df1f88f28c01a7508",
+      "kind": "protocol",
+      "path": "name",
+      "value": "BEELINE 2020 Figure 5 · mDC · {\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-3c4df1f88f28c01a7508",
+      "kind": "protocol",
+      "path": "description",
+      "value": "Source-specific evaluation. Input conditions: {\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-3c4df1f88f28c01a7508",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.title",
+      "value": "BEELINE 2020 Figure 5 · mDC · {\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}: Early Precision Ratio",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-3c4df1f88f28c01a7508",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.caveats.0",
+      "value": "Source-specific evaluation. Input conditions: {\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-408cb9c598ef659f51a6",
+      "kind": "protocol",
+      "path": "name",
+      "value": "BEELINE 2020 Figure 5 · MHSC-GM · {\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-408cb9c598ef659f51a6",
+      "kind": "protocol",
+      "path": "description",
+      "value": "Source-specific evaluation. Input conditions: {\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-408cb9c598ef659f51a6",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.title",
+      "value": "BEELINE 2020 Figure 5 · MHSC-GM · {\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}: Early Precision Ratio",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-408cb9c598ef659f51a6",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.caveats.0",
+      "value": "Source-specific evaluation. Input conditions: {\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-4178cb595371e239c8fd",
+      "kind": "protocol",
+      "path": "name",
+      "value": "BEELINE 2020 Figure 5 · hHep · {\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-4178cb595371e239c8fd",
+      "kind": "protocol",
+      "path": "description",
+      "value": "Source-specific evaluation. Input conditions: {\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-4178cb595371e239c8fd",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.title",
+      "value": "BEELINE 2020 Figure 5 · hHep · {\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}: Early Precision Ratio",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-4178cb595371e239c8fd",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.caveats.0",
+      "value": "Source-specific evaluation. Input conditions: {\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-4745597f348c3ff0e85a",
+      "kind": "protocol",
+      "path": "name",
+      "value": "BEELINE 2020 Figure 5 · mDC · {\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-4745597f348c3ff0e85a",
+      "kind": "protocol",
+      "path": "description",
+      "value": "Source-specific evaluation. Input conditions: {\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-4745597f348c3ff0e85a",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.title",
+      "value": "BEELINE 2020 Figure 5 · mDC · {\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}: Early Precision Ratio",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-4745597f348c3ff0e85a",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.caveats.0",
+      "value": "Source-specific evaluation. Input conditions: {\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-51354be75f1492ed099a",
+      "kind": "protocol",
+      "path": "name",
+      "value": "BEELINE 2020 Figure 5 · mHSC-E · {\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-51354be75f1492ed099a",
+      "kind": "protocol",
+      "path": "description",
+      "value": "Source-specific evaluation. Input conditions: {\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-51354be75f1492ed099a",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.title",
+      "value": "BEELINE 2020 Figure 5 · mHSC-E · {\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}: Early Precision Ratio",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-51354be75f1492ed099a",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.caveats.0",
+      "value": "Source-specific evaluation. Input conditions: {\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-562a238b609a61077d81",
+      "kind": "protocol",
+      "path": "name",
+      "value": "BEELINE 2020 Figure 2 · BFC · {}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-protocol-562a238b609a61077d81",
+      "kind": "protocol",
+      "path": "description",
+      "value": "Source-specific evaluation. Input conditions: {}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-protocol-562a238b609a61077d81",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.title",
+      "value": "BEELINE 2020 Figure 2 · BFC · {}: AUPRC Ratio",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-protocol-562a238b609a61077d81",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.caveats.0",
+      "value": "Source-specific evaluation. Input conditions: {}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-protocol-562a238b609a61077d81",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.1.title",
+      "value": "BEELINE 2020 Figure 2 · BFC · {}: Stability Across Datasets",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-protocol-562a238b609a61077d81",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.1.caveats.0",
+      "value": "Source-specific evaluation. Input conditions: {}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-protocol-61ae01473c4e5c4a9ce5",
+      "kind": "protocol",
+      "path": "name",
+      "value": "BEELINE 2020 Figure 5 · mHSC-L · {\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-61ae01473c4e5c4a9ce5",
+      "kind": "protocol",
+      "path": "description",
+      "value": "Source-specific evaluation. Input conditions: {\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+500\"}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-61ae01473c4e5c4a9ce5",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.title",
+      "value": "BEELINE 2020 Figure 5 · mHSC-L · {\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+500\"}: Early Precision Ratio",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-61ae01473c4e5c4a9ce5",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.caveats.0",
+      "value": "Source-specific evaluation. Input conditions: {\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+500\"}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-6ddc5a89a2b4c4c474d7",
+      "kind": "protocol",
+      "path": "name",
+      "value": "BEELINE 2020 Figure 5 · hESC · {\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-6ddc5a89a2b4c4c474d7",
+      "kind": "protocol",
+      "path": "description",
+      "value": "Source-specific evaluation. Input conditions: {\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+500\"}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-6ddc5a89a2b4c4c474d7",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.title",
+      "value": "BEELINE 2020 Figure 5 · hESC · {\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+500\"}: Early Precision Ratio",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-6ddc5a89a2b4c4c474d7",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.caveats.0",
+      "value": "Source-specific evaluation. Input conditions: {\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+500\"}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-78f8093a50e8fca5eacc",
+      "kind": "protocol",
+      "path": "name",
+      "value": "BEELINE 2020 Figure 5 · mHSC-E · {\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-78f8093a50e8fca5eacc",
+      "kind": "protocol",
+      "path": "description",
+      "value": "Source-specific evaluation. Input conditions: {\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+500\"}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-78f8093a50e8fca5eacc",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.title",
+      "value": "BEELINE 2020 Figure 5 · mHSC-E · {\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+500\"}: Early Precision Ratio",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-78f8093a50e8fca5eacc",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.caveats.0",
+      "value": "Source-specific evaluation. Input conditions: {\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+500\"}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-7913b13aba9d987c38ae",
+      "kind": "protocol",
+      "path": "name",
+      "value": "BEELINE 2020 Figure 5 · mESC · {\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-7913b13aba9d987c38ae",
+      "kind": "protocol",
+      "path": "description",
+      "value": "Source-specific evaluation. Input conditions: {\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+500\"}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-7913b13aba9d987c38ae",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.title",
+      "value": "BEELINE 2020 Figure 5 · mESC · {\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+500\"}: Early Precision Ratio",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-7913b13aba9d987c38ae",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.caveats.0",
+      "value": "Source-specific evaluation. Input conditions: {\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+500\"}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-7977f5aa02ec0001bc1a",
+      "kind": "protocol",
+      "path": "name",
+      "value": "BEELINE 2020 Figure 5 · mHSC-L · {\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-7977f5aa02ec0001bc1a",
+      "kind": "protocol",
+      "path": "description",
+      "value": "Source-specific evaluation. Input conditions: {\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+1000\"}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-7977f5aa02ec0001bc1a",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.title",
+      "value": "BEELINE 2020 Figure 5 · mHSC-L · {\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+1000\"}: Early Precision Ratio",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-7977f5aa02ec0001bc1a",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.caveats.0",
+      "value": "Source-specific evaluation. Input conditions: {\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+1000\"}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-7f7b37c767904dd8a6fb",
+      "kind": "protocol",
+      "path": "name",
+      "value": "BEELINE 2020 Figure 5 · mESC · {\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-7f7b37c767904dd8a6fb",
+      "kind": "protocol",
+      "path": "description",
+      "value": "Source-specific evaluation. Input conditions: {\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-7f7b37c767904dd8a6fb",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.title",
+      "value": "BEELINE 2020 Figure 5 · mESC · {\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}: Early Precision Ratio",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-7f7b37c767904dd8a6fb",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.caveats.0",
+      "value": "Source-specific evaluation. Input conditions: {\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-81fdcee5288c3672584a",
+      "kind": "protocol",
+      "path": "name",
+      "value": "BEELINE 2020 Figure 5 · hHep · {\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-81fdcee5288c3672584a",
+      "kind": "protocol",
+      "path": "description",
+      "value": "Source-specific evaluation. Input conditions: {\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-81fdcee5288c3672584a",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.title",
+      "value": "BEELINE 2020 Figure 5 · hHep · {\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}: Early Precision Ratio",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-81fdcee5288c3672584a",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.caveats.0",
+      "value": "Source-specific evaluation. Input conditions: {\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-994c136cc78955a7777e",
+      "kind": "protocol",
+      "path": "name",
+      "value": "BEELINE 2020 Figure 5 · hHep · {\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-994c136cc78955a7777e",
+      "kind": "protocol",
+      "path": "description",
+      "value": "Source-specific evaluation. Input conditions: {\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+500\"}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-994c136cc78955a7777e",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.title",
+      "value": "BEELINE 2020 Figure 5 · hHep · {\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+500\"}: Early Precision Ratio",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-994c136cc78955a7777e",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.caveats.0",
+      "value": "Source-specific evaluation. Input conditions: {\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+500\"}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-a72274bbb664040489be",
+      "kind": "protocol",
+      "path": "name",
+      "value": "BEELINE 2020 Figure 5 · mDC · {\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-a72274bbb664040489be",
+      "kind": "protocol",
+      "path": "description",
+      "value": "Source-specific evaluation. Input conditions: {\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+1000\"}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-a72274bbb664040489be",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.title",
+      "value": "BEELINE 2020 Figure 5 · mDC · {\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+1000\"}: Early Precision Ratio",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-a72274bbb664040489be",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.caveats.0",
+      "value": "Source-specific evaluation. Input conditions: {\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+1000\"}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-a8f87266d6be53bbd23b",
+      "kind": "protocol",
+      "path": "name",
+      "value": "BEELINE 2020 Figure 5 · MHSC-GM · {\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-a8f87266d6be53bbd23b",
+      "kind": "protocol",
+      "path": "description",
+      "value": "Source-specific evaluation. Input conditions: {\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-a8f87266d6be53bbd23b",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.title",
+      "value": "BEELINE 2020 Figure 5 · MHSC-GM · {\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}: Early Precision Ratio",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-a8f87266d6be53bbd23b",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.caveats.0",
+      "value": "Source-specific evaluation. Input conditions: {\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-a930238c7acc35fd34ee",
+      "kind": "protocol",
+      "path": "name",
+      "value": "BEELINE 2020 Figure 5 · hESC · {\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-a930238c7acc35fd34ee",
+      "kind": "protocol",
+      "path": "description",
+      "value": "Source-specific evaluation. Input conditions: {\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-a930238c7acc35fd34ee",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.title",
+      "value": "BEELINE 2020 Figure 5 · hESC · {\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}: Early Precision Ratio",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-a930238c7acc35fd34ee",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.caveats.0",
+      "value": "Source-specific evaluation. Input conditions: {\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-a9a52bfc61cc00ae40eb",
+      "kind": "protocol",
+      "path": "name",
+      "value": "BEELINE 2020 Figure 5 · mHSC-E · {\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-a9a52bfc61cc00ae40eb",
+      "kind": "protocol",
+      "path": "description",
+      "value": "Source-specific evaluation. Input conditions: {\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+1000\"}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-a9a52bfc61cc00ae40eb",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.title",
+      "value": "BEELINE 2020 Figure 5 · mHSC-E · {\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+1000\"}: Early Precision Ratio",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-a9a52bfc61cc00ae40eb",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.caveats.0",
+      "value": "Source-specific evaluation. Input conditions: {\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+1000\"}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-b022aafcf374cd51f0f3",
+      "kind": "protocol",
+      "path": "name",
+      "value": "BEELINE 2020 Figure 5 · mHSC-E · {\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-b022aafcf374cd51f0f3",
+      "kind": "protocol",
+      "path": "description",
+      "value": "Source-specific evaluation. Input conditions: {\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-b022aafcf374cd51f0f3",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.title",
+      "value": "BEELINE 2020 Figure 5 · mHSC-E · {\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}: Early Precision Ratio",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-b022aafcf374cd51f0f3",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.caveats.0",
+      "value": "Source-specific evaluation. Input conditions: {\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-b1b289fa63273aa8bba2",
+      "kind": "protocol",
+      "path": "name",
+      "value": "BEELINE 2020 Figure 5 · mESC · {\"reference_network\":\"log/gof\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-b1b289fa63273aa8bba2",
+      "kind": "protocol",
+      "path": "description",
+      "value": "Source-specific evaluation. Input conditions: {\"reference_network\":\"log/gof\",\"gene_selection\":\"TFs+1000\"}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-b1b289fa63273aa8bba2",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.title",
+      "value": "BEELINE 2020 Figure 5 · mESC · {\"reference_network\":\"log/gof\",\"gene_selection\":\"TFs+1000\"}: Early Precision Ratio",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-b1b289fa63273aa8bba2",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.caveats.0",
+      "value": "Source-specific evaluation. Input conditions: {\"reference_network\":\"log/gof\",\"gene_selection\":\"TFs+1000\"}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-b3a78798ab8a7602a63a",
+      "kind": "protocol",
+      "path": "name",
+      "value": "BEELINE 2020 Figure 5 · hESC · {\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-b3a78798ab8a7602a63a",
+      "kind": "protocol",
+      "path": "description",
+      "value": "Source-specific evaluation. Input conditions: {\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+1000\"}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-b3a78798ab8a7602a63a",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.title",
+      "value": "BEELINE 2020 Figure 5 · hESC · {\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+1000\"}: Early Precision Ratio",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-b3a78798ab8a7602a63a",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.caveats.0",
+      "value": "Source-specific evaluation. Input conditions: {\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+1000\"}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-b614e3405917763fb159",
+      "kind": "protocol",
+      "path": "name",
+      "value": "BEELINE 2020 Figure 5 · mHSC-E · {\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-b614e3405917763fb159",
+      "kind": "protocol",
+      "path": "description",
+      "value": "Source-specific evaluation. Input conditions: {\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-b614e3405917763fb159",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.title",
+      "value": "BEELINE 2020 Figure 5 · mHSC-E · {\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}: Early Precision Ratio",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-b614e3405917763fb159",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.caveats.0",
+      "value": "Source-specific evaluation. Input conditions: {\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-b782c1901e3d8fb8348e",
+      "kind": "protocol",
+      "path": "name",
+      "value": "BEELINE 2020 Figure 5 · mDC · {\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-b782c1901e3d8fb8348e",
+      "kind": "protocol",
+      "path": "description",
+      "value": "Source-specific evaluation. Input conditions: {\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-b782c1901e3d8fb8348e",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.title",
+      "value": "BEELINE 2020 Figure 5 · mDC · {\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}: Early Precision Ratio",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-b782c1901e3d8fb8348e",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.caveats.0",
+      "value": "Source-specific evaluation. Input conditions: {\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-b7da29c68a46720cce0b",
+      "kind": "protocol",
+      "path": "name",
+      "value": "BEELINE 2020 Figure 5 · mESC · {\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-b7da29c68a46720cce0b",
+      "kind": "protocol",
+      "path": "description",
+      "value": "Source-specific evaluation. Input conditions: {\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+1000\"}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-b7da29c68a46720cce0b",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.title",
+      "value": "BEELINE 2020 Figure 5 · mESC · {\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+1000\"}: Early Precision Ratio",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-b7da29c68a46720cce0b",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.caveats.0",
+      "value": "Source-specific evaluation. Input conditions: {\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+1000\"}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-bd571aa3305cceba1f0b",
+      "kind": "protocol",
+      "path": "name",
+      "value": "BEELINE 2020 Figure 5 · mHSC-L · {\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-bd571aa3305cceba1f0b",
+      "kind": "protocol",
+      "path": "description",
+      "value": "Source-specific evaluation. Input conditions: {\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-bd571aa3305cceba1f0b",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.title",
+      "value": "BEELINE 2020 Figure 5 · mHSC-L · {\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}: Early Precision Ratio",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-bd571aa3305cceba1f0b",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.caveats.0",
+      "value": "Source-specific evaluation. Input conditions: {\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-bd9b01304308808a7b38",
+      "kind": "protocol",
+      "path": "name",
+      "value": "BEELINE 2020 Figure 5 · hESC · {\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-bd9b01304308808a7b38",
+      "kind": "protocol",
+      "path": "description",
+      "value": "Source-specific evaluation. Input conditions: {\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-bd9b01304308808a7b38",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.title",
+      "value": "BEELINE 2020 Figure 5 · hESC · {\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}: Early Precision Ratio",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-bd9b01304308808a7b38",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.caveats.0",
+      "value": "Source-specific evaluation. Input conditions: {\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-c57e646de930422fa536",
+      "kind": "protocol",
+      "path": "name",
+      "value": "BEELINE 2020 Figure 5 · MHSC-GM · {\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-c57e646de930422fa536",
+      "kind": "protocol",
+      "path": "description",
+      "value": "Source-specific evaluation. Input conditions: {\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+500\"}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-c57e646de930422fa536",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.title",
+      "value": "BEELINE 2020 Figure 5 · MHSC-GM · {\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+500\"}: Early Precision Ratio",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-c57e646de930422fa536",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.caveats.0",
+      "value": "Source-specific evaluation. Input conditions: {\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+500\"}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-c7f45d872952b996c96a",
+      "kind": "protocol",
+      "path": "name",
+      "value": "BEELINE 2020 Figure 4 · HSC · {}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-protocol-c7f45d872952b996c96a",
+      "kind": "protocol",
+      "path": "description",
+      "value": "Source-specific evaluation. Input conditions: {}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-protocol-c7f45d872952b996c96a",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.title",
+      "value": "BEELINE 2020 Figure 4 · HSC · {}: AUPRC Ratio",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-protocol-c7f45d872952b996c96a",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.caveats.0",
+      "value": "Source-specific evaluation. Input conditions: {}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-protocol-c7f45d872952b996c96a",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.1.title",
+      "value": "BEELINE 2020 Figure 4 · HSC · {}: Early Precision Ratio",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-protocol-c7f45d872952b996c96a",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.1.caveats.0",
+      "value": "Source-specific evaluation. Input conditions: {}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-protocol-c7f45d872952b996c96a",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.2.title",
+      "value": "BEELINE 2020 Figure 4 · HSC · {}: EPR Activation",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-protocol-c7f45d872952b996c96a",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.2.caveats.0",
+      "value": "Source-specific evaluation. Input conditions: {}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-protocol-c7f45d872952b996c96a",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.3.title",
+      "value": "BEELINE 2020 Figure 4 · HSC · {}: EPR Inhibition",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-protocol-c7f45d872952b996c96a",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.3.caveats.0",
+      "value": "Source-specific evaluation. Input conditions: {}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-protocol-c8cff8ffd3fbf524bf2e",
+      "kind": "protocol",
+      "path": "name",
+      "value": "BEELINE 2020 Figure 5 · MHSC-GM · {\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-c8cff8ffd3fbf524bf2e",
+      "kind": "protocol",
+      "path": "description",
+      "value": "Source-specific evaluation. Input conditions: {\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+1000\"}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-c8cff8ffd3fbf524bf2e",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.title",
+      "value": "BEELINE 2020 Figure 5 · MHSC-GM · {\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+1000\"}: Early Precision Ratio",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-c8cff8ffd3fbf524bf2e",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.caveats.0",
+      "value": "Source-specific evaluation. Input conditions: {\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+1000\"}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-ceaaa7b9d8af61e51736",
+      "kind": "protocol",
+      "path": "name",
+      "value": "BEELINE 2020 Figure 5 · MHSC-GM · {\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-ceaaa7b9d8af61e51736",
+      "kind": "protocol",
+      "path": "description",
+      "value": "Source-specific evaluation. Input conditions: {\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-ceaaa7b9d8af61e51736",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.title",
+      "value": "BEELINE 2020 Figure 5 · MHSC-GM · {\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}: Early Precision Ratio",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-ceaaa7b9d8af61e51736",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.caveats.0",
+      "value": "Source-specific evaluation. Input conditions: {\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-d60261afa2c58e4aa12e",
+      "kind": "protocol",
+      "path": "name",
+      "value": "BEELINE 2020 Figure 5 · mHSC-L · {\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-d60261afa2c58e4aa12e",
+      "kind": "protocol",
+      "path": "description",
+      "value": "Source-specific evaluation. Input conditions: {\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-d60261afa2c58e4aa12e",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.title",
+      "value": "BEELINE 2020 Figure 5 · mHSC-L · {\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}: Early Precision Ratio",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-d60261afa2c58e4aa12e",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.caveats.0",
+      "value": "Source-specific evaluation. Input conditions: {\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-d66bbf2b3dd743f2db47",
+      "kind": "protocol",
+      "path": "name",
+      "value": "BEELINE 2020 Figure 2 · LL · {}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-protocol-d66bbf2b3dd743f2db47",
+      "kind": "protocol",
+      "path": "description",
+      "value": "Source-specific evaluation. Input conditions: {}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-protocol-d66bbf2b3dd743f2db47",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.title",
+      "value": "BEELINE 2020 Figure 2 · LL · {}: AUPRC Ratio",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-protocol-d66bbf2b3dd743f2db47",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.caveats.0",
+      "value": "Source-specific evaluation. Input conditions: {}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-protocol-d66bbf2b3dd743f2db47",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.1.title",
+      "value": "BEELINE 2020 Figure 2 · LL · {}: Stability Across Datasets",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-protocol-d66bbf2b3dd743f2db47",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.1.caveats.0",
+      "value": "Source-specific evaluation. Input conditions: {}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-protocol-dc2ce864a7578927cabc",
+      "kind": "protocol",
+      "path": "name",
+      "value": "BEELINE 2020 Figure 5 · mESC · {\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-dc2ce864a7578927cabc",
+      "kind": "protocol",
+      "path": "description",
+      "value": "Source-specific evaluation. Input conditions: {\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-dc2ce864a7578927cabc",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.title",
+      "value": "BEELINE 2020 Figure 5 · mESC · {\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}: Early Precision Ratio",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-dc2ce864a7578927cabc",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.caveats.0",
+      "value": "Source-specific evaluation. Input conditions: {\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-e0ffaca06ad1222ac21e",
+      "kind": "protocol",
+      "path": "name",
+      "value": "BEELINE 2020 Figure 5 · hHep · {\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-e0ffaca06ad1222ac21e",
+      "kind": "protocol",
+      "path": "description",
+      "value": "Source-specific evaluation. Input conditions: {\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-e0ffaca06ad1222ac21e",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.title",
+      "value": "BEELINE 2020 Figure 5 · hHep · {\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}: Early Precision Ratio",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-e0ffaca06ad1222ac21e",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.caveats.0",
+      "value": "Source-specific evaluation. Input conditions: {\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-eceec78306355eece4e7",
+      "kind": "protocol",
+      "path": "name",
+      "value": "BEELINE 2020 Figure 5 · hESC · {\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-eceec78306355eece4e7",
+      "kind": "protocol",
+      "path": "description",
+      "value": "Source-specific evaluation. Input conditions: {\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-eceec78306355eece4e7",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.title",
+      "value": "BEELINE 2020 Figure 5 · hESC · {\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}: Early Precision Ratio",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-eceec78306355eece4e7",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.caveats.0",
+      "value": "Source-specific evaluation. Input conditions: {\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-ed61833eb749ba711c5b",
+      "kind": "protocol",
+      "path": "name",
+      "value": "BEELINE 2020 Figure 5 · mHSC-L · {\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-ed61833eb749ba711c5b",
+      "kind": "protocol",
+      "path": "description",
+      "value": "Source-specific evaluation. Input conditions: {\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-ed61833eb749ba711c5b",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.title",
+      "value": "BEELINE 2020 Figure 5 · mHSC-L · {\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}: Early Precision Ratio",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-ed61833eb749ba711c5b",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.caveats.0",
+      "value": "Source-specific evaluation. Input conditions: {\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-edb7d264956f89df17fc",
+      "kind": "protocol",
+      "path": "name",
+      "value": "BEELINE 2020 Figure 5 · mDC · {\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-edb7d264956f89df17fc",
+      "kind": "protocol",
+      "path": "description",
+      "value": "Source-specific evaluation. Input conditions: {\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+500\"}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-edb7d264956f89df17fc",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.title",
+      "value": "BEELINE 2020 Figure 5 · mDC · {\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+500\"}: Early Precision Ratio",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-edb7d264956f89df17fc",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.caveats.0",
+      "value": "Source-specific evaluation. Input conditions: {\"reference_network\":\"STRING\",\"gene_selection\":\"TFs+500\"}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-f4f5a4cb785dc55503bb",
+      "kind": "protocol",
+      "path": "name",
+      "value": "BEELINE 2020 Figure 5 · mHSC-E · {\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-f4f5a4cb785dc55503bb",
+      "kind": "protocol",
+      "path": "description",
+      "value": "Source-specific evaluation. Input conditions: {\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-f4f5a4cb785dc55503bb",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.title",
+      "value": "BEELINE 2020 Figure 5 · mHSC-E · {\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}: Early Precision Ratio",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-f4f5a4cb785dc55503bb",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.caveats.0",
+      "value": "Source-specific evaluation. Input conditions: {\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-f6bd2f323f0f81692075",
+      "kind": "protocol",
+      "path": "name",
+      "value": "BEELINE 2020 Figure 5 · MHSC-GM · {\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-f6bd2f323f0f81692075",
+      "kind": "protocol",
+      "path": "description",
+      "value": "Source-specific evaluation. Input conditions: {\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-f6bd2f323f0f81692075",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.title",
+      "value": "BEELINE 2020 Figure 5 · MHSC-GM · {\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}: Early Precision Ratio",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-f6bd2f323f0f81692075",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.caveats.0",
+      "value": "Source-specific evaluation. Input conditions: {\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-f6bf921e477601ffffec",
+      "kind": "protocol",
+      "path": "name",
+      "value": "BEELINE 2020 Figure 4 · mCAD · {}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-protocol-f6bf921e477601ffffec",
+      "kind": "protocol",
+      "path": "description",
+      "value": "Source-specific evaluation. Input conditions: {}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-protocol-f6bf921e477601ffffec",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.title",
+      "value": "BEELINE 2020 Figure 4 · mCAD · {}: AUPRC Ratio",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-protocol-f6bf921e477601ffffec",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.caveats.0",
+      "value": "Source-specific evaluation. Input conditions: {}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-protocol-f6bf921e477601ffffec",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.1.title",
+      "value": "BEELINE 2020 Figure 4 · mCAD · {}: Early Precision Ratio",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-protocol-f6bf921e477601ffffec",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.1.caveats.0",
+      "value": "Source-specific evaluation. Input conditions: {}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-protocol-f6bf921e477601ffffec",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.2.title",
+      "value": "BEELINE 2020 Figure 4 · mCAD · {}: EPR Activation",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-protocol-f6bf921e477601ffffec",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.2.caveats.0",
+      "value": "Source-specific evaluation. Input conditions: {}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-protocol-f6bf921e477601ffffec",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.3.title",
+      "value": "BEELINE 2020 Figure 4 · mCAD · {}: EPR Inhibition",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-protocol-f6bf921e477601ffffec",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.3.caveats.0",
+      "value": "Source-specific evaluation. Input conditions: {}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-protocol-f7ef0c77a6155a1ff0d4",
+      "kind": "protocol",
+      "path": "name",
+      "value": "BEELINE 2020 Figure 5 · mHSC-L · {\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-f7ef0c77a6155a1ff0d4",
+      "kind": "protocol",
+      "path": "description",
+      "value": "Source-specific evaluation. Input conditions: {\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-f7ef0c77a6155a1ff0d4",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.title",
+      "value": "BEELINE 2020 Figure 5 · mHSC-L · {\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}: Early Precision Ratio",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-f7ef0c77a6155a1ff0d4",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.caveats.0",
+      "value": "Source-specific evaluation. Input conditions: {\"reference_network\":\"Cell-type specific ChIP-Seq\",\"gene_selection\":\"TFs+500\"}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-fabd886c5f7a9dbfdbab",
+      "kind": "protocol",
+      "path": "name",
+      "value": "BEELINE 2020 Figure 2 · BF · {}",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-protocol-fabd886c5f7a9dbfdbab",
+      "kind": "protocol",
+      "path": "description",
+      "value": "Source-specific evaluation. Input conditions: {}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-protocol-fabd886c5f7a9dbfdbab",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.title",
+      "value": "BEELINE 2020 Figure 2 · BF · {}: AUPRC Ratio",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-protocol-fabd886c5f7a9dbfdbab",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.caveats.0",
+      "value": "Source-specific evaluation. Input conditions: {}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-protocol-fabd886c5f7a9dbfdbab",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.1.title",
+      "value": "BEELINE 2020 Figure 2 · BF · {}: Stability Across Datasets",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-protocol-fabd886c5f7a9dbfdbab",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.1.caveats.0",
+      "value": "Source-specific evaluation. Input conditions: {}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "empty-condition"
+    },
+    {
+      "record_id": "acquired-protocol-fbb04bf73e09481732c8",
+      "kind": "protocol",
+      "path": "name",
+      "value": "BEELINE 2020 Figure 5 · mESC · {\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-fbb04bf73e09481732c8",
+      "kind": "protocol",
+      "path": "description",
+      "value": "Source-specific evaluation. Input conditions: {\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-fbb04bf73e09481732c8",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.title",
+      "value": "BEELINE 2020 Figure 5 · mESC · {\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}: Early Precision Ratio",
+      "form": "populated-condition"
+    },
+    {
+      "record_id": "acquired-protocol-fbb04bf73e09481732c8",
+      "kind": "protocol",
+      "path": "attributes.comparison_panels.0.caveats.0",
+      "value": "Source-specific evaluation. Input conditions: {\"reference_network\":\"Non-specific ChIP-Seq\",\"gene_selection\":\"TFs+1000\"}. No equivalence to other releases, protocols or model families is inferred.",
+      "form": "populated-condition"
+    }
+  ],
+  "empty_objects": [
+    {
+      "record_id": "rewire-local-20260920-configuration-proteingym-esm2",
+      "kind": "configuration",
+      "path": "attributes.packages"
+    },
+    {
+      "record_id": "rewire-mfass-v1",
+      "kind": "protocol",
+      "path": "attributes.historical_missing_metadata"
+    },
+    {
+      "record_id": "rewire-mfass-v2",
+      "kind": "protocol",
+      "path": "attributes.historical_missing_metadata"
+    },
+    {
+      "record_id": "rewire-mfass-v2-dataset",
+      "kind": "dataset",
+      "path": "attributes.missing_metadata"
+    },
+    {
+      "record_id": "rewire-model-baseline-kmer-position-v2",
+      "kind": "configuration",
+      "path": "attributes.historical_missing_metadata"
+    },
+    {
+      "record_id": "rewire-model-dnabert2-117m-frozen-pair-logreg",
+      "kind": "pipeline",
+      "path": "attributes.historical_missing_metadata"
+    },
+    {
+      "record_id": "rewire-model-pangolin-maskfalse",
+      "kind": "configuration",
+      "path": "attributes.historical_missing_metadata"
+    },
+    {
+      "record_id": "rewire-model-spliceai-1-3-1",
+      "kind": "configuration",
+      "path": "attributes.historical_missing_metadata"
+    }
+  ],
+  "valid_undefined_measurements": [
+    {
+      "record_id": "rewire-local-20260920-result-flip2-train-mean-spearman",
+      "printed_value": "undefined",
+      "undefined_reason": "Undefined correlation for constant targets or predictions"
+    },
+    {
+      "record_id": "rewire-local-20260920-result-mrnabench-train-mean-pearson",
+      "printed_value": "undefined",
+      "undefined_reason": "Fewer than two scored rows or constant values"
+    },
+    {
+      "record_id": "rewire-local-20260920-result-mrnabench-train-mean-spearman",
+      "printed_value": "undefined",
+      "undefined_reason": "Fewer than two scored rows or constant values"
+    }
+  ],
+  "integrity_issues": [],
+  "interpretation": "Condition strings, narrative evidence arrays and blank empty objects are source-confirmed presentation cases. Technical arrays/objects and raw code/evidence are not inherently errors. All CSV statuses describe this pattern/type audit, not full scientific or browser validation."
+}

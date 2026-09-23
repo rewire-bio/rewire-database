@@ -1,4 +1,5 @@
 "use client";
+import { catalogueText } from "@/lib/catalogue-text";
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import {
@@ -359,12 +360,14 @@ export default function Explorer({
               <Link
                 href={`${recordHref(record)}?return_to=${encodeURIComponent(returnTo)}`}
               >
-                {record.name}
+                {catalogueText(record.name)}
               </Link>
             </h2>
             <p className={ui.description}>
-              {(record.attributes.profile as { summary?: string } | undefined)
-                ?.summary || record.description}
+              {catalogueText(
+                (record.attributes.profile as { summary?: string } | undefined)
+                  ?.summary || record.description,
+              )}
             </p>
             {record.kind === "result" && (
               <>

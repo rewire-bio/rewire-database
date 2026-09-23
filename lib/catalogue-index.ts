@@ -1,3 +1,4 @@
+import { catalogueText } from "./catalogue-text";
 import type { Metadata } from "next";
 import type { OmicsRecord } from "./omics";
 
@@ -34,5 +35,5 @@ export function indexMetadata(kind: IndexKind, page = 1): Metadata {
 }
 export function indexSummary(record: OmicsRecord) {
   const profile = record.attributes.profile as { summary?: unknown } | undefined;
-  return typeof profile?.summary === "string" && profile.summary.trim() ? profile.summary : record.description || "Read the profile for available evidence and documented gaps.";
+  return catalogueText(typeof profile?.summary === "string" && profile.summary.trim() ? profile.summary : record.description || "Read the profile for available evidence and documented gaps.");
 }

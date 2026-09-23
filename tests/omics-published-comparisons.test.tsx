@@ -101,14 +101,16 @@ describe("source-scoped comparison figures", () => {
     expect(panels[0].rows).toHaveLength(30);
     expect(panels[0].rows[29].origin).toBe("paper_compilation");
     const html = renderToStaticMarkup(<BenchmarkCharts panels={panels} />);
-    expect(html).toContain("/database/model/model-11");
-    expect(html).not.toContain("/database/model/model-29");
+    expect(html).toContain("/database/model/model-29");
+    expect(html).not.toContain("/database/model/model-17");
     expect(html).toContain("Show all 30");
-    expect(html).toContain("/database/result/result-11");
+    expect(html).toContain("/database/result/result-18");
     expect(panels[0].rows[29].result.id).toBe("result-29");
     expect(html).toContain('role="img"');
-    expect(html).toContain("Source order is preserved");
-    expect(html).toContain("-0.16666666666666666");
+    expect(html).toContain("Highest scores first.");
+    expect(panels[0].rows[0].result.attributes.printed_value).toBe(
+      "-0.16666666666666666",
+    );
   });
   it.each(["metric", "unit", "metric_direction"])(
     "rejects incompatible %s",
@@ -194,10 +196,19 @@ describe("comparison missingness and evidence safeguards", () => {
     })!.published_comparisons;
     expect(panels[0].rows).toHaveLength(30);
     const html = renderToStaticMarkup(<BenchmarkCharts panels={panels} />);
-    expect(html.match(/role="img"/g)).toHaveLength(11);
+    expect(html.match(/role="img"/g)).toHaveLength(12);
     expect(html).toContain("Show all 30");
-    expect(html).toContain("N/A");
+    expect(html).not.toContain("N/A");
     expect(html).toContain("1 unavailable values");
+    const smallPanel = { ...panels[0], rows: panels[0].rows.slice(0, 3) };
+    const smallHtml = renderToStaticMarkup(
+      <BenchmarkCharts panels={[smallPanel]} />,
+    );
+    expect(smallHtml.match(/role="img"/g)).toHaveLength(2);
+    expect(smallHtml).toContain("N/A");
+    expect(smallHtml.indexOf("/database/result/result-0")).toBeGreaterThan(
+      smallHtml.indexOf("/database/result/result-1"),
+    );
   });
   it.each(["superseded", "disputed", "excluded"])(
     "rejects a %s evaluation even when the score is checked",
@@ -415,7 +426,7 @@ describe("source-scoped comparison view", () => {
     const html = renderToStaticMarkup(
       <BenchmarkCharts panels={detail.published_comparisons} />,
     );
-    expect(html).toContain("Source order is preserved");
+    expect(html).toContain("Highest scores first.");
     expect(html).not.toContain("Pooled by metric");
     expect(html).toContain("without a pooled ranking");
   });

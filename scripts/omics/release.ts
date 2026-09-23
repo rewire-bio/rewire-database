@@ -399,6 +399,7 @@ function main() {
               "Count reviewed metrics from the same source evaluation setup together, retaining all original record IDs and links.",
               "Load individual source-scoped charts, remove cross-protocol pooled rankings, and move findings before detailed instructions.",
               "Review 69 selected profile facts across 18 profiles against pinned primary sources, including exact configuration, split, coverage and uncertainty distinctions. Preserve every result value and keep unresolved metadata explicit.",
+              "Add two bounded ProteinGym protocol profiles with 24 sourced facts, distinguishing the 217-assay track from one complete AMFR assay. Preserve numerical results, source-authentication gaps and independent-reproduction limits.",
               "Preserve archived release bytes, historical URLs and MFASS history. Contribution intake remains controlled separately from catalogue publication.",
             ],
           }

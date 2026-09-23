@@ -1,13 +1,18 @@
 # Activate SDK submissions
 
-This change prepares live intake; it does not certify that production authentication,
-IAM or backups have been configured. Keep both intake flags false until the
-intake checks below pass. Firebase Auth sends sign-in links independently of the
-notification worker. Custom receipt and review emails may remain paused with
-`OMICS_MAIL_ENABLED=false` while contributors track submissions on the website.
-Scientific publication still requires a reviewed dataset release.
+Current status, verified 23 September 2026: production intake and the contribution
+page are enabled. All ten existing SDK submissions are published review items
+linked to release `2026-09-22-f58a0f1d267f`, following reviewed PR #24. Read-only
+owner and curator API checks confirm their identities and source bundles.
+Notification email remains paused (`OMICS_MAIL_ENABLED=false`). No delivery is
+claimed. Firebase sign-in emails are separate from contribution notifications.
 
-## Prerequisites before merging and deploying
+See [the dated recovery verification](submission-recovery-2026-09-23.md) for
+executed checks and limits. The setup instructions below describe a new deployment
+or recovery; they are not an instruction to disable the functioning service.
+Scientific publication always requires a reviewed dataset release.
+
+## Initial setup prerequisites (already deployed)
 
 The new scheduled function is declared even when `OMICS_MAIL_ENABLED=false`.
 Provision its service account **before merging**: main deploys the whole
@@ -61,8 +66,8 @@ Repository variables configure the reviewed deployment:
 
 | Variable | Value |
 | --- | --- |
-| `OMICS_CONTRIBUTIONS_ENABLED` | `false` initially, then `true` after readiness checks |
-| `NEXT_PUBLIC_OMICS_CONTRIBUTIONS_ENABLED` | `false` initially, then `true` for the public sign-in page |
+| `OMICS_CONTRIBUTIONS_ENABLED` | `true` in production; `false` only for initial setup or a reviewed maintenance pause |
+| `NEXT_PUBLIC_OMICS_CONTRIBUTIONS_ENABLED` | `true` in production |
 | `OMICS_MAIL_ENABLED` | `false` during initial intake; independently enable after a controlled delivery test |
 | `NEXT_PUBLIC_FIREBASE_PROJECT_ID` | `rewire-it` |
 | `NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN` | `rewire-it.firebaseapp.com` |
@@ -85,7 +90,7 @@ crash after claiming a message is parked for curator review rather than retried.
 Definite temporary rejections use bounded backoff; permanent errors are reported.
 Check the sender's Sent folder before any manual retry of an uncertain message.
 
-## Acceptance and first submissions
+## Initial activation procedure and current evidence
 
 - Run root tests, lint, typecheck, build and export checks; service tests under
   Auth/Firestore emulators; and the released wheel's cross-language integration
@@ -108,8 +113,10 @@ Check the sender's Sent folder before any manual retry of an uncertain message.
   successful intake. Do not put tokens or email bodies in public receipts.
 - Submit the remaining queued audited bundles with the same retry discipline. Link
   their IDs privately to database PR #24 and its proposed evaluation IDs. Curator
-  notes must prevent those same evaluations being imported a second time. Leave
-  all contributions pending review; this activation does not merge scientific results.
+  notes must prevent those same evaluations being imported a second time. Initial activation left
+  them pending review. Subsequent PR #24 published the ten reviewed evaluations;
+  authenticated curator transitions then associated the existing private items
+  with exact released IDs. Do not resubmit them.
 
 ## Rollback
 

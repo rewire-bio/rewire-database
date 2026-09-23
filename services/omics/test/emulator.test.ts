@@ -1203,3 +1203,78 @@ emulatorTest(
     assert.equal((await ref.get()).data()?.attempts, 1);
   },
 );
+
+emulatorTest("disabled intake and private recovery preserve API ownership, review, idempotency and paused mail", async () => {
+  assert.ok(project.startsWith("demo-"), "Recovery drill must use an isolated demo project");
+  const { deployedContributionHttpHandler } = await import("../src/http-handler.js");
+  const { backupPrivate, restorePrivate, privateCollections } = await import("../src/private-backup.js");
+  const { mkdtemp, readFile, rm, stat } = await import("node:fs/promises");
+  const { tmpdir } = await import("node:os");
+  const { join } = await import("node:path");
+  const { sdkBundle } = await import("./fixtures.js");
+  const previousIntake = process.env.OMICS_CONTRIBUTIONS_ENABLED;
+  const previousMail = process.env.OMICS_MAIL_ENABLED;
+  process.env.OMICS_CONTRIBUTIONS_ENABLED = "true";
+  process.env.OMICS_MAIL_ENABLED = "false";
+  const server = createServer(deployedContributionHttpHandler);
+  await new Promise<void>(resolve => server.listen(0, "127.0.0.1", resolve));
+  const endpoint = `http://127.0.0.1:${(server.address() as { port: number }).port}/api/trpc`;
+  const dir = await mkdtemp(join(tmpdir(), "rewire-recovery-drill-"));
+  const file = join(dir, "private.json");
+  try {
+    const owner = await signIn(), other = await signIn(), reviewer = await signIn();
+    await firebase().auth.setCustomUserClaims(reviewer.uid, { curator: true });
+    const verifiedReviewer = await signIn(reviewer.email);
+    const client = (token: string) => createTRPCClient<AppRouter>({ links: [httpLink({ url: endpoint, headers: { authorization: `Bearer ${token}` } })] });
+    const own = client(owner.token), foreign = client(other.token), curator = client(verifiedReviewer.token);
+    const payload = {
+      contribution: { type: "result" as const, title: "Synthetic recovery evaluation", summary: "Synthetic partial evaluation used only by the local recovery drill.", source_urls: ["https://example.org/recovery-evidence"], public_credit: false,
+        details: { model: "Synthetic private model", benchmark: "MFASS", protocol: "mfass-v2", metric: "AUROC", value: "0.77", source_locator: "Synthetic fixture", rewire_bundle: { ...sdkBundle, scope: "subset", completion: "partial", coverage: { denominator: 100, scored: 90, unscored: 10 } } } },
+      idempotencyKey: randomUUID(),
+    };
+    const created = await own.submission.create.mutate(payload);
+    await curator.curator.transition.mutate({ id: created.id, status: "in_review", note: "Synthetic recovery review only; no publication." });
+    const before = await own.submission.get.query({ id: created.id });
+    const snapshot = fixture();
+    const bytes = Buffer.from(JSON.stringify(snapshot));
+    await importRelease(firebase().db, bytes, { release_id: snapshot.release_id, schema_version: snapshot.schema_version, catalogue_sha256: createHash("sha256").update(bytes).digest("hex") });
+    await activateRelease(firebase().db, snapshot.release_id);
+    process.env.OMICS_CONTRIBUTIONS_ENABLED = "false";
+    for (const name of ["submission.list", "curator.list"]) {
+      const response = await fetch(`${endpoint}/${name}?input=%7B%7D`, { headers: { authorization: `Bearer ${owner.token}` } });
+      assert.equal(response.status, 503); assert.equal(response.headers.get("cache-control"), "no-store");
+    }
+    const denied = await fetch(`${endpoint}/submission.create`, { method: "POST", headers: { "content-type": "application/json", authorization: `Bearer ${owner.token}` }, body: JSON.stringify(payload) });
+    assert.equal(denied.status, 503);
+    assert.equal((await fetch(`${endpoint}/catalogue.release?input=%7B%7D`)).status, 200);
+    const saved = await backupPrivate(firebase().db, project, file);
+    assert.equal((await stat(dir)).mode & 0o777, 0o700);
+    const content = await readFile(file, "utf8");
+    assert.equal(content.includes("catalogueReleases"), false);
+    // Destructive simulation is confined to synthetic data in the demo emulator.
+    for (const collection of privateCollections) await firebase().db.recursiveDelete(firebase().db.collection(collection));
+    const restored = await restorePrivate(firebase().db, project, file);
+    assert.equal(restored.documents, saved.documents);
+    assert.equal((await fetch(`${endpoint}/catalogue.release?input=%7B%7D`)).status, 200);
+    process.env.OMICS_CONTRIBUTIONS_ENABLED = "true";
+    const recovered = await own.submission.get.query({ id: created.id });
+    assert.deepEqual(recovered, before);
+    assert.equal((recovered.details.rewire_bundle as any).completion, "partial");
+    await assert.rejects(foreign.submission.get.query({ id: created.id }), /not found/i);
+    assert.equal((await curator.curator.list.query({})).items[0].status, "in_review");
+    const outboxBefore = await firebase().db.collection("privateOutbox").get();
+    const retry = await own.submission.create.mutate(payload);
+    assert.deepEqual(retry, { id: created.id, status: "in_review" });
+    assert.equal((await firebase().db.collection("privateSubmissions").get()).size, 1);
+    assert.equal((await firebase().db.collection("privateOutbox").get()).size, outboxBefore.size);
+    assert.ok(outboxBefore.docs.every(d => d.data().state === "pending" && d.data().attempts === 0));
+    await assert.rejects(own.submission.create.mutate({ ...payload, contribution: { ...payload.contribution, title: "Changed payload" } }), /idempotency/);
+    assert.equal((await firebase().db.collection("catalogueReleases").doc(snapshot.release_id).collection("records").get()).docs.some(d => JSON.stringify(d.data()).includes(created.id)), false);
+    assert.equal(process.env.OMICS_MAIL_ENABLED, "false");
+  } finally {
+    if (previousIntake === undefined) delete process.env.OMICS_CONTRIBUTIONS_ENABLED; else process.env.OMICS_CONTRIBUTIONS_ENABLED = previousIntake;
+    if (previousMail === undefined) delete process.env.OMICS_MAIL_ENABLED; else process.env.OMICS_MAIL_ENABLED = previousMail;
+    server.closeAllConnections(); await new Promise<void>(resolve => server.close(() => resolve()));
+    await rm(dir, { recursive: true, force: true });
+  }
+});

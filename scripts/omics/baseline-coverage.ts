@@ -71,7 +71,7 @@ export function baselineAuditFiles(
   };
   const manifest = {
     schema_version: "1.0",
-    audit_version: 1,
+    audit_version: 2,
     release_id: catalogue.release_id,
     release_date: catalogue.released_at,
     publication_status: publicationStatus,

@@ -11,6 +11,24 @@
     "trailingSlash": true,
     "headers": [
       {
+        "source": "/_analytics/**",
+        "headers": [
+          {"key":"Content-Security-Policy", "value":"frame-ancestors https://benchmarks.rewire.it"},
+          {
+            "key": "Cache-Control",
+            "value": "no-store"
+          },
+          {
+            "key": "Referrer-Policy",
+            "value": "no-referrer"
+          },
+          {
+            "key": "X-Robots-Tag",
+            "value": "noindex, nofollow"
+          }
+        ]
+      },
+      {
         "source": "/icon",
         "headers": [
           {
@@ -101,6 +119,7 @@
         "*debug.log",
         ".env",
         ".env.*",
+        ".secret.local",
         ".git",
         ".firebase"
       ]

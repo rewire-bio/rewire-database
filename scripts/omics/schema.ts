@@ -8,6 +8,8 @@ import { createCatalogueQuery } from "../../services/omics/src/catalogue-query";
 import { validateBenchmarkResearch } from "../../services/omics/src/benchmark-research";
 import {
   entityKinds,
+  catalogueRelations,
+  validateDatasetReuseLink,
   modelSubjectKinds,
   benchmarkSubjectKinds,
   datasetSubjectKinds,
@@ -33,7 +35,13 @@ export const recordSchema = z
     facets: z.record(z.string(), z.array(z.string())),
     source_ids: z.array(z.string()),
     links: z.array(
-      z.object({ relation: z.string().min(1), target_id: z.string().min(1) }),
+      z.object({
+        relation: z.string().refine(
+          value => (catalogueRelations as readonly string[]).includes(value),
+          "Unknown catalogue relationship",
+        ),
+        target_id: z.string().min(1),
+      }),
     ),
     attributes: z.record(z.string(), z.unknown()),
   })
@@ -55,6 +63,7 @@ export function validateRecords(input: unknown[]): RecordEntry[] {
     for (const l of r.links) {
       if (!byId.has(l.target_id))
         throw new Error(`Dangling ${r.id} -> ${l.target_id}`);
+      validateDatasetReuseLink(r, l, byId.get(l.target_id)!);
       if (
         !(r.kind === "result" && l.relation === "evaluation") &&
         (entityKinds as readonly string[]).includes(l.relation) &&

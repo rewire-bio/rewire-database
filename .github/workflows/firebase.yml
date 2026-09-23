@@ -35,9 +35,23 @@ jobs:
       - run: npm ci
       - run: npm test
       - run: npm run lint
-      - run: npm run build
+      - name: Validate contribution configuration and build website
+        run: node scripts/check-analytics-config.mjs && node scripts/configure-contribution-deployment.mjs --validate-only && npm run build
+        env:
+          FIREBASE_PROJECT_ID: ${{ vars.FIREBASE_PROJECT_ID }}
+          OMICS_CONTRIBUTIONS_ENABLED: ${{ vars.OMICS_CONTRIBUTIONS_ENABLED || 'false' }}
+          NEXT_PUBLIC_OMICS_CONTRIBUTIONS_ENABLED: ${{ vars.NEXT_PUBLIC_OMICS_CONTRIBUTIONS_ENABLED || 'false' }}
+          OMICS_MAIL_ENABLED: ${{ vars.OMICS_MAIL_ENABLED || 'false' }}
+          NEXT_PUBLIC_FIREBASE_API_KEY: ${{ vars.NEXT_PUBLIC_FIREBASE_API_KEY }}
+          NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: ${{ vars.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN }}
+          NEXT_PUBLIC_FIREBASE_PROJECT_ID: ${{ vars.NEXT_PUBLIC_FIREBASE_PROJECT_ID }}
+          NEXT_PUBLIC_FIREBASE_APP_ID: ${{ vars.NEXT_PUBLIC_FIREBASE_APP_ID }}
+          NEXT_PUBLIC_GA_ID: ${{ vars.NEXT_PUBLIC_GA_ID }}
       - run: npm run typecheck
       - run: npm run check:export
+        env:
+          NEXT_PUBLIC_GA_ID: ${{ vars.NEXT_PUBLIC_GA_ID }}
+          NEXT_PUBLIC_OMICS_CONTRIBUTIONS_ENABLED: ${{ vars.NEXT_PUBLIC_OMICS_CONTRIBUTIONS_ENABLED || 'false' }}
       - name: Verify Firebase HTTP routing
         run: npx firebase emulators:exec --project demo-rewire-omics --only hosting 'npm run check:http'
       - uses: actions/setup-java@v4
@@ -45,7 +59,7 @@ jobs:
           distribution: temurin
           java-version: '21'
       - name: Install and build the API
-        run: npm ci --prefix services/omics && npm --prefix services/omics run build
+        run: npm ci --prefix services/omics && npm --prefix services/omics run build && npm --prefix services/omics run check:functions:load
       - name: Verify Hosting and API integration
         run: npx firebase emulators:exec --project demo-rewire-omics --only hosting,functions,auth,firestore 'npm --prefix services/omics test && node scripts/check-api-hosting.mjs'
       - name: Authenticate to Google
@@ -56,12 +70,20 @@ jobs:
           service_account: ${{ vars.GCP_DEPLOY_SERVICE_ACCOUNT }}
       - name: Deploy reviewed API and private Firestore rules
         if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && vars.FIREBASE_DEPLOY_ENABLED == 'true' && vars.FIREBASE_BACKEND_DEPLOY_ENABLED == 'true'
-        run: npx firebase deploy --only functions:omics,firestore --project "$FIREBASE_PROJECT_ID" --non-interactive
+        run: |
+          node scripts/configure-contribution-deployment.mjs
+          npx firebase deploy --only functions:omics,firestore --project "$FIREBASE_PROJECT_ID" --non-interactive
         env:
           FIREBASE_PROJECT_ID: ${{ vars.FIREBASE_PROJECT_ID }}
+          OMICS_CONTRIBUTIONS_ENABLED: ${{ vars.OMICS_CONTRIBUTIONS_ENABLED || 'false' }}
+          OMICS_MAIL_ENABLED: ${{ vars.OMICS_MAIL_ENABLED || 'false' }}
       - name: Publish catalogue and website with rollback
         if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && vars.FIREBASE_DEPLOY_ENABLED == 'true' && vars.FIREBASE_BACKEND_DEPLOY_ENABLED == 'true'
         run: node scripts/deploy-catalogue.mjs
         env:
           GCLOUD_PROJECT: ${{ vars.FIREBASE_PROJECT_ID }}
           NODE_ENV: production
+          OMICS_CONTRIBUTIONS_ENABLED: ${{ vars.OMICS_CONTRIBUTIONS_ENABLED || 'false' }}
+      - name: Remove generated service environment
+        if: always()
+        run: rm -f services/omics/.env

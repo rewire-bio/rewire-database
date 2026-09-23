@@ -17,8 +17,14 @@ import {
   secondaryKinds,
   singularKindLabels,
   type CatalogueFilters,
+  researchAreaLabel,
+  catalogueSearch,
+  browseFilterSummary,
+  supportsEvaluationSummary,
+  explorerPrintedScore,
 } from "@/lib/omics-browse";
 import styles from "./database.module.css";
+import ui from "./Explorer.module.css";
 
 export default function Explorer({
   initial,
@@ -30,6 +36,12 @@ export default function Explorer({
   const [filters, setFilters] = useState(defaultFilters);
   const [data, setData] = useState(initial);
   const [cursor, setCursor] = useState<string | undefined>();
+  const [applied, setApplied] = useState({
+    filters: defaultFilters,
+    cursor: undefined as string | undefined,
+  });
+  const [ready, setReady] = useState(false);
+  const [moreOpen, setMoreOpen] = useState(false);
   const [selected, setSelected] = useState<string[]>([]);
   const [comparison, setComparison] = useState<Comparison | null>(null);
   const [error, setError] = useState("");
@@ -46,28 +58,43 @@ export default function Explorer({
       ? Object.entries(counts).sort((a, b) => a[0].localeCompare(b[0]))
       : fallback.map((value) => [value, 0] as [string, number]);
   const availableAreas = entries(
-    (data as { available?: { areas: Record<string, number> } }).available?.areas,
+    (data as { available?: { areas: Record<string, number> } }).available
+      ?.areas,
     release.facets.areas,
   );
+  if (filters.area && !availableAreas.some(([area]) => area === filters.area))
+    availableAreas.push([filters.area, 0]);
   const availableStatuses = entries(
     (data as { available?: { statuses: Record<string, number> } }).available
       ?.statuses,
     release.facets.statuses,
   );
+  if (
+    filters.status &&
+    !availableStatuses.some(([status]) => status === filters.status)
+  )
+    availableStatuses.push([filters.status, 0]);
   const client = useMemo(
     () => catalogueClient(release.release_id),
     [release.release_id],
   );
   useEffect(() => {
     const read = () => {
-      setFilters(readCatalogueFilters(window.location.search));
-      setCursor(undefined);
+      const next = readCatalogueFilters(window.location.search);
+      setFilters(next);
+      setCursor(
+        new URLSearchParams(window.location.search).get("cursor") || undefined,
+      );
+      if (!primaryKinds.some((kind) => kind === next.kind)) setMoreOpen(true);
+      setSelected([]);
+      setReady(true);
     };
     read();
     window.addEventListener("popstate", read);
     return () => window.removeEventListener("popstate", read);
   }, []);
   useEffect(() => {
+    if (!ready) return;
     let active = true;
     setLoading(true);
     setError("");
@@ -84,7 +111,10 @@ export default function Explorer({
             limit: 20,
           })
           .then((page) => {
-            if (active) setData(page);
+            if (active) {
+              setData(page);
+              setApplied({ filters, cursor });
+            }
           })
           .catch(() => {
             if (active)
@@ -101,7 +131,7 @@ export default function Explorer({
       active = false;
       clearTimeout(timer);
     };
-  }, [client, filters, cursor, retry]);
+  }, [client, filters, cursor, retry, ready]);
   useEffect(() => {
     let active = true;
     setComparison(null);
@@ -125,20 +155,42 @@ export default function Explorer({
       active = false;
     };
   }, [selected, client, release.release_id]);
-  const change = (key: keyof CatalogueFilters, value: string) => {
-    const next = { ...filters, [key]: value };
+  const navigate = (
+    next: CatalogueFilters,
+    nextCursor?: string,
+    replace = false,
+  ) => {
     setFilters(next);
-    setCursor(undefined);
-    const url = new URL(window.location.href);
-    for (const [key, value] of Object.entries(next)) {
-      if (!value || (key === "kind" && value === "model"))
-        url.searchParams.delete(key);
-      else url.searchParams.set(key, value);
-    }
-    window.history.replaceState(null, "", url);
+    setCursor(nextCursor);
+    setSelected([]);
+    if (!primaryKinds.some((kind) => kind === next.kind)) setMoreOpen(true);
+    const url = `${window.location.pathname}${catalogueSearch(next, nextCursor)}#browse`;
+    window.history[replace ? "replaceState" : "pushState"](null, "", url);
+  };
+  const change = (key: keyof CatalogueFilters, value: string) => {
+    navigate({ ...filters, [key]: value }, undefined, key === "q");
+  };
+  const returnTo = `/${catalogueSearch(applied.filters, applied.cursor)}#browse`;
+  const pageInfo = data as CataloguePage & {
+    previous_cursor?: string | null;
+    range_start?: number;
+    range_end?: number;
+    evaluation_summaries?: Record<
+      string,
+      { evaluation_count: number; result_count: number }
+    >;
   };
   return (
     <>
+      <label className={`${styles.label} ${ui.search}`}>
+        Search the database
+        <input
+          type="search"
+          value={filters.q}
+          placeholder="Model, benchmark or biological question"
+          onChange={(event) => change("q", event.target.value)}
+        />
+      </label>
       <div
         className={styles.tabs}
         role="group"
@@ -158,35 +210,38 @@ export default function Explorer({
           </button>
         ))}
       </div>
-      <div
-        className={styles.supporting}
-        role="group"
-        aria-label="Methods, evaluation design and supporting records"
+      <details
+        className={ui.more}
+        open={moreOpen}
+        onToggle={(event) => setMoreOpen(event.currentTarget.open)}
       >
-        <span className={styles.browseGroupLabel}>
-          Methods and evaluation records
-        </span>
-        {secondaryKinds.map((kind) => (
-          <button
-            key={kind}
-            aria-pressed={filters.kind === kind}
-            onClick={() => change("kind", kind)}
-          >
-            {kindLabels[kind]}
-          </button>
-        ))}
-      </div>
+        <summary>
+          More record types
+          {!primaryKinds.some((kind) => kind === filters.kind)
+            ? `: ${kindLabels[filters.kind]}`
+            : ""}
+        </summary>
+        <div
+          className={styles.supporting}
+          role="group"
+          aria-label="Methods, evaluation design and supporting records"
+        >
+          <span className={styles.browseGroupLabel}>
+            Methods and evaluation records
+          </span>
+          {secondaryKinds.map((kind) => (
+            <button
+              key={kind}
+              aria-pressed={filters.kind === kind}
+              onClick={() => change("kind", kind)}
+            >
+              {kindLabels[kind]}
+            </button>
+          ))}
+        </div>
+      </details>
       <p className={styles.kindDescription}>{kindDescriptions[filters.kind]}</p>
-      <div className={styles.filters}>
-        <label className={styles.label}>
-          Search
-          <input
-            type="search"
-            value={filters.q}
-            placeholder="Model, task or biological context"
-            onChange={(event) => change("q", event.target.value)}
-          />
-        </label>
+      <div className={ui.filters}>
         <label className={styles.label}>
           Research area
           <select
@@ -196,7 +251,7 @@ export default function Explorer({
             <option value="">All areas</option>
             {availableAreas.map(([area, count]) => (
               <option key={area} value={area}>
-                {area.replace(/-/g, " ")} ({count})
+                {researchAreaLabel(area)} ({count})
               </option>
             ))}
           </select>
@@ -244,12 +299,15 @@ export default function Explorer({
           <p>Loading catalogue…</p>
         ) : (
           <p className={styles.muted}>
-            {data.total} matching records · Release {release.release_id}
+            {data.total.toLocaleString()} matching records
           </p>
         )}
         {error && (
           <div className={styles.error}>
             <p>{error}</p>
+            <p>
+              <strong>Showing:</strong> {browseFilterSummary(applied.filters)}
+            </p>
             <button
               className={styles.button}
               onClick={() => setRetry(retry + 1)}
@@ -259,7 +317,7 @@ export default function Explorer({
           </div>
         )}
       </div>
-      {filters.kind === "result" && (
+      {applied.filters.kind === "result" && (
         <div className={styles.notice}>
           <strong>Compare results</strong>
           <p>
@@ -290,17 +348,21 @@ export default function Explorer({
           )}
         </div>
       )}
-      <div className={styles.grid} aria-busy={loading}>
+      <div className={ui.rows} aria-busy={loading}>
         {data.items.map((record) => (
-          <article className={styles.card} key={record.id}>
+          <article className={ui.row} key={record.id}>
             <span className={styles.tag}>
               {singularKindLabels[record.kind]} ·{" "}
               {record.status.replace(/_/g, " ")}
             </span>
             <h2>
-              <Link href={recordHref(record)}>{record.name}</Link>
+              <Link
+                href={`${recordHref(record)}?return_to=${encodeURIComponent(returnTo)}`}
+              >
+                {record.name}
+              </Link>
             </h2>
-            <p>
+            <p className={ui.description}>
               {(record.attributes.profile as { summary?: string } | undefined)
                 ?.summary || record.description}
             </p>
@@ -308,8 +370,10 @@ export default function Explorer({
               <>
                 <p>
                   <strong>
-                    {displayValue(record.attributes.printed_value)}
-                    {record.attributes.unit === "percent" ? "%" : ""}
+                    {explorerPrintedScore(
+                      record.attributes.printed_value,
+                      record.attributes.unit,
+                    )}
                   </strong>{" "}
                   · {displayValue(record.attributes.metric)}
                 </p>
@@ -333,33 +397,59 @@ export default function Explorer({
               </>
             )}
             <p className={styles.muted}>
-              {(record.facets.areas || []).join(" · ")} ·{" "}
+              {(record.facets.areas || []).map(researchAreaLabel).join(" · ")}
+              {record.facets.areas?.length ? " · " : ""}
               {record.source_ids.length} linked sources
             </p>
+            {supportsEvaluationSummary(record.kind) &&
+              pageInfo.evaluation_summaries?.[record.id] && (
+                <p className={ui.counts}>
+                  {pageInfo.evaluation_summaries[record.id].evaluation_count > 0
+                    ? `${pageInfo.evaluation_summaries[record.id].evaluation_count.toLocaleString()} evaluations · ${pageInfo.evaluation_summaries[record.id].result_count.toLocaleString()} metric rows`
+                    : "No evaluations linked in this release"}
+                </p>
+              )}
           </article>
         ))}
       </div>
-      {!data.total && <p>No records match these filters.</p>}
-      <div className={styles.downloads}>
-        {cursor && (
+      {!data.total && !loading && !error && (
+        <div className={ui.empty}>
+          <p>No records match these filters.</p>
           <button
             className={styles.button}
-            disabled={loading}
-            onClick={() => setCursor(undefined)}
+            onClick={() => navigate({ ...defaultFilters, kind: filters.kind })}
           >
-            First page
+            Reset filters
           </button>
-        )}
-        {data.next_cursor && (
-          <button
-            className={styles.button}
-            disabled={loading}
-            onClick={() => setCursor(data.next_cursor || undefined)}
-          >
-            Next records
-          </button>
-        )}
-      </div>
+        </div>
+      )}
+      <nav className={ui.pagination} aria-label="Catalogue pages">
+        <button
+          className={styles.button}
+          disabled={
+            loading || Boolean(error) || pageInfo.previous_cursor == null
+          }
+          onClick={() =>
+            navigate(applied.filters, pageInfo.previous_cursor || undefined)
+          }
+        >
+          Previous
+        </button>
+        <span>
+          Showing {pageInfo.range_start ?? (data.items.length ? 1 : 0)}–
+          {pageInfo.range_end ?? data.items.length} of{" "}
+          {data.total.toLocaleString()}
+        </span>
+        <button
+          className={styles.button}
+          disabled={loading || Boolean(error) || !data.next_cursor}
+          onClick={() =>
+            navigate(applied.filters, data.next_cursor || undefined)
+          }
+        >
+          Next
+        </button>
+      </nav>
     </>
   );
 }

@@ -7,6 +7,7 @@ import {
   CompositionCharts,
   CoverageChart,
 } from "@/components/catalogue/CatalogueCharts";
+import { researchAreaLabel } from "@/lib/omics-browse";
 import { benchmarkCoverage } from "@/scripts/omics/audit-benchmark-evidence";
 
 export const metadata: Metadata = {
@@ -32,10 +33,15 @@ export default function BenchmarksPage() {
         counts.set(key, (counts.get(key) || 0) + 1);
     return [...counts.entries()]
       .sort((a, b) => b[1] - a[1])
-      .map(([label, value]) => ({ label: label.replace(/[-_]/g, " "), value }));
+      .map(([label, value]) => ({ label, value }));
   };
-  const kindRows = tally((record) => [record.kind]);
-  const areaRows = tally((record) => record.facets.areas || []).slice(0, 10);
+  const kindRows = tally((record) => [record.kind]).map((row) => ({
+    ...row,
+    label: row.label.replace(/_/g, " "),
+  }));
+  const areaRows = tally((record) => record.facets.areas || [])
+    .slice(0, 10)
+    .map((row) => ({ ...row, label: researchAreaLabel(row.label) }));
   const coverage = benchmarkCoverage(catalogue.records);
   const coverageRows = coverage.map((entry) => ({
     label: entry.name,
@@ -58,12 +64,6 @@ export default function BenchmarksPage() {
       </header>
       <section className="block first">
         <div className="wrap">
-          <nav className={styles.nav} aria-label="Database navigation">
-            <a href="#browse">Browse records</a>
-            <a href="#evidence">About the evidence</a>
-            <a href="#downloads">Downloads</a>
-            <a href="/contribute/">Contribute evidence</a>
-          </nav>
           <section
             id="browse"
             className={styles.browse}
@@ -74,19 +74,32 @@ export default function BenchmarksPage() {
               release={query.release()}
             />
           </section>
+          <nav
+            className={styles.nav}
+            aria-label="Database navigation"
+            style={{ marginTop: 24 }}
+          >
+            <a href="#browse">Browse records</a>
+            <a href="#evidence">About the evidence</a>
+            <a href="#downloads">Downloads</a>
+            <a href="/contribute/">Contribute evidence</a>
+          </nav>
           <section id="evidence" className={styles.information}>
-            <h2>What is in the database</h2>
-            <p>
-              {catalogue.records.length.toLocaleString()} records across{" "}
-              {kindRows.length} kinds. Every bar is a filter you can apply above.
-            </p>
-            <CompositionCharts kinds={kindRows} areas={areaRows} />
-            <h3>Benchmark evidence coverage</h3>
-            <CoverageChart
-              covered={covered}
-              total={coverage.length}
-              rows={coverageRows}
-            />
+            <details className={styles.section}>
+              <summary>Coverage: records and linked evaluations</summary>
+              <p>
+                {catalogue.records.length.toLocaleString()} records across{" "}
+                {kindRows.length} record types. These counts describe catalogue
+                coverage, not model performance.
+              </p>
+              <CompositionCharts kinds={kindRows} areas={areaRows} />
+              <h3>Benchmark evidence coverage</h3>
+              <CoverageChart
+                covered={covered}
+                total={coverage.length}
+                rows={coverageRows}
+              />
+            </details>
             <h2>About the evidence</h2>
             <p>
               Published evaluations and rewire evaluations are records in the

@@ -16,11 +16,13 @@ export default function EvidenceTable({
   initial,
   initialScope,
   collapsed = false,
+  sectionId = "evidence",
 }: {
   id: string;
   initial: EvidencePage;
   initialScope: string;
   collapsed?: boolean;
+  sectionId?: string;
 }) {
   const client = useMemo(
     () => catalogueClient(initial.release_id),
@@ -65,7 +67,7 @@ export default function EvidenceTable({
   const release = `/omics/releases/${initial.release_id}`;
   return (
     <section
-      id="evidence"
+      id={sectionId}
       className={styles.section}
       aria-labelledby="evidence-title"
     >

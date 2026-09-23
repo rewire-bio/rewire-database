@@ -1,0 +1,83 @@
+.search {
+  margin: 0 0 24px;
+  font-size: 16px;
+}
+.search input {
+  font-size: 16px;
+  padding: 13px 15px;
+}
+.more {
+  margin: 0 0 18px;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 14px;
+}
+.more summary {
+  color: var(--accent-ink);
+  cursor: pointer;
+  padding: 8px 0;
+}
+.filters {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin: 20px 0;
+}
+.rows {
+  margin: 20px 0;
+}
+.row {
+  border-top: 1px solid var(--line);
+  padding: 22px 0;
+  min-width: 0;
+}
+.row:last-child {
+  border-bottom: 1px solid var(--line);
+}
+.row h2 {
+  font-size: 21px;
+  line-height: 1.3;
+  margin: 7px 0;
+  overflow-wrap: anywhere;
+}
+.row h2 a {
+  color: var(--accent-ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.row p {
+  margin: 8px 0;
+}
+.description {
+  color: var(--ink-2);
+  line-height: 1.55;
+  max-width: 85ch;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.counts {
+  color: var(--ink-2);
+  font-size: 14px;
+}
+.pagination {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.pagination span {
+  color: var(--ink-2);
+  font-size: 14px;
+}
+.empty {
+  padding: 24px 0;
+}
+@media (max-width: 480px) {
+  .filters {
+    grid-template-columns: 1fr;
+  }
+  .pagination {
+    gap: 10px;
+  }
+}

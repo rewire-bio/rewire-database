@@ -64,8 +64,8 @@ export default function BenchmarkResearch({
         <p>No primary reference was verified in this search pass.</p>
       )}
       {research.gaps.length > 0 && (
-        <>
-          <h3>What was missing at that check</h3>
+        <details>
+          <summary>Historical gaps recorded on {research.review_date}</summary>
           {results > 0 && (
             <p>
               The catalogue now holds {results.toLocaleString()} result rows for
@@ -80,7 +80,7 @@ export default function BenchmarkResearch({
               <li key={i}>{gap}</li>
             ))}
           </ul>
-        </>
+        </details>
       )}
       <details>
         <summary>Search and extraction details</summary>

@@ -224,3 +224,89 @@ export function groupEntities(records: OmicsRecord[]) {
       : [];
   });
 }
+
+/** Human labels are presentation only; stored facet identities remain intact. */
+export function researchAreaLabel(value: string): string {
+  const labels: Record<string, string> = {
+    "dna-genomes": "DNA and genomes",
+    "rna-transcriptomics": "RNA and transcriptomics",
+    "rna-transcriptomes": "RNA and transcriptomes",
+    "cells-tissues": "Cells and tissues",
+    "proteins-complexes": "Proteins and complexes",
+    "microbes-communities": "Microbes and communities",
+    rna: "RNA",
+    "protein-sequence-function": "Protein sequence and function",
+    "protein-structure-design": "Protein structure and design",
+    "single-cell-spatial": "Single-cell and spatial omics",
+    "molecular-interactions": "Molecular interactions",
+    "microbes-metagenomics": "Microbes and metagenomics",
+    metabolomics: "Metabolomics",
+    "networks-mechanistic": "Networks and mechanistic biology",
+  };
+  return (
+    labels[value] ||
+    value.replace(/[-_]/g, " ").replace(/^./, (c) => c.toUpperCase())
+  );
+}
+
+export function catalogueSearch(
+  filters: CatalogueFilters,
+  cursor?: string,
+): string {
+  const params = new URLSearchParams();
+  for (const [key, value] of Object.entries(filters)) {
+    if (value && !(key === "kind" && value === "model")) params.set(key, value);
+  }
+  if (cursor) params.set("cursor", cursor);
+  return params.size ? `?${params}` : "";
+}
+
+/** Only local explorer routes may be used as a return destination. */
+export function safeBrowseReturnTo(
+  value: string | null | undefined,
+): string | null {
+  if (
+    !value ||
+    !value.startsWith("/") ||
+    value.startsWith("//") ||
+    /[\\\r\n]/.test(value)
+  )
+    return null;
+  try {
+    const url = new URL(value, "https://benchmarks.rewire.it");
+    if (
+      url.origin !== "https://benchmarks.rewire.it" ||
+      !["/", "/database/"].includes(url.pathname)
+    )
+      return null;
+    return `${url.pathname}${url.search}${url.hash}`;
+  } catch {
+    return null;
+  }
+}
+
+export function browseFilterSummary(filters: CatalogueFilters): string {
+  return [
+    kindLabels[filters.kind],
+    filters.q && `Search: ${filters.q}`,
+    filters.area && researchAreaLabel(filters.area),
+    filters.status.replace(/_/g, " "),
+    filters.origin &&
+      `${filters.origin === "rewire" ? "Rewire" : "Published"} evaluations`,
+  ]
+    .filter(Boolean)
+    .join(" · ");
+}
+
+/** Citation and claim records are not indexed as evaluated entities. */
+export function supportsEvaluationSummary(kind: OmicsKind): boolean {
+  return kind !== "source" && kind !== "claim";
+}
+
+export function explorerPrintedScore(value: unknown, unit: unknown): string {
+  const printed =
+    typeof value === "string" || typeof value === "number"
+      ? String(value)
+      : "Unreported";
+  return `${printed}${unit === "percent" && !printed.includes("%") && printed !== "Unreported" ? "%" : ""}`;
+}

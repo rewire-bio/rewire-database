@@ -8,9 +8,11 @@ import styles from "@/app/database/database.module.css";
 export default function Reproduction({
   evaluation,
   records,
+  compact = false,
 }: {
   evaluation?: OmicsRecord | null;
   records: OmicsRecord[];
+  compact?: boolean;
 }) {
   if (!evaluation) return null;
   const byId = new Map(records.map((r) => [r.id, r]));
@@ -52,17 +54,20 @@ export default function Reproduction({
       className={styles.section}
       aria-labelledby="reproduction-title"
     >
-      <h2 id="reproduction-title">Methods and reproduction</h2>
-      <p>{evaluation.description}</p>
+      <h2 id="reproduction-title">
+        {compact ? "Reproduction" : "Methods and reproduction"}
+      </h2>
+      {!compact && <p>{evaluation.description}</p>}
       <dl className={styles.details}>
-        {context.map((record) => (
-          <Fragment key={`${record.role}-${record.id}`}>
-            <dt>{record.kind.replace(/_/g, " ")}</dt>
-            <dd>
-              <Link href={recordHref(record)}>{record.name}</Link>
-            </dd>
-          </Fragment>
-        ))}
+        {!compact &&
+          context.map((record) => (
+            <Fragment key={`${record.role}-${record.id}`}>
+              <dt>{record.kind.replace(/_/g, " ")}</dt>
+              <dd>
+                <Link href={recordHref(record)}>{record.name}</Link>
+              </dd>
+            </Fragment>
+          ))}
         <dt>Split</dt>
         <dd>{displayValue(comparison.split)}</dd>
         <dt>Adaptation</dt>

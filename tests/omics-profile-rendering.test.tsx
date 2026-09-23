@@ -55,7 +55,7 @@ describe("scientific profile rendering", () => {
       <Profile
         record={detail.record}
         sources={detail.sources}
-        part="mechanism"
+        part="overview"
       />,
     );
     expect(html).toContain('role="img"');

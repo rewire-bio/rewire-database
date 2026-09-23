@@ -1,9 +1,12 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import { fetchWithRetry, verifyResolutionPublications } from "./deployment-transaction.mjs";
+import { contributionProbeMode, verifyContributionGate } from "./contribution-deployment.mjs";
 
 // Read-only acceptance probe. No Firebase credentials, imports or writes.
-const origin = (process.argv[2] || "https://benchmarks.rewire.it").replace(
+const args = process.argv.slice(2);
+const contributionMode = contributionProbeMode(args);
+const origin = (args.find(arg => !arg.startsWith("--")) || "https://benchmarks.rewire.it").replace(
   /\/$/,
   "",
 );
@@ -164,22 +167,10 @@ if (manifest.coverage.audit_history) {
   }
 }
 
-const disabled = await fetchWithRetry(
-  `${origin}/api/trpc/submission.list?verify=${probe}`,
-  {
-    redirect: "manual",
-    expectedStatus: 503,
-    expectedContentType: "application/json",
-  },
-);
-assert.equal(
-  disabled.status,
-  503,
-  "Production submissions must remain disabled",
-);
-assert.equal(disabled.headers.get("cache-control"), "no-store");
-assert.deepEqual(await disabled.json(), {
-  error: "Contributions are not enabled.",
+await verifyContributionGate(origin, {
+  mode: contributionMode,
+  releaseId: manifest.release_id,
+  probe,
 });
 
 if (process.argv.includes("--website")) {
@@ -201,5 +192,5 @@ if (process.argv.includes("--website")) {
 }
 
 console.log(
-  `Read-only live check passed: ${origin}, release ${manifest.release_id}, ${expectedCount} records; BarcodeBERT links and disabled submissions verified.`,
+  `Read-only live check passed: ${origin}, release ${manifest.release_id}, ${expectedCount} records; BarcodeBERT links and ${contributionMode} contribution gates verified.`,
 );

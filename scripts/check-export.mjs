@@ -11,6 +11,14 @@ assert.ok(read('out/index.html').includes('id="mfass-v1"'), 'Historical MFASS an
 assert.ok(read('out/index.html').includes('https://benchmarks.rewire.it/'), 'Database canonical missing');
 assert.ok(fs.existsSync('out/runs/mfass-v2/index.html'));
 assert.ok(fs.existsSync('out/404.html'));
+assert.ok(fs.existsSync('out/_analytics/index.html'), 'Consented analytics frame missing');
+assert.ok(fs.existsSync('out/_analytics/frame.js'), 'Consented analytics implementation missing');
+assert.match(read('out/_analytics/index.html'), /noindex,nofollow/);
+assert.equal(/googletagmanager|google-analytics|<iframe/i.test(read('out/contribute/index.html')), false, 'Private contribution export contains analytics');
+if (process.env.NEXT_PUBLIC_GA_ID) {
+  const chunks = fs.readdirSync('out/_next/static/chunks/app', { recursive: true }).filter(file => String(file).endsWith('.js'));
+  assert.ok(chunks.some(file => read(path.join('out/_next/static/chunks/app', String(file))).includes(process.env.NEXT_PUBLIC_GA_ID)), 'GA measurement ID missing from client build');
+}
 for (const paper of JSON.parse(read('data/benchmark-literature/papers.json'))) {
   assert.ok(fs.existsSync(`out/literature/papers/${paper.id}/index.html`), `Missing historical paper: ${paper.id}`);
 }

@@ -101,8 +101,11 @@ describe("source-scoped comparison figures", () => {
     expect(panels[0].rows).toHaveLength(30);
     expect(panels[0].rows[29].origin).toBe("paper_compilation");
     const html = renderToStaticMarkup(<BenchmarkCharts panels={panels} />);
-    expect(html).toContain("/database/model/model-29");
-    expect(html).toContain("/database/result/result-29");
+    expect(html).toContain("/database/model/model-11");
+    expect(html).not.toContain("/database/model/model-29");
+    expect(html).toContain("Show all 30");
+    expect(html).toContain("/database/result/result-11");
+    expect(panels[0].rows[29].result.id).toBe("result-29");
     expect(html).toContain('role="img"');
     expect(html).toContain("Source order is preserved");
     expect(html).toContain("-0.16666666666666666");
@@ -183,7 +186,7 @@ describe("source-scoped comparison figures", () => {
 describe("comparison missingness and evidence safeguards", () => {
   it("keeps unavailable cells in the evidence table without plotting them as zero", () => {
     const snapshot = fixture();
-    const missing = snapshot.records.find((r) => r.id === "result-29")!;
+    const missing = snapshot.records.find((r) => r.id === "result-0")!;
     missing.attributes.numeric_value = null;
     missing.attributes.printed_value = "N/A";
     const panels = createCatalogueQuery(snapshot).get({
@@ -191,7 +194,8 @@ describe("comparison missingness and evidence safeguards", () => {
     })!.published_comparisons;
     expect(panels[0].rows).toHaveLength(30);
     const html = renderToStaticMarkup(<BenchmarkCharts panels={panels} />);
-    expect(html.match(/role="img"/g)).toHaveLength(29);
+    expect(html.match(/role="img"/g)).toHaveLength(11);
+    expect(html).toContain("Show all 30");
     expect(html).toContain("N/A");
     expect(html).toContain("1 unavailable values");
   });
@@ -287,7 +291,11 @@ function pooledFixture(): CatalogueSnapshot {
   // third table whose metric appears only once.
   const tables = [
     { dataset: "dataset-a", split: "test", values: ["0.1", "0.5", "0.9"] },
-    { dataset: "dataset-b", split: "validation", values: ["0.3", "0.7", "0.2"] },
+    {
+      dataset: "dataset-b",
+      split: "validation",
+      values: ["0.3", "0.7", "0.2"],
+    },
   ];
   const panels: PublishedComparison[] = [];
   let index = 0;
@@ -399,20 +407,27 @@ function pooledFixture(): CatalogueSnapshot {
 
 describe("source-scoped comparison view", () => {
   it("does not rank incompatible datasets together", () => {
-    const detail = createCatalogueQuery(pooledFixture()).get({id: "benchmark"})!;
+    const detail = createCatalogueQuery(pooledFixture()).get({
+      id: "benchmark",
+    })!;
     expect(detail.published_comparisons).toHaveLength(3);
     expect(detail.aggregate_comparisons).toEqual([]);
-    const html = renderToStaticMarkup(<BenchmarkCharts panels={detail.published_comparisons} />);
+    const html = renderToStaticMarkup(
+      <BenchmarkCharts panels={detail.published_comparisons} />,
+    );
     expect(html).toContain("Source order is preserved");
     expect(html).not.toContain("Pooled by metric");
     expect(html).toContain("without a pooled ranking");
   });
   it("linked chart records do not contain nested chart definitions", () => {
-    const detail = createCatalogueQuery(pooledFixture()).get({id: "benchmark"})!;
+    const detail = createCatalogueQuery(pooledFixture()).get({
+      id: "benchmark",
+    })!;
     for (const panel of detail.published_comparisons) {
       expect(panel.protocol.attributes.comparison_panels).toBeUndefined();
-      for (const row of panel.rows) for (const linked of row.benchmarks)
-        expect(linked.attributes.comparison_panels).toBeUndefined();
+      for (const row of panel.rows)
+        for (const linked of row.benchmarks)
+          expect(linked.attributes.comparison_panels).toBeUndefined();
     }
   });
 });

@@ -1,0 +1,64 @@
+.nav {
+  position: sticky;
+  top: 62px;
+  z-index: 20;
+  margin: 0 0 24px;
+  padding: 10px 0;
+  background: var(--bg);
+  border-block: 1px solid var(--line);
+}
+.links {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.links a {
+  padding: 8px 14px;
+  border-radius: 5px;
+  color: var(--ink-2);
+  font-size: 15px;
+}
+.links a[aria-current] {
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+  font-weight: 600;
+}
+.links a:focus-visible,
+.back:focus-visible,
+.mobile select:focus-visible {
+  outline: 2px solid var(--accent-ink);
+  outline-offset: 3px;
+}
+.mobile {
+  display: none;
+}
+.back {
+  color: var(--accent-ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+@media (max-width: 720px) {
+  .links {
+    display: none;
+  }
+  .nav {
+    top: 58px;
+  }
+  .mobile {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    font-size: 14px;
+  }
+  .mobile select {
+    flex: 1;
+    min-width: 0;
+    min-height: 44px;
+    padding: 8px;
+    background: var(--bg);
+    color: var(--ink);
+    border: 1px solid var(--line-2);
+    border-radius: 4px;
+    font: inherit;
+  }
+}

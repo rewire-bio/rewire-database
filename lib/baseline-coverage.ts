@@ -22,6 +22,8 @@ export interface BaselineCoverageRow {
   context_source_ids: string[];
   execution_scope: string | null;
   resource_estimate: null;
+  recipe_ids: string[];
+  published_evaluations_by_origin: Record<string, string[]>;
 }
 export interface ModelEvaluationRow {
   record_id: string;
@@ -51,7 +53,7 @@ export interface ModelEvaluationRow {
   submission_status: "not_recorded_in_public_catalogue";
 }
 export interface BaselineAudit {
-  schema_version: "1.0";
+  schema_version: "1.1";
   release_id: string;
   release_date: string;
   interpretation: string;
@@ -74,9 +76,13 @@ export interface BaselineAudit {
 // Exact evaluated identities only. No method-name heuristics can establish a run.
 const measured: Record<
   string,
-  Partial<Record<BaselineRole, { evaluation: string; locator: string }>>
+  Partial<Record<BaselineRole, { evaluation: string; locator: string; also?: string[] }>>
 > = {
   "rewire-mfass-v2": {
+    null: {
+      evaluation: "rewire-local-20260921-evaluation-mfass-prior",
+      locator: "Reviewed baseline-runs-2026-09-22: MFASS training-prior report metrics, canonical split and coverage; fixed tie-break, not ranking ability",
+    },
     conventional: {
       evaluation: "rewire-evaluation-baseline-kmer-position-v2",
       locator:
@@ -91,8 +97,15 @@ const measured: Record<
     },
     conventional: {
       evaluation: "rewire-local-20260920-evaluation-flip2-composition",
+      also: ["rewire-local-20260921-evaluation-composition22"],
       locator:
-        "Pinned local-runs-2026-09-20 report: FLIP2 composition metrics, coverage and protocol_results",
+        "Reviewed local-runs-2026-09-20 and baseline-runs-2026-09-22 reports: 40-feature and 22-feature FLIP2 composition metrics, coverage and protocol_results",
+    },
+  },
+  "rewire-protocol-proteingym-amfr-random-v13": {
+    null: {
+      evaluation: "rewire-local-20260921-evaluation-proteingym-random",
+      locator: "Reviewed baseline-runs-2026-09-22: ProteinGym AMFR seed-0 random report metrics and coverage; one assay and one seed, not full-track coverage or a chance interval",
     },
   },
   "rewire-protocol-mrnabench-designed-mrl-v1": {
@@ -112,8 +125,6 @@ const accepted = (record: OmicsRecord) =>
   ["source_checked", "reproduced"].includes(record.status);
 const sorted = (items: string[]) => [...new Set(items)].sort();
 const roles: BaselineRole[] = ["null", "conventional"];
-const linksTo = (record: OmicsRecord, ids: Set<string>) =>
-  record.links.some((link) => ids.has(link.target_id));
 
 /** Selection suggestions are hypotheses for review, never validation of applicability. */
 export function candidateRule(
@@ -254,26 +265,36 @@ export function buildBaselineAudit(catalogue: OmicsCatalogue): BaselineAudit {
         ),
       );
       return roles.map((role, index): BaselineCoverageRow => {
-        const mapping = measured[protocol.id]?.[role];
+        const proposedMapping = measured[protocol.id]?.[role];
+        // A mapping added for a later release must not backfill archived evidence.
+        const mapping = proposedMapping && byId.has(proposedMapping.evaluation)
+          ? proposedMapping : undefined;
         const evaluation = mapping && byId.get(mapping.evaluation);
-        const results = evaluation
-          ? resultsByEvaluation.get(evaluation.id) || []
-          : [];
+        const matched = [evaluation, ...(mapping?.also || []).map((id) => byId.get(id))]
+          .filter((ev): ev is OmicsRecord => Boolean(ev));
+        for (const ev of matched) {
+          if (ev.kind !== "evaluation" || ev.attributes.origin !== "rewire_run" || !accepted(ev) ||
+              !ev.links.some((link) => ["benchmark", "protocol"].includes(link.relation) && link.target_id === protocol.id) ||
+              !resultsByEvaluation.get(ev.id)?.length || !ev.source_ids.length)
+            throw new Error(`Invalid baseline evidence: ${protocol.id}/${role}`);
+        }
+        const results = matched.flatMap((ev) => resultsByEvaluation.get(ev.id) || []);
         if (
           mapping &&
           (!evaluation ||
             evaluation.kind !== "evaluation" ||
             evaluation.attributes.origin !== "rewire_run" ||
             !accepted(evaluation) ||
-            !linksTo(evaluation, new Set([protocol.id])) ||
+            !evaluation.links.some((link) => ["benchmark", "protocol"].includes(link.relation) && link.target_id === protocol.id) ||
             !results.length ||
             !evaluation.source_ids.length)
         )
           throw new Error(`Invalid baseline evidence: ${protocol.id}/${role}`);
         const historical = protocol.status === "superseded";
-        const model = evaluation?.links
+        const modelNames = sorted(matched.flatMap((ev) => ev.links
           .map((l) => byId.get(l.target_id))
-          .find((r) => r && isModelSubject(r.kind));
+          .filter((r): r is OmicsRecord => Boolean(r && isModelSubject(r.kind)))
+          .map((r) => r.name)));
         return {
           protocol_id: protocol.id,
           protocol_name: protocol.name,
@@ -285,7 +306,7 @@ export function buildBaselineAudit(catalogue: OmicsCatalogue): BaselineAudit {
             : evaluation
               ? "measured"
               : "selection_required",
-          candidate: model?.name || candidates[index],
+          candidate: modelNames.join("; ") || candidates[index],
           candidate_basis: evaluation
             ? "reviewed_evaluation"
             : "editorial_selection_rule",
@@ -297,12 +318,12 @@ export function buildBaselineAudit(catalogue: OmicsCatalogue): BaselineAudit {
             : evaluation
               ? null
               : "Protocol-specific applicability, permitted inputs, access, split, evaluator and execution requirements need review before implementation or execution.",
-          evaluation_ids: evaluation ? [evaluation.id] : [],
+          evaluation_ids: matched.map((ev) => ev.id).sort(),
           result_ids: sorted(results.map((r) => r.id)),
           dataset_ids: datasetIds,
           source_ids: evaluation
             ? sorted([
-                ...evaluation.source_ids,
+                ...matched.flatMap((ev) => ev.source_ids),
                 ...results.flatMap((r) => r.source_ids),
               ])
             : [],
@@ -315,6 +336,17 @@ export function buildBaselineAudit(catalogue: OmicsCatalogue): BaselineAudit {
               )
             : null,
           resource_estimate: null,
+          recipe_ids: sorted((Array.isArray(protocol.attributes.run_recipes)
+            ? protocol.attributes.run_recipes : []).flatMap((recipe) =>
+              recipe && typeof recipe === "object" && "id" in recipe && typeof recipe.id === "string"
+                ? [recipe.id] : [])),
+          published_evaluations_by_origin: Object.fromEntries(
+            sorted(related.filter((ev) => accepted(ev) && (resultsByEvaluation.get(ev.id)?.length || 0) > 0)
+              .map((ev) => String(ev.attributes.origin || "unreported")))
+              .map((origin) => [origin, sorted(related.filter((ev) =>
+                accepted(ev) && (resultsByEvaluation.get(ev.id)?.length || 0) > 0 &&
+                String(ev.attributes.origin || "unreported") === origin).map((ev) => ev.id))]),
+          ),
         };
       });
     });
@@ -433,7 +465,7 @@ export function buildBaselineAudit(catalogue: OmicsCatalogue): BaselineAudit {
     };
   });
   return {
-    schema_version: "1.0",
+    schema_version: "1.1",
     release_id: catalogue.release_id,
     release_date: catalogue.released_at,
     interpretation:

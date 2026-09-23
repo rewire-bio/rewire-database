@@ -1,0 +1,22 @@
+.steps {
+  list-style: none;
+  margin: 1rem 0;
+  padding: 0;
+}
+
+.step {
+  min-width: 0;
+  margin-block: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border, #d5dad7);
+}
+
+.step h4 {
+  font-size: 1.05rem;
+  line-height: 1.5;
+}
+
+.step pre {
+  max-width: 100%;
+  overflow-x: auto;
+}

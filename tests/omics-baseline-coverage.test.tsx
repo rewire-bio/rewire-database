@@ -253,7 +253,7 @@ describe("baseline coverage and model evaluation audit", () => {
       />,
     );
     expect(html).toContain("1 of 2 active baseline roles");
-    expect(html).toContain("Selection requires review");
+    expect(html).toContain("Proposed control: requires review");
     expect(html).toContain(`/database/evaluation/${fixture.evaluation.id}`);
     expect(html).toContain(
       "/omics/baseline-coverage/2026-09-20-b2596bdf5206/protocol-baselines.csv",
@@ -276,4 +276,43 @@ describe("baseline coverage and model evaluation audit", () => {
     expect(audit.counts.historical_roles).toBe(2);
     expect(new Set(audit.protocols.map((p) => p.protocol_id)).size).toBe(180);
   });
+  it("separates recipes and author evidence from Rewire measured roles", () => {
+    const fixture = baselineFixture();
+    fixture.protocol.attributes.run_recipes = [{ id: "example-recipe" }];
+    const author = record("author-eval", "evaluation", { origin: "author_reported" });
+    author.links = [{ relation: "protocol", target_id: fixture.protocol.id }];
+    const score = record("author-score", "result");
+    score.links = [{ relation: "evaluation", target_id: author.id }];
+    fixture.snapshot.records.push(author, score);
+    const audit = buildBaselineAudit(fixture.snapshot);
+    expect(audit.counts.measured_roles).toBe(1);
+    expect(audit.protocols[0].recipe_ids).toEqual(["example-recipe"]);
+    expect(audit.protocols[0].published_evaluations_by_origin.author_reported).toEqual(["author-eval"]);
+    const html = renderToStaticMarkup(<BaselineCoverage record={fixture.protocol} catalogue={fixture.snapshot} />);
+    expect(html).toContain("Author-reported evaluations");
+    expect(html).toContain("Published Rewire evaluations");
+    expect(html).toContain("Recipe availability does not establish a completed evaluation");
+  });
+  it("renders an explicit empty suite instead of implying suite-wide baseline coverage", () => {
+    const suite = record("empty-suite", "benchmark");
+    const html = renderToStaticMarkup(<BaselineCoverage record={suite} catalogue={catalogue([suite])} />);
+    expect(html).toContain("No concrete protocols are explicitly linked");
+    expect(html).not.toContain("roles have published");
+  });
+  it("reflects the ten published runs while keeping exact protocol and partial scope", () => {
+    const snapshot: OmicsCatalogue = JSON.parse(gunzipSync(fs.readFileSync("data/omics/releases/2026-09-22-f58a0f1d267f/catalogue.json.gz")).toString());
+    const before = JSON.stringify(snapshot);
+    const audit = buildBaselineAudit(snapshot);
+    expect(audit.counts).toMatchObject({ protocols: 184, measured_roles: 7, models_with_rewire_evaluations: 14 });
+    expect(audit.protocols.find((row) => row.protocol_id === "rewire-mfass-v2" && row.role === "null")?.evaluation_ids).toEqual(["rewire-local-20260921-evaluation-mfass-prior"]);
+    const random = audit.protocols.find((row) => row.protocol_id === "rewire-protocol-proteingym-amfr-random-v13" && row.role === "null")!;
+    expect(random.evaluation_ids).toEqual(["rewire-local-20260921-evaluation-proteingym-random"]);
+    expect(random.source_locator).toContain("not full-track coverage");
+    const conventional = audit.protocols.find((row) => row.protocol_id === "rewire-protocol-flip2-rhomax-by-wild-type-v1" && row.role === "conventional")!;
+    expect(conventional.evaluation_ids).toHaveLength(2);
+    const generated = baselineAuditFiles(Buffer.from(JSON.stringify(snapshot)), "published_release");
+    expect(generated.manifest.audit_version).toBe(2);
+    expect(JSON.stringify(snapshot)).toBe(before);
+  });
+
 });

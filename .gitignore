@@ -77,6 +77,9 @@ __pycache__/
 /services/omics/dist/
 /services/omics/.firebase/
 /services/omics/*-debug.log
+/services/omics/.env.*
+/services/omics/.secret.local
+/services/omics/node_modules
 # Firebase local state and credentials
 .firebase/
 firebase-debug*.log

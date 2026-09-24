@@ -1,12 +1,21 @@
+import { socialMetadata } from "@/lib/catalogue-sharing";
 import type { Metadata } from "next";
 import Link from "next/link";
 import run from "@/data/benchmark-runs/mfass-v2.json";
 import styles from "./run.module.css";
 
-export const metadata: Metadata = {
+const pageMetadata = {
   title: "MFASS v2: corrected baseline and DNABERT-2 | rewire.it",
   description: "A complete local MFASS run with a corrected baseline, a frozen DNABERT-2 pair-embedding protocol, full coverage and group-resampled comparisons.",
   alternates: { canonical: "https://benchmarks.rewire.it/runs/mfass-v2/" },
+};
+export const metadata: Metadata = {
+  ...pageMetadata,
+  ...socialMetadata({
+    title: pageMetadata.title,
+    description: pageMetadata.description,
+    path: pageMetadata.alternates.canonical,
+  }),
 };
 
 function fixed(value: number, digits = 3): string {

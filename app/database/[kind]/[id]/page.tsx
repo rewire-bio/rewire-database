@@ -1,4 +1,7 @@
+import Breadcrumbs from "@/components/catalogue/Breadcrumbs";
+import { recordBreadcrumbs, socialMetadata } from "@/lib/catalogue-sharing";
 import { formatScore } from "@/lib/score-display";
+import { recordSearchMetadata } from "@/lib/catalogue-seo";
 import { catalogueText } from "@/lib/catalogue-text";
 import type { Metadata } from "next";
 import Link from "next/link";
@@ -63,15 +66,14 @@ export function generateMetadata({ params }: { params: Params }): Metadata {
     !recordRouteKinds(item.record).some((kind) => kind === params.kind)
   )
     return {};
+  const metadata = recordSearchMetadata(item.record, buildCatalogue().catalogue.records);
   return {
-    title: catalogueText(item.record.name),
-    description: catalogueText(
-      (item.record.attributes.profile as { summary?: string } | undefined)
-        ?.summary || item.record.description,
-    ),
-    alternates: {
-      canonical: `https://benchmarks.rewire.it${recordHref(item.record)}`,
-    },
+    ...metadata,
+    ...socialMetadata({
+      title: metadata.title,
+      description: metadata.description,
+      path: metadata.alternates.canonical,
+    }),
   };
 }
 function Links({ records }: { records: OmicsRecord[] }) {
@@ -275,12 +277,11 @@ export default function RecordPage({ params }: { params: Params }) {
     <>
       <header className="page-head" id="finding">
         <div className="wrap">
-          <nav className={styles.nav} aria-label="Breadcrumb">
+          <Breadcrumbs items={recordBreadcrumbs(record)} className={styles.nav} />
+          <div className={styles.nav}>
             <BrowseReturn fallback={`/?kind=${record.kind}#browse`} />
-            <Link href={`/?kind=${record.kind}#browse`}>
-              {kindLabels[record.kind]}
-            </Link>
-          </nav>
+            <Link href={`/?kind=${record.kind}#browse`}>Search and filter {kindLabels[record.kind].toLowerCase()}</Link>
+          </div>
           <div
             className={
               predictive && profile.success && profile.data.diagram

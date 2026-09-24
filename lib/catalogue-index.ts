@@ -1,3 +1,4 @@
+import { socialMetadata } from "./catalogue-sharing";
 import { catalogueText } from "./catalogue-text";
 import type { Metadata } from "next";
 import type { OmicsRecord } from "./omics";
@@ -25,13 +26,14 @@ export function validModelPage(value: string, records: OmicsRecord[]) {
 }
 export function indexMetadata(kind: IndexKind, page = 1): Metadata {
   const benchmark = kind === "benchmark";
-  return {
+  const metadata = {
     title: benchmark ? "Biological benchmarks: procedures, results and sources" : `Biological models: architectures and benchmark results${page > 1 ? ` | Page ${page}` : ""}`,
     description: benchmark
       ? "Browse biological benchmark suites and challenges, with procedures, linked model evaluations and source evidence. Tasks and protocols remain distinct."
       : `Browse specialist biological model profiles, architectures, access requirements and linked evaluations.${page > 1 ? ` Page ${page} of the alphabetical model index.` : ""}`,
     alternates: { canonical: CATALOGUE_ORIGIN + (benchmark ? "/benchmarks/" : modelIndexHref(page)) },
   };
+  return { ...metadata, ...socialMetadata({ title: metadata.title, description: metadata.description, path: metadata.alternates.canonical }) };
 }
 export function indexSummary(record: OmicsRecord) {
   const profile = record.attributes.profile as { summary?: unknown } | undefined;

@@ -1,3 +1,4 @@
+import { socialMetadata } from "@/lib/catalogue-sharing";
 import fs from "node:fs";
 import Link from "next/link";
 import type { Metadata } from "next";
@@ -5,11 +6,19 @@ import { buildCatalogue } from "@/lib/catalogue-build";
 import { auditPage } from "@/services/omics/src/audit";
 import type { AuditIndexRow, AuditRun } from "@/services/omics/src/audit";
 import AuditExplorer from "./AuditExplorer";
-export const metadata: Metadata = {
+const pageMetadata = {
   title: "Catalogue audit history",
   description:
     "Linked verification checks, source evidence and correction history for the rewire catalogue.",
   alternates: { canonical: "https://benchmarks.rewire.it/audits/" },
+};
+export const metadata: Metadata = {
+  ...pageMetadata,
+  ...socialMetadata({
+    title: pageMetadata.title,
+    description: pageMetadata.description,
+    path: pageMetadata.alternates.canonical,
+  }),
 };
 export default function Audits() {
   const { catalogue } = buildCatalogue();

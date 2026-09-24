@@ -1,0 +1,403 @@
+[
+  {
+    "id": "rewire-proteingym-v1-3-dms-substitutions",
+    "previous_profile_sha256": null,
+    "previous_record_sha256": "c201e2ee41e1e44e58caeb8bac2bb5760035702685ceac9a5e42ed8f58bc5b8b",
+    "profile": {
+      "summary": "A version-pinned zero-shot protocol for scoring amino-acid substitutions against ProteinGym v1.3 deep mutational scanning measurements. It defines track-wide aggregation, but a selected assay or partial prediction file does not establish complete-track performance.",
+      "summary_source_ids": [
+        "runner-recipe-docs-proteingym-md-f80cef7f",
+        "runner-recipe-packages-rewirebench-src-rewirebench-protocols-proteingym-py-f80cef7f"
+      ],
+      "summary_source_locator": "docs/proteingym.md lines 3–11, 31–33, 59–63; protocols/proteingym.py lines 232–249",
+      "sections": [
+        {
+          "title": "What the protocol evaluates",
+          "body": "Models supply one scalar score per assay–mutant pair, with higher values predicting better experimental function. The evaluator retains the supplied DMS_score and DMS_score_bin labels. This track includes single and multiple amino-acid substitutions; indels, supervised learning and clinical tracks require different protocols.",
+          "source_ids": [
+            "runner-recipe-docs-proteingym-md-f80cef7f",
+            "runner-recipe-packages-rewirebench-src-rewirebench-protocols-proteingym-py-f80cef7f"
+          ],
+          "source_locator": "docs/proteingym.md lines 3, 25–33; protocols/proteingym.py lines 41–55, 99–153"
+        },
+        {
+          "title": "How to interpret a track summary",
+          "body": "Metrics are first rounded within each assay, then averaged over assays belonging to the same UniProt protein and selection type, then over proteins within selection type, then equally over selection types. The runner exposes track metrics only when all 217 assays are fully scored. Category summaries from selected complete assays describe that selection only.",
+          "source_ids": [
+            "runner-recipe-packages-rewirebench-src-rewirebench-protocols-proteingym-py-f80cef7f",
+            "profile-protocol-proteingym-proteingym-performance-dms-benchmarks-py-0002bc1b"
+          ],
+          "source_locator": "protocols/proteingym.py lines 173–189, 216–244; performance_DMS_benchmarks.py lines 269–315"
+        },
+        {
+          "title": "Source review and execution are separate",
+          "body": "Pinned code and documentation specify the procedure. Their synthetic metric-comparison tests are source-reported implementation checks, not reproduction of a published ProteinGym model row. The separate AMFR report documents one later local evaluation and must not be generalized to this complete track.",
+          "source_ids": [
+            "runner-recipe-docs-proteingym-md-f80cef7f",
+            "rewire-local-20260920-source-proteingym-esm2"
+          ],
+          "source_locator": "docs/proteingym.md lines 65–70; report.json: /scope, /protocol_results/complete_assays, /protocol_results/total_assays, /independently_reproduced"
+        }
+      ],
+      "facts": [
+        {
+          "label": "Version and reference",
+          "value": "ProteinGym v1.3 substitutions; upstream revision 144fe22b07dfaeec2b366f2346203a9838a55b4c; reference CSV SHA-256 a8f498011532a74aa9fe556a50555a75e928c5837d19c06a87592ae04049b308. The runner recipe is pinned separately to f80cef7f818bec33e51b7f43ad499eb5078c8d87; this does not assert that v1.3 is the latest release.",
+          "status": "source_checked",
+          "source_ids": [
+            "runner-recipe-docs-proteingym-md-f80cef7f",
+            "runner-recipe-packages-rewirebench-src-rewirebench-protocols-proteingym-py-f80cef7f"
+          ],
+          "source_locator": "docs/proteingym.md lines 7–11; protocols/proteingym.py lines 21–24; source records: version and artifact_sha256"
+        },
+        {
+          "label": "Datasets",
+          "value": "The pinned reference contains 217 assays and 2,465,767 assay–variant records, including multiple substitutions. These are reference counts, not a claim that this review obtained or verified every assay file.",
+          "status": "source_checked",
+          "source_ids": [
+            "profile-protocol-proteingym-reference-files-dms-substitutions-csv-a8f49801"
+          ],
+          "source_locator": "DMS_substitutions.csv: 217 data rows; sum of DMS_total_number_mutants; includes_multiple_mutants"
+        },
+        {
+          "label": "Inputs and labels",
+          "value": "Inputs contain assay ID, wild-type sequence, mutated sequence and substitution notation. Predictions use globally unique <DMS_id>::<mutant> IDs. Higher scores mean better function; official DMS_score and DMS_score_bin labels remain with the evaluator.",
+          "status": "source_checked",
+          "source_ids": [
+            "runner-recipe-docs-proteingym-md-f80cef7f",
+            "runner-recipe-packages-rewirebench-src-rewirebench-protocols-proteingym-py-f80cef7f"
+          ],
+          "source_locator": "docs/proteingym.md lines 3, 25–33; protocols/proteingym.py lines 126–153"
+        },
+        {
+          "label": "Splits",
+          "value": "This zero-shot track has no assay-label fitting or cross-validation training split. An adapter exposing fit is rejected. This restriction does not establish that pretraining data exclude benchmark proteins.",
+          "status": "source_checked",
+          "source_ids": [
+            "runner-recipe-docs-proteingym-md-f80cef7f"
+          ],
+          "source_locator": "docs/proteingym.md line 33"
+        },
+        {
+          "label": "Metrics",
+          "value": "Per-assay Spearman rank correlation, ROC AUC, MCC, NDCG and top-10% recall. MCC thresholds predictions at the assay median; NDCG uses the pinned top-floor(n×0.1) implementation; top recall uses inclusive 90th-percentile thresholds, which can retain more than 10% with ties. Non-finite outputs become null, and the runner omits null values from subsequent means.",
+          "status": "source_checked",
+          "source_ids": [
+            "runner-recipe-packages-rewirebench-src-rewirebench-protocols-proteingym-py-f80cef7f",
+            "profile-protocol-proteingym-proteingym-performance-dms-benchmarks-py-0002bc1b"
+          ],
+          "source_locator": "protocols/proteingym.py lines 157–189; performance_DMS_benchmarks.py lines 14–78, 212–226"
+        },
+        {
+          "label": "Aggregation",
+          "value": "Round assay metrics to three decimals; average assays within each UniProt ID and selection type; average proteins within each selection type; average selection types equally and round the final runner summary to three decimals. This is not an assay-weighted or variant-weighted mean.",
+          "status": "source_checked",
+          "source_ids": [
+            "runner-recipe-packages-rewirebench-src-rewirebench-protocols-proteingym-py-f80cef7f",
+            "profile-protocol-proteingym-proteingym-performance-dms-benchmarks-py-0002bc1b"
+          ],
+          "source_locator": "protocols/proteingym.py lines 183–189, 221–239; performance_DMS_benchmarks.py lines 269–315"
+        },
+        {
+          "label": "Coverage",
+          "value": "Only a full-scope, fully scored 217-assay track exposes aggregate metrics. A selected assay is subset scope, and any limit is smoke scope. Incomplete assay metrics retain the original assay denominator and are excluded from category aggregation.",
+          "status": "source_checked",
+          "source_ids": [
+            "runner-recipe-docs-proteingym-md-f80cef7f",
+            "runner-recipe-packages-rewirebench-src-rewirebench-protocols-proteingym-py-f80cef7f"
+          ],
+          "source_locator": "docs/proteingym.md line 31; protocols/proteingym.py lines 104–108, 141, 208–249"
+        },
+        {
+          "label": "Uncertainty",
+          "value": "The runner estimates no uncertainty interval. Upstream zero-shot bootstrap standard errors concern differences from the best aggregate model, resampling within selection categories for 10,000 repetitions by default; they are not absolute model confidence intervals or variation across inference seeds.",
+          "status": "source_checked",
+          "source_ids": [
+            "runner-recipe-packages-rewirebench-src-rewirebench-protocols-proteingym-py-f80cef7f",
+            "profile-protocol-proteingym-proteingym-performance-dms-benchmarks-py-0002bc1b"
+          ],
+          "source_locator": "protocols/proteingym.py line 246; performance_DMS_benchmarks.py lines 95–111, 310–315"
+        },
+        {
+          "label": "Data verification",
+          "value": "The reference CSV is checked against its pinned SHA-256. Observed local assay hashes and optional expected_hashes detect byte changes but are explicitly not independently verified official archive checksums.",
+          "status": "source_checked",
+          "source_ids": [
+            "runner-recipe-docs-proteingym-md-f80cef7f",
+            "runner-recipe-packages-rewirebench-src-rewirebench-protocols-proteingym-py-f80cef7f"
+          ],
+          "source_locator": "docs/proteingym.md line 11; protocols/proteingym.py lines 69–71, 95–98, 145–148"
+        },
+        {
+          "label": "Checkpoint identity",
+          "value": "The protocol accepts supplied predictions or a compatible model adapter and therefore defines no universal checkpoint. Its ESM-2 example is a separate configuration; it does not identify weights for historical ProteinGym result rows.",
+          "status": "inapplicable",
+          "source_ids": [
+            "runner-recipe-docs-proteingym-md-f80cef7f"
+          ],
+          "source_locator": "docs/proteingym.md lines 3, 25–33, 35–53"
+        },
+        {
+          "label": "Reuse conditions",
+          "value": "The upstream software MIT notice does not establish permission for every assay dataset. Underlying study conditions and checkpoint terms must be checked separately; weights are not redistributed by the runner.",
+          "status": "source_checked",
+          "source_ids": [
+            "runner-recipe-docs-proteingym-md-f80cef7f"
+          ],
+          "source_locator": "docs/proteingym.md lines 7–9"
+        }
+      ],
+      "strengths": [
+        {
+          "text": "Versioned reference metadata, mutation validation and explicit partial-coverage handling make the intended comparison scope inspectable.",
+          "source_ids": [
+            "runner-recipe-packages-rewirebench-src-rewirebench-protocols-proteingym-py-f80cef7f"
+          ],
+          "source_locator": "protocols/proteingym.py lines 69–80, 104–125, 216–249"
+        }
+      ],
+      "limitations": [
+        {
+          "text": "A model can satisfy the scoring interface while having pretraining overlap. The example adapter leaves proteins longer than 1,022 residues unscored and cannot guarantee complete-track inference.",
+          "source_ids": [
+            "runner-recipe-docs-proteingym-md-f80cef7f"
+          ],
+          "source_locator": "docs/proteingym.md lines 33, 53"
+        },
+        {
+          "text": "No uncertainty intervals, independent assay-archive authentication or complete-track model run are established by this source review.",
+          "source_ids": [
+            "runner-recipe-docs-proteingym-md-f80cef7f",
+            "runner-recipe-packages-rewirebench-src-rewirebench-protocols-proteingym-py-f80cef7f"
+          ],
+          "source_locator": "docs/proteingym.md lines 11, 63–70; protocols/proteingym.py lines 245–246"
+        }
+      ],
+      "coverage": "limited",
+      "gaps": [
+        "Assay archives were not independently authenticated in this review.",
+        "Per-model training overlap and historical result checkpoint identities remain unresolved.",
+        "Full-track execution and named human scientific review remain outside this evidence batch."
+      ],
+      "review": {
+        "method": "automated_source_review",
+        "date": "2026-09-23",
+        "note": "Bounded review of pinned protocol sources and an existing public report. No model execution, numerical-result re-review, independent reproduction or named human scientific review was performed."
+      }
+    }
+  },
+  {
+    "id": "rewire-protocol-proteingym-amfr-v13",
+    "previous_profile_sha256": null,
+    "previous_record_sha256": "ab739287d2b053ad3a1f72e90172f20055c89d4c74a45c7f6010f87cb946f6b9",
+    "profile": {
+      "summary": "A documented local ESM-2 masked-marginal evaluation of all 2,972 variants in the ProteinGym v1.3 AMFR stability assay. It is one complete assay out of 217, with subset scope and no suite-level score or uncertainty interval.",
+      "summary_source_ids": [
+        "rewire-local-20260920-source-proteingym-esm2",
+        "profile-protocol-proteingym-reference-files-dms-substitutions-csv-a8f49801"
+      ],
+      "summary_source_locator": "report.json: /coverage, /scope, /metrics, /protocol_results; DMS_substitutions.csv: DMS_id=AMFR_HUMAN_Tsuboyama_2023_4G3O",
+      "sections": [
+        {
+          "title": "Biological target and experimental readout",
+          "body": "The pinned reference identifies a 47-residue human AMFR construct measured by cDNA-display proteolysis for stability. It lists 820 single and 2,152 multiple substitutions. This assay concerns the measured construct and experimental stability readout; it does not establish clinical variant effects or whole-protein performance.",
+          "source_ids": [
+            "profile-protocol-proteingym-reference-files-dms-substitutions-csv-a8f49801",
+            "rewire-local-20260920-instructions-proteingym"
+          ],
+          "source_locator": "DMS_substitutions.csv: AMFR row, seq_len, DMS_number_single_mutants, DMS_number_multiple_mutants, selection_type, raw_DMS_phenotype_name; local README.md: Data and method"
+        },
+        {
+          "title": "Model inputs and scoring",
+          "body": "The report identifies esm2_t6_8M_UR50D with a checkpoint digest and masked-marginal log odds in wild-type context, summed across substitutions. It reports no fitting and no assay labels, MSA or structure in the adapter inputs. Those observations apply to this reported configuration only.",
+          "source_ids": [
+            "rewire-local-20260920-source-proteingym-esm2",
+            "rewire-local-20260920-instructions-proteingym"
+          ],
+          "source_locator": "report.json: /execution/adapter_provenance, /execution/fitting, /input_information, /model_configuration; local README.md: Data and method"
+        },
+        {
+          "title": "Complete assay, incomplete track",
+          "body": "All 2,972 selected variants are reported scored, with zero unscored. The assay status is complete, while the enclosing report remains subset/partial_track, one of 217 assays, with empty suite metrics. The selected-assay denominator must not be interpreted as the denominator of the whole substitution track.",
+          "source_ids": [
+            "rewire-local-20260920-source-proteingym-esm2"
+          ],
+          "source_locator": "report.json: /coverage, /coverage_context, /scope, /completion, /protocol_results/per_assay/AMFR_HUMAN_Tsuboyama_2023_4G3O, /protocol_results/complete_assays, /protocol_results/total_assays, /metrics"
+        },
+        {
+          "title": "What was verified here",
+          "body": "This review retrieved and checked the public report, pinned reference, documentation and source code. The original documentation reports saved-prediction rescoring and agreement with five upstream metric formulas, but not execution of the complete upstream aggregation program. No predictions or weights were downloaded and no model was run in this review. The report explicitly says independently_reproduced=false.",
+          "source_ids": [
+            "rewire-local-20260920-instructions-proteingym",
+            "rewire-local-20260920-source-proteingym-esm2",
+            "protocol-evidence-amfr-reproduce-ca73fa47"
+          ],
+          "source_locator": "local README.md: Execution and verification; report.json: /independently_reproduced, /review_status; reproduce.py: main, saved-prediction and upstream metric comparison block"
+        }
+      ],
+      "facts": [
+        {
+          "label": "Assay and dataset",
+          "value": "AMFR_HUMAN_Tsuboyama_2023_4G3O in ProteinGym v1.3 DMS substitutions: human AMFR, 47 residues, Stability selection category, cDNA-display proteolysis; 820 single plus 2,152 multiple substitutions.",
+          "status": "source_checked",
+          "source_ids": [
+            "profile-protocol-proteingym-reference-files-dms-substitutions-csv-a8f49801"
+          ],
+          "source_locator": "DMS_substitutions.csv: AMFR row, taxon, seq_len, selection_assay, selection_type, DMS_number_single_mutants, DMS_number_multiple_mutants"
+        },
+        {
+          "label": "Version and reference",
+          "value": "Report preserved at runner commit ca73fa47136d182f2d4ddb083d084712198fc0e2. Report provenance pins upstream revision 144fe22b07dfaeec2b366f2346203a9838a55b4c and reference SHA-256 a8f498011532a74aa9fe556a50555a75e928c5837d19c06a87592ae04049b308.",
+          "status": "source_checked",
+          "source_ids": [
+            "rewire-local-20260920-source-proteingym-esm2"
+          ],
+          "source_locator": "source record: version, artifact_sha256; report.json: /provenance/upstream_revision, /provenance/reference_sha256"
+        },
+        {
+          "label": "Checkpoint and scoring",
+          "value": "The report names esm2_t6_8M_UR50D and checkpoint SHA-256 46f002a9870c9bdecd0ea887acb1f9a38a6b561e8f8bf8a6990b679b9d31b928, with wild-type-context masked marginals summed over substitutions. This is reported provenance, not a newly verified weight download or a checkpoint assignment to other result rows.",
+          "status": "source_checked",
+          "source_ids": [
+            "rewire-local-20260920-source-proteingym-esm2"
+          ],
+          "source_locator": "report.json: /execution/adapter_provenance/model, /checkpoint_sha256, /strategy (all under /execution/adapter_provenance)"
+        },
+        {
+          "label": "Inputs and fitting",
+          "value": "Wild-type protein sequence and amino-acid substitutions; no MSA, structure or assay labels in adapter inputs. The execution reports fitting=none. Official DMS_score_bin labels and higher-is-better target orientation are retained by the evaluator.",
+          "status": "source_checked",
+          "source_ids": [
+            "rewire-local-20260920-source-proteingym-esm2",
+            "rewire-local-20260920-instructions-proteingym"
+          ],
+          "source_locator": "report.json: /input_information, /execution/fitting, /protocol_configuration/binary_labels, /protocol_configuration/score_direction; local README.md: Data and method"
+        },
+        {
+          "label": "Splits",
+          "value": "All variants of this selected assay are evaluated with no new supervised train/test split or assay-label fitting. Selection before observing scores is reported in the local documentation; this review did not independently verify that chronology.",
+          "status": "source_checked",
+          "source_ids": [
+            "rewire-local-20260920-instructions-proteingym",
+            "rewire-local-20260920-source-proteingym-esm2"
+          ],
+          "source_locator": "local README.md: opening paragraph and Data and method; report.json: /execution/fitting"
+        },
+        {
+          "label": "Coverage",
+          "value": "2,972/2,972 selected variants scored, zero unscored; one complete assay out of 217. Report scope=subset, completion=partial and protocol status=partial_track. Both top-level and protocol suite metrics are empty.",
+          "status": "source_checked",
+          "source_ids": [
+            "rewire-local-20260920-source-proteingym-esm2"
+          ],
+          "source_locator": "report.json: /coverage, /scope, /completion, /metrics, /protocol_results/metrics, /protocol_results/complete_assays, /protocol_results/total_assays"
+        },
+        {
+          "label": "Metrics",
+          "value": "The preserved per-assay report contains Spearman, AUC, MCC, NDCG and Top_recall, rounded to three decimals. Higher is better; the reported negative correlation is retained. The local documentation reports agreement with upstream formulas; this review neither recomputed nor changed these result values.",
+          "status": "source_checked",
+          "source_ids": [
+            "rewire-local-20260920-source-proteingym-esm2",
+            "rewire-local-20260920-instructions-proteingym",
+            "protocol-evidence-proteingym-code-ca73fa47"
+          ],
+          "source_locator": "report.json: /protocol_results/per_assay/AMFR_HUMAN_Tsuboyama_2023_4G3O/metrics; local README.md: metric table and Execution and verification; pinned protocols/proteingym.py lines 157–184"
+        },
+        {
+          "label": "Aggregation",
+          "value": "The report records assay rounding followed by UniProt/selection-type and equal-category means. Its AMFR and Stability summaries contain only this selected assay, so they are not full-track estimates or independent observations.",
+          "status": "source_checked",
+          "source_ids": [
+            "rewire-local-20260920-source-proteingym-esm2",
+            "protocol-evidence-proteingym-code-ca73fa47"
+          ],
+          "source_locator": "report.json: /protocol_configuration/aggregation, /protocol_results/by_protein_selection_type, /protocol_results/by_selection_type, /protocol_results/metrics; protocols/proteingym.py lines 221–249"
+        },
+        {
+          "label": "Uncertainty",
+          "value": "No uncertainty interval was estimated in this report. Upstream cross-model bootstrap differences are not an absolute confidence interval for this assay; no seed-variability estimate is supplied.",
+          "status": "source_checked",
+          "source_ids": [
+            "rewire-local-20260920-source-proteingym-esm2"
+          ],
+          "source_locator": "report.json: /protocol_results/uncertainty, /model_configuration/seed"
+        },
+        {
+          "label": "Data verification",
+          "value": "The report records local AMFR CSV SHA-256 dd911d925eca79329a496eb6cb7b181ab448e15db244daf1c1f9c01e8a704c2a and a successful expected-hash check, while explicitly retaining local_bytes_hashed_not_independently_source_verified. Matching those bytes does not independently authenticate the official archive.",
+          "status": "source_checked",
+          "source_ids": [
+            "rewire-local-20260920-source-proteingym-esm2"
+          ],
+          "source_locator": "report.json: /provenance/assay_sha256/AMFR_HUMAN_Tsuboyama_2023_4G3O, /provenance/expected_hashes_checked, /provenance/data_verification"
+        },
+        {
+          "label": "Execution environment",
+          "value": "The report records rewirebench 0.4.0, Python 3.11.13, fair-esm 2.0.0, macOS arm64, CPU, seed 0 and one thread. Container digest/runtime and SIF SHA-256 are unreported. No accelerator or container execution is established.",
+          "status": "source_checked",
+          "source_ids": [
+            "rewire-local-20260920-source-proteingym-esm2"
+          ],
+          "source_locator": "report.json: /environment, /execution/adapter_provenance, /model_configuration"
+        },
+        {
+          "label": "Training overlap",
+          "value": "The report explicitly leaves training overlap unreported and notes that UniRef50 pretraining may overlap benchmark proteins. This review does not establish absence or extent of overlap.",
+          "status": "unreported",
+          "source_ids": [
+            "rewire-local-20260920-source-proteingym-esm2"
+          ],
+          "source_locator": "report.json: /model/training_overlap, /execution/adapter_provenance/training_overlap"
+        },
+        {
+          "label": "Reproduction status",
+          "value": "The report states independently_reproduced=false and published_result_reproduction=false. Source review and the original local formula checks do not establish independent reproduction of a published model result or named human scientific review.",
+          "status": "source_checked",
+          "source_ids": [
+            "rewire-local-20260920-source-proteingym-esm2",
+            "rewire-local-20260920-instructions-proteingym"
+          ],
+          "source_locator": "report.json: /independently_reproduced, /execution/adapter_provenance/published_result_reproduction, /review_status; local README.md: Execution and verification"
+        }
+      ],
+      "strengths": [
+        {
+          "text": "The report makes selected-assay coverage, checkpoint digest, score strategy and local input hashes explicit while retaining partial-track scope.",
+          "source_ids": [
+            "rewire-local-20260920-source-proteingym-esm2"
+          ],
+          "source_locator": "report.json: /coverage, /execution/adapter_provenance, /provenance, /scope"
+        }
+      ],
+      "limitations": [
+        {
+          "text": "One short construct and one experimental stability assay cannot establish whole-track, other-protein or clinical performance.",
+          "source_ids": [
+            "profile-protocol-proteingym-reference-files-dms-substitutions-csv-a8f49801",
+            "rewire-local-20260920-source-proteingym-esm2"
+          ],
+          "source_locator": "DMS_substitutions.csv: AMFR seq_len and selection_type; report.json: /protocol_results/complete_assays, /protocol_results/total_assays"
+        },
+        {
+          "text": "Independent assay-source authentication, training overlap and uncertainty remain unresolved; no new execution or named human scientific review was performed.",
+          "source_ids": [
+            "rewire-local-20260920-source-proteingym-esm2"
+          ],
+          "source_locator": "report.json: /provenance/data_verification, /model/training_overlap, /protocol_results/uncertainty, /independently_reproduced"
+        }
+      ],
+      "coverage": "limited",
+      "gaps": [
+        "Training overlap remains unreported in the execution report.",
+        "Local assay bytes were not independently authenticated against an official checksum.",
+        "No uncertainty interval or seed-variability estimate is provided.",
+        "Independent reproduction and named human scientific review remain outstanding."
+      ],
+      "review": {
+        "method": "automated_source_review",
+        "date": "2026-09-23",
+        "note": "Bounded review of pinned protocol sources and an existing public report. No model execution, numerical-result re-review, independent reproduction or named human scientific review was performed."
+      }
+    }
+  }
+]

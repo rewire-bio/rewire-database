@@ -6,13 +6,22 @@ import { profileSchema, validateProfileSources } from "../../lib/omics-profile";
 import { recordSchema, type RecordEntry } from "./schema";
 import { isModelSubject, isBenchmarkSubject } from "../../services/omics/src/entity-kinds";
 
-const directory = "data/omics/reviewed/profile-evidence-2026-09-23";
+const directories = [
+  "data/omics/reviewed/profile-evidence-2026-09-23",
+  "data/omics/reviewed/protocol-evidence-2026-09-23",
+];
 const sha = (value: string | Buffer) => createHash("sha256").update(value).digest("hex");
-const patchSchema = z.object({
+const digest = z.string().regex(/^[a-f0-9]{64}$/);
+const patchSchema = z.union([z.object({
   id: z.string().min(1),
-  previous_profile_sha256: z.string().regex(/^[a-f0-9]{64}$/),
+  previous_profile_sha256: digest,
   profile: z.unknown(),
-}).strict();
+}).strict(), z.object({
+  id: z.string().min(1),
+  previous_profile_sha256: z.null(),
+  previous_record_sha256: digest,
+  profile: z.unknown(),
+}).strict()]);
 
 /** A metadata review cannot change scientific results, identities or provenance. */
 export function applyProfileEvidence(
@@ -35,11 +44,19 @@ export function applyProfileEvidence(
     const patch = patchSchema.parse(raw);
     const profile = profileSchema.parse(patch.profile);
     const record = byId.get(patch.id);
-    if (!record?.attributes.profile || !(isModelSubject(record.kind) || isBenchmarkSubject(record.kind)))
+    if (!record || !(isModelSubject(record.kind) || isBenchmarkSubject(record.kind)))
       throw new Error(`Invalid profile evidence subject: ${patch.id}`);
     if (changes.has(patch.id)) throw new Error(`Duplicate profile evidence patch: ${patch.id}`);
-    if (sha(JSON.stringify(record.attributes.profile)) !== patch.previous_profile_sha256)
+    if (patch.previous_profile_sha256 === null) {
+      // Creation is deliberately restricted to an existing, completely pinned protocol.
+      // Null/invalid pre-existing profile values are not treated as absence.
+      if (record.kind !== "protocol" || Object.hasOwn(record.attributes, "profile") ||
+          sha(JSON.stringify(record)) !== patch.previous_record_sha256)
+        throw new Error(`Profile evidence creation precondition changed: ${patch.id}`);
+    } else if (!record.attributes.profile ||
+               sha(JSON.stringify(record.attributes.profile)) !== patch.previous_profile_sha256) {
       throw new Error(`Profile evidence precondition changed: ${patch.id}`);
+    }
     validateProfileSources(profile, byId);
     changes.set(record.id, {
       ...record,
@@ -49,7 +66,7 @@ export function applyProfileEvidence(
   return [...records.map(record => changes.get(record.id) || record), ...additional];
 }
 
-export function profileEvidenceInputs() {
+function batchInputs(directory: string) {
   const manifest = JSON.parse(fs.readFileSync(path.join(directory, "review.json"), "utf8"));
   return [path.join(directory, "review.json"), ...Object.keys(manifest.files).map(name => {
     if (name.includes("..") || path.isAbsolute(name)) throw new Error("Unsafe profile evidence path");
@@ -57,13 +74,17 @@ export function profileEvidenceInputs() {
   })];
 }
 
-export function addProfileEvidence(records: RecordEntry[]): RecordEntry[] {
+export function profileEvidenceInputs() {
+  return directories.flatMap(batchInputs);
+}
+
+function addBatch(records: RecordEntry[], directory: string): RecordEntry[] {
   const manifest = JSON.parse(fs.readFileSync(path.join(directory, "review.json"), "utf8"));
   if (manifest.method !== "automated_source_review" || manifest.outcome !== "pass")
     throw new Error("Profile evidence review is not complete");
   if (!manifest.files["patches.json"] || !manifest.files["sources.jsonl"])
     throw new Error("Profile evidence review does not cover its inputs");
-  for (const file of profileEvidenceInputs().slice(1)) {
+  for (const file of batchInputs(directory).slice(1)) {
     const name = path.relative(directory, file);
     if (sha(fs.readFileSync(file)) !== manifest.files[name])
       throw new Error(`Profile evidence input changed: ${name}`);
@@ -73,4 +94,8 @@ export function addProfileEvidence(records: RecordEntry[]): RecordEntry[] {
     JSON.parse(fs.readFileSync(path.join(directory, "patches.json"), "utf8")),
     fs.readFileSync(path.join(directory, "sources.jsonl"), "utf8").split("\n").filter(Boolean).map(line => JSON.parse(line)),
   );
+}
+
+export function addProfileEvidence(records: RecordEntry[]): RecordEntry[] {
+  return directories.reduce(addBatch, records);
 }

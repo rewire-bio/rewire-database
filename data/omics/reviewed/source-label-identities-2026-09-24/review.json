@@ -1,0 +1,37 @@
+{
+  "method": "automated_source_review",
+  "outcome": "pass",
+  "date": "2026-09-24",
+  "reviewer": "AI-assisted implementation review (Claude Code), with a separate AI-assisted source review by the coordinator",
+  "human_scientific_review": "not_performed",
+  "independent_reproduction": "not_performed",
+  "scope": "Identity of nine evaluated configurations printed only as a citation or author surname: eight ATOM3D author-year labels and the HEST label Ciga. The RSR scorer is named only generically, with its citation conflict and settings kept unresolved. Two method-level profiles for DeepDTA and DeepAffinity. No numerical values, locators, denominators or comparison conditions are changed.",
+  "independent_automated_review": [
+    "independent-review.md",
+    "implementation-review.md"
+  ],
+  "files": {
+    "artifacts/DeepAffinity-README.md.gz": "a7ded22bf37f164fc92fb14c3a43b3078933f585ac8a8f8d2b65538f702edfb9",
+    "artifacts/DeepDTA-README.md.gz": "7ba3ffc613c6e88b0d356aebf6ccff9170e0b67144b2f34e259df5a679a184a6",
+    "artifacts/atom3d-2012.04035v4.pdf.gz": "bda5829eaa09a4f5629d6920de1810aefb672ec6b9bd7a77fe02950df42451ed",
+    "artifacts/bipspi-PMC6361243.xml.gz": "b54b373bd9709515cff003fab09824ed36fa0bbd467c7e89ed5859caae54babd",
+    "artifacts/ciga-2011.13971v2.pdf.gz": "edfbdab14da1abb4393bf08f02ca9b4603ba12ba4b6361c5baee8e0541e38e8a",
+    "artifacts/deepaffinity-1806.07537v2.pdf.gz": "a8c016b0e3b921b3e83989013ccc00d7b6dba6dcfc603860c6588687e858c5e9",
+    "artifacts/deepdta-1801.10193v2.pdf.gz": "b2393fb68fa9b7b2afbcb605f9b4a3c3ab3ca5b00f0bc8cd1a8f351081f77ce9",
+    "artifacts/hest-2406.16192v1.pdf.gz": "e39c30336c452101f39dd1667703f414346e2251f184f26d0c1974b3123f2ed1",
+    "artifacts/martellab-self-supervised-histopathology-README.md.gz": "31ba69acbc0cd32925277bf6e6639c274b3525aca311558819632ab5cea73ea6",
+    "artifacts/molecularGNN_smiles-README.md.gz": "640ab63e9f835837173a020ce541f72b4dfa411afc8327473af77f3ad223b7a7",
+    "artifacts/n_gram_graph-README.md.gz": "a0ec72d818ed4401936ef4cf10808b4becc43897db12b273f3b17663d4ed3b72",
+    "artifacts/ngram-graph-1806.09206v2.pdf.gz": "7c17be6372230772c886046f32314a677691bee79bedfb014ce24a1644459f1e",
+    "artifacts/ornate-hal-01899468v1.pdf.gz": "4f41af1f49137f8bb4ea7ee0a8a92f2eb046b585e25b7388533881d545fe6a2a",
+    "artifacts/ozanciga-self-supervised-histopathology-README.md.gz": "df9b48ad2bb145babe222471211ea086da21f62c19ca485e8bbc7deb2531b05d",
+    "artifacts/tape-1906.08230v1.pdf.gz": "661f90d517cb7f8e2adb48a485261afbaa13d0d63f658fb4931f3b5514626a61",
+    "audit.json": "d320aab30b2d41781e4dea9582bbb22f21743805b9947a1ee072cc45d10847b6",
+    "identities.json": "392fdef11e9b70c1029ef6c9da6789959b02ee5eb4e0b6a4f13a0ddb023552bc",
+    "implementation-review.md": "d48d27b164bfd8cb2ab8c7240232cce05243bb1e61fb1dedb09acb73cc45ea42",
+    "independent-review.md": "c0b303046e937997c9e7ec79dadbc030eecdc25aa23783f3f8ca84b3e572b625",
+    "models.jsonl": "ed6a3470d0523adb1b9d8f0850321fa3dcb793ea33b5f794982f372d35a802fa",
+    "retrievals.json": "17e95a8a13ff0ef3f26ef4dc964f26a7c0999256f35c591cf1a164a226c9ab30",
+    "sources.jsonl": "85bc37aa275b3c8c334ddce507fad7cadad98c86a47e9383a206aa2074b556c9"
+  }
+}

@@ -2,6 +2,7 @@ import { validateSnapshot } from "../../services/omics/src/validation";
 import { addCoverageTables, coverageTableInputs } from "./model-coverage-tables";
 import { addModelEvaluationLinks, modelLinkInputs } from "./model-evaluation-links";
 import { addProfileEvidence, profileEvidenceInputs } from "./profile-evidence";
+import { addSourceLabelIdentities, sourceLabelInputs } from "./source-label-identities";
 import { addAgroEvaluations, agroInputs } from "./agront-evaluations";
 import { writeBaselineAudit } from "./baseline-coverage";
 import { writeImmutableChunks } from "./stream-files";
@@ -278,7 +279,9 @@ function main() {
   const evaluated = addAgroEvaluations(addBaselineEvaluations(addLocalEvaluations(applyAcquisitionCorrections(
     addAcquiredEvidence(addRunRecipes(separateEntities(profiled))),
   ))));
-  const records = addProfileEvidence(addModelEvaluationLinks(addCoverageTables(evaluated)));
+  const records = addSourceLabelIdentities(
+    addProfileEvidence(addModelEvaluationLinks(addCoverageTables(evaluated))),
+  );
   const profiles = records
     .filter((record) => record.attributes.profile)
     .map((record) => record.attributes.profile as OmicsProfile);
@@ -400,6 +403,7 @@ function main() {
               "Load individual source-scoped charts, remove cross-protocol pooled rankings, and move findings before detailed instructions.",
               "Review 69 selected profile facts across 18 profiles against pinned primary sources, including exact configuration, split, coverage and uncertainty distinctions. Preserve every result value and keep unresolved metadata explicit.",
               "Add two bounded ProteinGym protocol profiles with 24 sourced facts, distinguishing the 217-assay track from one complete AMFR assay. Preserve numerical results, source-authentication gaps and independent-reproduction limits.",
+              "Name nine evaluated methods printed only as an author-year citation (eight ATOM3D comparisons) or an author surname (HEST, Ciga), from the benchmark text and the cited original sources. The ATOM3D RSR scorer is named only as a Rosetta scoring function; its citation conflict and settings stay unresolved. Printed labels remain searchable and auditable; IDs, values, locators and comparison conditions are unchanged. Add sourced DeepDTA and DeepAffinity method profiles.",
               "Preserve archived release bytes, historical URLs and MFASS history. Contribution intake remains controlled separately from catalogue publication.",
             ],
           }
@@ -422,6 +426,7 @@ function main() {
         ...coverageTableInputs,
         ...modelLinkInputs,
         ...profileEvidenceInputs(),
+        ...sourceLabelInputs(),
         ...reviewInputFiles.filter((file) => fs.existsSync(file)),
         ...profileInputs.filter((file) => fs.existsSync(file)),
         ...associationInputs.filter((file) => fs.existsSync(file)),

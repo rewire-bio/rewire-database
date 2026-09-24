@@ -8,6 +8,7 @@ import {
   datasetSubjectKinds,
 } from "./entity-kinds.js";
 import { assertNoPrivateFields as assertPublicCatalogue } from "./private-fields.js";
+import { recordSearchText } from "./source-identity.js";
 import { createEvidenceIndex } from "./evidence-table.js";
 import { resolveComparisons } from "./published-comparisons.js";
 import type { ResolvedComparison } from "./published-comparisons.js";
@@ -494,11 +495,7 @@ export function createCatalogueQuery(snapshot: CatalogueSnapshot) {
           Object.values(r.facets).some((values) =>
             values.includes(input.area!),
           )) &&
-        (!q ||
-          [r.id, r.name, r.description, ...Object.values(r.facets).flat()]
-            .join(" ")
-            .toLowerCase()
-            .includes(q)) &&
+        (!q || recordSearchText(r).includes(q)) &&
         (!input.origin ||
           !["result", "evaluation"].includes(r.kind) ||
           originMatches(r.attributes.origin) ||
@@ -527,11 +524,7 @@ export function createCatalogueQuery(snapshot: CatalogueSnapshot) {
             Object.values(r.facets).some((values) =>
               values.includes(input.area!),
             )) &&
-          (!q ||
-            [r.id, r.name, r.description, ...Object.values(r.facets).flat()]
-              .join(" ")
-              .toLowerCase()
-              .includes(q)) &&
+          (!q || recordSearchText(r).includes(q)) &&
           (!input.origin ||
             !["result", "evaluation"].includes(r.kind) ||
             originMatches(r.attributes.origin) ||

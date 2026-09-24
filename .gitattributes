@@ -5,3 +5,5 @@ data/omics/reviewed/profile-evidence-2026-09-23/audit.csv whitespace=cr-at-eol
 # Keep the additive protocol review's original-byte receipts and CSV intact.
 data/omics/reviewed/protocol-evidence-2026-09-23/** -text
 data/omics/reviewed/protocol-evidence-2026-09-23/audit.csv whitespace=cr-at-eol
+# Keep the source-label identity review inputs byte-exact on checkout.
+data/omics/reviewed/source-label-identities-2026-09-24/** -text

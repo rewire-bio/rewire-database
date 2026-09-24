@@ -1,0 +1,441 @@
+[
+  {
+    "subject_id": "atom3d-method-zt-rk-et-al-2018",
+    "previous_record_sha256": "b71c7111a890bb8b761d5f1cf3f988af4647b0195d5d6eadec6ea16fac080fd3",
+    "source_label": "[Öztürk et al., 2018]",
+    "label_form": "bracketed_citation",
+    "status": "resolved",
+    "display_name": "DeepDTA (ATOM3D baseline)",
+    "identity": "DeepDTA",
+    "configuration": "Retrained by the ATOM3D authors with the original paper's hyperparameters: regression for LBA and binary classification for LEP.",
+    "description": null,
+    "source_ids": [
+      "evidence-expansion-atom3d-92656c20",
+      "source-label-deepdta-arxiv-3c368fed",
+      "source-label-deepdta-readme-a546a843"
+    ],
+    "source_locator": "ATOM3D arXiv:2012.04035v4 §5.1 and Table 5, p.7; App. F.5 and F.6 with footnote 10, p.24; Table 8 LBA (30%) and LEP rows, p.28. DeepDTA arXiv:1801.10193v2 title and abstract, p.1; Proposed model and Figure 2, PDF pp.7-8. github.com/hkmztrk/DeepDTA README at a546a8433a6822e958f36171c4356ad6f414d623.",
+    "basis": "ATOM3D §5.1 compares to 'DeepDTA [Öztürk et al., 2018]', a 1DCNN over protein sequence and ligand SMILES, and App. F.5 and F.6 link the public DeepDTA repository. The cited paper introduces DeepDTA as two 1D CNN blocks over SMILES and protein sequence. The identity comes from this text, not from the author string or a matching score.",
+    "known_details": [
+      {
+        "label": "Training",
+        "value": "Trained by the ATOM3D authors with the same hyperparameters as the original paper.",
+        "source_ids": [
+          "evidence-expansion-atom3d-92656c20"
+        ],
+        "source_locator": "ATOM3D App. F.5 and F.6, p.24"
+      },
+      {
+        "label": "Tasks",
+        "value": "LBA as regression. For LEP the task is reduced to binary classification of a protein sequence and ligand SMILES pair, without a twin network.",
+        "source_ids": [
+          "evidence-expansion-atom3d-92656c20"
+        ],
+        "source_locator": "ATOM3D App. F.5 and F.6, p.24"
+      },
+      {
+        "label": "LBA split",
+        "value": "The Table 5 LBA values equal the Table 8 DeepDTA row for LBA (30%).",
+        "source_ids": [
+          "evidence-expansion-atom3d-92656c20"
+        ],
+        "source_locator": "ATOM3D Table 5, p.7; Table 8, p.28"
+      }
+    ],
+    "unknown": [
+      {
+        "label": "Dataset-specific settings",
+        "note": "The original paper uses different maximum input lengths for Davis and KIBA. ATOM3D does not say which settings it used."
+      },
+      {
+        "label": "Checkpoint",
+        "note": "No retrained ATOM3D weights or checkpoint are identified."
+      },
+      {
+        "label": "Implementation revision",
+        "note": "ATOM3D links the repository without a commit."
+      }
+    ],
+    "link": {
+      "relation": "family",
+      "target_id": "identity-model-deepdta",
+      "source_ids": [
+        "evidence-expansion-atom3d-92656c20",
+        "source-label-deepdta-arxiv-3c368fed"
+      ],
+      "source_locator": "ATOM3D §5.1, p.7; App. F.5 and F.6, p.24. DeepDTA arXiv:1801.10193v2 Proposed model, PDF pp.7-8.",
+      "explanation": "ATOM3D retrained DeepDTA with the original hyperparameters. Family attribution only: the retrained weights and their LBA and LEP scores stay with this configuration."
+    }
+  },
+  {
+    "subject_id": "atom3d-method-karimi-et-al-2019",
+    "previous_record_sha256": "fb5a192b48a56cda21712ff769e673b70f2d9dcf35af7a469b6b27a7f3858213",
+    "source_label": "[Karimi et al., 2019]",
+    "label_form": "bracketed_citation",
+    "status": "resolved",
+    "display_name": "DeepAffinity (unified RNN/RNN-CNN; DSSP-derived SPS)",
+    "identity": "DeepAffinity",
+    "configuration": "Unified RNN/RNN-CNN retrained by the ATOM3D authors for LBA, with structure annotations computed by DSSP from 3D structures.",
+    "description": null,
+    "source_ids": [
+      "evidence-expansion-atom3d-92656c20",
+      "source-label-deepaffinity-arxiv-97d6e3ae",
+      "source-label-deepaffinity-readme-debca4c9"
+    ],
+    "source_locator": "ATOM3D arXiv:2012.04035v4 §5.1 and Table 5, p.7; App. F.5 with footnote 11, p.24. DeepAffinity arXiv:1806.07537v2 title, p.1; §2.2.2, p.3; §§2.4-2.5, p.4. github.com/Shen-Lab/DeepAffinity README at debca4c9f01991a37594e1b67f3dbb46a29e82d1.",
+    "basis": "ATOM3D §5.1 compares to 'DeepAffinity [Karimi et al., 2019]' for LBA, and App. F.5 specifies 'their unified RNN/RNN-CNN model' with SMILES and SPS inputs and links the public repository. The cited paper introduces this unified RNN-CNN as DeepAffinity.",
+    "known_details": [
+      {
+        "label": "SPS annotations",
+        "value": "Secondary structure and relative solvent accessibility computed with DSSP from the 3D structure, not predicted with SSpro/ACCpro as in the original paper.",
+        "source_ids": [
+          "evidence-expansion-atom3d-92656c20",
+          "source-label-deepaffinity-arxiv-97d6e3ae"
+        ],
+        "source_locator": "ATOM3D App. F.5, p.24; DeepAffinity §2.2.2, p.3"
+      },
+      {
+        "label": "Input lengths",
+        "value": "Maximum SMILES and SPS lengths raised from 100 and 152 to 160 and 168.",
+        "source_ids": [
+          "evidence-expansion-atom3d-92656c20"
+        ],
+        "source_locator": "ATOM3D App. F.5, p.24"
+      },
+      {
+        "label": "Training",
+        "value": "Pretrained seq2seq encoders initialise joint supervised training of the encoders and CNN for 1000 epochs. Other hyperparameters follow the original paper.",
+        "source_ids": [
+          "evidence-expansion-atom3d-92656c20"
+        ],
+        "source_locator": "ATOM3D App. F.5, p.24"
+      },
+      {
+        "label": "Tasks",
+        "value": "LBA only. Table 5 has no DeepAffinity LEP value.",
+        "source_ids": [
+          "evidence-expansion-atom3d-92656c20"
+        ],
+        "source_locator": "ATOM3D Table 5, p.7"
+      }
+    ],
+    "unknown": [
+      {
+        "label": "LBA split",
+        "note": "Table 8 has no DeepAffinity row, so the identity split behind the Table 5 values is not stated."
+      },
+      {
+        "label": "Attention and ensemble choice",
+        "note": "The original paper reports separate, marginalized and joint attention variants. ATOM3D does not say which was used."
+      },
+      {
+        "label": "Checkpoint",
+        "note": "No retrained ATOM3D weights or checkpoint are identified."
+      }
+    ],
+    "link": {
+      "relation": "family",
+      "target_id": "identity-model-deepaffinity",
+      "source_ids": [
+        "evidence-expansion-atom3d-92656c20",
+        "source-label-deepaffinity-arxiv-97d6e3ae"
+      ],
+      "source_locator": "ATOM3D §5.1, p.7; App. F.5, p.24. DeepAffinity arXiv:1806.07537v2 §2.4, p.4.",
+      "explanation": "ATOM3D retrained the unified RNN/RNN-CNN DeepAffinity model with DSSP-derived SPS input. Family attribution only: the retrained weights and their LBA scores stay with this configuration."
+    }
+  },
+  {
+    "subject_id": "atom3d-method-rao-et-al-2019",
+    "previous_record_sha256": "d88f994f0c0d71ae2c8ccb39d42951b91c7e02d5d1f4e374ad465bfaac4a085b",
+    "source_label": "[Rao et al., 2019]",
+    "label_form": "bracketed_citation",
+    "status": "resolved",
+    "display_name": "TAPE Transformer (ATOM3D baseline)",
+    "identity": "TAPE Transformer",
+    "configuration": "RES uses the accuracy reported in the TAPE paper. MSP uses the public TAPE implementation with a modified head, trained by the ATOM3D authors.",
+    "description": null,
+    "source_ids": [
+      "evidence-expansion-atom3d-92656c20",
+      "evidence-expansion-evidence-discovery-final-tape-6ee0c3e6"
+    ],
+    "source_locator": "ATOM3D arXiv:2012.04035v4 §5.1 and Table 4, p.7; App. F.3 and F.4 with footnote 9, p.24; Table 8 RES and MSP rows, p.28. TAPE arXiv:1906.08230v1 Table 1 and Architectures and Training, p.6.",
+    "basis": "ATOM3D §5.1 describes the comparison as 'the TAPE model [Rao et al., 2019], a transformer architecture that operates on protein sequence', and App. F.3 names 'the transformer architecture TAPE'. The RES value 0.30 also equals the Transformer held-out-family accuracy in TAPE Table 1. That match corroborates the text; it is not the basis of the identity.",
+    "known_details": [
+      {
+        "label": "RES value",
+        "value": "Taken from TAPE's reported language-modelling accuracy on held-out Pfam families, which ATOM3D treats as a sequence-only counterpart of RES. Table 8 marks it as trained on different data.",
+        "source_ids": [
+          "evidence-expansion-atom3d-92656c20",
+          "evidence-expansion-evidence-discovery-final-tape-6ee0c3e6"
+        ],
+        "source_locator": "ATOM3D App. F.3, p.24; Table 8, p.28; TAPE Table 1, p.6"
+      },
+      {
+        "label": "MSP",
+        "value": "Public TAPE implementation with its sequence-to-sequence head modified to predict the effect of mutations at given positions.",
+        "source_ids": [
+          "evidence-expansion-atom3d-92656c20"
+        ],
+        "source_locator": "ATOM3D App. F.4, p.24"
+      }
+    ],
+    "unknown": [
+      {
+        "label": "MSP initial weights",
+        "note": "ATOM3D does not say whether MSP training started from pretrained TAPE weights."
+      },
+      {
+        "label": "Checkpoint",
+        "note": "No checkpoint or implementation revision is identified."
+      }
+    ],
+    "link": {
+      "relation": "family",
+      "target_id": "discovery-model-tape-transformer",
+      "source_ids": [
+        "evidence-expansion-atom3d-92656c20",
+        "evidence-expansion-evidence-discovery-final-tape-6ee0c3e6"
+      ],
+      "source_locator": "ATOM3D §5.1, p.7; App. F.3 and F.4, p.24. TAPE arXiv:1906.08230v1 Table 1, p.6.",
+      "explanation": "ATOM3D identifies the compared model as the TAPE transformer. Family attribution only: RES reuses a TAPE paper value and MSP uses an ATOM3D-modified head."
+    }
+  },
+  {
+    "subject_id": "atom3d-method-liu-et-al-2019",
+    "previous_record_sha256": "7db032e42a7874742471462ccac3819d9b7aeb3a169feb2a543a2ecf4d90d810",
+    "source_label": "[Liu et al., 2019]",
+    "label_form": "bracketed_citation",
+    "status": "resolved",
+    "display_name": "N-Gram Graph XGB (ATOM3D baseline)",
+    "identity": "N-Gram Graph with XGBoost",
+    "configuration": "2D baseline for SMP: N-gram graph representation of the chemical bond graph with XGBoost.",
+    "description": null,
+    "source_ids": [
+      "evidence-expansion-atom3d-92656c20",
+      "source-label-ngram-graph-arxiv-fa329cdc",
+      "source-label-ngram-graph-readme-3acf580f"
+    ],
+    "source_locator": "ATOM3D arXiv:2012.04035v4 §5.1 and Table 3, p.7; App. F.1, p.23, and footnote 8, p.24. N-Gram Graph arXiv:1806.09206v2 title, p.1; RF and XGB models, p.6. github.com/chao1224/n_gram_graph README at 3acf580fe4b5835409abcbd566aadcba6f63fdb8.",
+    "basis": "ATOM3D App. F.1 compares to 'N-Gram Graph XGB [Liu et al., 2019]': the unsupervised N-gram graph representation combined with XGBoost, with a link to the public repository. The cited paper introduces the N-gram graph and evaluates it with XGBoost.",
+    "known_details": [],
+    "unknown": [
+      {
+        "label": "Who produced the values",
+        "note": "ATOM3D does not say whether it retrained N-Gram Graph XGB or reused published values. Table 8 has no row for it."
+      },
+      {
+        "label": "Checkpoint and settings",
+        "note": "No hyperparameters, checkpoint or implementation revision are identified."
+      }
+    ],
+    "link": null
+  },
+  {
+    "subject_id": "atom3d-method-tsubaki-et-al-2019",
+    "previous_record_sha256": "c6621e4d6416d6f9b661bd212570c3745b236606973375a01298e687750f3345",
+    "source_label": "[Tsubaki et al., 2019]",
+    "label_form": "bracketed_citation",
+    "status": "resolved",
+    "display_name": "Molecular GNN, SMILES implementation (ATOM3D baseline)",
+    "identity": "Molecular GNN of Tsubaki et al.",
+    "configuration": "2D baseline for SMP using the SMILES-only implementation in masashitsubaki/molecularGNN_smiles.",
+    "description": null,
+    "source_ids": [
+      "evidence-expansion-atom3d-92656c20",
+      "source-label-molecular-gnn-readme-0fdd327e"
+    ],
+    "source_locator": "ATOM3D arXiv:2012.04035v4 §5.1 and Table 3, p.7; App. F.1 with footnote 7, p.23; Table 8 SMP rows, p.28. github.com/masashitsubaki/molecularGNN_smiles README at 0fdd327ef4c0278e86619c370101706e5c6c506f.",
+    "basis": "ATOM3D App. F.1 chooses 'molecular GNNs [Tsubaki et al., 2019]' and uses 'an implementation that only uses the SMILES representation', linking masashitsubaki/molecularGNN_smiles. The repository describes a GNN over r-radius subgraphs from the authors' Bioinformatics paper. The method has no product name, so the display name is descriptive.",
+    "known_details": [
+      {
+        "label": "Input",
+        "value": "SMILES representation of the molecular graph only.",
+        "source_ids": [
+          "evidence-expansion-atom3d-92656c20"
+        ],
+        "source_locator": "ATOM3D App. F.1, p.23"
+      }
+    ],
+    "unknown": [
+      {
+        "label": "Checkpoint and settings",
+        "note": "No hyperparameters, checkpoint or implementation revision are identified."
+      }
+    ],
+    "link": null
+  },
+  {
+    "subject_id": "atom3d-method-sanchez-garcia-et-al-2018",
+    "previous_record_sha256": "da690b904501d7f71bd62acda235556ebe8f3c548a9df85b9ce4df51ee482c07",
+    "source_label": "[Sanchez-Garcia et al., 2018]",
+    "label_form": "bracketed_citation",
+    "status": "resolved",
+    "display_name": "BIPSPI, sequence-only (ATOM3D baseline)",
+    "identity": "BIPSPI",
+    "configuration": "Sequence-only BIPSPI using sequence and conservation features, evaluated on DB5.",
+    "description": null,
+    "source_ids": [
+      "evidence-expansion-atom3d-92656c20",
+      "source-label-bipspi-pmc-c4c9bf4b"
+    ],
+    "source_locator": "ATOM3D arXiv:2012.04035v4 §5.1 and Table 4, p.7; App. F.2, p.24; Table 8 PIP row, p.28. BIPSPI, Bioinformatics 35(3):470 (PMC6361243), Table 1, Input 'Seq' rows.",
+    "basis": "ATOM3D §5.1 compares to 'the sequence-only version of BIPSPI [Sanchez-Garcia et al., 2018]', and App. F.2 uses 'their model that uses only sequence and sequence conservation features and is evaluated on DB5'. BIPSPI Table 1 reports sequence-only ('Seq') variants.",
+    "known_details": [
+      {
+        "label": "Features",
+        "value": "Sequence and sequence conservation features only.",
+        "source_ids": [
+          "evidence-expansion-atom3d-92656c20"
+        ],
+        "source_locator": "ATOM3D App. F.2, p.24"
+      }
+    ],
+    "unknown": [
+      {
+        "label": "Who produced the value",
+        "note": "The 0.841 AUROC does not appear in BIPSPI Table 1. ATOM3D does not say whether it retrained BIPSPI or took the value from elsewhere."
+      },
+      {
+        "label": "Checkpoint",
+        "note": "No checkpoint or implementation revision is identified."
+      }
+    ],
+    "link": null
+  },
+  {
+    "subject_id": "atom3d-method-pag-s-et-al-2019",
+    "previous_record_sha256": "c0c5a0473331e93e67f84967576839becd80b7b3bda2095761a01e499c1de4bc",
+    "source_label": "[Pagès et al., 2019]",
+    "label_form": "bracketed_citation",
+    "status": "resolved",
+    "display_name": "ProQ3D (CAD-trained; rotameric optimization), reported by Pagès et al.",
+    "identity": "ProQ3D",
+    "configuration": "ProQ3D version trained on CAD-score with rotameric optimization, run by Pagès et al. with a 2013 UniRef database. ATOM3D reuses the CASP 11 stage 2 scores that Pagès et al. report.",
+    "description": "ProQ3D, a deep-learning model quality assessment method that uses structural information, Rosetta energy terms and sequence-derived evolutionary information. ATOM3D reuses scores reported by Pagès et al.",
+    "source_ids": [
+      "evidence-expansion-atom3d-92656c20",
+      "source-label-ornate-hal-91150854"
+    ],
+    "source_locator": "ATOM3D arXiv:2012.04035v4 Table 6, p.8; App. F.7, p.25; Table 8 PSR rows, p.28. Pagès et al., HAL hal-01899468v1 (preprint of Bioinformatics 35(18):3313, doi 10.1093/bioinformatics/btz122): Proq3D setup, PDF p.5; Table 2, CASP 11 stage 2 Proq3D row, PDF p.6.",
+    "basis": "ATOM3D App. F.7 takes its PSR comparison 'as reported in [Pagès et al., 2019]' and names 3DCNN, Ornate and Proq3D as the reported methods. All six ATOM3D Table 8 statistics (mean RP, RS, RK 0.444, 0.432, 0.304; global RP, RS, RK 0.772, 0.796, 0.594) equal the CASP 11 stage 2 Proq3D row of Pagès et al. Table 2; the Ornate and 3dCNN rows differ. The identity rests on ATOM3D's attribution to Pagès et al. together with a match on all six statistics to a single row. One matching value would not be enough.",
+    "known_details": [
+      {
+        "label": "ProQ3D version",
+        "value": "Trained on CAD-score with rotameric optimization enabled, run with a 2013 UniRef sequence database.",
+        "source_ids": [
+          "source-label-ornate-hal-91150854"
+        ],
+        "source_locator": "Pagès et al. HAL hal-01899468v1, PDF p.5"
+      },
+      {
+        "label": "Reported scores",
+        "value": "Pagès et al. Table 2 correlations are against GDT-TS on CASP 11 stage 2 models.",
+        "source_ids": [
+          "source-label-ornate-hal-91150854"
+        ],
+        "source_locator": "Pagès et al. HAL hal-01899468v1 Table 2, PDF p.6"
+      }
+    ],
+    "unknown": [
+      {
+        "label": "Checkpoint",
+        "note": "No ProQ3D software revision or checkpoint is identified."
+      },
+      {
+        "label": "Test set equivalence",
+        "note": "Neither source establishes that the Pagès et al. CASP 11 stage 2 model set is identical to the ATOM3D PSR test split."
+      }
+    ],
+    "link": null
+  },
+  {
+    "subject_id": "atom3d-method-watkins-et-al-2020",
+    "previous_record_sha256": "cc827269f4774c6f0db75b56d650c22d6d06fca729806833007853042d6c79ea",
+    "source_label": "[Watkins et al., 2020]",
+    "label_form": "bracketed_citation",
+    "status": "resolved",
+    "display_name": "Rosetta scoring function (RSR configuration unresolved)",
+    "identity": "Rosetta scoring function",
+    "configuration": null,
+    "description": "Rosetta scoring function used by ATOM3D as the state-of-the-art RSR comparison. The specific score function and settings are not stated.",
+    "source_ids": [
+      "evidence-expansion-atom3d-92656c20"
+    ],
+    "source_locator": "ATOM3D arXiv:2012.04035v4 Table 6, p.8 ([Watkins et al., 2020]); App. F.8, p.25; Table 7, p.27 and Table 8 RSR rows, p.28 ([Alford et al., 2017]).",
+    "basis": "App. F.8 states that ATOM3D compares its RSR results 'against the Rosetta scoring function [Alford et al., 2017]', and Tables 7 and 8 give the same values under [Alford et al., 2017]. Table 6 instead cites [Watkins et al., 2020] (FARFAR2). Both citations are Rosetta-based, so the generic identity is supported; the specific scoring function is not.",
+    "known_details": [
+      {
+        "label": "Comparison",
+        "value": "ATOM3D describes the Rosetta scoring function as a physical- and knowledge-based potential tuned for biomolecular structure, which has most consistently produced the lowest-RMSD candidates in past RNA Puzzles.",
+        "source_ids": [
+          "evidence-expansion-atom3d-92656c20"
+        ],
+        "source_locator": "ATOM3D App. F.8, p.25"
+      }
+    ],
+    "unknown": [
+      {
+        "label": "Citation conflict",
+        "note": "Table 6 cites [Watkins et al., 2020]; Tables 7 and 8 and App. F.8 cite [Alford et al., 2017]. The paper does not explain the difference."
+      },
+      {
+        "label": "Score function and settings",
+        "note": "The specific Rosetta score function, weights and software version behind the values are not stated. FARFAR2 is not inferred as the ranking method."
+      }
+    ],
+    "link": null
+  },
+  {
+    "subject_id": "hest-method-ciga",
+    "previous_record_sha256": "5b8031b5150988cf1b722996172fecf7539e24c64305e3f912d781095261be5c",
+    "source_label": "Ciga",
+    "label_form": "author_surname",
+    "status": "resolved",
+    "display_name": "SimCLR histology encoder + random forest (HEST; Ciga et al.)",
+    "identity": "SimCLR histology encoder of Ciga et al.",
+    "configuration": "Frozen patch embeddings scored by HEST with its 70-tree random-forest regression head.",
+    "description": null,
+    "source_ids": [
+      "evidence-expansion-p2-hest-cached-636099a73dee",
+      "source-label-ciga-arxiv-3b08dd7e",
+      "source-label-ciga-readme-f7a93798",
+      "source-label-martellab-readme-22d3440f"
+    ],
+    "source_locator": "HEST arXiv:2406.16192v1 §5.2, p.6; Table 1, p.7; App. C.3, pp.14 and 17; Table A12, p.26. Ciga et al. arXiv:2011.13971v2 abstract, p.1. github.com/ozanciga/self-supervised-histopathology README at f7a93798911c861efa297fd9c9b9b1f9ece0c1c0; github.com/martellab-sri/self-supervised-histopathology README at 22d3440f8d94d6e367304f1e50b82e9ea930dbd7.",
+    "basis": "HEST §5.2 lists 'Ciga Ciga et al. [2022] (SimCLR pretrained on public histology data)' among its ten patch encoders, and Table 1 scores their embeddings with a 70-tree random forest. The cited paper applies SimCLR to 57 unlabelled histopathology datasets. The printed label 'Ciga' is the first author's surname, so the display name describes the method and keeps the attribution.",
+    "known_details": [
+      {
+        "label": "Regression head",
+        "value": "Random forest with 70 trees (sklearn) mapping patch embeddings to log1p-normalised expression of the top 50 highly variable genes, scored by Pearson correlation.",
+        "source_ids": [
+          "evidence-expansion-p2-hest-cached-636099a73dee"
+        ],
+        "source_locator": "HEST §5.2, p.6; App. C.3, p.14"
+      },
+      {
+        "label": "Pretraining",
+        "value": "SimCLR self-supervised pretraining on public histology data.",
+        "source_ids": [
+          "evidence-expansion-p2-hest-cached-636099a73dee",
+          "source-label-ciga-arxiv-3b08dd7e"
+        ],
+        "source_locator": "HEST §5.2, p.6; Ciga et al. abstract, p.1"
+      }
+    ],
+    "unknown": [
+      {
+        "label": "Backbone",
+        "note": "HEST App. C.3 (p.17) and Table A12 (p.26) say ResNet-50. The original repository example loads ResNet-18 and the lab repository offers ResNet-34, 50 and 101. Which released weights HEST used is not stated."
+      },
+      {
+        "label": "Training recipe",
+        "note": "HEST Table A12 labels the recipe 'Supervised', which contradicts HEST §5.2, App. C.3 and the original paper."
+      },
+      {
+        "label": "Checkpoint",
+        "note": "No checkpoint file or revision is identified."
+      }
+    ],
+    "link": null
+  }
+]

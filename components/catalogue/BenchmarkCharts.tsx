@@ -12,6 +12,8 @@ import { catalogueClient, type ResultsPage } from "@/lib/catalogue-client";
 import { displayValue, originLabel, recordHref } from "@/lib/omics";
 import { testedEntities, singularKindLabels } from "@/lib/omics-browse";
 import { Evidence } from "./Profile";
+import { CitedAs } from "./SourceIdentity";
+import { sourceLabel } from "@/services/omics/src/source-identity";
 import Results from "./Results";
 import { useResultsLocation } from "./useResultsLocation";
 import {
@@ -85,6 +87,16 @@ function testedName(row: ResolvedComparison["rows"][number]) {
     .map((record) => catalogueText(record.name))
     .join(", ");
 }
+/** Row search also matches printed source labels kept for renamed methods. */
+export function testedSearchText(row: ResolvedComparison["rows"][number]) {
+  return [
+    testedName(row),
+    originLabel(row.origin),
+    ...testedEntities(row).map((record) => sourceLabel(record) || ""),
+  ]
+    .join(" ")
+    .toLowerCase();
+}
 function Entity({ row }: { row: ResolvedComparison["rows"][number] }) {
   return (
     <>
@@ -92,6 +104,7 @@ function Entity({ row }: { row: ResolvedComparison["rows"][number] }) {
         <span key={record.id}>
           {index > 0 ? ", " : ""}
           <Link href={recordHref(record)}>{catalogueText(record.name)}</Link>
+          <CitedAs record={record} />
         </span>
       ))}
     </>
@@ -231,9 +244,7 @@ export function ComparisonWorkspace({
     comparisonChoices(choices, state.scope_search, selected);
   const rows = useMemo(() => {
     const filtered = (panel?.rows || []).filter((row) =>
-      `${testedName(row)} ${originLabel(row.origin)}`
-        .toLowerCase()
-        .includes(state.search.toLowerCase()),
+      testedSearchText(row).includes(state.search.toLowerCase()),
     );
     filtered.sort((a, b) => {
       const av = numericScore(a.result.attributes.numeric_value),

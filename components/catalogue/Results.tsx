@@ -3,6 +3,7 @@ import { formatScore } from "@/lib/score-display";
 import { catalogueText } from "@/lib/catalogue-text";
 import { useEffect, useId, useMemo, useState } from "react";
 import Link from "next/link";
+import { CitedAs } from "./SourceIdentity";
 import { catalogueClient, type ResultsPage } from "@/lib/catalogue-client";
 import {
   displayValue,
@@ -48,6 +49,7 @@ function RecordLinks({ records }: { records: OmicsRecord[] }) {
               <Link href={recordHref(record)}>
                 {catalogueText(record.name)}
               </Link>
+              <CitedAs record={record} />
             </span>
           ))
         : "Not reported"}

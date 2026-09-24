@@ -28,6 +28,7 @@ import RunRecipes from "@/components/catalogue/RunRecipes";
 import BaselineCoverage from "@/components/catalogue/BaselineCoverage";
 import Reproduction from "@/components/catalogue/Reproduction";
 import RunGuide from "@/components/catalogue/RunGuide";
+import SourceIdentityNotice from "@/components/catalogue/SourceIdentity";
 import Results from "@/components/catalogue/Results";
 import { ComparisonWorkspace } from "@/components/catalogue/BenchmarkCharts";
 import SectionNavigation, {
@@ -270,6 +271,13 @@ export default function RecordPage({ params }: { params: Params }) {
     ...benchmarkLinks,
     ...datasetLinks,
   ]);
+  const identitySubjectId = (
+    record.attributes.source_identity as { subject_id?: unknown } | undefined
+  )?.subject_id;
+  const identitySubject =
+    typeof identitySubjectId === "string"
+      ? query.get({ id: identitySubjectId, include_comparisons: false })?.record
+      : undefined;
   const proposals = [...detail.direct, ...detail.reverse].filter(
     (item) => item.relation === "applicable_to",
   );
@@ -300,6 +308,11 @@ export default function RecordPage({ params }: { params: Params }) {
                   ? catalogueText(record.name)
                   : summary}
               </p>
+              <SourceIdentityNotice
+                record={record}
+                sources={detail.sources}
+                subject={identitySubject}
+              />
               {profile.success && profile.data.summary_source_ids && (
                 <ProfileEvidence
                   ids={profile.data.summary_source_ids}

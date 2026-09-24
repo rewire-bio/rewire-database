@@ -14,6 +14,7 @@ import {
   relationAcceptsKind,
 } from "./entity-kinds.js";
 import { profileSchema } from "./profile-schema.js";
+import { validateSourceIdentity } from "./source-identity.js";
 import { z } from "zod";
 import { createCatalogueQuery } from "./catalogue-query.js";
 import { validateBenchmarkResearch } from "./benchmark-research.js";
@@ -302,6 +303,7 @@ export function validateSnapshot(input: unknown) {
     validateBenchmarkResearch(record, records);
     validateRunGuide(record, records);
     validateRunRecipes(record, records);
+    validateSourceIdentity(record, records);
     const profile = record.attributes.profile;
     if (profile !== undefined) profileSchema.parse(profile);
     function validateProfileEvidence(value: unknown): void {

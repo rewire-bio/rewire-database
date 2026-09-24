@@ -1,0 +1,25 @@
+{
+  "release_id": "2026-09-24-eb3fb1cb4c7f",
+  "baseline_release": "2026-09-23-5fd75097e2dd",
+  "renamed": {
+    "configuration": 9,
+    "evaluation": 30,
+    "result": 30
+  },
+  "added": {
+    "model": 2,
+    "claim": 3,
+    "source": 12
+  },
+  "removed": 0,
+  "preserved_results": 11291,
+  "original_scientific_result_attributes_identical": true,
+  "original_scientific_result_attributes_scope": "Every attribute present in the baseline release, plus links, source IDs and status, for all 11,291 baseline results. Renamed results and evaluations also gain source_label and source_identity; whole records are not byte-identical.",
+  "original_evaluation_attribute_changes": 0,
+  "verified_source_inputs": 278,
+  "verified_exports": 407,
+  "historical_archives_changed": 0,
+  "compression": "gzip; mtime=0; original export hash checked",
+  "model_execution": false,
+  "human_scientific_review": false
+}

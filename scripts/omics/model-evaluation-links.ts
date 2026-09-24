@@ -15,7 +15,7 @@ const edgeSchema = z.object({
 const sha = (value: string | Buffer) => createHash("sha256").update(value).digest("hex");
 
 /** Explicit, source-reviewed identities only. Never match names at release time. */
-export function applyModelEvaluationLinks(input: RecordEntry[], edges: unknown[]): RecordEntry[] {
+export function applyModelEvaluationLinks(input: RecordEntry[], edges: unknown[], reviewDate = "2026-09-23"): RecordEntry[] {
   const byId = new Map(input.map(record => [record.id, record]));
   const patches = new Map<string, RecordEntry>();
   const claims: RecordEntry[] = [];
@@ -40,7 +40,7 @@ export function applyModelEvaluationLinks(input: RecordEntry[], edges: unknown[]
     claims.push({ id: claimId, kind: "claim", name: `${subject.name}: ${edge.relation.replaceAll("_", " ")} ${target.name}`, description: edge.explanation,
       status: "source_checked", facets: subject.facets, source_ids: edge.source_ids, links: [{ relation: "subject", target_id: subject.id }],
       attributes: { field, target_id: target.id, source_locator: edge.source_locator,
-        review: { method: "automated_source_review", date: "2026-09-23", note: "Source review establishes this relationship only. Exact evaluated configurations and original numerical review status remain unchanged. " + edge.explanation } } });
+        review: { method: "automated_source_review", date: reviewDate, note: "Source review establishes this relationship only. Exact evaluated configurations and original numerical review status remain unchanged. " + edge.explanation } } });
   }
   // Cyclic aliases would hide every member from browsing. Reject before release.
   const result = input.map(record => patches.get(record.id) || record);

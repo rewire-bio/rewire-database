@@ -1,5 +1,6 @@
 import { formatScore } from "./score-display";
 import { omicsKinds, type OmicsKind, type OmicsRecord } from "./omics";
+import { recordSearchText } from "../services/omics/src/source-identity";
 export type CatalogueFilters = {
   kind: OmicsKind;
   q: string;
@@ -106,10 +107,7 @@ export function filterCatalogue(
       matchesOrigin &&
       (!filters.area || record.facets.areas?.includes(filters.area)) &&
       (!filters.status || record.status === filters.status) &&
-      (!query ||
-        `${record.name} ${record.id} ${record.description} ${Object.values(record.facets).flat().join(" ")}`
-          .toLowerCase()
-          .includes(query))
+      (!query || recordSearchText(record).includes(query))
     );
   });
 }

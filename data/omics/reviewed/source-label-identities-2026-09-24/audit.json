@@ -1,0 +1,264 @@
+{
+  "audit": "Citation, bibliography or author-surname labels used as tested-entity names",
+  "command": "npx tsx scripts/omics/audit/source-label-names.ts <catalogue.json>",
+  "release_id": "2026-09-23-5fd75097e2dd",
+  "audited_kinds": [
+    "model",
+    "method",
+    "configuration",
+    "pipeline",
+    "service",
+    "baseline"
+  ],
+  "audited_records": 2642,
+  "audited_by_kind": {
+    "model": 59,
+    "method": 42,
+    "configuration": 2389,
+    "pipeline": 124,
+    "service": 1,
+    "baseline": 27
+  },
+  "patterns": {
+    "bracketed_author_year": "^\\[[^\\]]*\\b(1[89]|20)\\d{2}[a-z]?\\]$",
+    "et_al": "\\bet al\\b",
+    "parenthetical_author_year": "\\([A-Z][^()]*\\b(1[89]|20)\\d{2}[a-z]?\\)",
+    "trailing_year": "^[A-Z][\\p{L}'-]+( (and|&) [A-Z][\\p{L}'-]+)?,? \\(?(1[89]|20)\\d{2}[a-z]?\\)?$",
+    "numeric_reference": "\\[\\d+([,–-]\\s*\\d+)*\\]",
+    "ref_marker": "\\bref\\.?\\s*\\d+",
+    "attribution_suffix": "\\((?:[A-Z][\\p{L}'-]+)(?: et al\\.?| and [A-Z][\\p{L}'-]+)\\)"
+  },
+  "reviewer_identified_shorthand": [
+    "discovery-model-tape-bepler",
+    "hest-method-ciga"
+  ],
+  "counts": {
+    "hits": 14,
+    "citation_only": 8,
+    "reviewer_identified_shorthand": 2,
+    "resolved": 9,
+    "unresolved": 0,
+    "deferred": 1,
+    "retained": 4
+  },
+  "hits": [
+    {
+      "id": "agront-2024-fig3e-method-cnn-jores-et-al-promoter-strength-maize-protoplasts",
+      "kind": "configuration",
+      "name": "CNN (Jores et al.): promoter strength, maize protoplasts",
+      "source_label": null,
+      "patterns": [
+        "et_al",
+        "attribution_suffix"
+      ],
+      "citation_only": false,
+      "identity_status": null,
+      "decision": "retained",
+      "display_name": "CNN (Jores et al.): promoter strength, maize protoplasts",
+      "reason": "The name gives the method type (CNN) with an author attribution, so it is not citation-only. Left unchanged."
+    },
+    {
+      "id": "agront-2024-fig3e-method-cnn-jores-et-al-promoter-strength-tobacco-leaves",
+      "kind": "configuration",
+      "name": "CNN (Jores et al.): promoter strength, tobacco leaves",
+      "source_label": null,
+      "patterns": [
+        "et_al",
+        "attribution_suffix"
+      ],
+      "citation_only": false,
+      "identity_status": null,
+      "decision": "retained",
+      "display_name": "CNN (Jores et al.): promoter strength, tobacco leaves",
+      "reason": "The name gives the method type (CNN) with an author attribution, so it is not citation-only. Left unchanged."
+    },
+    {
+      "id": "agront-2024-fig3f-method-cnn-gorjifard-et-al-terminator-strength-maize-protoplasts",
+      "kind": "configuration",
+      "name": "CNN (Gorjifard et al.): terminator strength, maize protoplasts",
+      "source_label": null,
+      "patterns": [
+        "et_al",
+        "attribution_suffix"
+      ],
+      "citation_only": false,
+      "identity_status": null,
+      "decision": "retained",
+      "display_name": "CNN (Gorjifard et al.): terminator strength, maize protoplasts",
+      "reason": "The name gives the method type (CNN) with an author attribution, so it is not citation-only. Left unchanged."
+    },
+    {
+      "id": "agront-2024-fig3f-method-cnn-gorjifard-et-al-terminator-strength-tobacco-leaves",
+      "kind": "configuration",
+      "name": "CNN (Gorjifard et al.): terminator strength, tobacco leaves",
+      "source_label": null,
+      "patterns": [
+        "et_al",
+        "attribution_suffix"
+      ],
+      "citation_only": false,
+      "identity_status": null,
+      "decision": "retained",
+      "display_name": "CNN (Gorjifard et al.): terminator strength, tobacco leaves",
+      "reason": "The name gives the method type (CNN) with an author attribution, so it is not citation-only. Left unchanged."
+    },
+    {
+      "id": "atom3d-method-karimi-et-al-2019",
+      "kind": "configuration",
+      "name": "[Karimi et al., 2019]",
+      "source_label": null,
+      "patterns": [
+        "bracketed_author_year",
+        "et_al"
+      ],
+      "citation_only": true,
+      "identity_status": null,
+      "decision": "resolved",
+      "display_name": "DeepAffinity (unified RNN/RNN-CNN; DSSP-derived SPS)",
+      "reason": "ATOM3D §5.1 compares to 'DeepAffinity [Karimi et al., 2019]' for LBA, and App. F.5 specifies 'their unified RNN/RNN-CNN model' with SMILES and SPS inputs and links the public repository. The cited paper introduces this unified RNN-CNN as DeepAffinity."
+    },
+    {
+      "id": "atom3d-method-liu-et-al-2019",
+      "kind": "configuration",
+      "name": "[Liu et al., 2019]",
+      "source_label": null,
+      "patterns": [
+        "bracketed_author_year",
+        "et_al"
+      ],
+      "citation_only": true,
+      "identity_status": null,
+      "decision": "resolved",
+      "display_name": "N-Gram Graph XGB (ATOM3D baseline)",
+      "reason": "ATOM3D App. F.1 compares to 'N-Gram Graph XGB [Liu et al., 2019]': the unsupervised N-gram graph representation combined with XGBoost, with a link to the public repository. The cited paper introduces the N-gram graph and evaluates it with XGBoost."
+    },
+    {
+      "id": "atom3d-method-pag-s-et-al-2019",
+      "kind": "configuration",
+      "name": "[Pagès et al., 2019]",
+      "source_label": null,
+      "patterns": [
+        "bracketed_author_year",
+        "et_al"
+      ],
+      "citation_only": true,
+      "identity_status": null,
+      "decision": "resolved",
+      "display_name": "ProQ3D (CAD-trained; rotameric optimization), reported by Pagès et al.",
+      "reason": "ATOM3D App. F.7 takes its PSR comparison 'as reported in [Pagès et al., 2019]' and names 3DCNN, Ornate and Proq3D as the reported methods. All six ATOM3D Table 8 statistics (mean RP, RS, RK 0.444, 0.432, 0.304; global RP, RS, RK 0.772, 0.796, 0.594) equal the CASP 11 stage 2 Proq3D row of Pagès et al. Table 2; the Ornate and 3dCNN rows differ. The identity rests on ATOM3D's attribution to Pagès et al. together with a match on all six statistics to a single row. One matching value would not be enough."
+    },
+    {
+      "id": "atom3d-method-rao-et-al-2019",
+      "kind": "configuration",
+      "name": "[Rao et al., 2019]",
+      "source_label": null,
+      "patterns": [
+        "bracketed_author_year",
+        "et_al"
+      ],
+      "citation_only": true,
+      "identity_status": null,
+      "decision": "resolved",
+      "display_name": "TAPE Transformer (ATOM3D baseline)",
+      "reason": "ATOM3D §5.1 describes the comparison as 'the TAPE model [Rao et al., 2019], a transformer architecture that operates on protein sequence', and App. F.3 names 'the transformer architecture TAPE'. The RES value 0.30 also equals the Transformer held-out-family accuracy in TAPE Table 1. That match corroborates the text; it is not the basis of the identity."
+    },
+    {
+      "id": "atom3d-method-sanchez-garcia-et-al-2018",
+      "kind": "configuration",
+      "name": "[Sanchez-Garcia et al., 2018]",
+      "source_label": null,
+      "patterns": [
+        "bracketed_author_year",
+        "et_al"
+      ],
+      "citation_only": true,
+      "identity_status": null,
+      "decision": "resolved",
+      "display_name": "BIPSPI, sequence-only (ATOM3D baseline)",
+      "reason": "ATOM3D §5.1 compares to 'the sequence-only version of BIPSPI [Sanchez-Garcia et al., 2018]', and App. F.2 uses 'their model that uses only sequence and sequence conservation features and is evaluated on DB5'. BIPSPI Table 1 reports sequence-only ('Seq') variants."
+    },
+    {
+      "id": "atom3d-method-tsubaki-et-al-2019",
+      "kind": "configuration",
+      "name": "[Tsubaki et al., 2019]",
+      "source_label": null,
+      "patterns": [
+        "bracketed_author_year",
+        "et_al"
+      ],
+      "citation_only": true,
+      "identity_status": null,
+      "decision": "resolved",
+      "display_name": "Molecular GNN, SMILES implementation (ATOM3D baseline)",
+      "reason": "ATOM3D App. F.1 chooses 'molecular GNNs [Tsubaki et al., 2019]' and uses 'an implementation that only uses the SMILES representation', linking masashitsubaki/molecularGNN_smiles. The repository describes a GNN over r-radius subgraphs from the authors' Bioinformatics paper. The method has no product name, so the display name is descriptive."
+    },
+    {
+      "id": "atom3d-method-watkins-et-al-2020",
+      "kind": "configuration",
+      "name": "[Watkins et al., 2020]",
+      "source_label": null,
+      "patterns": [
+        "bracketed_author_year",
+        "et_al"
+      ],
+      "citation_only": true,
+      "identity_status": null,
+      "decision": "resolved",
+      "display_name": "Rosetta scoring function (RSR configuration unresolved)",
+      "reason": "App. F.8 states that ATOM3D compares its RSR results 'against the Rosetta scoring function [Alford et al., 2017]', and Tables 7 and 8 give the same values under [Alford et al., 2017]. Table 6 instead cites [Watkins et al., 2020] (FARFAR2). Both citations are Rosetta-based, so the generic identity is supported; the specific scoring function is not."
+    },
+    {
+      "id": "atom3d-method-zt-rk-et-al-2018",
+      "kind": "configuration",
+      "name": "[Öztürk et al., 2018]",
+      "source_label": null,
+      "patterns": [
+        "bracketed_author_year",
+        "et_al"
+      ],
+      "citation_only": true,
+      "identity_status": null,
+      "decision": "resolved",
+      "display_name": "DeepDTA (ATOM3D baseline)",
+      "reason": "ATOM3D §5.1 compares to 'DeepDTA [Öztürk et al., 2018]', a 1DCNN over protein sequence and ligand SMILES, and App. F.5 and F.6 link the public DeepDTA repository. The cited paper introduces DeepDTA as two 1D CNN blocks over SMILES and protein sequence. The identity comes from this text, not from the author string or a matching score."
+    },
+    {
+      "id": "discovery-model-tape-bepler",
+      "kind": "model",
+      "name": "TAPE Bepler",
+      "source_label": null,
+      "patterns": [
+        "reviewer_identified_shorthand"
+      ],
+      "citation_only": false,
+      "identity_status": null,
+      "decision": "deferred",
+      "display_name": "TAPE Bepler",
+      "reason": "Model-level record with an existing profile. The source reviewer permits 'TAPE supervised biLSTM (Bepler-Berger architecture)' (TAPE v1 Table 2 p.7; §5 p.6; A.5 p.17). Not renamed in this batch, which is limited to evaluated configurations; left for a follow-up."
+    },
+    {
+      "id": "hest-method-ciga",
+      "kind": "configuration",
+      "name": "Ciga",
+      "source_label": null,
+      "patterns": [
+        "reviewer_identified_shorthand"
+      ],
+      "citation_only": false,
+      "identity_status": null,
+      "decision": "resolved",
+      "display_name": "SimCLR histology encoder + random forest (HEST; Ciga et al.)",
+      "reason": "HEST §5.2 lists 'Ciga Ciga et al. [2022] (SimCLR pretrained on public histology data)' among its ten patch encoders, and Table 1 scores their embeddings with a 70-tree random forest. The cited paper applies SimCLR to 57 unlabelled histopathology datasets. The printed label 'Ciga' is the first author's surname, so the display name describes the method and keeps the attribution."
+    }
+  ],
+  "semantic_review": {
+    "source": "independent-review.md, section 'Independent wider name audit'",
+    "finding": "All 2,642 names were also inspected semantically. Beyond the pattern hits, only the two surname shorthands above were found. VCC names such as 'MetaLearner' and 'petalwish' are team names (1,048 VCC configuration names are submission labels), CAPRI's 25 labels such as 'Guerois [P10]' are participant names and IDs, and CAFA model IDs, CASP group IDs and RhoFold's 'Chen'/'Yang-best' are submission labels. None is a bibliography identity, and no architecture is inferred from them."
+  },
+  "review": {
+    "method": "automated_source_review",
+    "date": "2026-09-24",
+    "human_scientific_review": "not_performed",
+    "note": "AI-assisted audit. Pattern matches and reviewer-listed shorthands are candidates; each decision cites the source text in identities.json."
+  }
+}

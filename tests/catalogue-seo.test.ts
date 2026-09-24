@@ -1,9 +1,15 @@
-import fs from "node:fs";
-import { describe, expect, it } from "vitest";
+import fs, { readFileSync } from "node:fs";
+import { gunzipSync } from "node:zlib";
+import { describe, expect, it, vi } from "vitest";
 import { recordSearchMetadata, recordIsIndexable } from "../lib/catalogue-seo";
 import { parseCatalogue, recordHref, type OmicsRecord } from "../lib/omics";
 import sitemap from "../app/sitemap";
 import robots from "../app/robots";
+
+vi.mock("node:fs", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("node:fs")>();
+  return { ...actual, readFileSync: vi.fn(actual.readFileSync) };
+});
 
 const record = (
   id: string,
@@ -136,10 +142,19 @@ describe("record search metadata", () => {
     expect(robots().rules).toEqual({ userAgent: "*", allow: "/" });
   });
   it("covers every released record and uses exactly the same sitemap eligibility without unsupported timestamps", () => {
-    const catalogue = parseCatalogue(
-      JSON.parse(fs.readFileSync("public/omics/catalogue.json", "utf8")),
-    );
+    // Tests run before exports are generated in a clean checkout. Give the
+    // sitemap the same committed release used for the metadata assertions.
+    const release = gunzipSync(
+      fs.readFileSync(
+        "data/omics/releases/2026-09-23-5fd75097e2dd/catalogue.json.gz",
+      ),
+    ).toString("utf8");
+    const catalogue = parseCatalogue(JSON.parse(release));
+    vi.mocked(readFileSync).mockReturnValueOnce(release);
     const entries = sitemap();
+    expect(readFileSync).toHaveBeenCalledWith(
+      "public/omics/catalogue.json", "utf8",
+    );
     const paths = new Set(entries.map((entry) => entry.url));
     for (const item of catalogue.records) {
       const metadata = recordSearchMetadata(item, catalogue.records);

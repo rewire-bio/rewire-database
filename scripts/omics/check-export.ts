@@ -1,6 +1,22 @@
 import { baselineAuditFiles } from "./baseline-coverage";
-import { catalogueIndexPaths, indexRecords, MODEL_PAGE_SIZE } from "../../lib/catalogue-index";
+import {
+  catalogueIndexPaths,
+  indexRecords,
+  indexMetadata,
+  MODEL_PAGE_SIZE,
+} from "../../lib/catalogue-index";
 import { recordHref, recordRouteKinds } from "../../lib/omics";
+import {
+  recordIsIndexable,
+  recordSearchMetadata,
+} from "../../lib/catalogue-seo";
+import { recordBreadcrumbs } from "../../lib/catalogue-sharing";
+import { DOMAINS } from "../../lib/benchmark-catalog";
+import {
+  checkPageMetadata,
+  checkSitemap,
+  checkSocialImage,
+} from "../seo/check-page-metadata";
 import {
   createEvidenceIndex,
   evidenceCsvLines,
@@ -16,17 +32,69 @@ const catalogue = JSON.parse(
 );
 const records = validateRecords(catalogue.records);
 const failures: string[] = [];
+const origin = "https://benchmarks.rewire.it";
+const sitemap = checkSitemap(fs.readFileSync("out/sitemap.xml", "utf8"));
+failures.push(...sitemap.failures, ...checkSocialImage("out"));
+const indexPaths = catalogueIndexPaths(records);
+const expectedSitemap = new Set(
+  [
+    "/",
+    "/runs/mfass-v2/",
+    "/evidence/",
+    "/audits/",
+    ...indexPaths,
+    ...records.filter(recordIsIndexable).map(recordHref),
+  ].map((url) => origin + url),
+);
+for (const url of sitemap.urls)
+  if (!expectedSitemap.has(url))
+    failures.push(`Unexpected sitemap URL: ${url}`);
+for (const url of expectedSitemap)
+  if (!sitemap.urls.has(url)) failures.push(`Missing sitemap URL: ${url}`);
+const robots = fs.readFileSync("out/robots.txt", "utf8");
+if (
+  /Disallow:\s*\//i.test(robots) ||
+  !/User-Agent:\s*\*/i.test(robots) ||
+  !robots.includes(`Sitemap: ${origin}/sitemap.xml`)
+)
+  failures.push(
+    "Robots.txt must allow claim crawling and declare the canonical sitemap",
+  );
 function page(url: string) {
   const file = path.join("out", url, "index.html");
   if (!fs.existsSync(file)) failures.push(file);
   return fs.existsSync(file) ? fs.readFileSync(file, "utf8") : "";
 }
 for (const record of records) {
-  const html = page(recordHref(record));
-  for (const kind of recordRouteKinds(record)) {
-    const alias = page(`/database/${kind}/${record.id}/`);
-    if (!alias.includes(`https://benchmarks.rewire.it${recordHref(record)}`))
-      failures.push(`Missing canonical alias ${kind}/${record.id}`);
+  const url = recordHref(record);
+  const html = page(url);
+  const metadata = recordSearchMetadata(record, records);
+  const contract = {
+    canonical: metadata.alternates.canonical,
+    title: metadata.title,
+    description: metadata.description,
+    indexable: recordIsIndexable(record),
+    social: true,
+    breadcrumbs: recordBreadcrumbs(record),
+  };
+  failures.push(
+    ...checkPageMetadata(
+      html,
+      { ...contract, path: url, inSitemap: contract.indexable },
+      sitemap.urls,
+    ),
+  );
+  for (const kind of recordRouteKinds(record).filter(
+    (kind) => kind !== record.kind,
+  )) {
+    const aliasPath = `/database/${kind}/${record.id}/`;
+    failures.push(
+      ...checkPageMetadata(
+        page(aliasPath),
+        { ...contract, path: aliasPath, inSitemap: false },
+        sitemap.urls,
+      ),
+    );
   }
   if (!html.includes('id="evidence"'))
     failures.push(`Missing evidence table: ${record.id}`);
@@ -40,31 +108,135 @@ for (const record of records) {
   }
 }
 // Index discovery must exist in initial HTML, not only after hydration.
-const sitemapHtml = fs.readFileSync("out/sitemap.xml", "utf8");
-for (const url of catalogueIndexPaths(records)) {
+for (const url of indexPaths) {
   const html = page(url);
-  if (!html.includes(`rel="canonical" href="https://benchmarks.rewire.it${url}"`)) failures.push(`Index canonical ${url}`);
-  if (!sitemapHtml.includes(`https://benchmarks.rewire.it${url}</loc>`)) failures.push(`Index sitemap ${url}`);
   const number = url === "/models/" ? 1 : Number(url.match(/page\/(\d+)/)?.[1]);
-  const expected = url === "/benchmarks/" ? indexRecords(records, "benchmark") : indexRecords(records, "model").slice((number - 1) * MODEL_PAGE_SIZE, number * MODEL_PAGE_SIZE);
+  const metadata = indexMetadata(
+    url === "/benchmarks/" ? "benchmark" : "model",
+    number,
+  );
+  failures.push(
+    ...checkPageMetadata(
+      html,
+      {
+        path: url,
+        canonical: origin + url,
+        title: String(metadata.title),
+        description: metadata.description || "",
+        indexable: true,
+        inSitemap: true,
+        social: true,
+        breadcrumbs: [
+          { name: "Database", path: "/" },
+          {
+            name: url === "/benchmarks/" ? "Benchmarks" : "Models",
+            path: url === "/benchmarks/" ? "/benchmarks/" : "/models/",
+          },
+          ...(number > 1 ? [{ name: `Page ${number}`, path: url }] : []),
+        ],
+      },
+      sitemap.urls,
+    ),
+  );
+  const expected =
+    url === "/benchmarks/"
+      ? indexRecords(records, "benchmark")
+      : indexRecords(records, "model").slice(
+          (number - 1) * MODEL_PAGE_SIZE,
+          number * MODEL_PAGE_SIZE,
+        );
   for (const record of expected) {
-    if (!html.includes(`href="${recordHref(record)}"`)) failures.push(`Index missing canonical anchor ${record.id}`);
+    if (!html.includes(`href="${recordHref(record)}"`))
+      failures.push(`Index missing canonical anchor ${record.id}`);
   }
 }
+const utilityPages = new Map<string, string>();
 for (const url of [
   "/evidence/",
-  "/literature/",
+  "/audits/",
   "/runs/mfass-v1/",
   "/runs/mfass-v2/",
   "/contribute/",
-])
-  page(url);
-if (!page("/").includes('id="mfass-v1"'))
-  failures.push("Preserved MFASS v1 anchor");
+]) {
+  const html = page(url);
+  utilityPages.set(url, html);
+  const indexable = !["/runs/mfass-v1/", "/contribute/"].includes(url);
+  failures.push(
+    ...checkPageMetadata(
+      html,
+      {
+        path: url,
+        canonical: origin + url,
+        indexable,
+        inSitemap: indexable,
+        social: url !== "/contribute/",
+      },
+      sitemap.urls,
+    ),
+  );
+}
+const home = page("/");
+failures.push(
+  ...checkPageMetadata(
+    home,
+    {
+      path: "/",
+      canonical: origin + "/",
+      indexable: true,
+      inSitemap: true,
+      social: true,
+      website: true,
+    },
+    sitemap.urls,
+  ),
+);
+if (!home.includes('id="mfass-v1"')) failures.push("Preserved MFASS v1 anchor");
+for (const url of [
+  "/literature/",
+  "/database/",
+  ...DOMAINS.map(({ id }) => `/${id}/`),
+]) {
+  failures.push(
+    ...checkPageMetadata(
+      page(url),
+      {
+        path: url,
+        canonical: origin + "/",
+        indexable: url === "/literature/",
+        inSitemap: false,
+        social: false,
+      },
+      sitemap.urls,
+    ),
+  );
+}
 const papers = JSON.parse(
   fs.readFileSync("data/benchmark-literature/papers.json", "utf8"),
 );
-for (const paper of papers) page(`/literature/papers/${paper.id}/`);
+const sourcePaths = new Map(
+  records
+    .filter(
+      (record) => record.kind === "source" && record.status !== "excluded",
+    )
+    .map((record) => [record.id, recordHref(record)]),
+);
+for (const paper of papers) {
+  const url = `/literature/papers/${paper.id}/`;
+  const destination = sourcePaths.get(paper.id);
+  failures.push(
+    ...checkPageMetadata(
+      page(url),
+      {
+        path: url,
+        canonical: origin + (destination || url),
+        indexable: Boolean(destination),
+        inSitemap: false,
+        social: false,
+      },
+      sitemap.urls,
+    ),
+  );
+}
 const currentManifest = JSON.parse(
   fs.readFileSync("out/omics/manifest.json", "utf8"),
 );
@@ -108,18 +280,24 @@ const baselineExport = baselineAuditFiles(
   "published_release",
 );
 for (const [name, expected] of Object.entries(baselineExport.files)) {
-  const file = path.join("out/omics/baseline-coverage", catalogue.release_id, name);
+  const file = path.join(
+    "out/omics/baseline-coverage",
+    catalogue.release_id,
+    name,
+  );
   if (!fs.existsSync(file) || fs.readFileSync(file, "utf8") !== expected)
     failures.push(`Baseline audit export mismatch: ${name}`);
 }
 if (failures.length) throw new Error(failures.join("\n"));
 console.log(
-  `Verified ${records.length} record pages and their local links, ${papers.length} historical paper pages, MFASS history and release checksums.`,
+  `Verified ${records.length} record pages, generated metadata and local links, ${papers.length} historical paper pages, MFASS history and release checksums.`,
 );
 
-const contributionPage = page("/contribute/");
+const contributionPage = utilityPages.get("/contribute/")!;
 const contributionsEnabled = verifyContributionExport(
   contributionPage,
   process.env.NEXT_PUBLIC_OMICS_CONTRIBUTIONS_ENABLED,
 );
-console.log(`Contribution export is ${contributionsEnabled ? "enabled with email verification" : "disabled with local drafts"} and analytics-free.`);
+console.log(
+  `Contribution export is ${contributionsEnabled ? "enabled with email verification" : "disabled with local drafts"} and analytics-free.`,
+);

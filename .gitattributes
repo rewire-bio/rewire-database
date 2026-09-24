@@ -2,3 +2,6 @@
 data/omics/reviewed/profile-evidence-2026-09-23/** -text
 # This source-review CSV uses standard CRLF record separators.
 data/omics/reviewed/profile-evidence-2026-09-23/audit.csv whitespace=cr-at-eol
+# Keep the additive protocol review's original-byte receipts and CSV intact.
+data/omics/reviewed/protocol-evidence-2026-09-23/** -text
+data/omics/reviewed/protocol-evidence-2026-09-23/audit.csv whitespace=cr-at-eol

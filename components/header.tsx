@@ -45,7 +45,7 @@ export default function Header() {
           {label}
         </NavigationLink>;
       })}
-      <a href="https://rewire.it/blog/">Articles</a>
+      <a href="https://rewire.it/blog/">Articles ↗</a>
     </>
   );
   return (
@@ -58,6 +58,7 @@ export default function Header() {
         >
           <span className="dot" />
           rewire.it
+          <span className="brand-sub">benchmarks</span>
         </a>
         <nav className="nav desktop" aria-label="Primary">
           {links}

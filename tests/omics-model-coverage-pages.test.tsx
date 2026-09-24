@@ -76,7 +76,7 @@ describe("model coverage profile rendering", () => {
     expect(pipelineLink).toBeLessThan(methods);
     expect(closedDisclosuresAt(html, pipelineLink)).toBe(0);
     const visibleConfigurations = html.slice(configurations, methods);
-    expect(visibleConfigurations).toContain(`Pipeline · ${rows} metric rows`);
+    expect(visibleConfigurations).toContain(`Pipeline · ${rows} results`);
     expect(visibleConfigurations).toContain(
       "not assigned to the underlying model",
     );
@@ -85,7 +85,7 @@ describe("model coverage profile rendering", () => {
     expect(methodsDisclosure).not.toMatch(/\sopen(?:\s|=|>)/);
     expect(html).not.toContain("No evaluations linked in this release");
     expect(html).not.toContain("No reviewed evaluations are linked here");
-    expect(html).not.toContain("0 evaluations · 0 metric rows");
+    expect(html).not.toContain("0 evaluations · 0 results");
   });
 
   it("links ProteinMPNN checkpoint visitors to family evidence without assigning its scores to the checkpoint", () => {
@@ -99,7 +99,7 @@ describe("model coverage profile rendering", () => {
     expect(link).toBeGreaterThanOrEqual(0);
     expect(link).toBeLessThan(html.indexOf('id="use-model"'));
     expect(closedDisclosuresAt(html, link)).toBe(0);
-    expect(html).toContain("View 18 metric rows for the broader family");
+    expect(html).toContain("View 18 results for the broader family");
     expect(html).toContain(
       "their attribution to this exact checkpoint has not been verified",
     );
@@ -108,7 +108,7 @@ describe("model coverage profile rendering", () => {
     );
     expect(html).not.toContain("Evaluations and results</h2>");
     expect(html).not.toContain("No evaluations linked in this release");
-    expect(html).not.toContain("0 evaluations · 0 metric rows");
+    expect(html).not.toContain("0 evaluations · 0 results");
   });
 
   it("retains AgroNT's standard linked result table and exact reported scores", () => {
@@ -118,7 +118,7 @@ describe("model coverage profile rendering", () => {
     expect(results.evaluation_count).toBe(12);
     const html = render(id);
     expect(html).toContain('href="#results"');
-    expect(html).toContain("12 evaluations · 12 metric rows");
+    expect(html).toContain("12 evaluations · 12 results");
     expect(html).toContain("Evaluations and results</h2>");
     expect(html).toContain("<table");
     expect(html).toContain("Author-reported evaluation");

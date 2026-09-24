@@ -1,3 +1,4 @@
+import Breadcrumbs from "@/components/catalogue/Breadcrumbs";
 import { socialMetadata } from "@/lib/catalogue-sharing";
 import type { Metadata } from "next";
 import Link from "next/link";
@@ -29,12 +30,12 @@ function interval(metric: { delta: number; ci95: number[] }): string {
 export default function MfassV2Page() {
   return <>
     <header className="page-head"><div className="wrap">
+      <Breadcrumbs items={[{ name: "Database", path: "/" }, { name: "Rewire evaluations", path: "/?kind=result&origin=rewire#browse" }, { name: "MFASS v2", path: "/runs/mfass-v2/" }]} />
       <span className="kick">Independent rewire.it run</span>
       <h1>{run.label}</h1>
       <p className="intro">A corrected baseline and one zero-cost local DNABERT-2 protocol on MFASS. The held-out ranking result is complete.</p>
     </div></header>
     <section className="block first"><div className="wrap prose-brief">
-      <nav className={styles.breadcrumb} aria-label="Breadcrumb"><Link href="/">Benchmark database</Link><span aria-hidden="true">/</span><Link href="/?kind=result&origin=rewire#browse">Rewire evaluations</Link><span aria-hidden="true">/</span><span>MFASS v2</span></nav>
       <div className={styles.notice}><strong>Corrected result.</strong> {run.correction}</div>
       <p>MFASS tests exon recognition in a minigene assay. Of {run.cohort_variants.toLocaleString()} variants, {run.test_variants.toLocaleString()} were held out in {run.independent_test_groups} exon/gene groups; {run.test_positives} were splice-disrupting. The review capacity is {run.review_capacity} variants. <a href={run.assay_source_url} target="_blank" rel="noreferrer">Read the assay paper &rarr;</a></p>
       <h2 className="sec-head">Held-out results</h2>

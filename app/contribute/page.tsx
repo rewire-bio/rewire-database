@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import Breadcrumbs from "@/components/catalogue/Breadcrumbs";
 import ContributionForm from "./ContributionForm";
-import styles from "../database/database.module.css";
 export const metadata: Metadata = {
   title: "Contribute biological model evidence",
   description:
@@ -15,6 +14,7 @@ export default function ContributePage() {
     <>
       <header className="page-head">
         <div className="wrap">
+          <Breadcrumbs items={[{ name: "Database", path: "/" }, { name: "Contribute", path: "/contribute/" }]} />
           <span className="kick">Contribute evidence</span>
           <h1>Help improve the database</h1>
           <p className="intro">
@@ -25,9 +25,6 @@ export default function ContributePage() {
       </header>
       <section className="block first">
         <div className="wrap">
-          <nav className={styles.nav}>
-            <Link href="/">Back to the benchmark database</Link>
-          </nav>
           <ContributionForm />
         </div>
       </section>

@@ -179,5 +179,5 @@ it("omits unsupported evaluation counts on citation rows even when the API suppl
   );
   expect(markup).toContain("Example paper");
   expect(markup).not.toContain("No evaluations linked");
-  expect(markup).not.toContain("metric rows");
+  expect(markup).not.toMatch(/\d+ evaluations? · \d+ results?/);
 });

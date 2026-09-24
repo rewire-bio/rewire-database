@@ -1,3 +1,4 @@
+import Breadcrumbs from "@/components/catalogue/Breadcrumbs";
 import { socialMetadata } from "@/lib/catalogue-sharing";
 import type { Metadata } from "next";
 import Link from "next/link";
@@ -55,6 +56,7 @@ export default function EvidenceGuide() {
     <>
       <header className="page-head">
         <div className="wrap">
+          <Breadcrumbs items={[{ name: "Database", path: "/" }, { name: "Evidence and sources", path: "/evidence/" }]} />
           <span className="kick">Methods and provenance</span>
           <h1>Where the data comes from</h1>
           <p className="intro">
@@ -66,9 +68,6 @@ export default function EvidenceGuide() {
       </header>
       <section className="block first">
         <div className="wrap">
-          <nav className={styles.nav}>
-            <Link href="/">Benchmark database</Link>
-          </nav>
           <section className={styles.section}>
             <h2>What review status means</h2>
             <dl className={styles.details}>

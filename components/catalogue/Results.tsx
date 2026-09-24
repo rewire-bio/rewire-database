@@ -16,6 +16,8 @@ import {
   evaluationEntities,
   datasetEntities,
   singularKindLabels,
+  countLabel,
+  statusLabel,
 } from "@/lib/omics-browse";
 import { useResultsLocation } from "./useResultsLocation";
 import styles from "@/app/database/database.module.css";
@@ -178,10 +180,9 @@ export default function Results({
         {title}
       </h2>
       <p className={styles.muted}>
-        {data.evaluation_count}{" "}
-        {data.evaluation_count === 1 ? "evaluation" : "evaluations"} ·{" "}
-        {data.total} metric rows. Different protocols are not a single
-        leaderboard.
+        {countLabel(data.evaluation_count, "evaluation")} ·{" "}
+        {countLabel(data.total, "result")}. Different protocols are not a
+        single leaderboard.
       </p>
       {initial.total > 0 && (
         <details
@@ -254,7 +255,7 @@ export default function Results({
           aria-label="Evaluation results"
           aria-busy={loading}
         >
-          <table className={`${styles.resultTable} ${ux.compactTable}`}>
+          <table className={`${styles.resultTable} ${ux.compactTable} ${ux.stackOnMobile}`}>
             <caption>
               Exact evaluated configurations and original reported results
             </caption>
@@ -269,17 +270,17 @@ export default function Results({
             <tbody>
               {data.items.map((row) => (
                 <tr key={row.result.id}>
-                  <th scope="row">
+                  <th scope="row" data-label="Tested configuration">
                     <RecordLinks records={testedEntities(row)} />
                   </th>
-                  <td>
+                  <td data-label="Protocol and dataset">
                     <RecordLinks records={evaluationEntities(row)} />
                     <br />
                     <span className={styles.muted}>
                       <RecordLinks records={datasetEntities(row)} />
                     </span>
                   </td>
-                  <td>
+                  <td data-label="Finding">
                     <Link href={recordHref(row.result)}>
                       <strong className={styles.numericValue}>
                         {formatScore(row.result.attributes.printed_value)}
@@ -300,10 +301,9 @@ export default function Results({
                     </p>
                     <p>Coverage: {coverage(row)}</p>
                   </td>
-                  <td>
+                  <td data-label="Evidence and details">
                     <span>
-                      {originLabel(row.origin)} ·{" "}
-                      {row.review_status.replace(/_/g, " ")}
+                      {originLabel(row.origin)} · {statusLabel(row.review_status)}
                     </span>
                     <EvidenceConcerns sources={row.sources} />
                     <details>

@@ -1,0 +1,445 @@
+{
+  "schema": "rewire-matched-pilot-spec-v1",
+  "pilot_id": "proteingym-amfr-plm-vs-evolutionary-pilot-v1",
+  "issue": "https://github.com/rewire-bio/rewire-database/issues/40",
+  "spec_date": "2026-09-25",
+  "status": {
+    "planning": "complete",
+    "execution_authorised": false,
+    "execution_blockers": {
+      "G0": "human approval not given",
+      "G1": "resource logging not written",
+      "G3": "no AMFR plmc_v2 model",
+      "G4": "M3 adapter not implemented",
+      "G6": "analysis script not written"
+    },
+    "confirmatory": false,
+    "exposure": "AMFR DMS_score labels and the complete-assay (singles and doubles) ESM-2 8M and seeded-random results were viewed before this protocol was written. All analyses are exploratory.",
+    "planning_review": {
+      "date": "2026-09-25",
+      "scientific_design": "accepted by automated review: Codex (research director) with an independent Codex adviser",
+      "engineering_and_source_feasibility": "accepted by automated review: Codex (research director) with an independent Codex adviser",
+      "human_review": "none; not a human sign-off",
+      "author": "Claude Code (sole author; proposed engineering executor)"
+    },
+    "execution_decision": "awaits the human decision owner's separate decision at G0",
+    "publication_authorised": false
+  },
+  "question": "On single substitutions of the AMFR 47-residue construct, does ESM-2 8M masked-marginal scoring rank proteolysis-inferred folding stability better than the EVCouplings site-independent model, and which variants account for the difference?",
+  "task": {
+    "benchmark": "proteingym-v1.3-dms-substitutions",
+    "assay_id": "AMFR_HUMAN_Tsuboyama_2023_4G3O",
+    "reference_revision": "144fe22b07dfaeec2b366f2346203a9838a55b4c",
+    "reference_file_sha256": "a8f498011532a74aa9fe556a50555a75e928c5837d19c06a87592ae04049b308",
+    "assay_csv_sha256_observed": "dd911d925eca79329a496eb6cb7b181ab448e15db244daf1c1f9c01e8a704c2a",
+    "assay_csv_hash_status": "observed_download_bytes_not_publisher_authenticated",
+    "target": "DMS_score as supplied by ProteinGym; higher is more stable; no sign change",
+    "endpoint_scope": "cDNA display proteolysis folding stability of a 47-residue construct; not AMFR cellular function or organismal fitness",
+    "original_denominator": {
+      "total": 2972,
+      "single": 820,
+      "double": 2152,
+      "positions_with_singles": 47
+    },
+    "double_mutant_structure": {
+      "distinct_site_pairs": 7,
+      "positions_involved": [
+        28,
+        32,
+        38,
+        41,
+        46
+      ],
+      "pairs_share_sites": true,
+      "variants_per_pair_min": 227,
+      "variants_per_pair_max": 348
+    },
+    "split": "none; zero-shot scoring of all variants; no method is fitted to assay labels"
+  },
+  "methods": [
+    {
+      "id": "M1",
+      "name": "ESM-2 8M masked marginals",
+      "implementation": "rewirebench.adapters.esm:ESM2Adapter",
+      "implementation_sha256": "4ff38cfbb91d718b52a44da53aa5594fe73d9d1d4d0ce43724807597c3929889",
+      "checkpoint": "esm2_t6_8M_UR50D",
+      "checkpoint_sha256": "46f002a9870c9bdecd0ea887acb1f9a38a6b561e8f8bf8a6990b679b9d31b928",
+      "score": "sum over substituted sites of log P(mutant) - log P(wild type) at the masked site in wild-type context",
+      "inputs": "id, assay_id, wild-type sequence, mutant and mutated sequence; the score uses the wild-type sequence and substitutions; the adapter rejects any other field, so labels cannot reach it",
+      "adaptation": "none",
+      "training_overlap": "unknown; pretrained on UniRef50 2021_04 (UR50/D); the target sequence or homologues may be present; membership not checked",
+      "status": "implemented; executed on AMFR on 2026-09-20"
+    },
+    {
+      "id": "M2",
+      "name": "EVCouplings site-independent model",
+      "implementation": "rewirebench.adapters.evcouplings_independent:EVCouplingsIndependent",
+      "baseline_id": "proteingym-evcouplings-independent-v1",
+      "implementation_sha256": "517a54d4e06dbb0eb7f4c1d3a4bbbb6371635ccc4141af1c201edbee81e1f2de",
+      "score": "sum over substituted sites of h*_i(mutant) - h*_i(wild type); h* refitted by BFGS to the model's stored single-site frequencies, N_eff and lambda_h with couplings zero",
+      "inputs": "wild-type sequence, substitutions and one reviewed plmc_v2 model",
+      "adaptation": "label-free parameter estimation on a homologous-sequence alignment; no assay labels",
+      "training_overlap": "family-specific: the alignment contains the target family by construction; assay labels not used",
+      "status": "implemented and validated on synthetic models; blocked by G3"
+    },
+    {
+      "id": "M3",
+      "name": "EVmutation full (epistatic) model",
+      "implementation": "not implemented; proposed baseline_id proteingym-evmutation-epistatic-v1",
+      "score": "delta statistical energy E(mutant) - E(wild type) of the full Potts model using its fitted fields and couplings",
+      "inputs": "same plmc_v2 model file as M2",
+      "adaptation": "same as M2",
+      "training_overlap": "same as M2",
+      "relation_to_M2": "M2 refits fields without couplings; M3 uses jointly fitted fields and couplings. The contrast changes fields and couplings together and does not isolate coupling terms or show epistasis.",
+      "status": "blocked by G3 and G4"
+    }
+  ],
+  "null_reference": {
+    "id": "N0",
+    "name": "seeded-random-v1",
+    "seed": 0,
+    "role": "supplementary null; not one of the three methods; one fixed ranking, not a chance distribution; no bootstrap contrast"
+  },
+  "evolutionary_model": {
+    "route": "chosen at G0 and fixed before the model is obtained; if it fails the pilot stops; a route change needs a new reviewed protocol decision before any prediction",
+    "route_a": {
+      "description": "author-held plmc_v2 model",
+      "status": "no request sent; outreach is the human decision owner's decision",
+      "required": {
+        "training_alignment": "actual alignment bytes used for training, supplied and hashed; if different from the pinned v1.3 alignment, rejected unless a reviewed spec amendment adopts it before any prediction; the v1.3 hash is never recorded as its provenance",
+        "query_and_index_audit": "alignment query ID, region and focus columns agree with the model target and index list; index list maps onto the wild type",
+        "generation_configuration": "source-authored configuration or command covering method and version, filtering, weighting and regularisation",
+        "source_link": "attributable source record (archived manifest or log, or supplier record naming model and input hashes) tying the alignment and configuration to the model file",
+        "consistency_review": "header, coordinates and stored statistics consistent with the configuration and alignment"
+      },
+      "desirable": {
+        "fit_termination": "historical termination log; if unavailable recorded as unknown and M3 results make no convergence claim"
+      },
+      "not_required": [
+        "reproducing the original alignment search or retraining",
+        "original compiler binary",
+        "publisher-signed checksum"
+      ],
+      "record": "supplier, date, terms of use and sharing",
+      "if_required_item_missing": "route blocked; pilot stops"
+    },
+    "route_b": {
+      "description": "Rewire plmc fit on the ProteinGym v1.3 AMFR alignment",
+      "status": "training not authorised by issue 40",
+      "plmc_commit": "18c9e55e3bd2f14f4968be19a807b401996c929a",
+      "build": "make all-mac, unmodified (clang, double-precision arithmetic, no OpenMP); only permitted deviation is removing -msse4.2 if the build fails on arm64, recorded with the binary SHA256",
+      "output_precision": "float32 (plmc OUTPUT_PRECISION, independent of build precision)",
+      "command": "plmc -c AMFR_HUMAN.ec -o AMFR_HUMAN.model -f AMFR_HUMAN -g -m 100 -t 0.2 -lh 0.01 -le 7.6 AMFR_HUMAN_2023-08-07_b04.a2m 2> plmc.stderr",
+      "alphabet": "plmc built-in default; no -a flag, because focus-column removal depends on the built-in alphabet",
+      "derivation": {
+        "theta": "EVCouplings theta 0.8 passed to plmc as 1 - theta = 0.2",
+        "lambda_J": "0.01 * (q - 1) * (L - 1); q = 20 with gaps ignored; L = 41 uppercase query positions; 7.6",
+        "lambda_h": 0.01,
+        "iterations": 100,
+        "focus": "query ID with region suffix removed, as EVCouplings passes it",
+        "basis": "EVCouplings e1362407 config/sample_config_monomer.txt, couplings/protocol.py and couplings/tools.py"
+      },
+      "historical_match": "not known to match ProteinGym's historical EVmutation run",
+      "fit_acceptance": {
+        "evidence": "the 'Gradient optimization:' line in plmc.stderr; the model header records requested, not performed, iterations",
+        "Minimization success": "accept; label converged",
+        "MAXIMUMITERATION": "accept; label 'fixed-budget fit, 100 iterations (EVCouplings default), not converged' on every M3 result",
+        "other": "reject and stop; no refit"
+      }
+    },
+    "provenance_review_receipt": {
+      "required_at": "G3",
+      "required_items": [
+        "model_sha256",
+        "training_alignment_sha256",
+        "query_and_index_audit",
+        "generation_configuration",
+        "source_link",
+        "consistency_review"
+      ],
+      "route_b_additional_required": [
+        "fit_termination",
+        "plmc_binary_sha256",
+        "plmc_stderr_sha256"
+      ],
+      "route_a_desirable": [
+        "fit_termination"
+      ],
+      "freeze": "model, alignment, configuration and prepared-artifact hashes frozen in the spec before any prediction",
+      "claim_limit": "neither route supports a claim to reproduce ProteinGym's historical rows",
+      "stop_if": "any required item cannot be established"
+    }
+  },
+  "populations": {
+    "P1_primary": "single substitutions whose position and residues are covered by the M2/M3 model index list and alphabet; frozen at G5 from the model and mutant strings only",
+    "P2_doubles": "double substitutions with both sites covered; descriptive only",
+    "P0_full": "all 2972 variants with per-method coverage and unscored reasons",
+    "freeze_before": "any prediction on AMFR data, including real-model parity",
+    "expected_P1_from_alignment": {
+      "basis": "uppercase (focus) columns of AMFR_HUMAN_2023-08-07_b04.a2m; lowercase positions 1-5 and 47",
+      "expected_positions": 41,
+      "expected_singles": 707,
+      "expected_P2_doubles": 2152,
+      "authority": "expectation only; the reviewed model index list at G5 is authoritative"
+    },
+    "rule": "every comparison uses exactly the frozen P1 or P2 ID list for every method; a method that fails to score any frozen ID stops the analysis"
+  },
+  "adequacy_for_intervals": {
+    "applies_to": [
+      "primary",
+      "S1",
+      "S2"
+    ],
+    "min_P1_positions": 30,
+    "min_P1_variants": 300
+  },
+  "primary_analysis": {
+    "estimand": "delta_rho = Spearman(M1 score, DMS_score) - Spearman(M2 score, DMS_score) on P1",
+    "spearman": "scipy.stats.spearmanr; average ranks for ties",
+    "weighting": "each variant weighted equally within the Spearman calculation",
+    "undefined": "null with reason if M1, M2 or the label is constant on P1; M3 and N0 do not affect validity",
+    "bootstrap": {
+      "unit": "position",
+      "positions": "distinct P1 positions as integers, ascending; variants within a position ordered by variant ID",
+      "rng": "numpy.random.default_rng(40)",
+      "draws_attempted": 10000,
+      "draw": "rng.integers(0, K, size=K); resample is the drawn positions' variants in draw order, repeated per draw",
+      "ranks": "recomputed on each resample, average ranks for ties including duplicates",
+      "shared_draws": "the same 10000 draws serve the primary and both secondary contrasts",
+      "invalid": "a draw is invalid for a contrast if any of that contrast's methods or the label is constant in the resample",
+      "replacement_of_invalid_draws": false,
+      "refuse_interval_if_invalid_count_above": 100,
+      "interval": "numpy.quantile(valid_values, [0.025, 0.975], method='linear')",
+      "report": "attempted and valid draw counts per contrast",
+      "interpretation": "conditional on this assay, under approximate exchangeability of positions; not a population or suite-level confidence interval"
+    },
+    "sensitivity": "leave-one-position-out delta_rho for every P1 position, reported in position order",
+    "minimum_practical_difference": 0.1,
+    "minimum_practical_difference_basis": "planning decision for this pilot; not a universal or biological threshold",
+    "outcome_classes": {
+      "not_classified": "delta_rho undefined, or interval not computed (inadequate P1) or refused",
+      "M1_ranked_better": "delta_rho >= 0.10 and interval lower bound > 0",
+      "M2_ranked_better": "delta_rho <= -0.10 and interval upper bound < 0",
+      "practically_equivalent": "abs(delta_rho) < 0.10 and interval entirely within (-0.10, 0.10)",
+      "inconclusive": "any other defined delta_rho with a computed interval",
+      "disjoint": "the point-estimate conditions of the three substantive classes do not overlap"
+    },
+    "claim_limit": "comparative ranking on one assay; not incremental predictive information and not a statement about protein language models in general"
+  },
+  "secondary_analyses": {
+    "S1": {
+      "estimand": "Spearman(M3) - Spearman(M2) on P1",
+      "requires_non_constant": [
+        "M2",
+        "M3",
+        "label"
+      ]
+    },
+    "S2": {
+      "estimand": "Spearman(M1) - Spearman(M3) on P1",
+      "requires_non_constant": [
+        "M1",
+        "M3",
+        "label"
+      ]
+    },
+    "interval": "numpy.quantile(valid_values, [0.0125, 0.9875], method='linear'); Bonferroni over S1 and S2",
+    "rules": "same draws, validity, refusal and adequacy rules as the primary",
+    "outcome_class": "none",
+    "interpretation_limit": "S1 compares a full Potts model with a site-independent refit from the same statistics; it does not isolate couplings or show epistasis"
+  },
+  "descriptive_analyses": {
+    "D1": "five ProteinGym metrics (Spearman, AUC, MCC, NDCG, top-10% recall) for M1, M2, M3 and N0 on P1, using the supplied DMS_score_bin (full-assay median cutoff); undefined metrics null",
+    "D2": "P0 coverage and unscored reasons per method; SDK partial-status metrics on original denominators",
+    "D3": {
+      "scope": "Spearman per method over all of P2 and within each of the 7 site pairs",
+      "pair_rule": "report a pair's value only if it has at least 30 covered doubles and neither the method nor the label is constant within it; otherwise count and reason",
+      "limit": "pairs share sites; values are not independent and are not combined into any test",
+      "comparison": "descriptive comparison of whole models (full Potts, site-independent refit, M1, N0) on doubles; no attribution to couplings or epistasis"
+    },
+    "D4": {
+      "requires_non_constant": [
+        "M1",
+        "M2",
+        "label"
+      ],
+      "rank_fraction": "q = (average rank - 0.5) / n over P1",
+      "d": "abs(q_M2 - q_label) - abs(q_M1 - q_label); positive means M1 closer",
+      "position_summary": "mean d and variant count for every P1 position in position order, whatever the count",
+      "listed_variants": "up to 10 with d > 0 (largest first) and up to 10 with d < 0 (most negative first); fewer if fewer exist; d = 0 not listed; ties by variant ID",
+      "limit": "display of disagreement, not a decomposition of delta_rho"
+    },
+    "D5": "M1 and N0 Spearman on uncovered singles, only if at least 30 variants across at least 5 positions and method and label non-constant"
+  },
+  "subgroup_rule": "no subgroup metric, bin or example selection beyond D1-D5 as defined",
+  "prohibited": [
+    "changing assay, population, metric, threshold or method after predictions are compared with labels",
+    "subgroup bins chosen after inspecting labels or predictions",
+    "reversing any score direction",
+    "substituting an MSA-frequency, BLOSUM or other ad hoc score under the M2 or M3 identity",
+    "refitting plmc with other settings after the fit status is known",
+    "combining methods with assay labels (supervised stacking) in this pilot"
+  ],
+  "gates_in_order": [
+    {
+      "id": "G0",
+      "requirement": "Tim Richardson approves this spec by SHA256 and the model route"
+    },
+    {
+      "id": "G1",
+      "requirement": "resource logging in place before any environment build, retrieval, hashing, preparation, training, parity or scoring"
+    },
+    {
+      "id": "G2",
+      "requirement": "reference, assay CSV, ESM checkpoint and alignment hashes match; measured under G1"
+    },
+    {
+      "id": "G3",
+      "requirement": "model obtained (Route A) or fitted (Route B) under logging; fit acceptance; provenance review receipt with every required item established; M2 artifact passes prepare-baseline-artifact; model, alignment, configuration and artifact hashes frozen"
+    },
+    {
+      "id": "G4",
+      "requirement": "M3 adapter implemented; same-runtime parity with pinned upstream prediction_epistatic on synthetic fixtures only; reviewed; commit frozen"
+    },
+    {
+      "id": "G5",
+      "requirement": "P1 and P2 ID lists computed from the artifact and mutant strings and hashed"
+    },
+    {
+      "id": "G6",
+      "requirement": "analysis script tested on synthetic data and hashed"
+    },
+    {
+      "id": "R1",
+      "requirement": "real-model parity: unmodified pinned upstream vs M2 and M3 adapters on frozen P1 and P2 IDs within 1e-6"
+    },
+    {
+      "id": "R2",
+      "requirement": "score all 2972 variants with M1, M2, M3 and N0"
+    },
+    {
+      "id": "R3",
+      "requirement": "independent metric recomputation within absolute tolerance 1e-12, and frozen analysis"
+    }
+  ],
+  "pins": {
+    "rewire_benchmarks_commit": "d4531f5981acdf59c7a8c8032c16a3b601009d63",
+    "rewire_benchmarks_uv_lock_sha256": "3f2ec7f464119ec2478ad15aac302f1ba1e16f77725e7d30ffb2af68bf5f4296",
+    "proteingym_commit": "144fe22b07dfaeec2b366f2346203a9838a55b4c",
+    "evcouplings_commit": "e1362407a0b65d63ca07df55f44cb17b0a3722b7",
+    "plmc_commit": "18c9e55e3bd2f14f4968be19a807b401996c929a",
+    "alignment_sha256_observed": "23fe63b7fe8826769b6bf4501945f6ed01a569bdb3a1f37a010bc72dddaba04c",
+    "plmc_binary_sha256": null,
+    "plmc_v2_model_sha256": null,
+    "plmc_stderr_sha256": null,
+    "m2_prepared_artifact_sha256": null,
+    "m3_adapter_commit": null,
+    "frozen_P1_sha256": null,
+    "frozen_P2_sha256": null,
+    "analysis_script_sha256": null,
+    "training_alignment_sha256": null,
+    "generation_configuration_sha256": null
+  },
+  "resources": {
+    "host": {
+      "model": "Mac16,10",
+      "cpu": "Apple M4, 10 logical CPUs (4 performance, 6 efficiency)",
+      "memory_gib": 16,
+      "accelerator_used": "none",
+      "observed": "2026-09-25"
+    },
+    "storage": "all environments, caches, inputs and outputs on the external SSD",
+    "threads": 1,
+    "m1_execution": {
+      "sdk_batch_size": 32,
+      "model_forward_batch_size": 1,
+      "existing_measurement": "0.1878 s SDK inference timer, 2972 variants, 2026-09-20; excludes loading, preparation and metrics; not end-to-end",
+      "cache": "masked-position log-probabilities cached per (sequence, position) for the life of the adapter; one forward pass per distinct substituted position (47 for AMFR)"
+    },
+    "measurements": {
+      "section_timing": "for in-process Python sections, the harness records wall (time.perf_counter) and CPU (time.process_time) at the start and end of each section",
+      "process_totals": "/usr/bin/time -l per process: whole-process wall, CPU and peak RSS",
+      "memory_label": "peak RSS is reported for the named process (for example load plus scoring), never as inference-only or per-section memory",
+      "recorded_per_section": [
+        "threads",
+        "batch sizes",
+        "cache policy",
+        "versions",
+        "bytes written"
+      ],
+      "sections": [
+        "environment build",
+        "input retrieval and hashing",
+        "model preparation (plmc build and fit, or retrieval)",
+        "M2 artifact preparation",
+        "real-model parity",
+        "cold load per method (M1, M2, M3, N0), three fresh processes each, construction only",
+        "warm scoring per method, five repeats over all 2972 variants, starting after loading",
+        "evaluation and bootstrap"
+      ],
+      "warm_scoring_policies": {
+        "M1": "per record, one masked-marginal lookup per substitution; model forward batch 1 only for uncached positions; cache emptied by the harness before each repeat; forward-pass count reported; optional labelled cache-lookup-only pass",
+        "M2": "per record, parse substitutions and sum prepared field differences; fields read at construction; no per-call cache",
+        "M3": "per record, statistical-energy difference from the loaded model; cache behaviour recorded from the frozen G4 adapter; if it caches, emptied before each repeat",
+        "N0": "per record, one SHA256 of the seeded ID; no model or cache"
+      },
+      "threads": 1,
+      "external_command_cpu": "time.process_time excludes child processes; CPU for environment builds, the compiler and plmc comes from each command's own /usr/bin/time -l totals",
+      "sdk_prediction_batch_size": 32
+    },
+    "ceilings_planning_values": {
+      "plmc_fit_wall_minutes": 60,
+      "each_other_stage_wall_minutes": 10,
+      "peak_rss_gib": 4,
+      "new_disk_gib": 5
+    },
+    "paid_compute": "none",
+    "monetary_cost": "not estimated; no incremental cloud charge"
+  },
+  "roles": {
+    "human_decision_owner_proposed": "Tim Richardson (approval not given)",
+    "internal_accountable_coordinator": "Tim Richardson",
+    "automated_scientific_design_reviewer": "Codex (research director) with an independent Codex adviser; accepted 2026-09-25",
+    "engineering_drafting_and_executor": "Claude Code (sole author; proposed engineering executor; executes nothing before G0)",
+    "human_scientific_reviewer": "unassigned",
+    "external_rerun_researcher": "unassigned",
+    "automated_engineering_and_source_feasibility_reviewer": "Codex (research director) with an independent Codex adviser; accepted 2026-09-25"
+  },
+  "external_rerun": {
+    "artifact_replay": {
+      "materials": [
+        "plmc_v2 model file",
+        "M2 prepared artifact",
+        "spec",
+        "rewire-benchmarks and M3 commits",
+        "uv.lock",
+        "frozen ID lists",
+        "analysis script"
+      ],
+      "sharing": "Route B: private sharing by Rewire; public redistribution a separate decision. Route A: per supplier terms; if sharing is forbidden and the file cannot be obtained from the supplier, replay is recorded as not possible",
+      "planning_targets": {
+        "frozen_id_hashes": "identical",
+        "m2_m3_scores_abs": 1e-06,
+        "m1_scores_abs": 1e-05,
+        "delta_rho_and_bounds": "equal to three decimals",
+        "outcome_class": "same"
+      },
+      "target_status": "declared planning targets, not demonstrated cross-platform guarantees; not changed after results",
+      "undefined_or_refused": "agreement if both runs are undefined or refused for the same reason; otherwise a discrepancy",
+      "discrepancy": "investigated and recorded beside the original; the original is not overwritten; not in itself a refutation; neither rerun results nor discrepancies are published automatically; they go through the same publication review, which issue 40 does not authorise"
+    },
+    "regeneration": "Route B only: rebuild plmc and refit with the fixed command; compared as a separate result, not expected to be bit-identical"
+  },
+  "future_confirmatory_candidate": {
+    "selection_rule": "ProteinGym v1.3 Tsuboyama 2023 assays excluding AMFR with MSA_perc_cov = 1.0 and MSA_start = 1, ordered by most single substitutions then DMS_id",
+    "applied_to": "reference metadata only (sha256 a8f498011532a74aa9fe556a50555a75e928c5837d19c06a87592ae04049b308)",
+    "order": [
+      "RS15_GEOSE_Tsuboyama_2023_1A32",
+      "PITX2_HUMAN_Tsuboyama_2023_2L7M",
+      "MAFG_MOUSE_Tsuboyama_2023_1K1V"
+    ],
+    "status": "candidate only; checked Rewire locations hold only reference metadata, which cannot show absence of exposure",
+    "exposure_audit": "before any confirmatory claim: search of project repositories, workbenches and automated-session logs plus a declaration from each person involved, recorded by the human decision owner",
+    "if_exposed": "cannot support a confirmatory claim; audit the next assay in order; if none passes, no confirmatory test"
+  }
+}

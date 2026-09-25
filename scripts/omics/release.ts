@@ -1,3 +1,4 @@
+import { addMfassMatchedEvaluations } from "./mfass-matched-evaluations";
 import { validateSnapshot } from "../../services/omics/src/validation";
 import { addCoverageTables, coverageTableInputs } from "./model-coverage-tables";
 import { addModelEvaluationLinks, modelLinkInputs } from "./model-evaluation-links";
@@ -276,9 +277,9 @@ function main() {
         : [],
     ),
   );
-  const evaluated = addAgroEvaluations(addBaselineEvaluations(addLocalEvaluations(applyAcquisitionCorrections(
+  const evaluated = addMfassMatchedEvaluations(addAgroEvaluations(addBaselineEvaluations(addLocalEvaluations(applyAcquisitionCorrections(
     addAcquiredEvidence(addRunRecipes(separateEntities(profiled))),
-  ))));
+  )))));
   const records = addSourceLabelIdentities(
     addProfileEvidence(addModelEvaluationLinks(addCoverageTables(evaluated))),
   );
@@ -391,6 +392,7 @@ function main() {
                 "Counts derived from this release through the production relationship and chart gates. Figures are source-specific, and metric rows are not independent experiments. Source review is not reproduction.",
             },
             changelog: [
+              "Add four MFASS matched canonical-annotation configurations and 16 exact metric rows on the identical 8,297/8,324 scored subset; retain 23 assembly-orientation exclusions and four canonical transcript-scope exclusions, with pinned automated evidence and separate comparison panels.",
               "Add complete bounded primary-source result tables for BEELINE, CAFA, CAMI, CAPRI, CASP, FLIP2, PLINDER, scIB and provisional Virtual Cell Challenge 2026 validation.",
               "Preserve PEtab timing candidates and four conflicting FLIP2 values in acquisition staging with explicit limitations.",
               "Add append-only linked audit runs, field checks, source retrieval receipts and correction history; unresolved fields remain explicit.",

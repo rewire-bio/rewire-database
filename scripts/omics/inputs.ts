@@ -1,3 +1,4 @@
+import { mfassMatchedInputs } from "./mfass-matched-evaluations";
 import fs from "node:fs";
 import { createHash } from "node:crypto";
 import { enrichMetadata } from "./metadata";
@@ -56,6 +57,7 @@ const batchReceipt = (key: string) =>
   `data/omics/reviews/2026-09-18-${key}-extraction.json`;
 
 export const reviewInputFiles = [
+  ...mfassMatchedInputs,
   ...evaluationGroupInputFiles,
   "data/omics/reviews/2026-09-19-extraction-recheck.json",
   ...benchmarkEvidenceFiles,

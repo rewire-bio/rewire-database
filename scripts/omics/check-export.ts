@@ -17,6 +17,7 @@ import {
   checkSitemap,
   checkSocialImage,
 } from "../seo/check-page-metadata";
+import { utilityPageMetadataContracts } from "../seo/utility-page-metadata";
 import {
   createEvidenceIndex,
   evidenceCsvLines,
@@ -151,28 +152,11 @@ for (const url of indexPaths) {
   }
 }
 const utilityPages = new Map<string, string>();
-for (const url of [
-  "/evidence/",
-  "/audits/",
-  "/runs/mfass-v1/",
-  "/runs/mfass-v2/",
-  "/contribute/",
-]) {
-  const html = page(url);
-  utilityPages.set(url, html);
-  const indexable = !["/runs/mfass-v1/", "/contribute/"].includes(url);
+for (const contract of utilityPageMetadataContracts) {
+  const html = page(contract.path);
+  utilityPages.set(contract.path, html);
   failures.push(
-    ...checkPageMetadata(
-      html,
-      {
-        path: url,
-        canonical: origin + url,
-        indexable,
-        inSitemap: indexable,
-        social: url !== "/contribute/",
-      },
-      sitemap.urls,
-    ),
+    ...checkPageMetadata(html, contract, sitemap.urls),
   );
 }
 const home = page("/");

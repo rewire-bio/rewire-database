@@ -1,0 +1,20 @@
+{
+  "schema_version": "1.0",
+  "status": "reviewed",
+  "review_method": "automated",
+  "reviewed_at": "2026-09-25T11:24:56Z",
+  "source_revision": "093fd1ae198c80ce34408d84d6543bca4fc538f2",
+  "files": {
+    "exclusion-verification.json": "5d2099db4cf6f01432fd88c7db949da89ab9917940705fd0eaa1fb7c9354d46a",
+    "manifest-v1.json": "3fce70dd0bd96cb92d9d0e41287f31e62ddc4ecb8d188615093a873e952433e8",
+    "report.json": "259eb542313914b9114c21b62891f022c0ec0d9e3337196b8d7b2c6d5ae54ef3",
+    "verification.json": "13356c3f1bd7055b11cc0ab1b2b86a7ee586c51d0c984fad6e39ce8948d662fa",
+    "provenance.json": "6304e9625e793f24cccdc2669d092e6cdcc7a508a7f789967e726816fffde062"
+  },
+  "errors": [],
+  "limitations": [
+    "Computational source, coverage and transcription checks; not human review or independent reproduction.",
+    "Raw predictions retained locally; no source cohort alleles redistributed."
+  ],
+  "exclusions_revision": "4be7a98e2553fa2378c29625b13eb3e8ac2e58fb"
+}

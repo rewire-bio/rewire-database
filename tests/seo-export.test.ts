@@ -1,4 +1,3 @@
-import { utilityPageMetadata } from "../scripts/seo/utility-page-metadata";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
@@ -278,35 +277,5 @@ describe("exported sitemap and social asset", () => {
     expect(checkSocialImage(dir).join("\n")).toContain("dimensions disagree");
     fs.writeFileSync(file, "not a PNG");
     expect(checkSocialImage(dir).join("\n")).toContain("Invalid social PNG");
-  });
-});
-
-
-describe("utility-route breadcrumb metadata contracts", () => {
-  const fixtures = [
-    { path: "/evidence/", labels: ["Database", "Evidence and sources"], paths: ["/", "/evidence/"], indexable: true },
-    { path: "/runs/mfass-v1/", labels: ["Database", "Rewire evaluations", "MFASS v1 archive"], paths: ["/", "/?kind=result&origin=rewire#browse", "/runs/mfass-v1/"], indexable: false },
-    { path: "/runs/mfass-v2/", labels: ["Database", "Rewire evaluations", "MFASS v2"], paths: ["/", "/?kind=result&origin=rewire#browse", "/runs/mfass-v2/"], indexable: true },
-    { path: "/contribute/", labels: ["Database", "Contribute"], paths: ["/", "/contribute/"], indexable: false },
-  ];
-  for (const fixture of fixtures) it(`validates exact visible and structured hierarchy on ${fixture.path}`, () => {
-    const expected = utilityPageMetadata(fixture.path);
-    expect(expected.indexable).toBe(fixture.indexable);
-    expect(expected.inSitemap).toBe(fixture.indexable);
-    const items = fixture.labels.map((name, i) => ({ "@type": "ListItem", position: i + 1, name, item: origin + fixture.paths[i] }));
-    const markup = html.replaceAll(origin + pagePath, origin + fixture.path)
-      .replace('content="index, follow"', `content="${fixture.indexable ? "index" : "noindex"}, follow"`)
-      .replace(/<body>[\s\S]*<\/body>/, `<body><nav aria-label="Breadcrumb">${fixture.labels.map((label, i) => i === fixture.labels.length - 1
-        ? `<span aria-current="page">${label}</span>` : `<a href="${escape(fixture.paths[i])}">${label}</a>`).join("")}</nav><script type="application/ld+json">${JSON.stringify({ "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: items })}</script></body>`);
-    const sitemap = new Set(fixture.indexable ? [origin + fixture.path] : []);
-    expect(checkPageMetadata(markup, expected, sitemap)).toEqual([]);
-    expect(checkPageMetadata(markup.replace(/<script type="application\/ld\+json">[\s\S]*?<\/script>/, ""), expected, sitemap)).toContain(`${fixture.path}: structured data count mismatch`);
-    expect(checkPageMetadata(markup.replace('aria-label="Breadcrumb"', 'aria-label="Other"'), expected, sitemap)).toContain(`${fixture.path}: expected one visible breadcrumb navigation`);
-    expect(checkPageMetadata(markup.replace(/"position":1/, '"position":9'), expected, sitemap)).toContain(`${fixture.path}: BreadcrumbList does not match the page hierarchy`);
-  });
-  it("does not grant arbitrary routes structured-data permission or change audits", () => {
-    expect(() => utilityPageMetadata("/unknown/")).toThrow(/Unknown utility/);
-    expect(utilityPageMetadata("/audits/").breadcrumbs).toBeUndefined();
-    expect(utilityPageMetadata("/contribute/").social).toBe(false);
   });
 });

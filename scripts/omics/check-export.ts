@@ -1,4 +1,3 @@
-import { utilityPageMetadata } from "../seo/utility-page-metadata";
 import { baselineAuditFiles } from "./baseline-coverage";
 import {
   catalogueIndexPaths,
@@ -18,6 +17,7 @@ import {
   checkSitemap,
   checkSocialImage,
 } from "../seo/check-page-metadata";
+import { utilityPageMetadataContracts } from "../seo/utility-page-metadata";
 import {
   createEvidenceIndex,
   evidenceCsvLines,
@@ -152,17 +152,11 @@ for (const url of indexPaths) {
   }
 }
 const utilityPages = new Map<string, string>();
-for (const url of [
-  "/evidence/",
-  "/audits/",
-  "/runs/mfass-v1/",
-  "/runs/mfass-v2/",
-  "/contribute/",
-]) {
-  const html = page(url);
-  utilityPages.set(url, html);
+for (const contract of utilityPageMetadataContracts) {
+  const html = page(contract.path);
+  utilityPages.set(contract.path, html);
   failures.push(
-    ...checkPageMetadata(html, utilityPageMetadata(url), sitemap.urls),
+    ...checkPageMetadata(html, contract, sitemap.urls),
   );
 }
 const home = page("/");

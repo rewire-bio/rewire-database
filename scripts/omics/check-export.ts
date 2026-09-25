@@ -1,3 +1,4 @@
+import { utilityPageMetadata } from "../seo/utility-page-metadata";
 import { baselineAuditFiles } from "./baseline-coverage";
 import {
   catalogueIndexPaths,
@@ -160,19 +161,8 @@ for (const url of [
 ]) {
   const html = page(url);
   utilityPages.set(url, html);
-  const indexable = !["/runs/mfass-v1/", "/contribute/"].includes(url);
   failures.push(
-    ...checkPageMetadata(
-      html,
-      {
-        path: url,
-        canonical: origin + url,
-        indexable,
-        inSitemap: indexable,
-        social: url !== "/contribute/",
-      },
-      sitemap.urls,
-    ),
+    ...checkPageMetadata(html, utilityPageMetadata(url), sitemap.urls),
   );
 }
 const home = page("/");

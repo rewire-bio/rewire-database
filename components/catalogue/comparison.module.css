@@ -261,6 +261,54 @@
 .compactTable details {
   margin-top: 0.4rem;
 }
+/* Below 680px each result row becomes a card with the finding first. */
+@media (max-width: 680px) {
+  .stackOnMobile,
+  .stackOnMobile tbody,
+  .stackOnMobile tr,
+  .stackOnMobile th,
+  .stackOnMobile td {
+    display: block;
+    min-width: 0;
+    width: 100%;
+  }
+  .stackOnMobile thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+  }
+  .stackOnMobile tr {
+    display: flex;
+    flex-direction: column;
+    border-top: 1px solid var(--line);
+    padding: 6px 0;
+  }
+  .stackOnMobile tbody th,
+  .stackOnMobile td {
+    border-top: 0;
+    padding: 8px 16px;
+  }
+  .stackOnMobile td[data-label="Finding"] {
+    order: -1;
+    font-size: 1rem;
+  }
+  .stackOnMobile [data-label]::before {
+    content: attr(data-label);
+    display: block;
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--ink-3);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 4px;
+  }
+  .stackOnMobile p {
+    margin: 0.4rem 0;
+  }
+}
 .tableHeading {
   font-size: 1.15rem;
   margin-top: 1rem;

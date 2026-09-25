@@ -776,6 +776,12 @@
   font-size: 14px;
   line-height: 1.6;
   margin: 0;
+  overflow-wrap: anywhere;
+}
+.keyFacts a {
+  color: var(--accent-ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 .profileDisclosure {
   border: 1px solid var(--line);

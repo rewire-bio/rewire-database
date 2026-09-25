@@ -42,6 +42,27 @@ export function Evidence({
   );
 }
 
+/** Render bare http(s) URLs inside catalogue text as links. */
+function LinkedText({ text }: { text: string }) {
+  return (
+    <>
+      {text.split(/(https?:\/\/[^\s),;]+)/).map((part, index) => {
+        const url = index % 2 ? safeSourceUrl(part.replace(/\.$/, "")) : undefined;
+        if (!url) return part;
+        const trailing = part.endsWith(".") ? "." : "";
+        return (
+          <span key={index}>
+            <a href={url} rel="noreferrer">
+              {part.slice(0, part.length - trailing.length)}
+            </a>
+            {trailing}
+          </span>
+        );
+      })}
+    </>
+  );
+}
+
 /** Keep precise citations one keyboard-accessible disclosure away. */
 export function ProfileEvidence(props: Parameters<typeof Evidence>[0]) {
   return (
@@ -171,6 +192,14 @@ export default function Profile({
     const fact = profile.facts.find((item) => pattern.test(item.label));
     return fact ? [fact] : [];
   });
+  // When every key fact cites the same sources, list them once for the section.
+  const citationKey = (fact: (typeof keyFacts)[number]) =>
+    `${[...fact.source_ids].sort().join(",")}|${fact.source_locator}`;
+  const sharedFactSources =
+    keyFacts.length > 1 &&
+    keyFacts.every((fact) => citationKey(fact) === citationKey(keyFacts[0]))
+      ? keyFacts[0]
+      : null;
   const diagram = profile.diagram && (
     <figure className={styles.profileVisual}>
       <div className={styles.visualHeading}>
@@ -200,20 +229,31 @@ export default function Profile({
               {keyFacts.map((fact) => (
                 <article key={fact.label}>
                   <h3>{fact.label}</h3>
-                  <p>{fact.value}</p>
+                  <p>
+                    <LinkedText text={fact.value} />
+                  </p>
                   {fact.status && fact.status !== "source_checked" && (
                     <p className={styles.muted}>
                       {fact.status.replace(/_/g, " ")}
                     </p>
                   )}
-                  <ProfileEvidence
-                    ids={fact.source_ids}
-                    locator={fact.source_locator}
-                    sources={sources}
-                  />
+                  {!sharedFactSources && (
+                    <ProfileEvidence
+                      ids={fact.source_ids}
+                      locator={fact.source_locator}
+                      sources={sources}
+                    />
+                  )}
                 </article>
               ))}
             </div>
+          )}
+          {sharedFactSources && (
+            <ProfileEvidence
+              ids={sharedFactSources.source_ids}
+              locator={sharedFactSources.source_locator}
+              sources={sources}
+            />
           )}
           {keyFacts.length === 0 && (
             <p>
@@ -274,7 +314,7 @@ export default function Profile({
                       <tr key={i}>
                         <th scope="row">{fact.label}</th>
                         <td>
-                          {fact.value}
+                          <LinkedText text={fact.value} />
                           {fact.status && fact.status !== "source_checked" && (
                             <span className={styles.muted}>
                               {" "}

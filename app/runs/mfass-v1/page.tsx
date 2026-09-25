@@ -1,3 +1,4 @@
+import Breadcrumbs from "@/components/catalogue/Breadcrumbs";
 import { socialMetadata } from "@/lib/catalogue-sharing";
 import type { Metadata } from "next";
 import Link from "next/link";
@@ -25,10 +26,7 @@ export default function HistoricalMfassPage() {
     <>
       <header className="page-head">
         <div className="wrap">
-          <nav aria-label="Breadcrumb">
-            <Link href="/">Benchmark database</Link>
-            {" / "}<span>MFASS v1 archive</span>
-          </nav>
+          <Breadcrumbs items={[{ name: "Database", path: "/" }, { name: "Rewire evaluations", path: "/?kind=result&origin=rewire#browse" }, { name: "MFASS v1 archive", path: "/runs/mfass-v1/" }]} />
           <span className="kick">Historical run</span>
           <h1>MFASS v1 historical report</h1>
           <p className="intro">This archived evaluation has been superseded. Its original results, interpretation and reproduction instructions are retained for inspection.</p>

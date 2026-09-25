@@ -8,6 +8,27 @@ export type CatalogueFilters = {
   status: string;
   origin: string;
 };
+/** "1 result", "2 results": counts shown to readers. */
+export function countLabel(count: number, singular: string, plural = `${singular}s`): string {
+  return `${count.toLocaleString()} ${count === 1 ? singular : plural}`;
+}
+
+/** Reader-facing names for catalogue review states. */
+const statusLabels: Record<string, string> = {
+  discovered: "Not yet reviewed",
+  needs_review: "Needs review",
+  source_checked: "Source checked",
+  reproduced: "Independently reproduced",
+  disputed: "Disputed",
+  superseded: "Superseded",
+  excluded: "Excluded",
+};
+export function statusLabel(status: string): string {
+  return statusLabels[status] || status.replace(/_/g, " ");
+}
+
+/** Records per browse page; kept short so filters and downloads stay reachable on phones. */
+export const BROWSE_PAGE_SIZE = 10;
 export const defaultFilters: CatalogueFilters = {
   kind: "model",
   q: "",
@@ -289,7 +310,7 @@ export function browseFilterSummary(filters: CatalogueFilters): string {
     kindLabels[filters.kind],
     filters.q && `Search: ${filters.q}`,
     filters.area && researchAreaLabel(filters.area),
-    filters.status.replace(/_/g, " "),
+    filters.status && statusLabel(filters.status),
     filters.origin &&
       `${filters.origin === "rewire" ? "Rewire" : "Published"} evaluations`,
   ]

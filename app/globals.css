@@ -95,6 +95,10 @@ h1, h2, h3, h4 { margin: 0; font-weight: 600; letter-spacing: -0.02em; line-heig
   background: var(--accent);
   box-shadow: 0 0 6px var(--accent-glow);
 }
+.brand .brand-sub {
+  font-family: var(--mono); font-size: 12px; font-weight: 500; letter-spacing: 0;
+  color: var(--accent-ink); padding-left: 9px; border-left: 1px solid var(--line-2);
+}
 .nav { display: flex; gap: 4px; margin-left: auto; align-items: center; }
 .nav a {
   font-family: var(--sans); font-size: 14px; font-weight: 500; color: var(--ink-2);
@@ -493,7 +497,9 @@ h1, h2, h3, h4 { margin: 0; font-weight: 600; letter-spacing: -0.02em; line-heig
 .article { padding: 0 0 40px; }
 .art-head { border-bottom: 1px solid var(--line); padding: 40px 0 30px; }
 .breadcrumb { font-family: var(--mono); font-size: 12px; color: var(--ink-3); display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
-.breadcrumb a:hover { color: var(--accent-ink); }
+.breadcrumb a { color: var(--accent-ink); }
+.breadcrumb a:hover { text-decoration: underline; }
+.breadcrumb [aria-hidden="true"] { color: var(--line-2); }
 .breadcrumb .s { color: var(--line-2); }
 
 .art-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
@@ -711,6 +717,10 @@ details.qa .qa-body { font-family: var(--sans); font-size: 15px; line-height: 1.
   .topic-section .ts-head { grid-template-columns: 1fr; gap: 18px; }
   .topic-section .ts-head.no-visual { grid-template-columns: 1fr; }
   .topic-section .ts-visual { width: 100%; max-width: 320px; height: 160px; }
+}
+@media (pointer: coarse) {
+  .breadcrumb a { display: inline-block; padding: 8px 0; margin: -8px 0; }
+  .breadcrumb { row-gap: 16px; }
 }
 @media (max-width: 680px) {
   .wrap { padding: 0 20px; }

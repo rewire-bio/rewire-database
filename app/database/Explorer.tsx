@@ -23,6 +23,9 @@ import {
   browseFilterSummary,
   supportsEvaluationSummary,
   explorerPrintedScore,
+  BROWSE_PAGE_SIZE,
+  countLabel,
+  statusLabel,
 } from "@/lib/omics-browse";
 import styles from "./database.module.css";
 import ui from "./Explorer.module.css";
@@ -118,7 +121,7 @@ export default function Explorer({
             status: filters.status || undefined,
             origin: filters.origin || undefined,
             cursor,
-            limit: 20,
+            limit: BROWSE_PAGE_SIZE,
           },
           controller.signal,
         )
@@ -225,7 +228,7 @@ export default function Explorer({
           >
             {kindLabels[kind]}{" "}
             <span className={styles.tabCount}>
-              {release.facets.counts[kind] || 0}
+              {(release.facets.counts[kind] || 0).toLocaleString()}
             </span>
           </button>
         ))}
@@ -285,7 +288,7 @@ export default function Explorer({
             <option value="">All statuses</option>
             {availableStatuses.map(([status, count]) => (
               <option key={status} value={status}>
-                {status.replace(/_/g, " ")} ({count})
+                {statusLabel(status)} ({count})
               </option>
             ))}
           </select>
@@ -374,8 +377,7 @@ export default function Explorer({
         {(showResults ? data.items : []).map((record) => (
           <article className={ui.row} key={record.id}>
             <span className={styles.tag}>
-              {singularKindLabels[record.kind]} ·{" "}
-              {record.status.replace(/_/g, " ")}
+              {singularKindLabels[record.kind]} · {statusLabel(record.status)}
             </span>
             <h2>
               <Link
@@ -423,13 +425,13 @@ export default function Explorer({
             <p className={styles.muted}>
               {(record.facets.areas || []).map(researchAreaLabel).join(" · ")}
               {record.facets.areas?.length ? " · " : ""}
-              {record.source_ids.length} linked sources
+              {countLabel(record.source_ids.length, "source")}
             </p>
             {supportsEvaluationSummary(record.kind) &&
               pageInfo.evaluation_summaries?.[record.id] && (
                 <p className={ui.counts}>
                   {pageInfo.evaluation_summaries[record.id].evaluation_count > 0
-                    ? `${pageInfo.evaluation_summaries[record.id].evaluation_count.toLocaleString()} evaluations · ${pageInfo.evaluation_summaries[record.id].result_count.toLocaleString()} metric rows`
+                    ? `${countLabel(pageInfo.evaluation_summaries[record.id].evaluation_count, "evaluation")} · ${countLabel(pageInfo.evaluation_summaries[record.id].result_count, "result")}`
                     : "No evaluations linked in this release"}
                 </p>
               )}

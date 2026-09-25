@@ -8,7 +8,7 @@ import {
   CompositionCharts,
   CoverageChart,
 } from "@/components/catalogue/CatalogueCharts";
-import { researchAreaLabel } from "@/lib/omics-browse";
+import { BROWSE_PAGE_SIZE, researchAreaLabel } from "@/lib/omics-browse";
 import { benchmarkCoverage } from "@/scripts/omics/audit-benchmark-evidence";
 
 const pageMetadata = {
@@ -74,28 +74,23 @@ export default function BenchmarksPage() {
       </header>
       <section className="block first">
         <div className="wrap">
-          <section
-            id="browse"
-            className={styles.browse}
-            aria-label="Browse benchmark database"
-          >
-            <Explorer
-              initial={query.list({ kind: "model", limit: 20 })}
-              release={query.release()}
-            />
-          </section>
-          <nav
-            className={styles.nav}
-            aria-label="Database navigation"
-            style={{ marginTop: 24 }}
-          >
-            <a href="#browse">Browse records</a>
+          <nav className={styles.nav} aria-label="Database navigation">
             <a href="/benchmarks/">All benchmarks</a>
             <a href="/models/">Model index</a>
             <a href="#evidence">About the evidence</a>
             <a href="#downloads">Downloads</a>
             <a href="/contribute/">Contribute evidence</a>
           </nav>
+          <section
+            id="browse"
+            className={styles.browse}
+            aria-label="Browse benchmark database"
+          >
+            <Explorer
+              initial={query.list({ kind: "model", limit: BROWSE_PAGE_SIZE })}
+              release={query.release()}
+            />
+          </section>
           <section id="evidence" className={styles.information}>
             <details className={styles.section}>
               <summary>Coverage: records and linked evaluations</summary>
@@ -116,8 +111,9 @@ export default function BenchmarksPage() {
             <p>
               Published evaluations and rewire evaluations are records in the
               same database, with their origin shown beside each result. This
-              release includes {external} source-checked literature result rows
-              and {own} metric rows from existing rewire runs.
+              release includes {external.toLocaleString()} source-checked
+              published results and {own.toLocaleString()} results from
+              existing rewire runs.
             </p>
             <p>
               <strong>

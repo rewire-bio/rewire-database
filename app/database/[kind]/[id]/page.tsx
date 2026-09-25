@@ -47,6 +47,7 @@ import {
   evaluationEntities,
   datasetEntities,
   groupEntities,
+  countLabel,
   uniqueRecords,
 } from "@/lib/omics-browse";
 import styles from "../../database.module.css";
@@ -285,10 +286,9 @@ export default function RecordPage({ params }: { params: Params }) {
     <>
       <header className="page-head" id="finding">
         <div className="wrap">
-          <Breadcrumbs items={recordBreadcrumbs(record)} className={styles.nav} />
+          <Breadcrumbs items={recordBreadcrumbs(record)} />
           <div className={styles.nav}>
             <BrowseReturn fallback={`/?kind=${record.kind}#browse`} />
-            <Link href={`/?kind=${record.kind}#browse`}>Search and filter {kindLabels[record.kind].toLowerCase()}</Link>
           </div>
           <div
             className={
@@ -333,12 +333,8 @@ export default function RecordPage({ params }: { params: Params }) {
                 <p>
                   {(results.total > 0 || (!evaluatedDownstream.length && !broaderFamilyOnly)) && (
                     <a href="#results" className={styles.resultCount}>
-                    {results.evaluation_count}{" "}
-                    {results.evaluation_count === 1
-                      ? "evaluation"
-                      : "evaluations"}{" "}
-                    · {results.total}{" "}
-                    {results.total === 1 ? "metric row" : "metric rows"}
+                    {countLabel(results.evaluation_count, "evaluation")} ·{" "}
+                    {countLabel(results.total, "result")}
                     </a>
                   )}
                   {evaluatedDownstream.length > 0 && (
@@ -351,7 +347,7 @@ export default function RecordPage({ params }: { params: Params }) {
                   )}
                   {broaderFamilyOnly && !evaluatedDownstream.length && family && (
                     <Link href={`${recordHref(family.record)}#results`} className={styles.resultCount}>
-                      View {familyResults!.total} metric rows for the broader family
+                      View {countLabel(familyResults!.total, "result")} for the broader family
                     </Link>
                   )}
                 </p>
@@ -554,8 +550,7 @@ export default function RecordPage({ params }: { params: Params }) {
                     </Link>{" "}
                     <span>
                       {singularKindLabels[item.record.kind]} ·{" "}
-                      {query.results({ id: item.record.id, limit: 1 }).total}{" "}
-                      metric rows
+                      {countLabel(query.results({ id: item.record.id, limit: 1 }).total, "result")}
                     </span>
                   </li>
                 ))}

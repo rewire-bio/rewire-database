@@ -849,3 +849,44 @@
     padding-block: 8px;
   }
 }
+
+/* Home page: task-based entry points beside the main search. */
+.journeys {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 10px;
+  font-size: 14px;
+}
+.journeys > span {
+  color: var(--ink-3);
+  margin-right: 2px;
+}
+.journeys a {
+  display: inline-flex;
+  gap: 6px;
+  min-height: 40px;
+  align-items: center;
+  padding: 6px 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--card);
+  color: var(--ink-3);
+}
+.journeys a strong {
+  color: var(--accent-ink);
+  font-weight: 600;
+}
+.journeys a:hover {
+  border-color: var(--accent);
+}
+@media (max-width: 560px) {
+  .journeys a {
+    min-height: 36px;
+    padding: 4px 10px;
+    font-size: 13px;
+  }
+  .journeys a span {
+    display: none;
+  }
+}

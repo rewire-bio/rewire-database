@@ -101,8 +101,12 @@ describe("explorer initial hierarchy", () => {
       />,
     );
     expect(markup.indexOf('type="search"')).toBeLessThan(
-      markup.indexOf('aria-label="Browse the database"'),
+      markup.indexOf('aria-label="Record type"'),
     );
+    // The search input names its scope: the selected record type.
+    expect(markup).toContain('aria-describedby="catalogue-search-scope"');
+    expect(markup).toMatch(/id="catalogue-search-scope"[^>]*>Search in/);
+    expect(markup).toContain('aria-labelledby="refine-label"');
     expect(markup).toMatch(/<details[^>]*><summary>More record types/);
     expect(markup).not.toMatch(/<details[^>]* open/);
     expect(markup).toContain("Reset filters");

@@ -103,7 +103,7 @@ export default function UseCaseEvidence({ mapping, useCasePath, executionLinks }
           return row.result.attributes.uncertainty == null && typeof note === "string" ? [note] : [];
         }))];
         return <section key={evaluation.id} aria-label={catalogueText(evaluation.name)}>
-          <h4>{configurations.map((configuration, index) => <span key={configuration.id}>{index > 0 && "; "}<UseCaseRecordLink href={recordHref(configuration)} useCasePath={useCasePath}>{catalogueText(configuration.name)}</UseCaseRecordLink></span>)}</h4>
+          <h5>{configurations.map((configuration, index) => <span key={configuration.id}>{index > 0 && "; "}<UseCaseRecordLink href={recordHref(configuration)} useCasePath={useCasePath}>{catalogueText(configuration.name)}</UseCaseRecordLink></span>)}</h5>
           <p className={styles.muted}>{originLabel(evaluation.attributes.origin)} · {statusLabel(evaluation.status)}</p>
           <p>{catalogueText(evaluation.description)}</p>
           <dl className={styles.fields}>

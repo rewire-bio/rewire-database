@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { buildCatalogue } from "@/lib/catalogue-build";
 import Explorer from "./database/Explorer";
+import PageHeader from "@/components/PageHeader";
 import styles from "./database/database.module.css";
 import {
   CompositionCharts,
@@ -62,37 +63,32 @@ export default function BenchmarksPage() {
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJsonLd(catalogueWebsiteJsonLd) }} />
-      <header className="page-head">
-        <div className="wrap">
-          <span className="kick">Omics and molecular biology</span>
-          <h1>Biological model benchmark database</h1>
-          <p className="intro">
-            Find models, understand how they are tested, and inspect the
-            evidence behind their results.
-          </p>
-        </div>
-      </header>
-      <section className="block first">
-        <div className="wrap">
-          <nav className={styles.nav} aria-label="Database navigation">
-            <a href="/use-cases/">Use cases</a>
-            <a href="/benchmarks/">All benchmarks</a>
-            <a href="/models/">Model index</a>
-            <a href="#evidence">About the evidence</a>
-            <a href="#downloads">Downloads</a>
-            <a href="/contribute/">Contribute evidence</a>
-          </nav>
+      <PageHeader
+        eyebrow={["Omics and molecular biology", `Release ${catalogue.released_at.slice(0, 10)}`]}
+        title="Biological model benchmark database"
+        intro="Find biological models, see how they were tested and inspect the evidence behind each result."
+      >
+        <nav className={styles.journeys} aria-label="Other ways to start">
+          <span>Or start from</span>
+          <a href="/use-cases/"><strong>A biological question</strong> <span>Use cases</span></a>
+          <a href="/models/"><strong>A model you know</strong> <span>Models</span></a>
+          <a href="/benchmarks/"><strong>A benchmark</strong> <span>Benchmarks</span></a>
+        </nav>
+      </PageHeader>
+      <div className="wrap content">
           <section
             id="browse"
             className={styles.browse}
-            aria-label="Browse benchmark database"
+            aria-labelledby="browse-heading"
           >
+            <h2 id="browse-heading" className="sr-only">Search and browse the database</h2>
             <Explorer
               initial={query.list({ kind: "model", limit: BROWSE_PAGE_SIZE })}
               release={query.release()}
             />
           </section>
           <section id="evidence" className={styles.information}>
+            <h2>How to read the evidence</h2>
             <details className={styles.section}>
               <summary>Coverage: records and linked evaluations</summary>
               <p>
@@ -108,7 +104,6 @@ export default function BenchmarksPage() {
                 rows={coverageRows}
               />
             </details>
-            <h2>About the evidence</h2>
             <p>
               Published evaluations and rewire evaluations are records in the
               same database, with their origin shown beside each result. This
@@ -196,8 +191,7 @@ export default function BenchmarksPage() {
               </div>
             </details>
           </section>
-        </div>
-      </section>
+      </div>
     </>
   );
 }

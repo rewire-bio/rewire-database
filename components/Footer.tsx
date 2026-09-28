@@ -14,6 +14,7 @@ export default function Footer() {
             <a href="/">Benchmark database</a>
             <a href="/evidence/">Evidence and sources</a>
             <a href="/?kind=result&amp;origin=literature#browse">Published results</a>
+            <a href="/#downloads">Download the database</a>
             <a href="https://rewire.it/blog/">Articles</a>
           </div>
           <div className="col">

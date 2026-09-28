@@ -22,22 +22,9 @@ jobs:
       - uses: actions/checkout@v4
       - name: Free temporary runner space for immutable release exports
         if: runner.environment == 'github-hosted'
-        run: |
-          df -h .
-          # This Node/Python/Java project does not use these preinstalled SDKs.
-          # Keep the scientific archives; reclaim only disposable runner tools.
-          sudo rm -rf -- /usr/local/lib/android /usr/share/dotnet \
-            /usr/share/swift /usr/local/.ghcup /opt/ghc \
-            /opt/hostedtoolcache/CodeQL /usr/local/share/powershell
-          df -h .
-          # Historical exports currently need 19 GiB, plus Next's current export,
-          # generated pages, dependencies and working files. Fail before building
-          # if a future runner image no longer leaves sufficient headroom.
-          available=$(df -PB1 . | awk 'NR == 2 { print $4 }')
-          if [ "$available" -lt 37580963840 ]; then
-            echo "Insufficient temporary build space: need at least 35 GiB free."
-            exit 1
-          fi
+        # Archive restoration, generated pages and dependencies exceeded the
+        # previous 35 GiB allowance. Keep 45 GiB before installing dependencies.
+        run: node scripts/prepare-runner-space.mjs
       - uses: actions/setup-node@v4
         with:
           node-version: 22

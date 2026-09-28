@@ -2,30 +2,33 @@
 
 Use-case pages connect a research decision to exact catalogue evaluations. They
 do not add measurements, expand numeric comparison groups or recommend clinical
-care. The first release covers splicing follow-up and protein stability research,
-using three independently scoped mappings: matched MFASS, AMFR ESM-2 and the
-separate AMFR fixed-seed random control.
+care. The collection covers seven bounded research questions. The initial
+splicing and protein-stability pages retain their original mappings; the
+[September expansion review](use-case-expansion-2026-09-28.md) records the five
+additional questions and the evidence deliberately excluded.
 
 ## Content and evidence ownership
 
 - Codex authored and performed the initial automated source curation for issue
-  [#65](https://github.com/rewire-bio/rewire-database/issues/65). The recorded actor
+  [#65](https://github.com/rewire-bio/rewire-database/issues/65), followed by separate
+  curation and cross-review of the expansion. The recorded actor
   and method mean automated review, not human domain review or independent
   experimental replication.
 - Engineering and release responsibility remains with the repository maintainers
   through the existing review, CI, release and deployment process. A passing
   source receipt does not publish a feature or approve a scientific claim.
 - Human scientific review is unassigned. That gap stays visible on both seed
-  pages and is part of the scientific-review work tracked in
+  pages and every added question, and is part of the scientific-review work tracked in
   [#31](https://github.com/rewire-bio/rewire-database/issues/31).
 - At each release, evidence fingerprints are checked automatically. Maintainers
   should review active mappings monthly and when a cited protocol, source or
   result changes. This is a maintenance cadence, not a newly scheduled job.
 
 The input receipt is `data/omics/use-cases/review.json`; it binds the exact
-curation and source bytes. `inputs.json` contains the two use cases and their
-mappings. `sources.json` adds two pinned documentation source records. The other
-26,122 records in baseline release `2026-09-25-d40cee0abe73` remain unchanged.
+curation and source bytes. `inputs.json` contains seven use cases and 17
+protocol mappings. `sources.json` supplies the two pinned documentation source
+records introduced by the initial release. All 26,124 records in baseline release
+`2026-09-25-8af07e960e5f` remain unchanged by the expansion.
 Scientific result values are resolved from evaluation IDs rather than copied
 into these inputs.
 
@@ -78,7 +81,12 @@ The same resolver serves static pages and the release-pinned API. The sidecar
 does not introduce entity kinds or graph edges. Only explicitly listed, reviewed
 evaluations support an active mapping. Model backlinks identify the tested
 configurations and require reviewed relationships; they do not imply that every
-configuration in a model family applies.
+configuration in a model family applies. Legacy evaluation roles `benchmark` and
+`model` are accepted only when the existing target already has kind `protocol`
+or `configuration`, respectively. This preserves exact reviewed identities; it
+does not promote tasks, suites, model families, methods or pipelines. These
+targets and their source and relationship dependencies enter the same stale
+evidence checks as canonical roles.
 
 The public read procedures are `catalogue.useCases` (question/input search,
 area/context filters and pagination), `catalogue.useCase` (detail by slug) and

@@ -3,7 +3,7 @@ import os from "node:os";
 import path from "node:path";
 import { createHash } from "node:crypto";
 import { gzipSync, gunzipSync } from "node:zlib";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, beforeAll, describe, expect, it } from "vitest";
 import { buildRelease } from "../scripts/omics/release";
 import { restoreReleaseBundles } from "../scripts/omics/archives";
 import {
@@ -13,8 +13,9 @@ import {
 } from "../scripts/omics/use-cases";
 import {
   buildUseCaseArtifact, createUseCaseQuery, mappingEvidenceHash,
-  useCaseDeclaration, validateUseCaseArtifact, type UseCaseInputs,
+  useCaseDeclaration, validateUseCaseArtifact, type UseCaseArtifact, type UseCaseInputs,
 } from "../services/omics/src/use-cases";
+import type { CatalogueSnapshot } from "../services/omics/src/catalogue-query";
 import type { RecordEntry } from "../scripts/omics/schema";
 
 const sha = (bytes: string | Buffer) => createHash("sha256").update(bytes).digest("hex");
@@ -88,19 +89,55 @@ function archive(output: ReturnType<typeof buildRelease>, split: boolean) {
 }
 
 describe("reviewed use-case release inputs", () => {
-  it("keeps the two seed cases bounded, with separate completed and planned evidence", () => {
+  function reviewedExpansion() {
     const bundle = loadUseCases()!;
-    const baseline = JSON.parse(gunzipSync(fs.readFileSync("data/omics/releases/2026-09-25-d40cee0abe73/catalogue.json.gz")).toString());
+    const baseline: Omit<CatalogueSnapshot, "records"> & { records: RecordEntry[] } = JSON.parse(gunzipSync(fs.readFileSync("data/omics/releases/2026-09-25-d40cee0abe73/catalogue.json.gz")).toString());
+    const previous: CatalogueSnapshot = JSON.parse(gunzipSync(fs.readFileSync("data/omics/releases/2026-09-25-8af07e960e5f/catalogue.json.gz")).toString());
+    const seedInputs: UseCaseArtifact = JSON.parse(gunzipSync(fs.readFileSync("data/omics/releases/2026-09-25-8af07e960e5f/use-cases.json.gz")).toString());
     const records = addUseCaseSources(baseline.records, bundle);
-    expect(baseline.records).toHaveLength(26122);
-    expect(records).toHaveLength(26124);
-    expect(records.slice(0, 26122)).toEqual(baseline.records);
-    expect(bundle.sources.every((source) => source.kind === "source")).toBe(true);
     const snapshot = { ...baseline, records };
     const artifact = buildUseCaseArtifact(snapshot, bundle.inputs);
     const query = createUseCaseQuery(snapshot, artifact, useCaseDeclaration(bundle.inputs));
-    expect(query.list().total).toBe(2);
-    expect(artifact.mappings.map((m) => m.lifecycle)).toEqual(["active", "active", "active"]);
+    return { bundle, baseline, previous, seedInputs, records, snapshot, artifact, query };
+  }
+  let expanded: ReturnType<typeof reviewedExpansion>;
+  beforeAll(() => { expanded = reviewedExpansion(); });
+
+  it("expands reviewed questions while preserving every scientific record and seed input", () => {
+    const { bundle, baseline, previous, seedInputs, records, artifact, query } = expanded;
+    expect(baseline.records).toHaveLength(26122);
+    expect(records).toHaveLength(26124);
+    expect(previous.records).toHaveLength(26124);
+    expect([...records].sort((a, b) => a.id.localeCompare(b.id))).toEqual(previous.records);
+    expect(bundle.sources.every((source) => source.kind === "source")).toBe(true);
+    expect(query.list().total).toBe(7);
+    expect(artifact.mappings).toHaveLength(17);
+    expect(artifact.mappings.every((m) => m.lifecycle === "active")).toBe(true);
+    const evaluations = artifact.mappings.flatMap((m) => m.evaluation_ids);
+    expect(evaluations).toHaveLength(57);
+    expect(new Set(evaluations).size).toBe(57);
+    expect(seedInputs.use_cases).toHaveLength(2);
+    expect(seedInputs.mappings).toHaveLength(3);
+    for (const seed of seedInputs.use_cases)
+      expect(bundle.inputs.use_cases.find((entry) => entry.id === seed.id)).toEqual(seed);
+    for (const seed of seedInputs.mappings) {
+      expect(bundle.inputs.mappings.find((mapping) => mapping.id === seed.id)).toEqual(seed);
+      expect(artifact.mappings.find((mapping) => mapping.id === seed.id)).toEqual(seed);
+    }
+    for (const entry of bundle.inputs.use_cases) {
+      expect(entry.review.method).toBe("automated_source_review");
+      expect(query.get({ slug: entry.slug })!.use_case.review).toEqual(entry.review);
+    }
+    for (const mapping of artifact.mappings) {
+      expect(mapping.review?.method).toBe("automated_source_review");
+      const entry = bundle.inputs.use_cases.find((item) => item.id === mapping.use_case_id)!;
+      expect(query.get({ slug: entry.slug })!.mappings.find((item) => item.id === mapping.id)!.review).toEqual(mapping.review);
+    }
+    expect(() => addUseCaseSources(records, bundle)).toThrow(/cannot replace existing record/);
+  });
+
+  it("keeps the original MFASS and AMFR scopes separate from planned evidence", () => {
+    const { query } = expanded;
     const mfass = query.get({ slug: "splicing-follow-up" })!;
     expect(mfass.mappings).toHaveLength(1);
     expect(mfass.mappings[0].evaluations).toHaveLength(4);
@@ -114,15 +151,118 @@ describe("reviewed use-case release inputs", () => {
     expect(amfr.use_case.planned_work).toHaveLength(1);
     expect(amfr.use_case.planned_work[0].status).toBe("blocked");
     expect(amfr.mappings.flatMap((m) => m.evaluation_ids).join(" ")).not.toMatch(/evcouplings|evmutation/);
-    expect(bundle.inputs.use_cases.every((u) => u.review.method === "automated_source_review")).toBe(true);
-    expect(() => addUseCaseSources(records, bundle)).toThrow(/cannot replace existing record/);
+  });
+
+  type Scope = { protocol: string; evaluations: [string, string][] };
+  const groups: { slug: string; scopes: Scope[] }[] = [
+    {
+      slug: "utr-translation-baselines",
+      scopes: [{
+        protocol: "rewire-protocol-mrnabench-designed-mrl-v1",
+        evaluations: [
+          ["rewire-local-20260920-evaluation-mrnabench-composition", "rewire-local-20260920-configuration-mrnabench-composition"],
+          ["rewire-local-20260920-evaluation-mrnabench-train-mean", "rewire-local-20260920-configuration-mrnabench-train-mean"],
+        ],
+      }],
+    },
+    {
+      slug: "plant-promoter-reporters",
+      scopes: ["maize-protoplasts", "tobacco-leaves"].flatMap((host) =>
+        ["a-thaliana", "s-bicolor", "z-mays"].map((species) => ({
+          protocol: `agront-2024-fig3e-task-${host}-${species}`,
+          evaluations: ["agront", "cnn-jores-et-al"].map((method): [string, string] => [
+            `agront-2024-fig3e-evaluation-${method}-promoter-strength-${host}-${host}-${species}`,
+            `agront-2024-fig3e-method-${method}-promoter-strength-${host}`,
+          ]),
+        }))),
+    },
+    {
+      slug: "genetic-perturbation-response",
+      scopes: ["mse", "pearson-de"].map((metric) => ({
+        protocol: `gears-2023-supp-table6-task-${metric}`,
+        evaluations: ["no-perturb", "cpa", "cpa-plus-kg", "gears"].map((method): [string, string] => [
+          `gears-2023-supp-table6-evaluation-${method}-${metric}`,
+          `gears-2023-supp-table6-method-${method}`,
+        ]),
+      })),
+    },
+    {
+      slug: "rhodopsin-wavelength-transfer",
+      scopes: [{
+        protocol: "rewire-protocol-flip2-rhomax-by-wild-type-v1",
+        evaluations: [
+          ["rewire-local-20260920-evaluation-flip2-composition", "rewire-local-20260920-configuration-flip2-composition"],
+          ["rewire-local-20260920-evaluation-flip2-train-mean", "rewire-local-20260920-configuration-flip2-train-mean"],
+          ["rewire-local-20260921-evaluation-composition22", "rewire-local-20260921-configuration-composition22"],
+          ["rewire-local-20260921-evaluation-esm2-35m", "rewire-local-20260921-configuration-esm2-35m"],
+          ["rewire-local-20260921-evaluation-esm2-8m", "rewire-local-20260921-configuration-esm2-8m"],
+        ],
+      }],
+    },
+    {
+      slug: "mass-spectrum-molecule-shortlisting",
+      scopes: ["formula", "mces"].flatMap((split) => [1, 20].map((rank) => ({
+        protocol: `msalign-2026-table3-task-massspecgym-${split}-split-no-formula-r-${rank}`,
+        evaluations: ["deepsets", "emb-cos", "ffn", "jestr", "msalign", "sail"].map((method): [string, string] => [
+          `msalign-2026-table3-evaluation-${method}-massspecgym-${split}-split-no-formula-r-${rank}`,
+          `msalign-2026-table3-method-${method}`,
+        ]),
+      }))),
+    },
+  ];
+  it.each(groups)("keeps $slug evaluations within their exact protocol and configuration scopes", ({ slug, scopes }) => {
+    const page = expanded.query.get({ slug })!;
+    expect(page).not.toBeNull();
+    expect(page.mappings).toHaveLength(scopes.length);
+    expect(page.mappings.map((mapping) => mapping.protocol_id).sort()).toEqual(scopes.map((scope) => scope.protocol).sort());
+    for (const scope of scopes) {
+      const mapping = page.mappings.find((item) => item.protocol_id === scope.protocol)!;
+      expect(mapping.protocol).toMatchObject({ id: scope.protocol, kind: "protocol" });
+      expect(mapping.evaluation_ids.toSorted()).toEqual(scope.evaluations.map(([id]) => id).sort());
+      expect(mapping.evaluations).toHaveLength(scope.evaluations.length);
+      for (const [evaluationId, configurationId] of scope.evaluations) {
+        const evaluation = mapping.evaluations.find((item) => item.evaluation.id === evaluationId)!;
+        expect(evaluation.configurations.map((configuration) => configuration.id)).toEqual([configurationId]);
+        expect(evaluation.configurations[0].kind).toBe("configuration");
+        expect(evaluation.results.length).toBeGreaterThan(0);
+        for (const result of evaluation.results) {
+          expect(result.evaluation?.id).toBe(evaluationId);
+          expect(result.protocols.map((protocol) => protocol.id)).toEqual([scope.protocol]);
+          expect(result.configurations.map((configuration) => configuration.id)).toEqual([configurationId]);
+        }
+      }
+    }
+  });
+
+  it("retains undefined constant-control correlations and their original review evidence", () => {
+    const controls = [
+      { slug: "utr-translation-baselines", evaluation: "rewire-local-20260920-evaluation-mrnabench-train-mean", metrics: ["pearson", "spearman"] },
+      { slug: "rhodopsin-wavelength-transfer", evaluation: "rewire-local-20260920-evaluation-flip2-train-mean", metrics: ["spearman"] },
+    ];
+    const originals = new Map(expanded.previous.records.map((record) => [record.id, record]));
+    for (const control of controls) {
+      const page = expanded.query.get({ slug: control.slug })!;
+      const evaluation = page.mappings.flatMap((mapping) => mapping.evaluations)
+        .find((item) => item.evaluation.id === control.evaluation)!;
+      const correlations = evaluation.results.filter((row) => control.metrics.includes(String(row.result.attributes.metric)));
+      expect(correlations).toHaveLength(control.metrics.length);
+      for (const { result } of correlations) {
+        const original = originals.get(result.id)!;
+        expect(result.attributes.numeric_value).toBeNull();
+        expect(result.attributes.printed_value).toBe("undefined");
+        expect(result.attributes.undefined_reason).toBe(original.attributes.undefined_reason);
+        expect(result.attributes.undefined_reason).toMatch(/constant/i);
+        expect(result.attributes.review).toEqual(original.attributes.review);
+        expect(result.attributes.review).toMatchObject({ method: "automated_execution_evidence_review" });
+      }
+    }
   });
 
   it("rejects changed curation or source bytes without blessing them during release generation", () => {
     const directory = path.join(temporary(), "curation");
     fs.cpSync(useCaseRoot, directory, { recursive: true });
     expect(useCaseInputFiles(directory)).toHaveLength(5);
-    expect(loadUseCases(directory)!.inputs.use_cases).toHaveLength(2);
+    expect(loadUseCases(directory)!.inputs.use_cases).toHaveLength(7);
     const file = path.join(directory, "inputs.json");
     const before = fs.readFileSync(file, "utf8");
     fs.writeFileSync(file, before + " ");

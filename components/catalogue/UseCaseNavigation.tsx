@@ -24,11 +24,12 @@ export function UseCaseRecordLink({ href, useCasePath, children }: { href: strin
   </Suspense>;
 }
 
-function IndexReturn() {
+function IndexReturn({ label }: { label: ReactNode }) {
   const search = useSearchParams();
-  return <a href={`/use-cases/${contextSearch(search.toString())}`}>← Back to use cases</a>;
+  return <a href={`/use-cases/${contextSearch(search.toString())}`}>{label}</a>;
 }
 
-export function UseCaseReturn() {
-  return <Suspense fallback={<a href="/use-cases/">← Back to use cases</a>}><IndexReturn /></Suspense>;
+/** Returns to the index with the visitor's search and filters. Exported HTML links to the unfiltered index. */
+export function UseCaseReturn({ label = "← Back to use cases" }: { label?: ReactNode }) {
+  return <Suspense fallback={<a href="/use-cases/">{label}</a>}><IndexReturn label={label} /></Suspense>;
 }

@@ -205,67 +205,80 @@ export default function Explorer({
   };
   return (
     <>
-      <label className={`${styles.label} ${ui.search}`}>
-        Search the database
+      <div className={ui.searchPanel}>
+        <label className={ui.search} htmlFor="catalogue-search">
+          Search the database
+        </label>
         <input
+          id="catalogue-search"
+          className={ui.searchInput}
           type="search"
           value={filters.q}
-          placeholder="Model, benchmark or biological question"
+          placeholder="Model name, benchmark, organism or biological task"
+          aria-describedby="catalogue-search-scope"
           onChange={(event) => change("q", event.target.value)}
         />
-      </label>
-      <div
-        className={styles.tabs}
-        role="group"
-        aria-label="Browse the database"
-      >
-        {primaryKinds.map((kind) => (
-          <button
-            key={kind}
-            className={styles.button}
-            aria-pressed={filters.kind === kind}
-            onClick={() => change("kind", kind)}
-          >
-            {kindLabels[kind]}{" "}
-            <span className={styles.tabCount}>
-              {(release.facets.counts[kind] || 0).toLocaleString()}
+        <div className={ui.scope}>
+          <span id="catalogue-search-scope" className={ui.scopeLabel}>
+            Search in
+            <span className="sr-only">
+              {" "}
+              {kindLabels[filters.kind].toLowerCase()}
             </span>
-          </button>
-        ))}
-      </div>
-      <details
-        className={ui.more}
-        open={moreOpen}
-        onToggle={(event) => setMoreOpen(event.currentTarget.open)}
-      >
-        <summary>
-          More record types
-          {!primaryKinds.some((kind) => kind === filters.kind)
-            ? `: ${kindLabels[filters.kind]}`
-            : ""}
-        </summary>
-        <div
-          className={styles.supporting}
-          role="group"
-          aria-label="Methods, evaluation design and supporting records"
-        >
-          <span className={styles.browseGroupLabel}>
-            Methods and evaluation records
           </span>
-          {secondaryKinds.map((kind) => (
-            <button
-              key={kind}
-              aria-pressed={filters.kind === kind}
-              onClick={() => change("kind", kind)}
-            >
-              {kindLabels[kind]}
-            </button>
-          ))}
+          <div className={ui.kinds} role="group" aria-label="Record type">
+            {primaryKinds.map((kind) => (
+              <button
+                key={kind}
+                className={ui.kind}
+                aria-pressed={filters.kind === kind}
+                onClick={() => change("kind", kind)}
+              >
+                {kindLabels[kind]}{" "}
+                <span className={styles.tabCount}>
+                  {(release.facets.counts[kind] || 0).toLocaleString()}
+                </span>
+              </button>
+            ))}
+          </div>
         </div>
-      </details>
-      <p className={styles.kindDescription}>{kindDescriptions[filters.kind]}</p>
-      <div className={ui.filters}>
-        <label className={styles.label}>
+        <details
+          className={ui.more}
+          open={moreOpen}
+          onToggle={(event) => setMoreOpen(event.currentTarget.open)}
+        >
+          <summary>
+            More record types
+            {!primaryKinds.some((kind) => kind === filters.kind)
+              ? `: ${kindLabels[filters.kind]}`
+              : ""}
+          </summary>
+          <div
+            className={styles.supporting}
+            role="group"
+            aria-label="Methods, evaluation design and supporting records"
+          >
+            <span className={styles.browseGroupLabel}>
+              Methods and evaluation records
+            </span>
+            {secondaryKinds.map((kind) => (
+              <button
+                key={kind}
+                aria-pressed={filters.kind === kind}
+                onClick={() => change("kind", kind)}
+              >
+                {kindLabels[kind]}
+              </button>
+            ))}
+          </div>
+        </details>
+        <p className={ui.kindDescription}>{kindDescriptions[filters.kind]}</p>
+      </div>
+      <div className={ui.refine} role="group" aria-labelledby="refine-label">
+        <span id="refine-label" className={ui.refineLabel}>
+          Narrow these results
+        </span>
+        <label className={ui.filter}>
           Research area
           <select
             value={filters.area}
@@ -279,7 +292,7 @@ export default function Explorer({
             ))}
           </select>
         </label>
-        <label className={styles.label}>
+        <label className={ui.filter}>
           Evidence status
           <select
             value={filters.status}
@@ -293,36 +306,47 @@ export default function Explorer({
             ))}
           </select>
         </label>
+        {["result", "evaluation"].includes(filters.kind) && (
+          <div
+            className={ui.origin}
+            role="group"
+            aria-label="Result provenance"
+          >
+            <span>Evidence from</span>
+            {[
+              ["", "All evaluations"],
+              ["literature", "Published evaluations"],
+              ["rewire", "Rewire evaluations"],
+            ].map(([value, label]) => (
+              <button
+                key={value}
+                className={ui.kind}
+                aria-pressed={filters.origin === value}
+                onClick={() => change("origin", value)}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        )}
+        {(filters.q || filters.area || filters.status || filters.origin) && (
+          <button
+            className={ui.clear}
+            onClick={() => navigate({ ...defaultFilters, kind: filters.kind })}
+          >
+            Clear search and filters
+          </button>
+        )}
       </div>
-      {["result", "evaluation"].includes(filters.kind) && (
-        <div
-          className={styles.originFilter}
-          role="group"
-          aria-label="Result provenance"
-        >
-          <span>Evidence from</span>
-          {[
-            ["", "All evaluations"],
-            ["literature", "Published evaluations"],
-            ["rewire", "Rewire evaluations"],
-          ].map(([value, label]) => (
-            <button
-              key={value}
-              className={styles.button}
-              aria-pressed={filters.origin === value}
-              onClick={() => change("origin", value)}
-            >
-              {label}
-            </button>
-          ))}
-        </div>
-      )}
       <div aria-live="polite">
         {busy ? (
           <p>Loading {kindLabels[filters.kind].toLowerCase()}…</p>
         ) : showResults ? (
           <p className={styles.muted}>
-            {data.total.toLocaleString()} matching records
+            {data.total.toLocaleString()} matching{" "}
+            {data.total === 1
+              ? singularKindLabels[applied.filters.kind].toLowerCase()
+              : kindLabels[applied.filters.kind].toLowerCase()}
           </p>
         ) : null}
         {error && (
@@ -379,13 +403,13 @@ export default function Explorer({
             <span className={styles.tag}>
               {singularKindLabels[record.kind]} · {statusLabel(record.status)}
             </span>
-            <h2>
+            <h3>
               <Link
                 href={`${recordHref(record)}?return_to=${encodeURIComponent(returnTo)}`}
               >
                 {catalogueText(record.name)}
               </Link>
-            </h2>
+            </h3>
             <p className={ui.description}>
               {catalogueText(
                 (record.attributes.profile as { summary?: string } | undefined)

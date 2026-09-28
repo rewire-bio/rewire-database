@@ -17,7 +17,7 @@ human scientific review.
 
 | Check | Result |
 |---|---|
-| Root test suite | 767 tests passed across 79 files |
+| Root test suite | 795 tests passed across 80 files |
 | Service test suite with Auth/Firestore emulators | 304 passed; zero failures or skips |
 | Root lint and TypeScript | Passed |
 | Service TypeScript and Functions load | Passed |
@@ -33,6 +33,17 @@ suppression, tombstone history, invalid references, source concerns, legacy
 releases, publication/import validation and safe return links. These outcomes
 are engineering checks on the candidate, not evidence that a scientific claim
 has received human review.
+
+The first hosted CI export exhausted its runner's disk. The revised build keeps
+the four current-release rendering inputs visible, stages large downloads and
+historical releases, and restores and hardlinks their exact bytes into the
+export. This avoids 2.18 GiB of duplicate current downloads. A repeated full
+production build, export/checksum verification and local website/API probe passed.
+The test total above includes 15 staging/recovery tests and 23 hosted-runner
+cleanup tests. Runner preparation requires 45 GiB free, preserves active runtimes
+and the checkout, and removes only allowlisted optional SDKs or preloaded images
+on the disposable local daemon. Hosted CI and production publication are tracked
+on [PR #66](https://github.com/rewire-bio/rewire-database/pull/66) and issue #65.
 
 ## Scripted research decisions
 

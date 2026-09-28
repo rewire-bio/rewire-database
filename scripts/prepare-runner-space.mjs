@@ -24,6 +24,25 @@ export const UNUSED_TOOL_DIRECTORIES = Object.freeze([
   '/etc/skel/.cargo',
   '/home/runner/.rustup',
   '/home/runner/.cargo',
+  // Additional optional runtimes and non-Google cloud tools. These locations
+  // come from the same runner image's install-miniconda/homebrew/aws-tools.sh;
+  // Azure's Debian package is built by Azure/azure-cli/scripts/release/debian/prepare.sh.
+  '/usr/share/miniconda',
+  '/home/linuxbrew/.linuxbrew',
+  '/opt/az',
+  '/opt/microsoft/powershell',
+  '/usr/local/aws-cli',
+]);
+
+// Pinned installer evidence for the failed CI image (20260920.314.1):
+// https://github.com/actions/runner-images/blob/ubuntu24/20260920.314/images/ubuntu/scripts/build/install-docker.sh
+export const UNUSED_RUNNER_IMAGES = Object.freeze([
+  'ghcr.io/dependabot/dependabot-updater-core:latest',
+  'ghcr.io/github/gh-aw-mcpg:latest',
+  'ghcr.io/github/gh-aw-firewall/agent:latest',
+  'ghcr.io/github/gh-aw-firewall/api-proxy:latest',
+  'ghcr.io/github/gh-aw-firewall/squid:latest',
+  'ghcr.io/github/github-mcp-server:latest',
 ]);
 
 const contains = (parent, child) => child === parent || child.startsWith(`${parent}/`);
@@ -56,10 +75,18 @@ export function prepareRunnerSpace({
   const workspace = files.realpathSync(env.GITHUB_WORKSPACE);
   if (!files.lstatSync(workspace).isDirectory()) throw new Error('GITHUB_WORKSPACE must be a directory.');
 
+  // Installers use versioned names. Match only their exact naming contracts,
+  // never broad directory globs: install-julia.sh and Install-PowerShellAzModules.ps1.
+  const versioned = [
+    ...files.readdirSync('/usr/local').filter(name => /^julia\d+\.\d+\.\d+$/.test(name))
+      .map(name => `/usr/local/${name}`),
+    ...files.readdirSync('/usr/share').filter(name => /^az_\d+\.\d+\.\d+$/.test(name))
+      .map(name => `/usr/share/${name}`),
+  ].sort();
   // Validate the complete plan before the first removal. Symlinks (including
   // symlinked parents) and any overlap with the checkout fail closed.
-  const planned = [];
-  for (const directory of UNUSED_TOOL_DIRECTORIES) {
+  let planned = [];
+  for (const directory of [...UNUSED_TOOL_DIRECTORIES, ...versioned]) {
     if (contains(directory, workspace) || contains(workspace, directory))
       throw new Error(`Refusing cleanup that overlaps the checkout: ${directory}`);
     let entry;
@@ -69,6 +96,22 @@ export function prepareRunnerSpace({
       throw new Error(`Refusing cleanup of a non-directory or symlinked SDK path: ${directory}`);
     planned.push(directory);
   }
+
+  // Miniconda/Homebrew must not supply any runtime or deployment dependency in
+  // this job. Resolve the actual executables before allowing either installation
+  // to be removed. Keep every cached Node/Python/Java version regardless.
+  const requiredTools = ['node', 'python3', 'java', 'git', 'gcc', 'g++', 'make', 'gcloud'];
+  const located = run('which', requiredTools).trim().split('\n');
+  if (located.length !== requiredTools.length || located.some(file => !path.isAbsolute(file)))
+    throw new Error('Cannot identify required runtime and deployment executables.');
+  const protectedPaths = located.map(file => files.realpathSync(file));
+  for (const key of ['JAVA_HOME', 'CLOUDSDK_PYTHON', 'PYTHONHOME', 'CONDA_PREFIX'])
+    if (env[key] && path.isAbsolute(env[key])) protectedPaths.push(files.realpathSync(env[key]));
+  planned = planned.filter(directory => {
+    if (!protectedPaths.some(file => contains(directory, file))) return true;
+    log(`Preserving active runtime or deployment dependency: ${directory}`);
+    return false;
+  });
 
   const free = () => {
     const output = run('df', ['-PB1', workspace]);
@@ -91,16 +134,54 @@ export function prepareRunnerSpace({
   for (const directory of planned) {
     if (available >= MIN_FREE_BYTES) break;
     log(`Removing unused SDK: ${directory}`);
+    log(run('sudo', ['-n', 'du', '-s', '-x', '-B1', '--', directory]).trim());
     run('sudo', ['-n', 'rm', '-rf', '--one-file-system', '--', directory]);
     removed.push(directory);
     available = free();
   }
+
+  const removedImages = [];
+  if (available < MIN_FREE_BYTES) {
+    // No global prune, container deletion, volume deletion or registry access.
+    // The fixed Unix socket and absent context/TLS overrides restrict this to
+    // the disposable hosted VM's own daemon, regardless of default CLI context.
+    const overrides = ['DOCKER_HOST', 'DOCKER_CONTEXT', 'DOCKER_TLS', 'DOCKER_TLS_VERIFY', 'DOCKER_CERT_PATH'];
+    if (overrides.some(key => env[key])) throw new Error('Refusing Docker cache cleanup with Docker endpoint/context overrides.');
+    let socket;
+    try { socket = files.lstatSync('/run/docker.sock'); }
+    catch (error) { if (error.code !== 'ENOENT') throw error; }
+    if (socket) {
+      if (!socket.isSocket() || files.realpathSync('/run/docker.sock') !== '/run/docker.sock')
+        throw new Error('Refusing Docker cache cleanup through an unexpected socket.');
+      const docker = args => run('docker', ['--host', 'unix:///run/docker.sock', ...args]);
+      log('Local Docker cache before preparation:');
+      log(docker(['system', 'df']).trim());
+      log(docker(['image', 'ls', '--digests', '--no-trunc']).trim());
+      if (docker(['container', 'ls', '--all', '--quiet']).trim())
+        throw new Error('Refusing Docker cache cleanup because this runner already has containers.');
+      const cached = new Set(docker(['image', 'ls', '--format', '{{.Repository}}:{{.Tag}}']).trim().split('\n'));
+      for (const image of UNUSED_RUNNER_IMAGES) {
+        if (available >= MIN_FREE_BYTES) break;
+        if (!cached.has(image)) continue;
+        log(`Removing unused preloaded runner image: ${image}`);
+        log(docker(['image', 'rm', image]).trim()); // Deliberately no --force.
+        removedImages.push(image);
+        available = free();
+      }
+      log('Local Docker cache after preparation:');
+      log(docker(['system', 'df']).trim());
+    } else log('No local Docker socket; no container-cache cleanup attempted.');
+  }
   log('Workspace filesystem after preparation:');
   log(run('df', ['-h', workspace]).trim());
   log(`Free space: ${gib(available)} (${available} bytes); reclaimed ${gib(available - before)}.`);
-  if (available < MIN_FREE_BYTES)
-    throw new Error(`Insufficient temporary build space: need at least 45 GiB free before dependency installation; found ${gib(available)}. All allowed SDK cleanup is exhausted. Preserve the catalogue archives and investigate the runner image.`);
-  return { dryRun, available, required: MIN_FREE_BYTES, planned, removed };
+  if (available < MIN_FREE_BYTES) {
+    log('Remaining installation sizes (read-only diagnostics):');
+    try { log(run('sudo', ['-n', 'du', '-x', '-B1', '--max-depth=2', '--', '/usr/local', '/usr/share', '/opt', '/home', '/var/lib']).trim()); }
+    catch (error) { log(`Size diagnostics failed: ${error.message}`); }
+    throw new Error(`Insufficient temporary build space: need at least 45 GiB free before dependency installation; found ${gib(available)}. All allowed SDK/image cleanup is exhausted. Preserve the catalogue archives and investigate the runner inventory above.`);
+  }
+  return { dryRun, available, required: MIN_FREE_BYTES, planned, removed, removedImages };
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

@@ -26,6 +26,14 @@ const useCaseSchema = z.object({
   inputs: texts.min(1), output: text, setting: text, exclusions: texts,
   clinical_scope: text, evidence_gaps: texts,
   citations: z.array(citationSchema).min(1).max(100), review: reviewSchema,
+  // A question can lead collection before any applicability mapping exists.
+  // Optional without defaults so historical inputs retain their exact digest.
+  collection_plan: z.object({
+    status: z.enum(["planned", "collecting"]),
+    comparison_question: text,
+    baselines: texts.min(1), outcomes: texts.min(1),
+    validation_requirements: texts.min(1), next_step: text,
+  }).strict().optional(),
   planned_work: z.array(z.object({
     title: text, url: z.string().url().refine((s) => {
       const u = new URL(s);

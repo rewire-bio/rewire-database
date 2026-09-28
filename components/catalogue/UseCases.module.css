@@ -16,6 +16,15 @@
 .card h2 { margin: 12px 0 16px; font-size: 23px; line-height: 1.35; }
 .card p { line-height: 1.6; }
 .tag { color: var(--ink-3); font-size: 12px; line-height: 1.6; }
+.collectionStatus { display: inline-flex; max-width: 100%; padding: 4px 10px; border: 1px solid var(--line); border-radius: 999px; background: var(--accent-soft); color: var(--accent-ink); font-size: 12px; font-weight: 500; line-height: 1.5; }
+.collectionPlan { min-width: 0; padding: 28px; border: 1px solid var(--line); border-top: 3px solid var(--accent); border-radius: var(--radius-md); background: var(--bg-subtle); overflow-wrap: anywhere; }
+.planHeading { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 20px; }
+.planHeading h2 { margin: 0; }
+.planGrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 28px; }
+.planGrid > div { min-width: 0; }
+.nextCollectionTask { margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--line); }
+.nextCollectionTask h3 { margin-top: 0; }
+.nextCollectionTask p:last-child { margin-bottom: 0; }
 .muted { color: var(--ink-3); font-size: 14px; }
 .fields { display: grid; grid-template-columns: minmax(120px, 180px) minmax(0, 1fr); gap: 12px 24px; margin: 18px 0; }
 .fields dt { color: var(--ink-3); font-size: 14px; }
@@ -47,4 +56,4 @@
 .backlinks li { margin: 10px 0; line-height: 1.6; }
 .backlinks small { display: block; color: var(--ink-3); }
 @media (max-width: 1000px) { .filters { grid-template-columns: 1fr 1fr; } .filters label:first-child { grid-column: 1 / -1; } }
-@media (max-width: 720px) { .cards { grid-template-columns: 1fr; } .filters { grid-template-columns: 1fr; } .card, .mapping, .notice { padding: 18px; } .fields { grid-template-columns: 1fr; gap: 6px; } .fields dd { margin-bottom: 12px; } .table { min-width: 580px; } .table th, .table td { padding: 12px; } }
+@media (max-width: 720px) { .cards, .planGrid { grid-template-columns: 1fr; } .filters { grid-template-columns: 1fr; } .card, .mapping, .notice, .collectionPlan { padding: 18px; } .fields { grid-template-columns: 1fr; gap: 6px; } .fields dd { margin-bottom: 12px; } .table { min-width: 580px; } .table th, .table td { padding: 12px; } }

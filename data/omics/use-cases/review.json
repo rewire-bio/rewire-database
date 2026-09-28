@@ -1,26 +1,29 @@
 {
   "schema_version": "1.0",
   "review_method": "automated_source_review",
-  "reviewer": "Codex research curation",
-  "reviewed_at": "2026-09-28T12:15:35.948Z",
-  "baseline_release_id": "2026-09-25-8af07e960e5f",
+  "reviewer": "Codex curation and independent automated cross-review",
+  "reviewed_at": "2026-09-28T14:58:13.232Z",
+  "baseline_release_id": "2026-09-28-f9f5770cef26",
   "files": {
-    "inputs.json": "4017b8d1d3f1b8016a20f76f57c028b61e6047e16c002cdc588c7d823a9d9d24",
-    "sources.json": "e5e5a3fe710aa3175c24cc6a540c4430752abad7b5c39c646f6ac174bc826a42",
+    "inputs.json": "8baa24f8542d29ab7ef16f84bb69acc2737697a1755f045bd246bccf169b85f0",
+    "sources.json": "3cc78ead1f9ca97bf2de25c130cbce04066994ad446ff38f49b9ce83d7c3abb2",
     "sources/mfass-matched-study-intake.md": "0af394e74888c01dbe2970d2e28b9bbacb4a83d355881feaaa3a704396a2074d",
-    "sources/amfr-pilot-readme.md": "a3208aa4537e8d28c56f68f4559299f31241c50b8d8b2b3776cba5f1718caa43"
+    "sources/amfr-pilot-readme.md": "a3208aa4537e8d28c56f68f4559299f31241c50b8d8b2b3776cba5f1718caa43",
+    "sources/clinical-priorities-2026-09-28.md": "57ebf436d7d92d349700d7f3cb533b80b88e4e15d0d3129e824bfa3b06ecdab7",
+    "sources/research-priorities-2026-09-28.md": "1f7c3d2d1e0ba852e4ae725bec2e77e55e0aa81496551242e3fbe9fee7662ae0"
   },
   "source_artifacts": {
     "use-case-source-mfass-matched-intake-194a78b": "sources/mfass-matched-study-intake.md",
-    "use-case-source-amfr-pilot-plan-194a78b": "sources/amfr-pilot-readme.md"
+    "use-case-source-amfr-pilot-plan-194a78b": "sources/amfr-pilot-readme.md",
+    "use-case-source-clinical-priorities-2026-09-28": "sources/clinical-priorities-2026-09-28.md",
+    "use-case-source-research-priorities-2026-09-28": "sources/research-priorities-2026-09-28.md"
   },
-  "scope": "Seven bounded research questions and 17 scoped mappings. Five new questions passed primary-source curation and separate automated cross-review, with 14 new mappings to 51 existing evaluations. Both original questions, all three original mappings and all 26,124 baseline records are preserved. No new scientific result or source record is introduced.",
+  "scope": "Seventeen use-case definitions: the seven previously published cases plus ten question-led priorities with explicit planned collection and zero new mappings. All previous questions, seventeen mappings, fifty-seven evaluation references and 26,124 scientific records are preserved. Two authored workflow documentation sources are added. Separate automated clinical-definition, research-definition and code reviews found no material issues; review concerns definitions, not clinical sign-off.",
   "limitations": [
-    "Automated source curation and cross-review are not human scientific review or independent experimental replication.",
-    "No positive clinical suitability claim is supported.",
-    "Metric and split groups can share configurations and experimental provenance; 57 evaluation references do not mean 57 independent studies.",
-    "Undefined control correlations, unreported uncertainty and missing provenance remain explicit; no model-family winner or prospective experimental yield is established.",
-    "The AMFR matched singles comparison remains planned and execution-blocked.",
-    "Evidence fingerprints are explicitly frozen during curation; release generation only checks them."
+    "Automated source curation and cross-review are not human domain review, clinical validation or independent experimental replication.",
+    "The ten new definitions contain proposed comparisons, conventional baselines and evidence needs; no model scores, rankings or applicability claims are introduced.",
+    "Workflow citations justify the user decision. They do not establish effectiveness of a named model or access rights to patient-level data.",
+    "Collection is planned. Qualified scientific reviewer roles and source-specific acquisition permissions remain unassigned or unverified where stated.",
+    "All existing mapping fingerprints and numerical results are unchanged; builds validate frozen review bytes and do not renew them automatically."
   ]
 }

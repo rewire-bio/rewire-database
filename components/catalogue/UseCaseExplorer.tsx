@@ -6,6 +6,7 @@ import {
   createUseCasesClient, USE_CASE_PAGE_SIZE, type UseCasePage, type UseCaseFilters,
 } from "@/lib/use-cases-client";
 import { researchAreaLabel } from "@/lib/omics-browse";
+import { UseCaseCollectionStatus } from "./UseCaseCollectionPlan";
 import styles from "./UseCases.module.css";
 
 function Cards({ data, search }: { data: UseCasePage; search: string }) {
@@ -13,10 +14,11 @@ function Cards({ data, search }: { data: UseCasePage; search: string }) {
     {data.items.map((entry) => <article className={styles.card} key={entry.id}>
       <span className={styles.tag}>{researchAreaLabel(entry.area)} · {entry.contexts.map(caseContextLabel).join(" / ")}</span>
       <h2><a href={`/use-cases/${entry.slug}/${search}`}>{entry.title}</a></h2>
+      {entry.collection_plan && <p><UseCaseCollectionStatus status={entry.collection_plan.status} /></p>}
       <p>{entry.question}</p>
       <p className={styles.muted}><strong>Inputs:</strong> {entry.inputs.join("; ")}</p>
       <p className={styles.muted}>{entry.setting}</p>
-      <a href={`/use-cases/${entry.slug}/${search}`}>Inspect evidence and limitations →</a>
+      <a href={`/use-cases/${entry.slug}/${search}${entry.collection_plan ? "#collection-plan" : ""}`}>{entry.collection_plan ? "View question and evidence plan →" : "Inspect evidence and limitations →"}</a>
     </article>)}
   </div>;
 }
@@ -124,6 +126,6 @@ export default function UseCaseExplorer({ initial }: { initial: UseCasePage }) {
       {cursor && <button type="button" className={styles.button} onClick={() => navigate(filters)}>First page</button>}
       {data.next_cursor && <button type="button" className={styles.button} onClick={() => navigate(filters, data.next_cursor!)}>Next page</button>}
     </nav>}
-    <noscript><p>These are the first questions in this release. Enable JavaScript to apply search and filters; the question pages and their evidence remain readable without it.</p></noscript>
+    <noscript><p>These are the first questions in this release. Enable JavaScript to apply search and filters; the question pages, collection plans and evidence remain readable without it.</p></noscript>
   </div>;
 }

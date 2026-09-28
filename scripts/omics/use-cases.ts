@@ -19,6 +19,8 @@ const reviewedFiles = [
   "sources.json",
   "sources/mfass-matched-study-intake.md",
   "sources/amfr-pilot-readme.md",
+  "sources/clinical-priorities-2026-09-28.md",
+  "sources/research-priorities-2026-09-28.md",
 ] as const;
 const sha = (bytes: string | Buffer) =>
   createHash("sha256").update(bytes).digest("hex");

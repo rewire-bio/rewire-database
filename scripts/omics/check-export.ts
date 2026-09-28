@@ -133,7 +133,7 @@ function escaped(value: string) {
 const useCaseIndex = page("/use-cases/");
 failures.push(...checkPageMetadata(useCaseIndex, {
   path: "/use-cases/", canonical: `${origin}/use-cases/`, title: "Biological research use cases | rewire.it",
-  description: "Start with a biological question. Find relevant benchmarks, evaluated model configurations, execution methods and the limits of their evidence.",
+  description: "Research and clinical research questions guide evidence gathering. Explore collection plans, reviewed model comparisons and the limits of their evidence.",
   indexable: true, inSitemap: true, social: true,
   breadcrumbs: [{ name: "Database", path: "/" }, { name: "Use cases", path: "/use-cases/" }],
 }, sitemap.urls));
@@ -147,6 +147,12 @@ for (const entry of useCaseEntries) {
   }, sitemap.urls));
   for (const text of [entry.question, entry.decision, entry.setting, entry.clinical_scope, ...entry.inputs, ...entry.evidence_gaps])
     if (!html.includes(escaped(text))) failures.push(`Use-case HTML omits scope or evidence: ${entry.slug}: ${text}`);
+  if (entry.collection_plan) {
+    const plan = entry.collection_plan;
+    for (const text of [plan.comparison_question, ...plan.baselines, ...plan.outcomes, ...plan.validation_requirements, plan.next_step,
+      plan.status === "planned" ? "Collection planned" : "Collecting evidence"])
+      if (!html.includes(escaped(text))) failures.push(`Use-case HTML omits its collection plan: ${entry.slug}: ${text}`);
+  }
   if (!html.includes(catalogue.release_id) || !html.includes(useCaseArtifact!.input_sha256)) failures.push(`Use-case provenance missing: ${entry.slug}`);
   for (const mapping of useCaseQuery.get({ slug: entry.slug })!.mappings) {
     if (!html.includes(`id="mapping-${mapping.id}"`)) failures.push(`Use-case mapping missing: ${mapping.id}`);

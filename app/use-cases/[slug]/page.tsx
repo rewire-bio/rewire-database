@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Breadcrumbs from "@/components/catalogue/Breadcrumbs";
 import UseCaseEvidence, { UseCaseCitations, UseCaseReview, type ExecutionLink } from "@/components/catalogue/UseCaseEvidence";
+import UseCaseCollectionPlan from "@/components/catalogue/UseCaseCollectionPlan";
 import { UseCaseReturn } from "@/components/catalogue/UseCaseNavigation";
 import SectionNavigation from "@/components/catalogue/SectionNavigation";
 import { buildUseCases } from "@/lib/use-cases-build";
@@ -40,7 +41,11 @@ export default function UseCasePage({ params }: { params: Params }) {
       explanation: parsed.data.explanation,
     };
   }
-  const sections = [{ id: "question", label: "Your question" }, { id: "clinical-scope", label: "Clinical scope" }, { id: "evidence", label: "Evaluated evidence" }, { id: "gaps", label: "Missing evidence" }, { id: "sources", label: "Sources and review" }];
+  const sections = [
+    ...(entry.collection_plan ? [{ id: "collection-plan", label: "Evidence plan" }] : []),
+    { id: "question", label: "Your question" }, { id: "clinical-scope", label: "Clinical scope" },
+    { id: "evidence", label: "Evaluated evidence" }, { id: "gaps", label: "Missing evidence" }, { id: "sources", label: "Sources and review" },
+  ];
   return <>
     <header className="page-head"><div className="wrap">
       <Breadcrumbs items={[{ name: "Database", path: "/" }, { name: "Use cases", path: "/use-cases/" }, { name: entry.title, path }]} />
@@ -50,6 +55,7 @@ export default function UseCasePage({ params }: { params: Params }) {
     </div></header>
     <section className="block first"><div className="wrap">
       <SectionNavigation sections={sections} />
+      {entry.collection_plan && <UseCaseCollectionPlan plan={entry.collection_plan} />}
       <section id="question" className={styles.section}>
         <h2>Your decision and inputs</h2><p className={styles.intro}>{entry.decision}</p>
         <dl className={styles.fields}>
@@ -66,8 +72,14 @@ export default function UseCasePage({ params }: { params: Params }) {
       </section>
       <section id="evidence" className={styles.section}>
         <h2>Which evaluations inform this question?</h2>
-        <p>Evidence is grouped by its protocol. Relevance refers to the stated endpoint and context; it is separate from clinical validation and from the review method.</p>
-        {detail.mappings.length ? detail.mappings.map((mapping) => <UseCaseEvidence key={mapping.id} mapping={mapping} useCasePath={path} executionLinks={executionLinks} />) : <p>No applicability mappings are recorded in this release.</p>}
+        {detail.mappings.length ? <>
+          <p>Evidence is grouped by its protocol. Relevance refers to the stated endpoint and context; it is separate from clinical validation and from the review method.</p>
+          {detail.mappings.map((mapping) => <UseCaseEvidence key={mapping.id} mapping={mapping} useCasePath={path} executionLinks={executionLinks} />)}
+        </> : <div className={styles.notice}>
+          <p>No model comparison has been collected for this question yet.</p>
+          <p>Relevant methods and studies may exist outside this collection.</p>
+          {entry.collection_plan && <p><a href="#collection-plan">View the evidence plan and next collection task</a></p>}
+        </div>}
       </section>
       <section id="gaps" className={styles.section}>
         <h2>What evidence is still missing?</h2>
@@ -82,8 +94,8 @@ export default function UseCasePage({ params }: { params: Params }) {
         <UseCaseCitations citations={entry.citations} sources={detail.sources} useCasePath={path} />
         <details><summary>Release provenance and downloads</summary>
           <p>Release <code>{detail.release_id}</code></p><p>Use-case input digest <code>{detail.input_sha256}</code></p>
-          <p><a href={`/omics/releases/${detail.release_id}/use-cases.json`} download>Download the mappings and review metadata (JSON)</a> · <a href={`/omics/releases/${detail.release_id}/manifest.json`}>Verify release checksums</a></p>
-          <p>Question <code>{entry.id}</code>. Numerical values above come from this release&apos;s existing evaluation records.</p>
+          <p><a href={`/omics/releases/${detail.release_id}/use-cases.json`} download>Download questions, collection plans and review metadata (JSON)</a> · <a href={`/omics/releases/${detail.release_id}/manifest.json`}>Verify release checksums</a></p>
+          <p>Question <code>{entry.id}</code>. Any numerical results on this page come from this release&apos;s existing evaluation records.</p>
         </details>
       </section>
     </div></section>

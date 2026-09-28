@@ -55,6 +55,34 @@ function freeze(f: ReturnType<typeof fixture>) {
 }
 
 describe("scoped use-case evidence", () => {
+  it("publishes a collection plan without inventing mapped evidence or model backlinks", () => {
+    const f = fixture();
+    f.inputs.mappings = [];
+    f.entry.collection_plan = {
+      status: "planned", comparison_question: "Does this method improve confirmed experimental hits?",
+      baselines: ["Conventional selection with the same inputs"], outcomes: ["Hits at a fixed testing budget"],
+      validation_requirements: ["Independent study holdout"], next_step: "Collect paired method and baseline evaluations",
+    };
+    const before = structuredClone(f.snapshot);
+    const { query, declaration } = build(f);
+    expect(query.list({ q: "splicing" }).items[0].collection_plan).toEqual(f.entry.collection_plan);
+    expect(query.get({ slug: f.entry.slug })!.mappings).toEqual([]);
+    expect(query.links({ id: "model" }).items).toEqual([]);
+    expect(f.snapshot).toEqual(before);
+    f.entry.collection_plan.next_step = "An explicitly revised collection task";
+    expect(useCaseDeclaration(f.inputs).input_sha256).not.toBe(declaration.input_sha256);
+    f.entry.collection_plan.baselines = [];
+    expect(() => parseUseCaseInputs(f.inputs)).toThrow();
+  });
+
+  it("does not add collection defaults to historical inputs or change their digest", () => {
+    const { inputs } = fixture();
+    const original = structuredClone(inputs);
+    expect(parseUseCaseInputs(inputs)).toEqual(original);
+    expect(parseUseCaseInputs(inputs).use_cases[0]).not.toHaveProperty("collection_plan");
+    expect(useCaseDeclaration(inputs).input_sha256).toBe(useCaseHash(original));
+  });
+
   it("resolves exact configurations, existing result values and honest review/source metadata", () => {
     const { query, snapshot, artifact } = build();
     const detail = query.get({ slug: "splice-follow-up" })!;

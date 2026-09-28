@@ -1,11 +1,13 @@
-# Sourced research use cases
+# Research and clinical use cases
 
-Use-case pages connect a research decision to exact catalogue evaluations. They
-do not add measurements, expand numeric comparison groups or recommend clinical
-care. The collection covers seven bounded research questions. The initial
-splicing and protein-stability pages retain their original mappings; the
-[September expansion review](use-case-expansion-2026-09-28.md) records the five
-additional questions and the evidence deliberately excluded.
+Use-case pages define important user decisions and the evidence needed to answer
+them. The collection has 17 questions: seven with scoped evidence mappings and
+ten with collection plans. Questions can be published before comparative evidence
+is available. They do not add measurements, expand numeric comparison groups or
+recommend clinical care. The initial splicing and protein-stability mappings and
+the [five-question expansion](use-case-expansion-2026-09-28.md) are preserved.
+The [priority publication brief](use-case-priorities-2026-09-28.md) describes the
+ten new definitions and how they lead evidence acquisition.
 
 ## Content and evidence ownership
 
@@ -25,10 +27,11 @@ additional questions and the evidence deliberately excluded.
   result changes. This is a maintenance cadence, not a newly scheduled job.
 
 The input receipt is `data/omics/use-cases/review.json`; it binds the exact
-curation and source bytes. `inputs.json` contains seven use cases and 17
-protocol mappings. `sources.json` supplies the two pinned documentation source
-records introduced by the initial release. All 26,124 records in baseline release
-`2026-09-25-8af07e960e5f` remain unchanged by the expansion.
+curation and source bytes. `inputs.json` contains 17 use cases and 17 protocol
+mappings. `sources.json` supplies four documentation source records: the two
+initial pinned documents and two authored, sourced workflow briefs. All 26,124
+records in baseline release `2026-09-28-f9f5770cef26` remain unchanged; the two
+new documentation records bring the total to 26,126.
 Scientific result values are resolved from evaluation IDs rather than copied
 into these inputs.
 

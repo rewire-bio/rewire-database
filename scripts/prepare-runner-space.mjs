@@ -32,6 +32,11 @@ export const UNUSED_TOOL_DIRECTORIES = Object.freeze([
   '/opt/az',
   '/opt/microsoft/powershell',
   '/usr/local/aws-cli',
+  // Measured on image 20260920.314.1: 689,377,280 and 672,690,176 bytes.
+  // These CI workflows run Node/HTTP tests, with no browser automation. Retain
+  // Google Chrome, which is used by the separate manual mobile-lab script.
+  '/usr/local/share/chromium',
+  '/opt/microsoft/msedge',
 ]);
 
 // Pinned installer evidence for the failed CI image (20260920.314.1):

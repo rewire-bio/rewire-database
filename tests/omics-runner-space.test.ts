@@ -6,6 +6,8 @@ import { MIN_FREE_BYTES, UNUSED_TOOL_DIRECTORIES, UNUSED_RUNNER_IMAGES, prepareR
 
 const roots: string[] = [];
 const GiB = 1024 ** 3;
+const beforeCleanup = (additionalRemovals = 0) =>
+  MIN_FREE_BYTES - (UNUSED_TOOL_DIRECTORIES.length + additionalRemovals) * GiB;
 
 function fixture(initialFree = 34 * GiB, perRemoval = GiB) {
   const root = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), 'rewire-runner-space-')));
@@ -158,7 +160,7 @@ describe('hosted runner space preparation', () => {
   });
 
   it('fails early when every allowed SDK has been removed but space remains insufficient', () => {
-    const host = fixture(20 * GiB);
+    const host = fixture(beforeCleanup(1));
     expect(() => prepareRunnerSpace(host.options)).toThrow('need at least 45 GiB');
     expect(host.removed).toEqual(UNUSED_TOOL_DIRECTORIES);
     for (const file of host.preserved) expect(fs.readFileSync(host.map(file), 'utf8')).toBe('preserve');
@@ -173,7 +175,7 @@ describe('hosted runner space preparation', () => {
   });
 
   it('recognises only the documented Julia and Azure module version-directory formats', () => {
-    const host = fixture(25 * GiB);
+    const host = fixture(beforeCleanup(2));
     for (const directory of ['/usr/local/julia1.13.0', '/usr/share/az_15.6.1', '/usr/local/julia-project', '/usr/share/az_private']) {
       fs.mkdirSync(host.map(directory));
       fs.writeFileSync(host.map(`${directory}/sentinel`), 'preserve unless SDK');
@@ -187,7 +189,7 @@ describe('hosted runner space preparation', () => {
   });
 
   it('preserves an active Python runtime provided by an otherwise optional installation', () => {
-    const host = fixture(28 * GiB);
+    const host = fixture(beforeCleanup(-1));
     fs.mkdirSync(host.map('/usr/share/miniconda/bin'));
     fs.writeFileSync(host.map('/usr/share/miniconda/bin/python3'), 'active runtime');
     const run = vi.fn((program: string, args: string[]) => program === 'which'
@@ -200,7 +202,7 @@ describe('hosted runner space preparation', () => {
   });
 
   it('removes only documented preloaded images on the fixed local daemon without force', () => {
-    const host = fixture(23 * GiB);
+    const host = fixture(beforeCleanup(4));
     host.docker.enabled = true;
     host.docker.images = new Set([...UNUSED_RUNNER_IMAGES, 'company/application:keep']);
     const result = prepareRunnerSpace(host.options);
@@ -212,7 +214,7 @@ describe('hosted runner space preparation', () => {
   });
 
   it.each(['DOCKER_HOST', 'DOCKER_CONTEXT', 'DOCKER_TLS_VERIFY'])('refuses Docker cleanup with %s overrides', key => {
-    const host = fixture(20 * GiB);
+    const host = fixture(beforeCleanup(1));
     host.docker.enabled = true;
     host.docker.images = new Set(UNUSED_RUNNER_IMAGES);
     expect(() => prepareRunnerSpace({ ...host.options, env: { ...host.env, [key]: 'custom' } }))
@@ -222,7 +224,7 @@ describe('hosted runner space preparation', () => {
   });
 
   it('does not remove images when the daemon already has containers', () => {
-    const host = fixture(20 * GiB);
+    const host = fixture(beforeCleanup(1));
     host.docker.enabled = true;
     host.docker.containers = 'existing-container';
     host.docker.images = new Set(UNUSED_RUNNER_IMAGES);
@@ -231,7 +233,7 @@ describe('hosted runner space preparation', () => {
   });
 
   it('rejects an unexpected local Docker socket', () => {
-    const host = fixture(20 * GiB);
+    const host = fixture(beforeCleanup(1));
     host.docker.enabled = true;
     host.docker.socketSafe = false;
     expect(() => prepareRunnerSpace(host.options)).toThrow('unexpected socket');

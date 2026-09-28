@@ -1,0 +1,24 @@
+{
+  "schema_version": "1.0",
+  "review_method": "automated_source_review",
+  "reviewer": "Codex research curation",
+  "reviewed_at": "2026-09-25T15:43:22Z",
+  "baseline_release_id": "2026-09-25-d40cee0abe73",
+  "files": {
+    "inputs.json": "de07ab24efb8afdc3245d5c055ee905b2b742f9ac1e59ddd458c9968bc1c394a",
+    "sources.json": "e5e5a3fe710aa3175c24cc6a540c4430752abad7b5c39c646f6ac174bc826a42",
+    "sources/mfass-matched-study-intake.md": "0af394e74888c01dbe2970d2e28b9bbacb4a83d355881feaaa3a704396a2074d",
+    "sources/amfr-pilot-readme.md": "a3208aa4537e8d28c56f68f4559299f31241c50b8d8b2b3776cba5f1718caa43"
+  },
+  "source_artifacts": {
+    "use-case-source-mfass-matched-intake-194a78b": "sources/mfass-matched-study-intake.md",
+    "use-case-source-amfr-pilot-plan-194a78b": "sources/amfr-pilot-readme.md"
+  },
+  "scope": "Two bounded use-case pages and three proxy mappings reviewed against the immutable baseline catalogue and pinned documentation. Existing scientific records and results are unchanged. Corrected the AMFR planned-work link to its accessible content-addressed source copy without changing scientific evidence.",
+  "limitations": [
+    "Automated source review is not human scientific review or independent experimental replication.",
+    "No positive clinical suitability claim is supported.",
+    "The AMFR matched singles comparison remains planned and execution-blocked.",
+    "Evidence fingerprints are explicitly frozen during initial curation; release generation only checks them."
+  ]
+}

@@ -1,0 +1,313 @@
+{
+  "schema_version": "1.0",
+  "use_cases": [
+    {
+      "id": "use-case-protein-stability",
+      "slug": "protein-variant-stability",
+      "title": "Assess methods for protein stability experiments",
+      "question": "What evidence supports ranking protein substitutions by folding stability, and what must be validated before choosing a method?",
+      "area": "proteins-complexes",
+      "contexts": [
+        "research",
+        "clinical_research"
+      ],
+      "search_terms": [
+        "protein variant",
+        "amino acid substitution",
+        "folding stability",
+        "protein engineering",
+        "proteolysis",
+        "AMFR",
+        "ProteinGym",
+        "ESM-2",
+        "EVmutation",
+        "EVCouplings",
+        "pathogenicity"
+      ],
+      "intended_users": [
+        "Experimental researchers selecting variants for protein stability experiments",
+        "Computational researchers evaluating sequence-based variant rankings",
+        "Translational researchers checking whether stability evidence answers a disease question"
+      ],
+      "decision": "Inspect the available AMFR assay results as a narrow example, then identify the missing singles-only comparison and validation required for the target protein and endpoint.",
+      "inputs": [
+        "Wild-type protein sequence and amino acid substitutions",
+        "A defined construct and experimental stability endpoint; alignment-derived methods additionally require a traceable alignment and model"
+      ],
+      "output": "Exact existing AMFR configurations, their assay scope and unresolved comparisons; no universal model ranking or pathogenicity prediction.",
+      "setting": "The current evidence is limited to the 47-residue AMFR_HUMAN_Tsuboyama_2023_4G3O construct in ProteinGym v1.3. Its cDNA-display proteolysis assay infers folding stability. Completed evaluations cover 2,972 variants: 820 single and 2,152 double substitutions.",
+      "exclusions": [
+        "Whole-protein function, cellular activity, organismal fitness and clinical pathogenicity",
+        "Generalisation to other proteins, other ESM-2 checkpoints or the full ProteinGym track",
+        "Treating the existing mixed cohort as a completed matched single-substitution comparison"
+      ],
+      "clinical_scope": "Clinical applicability is not established. Stability of this short experimental construct is not evidence of clinical pathogenicity or suitability for diagnosis or treatment.",
+      "evidence_gaps": [
+        "The existing ESM-2 and fixed-seed random results use separate protocols. They are displayed separately and do not establish a matched cross-protocol winner.",
+        "No uncertainty intervals or seed-variability estimates are recorded for these completed evaluations. One random ranking is not a chance-performance interval.",
+        "The proposed ESM-2 versus EVCouplings site-independent and EVmutation comparison targets a frozen set of covered single substitutions. It has no completed results.",
+        "The planned comparison still needs a separate execution decision, a traceable real evolutionary model, the full-model adapter, resource logging, frozen populations and tested analysis code. Planning resource ceilings are not measured requirements.",
+        "The recorded ESM-2 timer excludes checkpoint loading, preparation and metrics; peak memory is unreported. It is not an end-to-end or cross-model speed comparison.",
+        "The existing AMFR protocols have no reviewed direct task-membership link. The mappings therefore reference the protocols only and do not infer membership from the ProteinGym suite.",
+        "Assay bytes were hashed locally without independent authentication against an upstream published checksum. Training overlap, independent reproduction and human scientific review remain unresolved."
+      ],
+      "citations": [
+        {
+          "source_id": "profile-protocol-proteingym-reference-files-dms-substitutions-csv-a8f49801",
+          "locator": "DMS_id=AMFR_HUMAN_Tsuboyama_2023_4G3O: seq_len, selection_assay, selection_type, raw_DMS_phenotype_name, DMS_number_single_mutants, DMS_number_multiple_mutants"
+        },
+        {
+          "source_id": "rewire-local-20260920-source-proteingym-esm2",
+          "locator": "/coverage; /execution; /provenance; /protocol_results"
+        },
+        {
+          "source_id": "rewire-local-20260921-source-proteingym-random",
+          "locator": "/coverage; /model_configuration; /protocol_results"
+        },
+        {
+          "source_id": "use-case-source-amfr-pilot-plan-194a78b",
+          "locator": "Status; Question; Task and data; Methods; Gates and execution order; Runtime and cost; Roles and review"
+        }
+      ],
+      "review": {
+        "method": "automated_source_review",
+        "actor": "Codex research curation",
+        "reviewed_at": "2026-09-25T15:43:22Z",
+        "note": "Bounded review of pinned assay metadata, completed execution records and the planning artifact. The plan is not a result. No new model execution, human domain review, independent replication or clinical validation. Public planned-work navigation points to the exact reviewed source copy; the original private-repository link remains in source provenance."
+      },
+      "planned_work": [
+        {
+          "title": "Matched single-substitution comparison: ESM-2, site-independent model and EVmutation",
+          "url": "https://benchmarks.rewire.it/omics/sources/a3208aa4537e8d28c56f68f4559299f31241c50b8d8b2b3776cba5f1718caa43.md",
+          "status": "blocked",
+          "reason": "Planning is complete; execution is not authorised by that plan. Gates require an execution decision, traceable evolutionary model, full-model adapter, resource logging, frozen populations and tested analysis. No measured comparison or winner is available."
+        }
+      ]
+    },
+    {
+      "id": "use-case-splicing-follow-up",
+      "slug": "splicing-follow-up",
+      "title": "Prioritise variants for splicing experiments",
+      "question": "Which evaluated configurations can inform selection of human SNVs for follow-up splicing experiments?",
+      "area": "dna-genomes",
+      "contexts": [
+        "research",
+        "clinical_research"
+      ],
+      "search_terms": [
+        "splicing",
+        "splice disruption",
+        "SNV",
+        "single nucleotide variant",
+        "variant prioritisation",
+        "exon recognition",
+        "minigene",
+        "patient RNA",
+        "MFASS",
+        "SpliceAI",
+        "Pangolin"
+      ],
+      "intended_users": [
+        "Experimental researchers selecting variants for functional follow-up",
+        "Computational researchers comparing splice-effect configurations",
+        "Clinical researchers investigating the limits of assay evidence"
+      ],
+      "decision": "Inspect the matched MFASS configurations and their limitations before selecting a method and designing validation in the intended experimental setting.",
+      "inputs": [
+        "Human single nucleotide variants with alleles, genome assembly and gene/transcript context",
+        "The intended experimental endpoint and the number of variants that can be followed up"
+      ],
+      "output": "A sourced set of exact evaluated configurations and remaining validation needs; no patient-level variant classification or recommendation.",
+      "setting": "MFASS measures exon recognition in an artificial minigene reporter. The matched study evaluates genomic-context SpliceAI and Pangolin configurations against this functional endpoint on a fixed held-out population.",
+      "exclusions": [
+        "Indels and variant types outside the reviewed human SNV protocol",
+        "Patient-RNA effects, disease pathogenicity, diagnostic yield and treatment decisions",
+        "Pooling the matched annotation study with historical MFASS runs using other annotations or scoring populations"
+      ],
+      "clinical_scope": "Clinical applicability is not established. Reporter-assay ranking does not demonstrate patient-RNA performance, pathogenicity classification or clinical yield; validation in the intended population and workflow is still needed.",
+      "evidence_gaps": [
+        "All four conditions scored 8,297 of 8,324 held-out variants. The same 27 exclusions comprise 23 hg19-to-hg38 assembly-orientation mismatches and four canonical-transcript-span exclusions; the latter are not established faulty variants. Missing predictions are not negative predictions.",
+        "No top-100 precision difference is established; Pangolin's masked top-100 result is sensitive to the registered tie order. Precision at 100 does not transfer automatically to another follow-up capacity or prevalence.",
+        "Individual-condition uncertainty intervals are not recorded. Paired-contrast intervals concern differences between conditions and must not be shown as each condition's uncertainty.",
+        "The study is exploratory: prior outcomes were inspected and nine contrast intervals are unadjusted. Matching annotation does not isolate model architecture.",
+        "Author confirmation of the assembly-orientation finding is not established. Human scientific review and independent replication remain outstanding.",
+        "These mappings do not change the MFASS task's discovered status. A source-reviewed applicability mapping is separate from reviewing the task record."
+      ],
+      "citations": [
+        {
+          "source_id": "evidence-expansion-mfass-readme-62a93814",
+          "locator": "Dataset; Limits: artificial minigene exon-recognition endpoint, not patient RNA"
+        },
+        {
+          "source_id": "use-case-source-mfass-matched-intake-194a78b",
+          "locator": "Opening paragraphs: coverage, exclusion classes, annotation, review and interpretation; Review and validation"
+        },
+        {
+          "source_id": "rewire-mfass-matched-v1-source-report",
+          "locator": "/conditions/{S0,S1,P0,P1}/coverage; /conditions/{S0,S1,P0,P1}/ties; /contrasts/{S1-S0,P1-P0,P0-S0}/paired/precision_at_capacity"
+        }
+      ],
+      "review": {
+        "method": "automated_source_review",
+        "actor": "Codex research curation",
+        "reviewed_at": "2026-09-25T15:28:11Z",
+        "note": "Bounded review of pinned reports, protocol documentation and intake narrative. No new model execution, human domain review, independent replication or clinical validation."
+      },
+      "planned_work": []
+    }
+  ],
+  "mappings": [
+    {
+      "id": "use-case-mapping-protein-stability-amfr-esm2",
+      "use_case_id": "use-case-protein-stability",
+      "lifecycle": "active",
+      "revision": 1,
+      "reason": "Initial bounded applicability review of the existing AMFR ESM-2 evaluation.",
+      "protocol_id": "rewire-protocol-proteingym-amfr-v13",
+      "evaluation_ids": [
+        "rewire-local-20260920-evaluation-proteingym-esm2"
+      ],
+      "endpoint": "Ranking the mixed AMFR assay cohort by proteolysis-inferred folding stability using ESM-2 8M masked marginals.",
+      "relevance": "proxy",
+      "rationale": "This completed short-construct assay is a narrow example for assessing stability-ranking evidence. Its mixed single/double cohort does not directly answer the planned single-substitution comparison or establish transfer to another protein.",
+      "constraints": [
+        "One 47-residue AMFR construct and all 2,972 variants, comprising 820 singles and 2,152 doubles; no train/test split.",
+        "Exact esm2_t6_8M_UR50D checkpoint, wild-type-context masked marginals summed over substituted sites, CPU, one thread; no assay labels, alignment or structure as scorer inputs.",
+        "Protocol-only mapping: a direct reviewed task-membership relationship is not recorded."
+      ],
+      "limitations": [
+        "No interval or seed-variability estimate; training overlap remains unknown and assay bytes have not been independently authenticated against an upstream checksum.",
+        "Recorded inference timing excludes loading, preparation and metrics; peak memory is unreported.",
+        "The site-independent and full EVmutation methods in the planned singles study have no completed comparison here.",
+        "No general whole-protein, ProteinGym-wide or clinical inference; automated source review is not human scientific validation."
+      ],
+      "citations": [
+        {
+          "source_id": "rewire-local-20260920-source-proteingym-esm2",
+          "locator": "/metrics; /coverage; /execution/adapter_provenance; /execution; /input_information; /provenance; /protocol_results"
+        },
+        {
+          "source_id": "rewire-local-20260920-instructions-proteingym",
+          "locator": "Data and method; Reproduce"
+        },
+        {
+          "source_id": "profile-protocol-proteingym-reference-files-dms-substitutions-csv-a8f49801",
+          "locator": "AMFR_HUMAN_Tsuboyama_2023_4G3O row: seq_len, selection_assay, raw_DMS_phenotype_name and mutant-count columns"
+        },
+        {
+          "source_id": "use-case-source-amfr-pilot-plan-194a78b",
+          "locator": "Question; Task and data; Methods; Gates and execution order; Runtime and cost"
+        }
+      ],
+      "review": {
+        "method": "automated_source_review",
+        "actor": "Codex research curation",
+        "reviewed_at": "2026-09-25T15:28:11Z",
+        "note": "Reviewed existing measured evidence separately from the planned singles comparison. No new experiment, human domain review or clinical validation."
+      },
+      "evidence_sha256": "81883d91b243e8a9c958bca976ad951aa82ba5a130eff9263dc8f3a04707012e"
+    },
+    {
+      "id": "use-case-mapping-protein-stability-amfr-random",
+      "use_case_id": "use-case-protein-stability",
+      "lifecycle": "active",
+      "revision": 1,
+      "reason": "Initial review of the separate fixed-seed random control as limited context.",
+      "protocol_id": "rewire-protocol-proteingym-amfr-random-v13",
+      "evaluation_ids": [
+        "rewire-local-20260921-evaluation-proteingym-random"
+      ],
+      "endpoint": "One fixed-seed random ranking of the mixed AMFR stability cohort.",
+      "relevance": "proxy",
+      "rationale": "A recorded null control helps inspect the assay and evaluation procedure. It is not a biological prediction method recommendation, a chance-performance interval or a matched comparison with the separately executed ESM-2 protocol.",
+      "constraints": [
+        "All 2,972 AMFR variants, mixing single and double substitutions; a single fixed seed of 0.",
+        "SHA256 ranking of prepared variant IDs; no biological prediction or label fitting.",
+        "Protocol-only mapping; keep its evaluation and configuration separate from ESM-2 and the planned singles comparison."
+      ],
+      "limitations": [
+        "One seed does not estimate chance variability or uncertainty. Do not subtract these separate protocol results to assert an evaluated winner.",
+        "Local input hashes do not independently authenticate assay bytes against an upstream published checksum.",
+        "This control supplies no pathogenicity or clinical suitability evidence; no human scientific review or independent replication is recorded."
+      ],
+      "citations": [
+        {
+          "source_id": "rewire-local-20260921-source-proteingym-random",
+          "locator": "/metrics; /coverage; /model_configuration; /protocol_configuration; /provenance; /protocol_results"
+        },
+        {
+          "source_id": "rewire-local-20260921-instructions-proteingym-random",
+          "locator": "Pinned reproduction instructions and execution scope"
+        },
+        {
+          "source_id": "use-case-source-amfr-pilot-plan-194a78b",
+          "locator": "Question; Task and data; Methods (N0); Analysis populations"
+        }
+      ],
+      "review": {
+        "method": "automated_source_review",
+        "actor": "Codex research curation",
+        "reviewed_at": "2026-09-25T15:28:11Z",
+        "note": "Reviewed as a separate one-seed control, not clinical evidence or a cross-protocol comparison."
+      },
+      "evidence_sha256": "2fa413430c25c90a4184be20e096c2200185e566d1690953e29bc40d55c98ddf"
+    },
+    {
+      "id": "use-case-mapping-splicing-mfass-matched-v1",
+      "use_case_id": "use-case-splicing-follow-up",
+      "lifecycle": "active",
+      "revision": 1,
+      "reason": "Initial bounded applicability review of the matched MFASS study.",
+      "protocol_id": "rewire-mfass-matched-v1-protocol",
+      "task_id": "catalog-task-mfass-splice",
+      "evaluation_ids": [
+        "rewire-mfass-matched-v1-evaluation-s0",
+        "rewire-mfass-matched-v1-evaluation-s1",
+        "rewire-mfass-matched-v1-evaluation-p0",
+        "rewire-mfass-matched-v1-evaluation-p1"
+      ],
+      "endpoint": "Ranking held-out MFASS SNVs by reporter-assay splice disruption under matched canonical annotation.",
+      "relevance": "proxy",
+      "rationale": "The recorded endpoint informs assay-oriented prioritisation under its declared conditions. Selecting variants for a different follow-up experiment requires transfer validation; the endpoint is not patient RNA or clinical pathogenicity.",
+      "constraints": [
+        "Identical scored population: 8,297 of 8,324 held-out variants, 314 scored positives and 460 groups in all four configurations.",
+        "Shared GENCODE 44 canonical transcript selection and FASTA; 50-base distance; distinct SpliceAI and Pangolin masking settings.",
+        "Keep historical annotation conditions and scoring populations in their existing separate comparison groups."
+      ],
+      "limitations": [
+        "23 assembly-orientation mismatches and four canonical-transcript-span exclusions remain unscored. The latter are protocol exclusions, not established faulty variants; full-population performance is unknown.",
+        "No top-100 precision difference is established and masked Pangolin is tie-sensitive. Paired contrast intervals are not individual-condition intervals.",
+        "Exploratory source review only; no independent human review, replication or clinical validation. Assembly-issue author confirmation is not established."
+      ],
+      "citations": [
+        {
+          "source_id": "rewire-mfass-matched-v1-source-report",
+          "locator": "/conditions/{S0,S1,P0,P1}/coverage; /conditions/{S0,S1,P0,P1}/metrics; /conditions/{S0,S1,P0,P1}/ties; /contrasts/{S1-S0,P1-P0,P0-S0}/paired/precision_at_capacity"
+        },
+        {
+          "source_id": "rewire-mfass-matched-v1-source-manifest-v1",
+          "locator": "/conditions; /distance; /resources_sha256; /code"
+        },
+        {
+          "source_id": "rewire-mfass-matched-v1-source-exclusion-verification",
+          "locator": "/exclusion_counts; /conditions; /checks"
+        },
+        {
+          "source_id": "use-case-source-mfass-matched-intake-194a78b",
+          "locator": "Opening coverage, exclusion, annotation and interpretation paragraphs; Review and validation"
+        },
+        {
+          "source_id": "evidence-expansion-mfass-readme-62a93814",
+          "locator": "Dataset; Limits"
+        }
+      ],
+      "review": {
+        "method": "automated_source_review",
+        "actor": "Codex research curation",
+        "reviewed_at": "2026-09-25T15:28:11Z",
+        "note": "Reviewed exact configuration and population scope against pinned source bytes. Applicability remains proxy evidence; no human domain review or clinical validation."
+      },
+      "evidence_sha256": "c4cfbe66c30d59308fc8d2226f42720a09a6e54d2f407c7141b08e01e39c0a47"
+    }
+  ]
+}

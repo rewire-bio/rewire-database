@@ -1,0 +1,58 @@
+[
+  {
+    "id": "use-case-source-mfass-matched-intake-194a78b",
+    "kind": "source",
+    "name": "MFASS matched study intake: coverage and interpretation",
+    "description": "Pinned repository source for bounded use-case interpretation. Automated source review only; no new measurement, independent reproduction or human domain review.",
+    "status": "source_checked",
+    "facets": {
+      "areas": [
+        "dna-genomes"
+      ]
+    },
+    "source_ids": [],
+    "links": [],
+    "attributes": {
+      "url": "https://benchmarks.rewire.it/omics/sources/0af394e74888c01dbe2970d2e28b9bbacb4a83d355881feaaa3a704396a2074d.md",
+      "artifact_url": "https://benchmarks.rewire.it/omics/sources/0af394e74888c01dbe2970d2e28b9bbacb4a83d355881feaaa3a704396a2074d.md",
+      "artifact_sha256": "0af394e74888c01dbe2970d2e28b9bbacb4a83d355881feaaa3a704396a2074d",
+      "version": "194a78b37eed911d0872e9b047a2539a9fee5dd0",
+      "retrieved_at": "2026-09-25T15:28:11Z",
+      "source_type": "rewire_protocol_documentation",
+      "evidence_origin": "rewire_documentation",
+      "review_artifact": "data/omics/use-cases/sources/mfass-matched-study-intake.md",
+      "retrieval_method": "Authenticated GitHub content API; exact bytes also compared with the pinned Git object.",
+      "review_scope": "Applicability interpretation and explicit evidence gaps; no numerical-result change or clinical validation.",
+      "original_url": "https://github.com/rewire-bio/rewire-database/blob/194a78b37eed911d0872e9b047a2539a9fee5dd0/docs/omics/mfass-matched-study-intake.md",
+      "original_artifact_url": "https://raw.githubusercontent.com/rewire-bio/rewire-database/194a78b37eed911d0872e9b047a2539a9fee5dd0/docs/omics/mfass-matched-study-intake.md"
+    }
+  },
+  {
+    "id": "use-case-source-amfr-pilot-plan-194a78b",
+    "kind": "source",
+    "name": "AMFR matched single-substitution pilot: plan and execution prerequisites",
+    "description": "Pinned repository source for bounded use-case interpretation. Automated source review only; no new measurement, independent reproduction or human domain review.",
+    "status": "source_checked",
+    "facets": {
+      "areas": [
+        "proteins-complexes"
+      ]
+    },
+    "source_ids": [],
+    "links": [],
+    "attributes": {
+      "url": "https://benchmarks.rewire.it/omics/sources/a3208aa4537e8d28c56f68f4559299f31241c50b8d8b2b3776cba5f1718caa43.md",
+      "artifact_url": "https://benchmarks.rewire.it/omics/sources/a3208aa4537e8d28c56f68f4559299f31241c50b8d8b2b3776cba5f1718caa43.md",
+      "artifact_sha256": "a3208aa4537e8d28c56f68f4559299f31241c50b8d8b2b3776cba5f1718caa43",
+      "version": "194a78b37eed911d0872e9b047a2539a9fee5dd0",
+      "retrieved_at": "2026-09-25T15:28:11Z",
+      "source_type": "rewire_protocol_documentation",
+      "evidence_origin": "rewire_documentation",
+      "review_artifact": "data/omics/use-cases/sources/amfr-pilot-readme.md",
+      "retrieval_method": "Authenticated GitHub content API; exact bytes also compared with the pinned Git object.",
+      "review_scope": "Applicability interpretation and explicit evidence gaps; no numerical-result change or clinical validation.",
+      "original_url": "https://github.com/rewire-bio/rewire-database/blob/194a78b37eed911d0872e9b047a2539a9fee5dd0/docs/research/proteingym-amfr-pilot-2026-09-25/README.md",
+      "original_artifact_url": "https://raw.githubusercontent.com/rewire-bio/rewire-database/194a78b37eed911d0872e9b047a2539a9fee5dd0/docs/research/proteingym-amfr-pilot-2026-09-25/README.md"
+    }
+  }
+]

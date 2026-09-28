@@ -448,6 +448,24 @@ export function createCatalogueQuery(snapshot: CatalogueSnapshot) {
     ];
   }
   return {
+    /** Exact public record lookup, without comparison or relationship expansion. */
+    snapshot: (): CatalogueSnapshot => snapshot,
+    record: (id: string): CatalogueRecord | null => byId.get(id) || null,
+    /** Whether a link is backed by a reviewed association claim, as used for rollups. */
+    association: (
+      recordId: string,
+      relation: string,
+      targetId: string,
+    ): boolean => {
+      const record = byId.get(recordId);
+      return (
+        !!record &&
+        record.links.some(
+          (link) => link.relation === relation && link.target_id === targetId,
+        ) &&
+        verifiedAssociation(record, { relation, target_id: targetId })
+      );
+    },
     release: () => ({
       release_id,
       schema_version: snapshot.schema_version,

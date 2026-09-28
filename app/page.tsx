@@ -75,6 +75,7 @@ export default function BenchmarksPage() {
       <section className="block first">
         <div className="wrap">
           <nav className={styles.nav} aria-label="Database navigation">
+            <a href="/use-cases/">Use cases</a>
             <a href="/benchmarks/">All benchmarks</a>
             <a href="/models/">Model index</a>
             <a href="#evidence">About the evidence</a>

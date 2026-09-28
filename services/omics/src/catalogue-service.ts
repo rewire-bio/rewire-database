@@ -9,6 +9,10 @@ import {
 } from "./catalogue-query.js";
 import { validateSnapshot } from "./validation.js";
 import { recordsDigest } from "./catalogue-integrity.js";
+import {
+  readStoredUseCases,
+  useCasePublicationIdentity,
+} from "./use-case-import.js";
 
 // One bounded, promise-coalesced snapshot per immutable release per warm instance.
 // Published releases are never modified. The active pointer itself is read afresh.
@@ -99,6 +103,7 @@ export async function activateRelease(db: Firestore, releaseId: string) {
     throw new Error("Only complete, ready releases can be published");
   if (meta.coverage?.audit_history && !meta.audit_manifest)
     throw new Error("Audit import must complete before publication");
+  const useCaseIdentity = useCasePublicationIdentity(meta);
   const records = (await ref.collection("records").get()).docs.map((d) =>
     d.data(),
   );
@@ -117,6 +122,7 @@ export async function activateRelease(db: Firestore, releaseId: string) {
     recordsDigest(snapshot.records) !== meta.records_digest
   )
     throw new Error("Catalogue record integrity failure");
+  await readStoredUseCases(db, releaseId, meta, snapshot);
   if (meta.query_chunks) {
     const chunks = await ref.collection("queryChunks").orderBy("index").get();
     if (chunks.size !== meta.query_chunks)
@@ -135,6 +141,14 @@ export async function activateRelease(db: Firestore, releaseId: string) {
       release.data()?.digest !== meta.digest
     )
       throw new Error("Release changed during activation");
+    const currentRelease = release.data()!;
+    if (useCasePublicationIdentity(currentRelease) !== useCaseIdentity)
+      throw new Error("Use-case release metadata changed during activation");
+    if (
+      currentRelease.coverage?.audit_history &&
+      !currentRelease.audit_manifest
+    )
+      throw new Error("Audit import must complete before publication");
     const now = new Date().toISOString();
     tx.update(ref, { published_at: release.data()?.published_at || now });
     tx.set(db.doc("cataloguePublication/active"), {

@@ -1,5 +1,6 @@
 import path from "node:path";
 import { importAuditFiles } from "./audit-import.js";
+import { importUseCaseFiles } from "./use-case-import.js";
 import { readFile } from "node:fs/promises";
 import { firebase } from "./firebase.js";
 import { importRelease } from "./catalogue.js";
@@ -27,8 +28,8 @@ if (snapshot !== "--current" && snapshot !== "--activate") {
   const metadata = JSON.parse(await readFile(manifest, "utf8"));
   const files: Record<string, Buffer> = {};
   const base = path.dirname(snapshot);
-  for (const name of Object.keys(metadata.files).filter((n) =>
-    /^audit-[a-z0-9-]+\.json$/.test(n),
+  for (const name of Object.keys(metadata.files).filter(
+    (n) => /^audit-[a-z0-9-]+\.json$/.test(n) || n === "use-cases.json",
   )) {
     try {
       files[name] = await readFile(path.join(base, name));
@@ -42,6 +43,7 @@ if (snapshot !== "--current" && snapshot !== "--activate") {
     }
   }
   await importAuditFiles(firebase().db, result.release_id, metadata, files);
+  await importUseCaseFiles(firebase().db, result.release_id, metadata, files);
 }
 console.log(JSON.stringify(result, null, 2));
 await firebase().db.terminate();

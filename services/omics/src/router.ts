@@ -9,6 +9,7 @@ import { contribution, patch, id } from "./validation.js";
 import * as store from "./store.js";
 import { catalogueQuery } from "./catalogue-service.js";
 import type { CatalogueQuery } from "./catalogue-query.js";
+import { useCaseQuery } from "./use-case-service.js";
 const t = initTRPC.context<Context>().create();
 const authenticated = t.procedure.use(({ ctx, next }) => {
   if (!ctx.user?.email_verified || !ctx.user.email)
@@ -50,6 +51,21 @@ async function readCatalogue<T>(
     });
   }
 }
+async function readUseCases<T>(
+  releaseId: string,
+  run: (query: Awaited<ReturnType<typeof useCaseQuery>>) => T,
+): Promise<T> {
+  const query = await useCaseQuery(firebase().db, releaseId);
+  try {
+    return run(query);
+  } catch (error) {
+    throw new TRPCError({
+      code: "BAD_REQUEST",
+      message:
+        error instanceof Error ? error.message : "Invalid use-case query",
+    });
+  }
+}
 export const appRouter = t.router({
   catalogue: t.router({
     release: t.procedure
@@ -82,6 +98,38 @@ export const appRouter = t.router({
       .query(({ input }) =>
         readCatalogue(input.release_id, (q) =>
           q.get({ ...input, include_comparisons: false }),
+        ),
+      ),
+    useCases: t.procedure
+      .input(
+        z
+          .object({
+            ...pinned,
+            ...pagination,
+            q: z.string().max(300).optional(),
+            area: z.string().max(100).optional(),
+            context: z.enum(["research", "clinical_research"]).optional(),
+          })
+          .strict(),
+      )
+      .query(({ input }) =>
+        readUseCases(input.release_id, (query) => {
+          const { release_id, ...filters } = input;
+          return query.list(filters);
+        }),
+      ),
+    useCase: t.procedure
+      .input(z.object({ ...pinned, slug: id }).strict())
+      .query(({ input }) =>
+        readUseCases(input.release_id, (query) =>
+          query.get({ slug: input.slug }),
+        ),
+      ),
+    useCaseLinks: t.procedure
+      .input(z.object({ ...pinned, id }).strict())
+      .query(({ input }) =>
+        readUseCases(input.release_id, (query) =>
+          query.links({ id: input.id }),
         ),
       ),
     comparison: t.procedure

@@ -281,7 +281,7 @@ export function catalogueSearch(
   return params.size ? `?${params}` : "";
 }
 
-/** Only local explorer routes may be used as a return destination. */
+/** Only local catalogue/use-case routes may be used as a return destination. */
 export function safeBrowseReturnTo(
   value: string | null | undefined,
 ): string | null {
@@ -293,10 +293,15 @@ export function safeBrowseReturnTo(
   )
     return null;
   try {
+    // Check the literal path before URL normalization can hide traversal or an
+    // encoded separator. Query values may contain safely encoded search terms.
+    const pathname = value.split(/[?#]/, 1)[0];
+    if (!/^(?:\/|\/database\/|\/use-cases\/(?:[a-z0-9]+(?:-[a-z0-9]+)*\/)?)$/.test(pathname)) return null;
+    if (/[\\\r\n]|%(?:25)*(?:0[ad]|5c)/i.test(value)) return null;
     const url = new URL(value, "https://benchmarks.rewire.it");
     if (
       url.origin !== "https://benchmarks.rewire.it" ||
-      !["/", "/database/"].includes(url.pathname)
+      url.pathname !== pathname
     )
       return null;
     return `${url.pathname}${url.search}${url.hash}`;

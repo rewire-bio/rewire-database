@@ -2,6 +2,8 @@ import fs from "node:fs";
 import path from "node:path";
 import { gunzipSync } from "node:zlib";
 import { createHash } from "node:crypto";
+import { validateUseCaseArtifact } from "../../services/omics/src/use-cases";
+import { parseUseCaseSourceDeclaration, writeUseCaseSourceCopies } from "./use-cases";
 
 function expectedFiles(manifest: any): string[] {
   const names = [
@@ -11,7 +13,14 @@ function expectedFiles(manifest: any): string[] {
     ...(manifest.coverage?.evidence_table_version === "1.0"
       ? ["evidence.csv", "evidence.jsonl"]
       : []),
+    ...(manifest.coverage?.use_cases !== undefined ? ["use-cases.json"] : []),
   ];
+  if (manifest.coverage?.use_case_sources !== undefined) {
+    if (manifest.coverage?.use_cases === undefined)
+      throw Error("Archived use-case sources require declared use cases");
+    names.push(...parseUseCaseSourceDeclaration(manifest.coverage.use_case_sources)
+      .map((source) => source.file));
+  }
   if (manifest.coverage?.audit_history) {
     names.push(
       "audit-index.json",
@@ -34,6 +43,38 @@ function expectedFiles(manifest: any): string[] {
     names.push(...chunks);
   }
   return names.sort();
+}
+
+function restoreSourceCopies(
+  manifest: any,
+  read: (file: string) => string,
+  output: string,
+) {
+  if (manifest.coverage?.use_case_sources === undefined) return;
+  const declaration = parseUseCaseSourceDeclaration(manifest.coverage.use_case_sources);
+  const files = Object.fromEntries(declaration.map((source) => {
+    const bytes = read(source.file);
+    if (createHash("sha256").update(bytes).digest("hex") !== source.sha256 ||
+        manifest.files[source.file] !== source.sha256)
+      throw Error("Archived use-case source checksum mismatch");
+    return [source.file, bytes];
+  }));
+  writeUseCaseSourceCopies(files, path.join(path.dirname(output), "sources"));
+}
+
+function validateUseCases(
+  manifest: any,
+  read: (file: string) => string,
+) {
+  if (manifest.coverage?.use_cases === undefined) return;
+  const snapshot = JSON.parse(read("catalogue.json"));
+  if (snapshot.release_id !== manifest.release_id ||
+      JSON.stringify(snapshot.coverage?.use_cases) !==
+      JSON.stringify(manifest.coverage.use_cases))
+    throw Error("Archived use-case release binding mismatch");
+  validateUseCaseArtifact(
+    snapshot, JSON.parse(read("use-cases.json")), manifest.coverage.use_cases,
+  );
 }
 
 /** Preserve already published exports byte for byte, even from a clean checkout. */
@@ -61,6 +102,13 @@ export function restoreReleaseBundles(
         JSON.stringify(expected.map((n) => `${n}.gz`).sort())
     )
       throw new Error("Unexpected archived files");
+    const readChecked = (name: string) => {
+      const bytes = gunzipSync(fs.readFileSync(path.join(input, entry.name, `${name}.gz`)));
+      if (createHash("sha256").update(bytes).digest("hex") !== manifest.files[name])
+        throw new Error(`Archive checksum mismatch: ${entry.name}/${name}`);
+      return bytes.toString("utf8");
+    };
+    validateUseCases(manifest, readChecked);
     const dir = path.join(output, entry.name);
     fs.mkdirSync(dir, { recursive: true });
     for (const name of [...expected, "manifest.json"]) {
@@ -81,6 +129,7 @@ export function restoreReleaseBundles(
         throw new Error(`Immutable release conflict: ${target}`);
       fs.writeFileSync(target, bytes);
     }
+    restoreSourceCopies(manifest, readChecked, output);
   }
   for (const name of fs
     .readdirSync(input)
@@ -111,6 +160,7 @@ export function restoreReleaseBundles(
       )
         throw new Error(`Archive checksum mismatch: ${id}/${file}`);
     }
+    validateUseCases(manifest, (name) => files[name]);
     for (const [file, bytes] of Object.entries(files)) {
       const target = path.join(output, id, file);
       if (fs.existsSync(target) && fs.readFileSync(target, "utf8") !== bytes)
@@ -119,5 +169,6 @@ export function restoreReleaseBundles(
     fs.mkdirSync(path.join(output, id), { recursive: true });
     for (const [file, bytes] of Object.entries(files))
       fs.writeFileSync(path.join(output, id, file), bytes);
+    restoreSourceCopies(manifest, (name) => files[name], output);
   }
 }

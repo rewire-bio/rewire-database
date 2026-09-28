@@ -20,6 +20,9 @@ const catalogueProcedures = new Set([
   "catalogue.auditRuns",
   "catalogue.auditRecords",
   "catalogue.auditChecks",
+  "catalogue.useCases",
+  "catalogue.useCase",
+  "catalogue.useCaseLinks",
 ]);
 function catalogueRequest(req: Request): boolean {
   if (req.method !== "GET") return false;

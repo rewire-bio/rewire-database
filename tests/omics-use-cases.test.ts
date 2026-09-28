@@ -67,6 +67,58 @@ describe("scoped use-case evidence", () => {
     expect(JSON.stringify(artifact)).not.toContain("numeric_value");
     expect(snapshot.records.find((r) => r.id === "task")!.status).toBe("discovered");
   });
+  it("resolves legacy link labels only through their exact reviewed protocol and configuration targets", () => {
+    const f = fixture();
+    f.snapshot.records.find((r) => r.id === "evaluation")!.links = [
+      { relation: "model", target_id: "config" },
+      { relation: "benchmark", target_id: "protocol" },
+      { relation: "dataset", target_id: "dataset" },
+    ];
+    freeze(f);
+    const before = structuredClone(f.snapshot);
+    const { query } = build(f);
+    const evaluated = query.get({ slug: f.entry.slug })!.mappings[0].evaluations[0];
+    expect(evaluated.configurations.map((r) => r.id)).toEqual(["config"]);
+    expect(evaluated.results[0].result.attributes.numeric_value).toBe("0.75");
+    expect(query.links({ id: "config" }).items[0].configuration_ids).toEqual(["config"]);
+    expect(query.links({ id: "model" }).items[0].configuration_ids).toEqual(["config"]);
+    expect(f.snapshot).toEqual(before);
+  });
+  it.each(["model", "method", "pipeline"] as const)("does not treat a legacy model link to a %s as an exact configuration", (kind) => {
+    const f = fixture();
+    f.snapshot.records.find((r) => r.id === "evaluation")!.links[0].relation = "model";
+    f.snapshot.records.find((r) => r.id === "config")!.kind = kind;
+    freeze(f);
+    expect(() => build(f)).toThrow(/no exact configuration/);
+  });
+  it.each(["task", "benchmark"] as const)("does not promote a legacy benchmark target of kind %s to a protocol", (kind) => {
+    const f = fixture();
+    f.snapshot.records.find((r) => r.id === "evaluation")!.links[1].relation = "benchmark";
+    f.snapshot.records.find((r) => r.id === "protocol")!.kind = kind;
+    freeze(f);
+    expect(() => build(f)).toThrow(/wrong-kind public protocol/);
+  });
+  it.each(["config", "model", "model-link"])("fingerprints %s evidence reached through a legacy configuration link", (id) => {
+    const f = fixture();
+    f.snapshot.records.find((r) => r.id === "evaluation")!.links[0].relation = "model";
+    freeze(f);
+    expect(build(f).artifact.mappings[0].lifecycle).toBe("active");
+    f.snapshot.records.find((r) => r.id === id)!.description += " changed";
+    const { artifact, query } = build(f);
+    expect(artifact.mappings[0].lifecycle).toBe("needs_review");
+    expect(query.links({ id: "config" }).items).toEqual([]);
+  });
+  it("keeps source and review gates for legacy configuration evidence", () => {
+    const f = fixture();
+    f.snapshot.records.find((r) => r.id === "evaluation")!.links[0].relation = "model";
+    const configuration = f.snapshot.records.find((r) => r.id === "config")!;
+    configuration.status = "discovered"; freeze(f);
+    expect(() => build(f)).toThrow(/not reviewed evidence/);
+    configuration.status = "source_checked";
+    f.snapshot.records.push({ ...f.snapshot.records[0], id: "config-source", attributes: { evidence_concerns: ["Unresolved provenance"] } });
+    configuration.source_ids = ["config-source"]; freeze(f);
+    expect(() => build(f)).toThrow(/Configuration evidence is disputed or unchecked/);
+  });
   it("provides backlinks only through exact evidence and reviewed navigation relationships", () => {
     const { query } = build();
     for (const id of ["protocol", "task", "evaluation", "config", "model", "suite"])

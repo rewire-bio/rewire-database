@@ -2,6 +2,199 @@
   "schema_version": "1.0",
   "use_cases": [
     {
+      "id": "use-case-genetic-perturbation-response",
+      "slug": "genetic-perturbation-response",
+      "title": "Assess models for genetic perturbation experiments",
+      "question": "Which prediction methods and controls should I test before using expression predictions to plan genetic perturbation experiments?",
+      "area": "cells-tissues",
+      "contexts": [
+        "research"
+      ],
+      "search_terms": [
+        "genetic perturbation",
+        "perturbation response",
+        "Perturb-seq",
+        "single-cell RNA-seq",
+        "scRNA-seq",
+        "GEARS",
+        "CPA",
+        "knowledge graph",
+        "Norman2019",
+        "no-change control",
+        "gene expression"
+      ],
+      "intended_users": [
+        "Researchers designing genetic perturbation screens",
+        "Computational biologists evaluating perturbation-response models"
+      ],
+      "decision": "Choose models and controls for a pilot in the intended cell system before using predictions to select follow-up experiments. The current evidence compares expression prediction; it does not establish experimental hit rates.",
+      "inputs": [
+        "Single-cell expression measurements from perturbed and unperturbed cells, with perturbation and cell-type labels",
+        "A study design with multiple measured perturbations and cells per perturbation; combinations require combination examples during GEARS training"
+      ],
+      "output": "Predicted post-perturbation expression and changes relative to unperturbed controls, assessed against measured responses.",
+      "setting": "Research method assessment anchored to the Norman2019 K562 cell-line comparison in GEARS Supplementary Table 6. Both endpoints below describe the same four evaluated configurations.",
+      "exclusions": [
+        "Cross-cell-type transfer and bulk-sequencing prediction are outside the cited GEARS usage scope.",
+        "Training GEARS only on single-gene perturbations does not support reliable combination prediction.",
+        "Expression prediction scores do not establish causal mechanism, fitness effects or successful experimental prioritisation."
+      ],
+      "clinical_scope": "Research use only. These expression endpoints do not establish diagnostic, treatment-selection or patient-response validity.",
+      "evidence_gaps": [
+        "The exact Table 6 split manifest, scoring gene subset, scored counts and checkpoint revisions remain unextracted. Do not silently label the MSE endpoint as Top20.",
+        "The table does not identify its printed spread as SD, SE or a confidence interval; these scores do not establish a statistically supported winner.",
+        "Both endpoints and the repeated No Perturb row are overlapping evidence from one source comparison, not independent replications.",
+        "Performance in a new cell system and experimental hit rates need a separate prospective evaluation. Human scientific review remains outstanding."
+      ],
+      "citations": [
+        {
+          "source_id": "coverage-source-gears-supp",
+          "locator": "Supplementary Table 6, printed page 34 / PDF page 35; Supplementary Table 1, PDF page 30; Supplementary Notes 5 and 14 (K562 context)."
+        },
+        {
+          "source_id": "evidence-official-c037e3419c04936262a0",
+          "locator": "README.md at f374e43e197b295016d80395d7a54ddb81cc6769, A note on usage (lines 15–19) and Core API Interface (lines 20–54)."
+        }
+      ],
+      "review": {
+        "method": "automated_source_review",
+        "actor": "Codex research curation",
+        "reviewed_at": "2026-09-28T12:11:40.845Z",
+        "note": "Primary-source curation and separate automated cross-review checked exact evidence identities, comparator coverage, endpoint relevance and transfer limits. No new execution, human scientific review, independent replication or clinical validation."
+      },
+      "planned_work": []
+    },
+    {
+      "id": "use-case-mass-spectrum-molecule-shortlisting",
+      "slug": "mass-spectrum-molecule-shortlisting",
+      "title": "Shortlist molecular identities from tandem mass spectra",
+      "question": "Which retrieval configurations merit validation when molecular formula is unknown and a researcher can examine only a short list of candidate structures?",
+      "area": "metabolomics",
+      "contexts": [
+        "research"
+      ],
+      "search_terms": [
+        "metabolomics",
+        "tandem mass spectrometry",
+        "MS/MS",
+        "molecular identification",
+        "candidate retrieval",
+        "unknown formula",
+        "MassSpecGym",
+        "MSAlign",
+        "DreaMS",
+        "ChemBERTa",
+        "MCES",
+        "formula split"
+      ],
+      "intended_users": [
+        "Metabolomics researchers shortlisting candidate molecular identities for experimental confirmation",
+        "Computational researchers choosing retrieval inputs, candidate pools and validation splits"
+      ],
+      "decision": "Compare formula-free retrieval configurations within a named split and shortlist size, then validate the intended instrument, chemistry and candidate database before selecting a workflow.",
+      "inputs": [
+        "MS/MS spectra with metadata sufficient to derive neutral molecular mass",
+        "A frozen set of candidate molecular structures; the true identity must be present for the measured retrieval endpoint"
+      ],
+      "output": "Split-specific Recall@1 and Recall@20 evidence for six exact configurations, plus candidate-pool and domain-shift limits.",
+      "setting": "MSAlign paper Table 3, MassSpecGym formula and MCES splits, formula-free inputs. Each source candidate pool contains 256 mass-matched PubChem structures. Formula and MCES splits remain distinct.",
+      "exclusions": [
+        "De novo molecular generation or cases where the true structure is absent from the candidate set",
+        "Formula-conditioned retrieval, including MIST, FLARE and MSAlign+Filter",
+        "Pooling split-specific results or transferring scores to different candidate database sizes",
+        "Authenticated molecular identification and clinical diagnosis"
+      ],
+      "clinical_scope": "Research only. Candidate retrieval is not a confirmed molecular identification or evidence of clinical diagnostic performance.",
+      "evidence_gaps": [
+        "The correct structure must be in a 256-candidate mass-filtered pool. Scores do not transfer automatically to a larger database, a different pool-construction procedure or a missing true structure.",
+        "MCES and formula splits impose different distribution shifts. The source authors favour formula splits for their deployment interpretation; that choice does not prove that formula-split performance represents every intended application.",
+        "Reported methods are the paper implementations: DeepSets training was extended to 50 epochs. These are not interchangeable with original model-paper scores or current checkpoints.",
+        "Exact test denominators, split-manifest hashes, checkpoint hashes and evaluator revisions remain unextracted or unreported in the catalogue. No uncertainty values or new independent reproduction are established.",
+        "Candidate recall is not an authenticated metabolite identification, a clinical diagnosis or a calibrated probability. Human domain review remains outstanding.",
+        "The four metric and split groups come from one paper and do not constitute independent replications."
+      ],
+      "citations": [
+        {
+          "source_id": "evidence-official-760ab2fa8c396aeb796c",
+          "locator": "Table 3, MassSpecGym MCES and formula blocks, formula-free columns, R@1 and R@20; Sections 4, 5.1 and 5.2"
+        }
+      ],
+      "review": {
+        "method": "automated_source_review",
+        "actor": "Codex research curation",
+        "reviewed_at": "2026-09-28T12:11:40.845Z",
+        "note": "Primary-source curation and separate automated cross-review checked exact evidence identities, comparator coverage, endpoint relevance and transfer limits. No new execution, human scientific review, independent replication or clinical validation."
+      },
+      "planned_work": []
+    },
+    {
+      "id": "use-case-plant-promoter-reporters",
+      "slug": "plant-promoter-reporters",
+      "title": "Compare methods for plant promoter experiments",
+      "question": "What evidence supports choosing a sequence model for predicting plant core-promoter strength in the intended reporter assay?",
+      "area": "dna-genomes",
+      "contexts": [
+        "research"
+      ],
+      "search_terms": [
+        "plant promoter",
+        "core promoter",
+        "promoter strength",
+        "synthetic biology",
+        "STARR-seq",
+        "AgroNT",
+        "CNN",
+        "maize protoplasts",
+        "tobacco leaves",
+        "Arabidopsis thaliana",
+        "Sorghum bicolor",
+        "Zea mays"
+      ],
+      "intended_users": [
+        "Plant synthetic-biology researchers prioritising promoter candidates for reporter experiments",
+        "Computational researchers selecting an assay-matched promoter prediction method"
+      ],
+      "decision": "Choose the matching sequence species and reporter host, then inspect the two evaluated methods and remaining validation needs before prioritising new promoter candidates. Keep each assay and species comparison separate.",
+      "inputs": [
+        "A 170 bp core-promoter sequence spanning −165 to +5 relative to an annotated transcription start site",
+        "The sequence species and intended assay host: maize protoplasts or tobacco leaves"
+      ],
+      "output": "Assay-specific evidence for AgroNT and the CNN from Jores et al., with exact evaluated configurations and source rows; no general plant-performance ranking.",
+      "setting": "The evidence concerns held-out core-promoter sequences from Arabidopsis thaliana, Sorghum bicolor and Zea mays. Their activity was measured by transient STARR-seq reporter assays in maize protoplasts or tobacco leaves, using the original studies’ train/test datasets for the model comparisons.",
+      "exclusions": [
+        "Endogenous gene expression, stable transformed plants, tissue-specific activity outside the two reporter hosts, plant fitness or crop yield",
+        "Terminator strength, promoter–terminator combinations, chromatin accessibility and other AgroNT tasks",
+        "Prospective validation of newly designed promoters, or pooling the six assay-by-species conditions into one score"
+      ],
+      "clinical_scope": "This page concerns plant reporter research. The evidence establishes no clinical application.",
+      "evidence_gaps": [
+        "All values are author-reported and source checked; no independent experimental reproduction or human scientific review is recorded.",
+        "The source tables provide no confidence intervals or run variability. Exact fitted checkpoint hashes, task-specific seeds, scoring denominators and executable split manifests remain unreported or unextracted.",
+        "The six comparisons retain their own assay system and sequence species. A maize-protoplast model can be evaluated on sequences from any of the three listed species; the host is not the sequence origin.",
+        "Held-out labelled examples do not establish exclusion from AgroNT pretraining or generalisation to an unseen species. Its reference-genome pretraining and supervised assay split answer different leakage questions.",
+        "Held-out R² describes assay-strength prediction. It is not top-k candidate hit rate, uncertainty for a new promoter, or proof that a designed promoter will work in a stable plant.",
+        "These four task-specific configurations do not establish performance for other AgroNT checkpoints or newer methods. Missing checkpoint and fitting detail limits exact recreation of the reported comparison.",
+        "The separately flagged Figure 4 chromatin-accessibility source anomaly is outside this page and supplies no evidence for promoter selection."
+      ],
+      "citations": [
+        {
+          "source_id": "agront-2024-fig3e-source",
+          "locator": "Figures/Fig3_panele.txt, lines 2–13, R2 column; pair rows by Species, Model and Type"
+        },
+        {
+          "source_id": "agront-2024-paper-methods",
+          "locator": "Figure 3e and caption; Fine-tuning strategy (Sec16); Promoter and terminator strength prediction (Sec21); pretraining data and training (Sec14–15)"
+        }
+      ],
+      "review": {
+        "method": "automated_source_review",
+        "actor": "Codex research curation",
+        "reviewed_at": "2026-09-28T12:11:40.845Z",
+        "note": "Primary-source curation and separate automated cross-review checked exact evidence identities, comparator coverage, endpoint relevance and transfer limits. No new execution, human scientific review, independent replication or clinical validation."
+      },
+      "planned_work": []
+    },
+    {
       "id": "use-case-protein-stability",
       "slug": "protein-variant-stability",
       "title": "Assess methods for protein stability experiments",
@@ -85,6 +278,87 @@
       ]
     },
     {
+      "id": "use-case-rhodopsin-wavelength-transfer",
+      "slug": "rhodopsin-wavelength-transfer",
+      "title": "Assess rhodopsin wavelength prediction across sequence backgrounds",
+      "question": "Which sequence-based configurations merit testing before selecting rhodopsins with different absorption wavelengths in a new wild-type background?",
+      "area": "proteins-complexes",
+      "contexts": [
+        "research"
+      ],
+      "search_terms": [
+        "rhodopsin",
+        "opsin",
+        "spectral tuning",
+        "absorption wavelength",
+        "optogenetics",
+        "protein engineering",
+        "FLIP2",
+        "Rhomax",
+        "wild-type transfer",
+        "ESM-2",
+        "sequence composition",
+        "ridge regression"
+      ],
+      "intended_users": [
+        "Protein engineers planning rhodopsin spectral-tuning experiments",
+        "Computational researchers checking transfer to new sequence backgrounds"
+      ],
+      "decision": "Use the existing held-out-background evaluations to choose controls and exact model configurations for a new, prospectively held-out spectral-tuning experiment.",
+      "inputs": [
+        "Complete rhodopsin amino-acid sequences",
+        "Training measurements of peak absorption wavelength and frozen assignments that separate wild-type backgrounds"
+      ],
+      "output": "Evidence for the exact frozen sequence probes and controls, plus the validation still needed for a new background; no calibrated wavelength or wet-lab success guarantee.",
+      "setting": "One complete FLIP2 Rhomax by_wild_type test split: 584 training, 116 unused validation and 184 test records. The experimental endpoint is peak absorption wavelength in nanometres.",
+      "exclusions": [
+        "Rhodopsin activation efficiency, expression, photostability and cellular function",
+        "Zero-shot likelihood scoring, alternative pooling or fine-tuning not evaluated in these runs",
+        "General protein fitness, all FLIP2 landscapes and clinical use"
+      ],
+      "clinical_scope": "Research only. Absorption-wavelength ranking does not establish suitability for an optogenetic intervention, patient care or treatment.",
+      "evidence_gaps": [
+        "A spectral-tuning endpoint is not opsin activation efficiency, expression, photostability, cellular function, general protein fitness or clinical usefulness.",
+        "Spearman and full-ranking NDCG do not establish wavelength calibration, top-k precision or a prospective experimental hit rate. Constant predictions have undefined Spearman; their NDCG is a control value, not strong predictive evidence.",
+        "No intervals or seed-variability estimates. The 35M checkpoint was chosen after seeing the 8M outcome; the source describes an exploratory follow-up, not a preregistered family-scale comparison.",
+        "ESM-2 pretraining overlap is unresolved. A frozen linear probe result does not establish the value of alternative pooling, fine-tuning or every model-family configuration.",
+        "Recorded timing covers sections of execution and is not a hardware-normalised deployment-cost comparison. Human domain review and external replication are not established."
+      ],
+      "citations": [
+        {
+          "source_id": "rewire-local-20260921-instructions-esm2-35m",
+          "locator": "Matched Rhomax evaluations; Procedure and evidence; Re-run or inspect"
+        },
+        {
+          "source_id": "rewire-local-20260921-source-esm2-35m",
+          "locator": "/metrics; /coverage; /model_configuration; /protocol_configuration; /execution; /provenance"
+        },
+        {
+          "source_id": "rewire-local-20260921-source-esm2-8m",
+          "locator": "/metrics; /coverage; /model_configuration; /protocol_configuration; /execution; /provenance"
+        },
+        {
+          "source_id": "rewire-local-20260921-source-composition22",
+          "locator": "/metrics; /model_configuration; /protocol_configuration"
+        },
+        {
+          "source_id": "rewire-local-20260920-source-flip2-train-mean",
+          "locator": "/metrics; /coverage; /model_configuration"
+        },
+        {
+          "source_id": "rewire-local-20260920-source-flip2-composition",
+          "locator": "/metrics; /coverage; /model_configuration; /provenance"
+        }
+      ],
+      "review": {
+        "method": "automated_source_review",
+        "actor": "Codex research curation",
+        "reviewed_at": "2026-09-28T12:11:40.845Z",
+        "note": "Primary-source curation and separate automated cross-review checked exact evidence identities, comparator coverage, endpoint relevance and transfer limits. No new execution, human scientific review, independent replication or clinical validation."
+      },
+      "planned_work": []
+    },
+    {
       "id": "use-case-splicing-follow-up",
       "slug": "splicing-follow-up",
       "title": "Prioritise variants for splicing experiments",
@@ -154,9 +428,606 @@
         "note": "Bounded review of pinned reports, protocol documentation and intake narrative. No new model execution, human domain review, independent replication or clinical validation."
       },
       "planned_work": []
+    },
+    {
+      "id": "use-case-utr-translation-baselines",
+      "slug": "utr-translation-baselines",
+      "title": "Set baselines for UTR translation experiments",
+      "question": "Before training a more complex model of reporter translation, which sequence-only controls should be measured on the same held-out data?",
+      "area": "rna-transcriptomes",
+      "contexts": [
+        "research"
+      ],
+      "search_terms": [
+        "5 prime UTR",
+        "5′UTR",
+        "translation",
+        "mean ribosome load",
+        "MRL",
+        "reporter assay",
+        "synthetic mRNA",
+        "mRNABench",
+        "Sample",
+        "RidgeCV",
+        "sequence composition",
+        "training mean",
+        "baseline"
+      ],
+      "intended_users": [
+        "Computational researchers building models of reporter translation",
+        "Experimental researchers evaluating a designed 5′UTR library before selecting a modelling strategy"
+      ],
+      "decision": "Establish training-mean and sequence-composition controls on a fixed held-out reporter dataset before deciding whether a more complex model adds useful prediction. The current evidence contains these two procedural controls and no pretrained model.",
+      "inputs": [
+        "Complete processed sequences and measured mean ribosome load from a defined reporter library",
+        "A fixed training, validation and test assignment, with test labels withheld from fitting and model selection"
+      ],
+      "output": "Two exact baseline configurations, their matched held-out evaluations and a repeat recipe; no foundation-model ranking or prediction of therapeutic performance.",
+      "setting": "The current comparison covers only the Sample designed subset in mRNABench and its measured mean ribosome load. Both controls use the full processed source sequence and the same seed-2541 split: 70,011 training, 15,003 validation and 15,003 test records. Both score all 15,003 held-out test records.",
+      "exclusions": [
+        "Benchmark-wide mRNABench performance or comparisons with the paper’s aggregated model scores",
+        "Claims about novel combinations of sequence motifs, homology-separated generalisation, other reporter systems or RNA chemistries",
+        "Therapeutic potency, in-vivo protein output and clinical decisions"
+      ],
+      "clinical_scope": "This is research evidence for designing a baseline comparison. Reporter mean ribosome load does not establish therapeutic efficacy or clinical suitability.",
+      "evidence_gaps": [
+        "Only two procedural controls have been evaluated here; no pretrained model or more complex sequence model has a matched result in this protocol.",
+        "There is one split and one execution per configuration, with no uncertainty interval or seed-variability estimate. The split does not establish homology separation or compositional generalisation.",
+        "RidgeCV uses training labels only and leaves the validation split unused. This differs from upstream probing; the selected test MSE must not be compared as if it were the paper’s aggregated Pearson score or default validation result.",
+        "The training-mean control has undefined Pearson and Spearman correlations because its predictions are constant. Unavailable correlations are not zero performance scores.",
+        "The original run’s raw inputs and saved predictions are not publicly archived. The public reports record hashes and a recipe for obtaining source data and running the controls again; prior predictions cannot be rescored from those reports. Dataset reuse terms are unreported.",
+        "The recorded repeat recipe executes all four local sequence controls, including a separate protein dataset. Portable command examples have not been rerun verbatim during this review. Timings cover the reported calculation sections, not complete setup or cross-machine performance."
+      ],
+      "citations": [
+        {
+          "source_id": "rewire-local-20260920-source-mrnabench-composition",
+          "locator": "/coverage; /model_configuration; /protocol_configuration; /protocol_results; /provenance"
+        },
+        {
+          "source_id": "rewire-local-20260920-source-mrnabench-train-mean",
+          "locator": "/coverage; /model_configuration; /protocol_results/metric_unavailable_reasons; /provenance"
+        },
+        {
+          "source_id": "rewire-local-20260920-instructions-mrnabench",
+          "locator": "Results: RNA evaluation paragraph; Provenance and review; Reproduce the four sequence controls"
+        },
+        {
+          "source_id": "expansion-p3-mrnabench-2025",
+          "locator": "Local Tasks (S12); Appendix B.7 Mean Ribosome Load - MPRA (S33); Data Splitting Strategies (S17); Linear Probing (S18); Appendix C (APP3)"
+        }
+      ],
+      "review": {
+        "method": "automated_source_review",
+        "actor": "Codex research curation",
+        "reviewed_at": "2026-09-28T12:11:40.845Z",
+        "note": "Primary-source curation and separate automated cross-review checked exact evidence identities, comparator coverage, endpoint relevance and transfer limits. No new execution, human scientific review, independent replication or clinical validation."
+      },
+      "planned_work": []
     }
   ],
   "mappings": [
+    {
+      "id": "use-case-map-gears-norman-table6-mse",
+      "use_case_id": "use-case-genetic-perturbation-response",
+      "lifecycle": "active",
+      "revision": 1,
+      "reason": "Initial applicability review: primary sources and separate automated cross-review support this exact protocol, its complete selected comparator group and the stated limits.",
+      "protocol_id": "gears-2023-supp-table6-task-mse",
+      "evaluation_ids": [
+        "gears-2023-supp-table6-evaluation-no-perturb-mse",
+        "gears-2023-supp-table6-evaluation-cpa-mse",
+        "gears-2023-supp-table6-evaluation-cpa-plus-kg-mse",
+        "gears-2023-supp-table6-evaluation-gears-mse"
+      ],
+      "endpoint": "Mean squared error of predicted versus observed post-perturbation expression; lower is better.",
+      "relevance": "proxy",
+      "rationale": "The complete comparison includes a no-change control, CPA, CPA with knowledge-graph features and GEARS. It can inform which controls to include in a pilot; aggregate expression agreement does not directly measure follow-up experiment yield.",
+      "constraints": [
+        "Use the exact Norman2019 K562 source-table protocol and configurations; do not combine this evidence with PerturBench or other GEARS splits.",
+        "Read both Table 6 endpoints together while retaining their separate metrics and shared experimental provenance."
+      ],
+      "limitations": [
+        "Exact Table 6 split and scored gene subset remain unextracted; checkpoint and runtime requirements are not established by these catalogue evaluations.",
+        "Reported spreads have unspecified type. A numerical difference is not a significance test.",
+        "Predictions need validation in the intended cell system before experiment selection."
+      ],
+      "citations": [
+        {
+          "source_id": "coverage-source-gears-supp",
+          "locator": "Supplementary Table 6, printed page 34 / PDF page 35; Supplementary Table 1, PDF page 30; Supplementary Notes 5 and 14 (K562 context)."
+        },
+        {
+          "source_id": "evidence-official-c037e3419c04936262a0",
+          "locator": "README.md at f374e43e197b295016d80395d7a54ddb81cc6769, A note on usage (lines 15–19) and Core API Interface (lines 20–54)."
+        }
+      ],
+      "review": {
+        "method": "automated_source_review",
+        "actor": "Codex research curation",
+        "reviewed_at": "2026-09-28T12:11:40.845Z",
+        "note": "Primary-source curation and separate automated cross-review checked exact evidence identities, comparator coverage, endpoint relevance and transfer limits. No new execution, human scientific review, independent replication or clinical validation."
+      },
+      "evidence_sha256": "c28653a778ad2953ce30515281cfbcbec052ef644991079b2d503d7ae92c22c2"
+    },
+    {
+      "id": "use-case-map-gears-norman-table6-pearson-de",
+      "use_case_id": "use-case-genetic-perturbation-response",
+      "lifecycle": "active",
+      "revision": 1,
+      "reason": "Initial applicability review: primary sources and separate automated cross-review support this exact protocol, its complete selected comparator group and the stated limits.",
+      "protocol_id": "gears-2023-supp-table6-task-pearson-de",
+      "evaluation_ids": [
+        "gears-2023-supp-table6-evaluation-no-perturb-pearson-de",
+        "gears-2023-supp-table6-evaluation-cpa-pearson-de",
+        "gears-2023-supp-table6-evaluation-cpa-plus-kg-pearson-de",
+        "gears-2023-supp-table6-evaluation-gears-pearson-de"
+      ],
+      "endpoint": "Pearson correlation of predicted versus observed expression change from unperturbed controls; higher is better.",
+      "relevance": "proxy",
+      "rationale": "The complete comparison includes a no-change control, CPA, CPA with knowledge-graph features and GEARS. It can inform which controls to include in a pilot; aggregate expression agreement does not directly measure follow-up experiment yield.",
+      "constraints": [
+        "Use the exact Norman2019 K562 source-table protocol and configurations; do not combine this evidence with PerturBench or other GEARS splits.",
+        "Read both Table 6 endpoints together while retaining their separate metrics and shared experimental provenance."
+      ],
+      "limitations": [
+        "Exact Table 6 split and scored gene subset remain unextracted; checkpoint and runtime requirements are not established by these catalogue evaluations.",
+        "Reported spreads have unspecified type. A numerical difference is not a significance test.",
+        "Predictions need validation in the intended cell system before experiment selection."
+      ],
+      "citations": [
+        {
+          "source_id": "coverage-source-gears-supp",
+          "locator": "Supplementary Table 6, printed page 34 / PDF page 35; Supplementary Table 1, PDF page 30; Supplementary Notes 5 and 14 (K562 context)."
+        },
+        {
+          "source_id": "evidence-official-c037e3419c04936262a0",
+          "locator": "README.md at f374e43e197b295016d80395d7a54ddb81cc6769, A note on usage (lines 15–19) and Core API Interface (lines 20–54)."
+        }
+      ],
+      "review": {
+        "method": "automated_source_review",
+        "actor": "Codex research curation",
+        "reviewed_at": "2026-09-28T12:11:40.845Z",
+        "note": "Primary-source curation and separate automated cross-review checked exact evidence identities, comparator coverage, endpoint relevance and transfer limits. No new execution, human scientific review, independent replication or clinical validation."
+      },
+      "evidence_sha256": "87737c4787ced71240c112f2f4cc859131132633b9f029abb0d8aa043f310486"
+    },
+    {
+      "id": "use-case-mapping-msms-formula-no-formula-r1",
+      "use_case_id": "use-case-mass-spectrum-molecule-shortlisting",
+      "lifecycle": "active",
+      "revision": 1,
+      "reason": "Initial applicability review: primary sources and separate automated cross-review support this exact protocol, its complete selected comparator group and the stated limits.",
+      "protocol_id": "msalign-2026-table3-task-massspecgym-formula-split-no-formula-r-1",
+      "evaluation_ids": [
+        "msalign-2026-table3-evaluation-deepsets-massspecgym-formula-split-no-formula-r-1",
+        "msalign-2026-table3-evaluation-emb-cos-massspecgym-formula-split-no-formula-r-1",
+        "msalign-2026-table3-evaluation-ffn-massspecgym-formula-split-no-formula-r-1",
+        "msalign-2026-table3-evaluation-jestr-massspecgym-formula-split-no-formula-r-1",
+        "msalign-2026-table3-evaluation-msalign-massspecgym-formula-split-no-formula-r-1",
+        "msalign-2026-table3-evaluation-sail-massspecgym-formula-split-no-formula-r-1"
+      ],
+      "endpoint": "Recall@1 of the true molecular structure among 256 mass-matched candidate structures on the MassSpecGym formula split, with no molecular formula supplied.",
+      "relevance": "proxy",
+      "rationale": "These source-checked retrieval evaluations inform method selection under explicit candidate and split assumptions; they do not establish accuracy in a new assay or unrestricted chemical search.",
+      "constraints": [
+        "Table 3, MassSpecGym formula split only; Recall@1. Retain all six formula-free configurations from that panel.",
+        "Candidate sets contain 256 PubChem structures selected with a 10 ppm neutral-mass tolerance. The true molecular identity is assumed to be in the set.",
+        "The formula data split groups by chemical formula; it does not supply formula to the evaluated models. Formula-conditioned methods and filtering are outside this mapping.",
+        "These are the source paper implementations and training settings. Exact original-paper or current-release equivalence is not established.",
+        "Metric groups at different shortlist sizes share an evaluation setting and must not count as independent replications."
+      ],
+      "limitations": [
+        "The correct structure must be in a 256-candidate mass-filtered pool. Scores do not transfer automatically to a larger database, a different pool-construction procedure or a missing true structure.",
+        "MCES and formula splits impose different distribution shifts. The source authors favour formula splits for their deployment interpretation; that choice does not prove that formula-split performance represents every intended application.",
+        "Reported methods are the paper implementations: DeepSets training was extended to 50 epochs. These are not interchangeable with original model-paper scores or current checkpoints.",
+        "Exact test denominators, split-manifest hashes, checkpoint hashes and evaluator revisions remain unextracted or unreported in the catalogue. No uncertainty values or new independent reproduction are established.",
+        "Candidate recall is not an authenticated metabolite identification, a clinical diagnosis or a calibrated probability. Human domain review remains outstanding."
+      ],
+      "citations": [
+        {
+          "source_id": "evidence-official-760ab2fa8c396aeb796c",
+          "locator": "Table 3, MassSpecGym formula split block, row R@1, formula-free columns FFN, DeepSets, JESTR, Emb-Cos, SAIL and MSAlign; Sections 4, 5.1 and 5.2"
+        }
+      ],
+      "review": {
+        "method": "automated_source_review",
+        "actor": "Codex research curation",
+        "reviewed_at": "2026-09-28T12:11:40.845Z",
+        "note": "Primary-source curation and separate automated cross-review checked exact evidence identities, comparator coverage, endpoint relevance and transfer limits. No new execution, human scientific review, independent replication or clinical validation."
+      },
+      "evidence_sha256": "264c270dc14e4c28740837553d6fcbf899529f22d829f825f065a798a4dfe76a"
+    },
+    {
+      "id": "use-case-mapping-msms-formula-no-formula-r20",
+      "use_case_id": "use-case-mass-spectrum-molecule-shortlisting",
+      "lifecycle": "active",
+      "revision": 1,
+      "reason": "Initial applicability review: primary sources and separate automated cross-review support this exact protocol, its complete selected comparator group and the stated limits.",
+      "protocol_id": "msalign-2026-table3-task-massspecgym-formula-split-no-formula-r-20",
+      "evaluation_ids": [
+        "msalign-2026-table3-evaluation-deepsets-massspecgym-formula-split-no-formula-r-20",
+        "msalign-2026-table3-evaluation-emb-cos-massspecgym-formula-split-no-formula-r-20",
+        "msalign-2026-table3-evaluation-ffn-massspecgym-formula-split-no-formula-r-20",
+        "msalign-2026-table3-evaluation-jestr-massspecgym-formula-split-no-formula-r-20",
+        "msalign-2026-table3-evaluation-msalign-massspecgym-formula-split-no-formula-r-20",
+        "msalign-2026-table3-evaluation-sail-massspecgym-formula-split-no-formula-r-20"
+      ],
+      "endpoint": "Recall@20 of the true molecular structure among 256 mass-matched candidate structures on the MassSpecGym formula split, with no molecular formula supplied.",
+      "relevance": "proxy",
+      "rationale": "These source-checked retrieval evaluations inform method selection under explicit candidate and split assumptions; they do not establish accuracy in a new assay or unrestricted chemical search.",
+      "constraints": [
+        "Table 3, MassSpecGym formula split only; Recall@20. Retain all six formula-free configurations from that panel.",
+        "Candidate sets contain 256 PubChem structures selected with a 10 ppm neutral-mass tolerance. The true molecular identity is assumed to be in the set.",
+        "The formula data split groups by chemical formula; it does not supply formula to the evaluated models. Formula-conditioned methods and filtering are outside this mapping.",
+        "These are the source paper implementations and training settings. Exact original-paper or current-release equivalence is not established.",
+        "Metric groups at different shortlist sizes share an evaluation setting and must not count as independent replications."
+      ],
+      "limitations": [
+        "The correct structure must be in a 256-candidate mass-filtered pool. Scores do not transfer automatically to a larger database, a different pool-construction procedure or a missing true structure.",
+        "MCES and formula splits impose different distribution shifts. The source authors favour formula splits for their deployment interpretation; that choice does not prove that formula-split performance represents every intended application.",
+        "Reported methods are the paper implementations: DeepSets training was extended to 50 epochs. These are not interchangeable with original model-paper scores or current checkpoints.",
+        "Exact test denominators, split-manifest hashes, checkpoint hashes and evaluator revisions remain unextracted or unreported in the catalogue. No uncertainty values or new independent reproduction are established.",
+        "Candidate recall is not an authenticated metabolite identification, a clinical diagnosis or a calibrated probability. Human domain review remains outstanding."
+      ],
+      "citations": [
+        {
+          "source_id": "evidence-official-760ab2fa8c396aeb796c",
+          "locator": "Table 3, MassSpecGym formula split block, row R@20, formula-free columns FFN, DeepSets, JESTR, Emb-Cos, SAIL and MSAlign; Sections 4, 5.1 and 5.2"
+        }
+      ],
+      "review": {
+        "method": "automated_source_review",
+        "actor": "Codex research curation",
+        "reviewed_at": "2026-09-28T12:11:40.845Z",
+        "note": "Primary-source curation and separate automated cross-review checked exact evidence identities, comparator coverage, endpoint relevance and transfer limits. No new execution, human scientific review, independent replication or clinical validation."
+      },
+      "evidence_sha256": "7b93e2000caca7115c4b176f38059899025b4efeb98f22a3e469bdc0c9521e1d"
+    },
+    {
+      "id": "use-case-mapping-msms-mces-no-formula-r1",
+      "use_case_id": "use-case-mass-spectrum-molecule-shortlisting",
+      "lifecycle": "active",
+      "revision": 1,
+      "reason": "Initial applicability review: primary sources and separate automated cross-review support this exact protocol, its complete selected comparator group and the stated limits.",
+      "protocol_id": "msalign-2026-table3-task-massspecgym-mces-split-no-formula-r-1",
+      "evaluation_ids": [
+        "msalign-2026-table3-evaluation-deepsets-massspecgym-mces-split-no-formula-r-1",
+        "msalign-2026-table3-evaluation-emb-cos-massspecgym-mces-split-no-formula-r-1",
+        "msalign-2026-table3-evaluation-ffn-massspecgym-mces-split-no-formula-r-1",
+        "msalign-2026-table3-evaluation-jestr-massspecgym-mces-split-no-formula-r-1",
+        "msalign-2026-table3-evaluation-msalign-massspecgym-mces-split-no-formula-r-1",
+        "msalign-2026-table3-evaluation-sail-massspecgym-mces-split-no-formula-r-1"
+      ],
+      "endpoint": "Recall@1 of the true molecular structure among 256 mass-matched candidate structures on the MassSpecGym MCES split, with no molecular formula supplied.",
+      "relevance": "proxy",
+      "rationale": "These source-checked retrieval evaluations inform method selection under explicit candidate and split assumptions; they do not establish accuracy in a new assay or unrestricted chemical search.",
+      "constraints": [
+        "Table 3, MassSpecGym MCES split only; Recall@1. Retain all six formula-free configurations from that panel.",
+        "Candidate sets contain 256 PubChem structures selected with a 10 ppm neutral-mass tolerance. The true molecular identity is assumed to be in the set.",
+        "The MCES split separates structure clusters with a minimum MCES distance greater than 10. Molecular formula is not supplied to these models; formula-conditioned methods and filtering are outside this mapping.",
+        "These are the source paper implementations and training settings. Exact original-paper or current-release equivalence is not established.",
+        "Metric groups at different shortlist sizes share an evaluation setting and must not count as independent replications."
+      ],
+      "limitations": [
+        "The correct structure must be in a 256-candidate mass-filtered pool. Scores do not transfer automatically to a larger database, a different pool-construction procedure or a missing true structure.",
+        "MCES and formula splits impose different distribution shifts. The source authors favour formula splits for their deployment interpretation; that choice does not prove that formula-split performance represents every intended application.",
+        "Reported methods are the paper implementations: DeepSets training was extended to 50 epochs. These are not interchangeable with original model-paper scores or current checkpoints.",
+        "Exact test denominators, split-manifest hashes, checkpoint hashes and evaluator revisions remain unextracted or unreported in the catalogue. No uncertainty values or new independent reproduction are established.",
+        "Candidate recall is not an authenticated metabolite identification, a clinical diagnosis or a calibrated probability. Human domain review remains outstanding."
+      ],
+      "citations": [
+        {
+          "source_id": "evidence-official-760ab2fa8c396aeb796c",
+          "locator": "Table 3, MassSpecGym MCES split block, row R@1, formula-free columns FFN, DeepSets, JESTR, Emb-Cos, SAIL and MSAlign; Sections 4, 5.1 and 5.2"
+        }
+      ],
+      "review": {
+        "method": "automated_source_review",
+        "actor": "Codex research curation",
+        "reviewed_at": "2026-09-28T12:11:40.845Z",
+        "note": "Primary-source curation and separate automated cross-review checked exact evidence identities, comparator coverage, endpoint relevance and transfer limits. No new execution, human scientific review, independent replication or clinical validation."
+      },
+      "evidence_sha256": "1556c455cef29ff84665800c8a0bfd3eacef978dcfb6f0048ed261d55e4bd55c"
+    },
+    {
+      "id": "use-case-mapping-msms-mces-no-formula-r20",
+      "use_case_id": "use-case-mass-spectrum-molecule-shortlisting",
+      "lifecycle": "active",
+      "revision": 1,
+      "reason": "Initial applicability review: primary sources and separate automated cross-review support this exact protocol, its complete selected comparator group and the stated limits.",
+      "protocol_id": "msalign-2026-table3-task-massspecgym-mces-split-no-formula-r-20",
+      "evaluation_ids": [
+        "msalign-2026-table3-evaluation-deepsets-massspecgym-mces-split-no-formula-r-20",
+        "msalign-2026-table3-evaluation-emb-cos-massspecgym-mces-split-no-formula-r-20",
+        "msalign-2026-table3-evaluation-ffn-massspecgym-mces-split-no-formula-r-20",
+        "msalign-2026-table3-evaluation-jestr-massspecgym-mces-split-no-formula-r-20",
+        "msalign-2026-table3-evaluation-msalign-massspecgym-mces-split-no-formula-r-20",
+        "msalign-2026-table3-evaluation-sail-massspecgym-mces-split-no-formula-r-20"
+      ],
+      "endpoint": "Recall@20 of the true molecular structure among 256 mass-matched candidate structures on the MassSpecGym MCES split, with no molecular formula supplied.",
+      "relevance": "proxy",
+      "rationale": "These source-checked retrieval evaluations inform method selection under explicit candidate and split assumptions; they do not establish accuracy in a new assay or unrestricted chemical search.",
+      "constraints": [
+        "Table 3, MassSpecGym MCES split only; Recall@20. Retain all six formula-free configurations from that panel.",
+        "Candidate sets contain 256 PubChem structures selected with a 10 ppm neutral-mass tolerance. The true molecular identity is assumed to be in the set.",
+        "The MCES split separates structure clusters with a minimum MCES distance greater than 10. Molecular formula is not supplied to these models; formula-conditioned methods and filtering are outside this mapping.",
+        "These are the source paper implementations and training settings. Exact original-paper or current-release equivalence is not established.",
+        "Metric groups at different shortlist sizes share an evaluation setting and must not count as independent replications."
+      ],
+      "limitations": [
+        "The correct structure must be in a 256-candidate mass-filtered pool. Scores do not transfer automatically to a larger database, a different pool-construction procedure or a missing true structure.",
+        "MCES and formula splits impose different distribution shifts. The source authors favour formula splits for their deployment interpretation; that choice does not prove that formula-split performance represents every intended application.",
+        "Reported methods are the paper implementations: DeepSets training was extended to 50 epochs. These are not interchangeable with original model-paper scores or current checkpoints.",
+        "Exact test denominators, split-manifest hashes, checkpoint hashes and evaluator revisions remain unextracted or unreported in the catalogue. No uncertainty values or new independent reproduction are established.",
+        "Candidate recall is not an authenticated metabolite identification, a clinical diagnosis or a calibrated probability. Human domain review remains outstanding."
+      ],
+      "citations": [
+        {
+          "source_id": "evidence-official-760ab2fa8c396aeb796c",
+          "locator": "Table 3, MassSpecGym MCES split block, row R@20, formula-free columns FFN, DeepSets, JESTR, Emb-Cos, SAIL and MSAlign; Sections 4, 5.1 and 5.2"
+        }
+      ],
+      "review": {
+        "method": "automated_source_review",
+        "actor": "Codex research curation",
+        "reviewed_at": "2026-09-28T12:11:40.845Z",
+        "note": "Primary-source curation and separate automated cross-review checked exact evidence identities, comparator coverage, endpoint relevance and transfer limits. No new execution, human scientific review, independent replication or clinical validation."
+      },
+      "evidence_sha256": "20b4477c9d7da7d6213c216c7729530cbc41539830e44375d8be88fd41a66c32"
+    },
+    {
+      "id": "use-case-mapping-plant-promoter-maize-protoplasts-a-thaliana",
+      "use_case_id": "use-case-plant-promoter-reporters",
+      "lifecycle": "active",
+      "revision": 1,
+      "reason": "Initial applicability review: primary sources and separate automated cross-review support this exact protocol, its complete selected comparator group and the stated limits.",
+      "protocol_id": "agront-2024-fig3e-task-maize-protoplasts-a-thaliana",
+      "evaluation_ids": [
+        "agront-2024-fig3e-evaluation-agront-promoter-strength-maize-protoplasts-maize-protoplasts-a-thaliana",
+        "agront-2024-fig3e-evaluation-cnn-jores-et-al-promoter-strength-maize-protoplasts-maize-protoplasts-a-thaliana"
+      ],
+      "endpoint": "Predicting STARR-seq core-promoter strength for Arabidopsis thaliana sequences in maize protoplasts, assessed by held-out R².",
+      "relevance": "proxy",
+      "rationale": "This comparison can inform method selection for Arabidopsis thaliana promoter reporter experiments in maize protoplasts. Held-out promoter prediction remains a proxy for selecting newly designed candidates and requires validation in the intended experiment.",
+      "constraints": [
+        "170 bp core-promoter sequences from Arabidopsis thaliana, measured in the maize protoplasts reporter system; use this exact protocol and its two evaluated configurations.",
+        "AgroNT uses task-specific regression with IA3 fine-tuning; the comparator is the task-specific CNN from Jores et al. Preserve assay-specific model identity.",
+        "Compare R² only within this protocol. Do not pool assay hosts, sequence species or promoter and terminator tasks."
+      ],
+      "limitations": [
+        "Author-reported comparison, source checked but not independently reproduced. No confidence intervals or run-variability estimate are supplied.",
+        "Fitted checkpoint hashes, exact scoring counts, task-specific seeds and executable split manifests are unreported or unextracted.",
+        "No prospective design success, endogenous expression, stable-plant, tissue-transfer or crop-yield claim. R² is not candidate hit rate."
+      ],
+      "citations": [
+        {
+          "source_id": "agront-2024-fig3e-source",
+          "locator": "Figures/Fig3_panele.txt, line 2 (data row 1), column R2; Species=A. thaliana; Model=Maize model; Type=AgroNT; Figures/Fig3_panele.txt, line 8 (data row 7), column R2; Species=A. thaliana; Model=Maize model; Type=CNN (Jores et al.)"
+        },
+        {
+          "source_id": "agront-2024-paper-methods",
+          "locator": "Figure 3e and caption; Fine-tuning strategy (Sec16); Promoter and terminator strength prediction (Sec21)"
+        }
+      ],
+      "review": {
+        "method": "automated_source_review",
+        "actor": "Codex research curation",
+        "reviewed_at": "2026-09-28T12:11:40.845Z",
+        "note": "Primary-source curation and separate automated cross-review checked exact evidence identities, comparator coverage, endpoint relevance and transfer limits. No new execution, human scientific review, independent replication or clinical validation."
+      },
+      "evidence_sha256": "51291aa4704085356887b47aa8c1326b2527631d19b94aaa9422bd7aae65c73d"
+    },
+    {
+      "id": "use-case-mapping-plant-promoter-maize-protoplasts-s-bicolor",
+      "use_case_id": "use-case-plant-promoter-reporters",
+      "lifecycle": "active",
+      "revision": 1,
+      "reason": "Initial applicability review: primary sources and separate automated cross-review support this exact protocol, its complete selected comparator group and the stated limits.",
+      "protocol_id": "agront-2024-fig3e-task-maize-protoplasts-s-bicolor",
+      "evaluation_ids": [
+        "agront-2024-fig3e-evaluation-agront-promoter-strength-maize-protoplasts-maize-protoplasts-s-bicolor",
+        "agront-2024-fig3e-evaluation-cnn-jores-et-al-promoter-strength-maize-protoplasts-maize-protoplasts-s-bicolor"
+      ],
+      "endpoint": "Predicting STARR-seq core-promoter strength for Sorghum bicolor sequences in maize protoplasts, assessed by held-out R².",
+      "relevance": "proxy",
+      "rationale": "This comparison can inform method selection for Sorghum bicolor promoter reporter experiments in maize protoplasts. Held-out promoter prediction remains a proxy for selecting newly designed candidates and requires validation in the intended experiment.",
+      "constraints": [
+        "170 bp core-promoter sequences from Sorghum bicolor, measured in the maize protoplasts reporter system; use this exact protocol and its two evaluated configurations.",
+        "AgroNT uses task-specific regression with IA3 fine-tuning; the comparator is the task-specific CNN from Jores et al. Preserve assay-specific model identity.",
+        "Compare R² only within this protocol. Do not pool assay hosts, sequence species or promoter and terminator tasks."
+      ],
+      "limitations": [
+        "Author-reported comparison, source checked but not independently reproduced. No confidence intervals or run-variability estimate are supplied.",
+        "Fitted checkpoint hashes, exact scoring counts, task-specific seeds and executable split manifests are unreported or unextracted.",
+        "No prospective design success, endogenous expression, stable-plant, tissue-transfer or crop-yield claim. R² is not candidate hit rate."
+      ],
+      "citations": [
+        {
+          "source_id": "agront-2024-fig3e-source",
+          "locator": "Figures/Fig3_panele.txt, line 3 (data row 2), column R2; Species=S. bicolor; Model=Maize model; Type=AgroNT; Figures/Fig3_panele.txt, line 9 (data row 8), column R2; Species=S. bicolor; Model=Maize model; Type=CNN (Jores et al.)"
+        },
+        {
+          "source_id": "agront-2024-paper-methods",
+          "locator": "Figure 3e and caption; Fine-tuning strategy (Sec16); Promoter and terminator strength prediction (Sec21)"
+        }
+      ],
+      "review": {
+        "method": "automated_source_review",
+        "actor": "Codex research curation",
+        "reviewed_at": "2026-09-28T12:11:40.845Z",
+        "note": "Primary-source curation and separate automated cross-review checked exact evidence identities, comparator coverage, endpoint relevance and transfer limits. No new execution, human scientific review, independent replication or clinical validation."
+      },
+      "evidence_sha256": "5471e1de9dd6577dcea6493aa23ff5afc73249f06b6e80e63f0a4727db673254"
+    },
+    {
+      "id": "use-case-mapping-plant-promoter-maize-protoplasts-z-mays",
+      "use_case_id": "use-case-plant-promoter-reporters",
+      "lifecycle": "active",
+      "revision": 1,
+      "reason": "Initial applicability review: primary sources and separate automated cross-review support this exact protocol, its complete selected comparator group and the stated limits.",
+      "protocol_id": "agront-2024-fig3e-task-maize-protoplasts-z-mays",
+      "evaluation_ids": [
+        "agront-2024-fig3e-evaluation-agront-promoter-strength-maize-protoplasts-maize-protoplasts-z-mays",
+        "agront-2024-fig3e-evaluation-cnn-jores-et-al-promoter-strength-maize-protoplasts-maize-protoplasts-z-mays"
+      ],
+      "endpoint": "Predicting STARR-seq core-promoter strength for Zea mays sequences in maize protoplasts, assessed by held-out R².",
+      "relevance": "proxy",
+      "rationale": "This comparison can inform method selection for Zea mays promoter reporter experiments in maize protoplasts. Held-out promoter prediction remains a proxy for selecting newly designed candidates and requires validation in the intended experiment.",
+      "constraints": [
+        "170 bp core-promoter sequences from Zea mays, measured in the maize protoplasts reporter system; use this exact protocol and its two evaluated configurations.",
+        "AgroNT uses task-specific regression with IA3 fine-tuning; the comparator is the task-specific CNN from Jores et al. Preserve assay-specific model identity.",
+        "Compare R² only within this protocol. Do not pool assay hosts, sequence species or promoter and terminator tasks."
+      ],
+      "limitations": [
+        "Author-reported comparison, source checked but not independently reproduced. No confidence intervals or run-variability estimate are supplied.",
+        "Fitted checkpoint hashes, exact scoring counts, task-specific seeds and executable split manifests are unreported or unextracted.",
+        "No prospective design success, endogenous expression, stable-plant, tissue-transfer or crop-yield claim. R² is not candidate hit rate."
+      ],
+      "citations": [
+        {
+          "source_id": "agront-2024-fig3e-source",
+          "locator": "Figures/Fig3_panele.txt, line 4 (data row 3), column R2; Species=Z. mays; Model=Maize model; Type=AgroNT; Figures/Fig3_panele.txt, line 10 (data row 9), column R2; Species=Z. mays; Model=Maize model; Type=CNN (Jores et al.)"
+        },
+        {
+          "source_id": "agront-2024-paper-methods",
+          "locator": "Figure 3e and caption; Fine-tuning strategy (Sec16); Promoter and terminator strength prediction (Sec21)"
+        }
+      ],
+      "review": {
+        "method": "automated_source_review",
+        "actor": "Codex research curation",
+        "reviewed_at": "2026-09-28T12:11:40.845Z",
+        "note": "Primary-source curation and separate automated cross-review checked exact evidence identities, comparator coverage, endpoint relevance and transfer limits. No new execution, human scientific review, independent replication or clinical validation."
+      },
+      "evidence_sha256": "475520831178904bc0c433ecd74d16b6336f195ce222cee5a249c18d6a36c6bc"
+    },
+    {
+      "id": "use-case-mapping-plant-promoter-tobacco-leaves-a-thaliana",
+      "use_case_id": "use-case-plant-promoter-reporters",
+      "lifecycle": "active",
+      "revision": 1,
+      "reason": "Initial applicability review: primary sources and separate automated cross-review support this exact protocol, its complete selected comparator group and the stated limits.",
+      "protocol_id": "agront-2024-fig3e-task-tobacco-leaves-a-thaliana",
+      "evaluation_ids": [
+        "agront-2024-fig3e-evaluation-agront-promoter-strength-tobacco-leaves-tobacco-leaves-a-thaliana",
+        "agront-2024-fig3e-evaluation-cnn-jores-et-al-promoter-strength-tobacco-leaves-tobacco-leaves-a-thaliana"
+      ],
+      "endpoint": "Predicting STARR-seq core-promoter strength for Arabidopsis thaliana sequences in tobacco leaves, assessed by held-out R².",
+      "relevance": "proxy",
+      "rationale": "This comparison can inform method selection for Arabidopsis thaliana promoter reporter experiments in tobacco leaves. Held-out promoter prediction remains a proxy for selecting newly designed candidates and requires validation in the intended experiment.",
+      "constraints": [
+        "170 bp core-promoter sequences from Arabidopsis thaliana, measured in the tobacco leaves reporter system; use this exact protocol and its two evaluated configurations.",
+        "AgroNT uses task-specific regression with IA3 fine-tuning; the comparator is the task-specific CNN from Jores et al. Preserve assay-specific model identity.",
+        "Compare R² only within this protocol. Do not pool assay hosts, sequence species or promoter and terminator tasks."
+      ],
+      "limitations": [
+        "Author-reported comparison, source checked but not independently reproduced. No confidence intervals or run-variability estimate are supplied.",
+        "Fitted checkpoint hashes, exact scoring counts, task-specific seeds and executable split manifests are unreported or unextracted.",
+        "No prospective design success, endogenous expression, stable-plant, tissue-transfer or crop-yield claim. R² is not candidate hit rate."
+      ],
+      "citations": [
+        {
+          "source_id": "agront-2024-fig3e-source",
+          "locator": "Figures/Fig3_panele.txt, line 5 (data row 4), column R2; Species=A. thaliana; Model=Tobacco model; Type=AgroNT; Figures/Fig3_panele.txt, line 11 (data row 10), column R2; Species=A. thaliana; Model=Tobacco model; Type=CNN (Jores et al.)"
+        },
+        {
+          "source_id": "agront-2024-paper-methods",
+          "locator": "Figure 3e and caption; Fine-tuning strategy (Sec16); Promoter and terminator strength prediction (Sec21)"
+        }
+      ],
+      "review": {
+        "method": "automated_source_review",
+        "actor": "Codex research curation",
+        "reviewed_at": "2026-09-28T12:11:40.845Z",
+        "note": "Primary-source curation and separate automated cross-review checked exact evidence identities, comparator coverage, endpoint relevance and transfer limits. No new execution, human scientific review, independent replication or clinical validation."
+      },
+      "evidence_sha256": "0ff8f7e2efa02a37a5ea958b65bb39cecb4c3bd5ede6320efe03cb5ba6b7ab81"
+    },
+    {
+      "id": "use-case-mapping-plant-promoter-tobacco-leaves-s-bicolor",
+      "use_case_id": "use-case-plant-promoter-reporters",
+      "lifecycle": "active",
+      "revision": 1,
+      "reason": "Initial applicability review: primary sources and separate automated cross-review support this exact protocol, its complete selected comparator group and the stated limits.",
+      "protocol_id": "agront-2024-fig3e-task-tobacco-leaves-s-bicolor",
+      "evaluation_ids": [
+        "agront-2024-fig3e-evaluation-agront-promoter-strength-tobacco-leaves-tobacco-leaves-s-bicolor",
+        "agront-2024-fig3e-evaluation-cnn-jores-et-al-promoter-strength-tobacco-leaves-tobacco-leaves-s-bicolor"
+      ],
+      "endpoint": "Predicting STARR-seq core-promoter strength for Sorghum bicolor sequences in tobacco leaves, assessed by held-out R².",
+      "relevance": "proxy",
+      "rationale": "This comparison can inform method selection for Sorghum bicolor promoter reporter experiments in tobacco leaves. Held-out promoter prediction remains a proxy for selecting newly designed candidates and requires validation in the intended experiment.",
+      "constraints": [
+        "170 bp core-promoter sequences from Sorghum bicolor, measured in the tobacco leaves reporter system; use this exact protocol and its two evaluated configurations.",
+        "AgroNT uses task-specific regression with IA3 fine-tuning; the comparator is the task-specific CNN from Jores et al. Preserve assay-specific model identity.",
+        "Compare R² only within this protocol. Do not pool assay hosts, sequence species or promoter and terminator tasks."
+      ],
+      "limitations": [
+        "Author-reported comparison, source checked but not independently reproduced. No confidence intervals or run-variability estimate are supplied.",
+        "Fitted checkpoint hashes, exact scoring counts, task-specific seeds and executable split manifests are unreported or unextracted.",
+        "No prospective design success, endogenous expression, stable-plant, tissue-transfer or crop-yield claim. R² is not candidate hit rate."
+      ],
+      "citations": [
+        {
+          "source_id": "agront-2024-fig3e-source",
+          "locator": "Figures/Fig3_panele.txt, line 6 (data row 5), column R2; Species=S. bicolor; Model=Tobacco model; Type=AgroNT; Figures/Fig3_panele.txt, line 12 (data row 11), column R2; Species=S. bicolor; Model=Tobacco model; Type=CNN (Jores et al.)"
+        },
+        {
+          "source_id": "agront-2024-paper-methods",
+          "locator": "Figure 3e and caption; Fine-tuning strategy (Sec16); Promoter and terminator strength prediction (Sec21)"
+        }
+      ],
+      "review": {
+        "method": "automated_source_review",
+        "actor": "Codex research curation",
+        "reviewed_at": "2026-09-28T12:11:40.845Z",
+        "note": "Primary-source curation and separate automated cross-review checked exact evidence identities, comparator coverage, endpoint relevance and transfer limits. No new execution, human scientific review, independent replication or clinical validation."
+      },
+      "evidence_sha256": "133865d16861493f70b2c49fd1c97a40a92964a2ceb2358a8d22cc7b72838611"
+    },
+    {
+      "id": "use-case-mapping-plant-promoter-tobacco-leaves-z-mays",
+      "use_case_id": "use-case-plant-promoter-reporters",
+      "lifecycle": "active",
+      "revision": 1,
+      "reason": "Initial applicability review: primary sources and separate automated cross-review support this exact protocol, its complete selected comparator group and the stated limits.",
+      "protocol_id": "agront-2024-fig3e-task-tobacco-leaves-z-mays",
+      "evaluation_ids": [
+        "agront-2024-fig3e-evaluation-agront-promoter-strength-tobacco-leaves-tobacco-leaves-z-mays",
+        "agront-2024-fig3e-evaluation-cnn-jores-et-al-promoter-strength-tobacco-leaves-tobacco-leaves-z-mays"
+      ],
+      "endpoint": "Predicting STARR-seq core-promoter strength for Zea mays sequences in tobacco leaves, assessed by held-out R².",
+      "relevance": "proxy",
+      "rationale": "This comparison can inform method selection for Zea mays promoter reporter experiments in tobacco leaves. Held-out promoter prediction remains a proxy for selecting newly designed candidates and requires validation in the intended experiment.",
+      "constraints": [
+        "170 bp core-promoter sequences from Zea mays, measured in the tobacco leaves reporter system; use this exact protocol and its two evaluated configurations.",
+        "AgroNT uses task-specific regression with IA3 fine-tuning; the comparator is the task-specific CNN from Jores et al. Preserve assay-specific model identity.",
+        "Compare R² only within this protocol. Do not pool assay hosts, sequence species or promoter and terminator tasks."
+      ],
+      "limitations": [
+        "Author-reported comparison, source checked but not independently reproduced. No confidence intervals or run-variability estimate are supplied.",
+        "Fitted checkpoint hashes, exact scoring counts, task-specific seeds and executable split manifests are unreported or unextracted.",
+        "No prospective design success, endogenous expression, stable-plant, tissue-transfer or crop-yield claim. R² is not candidate hit rate."
+      ],
+      "citations": [
+        {
+          "source_id": "agront-2024-fig3e-source",
+          "locator": "Figures/Fig3_panele.txt, line 7 (data row 6), column R2; Species=Z. mays; Model=Tobacco model; Type=AgroNT; Figures/Fig3_panele.txt, line 13 (data row 12), column R2; Species=Z. mays; Model=Tobacco model; Type=CNN (Jores et al.)"
+        },
+        {
+          "source_id": "agront-2024-paper-methods",
+          "locator": "Figure 3e and caption; Fine-tuning strategy (Sec16); Promoter and terminator strength prediction (Sec21)"
+        }
+      ],
+      "review": {
+        "method": "automated_source_review",
+        "actor": "Codex research curation",
+        "reviewed_at": "2026-09-28T12:11:40.845Z",
+        "note": "Primary-source curation and separate automated cross-review checked exact evidence identities, comparator coverage, endpoint relevance and transfer limits. No new execution, human scientific review, independent replication or clinical validation."
+      },
+      "evidence_sha256": "2ae000a01a35c24d345e32e99953aebcc54e266459abadebd9875174f75804d6"
+    },
     {
       "id": "use-case-mapping-protein-stability-amfr-esm2",
       "use_case_id": "use-case-protein-stability",
@@ -253,6 +1124,69 @@
       "evidence_sha256": "2fa413430c25c90a4184be20e096c2200185e566d1690953e29bc40d55c98ddf"
     },
     {
+      "id": "use-case-mapping-rhodopsin-wavelength-rhomax-fixed-probes",
+      "use_case_id": "use-case-rhodopsin-wavelength-transfer",
+      "lifecycle": "active",
+      "revision": 1,
+      "reason": "Initial applicability review: primary sources and separate automated cross-review support this exact protocol, its complete selected comparator group and the stated limits.",
+      "protocol_id": "rewire-protocol-flip2-rhomax-by-wild-type-v1",
+      "evaluation_ids": [
+        "rewire-local-20260920-evaluation-flip2-composition",
+        "rewire-local-20260920-evaluation-flip2-train-mean",
+        "rewire-local-20260921-evaluation-composition22",
+        "rewire-local-20260921-evaluation-esm2-35m",
+        "rewire-local-20260921-evaluation-esm2-8m"
+      ],
+      "endpoint": "Spearman rank association and full-ranking NDCG for absorption-wavelength predictions on 184 held-out Rhomax sequences.",
+      "relevance": "proxy",
+      "rationale": "The archived background split directly tests one transfer setting; choosing constructs in a new experiment requires validation beyond those 184 rows.",
+      "constraints": [
+        "The same frozen Rhomax by_wild_type assignments cover 584 training, 116 validation and 184 test records. Validation labels do not select these fixed settings.",
+        "Two exact ESM-2 checkpoints use frozen final-layer residue means, no MSA or templates, and a train-only alpha-10 ridge probe with train-only target scaling. They are not zero-shot likelihood scorers.",
+        "The 40-feature and 22-feature composition controls are distinct configurations. Training mean is the existing constant-control evaluation; repeated control checks do not add replications."
+      ],
+      "limitations": [
+        "A spectral-tuning endpoint is not opsin activation efficiency, expression, photostability, cellular function, general protein fitness or clinical usefulness.",
+        "Spearman and full-ranking NDCG do not establish wavelength calibration, top-k precision or a prospective experimental hit rate. Constant predictions have undefined Spearman; their NDCG is a control value, not strong predictive evidence.",
+        "No intervals or seed-variability estimates. The 35M checkpoint was chosen after seeing the 8M outcome; the source describes an exploratory follow-up, not a preregistered family-scale comparison.",
+        "ESM-2 pretraining overlap is unresolved. A frozen linear probe result does not establish the value of alternative pooling, fine-tuning or every model-family configuration.",
+        "Recorded timing covers sections of execution and is not a hardware-normalised deployment-cost comparison. Human domain review and external replication are not established."
+      ],
+      "citations": [
+        {
+          "source_id": "rewire-local-20260921-instructions-esm2-35m",
+          "locator": "Matched Rhomax evaluations; Procedure and evidence; Re-run or inspect"
+        },
+        {
+          "source_id": "rewire-local-20260921-source-esm2-35m",
+          "locator": "/metrics; /coverage; /model_configuration; /protocol_configuration; /execution; /provenance"
+        },
+        {
+          "source_id": "rewire-local-20260921-source-esm2-8m",
+          "locator": "/metrics; /coverage; /model_configuration; /protocol_configuration; /execution; /provenance"
+        },
+        {
+          "source_id": "rewire-local-20260921-source-composition22",
+          "locator": "/metrics; /model_configuration; /protocol_configuration"
+        },
+        {
+          "source_id": "rewire-local-20260920-source-flip2-train-mean",
+          "locator": "/metrics; /coverage; /model_configuration"
+        },
+        {
+          "source_id": "rewire-local-20260920-source-flip2-composition",
+          "locator": "/metrics; /coverage; /model_configuration; /provenance"
+        }
+      ],
+      "review": {
+        "method": "automated_source_review",
+        "actor": "Codex research curation",
+        "reviewed_at": "2026-09-28T12:11:40.845Z",
+        "note": "Primary-source curation and separate automated cross-review checked exact evidence identities, comparator coverage, endpoint relevance and transfer limits. No new execution, human scientific review, independent replication or clinical validation."
+      },
+      "evidence_sha256": "a012ef5867a510fe9861d1a3de019095e38fb8718f0dbd3581ddd1c5b9a51783"
+    },
+    {
       "id": "use-case-mapping-splicing-mfass-matched-v1",
       "use_case_id": "use-case-splicing-follow-up",
       "lifecycle": "active",
@@ -308,6 +1242,53 @@
         "note": "Reviewed exact configuration and population scope against pinned source bytes. Applicability remains proxy evidence; no human domain review or clinical validation."
       },
       "evidence_sha256": "c4cfbe66c30d59308fc8d2226f42720a09a6e54d2f407c7141b08e01e39c0a47"
+    },
+    {
+      "id": "use-case-mapping-utr-translation-baselines-designed-v1",
+      "use_case_id": "use-case-utr-translation-baselines",
+      "lifecycle": "active",
+      "revision": 1,
+      "reason": "Initial applicability review: primary sources and separate automated cross-review support this exact protocol, its complete selected comparator group and the stated limits.",
+      "protocol_id": "rewire-protocol-mrnabench-designed-mrl-v1",
+      "evaluation_ids": [
+        "rewire-local-20260920-evaluation-mrnabench-composition",
+        "rewire-local-20260920-evaluation-mrnabench-train-mean"
+      ],
+      "endpoint": "Predicting target_mrl_designed on the complete 15,003-record canonical test split of the Sample designed reporter dataset.",
+      "relevance": "direct",
+      "rationale": "The matched sequence-composition and training-mean controls provide an auditable starting point for deciding whether a more complex method adds predictive value on this defined endpoint. They do not establish transfer to a different library or supply a pretrained-model comparison.",
+      "constraints": [
+        "Both controls use the same full processed sequences, seed-2541 split, training labels and complete held-out test population. No validation or test labels select hyperparameters.",
+        "Composition features are log1p length, A/C/G/T fractions and unknown fraction, fitted with train-only RidgeCV over the recorded five alpha values and no normalization. The constant control is the training-target arithmetic mean.",
+        "MSE is the matched primary endpoint. Constant-control Pearson and Spearman are unavailable; do not replace missing values with zeros."
+      ],
+      "limitations": [
+        "One target, one split and one execution per method; no uncertainty or seed variability. No homology-separated or compositional-generalisation claim.",
+        "This training-only protocol differs from upstream probing and is not an aggregate mRNABench score or a reproduction of a published model result.",
+        "The original run’s raw inputs and saved predictions are not publicly archived. The recipe obtains source data and runs the controls again, including separate protein controls; it does not rescore prior predictions. Source-data reuse terms and cross-platform reproducibility remain unresolved.",
+        "Research baseline evidence only, with no new execution, human domain review or clinical validation."
+      ],
+      "citations": [
+        {
+          "source_id": "rewire-local-20260920-source-mrnabench-composition",
+          "locator": "/coverage; /model_configuration; /protocol_configuration; /protocol_results; /provenance"
+        },
+        {
+          "source_id": "rewire-local-20260920-source-mrnabench-train-mean",
+          "locator": "/coverage; /model_configuration; /protocol_results/metric_unavailable_reasons; /provenance"
+        },
+        {
+          "source_id": "rewire-local-20260920-instructions-mrnabench",
+          "locator": "Results: RNA evaluation paragraph; Provenance and review; Reproduce the four sequence controls"
+        }
+      ],
+      "review": {
+        "method": "automated_source_review",
+        "actor": "Codex research curation",
+        "reviewed_at": "2026-09-28T12:15:35.948Z",
+        "note": "Primary-source curation and separate automated cross-review checked exact evidence identities, comparator coverage, endpoint relevance and transfer limits. No new execution, human scientific review, independent replication or clinical validation."
+      },
+      "evidence_sha256": "1034171098b5ead5f29764df1c6efaccee4aa4c24f235945e36b8536ec30caf5"
     }
   ]
 }

@@ -166,6 +166,14 @@ function index(snapshot: CatalogueSnapshot) {
 }
 type Index = ReturnType<typeof index>;
 
+/** Legacy catalogue roles retain their exact reviewed target identities. A
+ * benchmark/task or model family is never promoted to a protocol/configuration. */
+function evaluationLinks(ix: Index, evaluation: CatalogueRecord, kind: "protocol" | "configuration") {
+  const legacy = kind === "protocol" ? "benchmark" : "model";
+  return evaluation.links.filter((link) => link.relation === kind ||
+    (link.relation === legacy && ix.records.get(link.target_id)?.kind === kind));
+}
+
 /** Exact evidence closure: no suite-to-task or sibling-protocol inference. */
 function dependencies(ix: Index, entry: UseCase, mapping: Mapping) {
   const ids = new Set<string>();
@@ -188,14 +196,17 @@ function dependencies(ix: Index, entry: UseCase, mapping: Mapping) {
     add(id);
     const evaluation = ix.records.get(id);
     for (const result of ix.results.get(id) || []) add(result.id);
-    for (const l of evaluation?.links || []) {
-      if (["configuration", "dataset", "dataset_subset", "protocol"].includes(l.relation)) add(l.target_id);
-      if (l.relation === "configuration") {
-        const config = ix.records.get(l.target_id);
-        for (const parent of config?.links || []) if (["family", "variant_of", "alias_of"].includes(parent.relation)) {
-          add(parent.target_id);
-          for (const claim of ix.associationClaims(config!, parent.relation, parent.target_id)) add(claim.id);
-        }
+    if (!evaluation) continue;
+    const configurations = evaluationLinks(ix, evaluation, "configuration");
+    for (const l of [
+      ...evaluation.links.filter((link) => ["dataset", "dataset_subset"].includes(link.relation)),
+      ...evaluationLinks(ix, evaluation, "protocol"), ...configurations,
+    ]) add(l.target_id);
+    for (const l of configurations) {
+      const config = ix.records.get(l.target_id);
+      for (const parent of config?.links || []) if (["family", "variant_of", "alias_of"].includes(parent.relation)) {
+        add(parent.target_id);
+        for (const claim of ix.associationClaims(config!, parent.relation, parent.target_id)) add(claim.id);
       }
     }
   }
@@ -235,9 +246,9 @@ function validateMapping(ix: Index, entry: UseCase, m: Mapping, activeChecks: bo
     throw Error("Task membership needs a direct reviewed protocol relationship");
   for (const id of m.evaluation_ids) {
     const e = requireRecord(ix, id, "evaluation");
-    if (!e.links.some((l) => l.relation === "protocol" && l.target_id === p.id))
+    if (!evaluationLinks(ix, e, "protocol").some((l) => l.target_id === p.id))
       throw Error(`Evaluation belongs to another protocol: ${id}`);
-    const configs = e.links.filter((l) => l.relation === "configuration").map((l) => requireRecord(ix, l.target_id, "configuration"));
+    const configs = evaluationLinks(ix, e, "configuration").map((l) => requireRecord(ix, l.target_id, "configuration"));
     if (!configs.length) throw Error(`Evaluation has no exact configuration: ${id}`);
     if (activeChecks && (!checked(e) || configs.some((c) => !checked(c)))) throw Error("Evaluation/configuration is not reviewed evidence");
     if (activeChecks && configs.some((c) => c.source_ids.some((id) => !cleanSource(ix.records.get(id)))))
@@ -325,7 +336,7 @@ export function createUseCaseQuery(snapshot: CatalogueSnapshot, value?: UseCaseA
     const task = m.task_id ? ix.records.get(m.task_id) || null : null;
     const evaluations = live ? m.evaluation_ids.map((id) => {
       const evaluation = ix.records.get(id)!;
-      const configurations = evaluation.links.filter((l) => l.relation === "configuration").map((l) => recordReference(ix.records.get(l.target_id)!));
+      const configurations = evaluationLinks(ix, evaluation, "configuration").map((l) => recordReference(ix.records.get(l.target_id)!));
       const results: ResultRow[] = [];
       let cursor: string | undefined;
       do {

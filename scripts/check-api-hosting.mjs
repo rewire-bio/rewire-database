@@ -1,5 +1,7 @@
 import assert from 'node:assert/strict';
 import {importAuditFiles} from '../services/omics/dist/audit-import.js';
+import {importUseCaseFiles} from '../services/omics/dist/use-case-import.js';
+import {createUseCaseQuery} from '../services/omics/dist/use-cases.js';
 import { readFile } from 'node:fs/promises';
 import { firebase } from '../services/omics/dist/firebase.js';
 import { importRelease } from '../services/omics/dist/catalogue.js';
@@ -38,7 +40,36 @@ try {
       files[name]=await readFile(new URL(`../public/omics/releases/${manifest.release_id}/${name}`,import.meta.url));
     await importAuditFiles(db,snapshot.release_id,manifest,files);
   }
+  const useCaseFiles = {};
+  if (manifest.files?.['use-cases.json']) {
+    useCaseFiles['use-cases.json'] = await readFile(new URL(`../public/omics/releases/${manifest.release_id}/use-cases.json`,import.meta.url));
+  }
+  await importUseCaseFiles(db,snapshot.release_id,manifest,useCaseFiles);
   await activateRelease(db,snapshot.release_id);
+  const artifact = useCaseFiles['use-cases.json'] ? JSON.parse(useCaseFiles['use-cases.json']) : undefined;
+  const useCases = createUseCaseQuery(snapshot,artifact,manifest.coverage?.use_cases);
+  const cases = await query('useCases',{release_id:snapshot.release_id,limit:1});
+  assert.deepEqual(cases,useCases.list({limit:1}),'Hosting and immutable use-case exports must agree');
+  if (cases.next_cursor) {
+    const input = {release_id:snapshot.release_id,limit:1,cursor:cases.next_cursor};
+    assert.deepEqual(await query('useCases',input),useCases.list({limit:1,cursor:cases.next_cursor}));
+    await query('useCases',{...input,q:'different question'},400);
+  }
+  for (const entry of artifact?.use_cases || []) {
+    const expected = useCases.get({slug:entry.slug});
+    const detail = await query('useCase',{release_id:snapshot.release_id,slug:entry.slug});
+    assert.deepEqual(detail,expected,'Use-case detail must retain exact release evidence and review state');
+    for (const mapping of detail.mappings) {
+      for (const evaluation of mapping.evaluations) {
+        for (const configuration of evaluation.configurations) {
+          const links = await query('useCaseLinks',{release_id:snapshot.release_id,id:configuration.id});
+          assert.deepEqual(links,useCases.links({id:configuration.id}));
+          assert.ok(links.items.some(link=>link.mapping_id===mapping.id && link.configuration_ids.includes(configuration.id)));
+        }
+      }
+    }
+  }
+  await query('useCases',{release_id:'not-a-published-release'},404);
   if (manifest.coverage?.audit_history) {
     const audits=await query('auditRecords',{release_id:snapshot.release_id,limit:2});
     assert.equal(audits.total,manifest.coverage.audit_history.records);
@@ -111,7 +142,7 @@ try {
   const mixed = await fetch(`${origin}/api/trpc/catalogue.release,submission.list?batch=1&input=${encodeURIComponent(JSON.stringify({0:pinned,1:{}}))}`,{redirect:'manual'});
   assert.equal(mixed.status,503,'Public/private batches cannot bypass the contribution gate');
   assert.equal(mixed.headers.get('cache-control'),'no-store');
-  console.log(`Firebase Hosting serves ${snapshot.records.length} records from ${snapshot.release_id}; release pinning, pagination, reciprocal BarcodeBERT links and private-data gates pass.`);
+  console.log(`Firebase Hosting serves ${snapshot.records.length} records from ${snapshot.release_id}; release pinning, pagination, use-case artifact parity, reciprocal links and private-data gates pass.`);
 } finally {
   await db.terminate();
 }

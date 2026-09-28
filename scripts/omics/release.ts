@@ -7,6 +7,14 @@ import { addSourceLabelIdentities, sourceLabelInputs } from "./source-label-iden
 import { addAgroEvaluations, agroInputs } from "./agront-evaluations";
 import { writeBaselineAudit } from "./baseline-coverage";
 import { writeImmutableChunks } from "./stream-files";
+import { addUseCaseSources, loadUseCases, useCaseInputFiles, useCaseSourceDeclaration, writeUseCaseSourceCopies, validateUseCaseHistory } from "./use-cases";
+import {
+  buildUseCaseArtifact,
+  MAX_USE_CASE_BYTES,
+  useCaseDeclaration,
+  useCaseHash,
+  type UseCaseInputs,
+} from "../../services/omics/src/use-cases";
 import { addLocalEvaluations, localEvaluationInputs, addBaselineEvaluations, baselineEvaluationInputs } from "./local-evaluations";
 import {
   addAcquiredEvidence,
@@ -46,7 +54,31 @@ export function buildRelease(
   releasedAt: string,
   extraCoverage: Record<string, unknown> = {},
   streamEvidence = false,
+  useCases?: UseCaseInputs,
+  useCaseSources?: Record<string, string>,
 ) {
+  if (useCases) {
+    validateUseCaseHistory(useCases);
+    const declaration = useCaseDeclaration(useCases);
+    if (extraCoverage.use_cases !== undefined &&
+        useCaseHash(extraCoverage.use_cases) !== useCaseHash(declaration))
+      throw Error("Use-case declaration does not match reviewed inputs");
+    // Bind the logical input digest before deriving the release ID. Artifact
+    // bytes then embed that ID and receive their own manifest file checksum.
+    extraCoverage = { ...extraCoverage, use_cases: declaration };
+  } else if (extraCoverage.use_cases !== undefined) {
+    throw Error("Declared use cases require reviewed inputs");
+  }
+  if (useCaseSources) {
+    if (!useCases) throw Error("Use-case sources require declared use cases");
+    const declaration = useCaseSourceDeclaration(useCaseSources);
+    if (extraCoverage.use_case_sources !== undefined &&
+        useCaseHash(extraCoverage.use_case_sources) !== useCaseHash(declaration))
+      throw Error("Use-case source declaration does not match reviewed bytes");
+    extraCoverage = { ...extraCoverage, use_case_sources: declaration };
+  } else if (extraCoverage.use_case_sources !== undefined) {
+    throw Error("Declared use-case sources require reviewed bytes");
+  }
   validateRecords(records);
   const schemaVersion =
     extraCoverage.entity_schema_version === "1.1" ? "1.1" : "1.0";
@@ -146,6 +178,13 @@ export function buildRelease(
   }
   if (extraCoverage.audit_history)
     Object.assign(files, auditFiles(loadAudits(), releaseId).files);
+  if (useCases) {
+    const bytes = JSON.stringify(buildUseCaseArtifact(snapshot, useCases), null, 2) + "\n";
+    if (Buffer.byteLength(bytes) > MAX_USE_CASE_BYTES)
+      throw Error("Use-case artifact exceeds serving byte budget");
+    files["use-cases.json"] = bytes;
+  }
+  if (useCaseSources) Object.assign(files, useCaseSources);
   const manifest = {
     schema_version: schemaVersion,
     release_id: releaseId,
@@ -280,9 +319,10 @@ function main() {
   const evaluated = addMfassMatchedEvaluations(addAgroEvaluations(addBaselineEvaluations(addLocalEvaluations(applyAcquisitionCorrections(
     addAcquiredEvidence(addRunRecipes(separateEntities(profiled))),
   )))));
-  const records = addSourceLabelIdentities(
+  const reviewedUseCases = loadUseCases();
+  const records = addUseCaseSources(addSourceLabelIdentities(
     addProfileEvidence(addModelEvaluationLinks(addCoverageTables(evaluated))),
-  );
+  ), reviewedUseCases);
   const profiles = records
     .filter((record) => record.attributes.profile)
     .map((record) => record.attributes.profile as OmicsProfile);
@@ -392,6 +432,7 @@ function main() {
                 "Counts derived from this release through the production relationship and chart gates. Figures are source-specific, and metric rows are not independent experiments. Source review is not reproduction.",
             },
             changelog: [
+              ...(reviewedUseCases ? ["Add two sourced research use cases linking questions to exact existing evaluations, with separate MFASS and AMFR protocol scopes, explicit clinical evidence gaps and an independently versioned, release-pinned use-case artifact. Add two documentation source records; preserve every prior scientific record and numerical result."] : []),
               "Add four MFASS matched canonical-annotation configurations and 16 exact metric rows on the identical 8,297/8,324 scored subset; retain 23 assembly-orientation exclusions and four canonical transcript-scope exclusions, with pinned automated evidence and separate comparison panels.",
               "Add complete bounded primary-source result tables for BEELINE, CAFA, CAMI, CAPRI, CASP, FLIP2, PLINDER, scIB and provisional Virtual Cell Challenge 2026 validation.",
               "Preserve PEtab timing candidates and four conflicting FLIP2 values in acquisition staging with explicit limitations.",
@@ -429,6 +470,7 @@ function main() {
         ...modelLinkInputs,
         ...profileEvidenceInputs(),
         ...sourceLabelInputs(),
+        ...useCaseInputFiles(),
         ...reviewInputFiles.filter((file) => fs.existsSync(file)),
         ...profileInputs.filter((file) => fs.existsSync(file)),
         ...associationInputs.filter((file) => fs.existsSync(file)),
@@ -438,10 +480,13 @@ function main() {
       })),
     },
     true,
+    reviewedUseCases?.inputs,
+    reviewedUseCases?.sourceFiles,
   );
   // Enforce the live API contract before writing or building a new release.
   validateSnapshot(output.snapshot);
   writeArchive(output);
+  if (reviewedUseCases) writeUseCaseSourceCopies(reviewedUseCases.sourceFiles);
   fs.writeFileSync(
     "public/omics/catalogue.json",
     output.files["catalogue.json"],

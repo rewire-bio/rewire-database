@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { createHash } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import { fetchWithRetry, verifyResolutionPublications } from "./deployment-transaction.mjs";
 import { contributionProbeMode, verifyContributionGate } from "./contribution-deployment.mjs";
@@ -31,6 +32,10 @@ const expectedCount = Object.values(manifest.counts).reduce(
   0,
 );
 const pinned = { release_id: manifest.release_id };
+const useCaseBytes = manifest.coverage.use_cases ? await readFile(new URL(
+  `../public/omics/releases/${manifest.release_id}/use-cases.json`, import.meta.url,
+)) : undefined;
+const useCases = useCaseBytes ? JSON.parse(useCaseBytes.toString("utf8")) : undefined;
 const probe = Date.now();
 async function query(name, input) {
   const response = await fetchWithRetry(
@@ -167,6 +172,39 @@ if (manifest.coverage.audit_history) {
   }
 }
 
+if (useCases) {
+  const entries = [];
+  let cursor;
+  do {
+    const page = await query("useCases", { ...pinned, limit: 100, ...(cursor ? { cursor } : {}) });
+    assert.equal(page.input_sha256, manifest.coverage.use_cases.input_sha256);
+    assert.equal(page.total, useCases.use_cases.length);
+    entries.push(...page.items);
+    cursor = page.next_cursor;
+  } while (cursor);
+  assert.deepEqual(entries, useCases.use_cases, "Published use-case questions must match the reviewed artifact");
+  for (const entry of entries) {
+    const detail = await query("useCase", { ...pinned, slug: entry.slug });
+    assert.equal(detail.input_sha256, useCases.input_sha256);
+    assert.deepEqual(detail.use_case, entry);
+    const mappings = useCases.mappings.filter(mapping => mapping.use_case_id === entry.id);
+    assert.equal(detail.mappings.length, mappings.length);
+    for (const mapping of mappings) {
+      const resolved = detail.mappings.find(item => item.id === mapping.id);
+      assert.ok(resolved, "Every reviewed mapping must be served");
+      assert.deepEqual(Object.fromEntries(Object.keys(mapping).map(key => [key, resolved[key]])), mapping);
+      const live = mapping.lifecycle === "active" && ["direct", "proxy"].includes(mapping.relevance);
+      assert.deepEqual(resolved.evaluations.map(item => item.evaluation.id), live ? mapping.evaluation_ids : []);
+      for (const evaluation of resolved.evaluations) for (const configuration of evaluation.configurations) {
+        const links = await query("useCaseLinks", { ...pinned, id: configuration.id });
+        assert.equal(links.input_sha256, useCases.input_sha256);
+        assert.deepEqual(links.items.find(item => item.mapping_id === mapping.id)?.configuration_ids, [configuration.id],
+          "A configuration backlink must not claim evidence from sibling configurations");
+      }
+    }
+  }
+}
+
 await verifyContributionGate(origin, {
   mode: contributionMode,
   releaseId: manifest.release_id,
@@ -183,6 +221,26 @@ if (process.argv.includes("--website")) {
     const auditPage = await fetchWithRetry(`${origin}/audits/?verify=${probe}`);
     assert.equal(auditPage.status, 200);
     assert.ok((await auditPage.text()).includes("Catalogue audit history"));
+  }
+  if (useCases) {
+    const index = await fetchWithRetry(`${origin}/use-cases/?verify=${probe}`);
+    assert.equal(index.status, 200, "Use-case navigation must be published");
+    const html = await index.text();
+    for (const entry of useCases.use_cases.slice(0, 10)) assert.ok(html.includes(`/use-cases/${entry.slug}/`));
+    for (const entry of useCases.use_cases) {
+      const page = await fetchWithRetry(`${origin}/use-cases/${entry.slug}/?verify=${probe}`);
+      assert.equal(page.status, 200, "Reviewed use-case page must be published");
+      const detailHtml = await page.text();
+      assert.ok(detailHtml.includes(useCases.release_id) && detailHtml.includes(useCases.input_sha256));
+    }
+    const artifact = await fetchWithRetry(`${origin}/omics/releases/${manifest.release_id}/use-cases.json?verify=${probe}`);
+    assert.equal(artifact.status, 200);
+    assert.equal(createHash("sha256").update(Buffer.from(await artifact.arrayBuffer())).digest("hex"), manifest.files["use-cases.json"]);
+    for (const source of manifest.coverage.use_case_sources || []) {
+      const copy = await fetchWithRetry(`${origin}/omics/sources/${source.sha256}.md?verify=${probe}`);
+      assert.equal(copy.status, 200, "Reviewed source copies must be publicly accessible");
+      assert.equal(createHash("sha256").update(Buffer.from(await copy.arrayBuffer())).digest("hex"), source.sha256);
+    }
   }
   assert.equal(
     (await response.json()).release_id,

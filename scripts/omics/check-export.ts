@@ -28,11 +28,26 @@ import path from "node:path";
 import { fileSha256, chunksSha256 } from "./stream-files";
 import { validateRecords } from "./schema";
 import { verifyContributionExport } from "./contribution-export";
+import { createUseCaseQuery, validateUseCaseArtifact } from "../../services/omics/src/use-cases";
+import { parseUseCaseSourceDeclaration } from "./use-cases";
 const catalogue = JSON.parse(
   fs.readFileSync("out/omics/catalogue.json", "utf8"),
 );
 const records = validateRecords(catalogue.records);
+const currentManifest = JSON.parse(fs.readFileSync("out/omics/manifest.json", "utf8"));
+const useCaseDeclaration = currentManifest.coverage?.use_cases;
+const useCaseFile = path.join("out/omics/releases", catalogue.release_id, "use-cases.json");
+if (Boolean(useCaseDeclaration) !== Boolean(currentManifest.files["use-cases.json"])) throw Error("Use-case declaration/export mismatch");
+const useCaseArtifact = useCaseDeclaration ? validateUseCaseArtifact(catalogue, JSON.parse(fs.readFileSync(useCaseFile, "utf8")), useCaseDeclaration) : undefined;
+const useCaseQuery = createUseCaseQuery(catalogue, useCaseArtifact, useCaseDeclaration);
+const useCaseEntries = useCaseArtifact?.use_cases || [];
 const failures: string[] = [];
+for (const source of parseUseCaseSourceDeclaration(currentManifest.coverage?.use_case_sources || [])) {
+  const archived = path.join("out/omics/releases", catalogue.release_id, source.file);
+  const alias = path.join("out/omics/sources", `${source.sha256}.md`);
+  if (!fs.existsSync(archived) || !fs.existsSync(alias) || fileSha256(archived) !== source.sha256 || fileSha256(alias) !== source.sha256)
+    failures.push(`Missing or changed public use-case source copy: ${source.file}`);
+}
 const origin = "https://benchmarks.rewire.it";
 const sitemap = checkSitemap(fs.readFileSync("out/sitemap.xml", "utf8"));
 failures.push(...sitemap.failures, ...checkSocialImage("out"));
@@ -43,6 +58,8 @@ const expectedSitemap = new Set(
     "/runs/mfass-v2/",
     "/evidence/",
     "/audits/",
+    "/use-cases/",
+    ...useCaseEntries.map((entry) => `/use-cases/${entry.slug}/`),
     ...indexPaths,
     ...records.filter(recordIsIndexable).map(recordHref),
   ].map((url) => origin + url),
@@ -101,13 +118,51 @@ for (const record of records) {
     failures.push(`Missing evidence table: ${record.id}`);
   for (const match of html.matchAll(/<a\b[^>]*\bhref="([^"]+)"/g)) {
     const href = match[1];
-    if (!href.startsWith("/database/") && !href.startsWith("/omics/")) continue;
+    if (!href.startsWith("/database/") && !href.startsWith("/omics/") && !href.startsWith("/use-cases/")) continue;
     const url = new URL(href, "https://benchmarks.rewire.it");
     let file = path.join("out", decodeURIComponent(url.pathname));
     if (url.pathname.endsWith("/")) file = path.join(file, "index.html");
     if (!fs.existsSync(file)) failures.push(href);
   }
 }
+// Use-case discovery and decision evidence must be exported, not client-only.
+function escaped(value: string) {
+  const escapes: Record<string, string> = { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#x27;" };
+  return value.replace(/[&<>"']/g, (character) => escapes[character]);
+}
+const useCaseIndex = page("/use-cases/");
+failures.push(...checkPageMetadata(useCaseIndex, {
+  path: "/use-cases/", canonical: `${origin}/use-cases/`, title: "Biological research use cases | rewire.it",
+  description: "Start with a biological question. Find relevant benchmarks, evaluated model configurations, execution methods and the limits of their evidence.",
+  indexable: true, inSitemap: true, social: true,
+  breadcrumbs: [{ name: "Database", path: "/" }, { name: "Use cases", path: "/use-cases/" }],
+}, sitemap.urls));
+for (const entry of useCaseEntries) {
+  const url = `/use-cases/${entry.slug}/`;
+  const html = page(url);
+  failures.push(...checkPageMetadata(html, {
+    path: url, canonical: origin + url, title: `${entry.title} | rewire.it`, description: entry.question,
+    indexable: true, inSitemap: true, social: true,
+    breadcrumbs: [{ name: "Database", path: "/" }, { name: "Use cases", path: "/use-cases/" }, { name: entry.title, path: url }],
+  }, sitemap.urls));
+  for (const text of [entry.question, entry.decision, entry.setting, entry.clinical_scope, ...entry.inputs, ...entry.evidence_gaps])
+    if (!html.includes(escaped(text))) failures.push(`Use-case HTML omits scope or evidence: ${entry.slug}: ${text}`);
+  if (!html.includes(catalogue.release_id) || !html.includes(useCaseArtifact!.input_sha256)) failures.push(`Use-case provenance missing: ${entry.slug}`);
+  for (const mapping of useCaseQuery.get({ slug: entry.slug })!.mappings) {
+    if (!html.includes(`id="mapping-${mapping.id}"`)) failures.push(`Use-case mapping missing: ${mapping.id}`);
+    for (const evaluation of mapping.evaluations) for (const row of evaluation.results)
+      if (!html.includes(recordHref(row.result))) failures.push(`Use-case result source missing: ${row.result.id}`);
+  }
+  for (const match of html.matchAll(/<a\b[^>]*\bhref="([^"]+)"/g)) {
+    const href = match[1];
+    if (!/^\/(?:database|omics|use-cases)\//.test(href)) continue;
+    const target = new URL(href, origin);
+    const file = path.join("out", decodeURIComponent(target.pathname), target.pathname.endsWith("/") ? "index.html" : "");
+    if (!fs.existsSync(file)) failures.push(`Use-case link missing: ${href}`);
+  }
+}
+for (const entry of useCaseQuery.list({ limit: 10 }).items)
+  if (!useCaseIndex.includes(`href="/use-cases/${entry.slug}/"`)) failures.push(`Use-case index missing canonical discovery anchor: ${entry.slug}`);
 // Index discovery must exist in initial HTML, not only after hydration.
 for (const url of indexPaths) {
   const html = page(url);
@@ -175,6 +230,7 @@ failures.push(
   ),
 );
 if (!home.includes('id="mfass-v1"')) failures.push("Preserved MFASS v1 anchor");
+if (!home.includes('href="/use-cases/"')) failures.push("Use-case homepage navigation missing");
 for (const url of [
   "/literature/",
   "/database/",
@@ -221,9 +277,6 @@ for (const paper of papers) {
     ),
   );
 }
-const currentManifest = JSON.parse(
-  fs.readFileSync("out/omics/manifest.json", "utf8"),
-);
 const evidenceIndex = createEvidenceIndex(catalogue, { cache: false });
 const evidenceRoot = path.join("out/omics/releases", catalogue.release_id);
 if (

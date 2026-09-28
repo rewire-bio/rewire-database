@@ -8,6 +8,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Fragment } from "react";
 import { buildCatalogue } from "@/lib/catalogue-build";
+import { buildUseCases } from "@/lib/use-cases-build";
+import UseCaseBacklinks from "@/components/catalogue/UseCaseBacklinks";
 import { packComparisons } from "@/lib/comparison-transport";
 import {
   recordHref,
@@ -122,6 +124,14 @@ export default function RecordPage({ params }: { params: Params }) {
   )
     notFound();
   const { record } = detail;
+  const useCaseLinks = buildUseCases().query.links({ id: record.id });
+  const useCaseConfigurations = Object.fromEntries(
+    [...new Set(useCaseLinks.items.flatMap((link) => link.configuration_ids))]
+      .flatMap((id) => {
+        const configuration = query.record(id);
+        return configuration ? [[id, configuration]] : [];
+      }),
+  );
   const results = query.results({ id: record.id, limit: 25 });
   const first = results.items[0];
   const evidenceScope = [...profileKinds, "result"].includes(record.kind)
@@ -365,6 +375,7 @@ export default function RecordPage({ params }: { params: Params }) {
       </header>
       <section className="block first">
         <div className="wrap">
+          <UseCaseBacklinks links={useCaseLinks} configurations={useCaseConfigurations} />
           <SectionNavigation
             sections={
               entity

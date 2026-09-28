@@ -7,20 +7,23 @@ import {
 } from "@/lib/use-cases-client";
 import { researchAreaLabel } from "@/lib/omics-browse";
 import { evidenceSummaryParts, type EvidenceSummary } from "@/lib/use-case-summary";
+import { UseCaseCollectionStatus } from "./UseCaseCollectionPlan";
 import styles from "./UseCases.module.css";
 
 function Cards({ data, search, summaries }: { data: UseCasePage; search: string; summaries: Record<string, EvidenceSummary> }) {
   return <ul className={styles.cards}>
     {data.items.map((entry) => {
       const summary = summaries[entry.slug];
-      return <li className={styles.card} key={entry.id}>
+      return <li key={entry.id}><article className={styles.card}>
         <p className={styles.tag}>{researchAreaLabel(entry.area)} · {entry.contexts.map(caseContextLabel).join(" and ")}</p>
         <h3><a href={`/use-cases/${entry.slug}/${search}`}>{entry.title}</a></h3>
+        {entry.collection_plan && <p><UseCaseCollectionStatus status={entry.collection_plan.status} /></p>}
         <p className={styles.question}>{entry.question}</p>
         <h4 className={styles.cardLabel}>You bring</h4>
         <ul className={styles.inputs}>{entry.inputs.map((input) => <li key={input}>{input}</li>)}</ul>
         <p className={styles.cardFoot}>{summary ? <>Opens with {evidenceSummaryParts(summary).slice(0, 3).join(" · ")}, plus limitations and sources.</> : "Opens with evaluated evidence, limitations and sources."}</p>
-      </li>;
+      <a href={`/use-cases/${entry.slug}/${search}${entry.collection_plan ? "#collection-plan" : ""}`}>{entry.collection_plan ? "View question and evidence plan →" : "Inspect evidence and limitations →"}</a>
+      </article></li>;
     })}
   </ul>;
 }
@@ -145,6 +148,6 @@ export default function UseCaseExplorer({ initial, summaries = {}, areaCounts = 
       {cursor && <button type="button" className={styles.button} onClick={() => navigate(filters)}>First page</button>}
       {data.next_cursor && <button type="button" className={styles.button} onClick={() => navigate(filters, data.next_cursor!)}>Next page</button>}
     </nav>}
-    <noscript><p>These are the first questions in this release. Enable JavaScript to apply search and filters; the question pages and their evidence remain readable without it.</p></noscript>
+    <noscript><p>These are the first questions in this release. Enable JavaScript to apply search and filters; the question pages, collection plans and evidence remain readable without it.</p></noscript>
   </div>;
 }

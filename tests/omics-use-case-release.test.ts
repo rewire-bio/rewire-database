@@ -92,8 +92,8 @@ describe("reviewed use-case release inputs", () => {
   function reviewedExpansion() {
     const bundle = loadUseCases()!;
     const baseline: Omit<CatalogueSnapshot, "records"> & { records: RecordEntry[] } = JSON.parse(gunzipSync(fs.readFileSync("data/omics/releases/2026-09-25-d40cee0abe73/catalogue.json.gz")).toString());
-    const previous: CatalogueSnapshot = JSON.parse(gunzipSync(fs.readFileSync("data/omics/releases/2026-09-25-8af07e960e5f/catalogue.json.gz")).toString());
-    const seedInputs: UseCaseArtifact = JSON.parse(gunzipSync(fs.readFileSync("data/omics/releases/2026-09-25-8af07e960e5f/use-cases.json.gz")).toString());
+    const previous: CatalogueSnapshot = JSON.parse(gunzipSync(fs.readFileSync("data/omics/releases/2026-09-28-f9f5770cef26/catalogue.json.gz")).toString());
+    const seedInputs: UseCaseArtifact = JSON.parse(gunzipSync(fs.readFileSync("data/omics/releases/2026-09-28-f9f5770cef26/use-cases.json.gz")).toString());
     const records = addUseCaseSources(baseline.records, bundle);
     const snapshot = { ...baseline, records };
     const artifact = buildUseCaseArtifact(snapshot, bundle.inputs);
@@ -106,18 +106,20 @@ describe("reviewed use-case release inputs", () => {
   it("expands reviewed questions while preserving every scientific record and seed input", () => {
     const { bundle, baseline, previous, seedInputs, records, artifact, query } = expanded;
     expect(baseline.records).toHaveLength(26122);
-    expect(records).toHaveLength(26124);
+    expect(records).toHaveLength(26126);
     expect(previous.records).toHaveLength(26124);
-    expect([...records].sort((a, b) => a.id.localeCompare(b.id))).toEqual(previous.records);
+    const previousIds = new Set(previous.records.map((record) => record.id));
+    expect(records.filter((record) => previousIds.has(record.id)).sort((a, b) => a.id.localeCompare(b.id))).toEqual(previous.records);
+    expect(records.filter((record) => !previousIds.has(record.id)).map((record) => record.kind)).toEqual(["source", "source"]);
     expect(bundle.sources.every((source) => source.kind === "source")).toBe(true);
-    expect(query.list().total).toBe(7);
+    expect(query.list().total).toBe(17);
     expect(artifact.mappings).toHaveLength(17);
     expect(artifact.mappings.every((m) => m.lifecycle === "active")).toBe(true);
     const evaluations = artifact.mappings.flatMap((m) => m.evaluation_ids);
     expect(evaluations).toHaveLength(57);
     expect(new Set(evaluations).size).toBe(57);
-    expect(seedInputs.use_cases).toHaveLength(2);
-    expect(seedInputs.mappings).toHaveLength(3);
+    expect(seedInputs.use_cases).toHaveLength(7);
+    expect(seedInputs.mappings).toHaveLength(17);
     for (const seed of seedInputs.use_cases)
       expect(bundle.inputs.use_cases.find((entry) => entry.id === seed.id)).toEqual(seed);
     for (const seed of seedInputs.mappings) {
@@ -261,8 +263,8 @@ describe("reviewed use-case release inputs", () => {
   it("rejects changed curation or source bytes without blessing them during release generation", () => {
     const directory = path.join(temporary(), "curation");
     fs.cpSync(useCaseRoot, directory, { recursive: true });
-    expect(useCaseInputFiles(directory)).toHaveLength(5);
-    expect(loadUseCases(directory)!.inputs.use_cases).toHaveLength(7);
+    expect(useCaseInputFiles(directory)).toHaveLength(7);
+    expect(loadUseCases(directory)!.inputs.use_cases).toHaveLength(17);
     const file = path.join(directory, "inputs.json");
     const before = fs.readFileSync(file, "utf8");
     fs.writeFileSync(file, before + " ");

@@ -1,0 +1,575 @@
+{
+  "planning_format": "use-case-led-exploration-v1",
+  "generated_on": "2026-09-28",
+  "purpose": "Planning artefact; not a production catalogue import or a claim of reviewed model results.",
+  "priority_basis": [
+    "Documented demand signal",
+    "Consequence of the user decision",
+    "Value of an informative comparison"
+  ],
+  "excluded_priority_basis": [
+    "Current Rewire evidence coverage",
+    "Ease of finding a benchmark",
+    "A model's publicity or current leaderboard position"
+  ],
+  "selection_note": "Editorial portfolio judgement; no measured cross-domain popularity ranking. Candidate sources were located during research; read-level/access limits are recorded in the domain reports.",
+  "scope_ids": "C1–C5 and R1–R5 are local planning identifiers, not production scientific IDs.",
+  "shared_acceptance_criteria": [
+    "Specify target population/system, prediction-time inputs, candidate universe, endpoint and decision budget before comparing models.",
+    "Predefine practically meaningful improvement with the appropriate users/reviewers; do not invent a universal numerical success threshold.",
+    "Extract source locator, protocol, dataset/release, model/configuration, comparator, denominator, split, result, uncertainty, failures and limitations.",
+    "Distinguish evidence origin from evaluation design; retrospective and blinded descriptors may coexist.",
+    "Label evidence direct, proxy, out of scope or unassessed relative to the defined decision.",
+    "Record public literature, metadata, raw-data, redistribution and benchmark permissions separately.",
+    "If no qualifying comparison exists, retain the question and record an actionable evidence gap; never invent a score or force an unrelated mapping.",
+    "Submit any proposed production mapping to the existing scientific review process; source discovery and this automated review are not qualified clinical sign-off."
+  ],
+  "first_collection_suggestion": [
+    "C1",
+    "C5",
+    "R1",
+    "R2"
+  ],
+  "first_collection_reason": "Addresses the user's rare-disease/cancer priorities and links molecular predictions to target and regulatory experiments; does not exclude other focus questions.",
+  "use_cases": [
+    {
+      "id": "C1",
+      "track": "clinical",
+      "title": "Rare-disease causal variant and gene prioritisation",
+      "user": "Diagnostic scientist or clinical genomicist",
+      "initial_scope": "ES/GS interpretation in a defined congenital-anomaly/developmental-disorder population; record variant-calling coverage, phenotype, pedigree and inheritance.",
+      "comparison_question": "Does adding a molecular-effect model to phenotype-, pedigree- and frequency-aware analysis improve causal-finding recovery at the same analyst review budget?",
+      "baselines": [
+        "Pinned conventional filtering and phenotype/pedigree-aware workflow",
+        "Appropriate pinned Exomiser configuration without the added model"
+      ],
+      "endpoints": [
+        "Case-level top-k recovery of independently adjudicated causal findings",
+        "Analyst review burden, missed variant classes, unresolved cases and abstention",
+        "Confirmed diagnosis measured separately from a ranked candidate"
+      ],
+      "validation_requirements": [
+        "Family, centre and time separation",
+        "Frozen gene–disease knowledge and model training cutoff",
+        "Keep unsolved cases in workload/coverage denominators",
+        "Audit evaluation labels for predictor-derived evidence"
+      ],
+      "candidate_sources": [
+        {
+          "url": "https://pipeline-rd-help.genomicsengland.co.uk/Mira/variant-prioritisation-approaches/exomiser/exomiser-performance/",
+          "role": "Operational prioritisation and validation evidence"
+        },
+        {
+          "url": "https://www.nature.com/articles/s41586-025-10014-0",
+          "role": "Candidate molecular-effect method; investigate added value, not standalone diagnostic claims"
+        }
+      ],
+      "next_deliverable": "Case-level extraction matrix distinguishing solved-case ranking, unselected diagnostic evaluation and molecular-effect proxies.",
+      "acceptance_criteria": [
+        "Record cohort selection, variant classes, pedigree/phenotype availability and exact workflow versions",
+        "Identify a same-input comparator or an explicit evaluation gap",
+        "Report independent adjudication and review-budget endpoints where available"
+      ],
+      "responsible_roles": [
+        "Clinical genetics reviewer",
+        "Genomic benchmark curator"
+      ],
+      "source_constraints": [
+        "Published validation data may be available without reusable patient-level cohorts; investigate access and reanalysis rights separately"
+      ],
+      "priority_tier": "focus",
+      "collection_status": "planned",
+      "qualified_review_status": "pending",
+      "assigned_owner": null
+    },
+    {
+      "id": "C2",
+      "track": "clinical",
+      "title": "Unresolved rare-disease reanalysis",
+      "user": "Clinical genomics service responsible for previously unresolved cases",
+      "initial_scope": "A dated unresolved ES/GS cohort with recorded changes to phenotype, calls and gene–disease knowledge.",
+      "comparison_question": "Does a proposed reanalysis method improve confirmed diagnoses or reduce review burden relative to refreshed conventional analysis using identical updated information?",
+      "baselines": [
+        "Refreshed conventional workflow with the same new knowledge, calls and phenotypes",
+        "Original unresolved cohort for programme-level incremental yield, reported separately"
+      ],
+      "endpoints": [
+        "New confirmed diagnoses per eligible case over a stated interval",
+        "Incremental method benefit under equal updated inputs",
+        "False alerts, review time and reason for each resolved case"
+      ],
+      "validation_requirements": [
+        "Separate new-information benefit from algorithmic benefit",
+        "Freeze original and update dates",
+        "Family/site separation and no future-knowledge leakage",
+        "Count diagnoses and diagnosed individuals separately"
+      ],
+      "candidate_sources": [
+        {
+          "url": "https://www.nature.com/articles/s41436-019-0478-1",
+          "role": "Professional reevaluation/reanalysis workflow definition"
+        },
+        {
+          "url": "https://www.nature.com/articles/s41525-024-00456-2",
+          "role": "Exomiser reanalysis implementation; preserve cohort denominators"
+        },
+        {
+          "url": "https://www.nature.com/articles/s41591-026-04477-5",
+          "role": "Talos reanalysis implementation; distinguish 241 diagnoses from 238 people"
+        }
+      ],
+      "next_deliverable": "Dated reanalysis evidence table with separate programme-yield and method-comparison columns.",
+      "acceptance_criteria": [
+        "Capture cohort eligibility and both analysis dates",
+        "Attribute changes to knowledge, phenotype, calling or ranking where reported",
+        "Identify the refreshed same-input comparator or document its absence"
+      ],
+      "responsible_roles": [
+        "Clinical genetics reviewer",
+        "Genomic benchmark curator"
+      ],
+      "source_constraints": [
+        "Controlled cohort access may be required for new evaluations; published implementation evidence is not permission to download patient data"
+      ],
+      "priority_tier": "focus",
+      "collection_status": "planned",
+      "qualified_review_status": "pending",
+      "assigned_owner": null
+    },
+    {
+      "id": "C3",
+      "track": "clinical",
+      "title": "Hereditary-cancer germline variant interpretation",
+      "user": "Germline variant scientist",
+      "initial_scope": "BRCA1/2 evidence review under a pinned, relevant ClinGen ENIGMA specification.",
+      "comparison_question": "Can an evidence-support method reduce review effort without increasing serious classification or criteria errors relative to standard gene-specific review?",
+      "baselines": [
+        "Manual criteria-based review using the same evidence cutoff and gene-specific specification"
+      ],
+      "endpoints": [
+        "Serious classification disagreements and criteria errors",
+        "Unresolved-case coverage and conflicts preserved",
+        "Reviewer time against independent expert adjudication"
+      ],
+      "validation_requirements": [
+        "Keep germline classification separate from person-level risk and somatic actionability",
+        "Remove predictor circularity from evaluation labels",
+        "Gene/domain and temporal separation as appropriate",
+        "Preserve germline confirmation and classification uncertainty"
+      ],
+      "candidate_sources": [
+        {
+          "url": "https://ascopubs.org/doi/10.1200/JCO.24.00662",
+          "role": "Testing workflow and demand"
+        },
+        {
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11393667/",
+          "role": "Gene-specific BRCA1/2 classification specifications"
+        }
+      ],
+      "next_deliverable": "BRCA1/2 interpretation evidence specification and source matrix, including unmet independent-adjudication requirements.",
+      "acceptance_criteria": [
+        "Record criteria/specification version and classification date",
+        "Distinguish functional assay scores from expert classification",
+        "Specify blinded independent adjudication and error severity"
+      ],
+      "responsible_roles": [
+        "Hereditary-cancer genetics reviewer",
+        "Variant curation specialist"
+      ],
+      "source_constraints": [
+        "Public assertions may embed predictor evidence; reuse and label independence must be audited"
+      ],
+      "priority_tier": "focus",
+      "collection_status": "planned",
+      "qualified_review_status": "pending",
+      "assigned_owner": null
+    },
+    {
+      "id": "C4",
+      "track": "clinical",
+      "title": "Somatic small-variant oncogenicity",
+      "user": "Somatic variant curator or molecular pathologist",
+      "initial_scope": "SNVs and small indels, with separate oncogene missense and tumour-suppressor loss-of-function protocols.",
+      "comparison_question": "Does a proposed method improve independent oncogenicity classification or review efficiency over explicit conventional criteria while retaining calibrated unresolved results?",
+      "baselines": [
+        "ClinGen/CGC/VICC criteria-based review under a pinned specification",
+        "Relevant specialised predictor assessed only within its actual output scope"
+      ],
+      "endpoints": [
+        "Category precision/recall and criteria fidelity",
+        "Calibration, abstention and unresolved coverage",
+        "Expert review effort; no treatment-benefit inference"
+      ],
+      "validation_requirements": [
+        "Independent oncogenicity labels, not germline pathogenicity labels",
+        "Hold out allelic series, residues, studies and intended unseen genes",
+        "Audit training/assertion overlap",
+        "Preserve assay and tumour/gene-mechanism context"
+      ],
+      "candidate_sources": [
+        {
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9081216/",
+          "role": "Oncogenicity framework; 94-variant validation is not an independent large benchmark"
+        },
+        {
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5926201/",
+          "role": "Assay-specific functional variant evidence"
+        },
+        {
+          "url": "https://www.ncbi.nlm.nih.gov/clinvar/docs/clinsig/",
+          "role": "Classification-type representation"
+        }
+      ],
+      "next_deliverable": "Provenance table of oncogenicity assertions and orthogonal functional evidence, with label-leakage exclusions.",
+      "acceptance_criteria": [
+        "Keep oncogenicity, germline classification and clinical impact distinct",
+        "Record criteria/date/assay and predictor contribution to each label source",
+        "Identify independent negative or uncertain examples without inventing benign controls"
+      ],
+      "responsible_roles": [
+        "Somatic variant reviewer",
+        "Functional genomics curator"
+      ],
+      "source_constraints": [
+        "Older functional sets may overlap model training; published access does not establish independent evaluation suitability"
+      ],
+      "priority_tier": "focus",
+      "collection_status": "planned",
+      "qualified_review_status": "pending",
+      "assigned_owner": null
+    },
+    {
+      "id": "C5",
+      "track": "clinical",
+      "title": "Tumour-specific actionability and resistance evidence review",
+      "user": "Molecular tumour-board scientist or oncologist reviewing evidence",
+      "initial_scope": "Advanced EGFR-mutant NSCLC, including prior EGFR-targeted therapy, progression, sampling time, jurisdiction and evidence date.",
+      "comparison_question": "Does retrieval-assisted review recover more correctly scoped sensitivity/resistance evidence with fewer unsupported assertions than a versioned lookup/manual-search workflow at equal review effort?",
+      "baselines": [
+        "Versioned knowledgebase lookup plus conventional manual primary-source review"
+      ],
+      "endpoints": [
+        "Relevant-evidence recall and unsupported assertion rate",
+        "Tumour, treatment-line, direction, date and citation fidelity",
+        "Contradiction handling and review time"
+      ],
+      "validation_requirements": [
+        "Freeze question and evidence corpus date",
+        "Hold out primary studies and molecular profiles",
+        "Preserve native evidence tiers and unknown information",
+        "Separate evidence review from treatment selection, response, survival and trial eligibility"
+      ],
+      "candidate_sources": [
+        {
+          "url": "https://pubmed.ncbi.nlm.nih.gov/38834388/",
+          "role": "ESMO workflow guidance; retrieve corrected full guidance for detailed grading"
+        },
+        {
+          "url": "https://docs.civicdb.org/en/latest/using/data_releases.html",
+          "role": "Dated source-evidence releases"
+        },
+        {
+          "url": "https://faq.oncokb.org/licensing",
+          "role": "Potential comparator with explicit AI benchmarking permission requirement"
+        },
+        {
+          "url": "https://www.nature.com/articles/s41467-023-35961-y",
+          "role": "Primary resistance evidence in a concrete therapy context"
+        }
+      ],
+      "next_deliverable": "Versioned NSCLC evidence-review specification, open-source extraction matrix and separate source-permission dependency list.",
+      "acceptance_criteria": [
+        "Extract tumour, biomarker, regimen, line, prior treatment, direction, source and date",
+        "Include contradictory, inapplicable and insufficient-evidence examples",
+        "Document independently adjudicated reference needs"
+      ],
+      "responsible_roles": [
+        "Molecular oncology reviewer",
+        "Clinical evidence curator"
+      ],
+      "source_constraints": [
+        "OncoKB prohibits AI training and requires explicit permission to benchmark AI models",
+        "Patient-level FLAURA genetic data are unavailable",
+        "No licence application or external contact is authorised by this planning file"
+      ],
+      "priority_tier": "focus",
+      "collection_status": "planned",
+      "qualified_review_status": "pending",
+      "assigned_owner": null
+    },
+    {
+      "id": "R1",
+      "track": "research",
+      "title": "Therapeutic target prioritisation for validation",
+      "user": "Disease biologist or translational discovery team",
+      "initial_scope": "One disease, candidate gene universe, direction of modulation and prespecified experimental phenotype.",
+      "comparison_question": "Does a proposed ranking yield more reproducible disease-relevant target effects at a fixed validation budget than conventional evidence aggregation?",
+      "baselines": [
+        "Genetics-only ranking",
+        "Expression-only ranking",
+        "Simple dependency or evidence aggregation"
+      ],
+      "endpoints": [
+        "Confirmed useful hits among the selected test budget",
+        "Rescue replication and context/selectivity",
+        "Direction-of-effect uncertainty and failure denominator"
+      ],
+      "validation_requirements": [
+        "Freeze inputs before validation outcomes",
+        "Include failed experiments and normal-cell controls",
+        "Do not label untested targets negative",
+        "Keep dependency, tractability, therapeutic window and clinical success separate"
+      ],
+      "candidate_sources": [
+        {
+          "url": "https://blog.opentargets.org/open-targets-platform-26-09-has-been-released/",
+          "role": "Versioned target-evidence infrastructure"
+        },
+        {
+          "url": "https://depmap.org/portal/",
+          "role": "Dependency evidence and conventional discovery workflows"
+        },
+        {
+          "url": "https://www.nature.com/articles/s41586-024-07316-0",
+          "role": "Impact rationale; observational genetic support is not AI effectiveness"
+        }
+      ],
+      "next_deliverable": "Disease-specific validation-campaign inventory including failures, evidence cutoffs and conventional ranking baselines.",
+      "acceptance_criteria": [
+        "Specify candidate universe, intervention direction and phenotype before collecting scores",
+        "Record which campaigns include failed/untested candidates",
+        "Identify selection-budget outcomes or an explicit gap"
+      ],
+      "responsible_roles": [
+        "Disease biology reviewer",
+        "Functional genomics curator"
+      ],
+      "source_constraints": [
+        "Resource, campaign and compound data have different reuse terms; audit donor/model overlap and dataset versions"
+      ],
+      "priority_tier": "focus",
+      "collection_status": "planned",
+      "qualified_review_status": "pending",
+      "assigned_owner": null
+    },
+    {
+      "id": "R2",
+      "track": "research",
+      "title": "Regulatory variant and effector-gene follow-up",
+      "user": "Functional geneticist following up disease-associated loci",
+      "initial_scope": "A defined set of loci with fine-mapping/LD context and a relevant cell system; separate allele-effect and element–gene prediction tasks.",
+      "comparison_question": "Does a method select more experimentally supported variant–element–gene hypotheses than appropriate distance/linking baselines at the same follow-up budget?",
+      "baselines": [
+        "Distance-based variant/gene or enhancer/gene selection where applicable",
+        "ABC, ENCODE-rE2G or scE2G for compatible linking tasks",
+        "Sequence predictors compared only on outputs they actually produce"
+      ],
+      "endpoints": [
+        "Allele-dependent regulatory effects",
+        "Endogenous element–gene or allele–gene effects measured separately",
+        "Confirmed follow-up hits per assay budget"
+      ],
+      "validation_requirements": [
+        "Locus and study holdouts",
+        "Audit LD and pretraining overlap",
+        "Preserve cell context, genome build and perturbation type",
+        "Keep reporter activity, element deletion, single-base effects and disease causality distinct"
+      ],
+      "candidate_sources": [
+        {
+          "url": "https://www.nature.com/articles/s41586-025-09909-9",
+          "role": "ENCODE regulatory workflow and functional evidence"
+        },
+        {
+          "url": "https://www.nature.com/articles/s41588-026-02695-8",
+          "role": "scE2G linking evaluation"
+        },
+        {
+          "url": "https://www.nature.com/articles/s41586-025-10014-0",
+          "role": "AlphaGenome molecular predictions and compatible evaluation scope"
+        }
+      ],
+      "next_deliverable": "Endpoint-specific matrix of CRISPRi, reporter and endogenous-editing studies, with incompatible tasks explicitly separated.",
+      "acceptance_criteria": [
+        "Define linking versus allele-effect endpoint for each comparison",
+        "Record context, holdout, negatives, failed assays and exact method/configuration",
+        "Identify evidence that tests experimental selection or record that only intermediate endpoints exist"
+      ],
+      "responsible_roles": [
+        "Regulatory genomics reviewer",
+        "Functional assay curator"
+      ],
+      "source_constraints": [
+        "Public data may overlap training or share loci; source availability does not establish independent transfer"
+      ],
+      "priority_tier": "focus",
+      "collection_status": "planned",
+      "qualified_review_status": "pending",
+      "assigned_owner": null
+    },
+    {
+      "id": "R3",
+      "track": "research",
+      "title": "Perturbation selection for a defined cellular response",
+      "user": "Functional genomics screen designer",
+      "initial_scope": "Genetic perturbations in a specified cellular setting and phenotype; combinations and chemical interventions are separate protocols.",
+      "comparison_question": "Does a model select more perturbations producing a prespecified phenotype at a fixed test budget than simple controls in the intended held-out setting?",
+      "baselines": [
+        "Mean response and no change",
+        "Linear/statistical response model",
+        "Nearest measured perturbation"
+      ],
+      "endpoints": [
+        "Experimentally confirmed phenotype hits per test budget",
+        "Perturbation-specific expression signal as an intermediate endpoint",
+        "Coverage and uncertainty for unseen interventions or contexts"
+      ],
+      "validation_requirements": [
+        "Separate unseen genes, combinations and cell contexts",
+        "Hold out biological/experimental units",
+        "Audit guide efficacy, batch and shared-control effects",
+        "Do not select evaluation genes using held-out responses",
+        "Treat information-gain experiment design as a different question"
+      ],
+      "candidate_sources": [
+        {
+          "url": "https://arcinstitute.org/news/virtual-cell-challenge-2025-wrap-up",
+          "role": "Direct challenge participation and baseline limitations"
+        },
+        {
+          "url": "https://www.nature.com/articles/s41587-025-02777-8",
+          "role": "Systema perturbation-specific evaluation"
+        },
+        {
+          "url": "https://www.nature.com/articles/s41592-025-02980-0",
+          "role": "Multi-dataset generalisation benchmark"
+        }
+      ],
+      "next_deliverable": "Perturbation benchmark inventory with split taxonomy, control baselines and separate phenotype-selection versus expression metrics.",
+      "acceptance_criteria": [
+        "Extract guide/replicate/control/condition units and model cutoff",
+        "Preserve negative or baseline-matching results",
+        "Identify fixed-budget experimental selection evidence or an explicit gap"
+      ],
+      "responsible_roles": [
+        "Perturbation biology reviewer",
+        "Single-cell benchmark curator"
+      ],
+      "source_constraints": [
+        "Challenge participation is not laboratory adoption; dataset permissions and control/replicate completeness need audit"
+      ],
+      "priority_tier": "focus",
+      "collection_status": "planned",
+      "qualified_review_status": "pending",
+      "assigned_owner": null
+    },
+    {
+      "id": "R4",
+      "track": "research",
+      "title": "Single-cell annotation transfer",
+      "user": "Single-cell analyst interpreting a new cohort",
+      "initial_scope": "A new tissue/disease dataset with specified assay, ontology level and versioned reference.",
+      "comparison_question": "Does a method improve known-type annotation and unknown-type recognition at matched coverage over conventional reference/statistical methods across independent studies?",
+      "baselines": [
+        "Marker and nearest-reference annotation",
+        "Appropriate Azimuth, CellTypist or scANVI configuration",
+        "Embedding with simple classifier where applicable"
+      ],
+      "endpoints": [
+        "Class-specific and hierarchy-aware errors",
+        "Rare-type and absent-reference performance",
+        "Calibration and accuracy-versus-abstention coverage",
+        "Resource use and study/platform transfer"
+      ],
+      "validation_requirements": [
+        "Donor, whole-study and platform holdouts",
+        "Atlas/pretraining duplication audit",
+        "Independent expert or orthogonal label checks",
+        "Keep disease-state discovery and batch integration separate"
+      ],
+      "candidate_sources": [
+        {
+          "url": "https://azimuth.hubmapconsortium.org/",
+          "role": "Current Pan-Human annotation workflow"
+        },
+        {
+          "url": "https://www.nature.com/articles/s41467-024-51059-5",
+          "role": "scTab donor-holdout evaluation"
+        },
+        {
+          "url": "https://cellxgene.cziscience.com/",
+          "role": "Reference datasets and provenance"
+        }
+      ],
+      "next_deliverable": "Reference-transfer extraction matrix with dataset provenance, label hierarchy, unknown types and coverage-aware comparisons.",
+      "acceptance_criteria": [
+        "Identify actual study/donor independence and reference version",
+        "Do not treat inherited author labels as infallible truth",
+        "Extract per-type performance and abstention where available"
+      ],
+      "responsible_roles": [
+        "Single-cell biology reviewer",
+        "Cell atlas curator"
+      ],
+      "source_constraints": [
+        "Dataset and model references can share donors, cells or labels; confirm source-specific reuse terms"
+      ],
+      "priority_tier": "focus",
+      "collection_status": "planned",
+      "qualified_review_status": "pending",
+      "assigned_owner": null
+    },
+    {
+      "id": "R5",
+      "track": "research",
+      "title": "Structural hypotheses for experimental planning",
+      "user": "Structural biologist choosing interface mutations or constructs",
+      "initial_scope": "A bounded class of protein complexes; monomers, antibodies and ligands require separate protocols.",
+      "comparison_question": "Do model-derived structural hypotheses improve experimental choices relative to appropriate template/docking baselines at a fixed testing budget?",
+      "baselines": [
+        "Suitable template modelling",
+        "Appropriate docking protocol",
+        "Conventional experimental-selection strategy for prospective utility"
+      ],
+      "endpoints": [
+        "Task-specific contact/pose accuracy and failure coverage as intermediate evidence",
+        "Confidence calibration",
+        "Independent interface-mutation or construct success where measured"
+      ],
+      "validation_requirements": [
+        "Sequence, template, ligand and deposition-date overlap audit",
+        "Include failed predictions and relevant alternative conformations",
+        "Separate complex classes and exact configurations",
+        "Do not equate confidence or structural accuracy with binding, affinity or function"
+      ],
+      "candidate_sources": [
+        {
+          "url": "https://deepmind.google/science/alphafold/",
+          "role": "Owner-reported broad research-use signal"
+        },
+        {
+          "url": "https://www.nature.com/articles/s41467-025-67127-3",
+          "role": "FoldBench task- and similarity-specific assessment"
+        }
+      ],
+      "next_deliverable": "Task-specific structural benchmark matrix plus an explicit inventory of prospective experimental-utility evidence.",
+      "acceptance_criteria": [
+        "State the user's experimental choice and compatible comparison task",
+        "Extract configurations, cutoff, similarity controls and missing predictions",
+        "Label structural metrics as intermediate when experimental-selection outcomes are absent"
+      ],
+      "responsible_roles": [
+        "Structural biology reviewer",
+        "Structural benchmark curator"
+      ],
+      "source_constraints": [
+        "Broad AlphaFold use does not establish use or success of a particular complex workflow; audit experimental deposition dates and reuse"
+      ],
+      "priority_tier": "focus",
+      "collection_status": "planned",
+      "qualified_review_status": "pending",
+      "assigned_owner": null
+    }
+  ]
+}

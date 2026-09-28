@@ -8,7 +8,7 @@ import { evidenceSummaryParts, summariseUseCaseEvidence, type EvidenceSummary } 
 import styles from "@/components/catalogue/UseCases.module.css";
 
 const title = "Biological research use cases | rewire.it";
-const description = "Start with a biological question. Find relevant benchmarks, evaluated model configurations, execution methods and the limits of their evidence.";
+const description = "Research and clinical research questions guide evidence gathering. Explore collection plans, reviewed model comparisons and the limits of their evidence.";
 export const metadata: Metadata = {
   title, description,
   alternates: { canonical: "https://benchmarks.rewire.it/use-cases/" },
@@ -33,7 +33,7 @@ export default function UseCasesPage() {
       breadcrumbs={[{ name: "Database", path: "/" }, { name: "Use cases", path: "/use-cases/" }]}
       eyebrow={["Use cases", `${entries.length} ${entries.length === 1 ? "question" : "questions"} in this release`]}
       title="Start from a biological question"
-      intro="A use case takes a research question and the data you would bring to it, then shows which benchmark evaluations in this database inform it, which models were tested and what the evidence cannot tell you."
+      intro="A use case starts with a research question and your data, then explains the evidence we plan to gather, any model comparisons already collected and what they can establish for your decision."
     >
       <a className={styles.jump} href="#browse-heading">Browse all {entries.length} use cases</a>
     </PageHeader>
@@ -64,6 +64,7 @@ export default function UseCasesPage() {
           <div><dt><a href="/benchmarks/">Benchmarks</a></dt><dd>You want one benchmark&apos;s tasks, protocols, datasets and published results.</dd></div>
           <div><dt><a href="/models/">Models</a></dt><dd>You already know a model and want its evaluations, configurations and how to run it.</dd></div>
         </dl>
+        <h3>Research relevance and clinical evidence</h3>
         <p className={styles.muted}>Each question states its setting, endpoint and transfer limitations. A relevant assay result does not by itself establish clinical performance. Clinical research pages explain which patient or workflow questions the available evidence leaves unanswered.</p>
       </section>
       <section className={styles.section} aria-labelledby="browse-heading">
@@ -72,11 +73,12 @@ export default function UseCasesPage() {
       </section>
       <section className={styles.section} aria-labelledby="about-heading">
         <h2 id="about-heading">About this collection</h2>
-        <p>Use cases connect a research decision to existing tasks, evaluation protocols and source-linked results. They do not combine incompatible protocols into one ranking. Review method and missing evidence remain visible on every page.</p>
+        <p>User questions lead evidence gathering. A question can enter this collection before model comparisons have been collected: its plan states what to compare, how to validate it and what to collect next.</p>
+        <p>Where reviewed evidence is available, inspect the exact configurations, evaluation protocols and source-linked results. Incompatible protocols remain separate. Review method, research or clinical research scope, and missing evidence stay visible.</p>
         <p><a href="/contribute/">Contribute evidence or a correction</a> · <a href="/evidence/">Evidence and review methods</a></p>
         <details><summary>Release and downloads</summary>
           <p>Release <code>{initial.release_id}</code></p>
-          {initial.input_sha256 && <><p>Use-case input digest <code>{initial.input_sha256}</code></p><p><a href={`/omics/releases/${initial.release_id}/use-cases.json`} download>Download use cases and applicability mappings (JSON)</a></p></>}
+          {initial.input_sha256 && <><p>Use-case input digest <code>{initial.input_sha256}</code></p><p><a href={`/omics/releases/${initial.release_id}/use-cases.json`} download>Download questions, collection plans and applicability mappings (JSON)</a></p></>}
           <p><a href={`/omics/releases/${initial.release_id}/manifest.json`}>Release checksums</a></p>
         </details>
       </section>

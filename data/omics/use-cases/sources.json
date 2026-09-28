@@ -54,5 +54,59 @@
       "original_url": "https://github.com/rewire-bio/rewire-database/blob/194a78b37eed911d0872e9b047a2539a9fee5dd0/docs/research/proteingym-amfr-pilot-2026-09-25/README.md",
       "original_artifact_url": "https://raw.githubusercontent.com/rewire-bio/rewire-database/194a78b37eed911d0872e9b047a2539a9fee5dd0/docs/research/proteingym-amfr-pilot-2026-09-25/README.md"
     }
+  },
+  {
+    "id": "use-case-source-clinical-priorities-2026-09-28",
+    "kind": "source",
+    "name": "Rewire clinical use-case priorities: workflow definitions and evidence plans",
+    "description": "Rewire-authored, sourced workflow definitions and planned comparisons. Automated source review of these definitions; no model-performance evidence, clinical validation or human expert approval.",
+    "status": "source_checked",
+    "facets": {
+      "areas": [
+        "dna-genomes"
+      ]
+    },
+    "source_ids": [],
+    "links": [],
+    "attributes": {
+      "url": "https://benchmarks.rewire.it/omics/sources/57ebf436d7d92d349700d7f3cb533b80b88e4e15d0d3129e824bfa3b06ecdab7.md",
+      "artifact_url": "https://benchmarks.rewire.it/omics/sources/57ebf436d7d92d349700d7f3cb533b80b88e4e15d0d3129e824bfa3b06ecdab7.md",
+      "artifact_sha256": "57ebf436d7d92d349700d7f3cb533b80b88e4e15d0d3129e824bfa3b06ecdab7",
+      "version": "2026-09-28",
+      "retrieved_at": "2026-09-28T14:54:24.886Z",
+      "source_type": "rewire_use_case_documentation",
+      "evidence_origin": "rewire_documentation",
+      "review_artifact": "data/omics/use-cases/sources/clinical-priorities-2026-09-28.md",
+      "retrieval_method": "Rewire-authored document captured as exact bytes for publication. Primary references were researched on 2026-09-28 with retrieval limits disclosed in the document.",
+      "review_scope": "Definition of user decisions, scope and evidence requirements. Not an independent study, guideline or model applicability claim."
+    }
+  },
+  {
+    "id": "use-case-source-research-priorities-2026-09-28",
+    "kind": "source",
+    "name": "Rewire research use-case priorities: workflow definitions and evidence plans",
+    "description": "Rewire-authored, sourced workflow definitions and planned comparisons. Automated source review of these definitions; no model-performance evidence, clinical validation or human expert approval.",
+    "status": "source_checked",
+    "facets": {
+      "areas": [
+        "cells-tissues",
+        "dna-genomes",
+        "proteins-complexes"
+      ]
+    },
+    "source_ids": [],
+    "links": [],
+    "attributes": {
+      "url": "https://benchmarks.rewire.it/omics/sources/1f7c3d2d1e0ba852e4ae725bec2e77e55e0aa81496551242e3fbe9fee7662ae0.md",
+      "artifact_url": "https://benchmarks.rewire.it/omics/sources/1f7c3d2d1e0ba852e4ae725bec2e77e55e0aa81496551242e3fbe9fee7662ae0.md",
+      "artifact_sha256": "1f7c3d2d1e0ba852e4ae725bec2e77e55e0aa81496551242e3fbe9fee7662ae0",
+      "version": "2026-09-28",
+      "retrieved_at": "2026-09-28T14:54:24.886Z",
+      "source_type": "rewire_use_case_documentation",
+      "evidence_origin": "rewire_documentation",
+      "review_artifact": "data/omics/use-cases/sources/research-priorities-2026-09-28.md",
+      "retrieval_method": "Rewire-authored document captured as exact bytes for publication. Primary references were researched on 2026-09-28 with retrieval limits disclosed in the document.",
+      "review_scope": "Definition of user decisions, scope and evidence requirements. Not an independent study, guideline or model applicability claim."
+    }
   }
 ]

@@ -3,6 +3,7 @@ import type { DocumentReference, Firestore } from "firebase-admin/firestore";
 import { validateSnapshot } from "./validation.js";
 import { createCatalogueQuery } from "./catalogue-query.js";
 import { recordsDigest } from "./catalogue-integrity.js";
+import { researchChunks, researchDigest } from "./research-store.js";
 
 /**
  * Commit writes in batches bounded by bytes as well as by count.
@@ -116,6 +117,10 @@ export async function importRelease(
     size += bytes;
   }
   if (group.length) chunks.push(JSON.stringify(group));
+  const research = snapshot.research ? researchChunks(snapshot.research) : undefined;
+  if (research) await commitInBatches(db, research.map((items_json, index) => ({
+    ref: ref.collection("researchChunks").doc(String(index).padStart(6, "0")), data: { index, items_json },
+  })));
   await commitInBatches(
     db,
     chunks.map((records_json, index) => ({
@@ -133,6 +138,7 @@ export async function importRelease(
       records_digest: recordsDigest(snapshot.records),
       record_count: snapshot.records.length,
       imported_at: new Date().toISOString(),
+      ...(snapshot.research ? { research_schema_version: "1.0", research_chunks: research!.length, research_digest: researchDigest(snapshot.research), research_frozen_readiness: snapshot.research.readiness !== undefined } : {}),
     });
   });
   return {

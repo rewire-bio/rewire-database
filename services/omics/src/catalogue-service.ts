@@ -13,6 +13,7 @@ import {
   readStoredUseCases,
   useCasePublicationIdentity,
 } from "./use-case-import.js";
+import { readResearchChunks } from "./research-store.js";
 
 // One bounded, promise-coalesced snapshot per immutable release per warm instance.
 // Published releases are never modified. The active pointer itself is read afresh.
@@ -75,6 +76,7 @@ export async function catalogueQuery(
       released_at: meta.released_at,
       coverage: meta.coverage,
       records,
+      ...((meta.research_schema_version || meta.coverage?.research_schema_version) ? { research: await readResearchChunks(ref, meta) } : {}),
     });
     if (
       meta.records_digest &&
@@ -115,6 +117,7 @@ export async function activateRelease(db: Firestore, releaseId: string) {
     released_at: meta.released_at,
     coverage: meta.coverage,
     records,
+    ...((meta.research_schema_version || meta.coverage?.research_schema_version) ? { research: await readResearchChunks(ref, meta) } : {}),
   });
   createCatalogueQuery(snapshot);
   if (

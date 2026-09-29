@@ -39,6 +39,10 @@ import SectionNavigation, {
 import BenchmarkResearch, {
   type BenchmarkResearchData,
 } from "@/components/catalogue/BenchmarkResearch";
+import ResearchReadiness from "@/components/catalogue/ResearchReadiness";
+import { InvestigationList } from "@/components/catalogue/ResearchInvestigation";
+import { researchKinds } from "@/components/catalogue/ResearchLabels";
+import { getResearch } from "@/services/omics/src/research";
 import {
   kindLabels,
   singularKindLabels,
@@ -132,6 +136,13 @@ export default function RecordPage({ params }: { params: Params }) {
         return configuration ? [[id, configuration]] : [];
       }),
   );
+  const readiness = researchKinds.includes(record.kind)
+    ? query.researchReadiness({ id: record.id, limit: 1 }).items[0]
+    : undefined;
+  const manifests = readiness
+    ? getResearch(catalogue).manifests.filter((manifest) => readiness.manifest_ids.includes(manifest.id))
+    : [];
+  const investigations = readiness ? query.investigations({ record_id: record.id, limit: 25 }) : undefined;
   const results = query.results({ id: record.id, limit: 25 });
   const first = results.items[0];
   const evidenceScope = [...profileKinds, "result"].includes(record.kind)
@@ -416,6 +427,15 @@ export default function RecordPage({ params }: { params: Params }) {
               its correction links before using these results.
             </aside>
           )}
+          {readiness && <ResearchReadiness assessment={readiness} manifests={manifests} records={manifests.flatMap((manifest) => {
+            const protocol = query.get({ id: manifest.protocol_id, include_comparisons: false })?.record;
+            return protocol ? [protocol] : [];
+          })} />}
+          {investigations && investigations.items.length > 0 && <section className={styles.section}>
+            <h2>Reviewed investigations</h2>
+            <InvestigationList reports={investigations.items} />
+            {investigations.next_cursor && <p><Link href="/investigations/">View all reviewed investigations</Link></p>}
+          </section>}
           {record.kind === "result" && (
             <section
               id="methods"

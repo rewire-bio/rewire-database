@@ -10,6 +10,7 @@ import * as store from "./store.js";
 import { catalogueQuery } from "./catalogue-service.js";
 import type { CatalogueQuery } from "./catalogue-query.js";
 import { useCaseQuery } from "./use-case-service.js";
+import { researchCapabilities } from "./research.js";
 const t = initTRPC.context<Context>().create();
 const authenticated = t.procedure.use(({ ctx, next }) => {
   if (!ctx.user?.email_verified || !ctx.user.email)
@@ -84,6 +85,7 @@ export const appRouter = t.router({
             area: z.string().max(100).optional(),
             status: z.string().max(100).optional(),
             origin: z.string().max(100).optional(),
+            readiness: z.enum(researchCapabilities).optional(),
           })
           .strict(),
       )
@@ -184,6 +186,10 @@ export const appRouter = t.router({
           return q.evidence(filters);
         }),
       ),
+    researchReadiness: t.procedure.input(z.object({ ...pinned, ...pagination, id: id.optional(), capability: z.enum(researchCapabilities).optional(), ready: z.boolean().optional() }).strict())
+      .query(({ input }) => readCatalogue(input.release_id, q => { const { release_id, ...filters } = input; return q.researchReadiness(filters); })),
+    investigations: t.procedure.input(z.object({ ...pinned, ...pagination, id: id.optional(), record_id: id.optional() }).strict())
+      .query(({ input }) => readCatalogue(input.release_id, q => { const { release_id, ...filters } = input; return q.investigations(filters); })),
     auditRuns: t.procedure
       .input(z.object({ ...pinned, ...pagination }).strict())
       .query(({ input }) => auditRuns(firebase().db, input)),

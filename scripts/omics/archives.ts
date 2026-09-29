@@ -21,6 +21,9 @@ function expectedFiles(manifest: any): string[] {
     names.push(...parseUseCaseSourceDeclaration(manifest.coverage.use_case_sources)
       .map((source) => source.file));
   }
+  if (manifest.coverage?.research_schema_version === "1.0") {
+    names.push("research-manifests.json", "research-readiness.json", "research-investigations.json");
+  }
   if (manifest.coverage?.audit_history) {
     names.push(
       "audit-index.json",

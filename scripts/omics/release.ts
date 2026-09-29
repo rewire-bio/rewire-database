@@ -16,6 +16,9 @@ import {
   type UseCaseInputs,
 } from "../../services/omics/src/use-cases";
 import { addLocalEvaluations, localEvaluationInputs, addBaselineEvaluations, baselineEvaluationInputs } from "./local-evaluations";
+
+import { loadResearchInputs, researchFiles, researchInputFiles } from "./research-release";
+import { deriveResearchReadiness, validateResearchData, type ResearchData } from "../../services/omics/src/research";
 import {
   addAcquiredEvidence,
   acquisitionFiles,
@@ -56,6 +59,7 @@ export function buildRelease(
   streamEvidence = false,
   useCases?: UseCaseInputs,
   useCaseSources?: Record<string, string>,
+  research?: ResearchData,
 ) {
   if (useCases) {
     validateUseCaseHistory(useCases);
@@ -79,6 +83,8 @@ export function buildRelease(
   } else if (extraCoverage.use_case_sources !== undefined) {
     throw Error("Declared use-case sources require reviewed bytes");
   }
+  // Assessments belong to the new serving release, never copy a prior release's IDs.
+  if (research) research = { schema_version: research.schema_version, manifests: research.manifests, investigations: research.investigations };
   validateRecords(records);
   const schemaVersion =
     extraCoverage.entity_schema_version === "1.1" ? "1.1" : "1.0";
@@ -96,10 +102,14 @@ export function buildRelease(
   const all = ordered.map((r) => JSON.stringify(r)).join("\n") + "\n";
   const visible = publicRecords(ordered);
   validateRecords(visible);
+  if (research) {
+    validateResearchData(research, { schema_version: schemaVersion, release_id: "validation", released_at: releasedAt, records: visible, coverage: {} });
+    extraCoverage = { ...extraCoverage, research_schema_version: "1.0" };
+  }
   const releaseId =
     releasedAt.slice(0, 10) +
     "-" +
-    sha(all + releasedAt + JSON.stringify(extraCoverage)).slice(0, 12);
+    sha(all + releasedAt + JSON.stringify(extraCoverage) + (research ? JSON.stringify(research) : "")).slice(0, 12);
   const counts = Object.fromEntries(
     releaseKinds.map((k) => [k, visible.filter((r) => r.kind === k).length]),
   );
@@ -131,7 +141,9 @@ export function buildRelease(
     released_at: releasedAt,
     records: visible,
     coverage,
+    ...(research ? { research } : {}),
   };
+  if (snapshot.research) snapshot.research = { ...snapshot.research, readiness: deriveResearchReadiness(snapshot) };
   assertNoPrivateFields(snapshot);
   const quote = (v: unknown) => '"' + String(v ?? "").replace(/"/g, '""') + '"';
   const csv =
@@ -157,6 +169,7 @@ export function buildRelease(
     "catalogue.json": JSON.stringify(snapshot, null, 2) + "\n",
     "records.jsonl": visible.map((r) => JSON.stringify(r)).join("\n") + "\n",
     "records.csv": csv,
+    ...researchFiles(snapshot),
   };
   const streamedHashes: Record<string, string> = {};
   if (extraCoverage.evidence_table_version === "1.0" && streamEvidence) {
@@ -272,6 +285,7 @@ function main() {
     restoreArchivedRelease(baseRecords);
     restoreReleaseBundles();
   }
+  const research = loadResearchInputs();
   const ledger = fs.existsSync("data/omics/search-ledger.jsonl")
     ? fs
         .readFileSync("data/omics/search-ledger.jsonl", "utf8")
@@ -382,6 +396,7 @@ function main() {
         note: "Source-reviewed instructions and exact applicability links; execution receipts do not establish reproduction of published scores. Production contributions remain disabled.",
       },
       evidence_table_version: "1.0",
+      ...(research ? { research_generator_sha256: sha(["services/omics/src/research.ts", "services/omics/src/research-integrity.ts", "scripts/omics/research-release.ts"].map(file => fs.readFileSync(file, "utf8")).join("\n")) } : {}),
       evidence_table_generator_sha256: sha(
         [
           "services/omics/src/evidence-table.ts",
@@ -448,6 +463,7 @@ function main() {
               "Add two bounded ProteinGym protocol profiles with 24 sourced facts, distinguishing the 217-assay track from one complete AMFR assay. Preserve numerical results, source-authentication gaps and independent-reproduction limits.",
               "Name nine evaluated methods printed only as an author-year citation (eight ATOM3D comparisons) or an author surname (HEST, Ciga), from the benchmark text and the cited original sources. The ATOM3D RSR scorer is named only as a Rosetta scoring function; its citation conflict and settings stay unresolved. Printed labels remain searchable and auditable; IDs, values, locators and comparison conditions are unchanged. Add sourced DeepDTA and DeepAffinity method profiles.",
               "Preserve archived release bytes, historical URLs and MFASS history. Contribution intake remains controlled separately from catalogue publication.",
+              ...(research ? ["Add verified research manifests, frozen readiness assessments and reviewed-only investigation contracts. Record IDs and values remain unchanged."] : []),
             ],
           }
         : {}),
@@ -471,6 +487,7 @@ function main() {
         ...profileEvidenceInputs(),
         ...sourceLabelInputs(),
         ...useCaseInputFiles(),
+        ...researchInputFiles.filter(file => fs.existsSync(file)),
         ...reviewInputFiles.filter((file) => fs.existsSync(file)),
         ...profileInputs.filter((file) => fs.existsSync(file)),
         ...associationInputs.filter((file) => fs.existsSync(file)),
@@ -482,6 +499,7 @@ function main() {
     true,
     reviewedUseCases?.inputs,
     reviewedUseCases?.sourceFiles,
+    research,
   );
   // Enforce the live API contract before writing or building a new release.
   validateSnapshot(output.snapshot);

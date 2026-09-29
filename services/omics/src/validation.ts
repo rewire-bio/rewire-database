@@ -20,6 +20,7 @@ import { createCatalogueQuery } from "./catalogue-query.js";
 import { validateBenchmarkResearch } from "./benchmark-research.js";
 import { isIP } from "node:net";
 import { assertPublicCatalogue } from "./catalogue-query.js";
+import { researchDataSchema, validateResearchData } from "./research.js";
 
 const short = z.string().trim().min(1).max(500);
 export const id = z.string().regex(/^[a-z0-9][a-z0-9-]{0,254}$/);
@@ -249,12 +250,14 @@ export const snapshotSchema = z
     released_at: z.string().datetime(),
     records: z.array(recordSchema),
     coverage: z.record(z.string(), z.unknown()),
+    research: researchDataSchema.optional(),
   })
   .strict();
 export type CatalogueRecord = z.infer<typeof recordSchema>;
 export function validateSnapshot(input: unknown) {
   assertPublicCatalogue(input);
   const snapshot = snapshotSchema.parse(input);
+  if (snapshot.research) validateResearchData(snapshot.research, snapshot);
   const records = new Map(
     snapshot.records.map((record) => [record.id, record]),
   );

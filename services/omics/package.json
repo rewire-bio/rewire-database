@@ -18,6 +18,7 @@
     "mail:drain": "tsx src/mail-worker.ts"
   },
   "dependencies": {
+    "@noble/hashes": "2.4.0",
     "@trpc/server": "^11.0.0",
     "firebase-admin": "14.4.0",
     "firebase-functions": "7.4.0",

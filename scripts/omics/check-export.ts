@@ -30,6 +30,8 @@ import { validateRecords } from "./schema";
 import { verifyContributionExport } from "./contribution-export";
 import { createUseCaseQuery, validateUseCaseArtifact } from "../../services/omics/src/use-cases";
 import { parseUseCaseSourceDeclaration } from "./use-cases";
+import { researchFiles } from "./research-release";
+import { deriveResearchReadiness, getResearch } from "../../services/omics/src/research";
 const catalogue = JSON.parse(
   fs.readFileSync("out/omics/catalogue.json", "utf8"),
 );
@@ -59,6 +61,8 @@ const expectedSitemap = new Set(
     "/evidence/",
     "/audits/",
     "/use-cases/",
+    "/investigations/",
+    ...getResearch(catalogue).investigations.map((report) => `/investigations/${report.id}/`),
     ...useCaseEntries.map((entry) => `/use-cases/${entry.slug}/`),
     ...indexPaths,
     ...records.filter(recordIsIndexable).map(recordHref),
@@ -256,6 +260,7 @@ for (const url of [
     ),
   );
 }
+page("/investigations/");
 const papers = JSON.parse(
   fs.readFileSync("data/benchmark-literature/papers.json", "utf8"),
 );
@@ -285,6 +290,23 @@ for (const paper of papers) {
 }
 const evidenceIndex = createEvidenceIndex(catalogue, { cache: false });
 const evidenceRoot = path.join("out/omics/releases", catalogue.release_id);
+for (const [name, expected] of Object.entries(researchFiles(catalogue))) {
+  const exported = path.join(evidenceRoot, name);
+  if (!fs.existsSync(exported) || fs.readFileSync(exported, "utf8") !== expected)
+    failures.push(`Research sidecar differs from catalogue: ${name}`);
+}
+const research = getResearch(catalogue);
+for (const report of research.investigations) {
+  const html = page(`/investigations/${report.id}/`);
+  if (!html.includes(report.id)) failures.push(`Missing investigation evidence: ${report.id}`);
+}
+for (const item of deriveResearchReadiness(catalogue).filter(item => item.manifest_ids.length)) {
+  const record = records.find(record => record.id === item.record_id)!;
+  if (!page(recordHref(record)).includes('id="research-readiness"'))
+    failures.push(`Missing research readiness panel: ${item.record_id}`);
+}
+if (fs.readFileSync("out/sitemap.xml", "utf8").includes("_no-reviewed-reports"))
+  failures.push("Empty investigation sentinel entered sitemap");
 if (
   fileSha256(path.join(evidenceRoot, "evidence.jsonl")) !==
     chunksSha256(evidenceJsonlLines(evidenceIndex.iterate())) ||

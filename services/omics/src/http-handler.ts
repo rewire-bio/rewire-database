@@ -23,6 +23,8 @@ const catalogueProcedures = new Set([
   "catalogue.useCases",
   "catalogue.useCase",
   "catalogue.useCaseLinks",
+  "catalogue.researchReadiness",
+  "catalogue.investigations",
 ]);
 function catalogueRequest(req: Request): boolean {
   if (req.method !== "GET") return false;

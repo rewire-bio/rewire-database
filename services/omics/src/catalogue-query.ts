@@ -12,6 +12,7 @@ import { recordSearchText } from "./source-identity.js";
 import { createEvidenceIndex } from "./evidence-table.js";
 import { resolveComparisons } from "./published-comparisons.js";
 import type { ResolvedComparison } from "./published-comparisons.js";
+import { deriveResearchReadiness, getResearch, validateResearchData, type ResearchData, type ResearchReadiness, type ResearchCapability } from "./research.js";
 /** The public catalogue contract shared by Firestore and static-release adapters. */
 export interface CatalogueRecord {
   id: string;
@@ -30,6 +31,7 @@ export interface CatalogueSnapshot {
   released_at: string;
   coverage: Record<string, unknown>;
   records: CatalogueRecord[];
+  research?: ResearchData;
 }
 export interface ListInput {
   kind?: CatalogueRecord["kind"];
@@ -39,6 +41,7 @@ export interface ListInput {
   origin?: string;
   cursor?: string;
   limit?: number;
+  readiness?: ResearchCapability;
 }
 export interface ResultsInput {
   id: string;
@@ -141,6 +144,11 @@ function known(v: unknown): boolean {
 }
 export function createCatalogueQuery(snapshot: CatalogueSnapshot) {
   assertPublicCatalogue(snapshot);
+  if (snapshot.research) validateResearchData(snapshot.research, snapshot);
+  let researchReadiness: ResearchReadiness[] | undefined;
+  let researchReadinessById: Map<string, ResearchReadiness> | undefined;
+  const readiness = () => researchReadiness ||= deriveResearchReadiness(snapshot);
+  const readinessById = () => researchReadinessById ||= new Map(readiness().map(item => [item.record_id, item]));
   const records = snapshot.records
     .filter((r) => r.status !== "excluded")
     .sort((a, b) => a.id.localeCompare(b.id));
@@ -507,6 +515,7 @@ export function createCatalogueQuery(snapshot: CatalogueSnapshot) {
         skip: "status" | "area" | null,
       ) =>
         (!input.kind || r.kind === input.kind) &&
+        (!input.readiness || readinessById().get(r.id)?.capabilities[input.readiness].ready === true) &&
         (skip === "status" || !input.status || r.status === input.status) &&
         (skip === "area" ||
           !input.area ||
@@ -537,6 +546,7 @@ export function createCatalogueQuery(snapshot: CatalogueSnapshot) {
       const selected = visibleRecords.filter(
         (r) =>
           (!input.kind || r.kind === input.kind) &&
+          (!input.readiness || readinessById().get(r.id)?.capabilities[input.readiness].ready === true) &&
           (!input.status || r.status === input.status) &&
           (!input.area ||
             Object.values(r.facets).some((values) =>
@@ -550,14 +560,11 @@ export function createCatalogueQuery(snapshot: CatalogueSnapshot) {
               originMatches(row.origin),
             )),
       );
-      const selectedPage = page(
-        selected,
-        input,
-        canonical(filters),
-        (r) => r.id,
-      );
+      const selectedPage = page(selected, input, canonical(filters), (r) => r.id);
+      const selectedIds = new Set(selectedPage.items.map(item => item.id));
       return {
         ...selectedPage,
+        research_readiness: selectedPage.items.some(item => ["dataset", "dataset_subset", "evaluation"].includes(item.kind)) ? readiness().filter(item => selectedIds.has(item.record_id)) : [],
         available,
         evaluation_summaries: Object.fromEntries(
           selectedPage.items.map((record) => {
@@ -576,6 +583,23 @@ export function createCatalogueQuery(snapshot: CatalogueSnapshot) {
           }),
         ),
       };
+    },
+    researchReadiness(input: { id?: string; capability?: ResearchCapability; ready?: boolean; cursor?: string; limit?: number } = {}) {
+      const { cursor, limit, ...filters } = input;
+      if (input.ready !== undefined && !input.capability) throw new Error("Readiness state requires a capability");
+      const selected = readiness().filter(item => (!input.id || input.id === item.record_id) &&
+        (!input.capability || input.ready === undefined || item.capabilities[input.capability].ready === input.ready));
+      return page(selected, input, canonical({ researchReadiness: filters }), item => item.record_id);
+    },
+    investigations(input: { id?: string; record_id?: string; cursor?: string; limit?: number } = {}) {
+      const { cursor, limit, ...filters } = input;
+      const research = getResearch(snapshot);
+      const manifests = new Map(research.manifests.map(manifest => [manifest.id, manifest]));
+      const selected = research.investigations.filter(report => {
+        const manifest = manifests.get(report.manifest_id);
+        return (!input.id || report.id === input.id) && (!input.record_id || manifest?.dataset_id === input.record_id || manifest?.evaluation_ids.includes(input.record_id));
+      }).sort((a, b) => a.id.localeCompare(b.id));
+      return page(selected, input, canonical({ investigations: filters }), report => report.id);
     },
     evidence(input: {
       id: string;

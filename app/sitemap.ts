@@ -4,6 +4,7 @@ import { readFileSync } from "node:fs";
 import { parseCatalogue, recordHref } from "@/lib/omics";
 import { catalogueIndexPaths } from "@/lib/catalogue-index";
 import { buildUseCases } from "@/lib/use-cases-build";
+import { getResearch } from "@/services/omics/src/research";
 export default function sitemap(): MetadataRoute.Sitemap {
   const base = "https://benchmarks.rewire.it";
   const catalogue = parseCatalogue(JSON.parse(readFileSync("public/omics/catalogue.json", "utf8")));
@@ -21,5 +22,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...catalogue.records.filter(recordIsIndexable).map((record) => ({
       url: base + recordHref(record),
     })),
+    { url: `${base}/investigations/` },
+    ...getResearch(catalogue).investigations.map((report) => ({ url: `${base}/investigations/${report.id}/`, lastModified: report.review.reviewed_at })),
   ];
 }

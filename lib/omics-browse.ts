@@ -1,12 +1,14 @@
 import { formatScore } from "./score-display";
 import { omicsKinds, type OmicsKind, type OmicsRecord } from "./omics";
 import { recordSearchText } from "../services/omics/src/source-identity";
+import type { ResearchReadiness } from "../services/omics/src/research";
 export type CatalogueFilters = {
   kind: OmicsKind;
   q: string;
   area: string;
   status: string;
   origin: string;
+  readiness: "" | keyof ResearchReadiness["capabilities"];
 };
 /** "1 result", "2 results": counts shown to readers. */
 export function countLabel(count: number, singular: string, plural = `${singular}s`): string {
@@ -35,6 +37,7 @@ export const defaultFilters: CatalogueFilters = {
   area: "",
   status: "",
   origin: "",
+  readiness: "",
 };
 export const kindLabels: Record<OmicsKind, string> = {
   model: "Models",
@@ -90,19 +93,27 @@ export function readCatalogueFilters(search: string): CatalogueFilters {
   const params = new URLSearchParams(search);
   const kind = params.get("kind") as OmicsKind;
   const origin = params.get("origin") || "";
+  const readiness = params.get("readiness") || "";
   return {
     kind: omicsKinds.includes(kind) ? kind : "model",
     q: params.get("q") || "",
     area: params.get("area") || "",
     status: params.get("status") || "",
     origin: ["literature", "rewire"].includes(origin) ? origin : "",
+    readiness: ["dataset", "dataset_subset", "evaluation"].includes(kind) &&
+      ["replay", "analysis", "local_run", "validation"].includes(readiness)
+      ? readiness as keyof ResearchReadiness["capabilities"] : "",
   };
 }
 export function filterCatalogue(
   records: OmicsRecord[],
   filters: CatalogueFilters,
+  readiness: ResearchReadiness[] = [],
 ) {
   const byId = new Map(records.map((record) => [record.id, record]));
+  const readyIds = new Set(readiness.filter((item) =>
+    filters.readiness && item.capabilities[filters.readiness].ready,
+  ).map((item) => item.record_id));
   const query = filters.q.trim().toLowerCase();
   return records.filter((record) => {
     const evaluation =
@@ -125,6 +136,7 @@ export function filterCatalogue(
           ].includes(String(origin)));
     return (
       record.kind === filters.kind &&
+      (!filters.readiness || readyIds.has(record.id)) &&
       matchesOrigin &&
       (!filters.area || record.facets.areas?.includes(filters.area)) &&
       (!filters.status || record.status === filters.status) &&

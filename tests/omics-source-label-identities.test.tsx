@@ -141,7 +141,7 @@ describe("reviewed source-label identities", () => {
     expect(ids("[Öztürk et al., 2018]")).toEqual(["atom3d-method-zt-rk-et-al-2018"]);
     expect(ids("ciga")).toEqual(["hest-method-ciga"]);
     expect(ids("simclr histology")).toEqual(["hest-method-ciga"]);
-    expect(filterCatalogue(snapshot.records as any, { kind: "result", q: "karimi et al", area: "", status: "", origin: "" })
+    expect(filterCatalogue(snapshot.records as any, { kind: "result", readiness: "", q: "karimi et al", area: "", status: "", origin: "" })
       .map((item) => item.id)).toContain("atom3d-result-karimi-et-al-2019-lba-rmse-rmse");
     const detail = query.get({ id: "atom3d-task-lba-rmse" })!;
     const rows = detail.published_comparisons.flatMap((panel) => panel.rows);

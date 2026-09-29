@@ -20,12 +20,15 @@
     "omics:service:test": "npm --prefix services/omics run test:emulator",
     "omics:check-updates": "tsx scripts/omics/check-updates.ts",
     "omics:check-export": "tsx scripts/omics/check-export.ts",
+    "omics:research:audit": "tsx scripts/omics/research-audit.ts",
+    "omics:research:import": "tsx scripts/omics/research-import.ts",
     "preview:stack": "npm --prefix services/omics run build && firebase emulators:start --project demo-rewire-omics --only hosting,functions,auth,firestore",
     "deploy:stack": "firebase deploy --only hosting,functions:omics,firestore",
     "check:http": "node scripts/check-hosting-http.mjs",
     "omics:baseline-coverage": "tsx scripts/omics/baseline-coverage.ts"
   },
   "dependencies": {
+    "@noble/hashes": "2.4.0",
     "@trpc/client": "^11.18.0",
     "firebase": "^12.19.0",
     "lucide-react": "^0.473.0",

@@ -120,6 +120,11 @@ export default function BenchmarksPage() {
             </p>
             <div className={styles.referenceGrid}>
               <article>
+                <h3>Investigate discrepancies</h3>
+                <p>Check whether the data supports replaying a metric, investigating an unexpected result or testing an explanation independently.</p>
+                <Link href="/investigations/">Readiness and investigations →</Link>
+              </article>
+              <article>
                 <h3>Rewire evaluations</h3>
                 <p>
                   Read the protocol, coverage and limitations behind our

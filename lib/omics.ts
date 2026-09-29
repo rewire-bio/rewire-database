@@ -1,5 +1,6 @@
 import { catalogueText } from "./catalogue-text";
 import { assertNoPrivateFields } from "../services/omics/src/private-fields";
+import { validateResearchData, type ResearchData } from "../services/omics/src/research";
 import {
   entityKinds,
   legacyKinds,
@@ -27,6 +28,7 @@ export interface OmicsCatalogue {
   released_at: string;
   records: OmicsRecord[];
   coverage: Record<string, unknown>;
+  research?: ResearchData;
 }
 export function parseCatalogue(value: unknown): OmicsCatalogue {
   assertNoPrivateFields(
@@ -61,6 +63,7 @@ export function parseCatalogue(value: unknown): OmicsCatalogue {
       throw new Error("Invalid catalogue record.");
     ids.add(record.id);
   }
+  if (catalogue.research) validateResearchData(catalogue.research, catalogue);
   return {
     ...catalogue,
     records: catalogue.records.filter((record) => record.status !== "excluded"),

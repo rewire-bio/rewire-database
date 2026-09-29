@@ -29,6 +29,9 @@ import {
 } from "@/lib/omics-browse";
 import styles from "./database.module.css";
 import ui from "./Explorer.module.css";
+import { ResearchReadinessSummary } from "@/components/catalogue/ResearchReadiness";
+import { researchCapabilityLabels, researchKinds } from "@/components/catalogue/ResearchLabels";
+import researchStyles from "@/components/catalogue/Research.module.css";
 
 export default function Explorer({
   initial,
@@ -120,6 +123,7 @@ export default function Explorer({
             area: filters.area || undefined,
             status: filters.status || undefined,
             origin: filters.origin || undefined,
+            readiness: filters.readiness || undefined,
             cursor,
             limit: BROWSE_PAGE_SIZE,
           },
@@ -185,7 +189,9 @@ export default function Explorer({
     window.history[replace ? "replaceState" : "pushState"](null, "", url);
   };
   const change = (key: keyof CatalogueFilters, value: string) => {
-    navigate({ ...filters, [key]: value }, undefined, key === "q");
+    const next = { ...filters, [key]: value };
+    if (key === "kind" && !researchKinds.includes(value)) next.readiness = "";
+    navigate(next, undefined, key === "q");
   };
   // Controls reflect the requested URL immediately; rows belong to the last
   // successful request. Never display that page under different filters.
@@ -338,6 +344,20 @@ export default function Explorer({
           </button>
         )}
       </div>
+      {researchKinds.includes(filters.kind) && (
+        <div className={researchStyles.filters}>
+          <label className={researchStyles.filter}>
+            Research readiness
+            <select value={filters.readiness} onChange={(event) => change("readiness", event.target.value)}>
+              <option value="">All records, including evidence gaps</option>
+              {Object.entries(researchCapabilityLabels).map(([value, label]) => (
+                <option key={value} value={value}>{label}: evidence complete</option>
+              ))}
+            </select>
+          </label>
+          <p className={styles.muted}>Readiness requires connected artifacts and verification. Source review alone is insufficient. <Link href="/investigations/">About investigations</Link></p>
+        </div>
+      )}
       <div aria-live="polite">
         {busy ? (
           <p>Loading {kindLabels[filters.kind].toLowerCase()}…</p>
@@ -459,6 +479,9 @@ export default function Explorer({
                     : "No evaluations linked in this release"}
                 </p>
               )}
+            {data.research_readiness?.find((item) => item.record_id === record.id) && (
+              <ResearchReadinessSummary assessment={data.research_readiness.find((item) => item.record_id === record.id)!} href={recordHref(record)} />
+            )}
           </article>
         ))}
       </div>

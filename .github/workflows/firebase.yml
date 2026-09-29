@@ -28,8 +28,10 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: npm
-      - run: npm ci
+      # Avoid a second cache archive while the static export occupies the disk.
+      - run: |
+          npm ci
+          npm cache clean --force
       - run: npm test
       - run: npm run lint
       - name: Validate contribution configuration and build website
@@ -45,6 +47,11 @@ jobs:
           NEXT_PUBLIC_FIREBASE_APP_ID: ${{ vars.NEXT_PUBLIC_FIREBASE_APP_ID }}
           NEXT_PUBLIC_GA_ID: ${{ vars.NEXT_PUBLIC_GA_ID }}
       - run: npm run typecheck
+      - name: Release intermediate Next build space
+        # Static hosting uses out/. Keep generated types, exports and archives.
+        run: |
+          rm -rf .next/server .next/cache
+          df -h .
       - run: npm run check:export
         env:
           NEXT_PUBLIC_GA_ID: ${{ vars.NEXT_PUBLIC_GA_ID }}

@@ -44,8 +44,11 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-          cache: npm
-      - run: npm ci
+      # The export nearly fills the runner; do not retain or upload an npm
+      # download cache alongside immutable releases and generated pages.
+      - run: |
+          npm ci
+          npm cache clean --force
       - run: npm run omics:migrate
       - name: Verify reproducible migration
         run: git diff --exit-code -- data/omics/migrated.jsonl data/omics/scope-audit.jsonl
@@ -53,6 +56,11 @@ jobs:
         run: python3 -m unittest discover -s scripts/omics/tests -p "test_*.py"
       - run: npm run test:omics
       - run: npm run build
+      - name: Release intermediate Next build space
+        # Static hosting uses out/. Keep generated types, exports and archives.
+        run: |
+          rm -rf .next/server .next/cache
+          df -h .
       - run: npm run omics:check-export
   contributions:
     runs-on: ubuntu-latest

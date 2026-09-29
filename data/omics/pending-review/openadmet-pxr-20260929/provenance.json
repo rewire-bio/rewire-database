@@ -1,0 +1,23 @@
+{
+  "source_repository": "rewire-bio/rewire.it",
+  "source_commit": "19949f47a0f0c1cb29f4e3f9f3f61998941549ab",
+  "recovered_at": "2026-09-29",
+  "status": "pending_schema_and_source_review",
+  "files": [
+    {
+      "path": "source/discovery.jsonl",
+      "sha256": "a121faed30a7a2ed782c854ce24fc92bb2b9d7851ff549c5ee4dd6299119f5a5",
+      "bytes": 8419
+    },
+    {
+      "path": "source/search-ledger.jsonl",
+      "sha256": "fe45bad23e3058baffebec8fcb61843a3110839e96a39ceec5ea7d4bb9226002",
+      "bytes": 1142
+    },
+    {
+      "path": "source/research.md",
+      "sha256": "802d988dea8f5c8694d5662f727efe3c5572936bbf2522b1e3b1009337ab56f2",
+      "bytes": 738
+    }
+  ]
+}

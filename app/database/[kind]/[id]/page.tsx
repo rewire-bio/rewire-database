@@ -1,3 +1,4 @@
+import BenchmarkCoverage from "@/components/catalogue/BenchmarkCoverage";
 import Breadcrumbs from "@/components/catalogue/Breadcrumbs";
 import { recordBreadcrumbs, socialMetadata } from "@/lib/catalogue-sharing";
 import { formatScore } from "@/lib/score-display";
@@ -509,6 +510,13 @@ export default function RecordPage({ params }: { params: Params }) {
                 checked does not mean independently reproduced.
               </p>
             </section>
+          )}
+          {evaluationDesign && (
+            <BenchmarkCoverage
+              results={results.total}
+              evaluations={results.evaluation_count}
+              charts={detail.comparison_options.length}
+            />
           )}
           {evaluationDesign && (
             <ComparisonWorkspace

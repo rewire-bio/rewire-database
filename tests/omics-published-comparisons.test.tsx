@@ -1,3 +1,4 @@
+import { benchmarkCoverage } from "../services/omics/src/benchmark-coverage";
 import { afterEach, beforeEach, describe, it, expect, vi } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
 import { act, create, type ReactTestRenderer } from "react-test-renderer";
@@ -180,6 +181,34 @@ describe("source-scoped comparison figures", () => {
       createCatalogueQuery(snapshot).get({ id: "parent" })!
         .published_comparisons,
     ).toHaveLength(1);
+  });
+  it("rejects conflicting inherited panel IDs while retaining identical duplicates", () => {
+    const snapshot = fixture();
+    const benchmark = snapshot.records.find(r => r.id === "benchmark")!;
+    const panels = structuredClone(benchmark.attributes.comparison_panels) as PublishedComparison[];
+    snapshot.records.push(record("parent", "benchmark", { comparison_panels: panels }),
+      record("claim", "claim", { field: "links:evaluates_task:parent", value: "parent", source_locator: "Methods" }, [{ relation: "subject", target_id: "benchmark" }]));
+    benchmark.links.push({ relation: "evaluates_task", target_id: "parent" });
+    expect(createCatalogueQuery(snapshot).get({ id: "parent" })!.published_comparisons).toHaveLength(1);
+    panels[0].title = "Conflicting figure";
+    expect(() => createCatalogueQuery(snapshot).get({ id: "parent" })).toThrow("Conflicting inherited comparison: comparison");
+  });
+  it("audits complete row counts, inherited figures, evidence sources and empty pages", () => {
+    const snapshot = fixture();
+    const benchmark = snapshot.records.find(r => r.id === "benchmark")!;
+    snapshot.records.push(record("parent", "benchmark"), record("empty", "task"),
+      record("hidden", "benchmark"), record("historical", "protocol"),
+      record("claim", "claim", { field: "links:evaluates_task:parent", value: "parent", source_locator: "Methods" }, [{ relation: "subject", target_id: "benchmark" }]));
+    snapshot.records.find(r => r.id === "hidden")!.status = "excluded";
+    snapshot.records.find(r => r.id === "historical")!.status = "superseded";
+    benchmark.links.push({ relation: "evaluates_task", target_id: "parent" });
+    const audit = benchmarkCoverage(snapshot);
+    expect(audit.release_id).toBe("release");
+    expect(audit.pages.find(p => p.id === "parent")).toMatchObject({ metric_rows: 30, evaluations: 30, charts: 1, charted_metric_rows: 30, chart_protocol_ids: ["benchmark"], source_urls: ["https://example.org/paper"] });
+    expect(audit.pages.find(p => p.id === "empty")).toMatchObject({ metric_rows: 0, state: "results_not_yet_collected" });
+    expect(audit.pages.find(p => p.id === "historical")!.state).toBe("historical");
+    expect(audit.pages.some(p => p.id === "hidden")).toBe(false);
+    expect(audit.summary.benchmark).toEqual({ pages: 2, with_results: 2, with_charts: 2 });
   });
   it("never upgrades incomplete comparisons to the stronger compatibility gate", () => {
     const query = createCatalogueQuery(fixture());

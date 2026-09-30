@@ -32,3 +32,11 @@ GitHub secrets cannot be read back or copied out of the blog repository. Supply 
 On main, Firebase publishes its API and complete origin first with its existing rollback transaction. Cloudflare then captures the previous Worker deployment, publishes the corresponding core UI, and checks HTTP behavior and the live catalogue. A failed Cloudflare publish/probe restores the prior Worker deployment; Firebase retains the newly reviewed, backward-compatible release and all historical release IDs. Cloudflare CI refuses to run without an existing rollback target. Backend contract changes must remain compatible with the preceding frontend; this is already required for Firebase rollback.
 
 This repository does not create DNS records or alter registrar nameservers. Record DNS cutover and final hostname verification separately.
+
+## Bootstrap without rebuilding locally
+
+After a PR or main build passes its checks, download that run's `cloudflare-web-COMMIT` GitHub artifact. Its three-day retention is intentional. The gzip tar contains only the checked static subset, Worker source, public Firebase routing configuration, Wrangler configuration, asset inventory and source metadata. It contains no backend data dump, private submissions, credentials or service environment.
+
+Extract the tar in an empty directory and inspect `.cloudflare/build.json`; its commit is GitHub's exact checked commit (a PR run uses the synthetic merge commit). Verify that this is the reviewed revision and that the workflow completed its checks before deployment. From that directory run `npx --yes wrangler@4.144.0 deploy` using the operator's existing OAuth login. The package contains `firebase.json` because the Worker bundles its reviewed redirects. Keep `CLOUDFLARE_DEPLOY_ENABLED=false` until bootstrap, hostname verification and the durable repository token are ready.
+
+Do not combine assets downloaded from one run with Worker source or configuration from another. A later main-branch artifact can be deployed through the normal CI transaction once the initial rollback target exists.

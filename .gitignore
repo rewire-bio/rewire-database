@@ -88,3 +88,5 @@ gha-creds-*.json
 
 # Staged Cloudflare assets (generated from out/)
 /.cloudflare/
+
+/cloudflare-web.tar.gz

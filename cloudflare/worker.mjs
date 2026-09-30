@@ -25,6 +25,15 @@ export default {
       }
     }
     const upstream = new URL(url.pathname + url.search, FIREBASE_ORIGIN);
+    // Cloudflare's production origin fetch can negotiate a compressed range
+    // despite identity being requested. Let Firebase serve public byte ranges
+    // directly until the origin guarantees uncompressed partial responses.
+    if ((url.pathname === "/omics" || url.pathname.startsWith("/omics/")) &&
+      ["GET", "HEAD"].includes(request.method) && request.headers.has("range")) {
+      return new Response(null, { status: 307, headers: {
+        Location: upstream.href, "Cache-Control": "no-store", "Referrer-Policy": "no-referrer",
+      } });
+    }
     const privateRequest = url.pathname === "/api" || url.pathname.startsWith("/api/") ||
       url.pathname === "/__/auth" || url.pathname.startsWith("/__/auth/") ||
       request.headers.has("authorization") || request.headers.has("cookie");
@@ -56,7 +65,7 @@ export default {
         headers.set("location", destination.href);
       }
     }
-    // Stream exports, including range responses. No parsing, compression,
+    // Stream complete exports. Public ranges are redirected above. No parsing, compression,
     // scientific-record transformation, or Cache API storage is performed here.
     return new Response(response.body, { status: response.status, statusText: response.statusText, headers });
   },

@@ -32,6 +32,7 @@ if (!previous?.versions?.length) throw new Error("Bootstrap and verify the Worke
 try {
   await run(["npx", "--no-install", "wrangler", "deploy"]);
   await run(["node", "scripts/check-hosting-http.mjs", origin]);
+  await run(["node", "scripts/check-cloudflare-ranges.mjs", origin]);
   await run(["node", "scripts/check-live-catalogue.mjs", origin, "--website"]);
 } catch (error) {
   try {

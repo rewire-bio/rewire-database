@@ -9,6 +9,18 @@ import { prepareCloudflare } from "../scripts/prepare-cloudflare.mjs";
 afterEach(() => { vi.unstubAllGlobals(); });
 const assets = { fetch: vi.fn(async () => new Response("missing", { status: 404 })) };
 describe("Cloudflare hybrid hosting", () => {
+  it("temporarily redirects public byte ranges without changing path, query or method", async () => {
+    const fetcher = vi.fn();
+    vi.stubGlobal("fetch", fetcher);
+    for (const method of ["GET", "HEAD"]) {
+      const response = await worker.fetch(new Request("https://benchmarks.rewirebio.io/omics/releases/id/audit-checks.jsonl?download=a%26b&v=1&v=2", { method, headers: { Range: "bytes=100-199", "If-Range": '"original-etag"' } }), { ASSETS: assets });
+      expect(response.status).toBe(307);
+      expect(response.headers.get("location")).toBe("https://rewire-it.web.app/omics/releases/id/audit-checks.jsonl?download=a%26b&v=1&v=2");
+      expect(response.headers.get("cache-control")).toBe("no-store");
+      expect(response.headers.get("referrer-policy")).toBe("no-referrer");
+    }
+    expect(fetcher).not.toHaveBeenCalled();
+  });
   it("preserves reviewed legacy redirects and repeated encoded query values", async () => {
     const response = await worker.fetch(new Request("https://benchmarks.rewirebio.io/literature/?q=a%26b&kind=model&q=%CE%B2"), { ASSETS: assets });
     expect(response.status).toBe(301);
@@ -20,18 +32,16 @@ describe("Cloudflare hybrid hosting", () => {
     const response = await worker.fetch(new Request("https://benchmarks.rewirebio.io/missing/"), { ASSETS: assets });
     expect(response.status).toBe(404);
   });
-  it("streams range exports with their exact bytes and headers", async () => {
+  it("streams complete exports with their exact bytes and headers", async () => {
     const bytes = new Uint8Array([0, 255, 4, 10]);
-    const fetcher = vi.fn(async () => new Response(bytes, { status: 206, headers: { "content-range": "bytes 0-3/200", etag: '"release-checksum"' } }));
+    const fetcher = vi.fn(async () => new Response(bytes, { status: 200, headers: { etag: '"release-checksum"' } }));
     vi.stubGlobal("fetch", fetcher);
-    const response = await worker.fetch(new Request("https://benchmarks.rewirebio.io/omics/releases/id/records.csv?download=1", { headers: { range: "bytes=0-3" } }), { ASSETS: assets });
+    const response = await worker.fetch(new Request("https://benchmarks.rewirebio.io/omics/releases/id/records.csv?download=1"), { ASSETS: assets });
     const [upstream, options] = fetcher.mock.calls[0] as any;
     expect(upstream.url).toBe("https://rewire-it.web.app/omics/releases/id/records.csv?download=1");
-    expect(upstream.headers.get("range")).toBe("bytes=0-3");
     expect(upstream.headers.get("accept-encoding")).toBe("identity");
     expect(options.redirect).toBe("manual");
-    expect(response.status).toBe(206);
-    expect(response.headers.get("content-range")).toBe("bytes 0-3/200");
+    expect(response.status).toBe(200);
     expect(new Uint8Array(await response.arrayBuffer())).toEqual(bytes);
   });
   it("fetches missing content-addressed chunks from Firebase during rollout and rollback", async () => {

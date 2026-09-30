@@ -104,6 +104,11 @@ jobs:
         run: npm ci --prefix services/omics && npm --prefix services/omics run build && npm --prefix services/omics run check:functions:load
       - name: Verify Hosting and API integration
         run: npx firebase emulators:exec --project demo-rewire-omics --only hosting,functions,auth,firestore 'npm --prefix services/omics test && node scripts/check-api-hosting.mjs'
+        env:
+          # The HTTP probe explicitly verifies the disabled-intake contract.
+          # Keep emulator settings independent of the production publication plan.
+          OMICS_CONTRIBUTIONS_ENABLED: 'false'
+          OMICS_MAIL_ENABLED: 'false'
       - name: Package checked Cloudflare frontend for operator bootstrap
         run: |
           node -e 'require("node:fs").writeFileSync(".cloudflare/build.json", JSON.stringify({repository: process.env.GITHUB_REPOSITORY, commit: process.env.GITHUB_SHA, run: process.env.GITHUB_RUN_ID, wrangler: require("./package.json").devDependencies.wrangler}, null, 2) + "\n")'

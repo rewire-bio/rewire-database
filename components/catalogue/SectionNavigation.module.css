@@ -1,7 +1,10 @@
 .nav {
   position: sticky;
   top: var(--site-header-height);
-  min-height: var(--section-nav-height);
+  /* Fixed, not var(--section-nav-height): that variable is written from this nav's own measured
+     height for scroll-offset math elsewhere, so using it here too would create a feedback loop
+     that can grow but never shrink. */
+  min-height: 62px;
   z-index: 20;
   margin: 0 0 24px;
   padding: 10px 0;
@@ -39,6 +42,9 @@
   text-underline-offset: 3px;
 }
 @media (max-width: 720px) {
+  .nav {
+    min-height: 66px;
+  }
   .links {
     display: none;
   }

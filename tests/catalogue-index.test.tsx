@@ -38,8 +38,8 @@ describe("static catalogue indexes", () => {
   it("gives every index page its own canonical and sitemap path without duplicate page 1 or query combinations", () => {
     const paths = catalogueIndexPaths(catalogue.records);
     expect(paths).toEqual(["/benchmarks/", ...Array.from({ length: modelPageCount(catalogue.records) }, (_, i) => modelIndexHref(i + 1))]);
-    expect(indexMetadata("benchmark").alternates?.canonical).toBe("https://benchmarks.rewire.it/benchmarks/");
-    for (let page = 1; page <= modelPageCount(catalogue.records); page++) expect(indexMetadata("model", page).alternates?.canonical).toBe(`https://benchmarks.rewire.it${modelIndexHref(page)}`);
+    expect(indexMetadata("benchmark").alternates?.canonical).toBe("https://benchmarks.rewirebio.io/benchmarks/");
+    for (let page = 1; page <= modelPageCount(catalogue.records); page++) expect(indexMetadata("model", page).alternates?.canonical).toBe(`https://benchmarks.rewirebio.io${modelIndexHref(page)}`);
     for (const invalid of ["1", "01", "0", "-1", "2.0", "02", "999999", "Infinity", "a"]) expect(validModelPage(invalid, catalogue.records)).toBe(false);
     expect(validModelPage("2", catalogue.records)).toBe(true);
     expect(paths.every((path) => !path.includes("?"))).toBe(true);

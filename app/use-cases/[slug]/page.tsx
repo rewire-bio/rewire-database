@@ -22,7 +22,7 @@ export function generateMetadata({ params }: { params: Params }): Metadata {
   const title = `${detail.use_case.title} | rewire.it`;
   const description = detail.use_case.question;
   const path = `/use-cases/${detail.use_case.slug}/`;
-  return { title, description, alternates: { canonical: `https://benchmarks.rewire.it${path}` }, ...socialMetadata({ title, description, path }) };
+  return { title, description, alternates: { canonical: `https://benchmarks.rewirebio.io${path}` }, ...socialMetadata({ title, description, path }) };
 }
 
 export default function UseCasePage({ params }: { params: Params }) {

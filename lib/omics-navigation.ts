@@ -4,7 +4,7 @@ export function legacyCatalogueDestination(
   search = "",
   hash = "",
 ): string {
-  const base = "https://benchmarks.rewire.it";
+  const base = "https://benchmarks.rewirebio.io";
   if (!target.startsWith("/") || target.startsWith("//"))
     throw new Error("Catalogue redirects must use a local path.");
   const destination = new URL(target, base);

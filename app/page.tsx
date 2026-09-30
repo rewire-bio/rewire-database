@@ -16,7 +16,7 @@ const pageMetadata = {
   title: "Biological model benchmark database",
   description:
     "Explore specialist biological models, benchmarks, datasets, baselines and source-linked results in one database.",
-  alternates: { canonical: "https://benchmarks.rewire.it/" },
+  alternates: { canonical: "https://benchmarks.rewirebio.io/" },
 };
 export const metadata: Metadata = {
   ...pageMetadata,

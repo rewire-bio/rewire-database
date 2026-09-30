@@ -56,6 +56,6 @@ const pages: Omit<PageMetadataContract, "canonical">[] = [
 export const utilityPageMetadataContracts: PageMetadataContract[] = pages.map(
   (page) => ({
     ...page,
-    canonical: new URL(page.path, "https://benchmarks.rewire.it").href,
+    canonical: new URL(page.path, "https://benchmarks.rewirebio.io").href,
   }),
 );

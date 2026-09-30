@@ -18,7 +18,7 @@ export function generateStaticParams(): Params[] {
 export function generateMetadata({ params }: { params: Params }): Metadata {
   const report = getResearch(buildCatalogue().catalogue).investigations.find((item) => item.id === params.id);
   if (!report) return { robots: { index: false, follow: false } };
-  return { title: report.title, description: report.question, alternates: { canonical: `https://benchmarks.rewire.it${investigationHref(report.id)}` } };
+  return { title: report.title, description: report.question, alternates: { canonical: `https://benchmarks.rewirebio.io${investigationHref(report.id)}` } };
 }
 
 export default function InvestigationPage({ params }: { params: Params }) {

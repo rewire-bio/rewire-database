@@ -337,7 +337,7 @@ describe("readable comparison evidence", () => {
 describe("rounded comparison values in table view", () => {
   let tree: ReactTestRenderer | undefined;
   beforeEach(() => {
-    let url = new URL("https://benchmarks.rewire.it/database/benchmark/benchmark/");
+    let url = new URL("https://benchmarks.rewirebio.io/database/benchmark/benchmark/");
     const events = new EventTarget();
     vi.stubGlobal("window", {
       get location() {

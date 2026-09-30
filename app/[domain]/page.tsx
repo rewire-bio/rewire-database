@@ -10,7 +10,7 @@ export function generateMetadata({ params }: Props): Metadata {
   const domain = getDomain(params.domain);
   return {
     title: `${domain?.name || "Models"} | Benchmark database`,
-    alternates: { canonical: "https://benchmarks.rewire.it/" },
+    alternates: { canonical: "https://benchmarks.rewirebio.io/" },
     robots: { index: false, follow: true },
   };
 }

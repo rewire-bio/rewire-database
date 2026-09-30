@@ -174,7 +174,7 @@ describe("explicit catalogue entity UI", () => {
     expect(
       generateMetadata({ params: { kind: "model", id: "configured" } })
         .alternates?.canonical,
-    ).toBe("https://benchmarks.rewire.it/database/configuration/configured/");
+    ).toBe("https://benchmarks.rewirebio.io/database/configuration/configured/");
     const html = renderToStaticMarkup(
       <RecordPage params={{ kind: "model", id: "configured" }} />,
     );

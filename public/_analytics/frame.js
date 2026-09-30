@@ -1,7 +1,7 @@
 /* Isolate GA from parent history, form events and URLs. Loaded only after opt-in. */
 (() => {
   "use strict";
-  const origin = "https://benchmarks.rewire.it";
+  const origin = "https://benchmarks.rewirebio.io";
   const frameOrigin = "https://rewire-it.web.app";
   if (window.location.origin !== frameOrigin || window.parent === window) return;
   let id;

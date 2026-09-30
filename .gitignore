@@ -85,3 +85,6 @@ __pycache__/
 firebase-debug*.log
 *-debug.log
 gha-creds-*.json
+
+# Staged Cloudflare assets (generated from out/)
+/.cloudflare/

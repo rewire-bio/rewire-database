@@ -21,7 +21,7 @@ vi.mock("../lib/catalogue-build", () => ({
   }),
 }));
 
-const origin = "https://benchmarks.rewire.it";
+const origin = "https://benchmarks.rewirebio.io";
 const cases = [
   {
     path: "/evidence/", Page: EvidencePage, indexable: true,

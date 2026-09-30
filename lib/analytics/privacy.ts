@@ -1,4 +1,4 @@
-export const ANALYTICS_ORIGIN = "https://benchmarks.rewire.it";
+export const ANALYTICS_ORIGIN = "https://benchmarks.rewirebio.io";
 // Existing Firebase Hosting alias for this site; a separate browser origin
 // prevents Google's script from inspecting the parent URL, DOM or history.
 export const ANALYTICS_FRAME_ORIGIN = "https://rewire-it.web.app";

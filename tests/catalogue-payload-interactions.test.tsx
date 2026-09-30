@@ -39,7 +39,7 @@ async function flush() {
   });
 }
 async function changeLocation(search: string) {
-  url = new URL("https://benchmarks.rewire.it/test/" + search);
+  url = new URL("https://benchmarks.rewirebio.io/test/" + search);
   await act(async () => {
     events.dispatchEvent(new Event("popstate"));
   });
@@ -54,7 +54,7 @@ function text() {
 }
 beforeEach(() => {
   vi.clearAllMocks();
-  url = new URL("https://benchmarks.rewire.it/test/");
+  url = new URL("https://benchmarks.rewirebio.io/test/");
   events = new EventTarget();
   vi.stubGlobal("window", {
     get location() {

@@ -44,7 +44,7 @@ let tree: ReactTestRenderer;
 let url: URL;
 let events: EventTarget;
 async function render(search = "?kind=benchmark") {
-  url = new URL(`https://benchmarks.rewire.it/${search}#browse`);
+  url = new URL(`https://benchmarks.rewirebio.io/${search}#browse`);
   await act(async () => {
     tree = create(
       <Explorer initial={page() as never} release={release as never} />,

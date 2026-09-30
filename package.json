@@ -25,7 +25,9 @@
     "preview:stack": "npm --prefix services/omics run build && firebase emulators:start --project demo-rewire-omics --only hosting,functions,auth,firestore",
     "deploy:stack": "firebase deploy --only hosting,functions:omics,firestore",
     "check:http": "node scripts/check-hosting-http.mjs",
-    "omics:baseline-coverage": "tsx scripts/omics/baseline-coverage.ts"
+    "omics:baseline-coverage": "tsx scripts/omics/baseline-coverage.ts",
+    "prepare:cloudflare": "node scripts/prepare-cloudflare.mjs",
+    "deploy:cloudflare": "node scripts/deploy-cloudflare.mjs"
   },
   "dependencies": {
     "@noble/hashes": "2.4.0",
@@ -53,7 +55,8 @@
     "tailwindcss-animate": "^1.0.7",
     "tsx": "^4.23.13",
     "typescript": "^5",
-    "vitest": "^1.0.4"
+    "vitest": "^1.0.4",
+    "wrangler": "4.144.0"
   },
   "engines": {
     "node": ">=22"

@@ -8,7 +8,7 @@ import styles from "@/components/catalogue/Research.module.css";
 export const metadata: Metadata = {
   title: "Discrepancy investigations",
   description: "Reviewed investigations of benchmark discrepancies, including failed explanations, reproducible tests and limits of biological interpretation.",
-  alternates: { canonical: "https://benchmarks.rewire.it/investigations/" },
+  alternates: { canonical: "https://benchmarks.rewirebio.io/investigations/" },
 };
 
 export default function InvestigationsPage() {

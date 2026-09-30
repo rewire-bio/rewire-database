@@ -15,7 +15,7 @@
         "headers": [
           {
             "key": "Content-Security-Policy",
-            "value": "frame-ancestors https://benchmarks.rewire.it"
+            "value": "frame-ancestors https://benchmarks.rewire.it https://benchmarks.rewirebio.io"
           },
           {
             "key": "Cache-Control",

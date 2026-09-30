@@ -38,7 +38,7 @@ describe("protocol display and metadata", () => {
       expect(metadata.description).not.toContain("gene_selection");
       expect(metadata.title).toContain("Reference network:");
       expect(metadata.alternates?.canonical).toBe(
-        `https://benchmarks.rewire.it/database/protocol/${record.id}/`,
+        `https://benchmarks.rewirebio.io/database/protocol/${record.id}/`,
       );
     }
   });

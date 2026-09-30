@@ -36,7 +36,7 @@ describe("truthful catalogue sharing", () => {
         expect(item.position).toBe(index + 1);
         expect(html).toContain(items[index].name);
         if (index < items.length - 1) expect(html).toContain(`href="${items[index].path}"`);
-        expect(item.item).toBe(`https://benchmarks.rewire.it${items[index].path}`);
+        expect(item.item).toBe(`https://benchmarks.rewirebio.io${items[index].path}`);
       }
     }
   });
@@ -44,7 +44,7 @@ describe("truthful catalogue sharing", () => {
     for (const kind of ["model", "benchmark", "source", "dataset"] as const) {
       const record = records.find((record) => record.kind === kind)!;
       const html = renderToStaticMarkup(<RecordPage params={{ kind, id: record.id }} />);
-      expect(jsonLd(html).itemListElement.at(-1).item).toBe(`https://benchmarks.rewire.it${recordHref(record)}`);
+      expect(jsonLd(html).itemListElement.at(-1).item).toBe(`https://benchmarks.rewirebio.io${recordHref(record)}`);
       expect(html).toContain('aria-current="page"');
       expect(html).toContain("Back to results");
       expect(html).not.toContain('"@type":"Dataset"');
@@ -66,7 +66,7 @@ describe("truthful catalogue sharing", () => {
   it("keeps legacy-kind sharing URLs canonical", () => {
     const record = records.find((record) => record.kind === "model")!;
     record.attributes.legacy_kinds = ["baseline"];
-    expect(generateMetadata({ params: { id: record.id, kind: "baseline" } }).openGraph).toMatchObject({ url: `https://benchmarks.rewire.it${recordHref(record)}` });
+    expect(generateMetadata({ params: { id: record.id, kind: "baseline" } }).openGraph).toMatchObject({ url: `https://benchmarks.rewirebio.io${recordHref(record)}` });
     delete record.attributes.legacy_kinds;
   });
   it("prevents record strings from breaking out of JSON-LD script elements", () => {

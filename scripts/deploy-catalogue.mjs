@@ -93,7 +93,7 @@ await deployCatalogue({
   verifyWebsite: () =>
     run("node", [
       "scripts/check-live-catalogue.mjs",
-      "https://benchmarks.rewire.it",
+      "https://rewire-it.web.app",
       contributionProbeArgument,
       "--website",
     ]),

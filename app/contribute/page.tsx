@@ -7,7 +7,7 @@ export const metadata: Metadata = {
     "Submit a specialist biological model, benchmark, result or correction for review.",
   robots: { index: false, follow: true },
   referrer: "no-referrer",
-  alternates: { canonical: "https://benchmarks.rewire.it/contribute/" },
+  alternates: { canonical: "https://benchmarks.rewirebio.io/contribute/" },
 };
 export default function ContributePage() {
   return (

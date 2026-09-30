@@ -28,8 +28,8 @@ export function contributionDeployment(env = process.env) {
   const service = {
     OMICS_CONTRIBUTIONS_ENABLED: String(backend),
     OMICS_MAIL_ENABLED: String(mail),
-    PUBLIC_WEB_URL: "https://benchmarks.rewire.it",
-    ALLOWED_ORIGINS: "https://benchmarks.rewire.it",
+    PUBLIC_WEB_URL: "https://benchmarks.rewirebio.io",
+    ALLOWED_ORIGINS: "https://benchmarks.rewire.it,https://benchmarks.rewirebio.io",
     MAIL_PROVIDER: "gmail",
     GMAIL_SERVICE_ACCOUNT: "rewire-mail-runtime@rewire-it.iam.gserviceaccount.com",
     GMAIL_SENDER: "tim@rewire.it",

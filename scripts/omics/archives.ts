@@ -128,9 +128,10 @@ export function restoreReleaseBundles(
       )
         throw new Error(`Archive checksum mismatch: ${entry.name}/${name}`);
       const target = path.join(dir, name);
-      if (fs.existsSync(target) && !fs.readFileSync(target).equals(bytes))
-        throw new Error(`Immutable release conflict: ${target}`);
-      fs.writeFileSync(target, bytes);
+      if (fs.existsSync(target)) {
+        if (!fs.readFileSync(target).equals(bytes))
+          throw new Error(`Immutable release conflict: ${target}`);
+      } else fs.writeFileSync(target, bytes);
     }
     restoreSourceCopies(manifest, readChecked, output);
   }
@@ -170,8 +171,10 @@ export function restoreReleaseBundles(
         throw new Error(`Immutable release conflict: ${target}`);
     }
     fs.mkdirSync(path.join(output, id), { recursive: true });
-    for (const [file, bytes] of Object.entries(files))
-      fs.writeFileSync(path.join(output, id, file), bytes);
+    for (const [file, bytes] of Object.entries(files)) {
+      const target = path.join(output, id, file);
+      if (!fs.existsSync(target)) fs.writeFileSync(target, bytes);
+    }
     restoreSourceCopies(manifest, (name) => files[name], output);
   }
 }

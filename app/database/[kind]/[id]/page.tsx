@@ -65,16 +65,11 @@ export function generateStaticParams() {
   );
 }
 export function generateMetadata({ params }: { params: Params }): Metadata {
-  const item = buildCatalogue().query.get({
-    id: params.id,
-    include_comparisons: false,
-  });
-  if (
-    !item ||
-    !recordRouteKinds(item.record).some((kind) => kind === params.kind)
-  )
+  const { catalogue, query } = buildCatalogue();
+  const record = query.record(params.id);
+  if (!record || !recordRouteKinds(record).some((kind) => kind === params.kind))
     return {};
-  const metadata = recordSearchMetadata(item.record, buildCatalogue().catalogue.records);
+  const metadata = recordSearchMetadata(record, catalogue.records);
   return {
     ...metadata,
     ...socialMetadata({
@@ -806,6 +801,7 @@ export default function RecordPage({ params }: { params: Params }) {
             <Reproduction
               evaluation={evaluated}
               records={catalogue.records}
+              recordById={query.record}
               compact
             />
           )}

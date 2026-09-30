@@ -1,3 +1,4 @@
+import { historicalExportPaths } from "./export-scope.mjs";
 import { baselineAuditFiles } from "./baseline-coverage";
 import {
   catalogueIndexPaths,
@@ -36,6 +37,8 @@ const catalogue = JSON.parse(
   fs.readFileSync("out/omics/catalogue.json", "utf8"),
 );
 const records = validateRecords(catalogue.records);
+const currentOnly = process.argv.includes("--current-only");
+const historicalPaths: Set<string> = currentOnly ? historicalExportPaths(catalogue.release_id) : new Set();
 const currentManifest = JSON.parse(fs.readFileSync("out/omics/manifest.json", "utf8"));
 const useCaseDeclaration = currentManifest.coverage?.use_cases;
 const useCaseFile = path.join("out/omics/releases", catalogue.release_id, "use-cases.json");
@@ -126,7 +129,7 @@ for (const record of records) {
     const url = new URL(href, "https://benchmarks.rewirebio.io");
     let file = path.join("out", decodeURIComponent(url.pathname));
     if (url.pathname.endsWith("/")) file = path.join(file, "index.html");
-    if (!fs.existsSync(file)) failures.push(href);
+    if (!fs.existsSync(file) && !historicalPaths.has(decodeURIComponent(url.pathname))) failures.push(href);
   }
 }
 // Use-case discovery and decision evidence must be exported, not client-only.
@@ -168,7 +171,7 @@ for (const entry of useCaseEntries) {
     if (!/^\/(?:database|omics|use-cases)\//.test(href)) continue;
     const target = new URL(href, origin);
     const file = path.join("out", decodeURIComponent(target.pathname), target.pathname.endsWith("/") ? "index.html" : "");
-    if (!fs.existsSync(file)) failures.push(`Use-case link missing: ${href}`);
+    if (!fs.existsSync(file) && !historicalPaths.has(decodeURIComponent(target.pathname))) failures.push(`Use-case link missing: ${href}`);
   }
 }
 for (const entry of useCaseQuery.list({ limit: 10 }).items)
@@ -320,7 +323,7 @@ if (!archivedIds.includes(currentManifest.release_id))
   failures.push("Missing current release archive");
 for (const receipt of fs
   .readdirSync("data/omics/releases")
-  .filter((name) => name.endsWith(".json"))) {
+  .filter((name) => name.endsWith(".json") && (!currentOnly || name === `${currentManifest.release_id}.json`))) {
   const id = receipt.slice(0, -5);
   const published = path.join(archiveRoot, id, "manifest.json");
   if (
@@ -331,7 +334,7 @@ for (const receipt of fs
   )
     failures.push(`Historical manifest ${id}`);
 }
-for (const id of archivedIds) {
+for (const id of archivedIds.filter(id => !currentOnly || id === currentManifest.release_id)) {
   const manifest = JSON.parse(
     fs.readFileSync(path.join(archiveRoot, id, "manifest.json"), "utf8"),
   );

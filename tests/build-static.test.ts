@@ -35,6 +35,30 @@ function exported(root: string) {
 afterEach(() => { vi.restoreAllMocks(); for (const root of roots.splice(0)) fs.rmSync(root, { recursive: true, force: true }); });
 
 describe('static build archive staging', () => {
+  it('exports only current downloads while restoring existing local history unchanged', async () => {
+    const root = fixture();
+    const historical = path.join(root, 'public/omics/releases/old/nested/evidence.csv');
+    const before = fs.statSync(historical);
+    await buildStatic({ root, currentOnly: true, build: async () => {
+      expect(fs.existsSync(historical)).toBe(false);
+      exported(root);
+    } });
+    expect(fs.readFileSync(historical, 'utf8')).toBe('score\n0.123456789\n');
+    expect(fs.statSync(historical).ino).toBe(before.ino);
+    expect(fs.statSync(historical).mtimeMs).toBe(before.mtimeMs);
+    expect(fs.existsSync(path.join(root, 'out/omics/releases/old'))).toBe(false);
+    expect(fs.readFileSync(path.join(root, 'out/omics/releases/current/evidence.jsonl'), 'utf8')).toBe('{"value":0.123456789}\n');
+    expect(fs.existsSync(path.join(root, 'workbench/build-static.lock'))).toBe(false);
+  });
+
+  it('restores local history even when a current-only build fails', async () => {
+    const root = fixture();
+    await expect(buildStatic({ root, currentOnly: true, build: async () => { throw new Error('Next failed'); } })).rejects.toThrow('Next failed');
+    expect(fs.existsSync(path.join(root, 'public/omics/releases/old/nested/evidence.csv'))).toBe(true);
+    expect(fs.existsSync(path.join(root, 'public/omics/releases/current/evidence.jsonl'))).toBe(true);
+    expect(fs.existsSync(path.join(root, 'out/omics/releases/old'))).toBe(false);
+  });
+
   it('keeps rendering assets, stages downloads, and exports exact hard links for current and historical releases', async () => {
     const root = fixture();
     const source = path.join(root, 'public/omics/releases/old/nested/evidence.csv');

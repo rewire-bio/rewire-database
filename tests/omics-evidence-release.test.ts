@@ -63,7 +63,10 @@ describe.each([false, true])("release evidence exports enabled: %s", (evidence) 
     expect(Object.keys(output.manifest.files).sort()).toEqual(expected);
     const archive = bundle(output);
     restoreReleaseBundles(archive.input, archive.destination);
+    const target = path.join(archive.destination, archive.id, "catalogue.json");
+    fs.utimesSync(target, 1, 1);
     restoreReleaseBundles(archive.input, archive.destination);
+    expect(fs.statSync(target).mtimeMs).toBe(1000);
     expect(fs.readdirSync(path.join(archive.destination, archive.id)).sort()).toEqual([...expected, "manifest.json"].sort());
     for (const [file, bytes] of Object.entries(archive.files)) {
       expect(fs.readFileSync(path.join(archive.destination, archive.id, file), "utf8")).toBe(bytes);

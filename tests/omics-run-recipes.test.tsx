@@ -129,6 +129,19 @@ describe("reviewed local execution recipes", () => {
     expect(html).toContain("?recipe=local-scoring#run-recipes");
     expect(html).toContain("does not establish score reproduction");
   });
+  it("reuses the catalogue index without changing reproduction HTML", () => {
+    const { owner, evaluation, source } = fixture();
+    const records = [owner, evaluation, source];
+    const byId = new Map(records.map(record => [record.id, record]));
+    for (const compact of [false, true]) {
+      const before = renderToStaticMarkup(<Reproduction evaluation={evaluation} records={records} compact={compact} />);
+      const after = renderToStaticMarkup(<Reproduction evaluation={evaluation} records={records} compact={compact} recordById={id => byId.get(id)} />);
+      expect(after).toBe(before);
+    }
+    delete evaluation.attributes.reproduction;
+    expect(renderToStaticMarkup(<Reproduction evaluation={evaluation} records={records} recordById={id => byId.get(id)} />))
+      .toBe(renderToStaticMarkup(<Reproduction evaluation={evaluation} records={records} />));
+  });
   it("shows an explicit gap instead of borrowing a similarly named recipe", () => {
     const { evaluation, owner, source } = fixture();
     delete evaluation.attributes.reproduction;

@@ -18,6 +18,7 @@ import {
 import { addLocalEvaluations, localEvaluationInputs, addBaselineEvaluations, baselineEvaluationInputs } from "./local-evaluations";
 
 import { loadResearchInputs, researchFiles, researchInputFiles } from "./research-release";
+import { withResearchPins } from "./research-snapshot";
 import { deriveResearchReadiness, validateResearchData, type ResearchData } from "../../services/omics/src/research";
 import {
   addAcquiredEvidence,
@@ -261,9 +262,10 @@ function writeArchive(output: ReturnType<typeof buildRelease>) {
   };
   for (const [name, data] of Object.entries(files)) {
     const file = path.join(dir, name);
-    if (fs.existsSync(file) && fs.readFileSync(file, "utf8") !== data)
-      throw new Error("Attempt to overwrite immutable release " + file);
-    fs.writeFileSync(file, data);
+    if (fs.existsSync(file)) {
+      if (fs.readFileSync(file, "utf8") !== data)
+        throw new Error("Attempt to overwrite immutable release " + file);
+    } else fs.writeFileSync(file, data);
   }
 }
 function main() {
@@ -279,13 +281,13 @@ function main() {
       : [],
   );
   if (!baseRecords.length) throw new Error("No reviewed catalogue inputs");
-  // Review-only release preparation can avoid expanding all historical downloads.
-  // Production builds omit this option and still restore/check every archive.
+  // Current-only builds keep historical downloads in the previously published
+  // Hosting version. Full builds still restore and verify every archive.
   if (!process.argv.includes("--current-only")) {
     restoreArchivedRelease(baseRecords);
     restoreReleaseBundles();
   }
-  const research = loadResearchInputs();
+  const research = withResearchPins(() => loadResearchInputs());
   const ledger = fs.existsSync("data/omics/search-ledger.jsonl")
     ? fs
         .readFileSync("data/omics/search-ledger.jsonl", "utf8")

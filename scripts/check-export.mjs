@@ -2,7 +2,11 @@ import fs from 'node:fs';
 import path from 'node:path';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
+import { historicalExportPaths } from './omics/export-scope.mjs';
 const read = (file) => fs.readFileSync(file, 'utf8');
+const currentOnly = process.argv.includes('--current-only');
+const currentRelease = JSON.parse(read('out/omics/manifest.json')).release_id;
+const historicalPaths = currentOnly ? historicalExportPaths(currentRelease) : new Set();
 const manifest = JSON.parse(read('docs/extraction-manifest.json'));
 for (const row of manifest.files.filter((row) => row.destination_path.startsWith('data/'))) {
   assert.equal(createHash('sha256').update(fs.readFileSync(row.destination_path)).digest('hex'), row.source_sha256, `Historical data changed: ${row.destination_path}`);
@@ -60,6 +64,9 @@ const review = JSON.parse(read('docs/review-extraction-manifest.json'));
 // The current pointer and release timestamp advance; the original release stays byte-identical.
 const mutablePointers = new Set(['data/omics/release-config.json', 'public/omics/catalogue.json', 'public/omics/manifest.json']);
 for (const row of review.files.filter(row => /^(data\/|public\/omics\/)/.test(row.destination_path) && !mutablePointers.has(row.destination_path))) {
+  // The deployment composes these receipted historical paths with the prior
+  // Hosting version; input records and every current artifact still get checked.
+  if (row.destination_path.startsWith('public/') && historicalPaths.has(row.destination_path.slice('public'.length))) continue;
   assert.equal(createHash('sha256').update(fs.readFileSync(row.destination_path)).digest('hex'), row.source_sha256, `Preserved review data changed: ${row.destination_path}`);
 }
 console.log('Historical input records and archived release bytes match their extraction receipt.');

@@ -1,7 +1,10 @@
 import { spawn } from "node:child_process";
+import { createHash } from 'node:crypto';
 import { readFile } from "node:fs/promises";
 import { deployCatalogue, hostingVersion } from "./deployment-transaction.mjs";
 import { contributionProbeMode } from "./contribution-deployment.mjs";
+import { assertPublishedBase, classify, fingerprints, publishedReceipt, publicBytes, validReceipt } from "./deployment-plan.mjs";
+import { assertHistoricalDownloadsPresent, deployWebHosting } from "./hosting-web-deploy.mjs";
 const contributionProbeArgument = `--contributions=${contributionProbeMode()}`;
 
 // Run only from the reviewed deployment workflow with WIF/ADC. Tests exercise
@@ -18,6 +21,22 @@ const manifest = JSON.parse(
     "utf8",
   ),
 );
+const manifestBytes = await readFile('public/omics/manifest.json');
+const plan = JSON.parse(await readFile('workbench/deployment-plan.json', 'utf8'));
+const receipt = JSON.parse(await readFile('out/deployment.json', 'utf8'));
+if (!['full', 'web'].includes(plan.mode) || !validReceipt(receipt) ||
+    JSON.stringify(await fingerprints()) !== JSON.stringify(plan.fingerprints) ||
+    JSON.stringify(receipt.fingerprints) !== JSON.stringify(plan.fingerprints) ||
+    receipt.commit !== plan.commit || receipt.release_id !== manifest.release_id ||
+    receipt.manifest_sha256 !== createHash('sha256').update(manifestBytes).digest('hex'))
+  throw new Error('Deployment plan does not match checked source and output');
+if (plan.mode === 'web' && classify(plan.fingerprints, plan.previous, plan.force_full).mode !== 'web')
+  throw new Error('The checked inputs require a full publication');
+if (!plan.backend) {
+  const live = await publishedReceipt();
+  if (!live || JSON.stringify(live) !== JSON.stringify(plan.previous))
+    throw new Error('Backend deployment base changed; rebuild before publishing');
+}
 async function run(command, args, capture = false) {
   return new Promise((resolve, reject) => {
     const child = spawn(command, args, {
@@ -46,6 +65,11 @@ const firebase = (...args) =>
   ]);
 const importer = (...args) =>
   run("node", ["--import", "tsx", "services/omics/src/import-cli.ts", ...args]);
+async function currentHostingVersion() {
+  const listing = JSON.parse(await run('npx', ['--no-install', 'firebase', 'hosting:channel:list',
+    '--site', site, '--project', project, '--non-interactive', '--json'], true));
+  return hostingVersion(listing, project, site);
+}
 await deployCatalogue({
   async capture() {
     const current = JSON.parse(
@@ -80,6 +104,19 @@ await deployCatalogue({
     console.log("Rollback target:", JSON.stringify(previous));
     return previous;
   },
+  async canReuseCatalogue(previous) {
+    if (plan.mode === 'web') {
+      await assertPublishedBase(plan, manifestBytes);
+      if (previous.release_id !== manifest.release_id) throw new Error('Live API release differs from the UI build');
+      if (await currentHostingVersion() !== previous.hosting_version) throw new Error('Hosting changed during capture');
+      return true;
+    }
+    await assertHistoricalDownloadsPresent({ previousVersion: previous.hosting_version });
+    if (previous.release_id !== manifest.release_id) return false;
+    const liveManifest = await publicBytes('omics/manifest.json');
+    if (!liveManifest.equals(manifestBytes)) throw new Error('Same release ID has different published manifest bytes');
+    return true;
+  },
   importRelease: () =>
     importer("public/omics/catalogue.json", "public/omics/manifest.json"),
   activate: () => importer("--activate", manifest.release_id),
@@ -89,7 +126,22 @@ await deployCatalogue({
       "https://europe-west2-rewire-it.cloudfunctions.net/contributions",
       contributionProbeArgument,
     ]),
-  deployHosting: () => firebase("deploy", "--only", "hosting"),
+  async publishHosting(previous, markReleaseAttempt) {
+    if (plan.mode === 'full') {
+      markReleaseAttempt();
+      return firebase('deploy', '--only', 'hosting');
+    }
+    await assertPublishedBase(plan, manifestBytes);
+    return deployWebHosting({
+      previousVersion: previous.hosting_version,
+      onReleaseAttempt: markReleaseAttempt,
+      async beforeRelease() {
+        await assertPublishedBase(plan, manifestBytes);
+        if (await currentHostingVersion() !== previous.hosting_version)
+          throw new Error('Hosting changed while preparing the UI deployment; no live changes made');
+      },
+    });
+  },
   verifyWebsite: () =>
     run("node", [
       "scripts/check-live-catalogue.mjs",

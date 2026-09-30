@@ -29,6 +29,15 @@ const affected = fixture.snapshot!.records.filter(
   (r) => r.kind === "protocol" && r.name.includes('"reference_network"'),
 );
 describe("protocol display and metadata", () => {
+  it("reads metadata without expanding record relationships or comparisons", () => {
+    const record = affected[0];
+    const expected = generateMetadata({ params: { id: record.id, kind: record.kind } });
+    const get = vi.spyOn(fixture.query!, "get").mockImplementation(() => { throw new Error("unnecessary relationship expansion"); });
+    try {
+      expect(generateMetadata({ params: { id: record.id, kind: record.kind } })).toEqual(expected);
+      expect(get).not.toHaveBeenCalled();
+    } finally { get.mockRestore(); }
+  });
   it("keeps all BEELINE canonical URLs while cleaning titles and descriptions", () => {
     for (const record of affected) {
       const metadata = generateMetadata({

@@ -14,15 +14,27 @@ export async function deployCatalogue(actions) {
     throw new Error(
       "An existing catalogue release and Hosting version are required for rollback.",
     );
-  await actions.importRelease();
+  // The preflight must settle before any rollback tracking: a stale UI build
+  // must not restore an older version over an intervening publication.
+  const reuseCatalogue = actions.canReuseCatalogue
+    ? await actions.canReuseCatalogue(previous) : false;
+  if (!reuseCatalogue) await actions.importRelease();
   let activationAttempted = false;
   let hostingAttempted = false;
   try {
-    activationAttempted = true;
-    await actions.activate();
+    if (!reuseCatalogue) {
+      activationAttempted = true;
+      await actions.activate();
+    }
     await actions.verifyApi();
-    hostingAttempted = true;
-    await actions.deployHosting();
+    if (actions.publishHosting) {
+      // REST drafts do not affect live traffic. Mark only the final release
+      // request, including an ambiguous response that may already be live.
+      await actions.publishHosting(previous, () => { hostingAttempted = true; });
+    } else {
+      hostingAttempted = true;
+      await actions.deployHosting();
+    }
     await actions.verifyWebsite();
   } catch (cause) {
     const failures = [cause];

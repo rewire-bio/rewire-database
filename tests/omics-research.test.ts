@@ -7,7 +7,8 @@ import { afterEach, describe, expect, it } from "vitest";
 import { createCatalogueQuery, type CatalogueSnapshot } from "../services/omics/src/catalogue-query";
 import { deriveResearchReadiness, getResearch, validateResearchData, validateResearchManifest, type ResearchData, type ResearchInvestigation, type ResearchManifest, type ResearchSpec } from "../services/omics/src/research";
 import { buildRelease } from "../scripts/omics/release";
-import { researchFiles } from "../scripts/omics/research-release";
+import { researchFiles, loadResearchInputs } from "../scripts/omics/research-release";
+import { loadPinnedResearchSnapshot, withResearchPins } from "../scripts/omics/research-snapshot";
 import { canonicalResearchJson, researchHash, stageResearchBundle, validateInvestigationBundle } from "../scripts/omics/research-import";
 import { researchChunks, researchDigest, readResearchChunks } from "../services/omics/src/research-store";
 import { restoreReleaseBundles } from "../scripts/omics/archives";
@@ -290,5 +291,82 @@ describe("offline investigation import", () => {
       (r: ResearchInvestigation) => { r.attempts[0].operation.expected_observation = "Changed after execution"; },
       (r: ResearchInvestigation) => { r.attempts[0].receipt = null; r.attempts[0].receipt_sha256 = null; },
     ]) { const { snapshot, manifest, report } = reportFixture(); edit(report); expect(() => validateInvestigationBundle(report, manifest, snapshot)).toThrow(); }
+  });
+});
+
+
+describe("cold current-only research input loading", () => {
+  function pinnedFixture(bundle = false) {
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), "research-pinned-"));
+    roots.push(root);
+    const { snapshot, manifest } = fixture();
+    const bytes = JSON.stringify(snapshot);
+    const receipt = JSON.stringify({ release_id: sourceRelease, files: { "catalogue.json": crypto.createHash("sha256").update(bytes).digest("hex") } });
+    const archive = path.join(root, "data/omics/releases");
+    fs.mkdirSync(path.join(archive, sourceRelease), { recursive: true });
+    fs.mkdirSync(path.join(root, "data/research"), { recursive: true });
+    fs.writeFileSync(path.join(archive, `${sourceRelease}.json`), receipt);
+    if (bundle) fs.writeFileSync(path.join(archive, `${sourceRelease}.bundle.json.gz`), gzipSync(JSON.stringify({ "catalogue.json": bytes, "manifest.json": receipt })));
+    else fs.writeFileSync(path.join(archive, sourceRelease, "catalogue.json.gz"), gzipSync(bytes));
+    fs.writeFileSync(path.join(root, "data/research/manifests.json"), JSON.stringify([manifest]));
+    fs.writeFileSync(path.join(root, "data/research/investigations.json"), "[]");
+    return { root, snapshot, archive };
+  }
+  it.each([false, true])("loads authenticated historical evidence without expanding a public release (bundle=%s)", bundle => {
+    const { root, snapshot } = pinnedFixture(bundle);
+    expect(loadPinnedResearchSnapshot(root, sourceRelease)).toEqual(snapshot);
+    expect(withResearchPins(() => loadResearchInputs(root), root)?.manifests[0].catalogue_release_id).toBe(sourceRelease);
+    expect(fs.existsSync(path.join(root, "public"))).toBe(false);
+  });
+  it("removes temporary pins after loader failure and preserves pre-existing directory content", () => {
+    const { root } = pinnedFixture();
+    const releases = path.join(root, "public/omics/releases");
+    fs.mkdirSync(releases, { recursive: true });
+    fs.writeFileSync(path.join(releases, "unrelated.txt"), "preserve");
+    expect(() => withResearchPins(() => {
+      expect(fs.existsSync(path.join(releases, sourceRelease, "catalogue.json"))).toBe(true);
+      throw new Error("Research validation failed");
+    }, root)).toThrow("Research validation failed");
+    expect(fs.readdirSync(releases)).toEqual(["unrelated.txt"]);
+    expect(fs.readFileSync(path.join(releases, "unrelated.txt"), "utf8")).toBe("preserve");
+  });
+  it("keeps existing authenticated pins and their directory bytes untouched", () => {
+    const { root, snapshot } = pinnedFixture();
+    const directory = path.join(root, "public/omics/releases", sourceRelease);
+    fs.mkdirSync(directory, { recursive: true });
+    const file = path.join(directory, "catalogue.json");
+    fs.writeFileSync(file, JSON.stringify(snapshot));
+    fs.utimesSync(file, 1, 1);
+    const before = fs.statSync(file);
+    const expected = loadResearchInputs(root);
+    expect(withResearchPins(() => loadResearchInputs(root), root)).toEqual(expected);
+    expect(fs.statSync(file).mtimeMs).toBe(before.mtimeMs);
+    expect(fs.statSync(file).ino).toBe(before.ino);
+    expect(fs.readFileSync(file, "utf8")).toBe(JSON.stringify(snapshot));
+  });
+  it("does not delete replacement files created by the loader", () => {
+    const { root } = pinnedFixture();
+    const directory = path.join(root, "public/omics/releases", sourceRelease);
+    const file = path.join(directory, "catalogue.json");
+    withResearchPins(() => {
+      fs.renameSync(file, path.join(root, "retained-owned-pin"));
+      fs.writeFileSync(file, "replacement bytes");
+    }, root);
+    expect(fs.readFileSync(file, "utf8")).toBe("replacement bytes");
+  });
+  it("rejects corrupt compressed or already-restored snapshots", () => {
+    const { root, snapshot, archive } = pinnedFixture();
+    fs.writeFileSync(path.join(archive, sourceRelease, "catalogue.json.gz"), gzipSync(JSON.stringify({ ...snapshot, records: [] })));
+    expect(() => loadPinnedResearchSnapshot(root, sourceRelease)).toThrow(/checksum mismatch/);
+    const restored = path.join(root, "public/omics/releases", sourceRelease);
+    fs.mkdirSync(restored, { recursive: true });
+    fs.writeFileSync(path.join(restored, "catalogue.json"), "{}");
+    expect(() => loadPinnedResearchSnapshot(root, sourceRelease)).toThrow(/checksum mismatch/);
+  });
+  it("rejects a mismatched receipt and unsafe release paths", () => {
+    const { root, archive } = pinnedFixture();
+    fs.writeFileSync(path.join(archive, `${sourceRelease}.json`), JSON.stringify({ release_id: "wrong", files: { "catalogue.json": "a".repeat(64) } }));
+    expect(() => loadPinnedResearchSnapshot(root, sourceRelease)).toThrow(/receipt mismatch/);
+    expect(() => loadPinnedResearchSnapshot(root, "../other")).toThrow(/Invalid/);
   });
 });

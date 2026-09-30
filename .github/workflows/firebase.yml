@@ -4,6 +4,11 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+    inputs:
+      force_full:
+        description: Rebuild all archives and redeploy the backend
+        type: boolean
+        default: false
 permissions:
   contents: read
   id-token: write
@@ -18,6 +23,15 @@ jobs:
     # bundles. That needs more heap than Node allows itself by default.
     env:
       NODE_OPTIONS: --max-old-space-size=8192
+      FIREBASE_PROJECT_ID: ${{ vars.FIREBASE_PROJECT_ID }}
+      OMICS_CONTRIBUTIONS_ENABLED: ${{ vars.OMICS_CONTRIBUTIONS_ENABLED || 'false' }}
+      OMICS_MAIL_ENABLED: ${{ vars.OMICS_MAIL_ENABLED || 'false' }}
+      NEXT_PUBLIC_OMICS_CONTRIBUTIONS_ENABLED: ${{ vars.NEXT_PUBLIC_OMICS_CONTRIBUTIONS_ENABLED || 'false' }}
+      NEXT_PUBLIC_FIREBASE_API_KEY: ${{ vars.NEXT_PUBLIC_FIREBASE_API_KEY }}
+      NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: ${{ vars.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN }}
+      NEXT_PUBLIC_FIREBASE_PROJECT_ID: ${{ vars.NEXT_PUBLIC_FIREBASE_PROJECT_ID }}
+      NEXT_PUBLIC_FIREBASE_APP_ID: ${{ vars.NEXT_PUBLIC_FIREBASE_APP_ID }}
+      NEXT_PUBLIC_GA_ID: ${{ vars.NEXT_PUBLIC_GA_ID }}
     steps:
       - uses: actions/checkout@v4
       - name: Free temporary runner space for immutable release exports
@@ -28,31 +42,53 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      # Avoid a second cache archive while the static export occupies the disk.
+      - name: Select publication work from the last live receipt
+        id: plan
+        run: node scripts/deployment-plan.mjs
+        env:
+          FORCE_FULL: ${{ inputs.force_full || 'false' }}
+      - name: Restore Next compilation cache
+        id: next-cache
+        uses: actions/cache/restore@v4
+        with:
+          path: .next/cache
+          key: ${{ runner.os }}-node22-next-${{ hashFiles('package-lock.json') }}-${{ steps.plan.outputs.compiler_env }}-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-node22-next-${{ hashFiles('package-lock.json') }}-${{ steps.plan.outputs.compiler_env }}-
+      # Expanded historical exports are intentionally never cached.
       - run: |
           npm ci
           npm cache clean --force
+      # These unique checks used to run in a second workflow that also rebuilt
+      # the entire website. Keep their coverage in this single checked build.
+      - name: Verify reproducible migration and public-artifact review
+        run: |
+          npm run omics:migrate
+          git diff --exit-code -- data/omics/migrated.jsonl data/omics/scope-audit.jsonl
+          python3 -m unittest discover -s scripts/omics/tests -p "test_*.py"
       - run: npm test
       - run: npm run lint
       - name: Validate contribution configuration and build website
-        run: node scripts/check-analytics-config.mjs && node scripts/configure-contribution-deployment.mjs --validate-only && npm run build
-        env:
-          FIREBASE_PROJECT_ID: ${{ vars.FIREBASE_PROJECT_ID }}
-          OMICS_CONTRIBUTIONS_ENABLED: ${{ vars.OMICS_CONTRIBUTIONS_ENABLED || 'false' }}
-          NEXT_PUBLIC_OMICS_CONTRIBUTIONS_ENABLED: ${{ vars.NEXT_PUBLIC_OMICS_CONTRIBUTIONS_ENABLED || 'false' }}
-          OMICS_MAIL_ENABLED: ${{ vars.OMICS_MAIL_ENABLED || 'false' }}
-          NEXT_PUBLIC_FIREBASE_API_KEY: ${{ vars.NEXT_PUBLIC_FIREBASE_API_KEY }}
-          NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: ${{ vars.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN }}
-          NEXT_PUBLIC_FIREBASE_PROJECT_ID: ${{ vars.NEXT_PUBLIC_FIREBASE_PROJECT_ID }}
-          NEXT_PUBLIC_FIREBASE_APP_ID: ${{ vars.NEXT_PUBLIC_FIREBASE_APP_ID }}
-          NEXT_PUBLIC_GA_ID: ${{ vars.NEXT_PUBLIC_GA_ID }}
+        run: |
+          node scripts/check-analytics-config.mjs
+          node scripts/configure-contribution-deployment.mjs --validate-only
+          if [ "${{ steps.plan.outputs.mode }}" = web ]; then npm run build:web; else npm run build; fi
+          node scripts/deployment-plan.mjs --receipt
       - run: npm run typecheck
+      - name: Save Next compilation cache before cleanup
+        if: steps.next-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: .next/cache
+          key: ${{ steps.next-cache.outputs.cache-primary-key }}
       - name: Release intermediate Next build space
         # Static hosting uses out/. Keep generated types, exports and archives.
         run: |
           rm -rf .next/server .next/cache
           df -h .
-      - run: npm run check:export
+      - name: Verify exported website and release bytes
+        run: |
+          if [ "${{ steps.plan.outputs.mode }}" = web ]; then npm run check:export:web; else npm run check:export; fi
         env:
           NEXT_PUBLIC_GA_ID: ${{ vars.NEXT_PUBLIC_GA_ID }}
           NEXT_PUBLIC_OMICS_CONTRIBUTIONS_ENABLED: ${{ vars.NEXT_PUBLIC_OMICS_CONTRIBUTIONS_ENABLED || 'false' }}
@@ -86,18 +122,29 @@ jobs:
         with:
           workload_identity_provider: ${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER }}
           service_account: ${{ vars.GCP_DEPLOY_SERVICE_ACCOUNT }}
-      - name: Deploy reviewed API and private Firestore rules
+      - name: Check independent backend deployment state
+        id: backend
         if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && vars.FIREBASE_DEPLOY_ENABLED == 'true' && vars.FIREBASE_BACKEND_DEPLOY_ENABLED == 'true'
+        run: node scripts/backend-deployment.mjs
+        env:
+          GCLOUD_PROJECT: ${{ vars.FIREBASE_PROJECT_ID }}
+          NODE_ENV: production
+      - name: Deploy reviewed API and private Firestore rules
+        if: steps.backend.outputs.required == 'true' && github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && vars.FIREBASE_DEPLOY_ENABLED == 'true' && vars.FIREBASE_BACKEND_DEPLOY_ENABLED == 'true'
         run: |
+          node scripts/backend-deployment.mjs --begin
           node scripts/configure-contribution-deployment.mjs
           npx firebase deploy --only functions:omics,firestore --project "$FIREBASE_PROJECT_ID" --non-interactive
+          node scripts/backend-deployment.mjs --complete
         env:
+          GCLOUD_PROJECT: ${{ vars.FIREBASE_PROJECT_ID }}
+          NODE_ENV: production
           FIREBASE_PROJECT_ID: ${{ vars.FIREBASE_PROJECT_ID }}
           OMICS_CONTRIBUTIONS_ENABLED: ${{ vars.OMICS_CONTRIBUTIONS_ENABLED || 'false' }}
           OMICS_MAIL_ENABLED: ${{ vars.OMICS_MAIL_ENABLED || 'false' }}
       - name: Publish catalogue and website with rollback
         if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && vars.FIREBASE_DEPLOY_ENABLED == 'true' && vars.FIREBASE_BACKEND_DEPLOY_ENABLED == 'true'
-        run: node scripts/deploy-catalogue.mjs
+        run: node scripts/backend-deployment.mjs --assert && node scripts/deploy-catalogue.mjs
         env:
           GCLOUD_PROJECT: ${{ vars.FIREBASE_PROJECT_ID }}
           NODE_ENV: production

@@ -8,7 +8,7 @@ import styles from "./run.module.css";
 const pageMetadata = {
   title: "MFASS v2: corrected baseline and DNABERT-2 | rewire.it",
   description: "A complete local MFASS run with a corrected baseline, a frozen DNABERT-2 pair-embedding protocol, full coverage and group-resampled comparisons.",
-  alternates: { canonical: "https://benchmarks.rewire.it/runs/mfass-v2/" },
+  alternates: { canonical: "https://benchmarks.rewirebio.io/runs/mfass-v2/" },
 };
 export const metadata: Metadata = {
   ...pageMetadata,

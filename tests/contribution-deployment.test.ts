@@ -28,7 +28,7 @@ describe("persistent contribution deployment settings", () => {
     expect(config).toMatchObject({ backend: false, frontend: false, mail: false });
     const output = serviceEnvironment(config);
     expect(output).toContain('OMICS_CONTRIBUTIONS_ENABLED="false"');
-    expect(output).toContain('PUBLIC_WEB_URL="https://benchmarks.rewire.it"');
+    expect(output).toContain('PUBLIC_WEB_URL="https://benchmarks.rewirebio.io"');
     expect(output).not.toMatch(/private|PASSWORD|GOOGLE_APPLICATION_CREDENTIALS/);
   });
   it("allows backend activation before the public form", () => {

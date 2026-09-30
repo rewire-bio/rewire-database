@@ -7,7 +7,7 @@ import styles from "../../overview.module.css";
 const pageMetadata = {
   title: "MFASS v1 historical report",
   description: "Preserved MFASS v1 benchmark results and reproduction instructions, superseded by the corrected MFASS v2 evaluation.",
-  alternates: { canonical: "https://benchmarks.rewire.it/runs/mfass-v1/" },
+  alternates: { canonical: "https://benchmarks.rewirebio.io/runs/mfass-v1/" },
   robots: { index: false, follow: true },
 };
 export const metadata: Metadata = {

@@ -48,7 +48,7 @@ describe("use-case navigation and safe return context", () => {
     state.search = "q=splicing&area=dna-genomes&context=research&cursor=page2";
     const markup = renderToStaticMarkup(<UseCaseRecordLink href="/database/protocol/protocol/?recipe=existing#run-recipes" useCasePath="/use-cases/splicing-follow-up/">Recipe</UseCaseRecordLink>);
     const href = markup.match(/href="([^"]+)"/)![1].replaceAll("&amp;", "&");
-    const url = new URL(href, "https://benchmarks.rewire.it");
+    const url = new URL(href, "https://benchmarks.rewirebio.io");
     expect(url.searchParams.get("recipe")).toBe("existing");
     expect(url.hash).toBe("#run-recipes");
     expect(url.searchParams.get("return_to")).toBe(`/use-cases/splicing-follow-up/?${state.search}`);
@@ -89,7 +89,7 @@ describe("use-case evidence rendering", () => {
   });
   it("labels a content-addressed source copy separately from the original repository location", () => {
     const value = mapping();
-    value.sources[0].attributes.url = "https://benchmarks.rewire.it/omics/sources/digest.md";
+    value.sources[0].attributes.url = "https://benchmarks.rewirebio.io/omics/sources/digest.md";
     value.sources[0].attributes.original_url = "https://github.com/owner/repo/blob/revision/doc.md";
     const markup = html(value);
     expect(markup).toContain("Reviewed source copy");

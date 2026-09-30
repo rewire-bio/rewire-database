@@ -8,7 +8,7 @@ for (const row of manifest.files.filter((row) => row.destination_path.startsWith
   assert.equal(createHash('sha256').update(fs.readFileSync(row.destination_path)).digest('hex'), row.source_sha256, `Historical data changed: ${row.destination_path}`);
 }
 assert.ok(read('out/index.html').includes('id="mfass-v1"'), 'Historical MFASS anchor missing');
-assert.ok(read('out/index.html').includes('https://benchmarks.rewire.it/'), 'Database canonical missing');
+assert.ok(read('out/index.html').includes('https://benchmarks.rewirebio.io/'), 'Database canonical missing');
 assert.ok(fs.existsSync('out/runs/mfass-v2/index.html'));
 assert.ok(fs.existsSync('out/404.html'));
 assert.ok(fs.existsSync('out/_analytics/index.html'), 'Consented analytics frame missing');
@@ -23,8 +23,8 @@ for (const paper of JSON.parse(read('data/benchmark-literature/papers.json'))) {
   assert.ok(fs.existsSync(`out/literature/papers/${paper.id}/index.html`), `Missing historical paper: ${paper.id}`);
 }
 for (const redirect of JSON.parse(read('firebase.json')).hosting.redirects || []) {
-  const destination = new URL(redirect.destination, 'https://benchmarks.rewire.it');
-  assert.equal(destination.origin, 'https://benchmarks.rewire.it', 'Unexpected external migration redirect');
+  const destination = new URL(redirect.destination, 'https://benchmarks.rewirebio.io');
+  assert.equal(destination.origin, 'https://benchmarks.rewirebio.io', 'Unexpected external migration redirect');
   assert.ok(fs.existsSync(path.join('out', destination.pathname, 'index.html')), `Redirect destination missing: ${redirect.destination}`);
 }
 for (const filename of ['papers.json', 'results.csv']) {

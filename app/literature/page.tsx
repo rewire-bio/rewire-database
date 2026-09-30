@@ -5,7 +5,7 @@ export const metadata: Metadata = {
   title: "Published results in the benchmark database",
   description:
     "Published biological model results are part of the unified benchmark database.",
-  alternates: { canonical: "https://benchmarks.rewire.it/" },
+  alternates: { canonical: "https://benchmarks.rewirebio.io/" },
 };
 export default function LiteraturePage() {
   return (

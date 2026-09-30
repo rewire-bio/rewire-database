@@ -50,7 +50,7 @@ for (const source of parseUseCaseSourceDeclaration(currentManifest.coverage?.use
   if (!fs.existsSync(archived) || !fs.existsSync(alias) || fileSha256(archived) !== source.sha256 || fileSha256(alias) !== source.sha256)
     failures.push(`Missing or changed public use-case source copy: ${source.file}`);
 }
-const origin = "https://benchmarks.rewire.it";
+const origin = "https://benchmarks.rewirebio.io";
 const sitemap = checkSitemap(fs.readFileSync("out/sitemap.xml", "utf8"));
 failures.push(...sitemap.failures, ...checkSocialImage("out"));
 const indexPaths = catalogueIndexPaths(records);
@@ -123,7 +123,7 @@ for (const record of records) {
   for (const match of html.matchAll(/<a\b[^>]*\bhref="([^"]+)"/g)) {
     const href = match[1];
     if (!href.startsWith("/database/") && !href.startsWith("/omics/") && !href.startsWith("/use-cases/")) continue;
-    const url = new URL(href, "https://benchmarks.rewire.it");
+    const url = new URL(href, "https://benchmarks.rewirebio.io");
     let file = path.join("out", decodeURIComponent(url.pathname));
     if (url.pathname.endsWith("/")) file = path.join(file, "index.html");
     if (!fs.existsSync(file)) failures.push(href);

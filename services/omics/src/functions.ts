@@ -13,7 +13,7 @@ export const contributions = onRequest(
     maxInstances: 2,
     memory: "512MiB",
     concurrency: 4,
-    cors: ["https://benchmarks.rewire.it"],
+    cors: ["https://benchmarks.rewire.it", "https://benchmarks.rewirebio.io"],
     timeoutSeconds: 30,
   },
   deployedContributionHttpHandler,

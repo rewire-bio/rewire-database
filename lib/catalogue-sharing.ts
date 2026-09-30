@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { catalogueText } from "./catalogue-text";
 import { recordHref, type OmicsRecord } from "./omics";
 
-const ORIGIN = "https://benchmarks.rewire.it";
+const ORIGIN = "https://benchmarks.rewirebio.io";
 export const SOCIAL_IMAGE = {
   url: `${ORIGIN}/images/social/catalogue.png`,
   width: 1200,

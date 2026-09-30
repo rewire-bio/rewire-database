@@ -3,7 +3,7 @@ import path from "node:path";
 import { XMLParser, XMLValidator } from "fast-xml-parser";
 import { SOCIAL_IMAGE, type BreadcrumbItem } from "../../lib/catalogue-sharing";
 
-const ORIGIN = "https://benchmarks.rewire.it";
+const ORIGIN = "https://benchmarks.rewirebio.io";
 /** Decode only after extracting markup: escaped record text is not an HTML tag. */
 function decode(value: string): string {
   const named: Record<string, string> = {

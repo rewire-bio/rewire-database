@@ -191,7 +191,7 @@ export function recordSearchMetadata(
     title,
     description,
     alternates: {
-      canonical: `https://benchmarks.rewire.it${recordHref(record)}`,
+      canonical: `https://benchmarks.rewirebio.io${recordHref(record)}`,
     },
     robots: { index: recordIsIndexable(record), follow: true as const },
   };

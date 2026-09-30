@@ -20,7 +20,7 @@ let url: URL;
 let events: EventTarget;
 function text() { return JSON.stringify(tree!.toJSON()); }
 async function render(search = "?q=RNA") {
-  url = new URL(`https://benchmarks.rewire.it/use-cases/${search}`);
+  url = new URL(`https://benchmarks.rewirebio.io/use-cases/${search}`);
   await act(async () => { tree = create(<UseCaseExplorer initial={page()} />); });
 }
 beforeEach(() => {
@@ -55,7 +55,7 @@ describe("use-case question discovery", () => {
   it("ignores out-of-order responses when browser history changes filters", async () => {
     const first = deferred(); const next = deferred(); list.mockReturnValueOnce(first.promise).mockReturnValueOnce(next.promise);
     await render(); const signal = list.mock.calls[0][1] as AbortSignal;
-    await act(async () => { url = new URL("https://benchmarks.rewire.it/use-cases/?q=protein"); events.dispatchEvent(new Event("popstate")); });
+    await act(async () => { url = new URL("https://benchmarks.rewirebio.io/use-cases/?q=protein"); events.dispatchEvent(new Event("popstate")); });
     expect(signal.aborted).toBe(true);
     await act(async () => next.resolve(page("Current protein question")));
     await act(async () => first.resolve(page("Stale RNA question")));
@@ -79,7 +79,7 @@ describe("use-case question discovery", () => {
     await act(async () => request.resolve(page("", 0)));
     expect(text()).toContain("No use cases match"); expect(text()).toContain("absence does not establish");
     const failed = deferred(); list.mockReturnValue(failed.promise);
-    await act(async () => { url = new URL("https://benchmarks.rewire.it/use-cases/?q=other"); events.dispatchEvent(new Event("popstate")); });
+    await act(async () => { url = new URL("https://benchmarks.rewirebio.io/use-cases/?q=other"); events.dispatchEvent(new Event("popstate")); });
     await act(async () => failed.reject(new Error("service unavailable")));
     expect(text()).toContain("could not be loaded"); expect(text()).not.toContain("No use cases match"); expect(text()).not.toContain("0 matching use cases");
   });

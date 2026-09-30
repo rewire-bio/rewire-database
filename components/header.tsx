@@ -47,7 +47,7 @@ export default function Header() {
           {label}
         </NavigationLink>;
       })}
-      <a href="https://rewire.it/blog/">Articles ↗</a>
+      <a href="https://rewirebio.io/blog/">Articles ↗</a>
     </>
   );
   return (

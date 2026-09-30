@@ -310,9 +310,9 @@ export function safeBrowseReturnTo(
     const pathname = value.split(/[?#]/, 1)[0];
     if (!/^(?:\/|\/database\/|\/use-cases\/(?:[a-z0-9]+(?:-[a-z0-9]+)*\/)?)$/.test(pathname)) return null;
     if (/[\\\r\n]|%(?:25)*(?:0[ad]|5c)/i.test(value)) return null;
-    const url = new URL(value, "https://benchmarks.rewire.it");
+    const url = new URL(value, "https://benchmarks.rewirebio.io");
     if (
-      url.origin !== "https://benchmarks.rewire.it" ||
+      url.origin !== "https://benchmarks.rewirebio.io" ||
       url.pathname !== pathname
     )
       return null;

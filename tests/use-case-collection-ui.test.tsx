@@ -150,7 +150,7 @@ describe("use-case evidence collection plans", () => {
   });
 
   it("preserves filtered pagination and return context for plans loaded through the client", async () => {
-    let url = new URL("https://benchmarks.rewire.it/use-cases/?q=cancer&context=clinical_research&cursor=page-two");
+    let url = new URL("https://benchmarks.rewirebio.io/use-cases/?q=cancer&context=clinical_research&cursor=page-two");
     const events = new EventTarget();
     vi.stubGlobal("window", {
       get location() { return url; },

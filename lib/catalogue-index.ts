@@ -5,7 +5,7 @@ import type { OmicsRecord } from "./omics";
 
 export type IndexKind = "model" | "benchmark";
 export const MODEL_PAGE_SIZE = 24;
-export const CATALOGUE_ORIGIN = "https://benchmarks.rewire.it";
+export const CATALOGUE_ORIGIN = "https://benchmarks.rewirebio.io";
 
 /** Exact entity kinds only: configurations, tasks and protocols remain separate. */
 export function indexRecords(records: OmicsRecord[], kind: IndexKind) {

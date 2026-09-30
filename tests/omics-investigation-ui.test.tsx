@@ -206,7 +206,7 @@ describe("reviewed investigation routes", () => {
     expect(html).toContain("/database/dataset/assay");
     expect(html).toContain("/database/protocol/protocol");
     expect(html).toContain("/database/evaluation/evaluation");
-    expect(generateMetadata({ params: { id: report.id } }).alternates?.canonical).toBe(`https://benchmarks.rewire.it/investigations/${report.id}/`);
+    expect(generateMetadata({ params: { id: report.id } }).alternates?.canonical).toBe(`https://benchmarks.rewirebio.io/investigations/${report.id}/`);
   });
   it("blocks independent support labels until a validation-specific contract exists", () => {
     const unsupported = { ...report, claim_level: "independently_supported" as const };

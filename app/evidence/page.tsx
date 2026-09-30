@@ -10,7 +10,7 @@ const pageMetadata = {
   title: "Evidence and source origins",
   description:
     "Trace rewire catalogue statements to original sources, exact locations, reviewed artifacts and explicitly unresolved metadata.",
-  alternates: { canonical: "https://benchmarks.rewire.it/evidence/" },
+  alternates: { canonical: "https://benchmarks.rewirebio.io/evidence/" },
 };
 export const metadata: Metadata = {
   ...pageMetadata,

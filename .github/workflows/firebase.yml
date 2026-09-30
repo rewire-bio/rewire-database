@@ -57,7 +57,7 @@ jobs:
           NEXT_PUBLIC_GA_ID: ${{ vars.NEXT_PUBLIC_GA_ID }}
           NEXT_PUBLIC_OMICS_CONTRIBUTIONS_ENABLED: ${{ vars.NEXT_PUBLIC_OMICS_CONTRIBUTIONS_ENABLED || 'false' }}
       - name: Stage and validate Cloudflare asset subset
-        run: npm run prepare:cloudflare
+        run: npm run prepare:cloudflare && node scripts/check-cloudflare-local.mjs
       - name: Verify Firebase HTTP routing
         run: npx firebase emulators:exec --project demo-rewire-omics --only hosting 'npm run check:http'
       - uses: actions/setup-java@v4

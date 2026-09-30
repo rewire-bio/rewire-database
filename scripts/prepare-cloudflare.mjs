@@ -1,7 +1,7 @@
 import { readdir, lstat, mkdir, link, copyFile, rm, writeFile, readFile } from "node:fs/promises";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
-import { isProxied } from "../cloudflare/worker.mjs";
+import { isProxied } from "../cloudflare/routing.mjs";
 
 export async function prepareCloudflare(root = process.cwd()) {
   const input = path.join(root, "out");

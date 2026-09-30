@@ -2,7 +2,8 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { mkdtemp, mkdir, writeFile, readFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
-import worker, { isProxied } from "../cloudflare/worker.mjs";
+import worker from "../cloudflare/worker.mjs";
+import { isProxied } from "../cloudflare/routing.mjs";
 import { prepareCloudflare } from "../scripts/prepare-cloudflare.mjs";
 
 afterEach(() => { vi.unstubAllGlobals(); });
@@ -27,10 +28,24 @@ describe("Cloudflare hybrid hosting", () => {
     const [upstream, options] = fetcher.mock.calls[0] as any;
     expect(upstream.url).toBe("https://rewire-it.web.app/omics/releases/id/records.csv?download=1");
     expect(upstream.headers.get("range")).toBe("bytes=0-3");
+    expect(upstream.headers.get("accept-encoding")).toBe("identity");
     expect(options.redirect).toBe("manual");
     expect(response.status).toBe(206);
     expect(response.headers.get("content-range")).toBe("bytes 0-3/200");
     expect(new Uint8Array(await response.arrayBuffer())).toEqual(bytes);
+  });
+  it("fetches missing content-addressed chunks from Firebase during rollout and rollback", async () => {
+    const fetcher = vi.fn(async () => new Response("console.log('newer chunk')", { headers: { "content-type": "application/javascript" } }));
+    vi.stubGlobal("fetch", fetcher);
+    const response = await worker.fetch(new Request("https://benchmarks.rewirebio.io/_next/static/chunks/newer.js"), { ASSETS: assets });
+    expect(response.status).toBe(200);
+    expect((fetcher.mock.calls[0] as any)[0].url).toBe("https://rewire-it.web.app/_next/static/chunks/newer.js");
+    expect(await response.text()).toContain("newer chunk");
+  });
+  it("never returns a successful HTML fallback for a missing script", async () => {
+    vi.stubGlobal("fetch", vi.fn(async () => new Response("<html>fallback</html>", { headers: { "content-type": "text/html" } })));
+    const response = await worker.fetch(new Request("https://benchmarks.rewirebio.io/_next/static/chunks/missing.js"), { ASSETS: assets });
+    expect(response.status).toBe(404);
   });
   it("preserves authenticated POST requests and prevents private CDN caching", async () => {
     const fetcher = vi.fn(async () => new Response("{}", { headers: { "cache-control": "public,max-age=600", "cdn-cache-control": "max-age=600" } }));
@@ -41,7 +56,7 @@ describe("Cloudflare hybrid hosting", () => {
     expect(upstream.headers.get("authorization")).toBe("Bearer example");
     expect(await upstream.text()).toBe('{"example":true}');
     expect(options.cf.cacheTtl).toBe(0);
-    expect(response.headers.get("cache-control")).toBe("private, no-store");
+    expect(response.headers.get("cache-control")).toBe("no-store");
     expect(response.headers.has("cdn-cache-control")).toBe(false);
   });
   it("keeps origin redirects on the requested domain without following them", async () => {

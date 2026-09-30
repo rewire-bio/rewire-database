@@ -56,7 +56,8 @@ async function fixture() {
     if (url.endsWith(":populateFiles")) {
       expect(Object.keys(json!.files!).length).toBeLessThanOrEqual(1000);
       for (const [name, hash] of Object.entries(json!.files!)) draft.set(name, hash);
-      return { uploadRequiredHashes: [...new Set(Object.values(json!.files!))],
+      const historical = Object.keys(json!.files!).every((name) => name.startsWith("/omics/"));
+      return { uploadRequiredHashes: historical ? [] : [...new Set(Object.values(json!.files!))],
         uploadUrl: `https://upload-firebasehosting.googleapis.com/upload/${VERSION}/files` };
     }
     if (bodyFile) {
@@ -97,7 +98,7 @@ describe("immutable-history Hosting web publication", () => {
     const f = await fixture();
     await Promise.all(Array.from({ length: 1001 }, (_, i) => writeFile(path.join(f.root, "out", `page-${i}.html`), "shared")));
     await deployWebHosting(f.options);
-    expect(f.request.mock.calls.filter(([r]) => r.url.endsWith(":populateFiles"))).toHaveLength(2);
+    expect(f.request.mock.calls.filter(([r]) => r.url.endsWith(":populateFiles") && Object.keys(r.json!.files!).some((name) => !name.startsWith("/omics/")))).toHaveLength(2);
     expect(f.request.mock.calls.filter(([r]) => r.bodyFile)).toHaveLength(3);
   });
 
@@ -147,6 +148,56 @@ describe("immutable-history Hosting web publication", () => {
       return response;
     });
     expect(await deployWebHosting(f.options)).toBe(VERSION);
+  });
+
+  it("repairs a partial clone by registering every historical path without uploading old bytes", async () => {
+    const f = await fixture();
+    f.originals.set("/__/firebase/init.js", "1".repeat(64));
+    f.originals.set("/__/firebase/init.json", "2".repeat(64));
+    for (let i = 0; i < 1001; i++) f.originals.set(`/omics/releases/old/chunk-${i}.json`, HASH);
+    const base = f.request.getMockImplementation()!;
+    f.request.mockImplementation(async (r) => {
+      const result = await base(r);
+      if (r.url.endsWith("versions:clone")) {
+        f.draft.clear();
+        f.draft.set("/omics/sources/evidence.md", f.originals.get("/omics/sources/evidence.md")!);
+        f.draft.set("/__/firebase/init.js", "1".repeat(64));
+        f.draft.set("/__/firebase/init.json", "2".repeat(64));
+      }
+      return result;
+    });
+    expect(await deployWebHosting(f.options)).toBe(VERSION);
+    const historyBatches = f.request.mock.calls.filter(([r]) => r.url.endsWith(":populateFiles") && Object.keys(r.json!.files!).every((name) => name.startsWith("/omics/")));
+    expect(historyBatches).toHaveLength(2);
+    expect(historyBatches.flatMap(([r]) => Object.keys(r.json!.files!))).toHaveLength(1005);
+    expect(f.draft.get("/__/firebase/init.js")).toBe("1".repeat(64));
+    expect(f.request.mock.calls.filter(([r]) => r.bodyFile)).toHaveLength(2);
+  });
+
+  it("refuses to fetch or upload missing previously published history", async () => {
+    const f = await fixture();
+    const base = f.request.getMockImplementation()!;
+    f.request.mockImplementation(async (r) => {
+      const result = await base(r);
+      if (r.url.endsWith(":populateFiles") && Object.keys(r.json!.files!).every((name) => name.startsWith("/omics/"))) result.uploadRequiredHashes = [HASH];
+      return result;
+    });
+    await expect(deployWebHosting(f.options)).rejects.toThrow("Previously published history requires an upload");
+    expect(f.options.onReleaseAttempt).not.toHaveBeenCalled();
+    expect(f.request.mock.calls.filter(([r]) => r.bodyFile)).toHaveLength(0);
+  });
+
+  it.each(["unknown-managed", "absent-from-source", "changed-managed-hash"])("rejects %s files in a clone", async (mode) => {
+    const f = await fixture();
+    if (mode === "changed-managed-hash") f.originals.set("/__/firebase/init.js", "1".repeat(64));
+    const base = f.request.getMockImplementation()!;
+    f.request.mockImplementation(async (r) => {
+      const result = await base(r);
+      if (r.url.endsWith("versions:clone")) f.draft.set(mode === "unknown-managed" ? "/__/arbitrary.js" : "/__/firebase/init.js", "2".repeat(64));
+      return result;
+    });
+    await expect(deployWebHosting(f.options)).rejects.toThrow("unexpected file or changed hash");
+    expect(f.options.onReleaseAttempt).not.toHaveBeenCalled();
   });
 
   it.each(["foreign", "missing", "unknown", "duplicate", "traversal", "mutation", "timeout", "operation-error", "wrong-site", "finalize", "upload", "clone", "pagination-loop", "foreign-operation"])(

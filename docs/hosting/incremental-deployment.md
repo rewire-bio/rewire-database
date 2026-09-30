@@ -30,9 +30,14 @@ stored in this cache.
 
 For a website update, the publisher verifies the live Hosting receipt, exact
 manifest bytes and active API release. It clones **only** the prior `/omics/`
-files server-side into a draft Firebase Hosting version, then uploads the checked
-website files. Paginated path/hash comparisons prove that every previous
-`/omics/` file is retained and no stale UI file survives. The prior Hosting
+files server-side into a draft Firebase Hosting version, explicitly registers
+every retained path/hash mapping against Firebase's existing stored bytes, then
+uploads the checked website files. Registering retained files must require zero
+uploads; otherwise publication stops. This handles incomplete filtered-clone
+inventories without rebuilding historical archives. Paginated path/hash
+comparisons prove that every previous `/omics/` file is retained and no stale UI
+file survives. Firebase's two managed initialization files are accepted only at
+their exact paths with the hashes captured from the source version. The prior Hosting
 configuration is inherited only because its fingerprint matched.
 
 The publisher checks the live base again immediately before release. Draft

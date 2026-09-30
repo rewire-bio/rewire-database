@@ -10,6 +10,7 @@ const API = "https://firebasehosting.googleapis.com/v1beta1/";
 const UPLOAD = "https://upload-firebasehosting.googleapis.com/upload/";
 const ID = /^[a-zA-Z0-9_-]+$/;
 const HASH = /^[a-f0-9]{64}$/;
+const MANAGED_FILES = new Set(["/__/firebase/init.js", "/__/firebase/init.json"]);
 const pause = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 /** @typedef {{method: string, url: string, json?: {files?: Record<string,string>, status?: string, sourceVersion?: string, finalize?: boolean, include?: {regexes: string[]}}, bodyFile?: string, retry?: boolean}} HostingRequest */
@@ -167,6 +168,14 @@ function equalFiles(expected, actual) {
     "Hosting file preservation/composition mismatch");
 }
 
+function requiredUploads(result, version, hashes) {
+  requireCondition(result.uploadRequiredHashes === undefined || Array.isArray(result.uploadRequiredHashes), "Invalid requested upload hashes");
+  const requested = [...new Set(result.uploadRequiredHashes || [])];
+  requireCondition(requested.every((hash) => HASH.test(hash) && hashes.has(hash)), "Unknown requested upload hash");
+  if (requested.length || result.uploadUrl !== undefined) requireCondition(result.uploadUrl === `${UPLOAD}${version}/files`, "Untrusted upload URL");
+  return requested;
+}
+
 /** Refuse a full CLI publication which would remove previously published downloads.
  * Generated full exports separately validate archive checksums. This read-only guard
  * checks remote inventory against local presence, without assuming identical gzip settings.
@@ -235,6 +244,8 @@ export async function deployWebHosting({ previousVersion, site = "rewire-it", ro
     const source = `sites/${site}/versions/${previousVersion}`;
     const original = await activeFiles(client, source);
     const retained = new Map([...original].filter(([name]) => name.startsWith("/omics/")));
+    const managed = new Map([...original].filter(([name]) => MANAGED_FILES.has(name)));
+    requireCondition(files.every((file) => !file.path.startsWith("/__/")), "UI cannot overwrite Firebase's reserved paths");
     requireCondition(retained.has("/omics/manifest.json"), "Source version lacks /omics/manifest.json");
     for (const name of retained.keys()) {
       const release = name.match(/^\/omics\/releases\/([^/]+)\//)?.[1];
@@ -253,7 +264,21 @@ export async function deployWebHosting({ previousVersion, site = "rewire-it", ro
     const version = versionName(operation.response?.name, site);
     requireCondition(version !== source && operation.response.status === "CREATED",
     "Clone did not return a new same-site CREATED version");
-    equalFiles(retained, await activeFiles(client, version));
+    const preserved = new Map([...retained, ...managed]);
+    const cloned = await activeFiles(client, version);
+    requireCondition([...cloned].every(([name, hash]) => preserved.get(name) === hash), "Clone contains an unexpected file or changed hash");
+    // A real CREATED clone can expose only a subset of the source's paths. Explicitly
+    // register every retained mapping: these hashes already exist in this same site,
+    // so requiring zero uploads preserves history without expanding or transferring it.
+    const retainedEntries = [...retained];
+    for (let i = 0; i < retainedEntries.length; i += 1000) {
+      const batch = retainedEntries.slice(i, i + 1000);
+      const result = await client.request({ method: "POST", url: `${API}${version}:populateFiles`,
+        json: { files: Object.fromEntries(batch) } });
+      requireCondition(requiredUploads(result, version, new Set(batch.map(([, hash]) => hash))).length === 0,
+        "Previously published history requires an upload; aborting without changing live Hosting");
+    }
+    equalFiles(preserved, await activeFiles(client, version));
     // Each populate operation adds mappings. No stale UI is cloned, and no /omics mapping is overwritten.
     const batches = [];
     for (let i = 0; i < files.length; i += 1000) batches.push(files.slice(i, i + 1000));
@@ -263,16 +288,13 @@ export async function deployWebHosting({ previousVersion, site = "rewire-it", ro
       const hashes = new Map(batch.map((file) => [file.hash, file.compressed]));
       const result = await client.request({ method: "POST", url: `${API}${version}:populateFiles`,
         json: { files: Object.fromEntries(batch.map((file) => [file.path, file.hash])) } });
-      requireCondition(result.uploadRequiredHashes === undefined || Array.isArray(result.uploadRequiredHashes), "Invalid requested upload hashes");
-      const requested = [...new Set(result.uploadRequiredHashes || [])];
-      requireCondition(requested.every((hash) => HASH.test(hash) && hashes.has(hash)), "Unknown requested upload hash");
-      if (requested.length || result.uploadUrl !== undefined) requireCondition(result.uploadUrl === `${UPLOAD}${version}/files`, "Untrusted upload URL");
+      const requested = requiredUploads(result, version, hashes);
       await pool(requested.filter((hash) => !uploaded.has(hash)), concurrency, async (hash) => {
         await client.request({ method: "POST", url: `${result.uploadUrl}/${hash}`, bodyFile: hashes.get(hash) });
         uploaded.add(hash);
       });
     }
-    const expected = new Map([...retained, ...files.map((file) => [file.path, file.hash])]);
+    const expected = new Map([...preserved, ...files.map((file) => [file.path, file.hash])]);
     equalFiles(expected, await activeFiles(client, version));
     const finalized = await client.request({ method: "PATCH", url: `${API}${version}?updateMask=status`, json: { status: "FINALIZED" } });
     requireCondition(versionName(finalized.name, site) === version && finalized.status === "FINALIZED", "Hosting finalization failed");

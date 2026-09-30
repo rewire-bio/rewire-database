@@ -1,0 +1,1045 @@
+[
+  {
+    "use_case_id": "use-case-rare-disease-candidate-ranking",
+    "issue": 341,
+    "issue_url": "https://github.com/rewire-bio/rewire.it/issues/341",
+    "existing_evidence_ids": [],
+    "new_ids": [
+      "uc-clinical-20260930-source-talos",
+      "uc-clinical-20260930-source-talos-table1",
+      "uc-clinical-20260930-talos-default",
+      "uc-clinical-20260930-talos-strict",
+      "uc-clinical-20260930-talos-acg-trio-data",
+      "uc-clinical-20260930-talos-acg-trio-protocol",
+      "uc-clinical-20260930-talos-acg-trio-default-evaluation",
+      "uc-clinical-20260930-talos-acg-trio-default-diagnoses",
+      "uc-clinical-20260930-talos-acg-trio-default-recovery",
+      "uc-clinical-20260930-talos-acg-trio-default-candidate-variants",
+      "uc-clinical-20260930-talos-acg-trio-default-candidates-per-proband",
+      "uc-clinical-20260930-talos-acg-trio-default-candidates-per-recovered-diagnosis",
+      "uc-clinical-20260930-talos-acg-trio-strict-evaluation",
+      "uc-clinical-20260930-talos-acg-trio-strict-diagnoses",
+      "uc-clinical-20260930-talos-acg-trio-strict-recovery",
+      "uc-clinical-20260930-talos-acg-trio-strict-candidate-variants",
+      "uc-clinical-20260930-talos-acg-trio-strict-candidates-per-proband",
+      "uc-clinical-20260930-talos-acg-trio-strict-candidates-per-recovered-diagnosis",
+      "uc-clinical-20260930-talos-acg-singleton-data",
+      "uc-clinical-20260930-talos-acg-singleton-protocol",
+      "uc-clinical-20260930-talos-acg-singleton-default-evaluation",
+      "uc-clinical-20260930-talos-acg-singleton-default-diagnoses",
+      "uc-clinical-20260930-talos-acg-singleton-default-recovery",
+      "uc-clinical-20260930-talos-acg-singleton-default-candidate-variants",
+      "uc-clinical-20260930-talos-acg-singleton-default-candidates-per-proband",
+      "uc-clinical-20260930-talos-acg-singleton-default-candidates-per-recovered-diagnosis",
+      "uc-clinical-20260930-talos-acg-singleton-strict-evaluation",
+      "uc-clinical-20260930-talos-acg-singleton-strict-diagnoses",
+      "uc-clinical-20260930-talos-acg-singleton-strict-recovery",
+      "uc-clinical-20260930-talos-acg-singleton-strict-candidate-variants",
+      "uc-clinical-20260930-talos-acg-singleton-strict-candidates-per-proband",
+      "uc-clinical-20260930-talos-acg-singleton-strict-candidates-per-recovered-diagnosis",
+      "uc-clinical-20260930-talos-acg-full-data",
+      "uc-clinical-20260930-talos-acg-full-protocol",
+      "uc-clinical-20260930-talos-acg-full-default-evaluation",
+      "uc-clinical-20260930-talos-acg-full-default-diagnoses",
+      "uc-clinical-20260930-talos-acg-full-default-recovery",
+      "uc-clinical-20260930-talos-acg-full-default-candidate-variants",
+      "uc-clinical-20260930-talos-acg-full-default-candidates-per-proband",
+      "uc-clinical-20260930-talos-acg-full-default-candidates-per-recovered-diagnosis",
+      "uc-clinical-20260930-talos-acg-full-strict-evaluation",
+      "uc-clinical-20260930-talos-acg-full-strict-diagnoses",
+      "uc-clinical-20260930-talos-acg-full-strict-recovery",
+      "uc-clinical-20260930-talos-acg-full-strict-candidate-variants",
+      "uc-clinical-20260930-talos-acg-full-strict-candidates-per-proband",
+      "uc-clinical-20260930-talos-acg-full-strict-candidates-per-recovered-diagnosis",
+      "uc-clinical-20260930-talos-rgp-trio-data",
+      "uc-clinical-20260930-talos-rgp-trio-protocol",
+      "uc-clinical-20260930-talos-rgp-trio-default-evaluation",
+      "uc-clinical-20260930-talos-rgp-trio-default-diagnoses",
+      "uc-clinical-20260930-talos-rgp-trio-default-recovery",
+      "uc-clinical-20260930-talos-rgp-trio-default-candidate-variants",
+      "uc-clinical-20260930-talos-rgp-trio-default-candidates-per-proband",
+      "uc-clinical-20260930-talos-rgp-trio-default-candidates-per-recovered-diagnosis",
+      "uc-clinical-20260930-talos-rgp-trio-strict-evaluation",
+      "uc-clinical-20260930-talos-rgp-trio-strict-diagnoses",
+      "uc-clinical-20260930-talos-rgp-trio-strict-recovery",
+      "uc-clinical-20260930-talos-rgp-trio-strict-candidate-variants",
+      "uc-clinical-20260930-talos-rgp-trio-strict-candidates-per-proband",
+      "uc-clinical-20260930-talos-rgp-trio-strict-candidates-per-recovered-diagnosis",
+      "uc-clinical-20260930-talos-rgp-singleton-data",
+      "uc-clinical-20260930-talos-rgp-singleton-protocol",
+      "uc-clinical-20260930-talos-rgp-singleton-default-evaluation",
+      "uc-clinical-20260930-talos-rgp-singleton-default-diagnoses",
+      "uc-clinical-20260930-talos-rgp-singleton-default-recovery",
+      "uc-clinical-20260930-talos-rgp-singleton-default-candidate-variants",
+      "uc-clinical-20260930-talos-rgp-singleton-default-candidates-per-proband",
+      "uc-clinical-20260930-talos-rgp-singleton-default-candidates-per-recovered-diagnosis",
+      "uc-clinical-20260930-talos-rgp-singleton-strict-evaluation",
+      "uc-clinical-20260930-talos-rgp-singleton-strict-diagnoses",
+      "uc-clinical-20260930-talos-rgp-singleton-strict-recovery",
+      "uc-clinical-20260930-talos-rgp-singleton-strict-candidate-variants",
+      "uc-clinical-20260930-talos-rgp-singleton-strict-candidates-per-proband",
+      "uc-clinical-20260930-talos-rgp-singleton-strict-candidates-per-recovered-diagnosis",
+      "uc-clinical-20260930-talos-rgp-full-data",
+      "uc-clinical-20260930-talos-rgp-full-protocol",
+      "uc-clinical-20260930-talos-rgp-full-default-evaluation",
+      "uc-clinical-20260930-talos-rgp-full-default-diagnoses",
+      "uc-clinical-20260930-talos-rgp-full-default-recovery",
+      "uc-clinical-20260930-talos-rgp-full-default-candidate-variants",
+      "uc-clinical-20260930-talos-rgp-full-default-candidates-per-proband",
+      "uc-clinical-20260930-talos-rgp-full-default-candidates-per-recovered-diagnosis",
+      "uc-clinical-20260930-talos-rgp-full-strict-evaluation",
+      "uc-clinical-20260930-talos-rgp-full-strict-diagnoses",
+      "uc-clinical-20260930-talos-rgp-full-strict-recovery",
+      "uc-clinical-20260930-talos-rgp-full-strict-candidate-variants",
+      "uc-clinical-20260930-talos-rgp-full-strict-candidates-per-proband",
+      "uc-clinical-20260930-talos-rgp-full-strict-candidates-per-recovered-diagnosis",
+      "uc-clinical-20260930-baseline-talos-default",
+      "uc-clinical-20260930-exomiser-v14",
+      "uc-clinical-20260930-exomiser-acg-data",
+      "uc-clinical-20260930-exomiser-acg-protocol",
+      "uc-clinical-20260930-exomiser-acg-evaluation",
+      "uc-clinical-20260930-exomiser-all-count",
+      "uc-clinical-20260930-exomiser-all-percent",
+      "uc-clinical-20260930-exomiser-top10-count",
+      "uc-clinical-20260930-exomiser-top10-percent",
+      "uc-clinical-20260930-exomiser-top5-count",
+      "uc-clinical-20260930-exomiser-top5-percent",
+      "uc-clinical-20260930-exomiser-top1-count",
+      "uc-clinical-20260930-exomiser-top1-percent",
+      "uc-clinical-20260930-baseline-exomiser",
+      "uc-clinical-20260930-talos-monthly",
+      "uc-clinical-20260930-reanalysis-4735-data",
+      "uc-clinical-20260930-reanalysis-programme-protocol",
+      "uc-clinical-20260930-reanalysis-programme-evaluation",
+      "uc-clinical-20260930-reanalysis-new-confirmed-diagnoses",
+      "uc-clinical-20260930-reanalysis-newly-diagnosed-individuals",
+      "uc-clinical-20260930-reanalysis-additional-diagnostic-yield",
+      "uc-clinical-20260930-reanalysis-new-gene-disease-diagnoses",
+      "uc-clinical-20260930-reanalysis-new-gene-disease-share",
+      "uc-clinical-20260930-reanalysis-new-variant-evidence-diagnoses",
+      "uc-clinical-20260930-reanalysis-new-variant-evidence-share",
+      "uc-clinical-20260930-reanalysis-improved-analysis-diagnoses",
+      "uc-clinical-20260930-reanalysis-improved-analysis-share",
+      "uc-clinical-20260930-reanalysis-first-cycle-diagnoses",
+      "uc-clinical-20260930-reanalysis-first-cycle-share",
+      "uc-clinical-20260930-reanalysis-later-cycle-diagnoses",
+      "uc-clinical-20260930-reanalysis-later-cycle-share",
+      "uc-clinical-20260930-reanalysis-new-candidates-per-1000",
+      "uc-clinical-20260930-original-analysis",
+      "uc-clinical-20260930-baseline-reanalysis-original",
+      "uc-clinical-20260930-updated-manual-proposed",
+      "uc-clinical-20260930-baseline-reanalysis-updated-manual",
+      "uc-clinical-20260930-method-talos",
+      "uc-clinical-20260930-association-talos-default",
+      "uc-clinical-20260930-association-talos-strict",
+      "uc-clinical-20260930-association-talos-monthly",
+      "uc-clinical-20260930-method-exomiser",
+      "uc-clinical-20260930-association-exomiser-v14",
+      "uc-clinical-20260930-benchmark-talos-study",
+      "uc-clinical-20260930-membership-talos-acg-trio-protocol",
+      "uc-clinical-20260930-membership-talos-acg-singleton-protocol",
+      "uc-clinical-20260930-membership-talos-acg-full-protocol",
+      "uc-clinical-20260930-membership-talos-rgp-trio-protocol",
+      "uc-clinical-20260930-membership-talos-rgp-singleton-protocol",
+      "uc-clinical-20260930-membership-talos-rgp-full-protocol",
+      "uc-clinical-20260930-membership-exomiser-acg-protocol",
+      "uc-clinical-20260930-membership-reanalysis-programme-protocol"
+    ],
+    "sources": [
+      "uc-clinical-20260930-source-talos",
+      "uc-clinical-20260930-source-talos-table1"
+    ],
+    "searched_queries": [
+      "Exomiser benchmark 2024 2025 rare disease 100000 genomes top 1 LIRICAL benchmark table",
+      "Talos automated reanalysis rare disease 2024 2025 diagnostic yield"
+    ],
+    "remaining_gaps": [
+      "Known callable diagnosis recovery is available, but no controlled addition of a molecular-effect model at identical review effort was established.",
+      "Family, site and temporal independence, calling failures and unresolved outcomes need explicit prospective evaluation.",
+      "Talos/Exomiser comparison has source denominator discrepancies (194 body versus 190 extended figure); rank limits are not equal effort."
+    ],
+    "coverage_verdict": "scoped_candidate_recovery_and_workload_evidence",
+    "suggested_mappings": [
+      {
+        "protocol_id": "uc-clinical-20260930-talos-acg-trio-protocol",
+        "evaluation_ids": [
+          "uc-clinical-20260930-talos-acg-trio-default-evaluation",
+          "uc-clinical-20260930-talos-acg-trio-strict-evaluation"
+        ],
+        "endpoint": "Known diagnosis recovery and number of candidates requiring review",
+        "relevance": "proxy",
+        "rationale": "Directly measures candidate-set recovery and review burden in a bounded clinical cohort; it does not isolate the added value of a molecular-effect model.",
+        "constraints": [
+          "ACG trio; do not pool overlapping family modes.",
+          "Recovery denominator is callable known diagnoses; workload denominator includes unresolved probands."
+        ],
+        "limitations": [
+          "No prospective diagnostic accuracy or equal analyst-time comparison.",
+          "Exact pipeline snapshots and independent clinical review remain outstanding."
+        ],
+        "citations": [
+          {
+            "source_id": "uc-clinical-20260930-source-talos-table1",
+            "locator": "Table 1, ACG, trio"
+          }
+        ]
+      },
+      {
+        "protocol_id": "uc-clinical-20260930-talos-acg-singleton-protocol",
+        "evaluation_ids": [
+          "uc-clinical-20260930-talos-acg-singleton-default-evaluation",
+          "uc-clinical-20260930-talos-acg-singleton-strict-evaluation"
+        ],
+        "endpoint": "Known diagnosis recovery and number of candidates requiring review",
+        "relevance": "proxy",
+        "rationale": "Directly measures candidate-set recovery and review burden in a bounded clinical cohort; it does not isolate the added value of a molecular-effect model.",
+        "constraints": [
+          "ACG singleton; do not pool overlapping family modes.",
+          "Recovery denominator is callable known diagnoses; workload denominator includes unresolved probands."
+        ],
+        "limitations": [
+          "No prospective diagnostic accuracy or equal analyst-time comparison.",
+          "Exact pipeline snapshots and independent clinical review remain outstanding."
+        ],
+        "citations": [
+          {
+            "source_id": "uc-clinical-20260930-source-talos-table1",
+            "locator": "Table 1, ACG, singleton"
+          }
+        ]
+      },
+      {
+        "protocol_id": "uc-clinical-20260930-talos-acg-full-protocol",
+        "evaluation_ids": [
+          "uc-clinical-20260930-talos-acg-full-default-evaluation",
+          "uc-clinical-20260930-talos-acg-full-strict-evaluation"
+        ],
+        "endpoint": "Known diagnosis recovery and number of candidates requiring review",
+        "relevance": "proxy",
+        "rationale": "Directly measures candidate-set recovery and review burden in a bounded clinical cohort; it does not isolate the added value of a molecular-effect model.",
+        "constraints": [
+          "ACG full; do not pool overlapping family modes.",
+          "Recovery denominator is callable known diagnoses; workload denominator includes unresolved probands."
+        ],
+        "limitations": [
+          "No prospective diagnostic accuracy or equal analyst-time comparison.",
+          "Exact pipeline snapshots and independent clinical review remain outstanding."
+        ],
+        "citations": [
+          {
+            "source_id": "uc-clinical-20260930-source-talos-table1",
+            "locator": "Table 1, ACG, full"
+          }
+        ]
+      },
+      {
+        "protocol_id": "uc-clinical-20260930-talos-rgp-trio-protocol",
+        "evaluation_ids": [
+          "uc-clinical-20260930-talos-rgp-trio-default-evaluation",
+          "uc-clinical-20260930-talos-rgp-trio-strict-evaluation"
+        ],
+        "endpoint": "Known diagnosis recovery and number of candidates requiring review",
+        "relevance": "proxy",
+        "rationale": "Directly measures candidate-set recovery and review burden in a bounded clinical cohort; it does not isolate the added value of a molecular-effect model.",
+        "constraints": [
+          "RGP trio; do not pool overlapping family modes.",
+          "Recovery denominator is callable known diagnoses; workload denominator includes unresolved probands."
+        ],
+        "limitations": [
+          "No prospective diagnostic accuracy or equal analyst-time comparison.",
+          "Exact pipeline snapshots and independent clinical review remain outstanding."
+        ],
+        "citations": [
+          {
+            "source_id": "uc-clinical-20260930-source-talos-table1",
+            "locator": "Table 1, RGP, trio"
+          }
+        ]
+      },
+      {
+        "protocol_id": "uc-clinical-20260930-talos-rgp-singleton-protocol",
+        "evaluation_ids": [
+          "uc-clinical-20260930-talos-rgp-singleton-default-evaluation",
+          "uc-clinical-20260930-talos-rgp-singleton-strict-evaluation"
+        ],
+        "endpoint": "Known diagnosis recovery and number of candidates requiring review",
+        "relevance": "proxy",
+        "rationale": "Directly measures candidate-set recovery and review burden in a bounded clinical cohort; it does not isolate the added value of a molecular-effect model.",
+        "constraints": [
+          "RGP singleton; do not pool overlapping family modes.",
+          "Recovery denominator is callable known diagnoses; workload denominator includes unresolved probands."
+        ],
+        "limitations": [
+          "No prospective diagnostic accuracy or equal analyst-time comparison.",
+          "Exact pipeline snapshots and independent clinical review remain outstanding."
+        ],
+        "citations": [
+          {
+            "source_id": "uc-clinical-20260930-source-talos-table1",
+            "locator": "Table 1, RGP, singleton"
+          }
+        ]
+      },
+      {
+        "protocol_id": "uc-clinical-20260930-talos-rgp-full-protocol",
+        "evaluation_ids": [
+          "uc-clinical-20260930-talos-rgp-full-default-evaluation",
+          "uc-clinical-20260930-talos-rgp-full-strict-evaluation"
+        ],
+        "endpoint": "Known diagnosis recovery and number of candidates requiring review",
+        "relevance": "proxy",
+        "rationale": "Directly measures candidate-set recovery and review burden in a bounded clinical cohort; it does not isolate the added value of a molecular-effect model.",
+        "constraints": [
+          "RGP full; do not pool overlapping family modes.",
+          "Recovery denominator is callable known diagnoses; workload denominator includes unresolved probands."
+        ],
+        "limitations": [
+          "No prospective diagnostic accuracy or equal analyst-time comparison.",
+          "Exact pipeline snapshots and independent clinical review remain outstanding."
+        ],
+        "citations": [
+          {
+            "source_id": "uc-clinical-20260930-source-talos-table1",
+            "locator": "Table 1, RGP, full"
+          }
+        ]
+      },
+      {
+        "protocol_id": "uc-clinical-20260930-exomiser-acg-protocol",
+        "evaluation_ids": [
+          "uc-clinical-20260930-exomiser-acg-evaluation"
+        ],
+        "endpoint": "Rank-budget recovery of known SNV/indel diagnoses",
+        "relevance": "proxy",
+        "rationale": "Measured conventional comparator for candidate ranking; separately scoped because source cohort counts conflict and effort is not matched.",
+        "constraints": [
+          "Results denominator 194; Extended Data Fig1 states 190.",
+          "Top1/top5/top10/all rank limits are different review budgets."
+        ],
+        "limitations": [
+          "Do not combine with Talos Table1 or infer matched equal-effort superiority.",
+          "Minor software version and knowledge release not extracted."
+        ],
+        "citations": [
+          {
+            "source_id": "uc-clinical-20260930-source-talos",
+            "locator": "Results Comparison with other tools; Methods; Extended Data Fig1 caption"
+          }
+        ]
+      }
+    ],
+    "draft_issue_comment": "Coverage audit (30 September 2026): scoped candidate recovery and workload evidence.\n\nAdded primary-source protocols, exact method configurations, conventional baseline roles, datasets, evaluations and transcribed measurements to the review branch. Existing 26,126-record catalogue contained no named direct evidence for this clinical use case.\n\n- Known callable diagnosis recovery is available, but no controlled addition of a molecular-effect model at identical review effort was established.\n- Family, site and temporal independence, calling failures and unresolved outcomes need explicit prospective evaluation.\n- Talos/Exomiser comparison has source denominator discrepancies (194 body versus 190 extended figure); rank limits are not equal effort.\n\nSources: https://www.nature.com/articles/s41591-026-04477-5, https://www.nature.com/articles/s41591-026-04477-5/tables/1\n\nThese are automated source checks, not independent reproduction, human scientific review or clinical approval. Candidate database additions remain subject to normal review/release."
+  },
+  {
+    "use_case_id": "use-case-unresolved-rare-disease-reanalysis",
+    "issue": 342,
+    "issue_url": "https://github.com/rewire-bio/rewire.it/issues/342",
+    "existing_evidence_ids": [],
+    "new_ids": [
+      "uc-clinical-20260930-source-talos",
+      "uc-clinical-20260930-talos-default",
+      "uc-clinical-20260930-talos-strict",
+      "uc-clinical-20260930-exomiser-v14",
+      "uc-clinical-20260930-exomiser-acg-data",
+      "uc-clinical-20260930-exomiser-acg-protocol",
+      "uc-clinical-20260930-exomiser-acg-evaluation",
+      "uc-clinical-20260930-exomiser-all-count",
+      "uc-clinical-20260930-exomiser-all-percent",
+      "uc-clinical-20260930-exomiser-top10-count",
+      "uc-clinical-20260930-exomiser-top10-percent",
+      "uc-clinical-20260930-exomiser-top5-count",
+      "uc-clinical-20260930-exomiser-top5-percent",
+      "uc-clinical-20260930-exomiser-top1-count",
+      "uc-clinical-20260930-exomiser-top1-percent",
+      "uc-clinical-20260930-baseline-exomiser",
+      "uc-clinical-20260930-talos-monthly",
+      "uc-clinical-20260930-reanalysis-4735-data",
+      "uc-clinical-20260930-reanalysis-programme-protocol",
+      "uc-clinical-20260930-reanalysis-programme-evaluation",
+      "uc-clinical-20260930-reanalysis-new-confirmed-diagnoses",
+      "uc-clinical-20260930-reanalysis-newly-diagnosed-individuals",
+      "uc-clinical-20260930-reanalysis-additional-diagnostic-yield",
+      "uc-clinical-20260930-reanalysis-new-gene-disease-diagnoses",
+      "uc-clinical-20260930-reanalysis-new-gene-disease-share",
+      "uc-clinical-20260930-reanalysis-new-variant-evidence-diagnoses",
+      "uc-clinical-20260930-reanalysis-new-variant-evidence-share",
+      "uc-clinical-20260930-reanalysis-improved-analysis-diagnoses",
+      "uc-clinical-20260930-reanalysis-improved-analysis-share",
+      "uc-clinical-20260930-reanalysis-first-cycle-diagnoses",
+      "uc-clinical-20260930-reanalysis-first-cycle-share",
+      "uc-clinical-20260930-reanalysis-later-cycle-diagnoses",
+      "uc-clinical-20260930-reanalysis-later-cycle-share",
+      "uc-clinical-20260930-reanalysis-new-candidates-per-1000",
+      "uc-clinical-20260930-original-analysis",
+      "uc-clinical-20260930-baseline-reanalysis-original",
+      "uc-clinical-20260930-updated-manual-proposed",
+      "uc-clinical-20260930-baseline-reanalysis-updated-manual",
+      "uc-clinical-20260930-method-talos",
+      "uc-clinical-20260930-association-talos-default",
+      "uc-clinical-20260930-association-talos-strict",
+      "uc-clinical-20260930-association-talos-monthly",
+      "uc-clinical-20260930-method-exomiser",
+      "uc-clinical-20260930-association-exomiser-v14",
+      "uc-clinical-20260930-benchmark-talos-study",
+      "uc-clinical-20260930-membership-talos-acg-trio-protocol",
+      "uc-clinical-20260930-membership-talos-acg-singleton-protocol",
+      "uc-clinical-20260930-membership-talos-acg-full-protocol",
+      "uc-clinical-20260930-membership-talos-rgp-trio-protocol",
+      "uc-clinical-20260930-membership-talos-rgp-singleton-protocol",
+      "uc-clinical-20260930-membership-talos-rgp-full-protocol",
+      "uc-clinical-20260930-membership-exomiser-acg-protocol",
+      "uc-clinical-20260930-membership-reanalysis-programme-protocol"
+    ],
+    "sources": [
+      "uc-clinical-20260930-source-talos"
+    ],
+    "searched_queries": [
+      "Talos automated reanalysis rare disease 2024 2025 diagnostic yield",
+      "AUTOMATED VERSUS MANUAL REANALYSIS IN RARE DISEASE GENOMICS"
+    ],
+    "remaining_gaps": [
+      "Equal updated calls, phenotypes and knowledge with matched review effort are not established in the extracted peer-reviewed programme.",
+      "A 2026 medRxiv automated-versus-manual comparison was discovered (10.64898/2026.05.16.26352295); full text retrieval failed with HTTP403 and indexed percentages conflict between text and caption. No measurements imported from that preprint.",
+      "False alerts, review time, retracted diagnoses and source denominator inconsistencies need adjudication."
+    ],
+    "coverage_verdict": "programme_yield_available_equal_input_method_gap",
+    "suggested_mappings": [
+      {
+        "protocol_id": "uc-clinical-20260930-reanalysis-programme-protocol",
+        "evaluation_ids": [
+          "uc-clinical-20260930-reanalysis-programme-evaluation"
+        ],
+        "endpoint": "New confirmed diagnoses and review workload during monthly reanalysis",
+        "relevance": "direct",
+        "rationale": "Direct programme-level reanalysis outcomes in a previously unresolved cohort; does not isolate method benefit.",
+        "constraints": [
+          "4735 individuals; diagnoses and individuals distinct; staggered repeated cycles.",
+          "Original analysis 2017–2022; monthly programme 2023–2025."
+        ],
+        "limitations": [
+          "No equal-input refreshed conventional control.",
+          "No randomization/blinding; updated calls and knowledge contribute to yield."
+        ],
+        "citations": [
+          {
+            "source_id": "uc-clinical-20260930-source-talos",
+            "locator": "Results, Iterative reanalysis; Methods"
+          }
+        ]
+      }
+    ],
+    "draft_issue_comment": "Coverage audit (30 September 2026): programme yield available equal input method gap.\n\nAdded primary-source protocols, exact method configurations, conventional baseline roles, datasets, evaluations and transcribed measurements to the review branch. Existing 26,126-record catalogue contained no named direct evidence for this clinical use case.\n\n- Equal updated calls, phenotypes and knowledge with matched review effort are not established in the extracted peer-reviewed programme.\n- A 2026 medRxiv automated-versus-manual comparison was discovered (10.64898/2026.05.16.26352295); full text retrieval failed with HTTP403 and indexed percentages conflict between text and caption. No measurements imported from that preprint.\n- False alerts, review time, retracted diagnoses and source denominator inconsistencies need adjudication.\n\nSources: https://www.nature.com/articles/s41591-026-04477-5\n\nThese are automated source checks, not independent reproduction, human scientific review or clinical approval. Candidate database additions remain subject to normal review/release."
+  },
+  {
+    "use_case_id": "use-case-brca1-brca2-germline-interpretation",
+    "issue": 343,
+    "issue_url": "https://github.com/rewire-bio/rewire.it/issues/343",
+    "existing_evidence_ids": [],
+    "new_ids": [
+      "uc-clinical-20260930-source-enigma",
+      "uc-clinical-20260930-bayesdel-enigma",
+      "uc-clinical-20260930-enigma-brca1-data",
+      "uc-clinical-20260930-enigma-brca1-protocol",
+      "uc-clinical-20260930-enigma-brca1-evaluation",
+      "uc-clinical-20260930-enigma-brca1-low-benign-count",
+      "uc-clinical-20260930-enigma-brca1-low-benign-fraction",
+      "uc-clinical-20260930-enigma-brca1-low-pathogenic-count",
+      "uc-clinical-20260930-enigma-brca1-low-pathogenic-fraction",
+      "uc-clinical-20260930-enigma-brca1-low-likelihood-ratio",
+      "uc-clinical-20260930-enigma-brca1-middle-benign-count",
+      "uc-clinical-20260930-enigma-brca1-middle-benign-fraction",
+      "uc-clinical-20260930-enigma-brca1-middle-pathogenic-count",
+      "uc-clinical-20260930-enigma-brca1-middle-pathogenic-fraction",
+      "uc-clinical-20260930-enigma-brca1-middle-likelihood-ratio",
+      "uc-clinical-20260930-enigma-brca1-high-benign-count",
+      "uc-clinical-20260930-enigma-brca1-high-benign-fraction",
+      "uc-clinical-20260930-enigma-brca1-high-pathogenic-count",
+      "uc-clinical-20260930-enigma-brca1-high-pathogenic-fraction",
+      "uc-clinical-20260930-enigma-brca1-high-likelihood-ratio",
+      "uc-clinical-20260930-enigma-brca2-data",
+      "uc-clinical-20260930-enigma-brca2-protocol",
+      "uc-clinical-20260930-enigma-brca2-evaluation",
+      "uc-clinical-20260930-enigma-brca2-low-benign-count",
+      "uc-clinical-20260930-enigma-brca2-low-benign-fraction",
+      "uc-clinical-20260930-enigma-brca2-low-pathogenic-count",
+      "uc-clinical-20260930-enigma-brca2-low-pathogenic-fraction",
+      "uc-clinical-20260930-enigma-brca2-low-likelihood-ratio",
+      "uc-clinical-20260930-enigma-brca2-middle-benign-count",
+      "uc-clinical-20260930-enigma-brca2-middle-benign-fraction",
+      "uc-clinical-20260930-enigma-brca2-middle-pathogenic-count",
+      "uc-clinical-20260930-enigma-brca2-middle-pathogenic-fraction",
+      "uc-clinical-20260930-enigma-brca2-middle-likelihood-ratio",
+      "uc-clinical-20260930-enigma-brca2-high-benign-count",
+      "uc-clinical-20260930-enigma-brca2-high-benign-fraction",
+      "uc-clinical-20260930-enigma-brca2-high-pathogenic-count",
+      "uc-clinical-20260930-enigma-brca2-high-pathogenic-fraction",
+      "uc-clinical-20260930-enigma-brca2-high-likelihood-ratio",
+      "uc-clinical-20260930-enigma-v10-manual",
+      "uc-clinical-20260930-enigma-pilot-data",
+      "uc-clinical-20260930-enigma-pilot-protocol",
+      "uc-clinical-20260930-enigma-pilot-evaluation",
+      "uc-clinical-20260930-enigma-pilot-first-phase-confidence-band",
+      "uc-clinical-20260930-enigma-pilot-resolved-initial-vus-conflict",
+      "uc-clinical-20260930-enigma-pilot-second-phase-vus-other-resolved",
+      "uc-clinical-20260930-enigma-pilot-lp-p-resolved-to-p",
+      "uc-clinical-20260930-enigma-pilot-lb-b-resolved-to-b",
+      "uc-clinical-20260930-baseline-enigma-manual",
+      "uc-clinical-20260930-bayesdel-pejaver-generic",
+      "uc-clinical-20260930-enigma-brca1-generic-protocol",
+      "uc-clinical-20260930-enigma-brca1-generic-evaluation",
+      "uc-clinical-20260930-enigma-brca1-generic-false-pp3",
+      "uc-clinical-20260930-enigma-brca1-generic-bp4",
+      "uc-clinical-20260930-enigma-brca2-generic-protocol",
+      "uc-clinical-20260930-enigma-brca2-generic-evaluation",
+      "uc-clinical-20260930-enigma-brca2-generic-false-pp3",
+      "uc-clinical-20260930-enigma-brca2-generic-bp4",
+      "uc-clinical-20260930-baseline-bayesdel-generic",
+      "uc-clinical-20260930-method-bayesdel",
+      "uc-clinical-20260930-association-bayesdel-enigma",
+      "uc-clinical-20260930-association-bayesdel-pejaver-generic",
+      "uc-clinical-20260930-benchmark-enigma-study",
+      "uc-clinical-20260930-membership-enigma-brca1-protocol",
+      "uc-clinical-20260930-membership-enigma-brca2-protocol",
+      "uc-clinical-20260930-membership-enigma-pilot-protocol",
+      "uc-clinical-20260930-membership-enigma-brca1-generic-protocol",
+      "uc-clinical-20260930-membership-enigma-brca2-generic-protocol"
+    ],
+    "sources": [
+      "uc-clinical-20260930-source-enigma"
+    ],
+    "searched_queries": [
+      "BRCA1 BRCA2 classification benchmark ENIGMA AutoGVP 2024 table",
+      "BRCA1 BRCA2 manual benchmark AutoGVP"
+    ],
+    "remaining_gaps": [
+      "Independent complete clinical classifications, serious-error adjudication and equal-evidence reviewer-time comparison were not found in selected evidence.",
+      "BayesDel labels derive from functional assays; threshold calibration is not held-out pathogenicity validation.",
+      "Study v1.0 manual pilot revises specifications on the same variants; current specification version must be pinned for any new run.",
+      "Generic BayesDel thresholds from Pejaver are a relevant alternative described in Table S4; supplement download returned challenge HTML, so the four primary-body percentages/bounds are entered while unverified Table S4 cells remain missing."
+    ],
+    "coverage_verdict": "functional_calibration_and_manual_pilot_proxy",
+    "suggested_mappings": [
+      {
+        "protocol_id": "uc-clinical-20260930-enigma-brca1-protocol",
+        "evaluation_ids": [
+          "uc-clinical-20260930-enigma-brca1-evaluation"
+        ],
+        "endpoint": "Functional-reference likelihood ratios for computational evidence weights",
+        "relevance": "proxy",
+        "rationale": "A gene-specific evidence input calibration relevant to BRCA review; it does not measure full clinical classification or review effort.",
+        "constraints": [
+          "Domain-restricted missense variants.",
+          "Functionally defined labels and calibration-selected cutpoints."
+        ],
+        "limitations": [
+          "Independent pathogenicity labels, training overlap audit and serious-error adjudication remain missing.",
+          "No method-level clinical superiority claim."
+        ],
+        "citations": [
+          {
+            "source_id": "uc-clinical-20260930-source-enigma",
+            "locator": "Table 2 and footnotes a–c"
+          }
+        ]
+      },
+      {
+        "protocol_id": "uc-clinical-20260930-enigma-brca2-protocol",
+        "evaluation_ids": [
+          "uc-clinical-20260930-enigma-brca2-evaluation"
+        ],
+        "endpoint": "Functional-reference likelihood ratios for computational evidence weights",
+        "relevance": "proxy",
+        "rationale": "A gene-specific evidence input calibration relevant to BRCA review; it does not measure full clinical classification or review effort.",
+        "constraints": [
+          "Domain-restricted missense variants.",
+          "Functionally defined labels and calibration-selected cutpoints."
+        ],
+        "limitations": [
+          "Independent pathogenicity labels, training overlap audit and serious-error adjudication remain missing.",
+          "No method-level clinical superiority claim."
+        ],
+        "citations": [
+          {
+            "source_id": "uc-clinical-20260930-source-enigma",
+            "locator": "Table 2 and footnotes a–c"
+          }
+        ]
+      },
+      {
+        "protocol_id": "uc-clinical-20260930-enigma-pilot-protocol",
+        "evaluation_ids": [
+          "uc-clinical-20260930-enigma-pilot-evaluation"
+        ],
+        "endpoint": "Selected-variant curation agreement and uncertainty resolution",
+        "relevance": "proxy",
+        "rationale": "Measures part of the actual BRCA review workflow, without independent clinical accuracy or effort validation.",
+        "constraints": [
+          "40 selected pilot variants; two phases; v1.0 specifications."
+        ],
+        "limitations": [
+          "Same pilot supports specification revision.",
+          "No blinded independent error adjudication or review-time comparator."
+        ],
+        "citations": [
+          {
+            "source_id": "uc-clinical-20260930-source-enigma",
+            "locator": "Results Pilot curation; Figure 3"
+          }
+        ]
+      },
+      {
+        "protocol_id": "uc-clinical-20260930-enigma-brca1-generic-protocol",
+        "evaluation_ids": [
+          "uc-clinical-20260930-enigma-brca1-generic-evaluation"
+        ],
+        "endpoint": "Evidence-code assignment under generic thresholds",
+        "relevance": "proxy",
+        "rationale": "Published conventional threshold comparison on the functional benign reference set.",
+        "constraints": [
+          "Primary narrative 29% BRCA1 / 36% BRCA2 false PP3; BP4 coverage<10%is a bound, not a point estimate."
+        ],
+        "limitations": [
+          "No final classification error or independent clinical labels.",
+          "Full Supplementary Table S4 unavailable."
+        ],
+        "citations": [
+          {
+            "source_id": "uc-clinical-20260930-source-enigma",
+            "locator": "Results, BayesDel calibration paragraph comparing Pejaver thresholds"
+          }
+        ]
+      },
+      {
+        "protocol_id": "uc-clinical-20260930-enigma-brca2-generic-protocol",
+        "evaluation_ids": [
+          "uc-clinical-20260930-enigma-brca2-generic-evaluation"
+        ],
+        "endpoint": "Evidence-code assignment under generic thresholds",
+        "relevance": "proxy",
+        "rationale": "Published conventional threshold comparison on the functional benign reference set.",
+        "constraints": [
+          "Primary narrative 29% BRCA1 / 36% BRCA2 false PP3; BP4 coverage<10%is a bound, not a point estimate."
+        ],
+        "limitations": [
+          "No final classification error or independent clinical labels.",
+          "Full Supplementary Table S4 unavailable."
+        ],
+        "citations": [
+          {
+            "source_id": "uc-clinical-20260930-source-enigma",
+            "locator": "Results, BayesDel calibration paragraph comparing Pejaver thresholds"
+          }
+        ]
+      }
+    ],
+    "draft_issue_comment": "Coverage audit (30 September 2026): functional calibration and manual pilot proxy.\n\nAdded primary-source protocols, exact method configurations, conventional baseline roles, datasets, evaluations and transcribed measurements to the review branch. Existing 26,126-record catalogue contained no named direct evidence for this clinical use case.\n\n- Independent complete clinical classifications, serious-error adjudication and equal-evidence reviewer-time comparison were not found in selected evidence.\n- BayesDel labels derive from functional assays; threshold calibration is not held-out pathogenicity validation.\n- Study v1.0 manual pilot revises specifications on the same variants; current specification version must be pinned for any new run.\n- Generic BayesDel thresholds from Pejaver are a relevant alternative described in Table S4; supplement download returned challenge HTML, so the four primary-body percentages/bounds are entered while unverified Table S4 cells remain missing.\n\nSources: https://pmc.ncbi.nlm.nih.gov/articles/PMC11393667/\n\nThese are automated source checks, not independent reproduction, human scientific review or clinical approval. Candidate database additions remain subject to normal review/release."
+  },
+  {
+    "use_case_id": "use-case-somatic-small-variant-oncogenicity",
+    "issue": 344,
+    "issue_url": "https://github.com/rewire-bio/rewire.it/issues/344",
+    "existing_evidence_ids": [],
+    "new_ids": [
+      "uc-clinical-20260930-source-oncovi",
+      "uc-clinical-20260930-oncovi-study",
+      "uc-clinical-20260930-oncovi-manual",
+      "uc-clinical-20260930-oncovi-sop-data",
+      "uc-clinical-20260930-oncovi-sop-protocol",
+      "uc-clinical-20260930-oncovi-sop-evaluation",
+      "uc-clinical-20260930-oncovi-mtb-data",
+      "uc-clinical-20260930-oncovi-mtb-protocol",
+      "uc-clinical-20260930-oncovi-mtb-evaluation",
+      "uc-clinical-20260930-oncovi-expert-data",
+      "uc-clinical-20260930-oncovi-expert-protocol",
+      "uc-clinical-20260930-oncovi-expert-evaluation",
+      "uc-clinical-20260930-oncovi-clinvar-data",
+      "uc-clinical-20260930-oncovi-clinvar-protocol",
+      "uc-clinical-20260930-oncovi-clinvar-evaluation",
+      "uc-clinical-20260930-oncovi-sop-accuracy",
+      "uc-clinical-20260930-oncovi-sop-oncogenic-sensitivity",
+      "uc-clinical-20260930-oncovi-sop-benign-sensitivity",
+      "uc-clinical-20260930-oncovi-sop-tsg-accuracy",
+      "uc-clinical-20260930-oncovi-sop-oncogene-accuracy",
+      "uc-clinical-20260930-oncovi-sop-missense-accuracy",
+      "uc-clinical-20260930-oncovi-sop-truncating-accuracy",
+      "uc-clinical-20260930-oncovi-mtb-concordance",
+      "uc-clinical-20260930-oncovi-mtb-vus-concordance",
+      "uc-clinical-20260930-oncovi-mtb-benign-concordance",
+      "uc-clinical-20260930-oncovi-mtb-oncogenic-vs-pathogenic-concordance",
+      "uc-clinical-20260930-oncovi-mtb-oncogene-concordance",
+      "uc-clinical-20260930-oncovi-mtb-tsg-concordance",
+      "uc-clinical-20260930-oncovi-mtb-missense-concordance",
+      "uc-clinical-20260930-oncovi-mtb-truncating-concordance",
+      "uc-clinical-20260930-oncovi-expert-expert-concordance",
+      "uc-clinical-20260930-oncovi-expert-prior-mtb-concordance",
+      "uc-clinical-20260930-oncovi-clinvar-accuracy",
+      "uc-clinical-20260930-oncovi-clinvar-oncogenic-sensitivity",
+      "uc-clinical-20260930-oncovi-clinvar-tsg-concordance",
+      "uc-clinical-20260930-oncovi-clinvar-oncogene-concordance",
+      "uc-clinical-20260930-oncovi-clinvar-truncating-concordance",
+      "uc-clinical-20260930-oncovi-clinvar-missense-concordance",
+      "uc-clinical-20260930-oncovi-sop-score-correlation",
+      "uc-clinical-20260930-oncovi-expert-score-correlation",
+      "uc-clinical-20260930-baseline-oncovi-manual",
+      "uc-clinical-20260930-oncovi-prior-mtb",
+      "uc-clinical-20260930-oncovi-prior-mtb-expert-evaluation",
+      "uc-clinical-20260930-oncovi-prior-mtb-expert-agreement",
+      "uc-clinical-20260930-oncovi-prior-mtb-expert-concordant-count",
+      "uc-clinical-20260930-baseline-oncovi-prior-mtb",
+      "uc-clinical-20260930-method-oncovi",
+      "uc-clinical-20260930-association-oncovi-study",
+      "uc-clinical-20260930-benchmark-oncovi-study",
+      "uc-clinical-20260930-membership-oncovi-sop-protocol",
+      "uc-clinical-20260930-membership-oncovi-mtb-protocol",
+      "uc-clinical-20260930-membership-oncovi-expert-protocol",
+      "uc-clinical-20260930-membership-oncovi-clinvar-protocol"
+    ],
+    "sources": [
+      "uc-clinical-20260930-source-oncovi"
+    ],
+    "searched_queries": [
+      "somatic oncogenicity benchmark CancerVar oncogenicity 2024 2025 table",
+      "Oncogenicity Variant Interpreter full text table 2026"
+    ],
+    "remaining_gaps": [
+      "OncoVI direct SOP/ClinVar classification exists; prospective reviewer-effort, calibration and independent model-versus-expert evaluation remain missing.",
+      "MTB old labels measure protein-function impact, not oncogenicity; selected reassessment shares experts/resources and is disagreement-enriched.",
+      "Abstract/body accuracy conflicts remain flagged. Supplemental Table S6 download returned challenge HTML; only body-printed strata are extracted."
+    ],
+    "coverage_verdict": "direct_classification_with_reference_independence_gaps",
+    "suggested_mappings": [
+      {
+        "protocol_id": "uc-clinical-20260930-oncovi-sop-protocol",
+        "evaluation_ids": [
+          "uc-clinical-20260930-oncovi-sop-evaluation"
+        ],
+        "endpoint": "Oncogenicity category agreement, sensitivity and reported subgroup performance",
+        "relevance": "direct",
+        "rationale": "Assesses variant classification within the named reference; reference independence and transfer are bounded.",
+        "constraints": [
+          "Three-class O/LO, VUS, B/LB reference; public guideline examples, not unseen-gene validation."
+        ],
+        "limitations": [
+          "Not a treatment-selection benchmark.",
+          "No human domain review of this intake; reference overlap and prospective workload remain unresolved.",
+          "Abstract/body accuracy discrepancies retained."
+        ],
+        "citations": [
+          {
+            "source_id": "uc-clinical-20260930-source-oncovi",
+            "locator": "Results; Figures 2–4; ClinVar assessment; subgroup values referenced to Supplemental Table S6"
+          }
+        ]
+      },
+      {
+        "protocol_id": "uc-clinical-20260930-oncovi-mtb-protocol",
+        "evaluation_ids": [
+          "uc-clinical-20260930-oncovi-mtb-evaluation"
+        ],
+        "endpoint": "Oncogenicity category agreement, sensitivity and reported subgroup performance",
+        "relevance": "proxy",
+        "rationale": "Assesses variant classification within the named reference; reference independence and transfer are bounded.",
+        "constraints": [
+          "Prior MTB effect-on-protein-function classes are a proxy reference, not oncogenicity ground truth."
+        ],
+        "limitations": [
+          "Not a treatment-selection benchmark.",
+          "No human domain review of this intake; reference overlap and prospective workload remain unresolved.",
+          "Abstract/body accuracy discrepancies retained."
+        ],
+        "citations": [
+          {
+            "source_id": "uc-clinical-20260930-source-oncovi",
+            "locator": "Results; Figures 2–4; ClinVar assessment; subgroup values referenced to Supplemental Table S6"
+          }
+        ]
+      },
+      {
+        "protocol_id": "uc-clinical-20260930-oncovi-expert-protocol",
+        "evaluation_ids": [
+          "uc-clinical-20260930-oncovi-expert-evaluation",
+          "uc-clinical-20260930-oncovi-prior-mtb-expert-evaluation"
+        ],
+        "endpoint": "Oncogenicity category agreement, sensitivity and reported subgroup performance",
+        "relevance": "proxy",
+        "rationale": "Assesses variant classification within the named reference; reference independence and transfer are bounded.",
+        "constraints": [
+          "A posteriori disagreement-enriched sample; same three experts and same reference resources; blinded to implementation, not independent resource adjudication.",
+          "Historical MTB 34% agreement with expert review compares functional-impact and oncogenicity labels; OncoVI 22% is against the old MTB labels, while 80% is against expert reassessment. Distinct metrics and references must not be pooled."
+        ],
+        "limitations": [
+          "Not a treatment-selection benchmark.",
+          "No human domain review of this intake; reference overlap and prospective workload remain unresolved.",
+          "Abstract/body accuracy discrepancies retained."
+        ],
+        "citations": [
+          {
+            "source_id": "uc-clinical-20260930-source-oncovi",
+            "locator": "Results; Figures 2–4; ClinVar assessment; subgroup values referenced to Supplemental Table S6"
+          }
+        ]
+      },
+      {
+        "protocol_id": "uc-clinical-20260930-oncovi-clinvar-protocol",
+        "evaluation_ids": [
+          "uc-clinical-20260930-oncovi-clinvar-evaluation"
+        ],
+        "endpoint": "Oncogenicity category agreement, sensitivity and reported subgroup performance",
+        "relevance": "direct",
+        "rationale": "Assesses variant classification within the named reference; reference independence and transfer are bounded.",
+        "constraints": [
+          "691 classified variants in 227 genes, downloaded 12 April 2025; predictor/curation overlap needs audit."
+        ],
+        "limitations": [
+          "Not a treatment-selection benchmark.",
+          "No human domain review of this intake; reference overlap and prospective workload remain unresolved.",
+          "Abstract/body accuracy discrepancies retained."
+        ],
+        "citations": [
+          {
+            "source_id": "uc-clinical-20260930-source-oncovi",
+            "locator": "Results; Figures 2–4; ClinVar assessment; subgroup values referenced to Supplemental Table S6"
+          }
+        ]
+      }
+    ],
+    "draft_issue_comment": "Coverage audit (30 September 2026): direct classification with reference independence gaps.\n\nAdded primary-source protocols, exact method configurations, conventional baseline roles, datasets, evaluations and transcribed measurements to the review branch. Existing 26,126-record catalogue contained no named direct evidence for this clinical use case.\n\n- OncoVI direct SOP/ClinVar classification exists; prospective reviewer-effort, calibration and independent model-versus-expert evaluation remain missing.\n- MTB old labels measure protein-function impact, not oncogenicity; selected reassessment shares experts/resources and is disagreement-enriched.\n- Abstract/body accuracy conflicts remain flagged. Supplemental Table S6 download returned challenge HTML; only body-printed strata are extracted.\n\nSources: https://pmc.ncbi.nlm.nih.gov/articles/PMC13269341/\n\nThese are automated source checks, not independent reproduction, human scientific review or clinical approval. Candidate database additions remain subject to normal review/release."
+  },
+  {
+    "use_case_id": "use-case-egfr-nsclc-actionability-resistance-evidence",
+    "issue": 345,
+    "issue_url": "https://github.com/rewire-bio/rewire.it/issues/345",
+    "existing_evidence_ids": [],
+    "new_ids": [
+      "uc-clinical-20260930-source-civic",
+      "uc-clinical-20260930-source-civic-supp",
+      "uc-clinical-20260930-civic-gpt5-alone",
+      "uc-clinical-20260930-civic-gpt5-mcp",
+      "uc-clinical-20260930-civic-agent-mode",
+      "uc-clinical-20260930-civic-100-data",
+      "uc-clinical-20260930-civic-retrieval-protocol",
+      "uc-clinical-20260930-civic-mcp-evaluation",
+      "uc-clinical-20260930-civic-alone-evaluation",
+      "uc-clinical-20260930-civic-agent-evaluation",
+      "uc-clinical-20260930-civic-mcp-predictive-f1",
+      "uc-clinical-20260930-civic-alone-predictive-f1",
+      "uc-clinical-20260930-civic-agent-predictive-f1",
+      "uc-clinical-20260930-civic-mcp-predisposing-f1",
+      "uc-clinical-20260930-civic-alone-predisposing-f1",
+      "uc-clinical-20260930-civic-agent-predisposing-f1",
+      "uc-clinical-20260930-civic-mcp-functional-f1",
+      "uc-clinical-20260930-civic-alone-functional-f1",
+      "uc-clinical-20260930-civic-agent-functional-f1",
+      "uc-clinical-20260930-civic-mcp-oncogenic-f1",
+      "uc-clinical-20260930-civic-alone-oncogenic-f1",
+      "uc-clinical-20260930-civic-agent-oncogenic-f1",
+      "uc-clinical-20260930-civic-mcp-prognostic-f1",
+      "uc-clinical-20260930-civic-alone-prognostic-f1",
+      "uc-clinical-20260930-civic-agent-prognostic-f1",
+      "uc-clinical-20260930-civic-mcp-diagnostic-f1",
+      "uc-clinical-20260930-civic-alone-diagnostic-f1",
+      "uc-clinical-20260930-civic-agent-diagnostic-f1",
+      "uc-clinical-20260930-civic-mcp-micro-f1",
+      "uc-clinical-20260930-civic-mcp-accuracy",
+      "uc-clinical-20260930-civic-mcp-time",
+      "uc-clinical-20260930-civic-alone-micro-f1",
+      "uc-clinical-20260930-civic-alone-accuracy",
+      "uc-clinical-20260930-civic-alone-time",
+      "uc-clinical-20260930-civic-agent-micro-f1",
+      "uc-clinical-20260930-civic-agent-accuracy",
+      "uc-clinical-20260930-civic-agent-time",
+      "uc-clinical-20260930-civic-mcp-predictive-sensitivity-precision",
+      "uc-clinical-20260930-civic-mcp-predictive-sensitivity-recall",
+      "uc-clinical-20260930-civic-mcp-predictive-sensitivity-f1",
+      "uc-clinical-20260930-civic-mcp-predictive-resistance-precision",
+      "uc-clinical-20260930-civic-mcp-predictive-resistance-recall",
+      "uc-clinical-20260930-civic-mcp-predictive-resistance-f1",
+      "uc-clinical-20260930-civic-mcp-predisposing-predisposition-precision",
+      "uc-clinical-20260930-civic-mcp-predisposing-predisposition-recall",
+      "uc-clinical-20260930-civic-mcp-predisposing-predisposition-f1",
+      "uc-clinical-20260930-civic-mcp-oncogenic-oncogenicity-precision",
+      "uc-clinical-20260930-civic-mcp-oncogenic-oncogenicity-recall",
+      "uc-clinical-20260930-civic-mcp-oncogenic-oncogenicity-f1",
+      "uc-clinical-20260930-civic-mcp-predisposing-n-a-precision",
+      "uc-clinical-20260930-civic-mcp-predisposing-n-a-recall",
+      "uc-clinical-20260930-civic-mcp-predisposing-n-a-f1",
+      "uc-clinical-20260930-civic-mcp-diagnostic-positive-precision",
+      "uc-clinical-20260930-civic-mcp-diagnostic-positive-recall",
+      "uc-clinical-20260930-civic-mcp-diagnostic-positive-f1",
+      "uc-clinical-20260930-civic-mcp-predisposing-uncertain-significance-precision",
+      "uc-clinical-20260930-civic-mcp-predisposing-uncertain-significance-recall",
+      "uc-clinical-20260930-civic-mcp-predisposing-uncertain-significance-f1",
+      "uc-clinical-20260930-civic-mcp-functional-loss-of-function-precision",
+      "uc-clinical-20260930-civic-mcp-functional-loss-of-function-recall",
+      "uc-clinical-20260930-civic-mcp-functional-loss-of-function-f1",
+      "uc-clinical-20260930-civic-mcp-functional-gain-of-function-precision",
+      "uc-clinical-20260930-civic-mcp-functional-gain-of-function-recall",
+      "uc-clinical-20260930-civic-mcp-functional-gain-of-function-f1",
+      "uc-clinical-20260930-civic-mcp-prognostic-better-outcome-precision",
+      "uc-clinical-20260930-civic-mcp-prognostic-better-outcome-recall",
+      "uc-clinical-20260930-civic-mcp-prognostic-better-outcome-f1",
+      "uc-clinical-20260930-civic-mcp-prognostic-poor-outcome-precision",
+      "uc-clinical-20260930-civic-mcp-prognostic-poor-outcome-recall",
+      "uc-clinical-20260930-civic-mcp-prognostic-poor-outcome-f1",
+      "uc-clinical-20260930-civic-mcp-functional-dominant-negative-precision",
+      "uc-clinical-20260930-civic-mcp-functional-dominant-negative-recall",
+      "uc-clinical-20260930-civic-mcp-functional-dominant-negative-f1",
+      "uc-clinical-20260930-civic-mcp-predictive-reduced-sensitivity-precision",
+      "uc-clinical-20260930-civic-mcp-predictive-reduced-sensitivity-recall",
+      "uc-clinical-20260930-civic-mcp-predictive-reduced-sensitivity-f1",
+      "uc-clinical-20260930-civic-mcp-diagnostic-negative-precision",
+      "uc-clinical-20260930-civic-mcp-diagnostic-negative-recall",
+      "uc-clinical-20260930-civic-mcp-diagnostic-negative-f1",
+      "uc-clinical-20260930-civic-mcp-functional-unaltered-function-precision",
+      "uc-clinical-20260930-civic-mcp-functional-unaltered-function-recall",
+      "uc-clinical-20260930-civic-mcp-functional-unaltered-function-f1",
+      "uc-clinical-20260930-civic-alone-predictive-sensitivity-precision",
+      "uc-clinical-20260930-civic-alone-predictive-sensitivity-recall",
+      "uc-clinical-20260930-civic-alone-predictive-sensitivity-f1",
+      "uc-clinical-20260930-civic-alone-predictive-resistance-precision",
+      "uc-clinical-20260930-civic-alone-predictive-resistance-recall",
+      "uc-clinical-20260930-civic-alone-predictive-resistance-f1",
+      "uc-clinical-20260930-civic-alone-predisposing-predisposition-precision",
+      "uc-clinical-20260930-civic-alone-predisposing-predisposition-recall",
+      "uc-clinical-20260930-civic-alone-predisposing-predisposition-f1",
+      "uc-clinical-20260930-civic-alone-oncogenic-oncogenicity-precision",
+      "uc-clinical-20260930-civic-alone-oncogenic-oncogenicity-recall",
+      "uc-clinical-20260930-civic-alone-oncogenic-oncogenicity-f1",
+      "uc-clinical-20260930-civic-alone-predisposing-n-a-precision",
+      "uc-clinical-20260930-civic-alone-predisposing-n-a-recall",
+      "uc-clinical-20260930-civic-alone-predisposing-n-a-f1",
+      "uc-clinical-20260930-civic-alone-diagnostic-positive-precision",
+      "uc-clinical-20260930-civic-alone-diagnostic-positive-recall",
+      "uc-clinical-20260930-civic-alone-diagnostic-positive-f1",
+      "uc-clinical-20260930-civic-alone-predisposing-uncertain-significance-precision",
+      "uc-clinical-20260930-civic-alone-predisposing-uncertain-significance-recall",
+      "uc-clinical-20260930-civic-alone-predisposing-uncertain-significance-f1",
+      "uc-clinical-20260930-civic-alone-functional-loss-of-function-precision",
+      "uc-clinical-20260930-civic-alone-functional-loss-of-function-recall",
+      "uc-clinical-20260930-civic-alone-functional-loss-of-function-f1",
+      "uc-clinical-20260930-civic-alone-functional-gain-of-function-precision",
+      "uc-clinical-20260930-civic-alone-functional-gain-of-function-recall",
+      "uc-clinical-20260930-civic-alone-functional-gain-of-function-f1",
+      "uc-clinical-20260930-civic-alone-prognostic-better-outcome-precision",
+      "uc-clinical-20260930-civic-alone-prognostic-better-outcome-recall",
+      "uc-clinical-20260930-civic-alone-prognostic-better-outcome-f1",
+      "uc-clinical-20260930-civic-alone-prognostic-poor-outcome-precision",
+      "uc-clinical-20260930-civic-alone-prognostic-poor-outcome-recall",
+      "uc-clinical-20260930-civic-alone-prognostic-poor-outcome-f1",
+      "uc-clinical-20260930-civic-alone-functional-dominant-negative-precision",
+      "uc-clinical-20260930-civic-alone-functional-dominant-negative-recall",
+      "uc-clinical-20260930-civic-alone-functional-dominant-negative-f1",
+      "uc-clinical-20260930-civic-alone-predictive-reduced-sensitivity-precision",
+      "uc-clinical-20260930-civic-alone-predictive-reduced-sensitivity-recall",
+      "uc-clinical-20260930-civic-alone-predictive-reduced-sensitivity-f1",
+      "uc-clinical-20260930-civic-alone-diagnostic-negative-precision",
+      "uc-clinical-20260930-civic-alone-diagnostic-negative-recall",
+      "uc-clinical-20260930-civic-alone-diagnostic-negative-f1",
+      "uc-clinical-20260930-civic-alone-functional-unaltered-function-precision",
+      "uc-clinical-20260930-civic-alone-functional-unaltered-function-recall",
+      "uc-clinical-20260930-civic-alone-functional-unaltered-function-f1",
+      "uc-clinical-20260930-civic-agent-predictive-sensitivity-precision",
+      "uc-clinical-20260930-civic-agent-predictive-sensitivity-recall",
+      "uc-clinical-20260930-civic-agent-predictive-sensitivity-f1",
+      "uc-clinical-20260930-civic-agent-predictive-resistance-precision",
+      "uc-clinical-20260930-civic-agent-predictive-resistance-recall",
+      "uc-clinical-20260930-civic-agent-predictive-resistance-f1",
+      "uc-clinical-20260930-civic-agent-predisposing-predisposition-precision",
+      "uc-clinical-20260930-civic-agent-predisposing-predisposition-recall",
+      "uc-clinical-20260930-civic-agent-predisposing-predisposition-f1",
+      "uc-clinical-20260930-civic-agent-oncogenic-oncogenicity-precision",
+      "uc-clinical-20260930-civic-agent-oncogenic-oncogenicity-recall",
+      "uc-clinical-20260930-civic-agent-oncogenic-oncogenicity-f1",
+      "uc-clinical-20260930-civic-agent-predisposing-n-a-precision",
+      "uc-clinical-20260930-civic-agent-predisposing-n-a-recall",
+      "uc-clinical-20260930-civic-agent-predisposing-n-a-f1",
+      "uc-clinical-20260930-civic-agent-diagnostic-positive-precision",
+      "uc-clinical-20260930-civic-agent-diagnostic-positive-recall",
+      "uc-clinical-20260930-civic-agent-diagnostic-positive-f1",
+      "uc-clinical-20260930-civic-agent-predisposing-uncertain-significance-precision",
+      "uc-clinical-20260930-civic-agent-predisposing-uncertain-significance-recall",
+      "uc-clinical-20260930-civic-agent-predisposing-uncertain-significance-f1",
+      "uc-clinical-20260930-civic-agent-functional-loss-of-function-precision",
+      "uc-clinical-20260930-civic-agent-functional-loss-of-function-recall",
+      "uc-clinical-20260930-civic-agent-functional-loss-of-function-f1",
+      "uc-clinical-20260930-civic-agent-functional-gain-of-function-precision",
+      "uc-clinical-20260930-civic-agent-functional-gain-of-function-recall",
+      "uc-clinical-20260930-civic-agent-functional-gain-of-function-f1",
+      "uc-clinical-20260930-civic-agent-prognostic-better-outcome-precision",
+      "uc-clinical-20260930-civic-agent-prognostic-better-outcome-recall",
+      "uc-clinical-20260930-civic-agent-prognostic-better-outcome-f1",
+      "uc-clinical-20260930-civic-agent-prognostic-poor-outcome-precision",
+      "uc-clinical-20260930-civic-agent-prognostic-poor-outcome-recall",
+      "uc-clinical-20260930-civic-agent-prognostic-poor-outcome-f1",
+      "uc-clinical-20260930-civic-agent-functional-dominant-negative-precision",
+      "uc-clinical-20260930-civic-agent-functional-dominant-negative-recall",
+      "uc-clinical-20260930-civic-agent-functional-dominant-negative-f1",
+      "uc-clinical-20260930-civic-agent-predictive-reduced-sensitivity-precision",
+      "uc-clinical-20260930-civic-agent-predictive-reduced-sensitivity-recall",
+      "uc-clinical-20260930-civic-agent-predictive-reduced-sensitivity-f1",
+      "uc-clinical-20260930-civic-agent-diagnostic-negative-precision",
+      "uc-clinical-20260930-civic-agent-diagnostic-negative-recall",
+      "uc-clinical-20260930-civic-agent-diagnostic-negative-f1",
+      "uc-clinical-20260930-civic-agent-functional-unaltered-function-precision",
+      "uc-clinical-20260930-civic-agent-functional-unaltered-function-recall",
+      "uc-clinical-20260930-civic-agent-functional-unaltered-function-f1",
+      "uc-clinical-20260930-baseline-civic-gpt-alone",
+      "uc-clinical-20260930-baseline-civic-agent",
+      "uc-clinical-20260930-civic-manual-lookup-proposed",
+      "uc-clinical-20260930-baseline-egfr-manual",
+      "uc-clinical-20260930-pipeline-civic-retrieval",
+      "uc-clinical-20260930-association-civic-gpt5-alone",
+      "uc-clinical-20260930-association-civic-gpt5-mcp",
+      "uc-clinical-20260930-association-civic-agent-mode",
+      "uc-clinical-20260930-benchmark-civic-study",
+      "uc-clinical-20260930-membership-civic-retrieval-protocol"
+    ],
+    "sources": [
+      "uc-clinical-20260930-source-civic",
+      "uc-clinical-20260930-source-civic-supp"
+    ],
+    "searched_queries": [
+      "EGFR NSCLC evidence retrieval benchmark CIViC precision recall molecular tumor board OncoKB benchmark",
+      "EGFR evidence retrieval benchmark",
+      "CIViC benchmark precision recall evidence extraction",
+      "EGFR CIViC MCP benchmark"
+    ],
+    "remaining_gaps": [
+      "No independently adjudicated advanced EGFR-mutant NSCLC evidence-retrieval benchmark with prior therapy, treatment line, date, jurisdiction and contradictions was established by this bounded search.",
+      "CIViC study reports pan-cancer aggregate and predictive direction metrics; no published EGFR-only score was found.",
+      "OncoTraj (arXiv:2606.11144) predicts longitudinal resistance and is outside the requested evidence-retrieval endpoint.",
+      "Manual versioned lookup plus primary-source review still needs measured equal effort."
+    ],
+    "coverage_verdict": "pan_cancer_retrieval_proxy_egfr_specific_gap",
+    "suggested_mappings": [
+      {
+        "protocol_id": "uc-clinical-20260930-civic-retrieval-protocol",
+        "evaluation_ids": [
+          "uc-clinical-20260930-civic-mcp-evaluation",
+          "uc-clinical-20260930-civic-alone-evaluation",
+          "uc-clinical-20260930-civic-agent-evaluation"
+        ],
+        "endpoint": "CIViC evidence-direction retrieval precision/recall/F1 and latency",
+        "relevance": "proxy",
+        "rationale": "A directly relevant retrieval endpoint across cancer types, not a validated EGFR/NSCLC evidence-review system.",
+        "constraints": [
+          "100 triplets; March2026 live CIViC; fixed label prompts.",
+          "Exact API model and separate unpinnable UI Agent Mode.",
+          "No Evidence excluded from reported performance."
+        ],
+        "limitations": [
+          "No EGFR-specific subgroup, equal-effort manual baseline, treatment-line history or jurisdiction adjudication.",
+          "Figure1c and supplement disagree for MCP oncogenic F1.",
+          "No individual benefit or treatment-selection claim."
+        ],
+        "citations": [
+          {
+            "source_id": "uc-clinical-20260930-source-civic-supp",
+            "locator": "Supplementary Tables 1–3, implementation and Agent Mode methods; main Fig1c"
+          }
+        ]
+      }
+    ],
+    "draft_issue_comment": "Coverage audit (30 September 2026): pan cancer retrieval proxy egfr specific gap.\n\nAdded primary-source protocols, exact method configurations, conventional baseline roles, datasets, evaluations and transcribed measurements to the review branch. Existing 26,126-record catalogue contained no named direct evidence for this clinical use case.\n\n- No independently adjudicated advanced EGFR-mutant NSCLC evidence-retrieval benchmark with prior therapy, treatment line, date, jurisdiction and contradictions was established by this bounded search.\n- CIViC study reports pan-cancer aggregate and predictive direction metrics; no published EGFR-only score was found.\n- OncoTraj (arXiv:2606.11144) predicts longitudinal resistance and is outside the requested evidence-retrieval endpoint.\n- Manual versioned lookup plus primary-source review still needs measured equal effort.\n\nSources: https://academic.oup.com/bioinformaticsadvances/article/6/1/vbag209/8746878, https://academic.oup.com/bioinformaticsadvances/article/6/1/vbag209/8746878#supplementary-data\n\nThese are automated source checks, not independent reproduction, human scientific review or clinical approval. Candidate database additions remain subject to normal review/release."
+  }
+]

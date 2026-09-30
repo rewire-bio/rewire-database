@@ -88,9 +88,13 @@ function archive(output: ReturnType<typeof buildRelease>, split: boolean) {
   return { input, destination, id, files, write };
 }
 
-describe("reviewed use-case release inputs", () => {
+describe("historical reviewed use-case expansion", () => {
   function reviewedExpansion() {
-    const bundle = loadUseCases()!;
+    const current = loadUseCases()!;
+    // This suite verifies the immutable September 28 expansion. Later curation
+    // is tested separately against its own records and receipt.
+    const archived: UseCaseArtifact = JSON.parse(gunzipSync(fs.readFileSync("data/omics/releases/2026-09-28-c7b5ac6d34f2/use-cases.json.gz")).toString());
+    const bundle = { ...current, inputs: { schema_version: archived.schema_version, use_cases: archived.use_cases, mappings: archived.mappings } };
     const baseline: Omit<CatalogueSnapshot, "records"> & { records: RecordEntry[] } = JSON.parse(gunzipSync(fs.readFileSync("data/omics/releases/2026-09-25-d40cee0abe73/catalogue.json.gz")).toString());
     const previous: CatalogueSnapshot = JSON.parse(gunzipSync(fs.readFileSync("data/omics/releases/2026-09-28-f9f5770cef26/catalogue.json.gz")).toString());
     const seedInputs: UseCaseArtifact = JSON.parse(gunzipSync(fs.readFileSync("data/omics/releases/2026-09-28-f9f5770cef26/use-cases.json.gz")).toString());

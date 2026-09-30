@@ -179,7 +179,7 @@ describe("conservative comparison", () => {
 });
 
 describe("unconfigured contribution form", () => {
-  afterEach(() => vi.unstubAllEnvs());
+  afterEach(() => { vi.unstubAllEnvs(); });
   it("offers a local draft without presenting a working submission action", async () => {
     vi.resetModules();
     vi.stubEnv("NEXT_PUBLIC_OMICS_CONTRIBUTIONS_ENABLED", "false");

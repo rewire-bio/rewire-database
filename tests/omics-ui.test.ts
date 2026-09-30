@@ -5,8 +5,7 @@ import {
 } from "../lib/omics-contributions";
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
-import ContributionForm from "../app/contribute/ContributionForm";
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import {
   compareResults,
   originLabel,
@@ -180,7 +179,11 @@ describe("conservative comparison", () => {
 });
 
 describe("unconfigured contribution form", () => {
-  it("offers a local draft without presenting a working submission action", () => {
+  afterEach(() => vi.unstubAllEnvs());
+  it("offers a local draft without presenting a working submission action", async () => {
+    vi.resetModules();
+    vi.stubEnv("NEXT_PUBLIC_OMICS_CONTRIBUTIONS_ENABLED", "false");
+    const { default: ContributionForm } = await import("../app/contribute/ContributionForm");
     const html = renderToStaticMarkup(createElement(ContributionForm));
     expect(html).toContain("Submissions are not open yet.");
     expect(html).toContain("Download draft");

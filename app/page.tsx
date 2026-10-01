@@ -11,6 +11,8 @@ import {
 } from "@/components/catalogue/CatalogueCharts";
 import { BROWSE_PAGE_SIZE, researchAreaLabel } from "@/lib/omics-browse";
 import { benchmarkCoverage } from "@/scripts/omics/audit-benchmark-evidence";
+import RefreshStatus from "@/components/RefreshStatus";
+import { readRefresh } from "@/lib/refresh-build";
 
 const pageMetadata = {
   title: "Biological model benchmark database",
@@ -76,6 +78,7 @@ export default function BenchmarksPage() {
         </nav>
       </PageHeader>
       <div className="wrap content">
+          <RefreshStatus data={readRefresh(process.cwd(), catalogue.release_id)} />
           <section
             id="browse"
             className={styles.browse}

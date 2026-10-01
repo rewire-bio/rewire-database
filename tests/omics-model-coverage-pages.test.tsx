@@ -83,7 +83,7 @@ describe("model coverage profile rendering", () => {
   it("links ProteinMPNN checkpoint visitors to family evidence without assigning its scores to the checkpoint", () => {
     const id = "catalog-model-proteinmpnn";
     expect(query.results({ id }).total).toBe(0);
-    expect(query.results({ id: "discovery-model-proteinmpnn" }).total).toBe(18);
+    expect(query.results({ id: "discovery-model-proteinmpnn" }).total).toBe(19);
     const html = render(id);
     const link = html.indexOf(
       'href="/database/model/discovery-model-proteinmpnn#results"',
@@ -91,7 +91,7 @@ describe("model coverage profile rendering", () => {
     expect(link).toBeGreaterThanOrEqual(0);
     expect(link).toBeLessThan(html.indexOf('id="use-model"'));
     expect(closedDisclosuresAt(html, link)).toBe(0);
-    expect(html).toContain("View 18 results for the broader family");
+    expect(html).toContain("View 19 results for the broader family");
     expect(html).toContain(
       "their attribution to this exact checkpoint has not been verified",
     );

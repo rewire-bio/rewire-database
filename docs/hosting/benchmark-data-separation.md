@@ -22,7 +22,7 @@ A data update is a reviewed pull request changing the lock. Full deployment stil
 
 Initial extraction source: `e13852aa4d190fb52fad29f38b0d6a5257aadb3b`. Scientific release: `2026-09-29-06401fd5b220`. Original source file hashes are retained in the data repository's `docs/data-extraction.json`. No scientific IDs, values or source evidence were changed by the split.
 
-Open evidence PRs #74, #75 and #80 predate this boundary. Preserve them and port their reviewed data edits to the new owner; do not merge their raw-data paths back into this website.
+Open evidence PRs #74 and #75 predate this boundary. Merged PR #80 was carried into the data repository from `bc6b40772298f518ec1827311cc0e89f71c3c37e`, including its 17-use-case audit and release `2026-09-30-e37e3ab1284d` (28,133 public records). Preserve them and port their reviewed data edits to the new owner; do not merge their raw-data paths back into this website.
 
 ## Private CI access setup
 

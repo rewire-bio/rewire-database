@@ -418,6 +418,16 @@ export async function prepareBenchmarkData(options = {}) {
 
   const stagedFiles = [];
   const verifiedPaths = new Map();
+  // Share only immutable archives. Mutable pointers and raw inputs must not
+  // share an inode with release history, even when their current bytes match.
+  const verifiedArchives = new Map();
+  const rememberVerified = (entry, file) => {
+    verifiedPaths.set(entry.destination, file);
+    if (entry.destination.startsWith('public/omics/releases/') || entry.destination.startsWith('data/omics/releases/')) {
+      const key = `${entry.sha256}:${entry.bytes}`;
+      if (!verifiedArchives.has(key)) verifiedArchives.set(key, file);
+    }
+  };
   let reusedCount = 0;
   let skippedCount = 0;
 
@@ -463,7 +473,7 @@ export async function prepareBenchmarkData(options = {}) {
             );
           }
           // Exact match on immutable file: reuse it
-          verifiedPaths.set(entry.destination, destFilePath);
+          rememberVerified(entry, destFilePath);
           reusedCount++;
           continue;
         }
@@ -477,7 +487,7 @@ export async function prepareBenchmarkData(options = {}) {
             );
           }
           // Exact match on tracked raw data: reuse it
-          verifiedPaths.set(entry.destination, destFilePath);
+          rememberVerified(entry, destFilePath);
           reusedCount++;
           continue;
         }
@@ -499,30 +509,45 @@ export async function prepareBenchmarkData(options = {}) {
                 );
               }
             }
-            verifiedPaths.set(entry.destination, destFilePath);
-          reusedCount++;
+            rememberVerified(entry, destFilePath);
+            reusedCount++;
             continue;
           }
         }
       }
 
-      // Decompress and verify gzip payload to staging in workbench
       const stagedFilePath = path.join(stagingDir, ...entry.destination.split('/'));
-      const { bytes, sha256 } = await decompressAndVerifyToStaging(
-        sourceFilePath,
-        stagedFilePath,
-        entry.bytes,
-      );
-
-      if (bytes !== entry.bytes) {
-        throw new Error(
-          `Payload size mismatch for ${entry.destination}: expected ${entry.bytes}, got ${bytes}`,
+      const donor = isImmutable ? verifiedArchives.get(`${entry.sha256}:${entry.bytes}`) : undefined;
+      if (donor) {
+        // A prior verification is not enough: cached outputs can be changed
+        // while this run is staging other files. Recheck immediately before
+        // linking, and never replace or relink an existing destination.
+        assertSafePath(websiteRoot, path.relative(websiteRoot, donor), { required: true });
+        const before = fs.lstatSync(donor);
+        if (before.size !== entry.bytes || await hashFile(donor) !== entry.sha256) {
+          throw new Error(`Verified archive changed before deduplication: ${donor}`);
+        }
+        assertSafePath(websiteRoot, path.relative(websiteRoot, donor), { required: true });
+        const after = fs.lstatSync(donor);
+        if (before.dev !== after.dev || before.ino !== after.ino || before.size !== after.size ||
+            before.mtimeMs !== after.mtimeMs || before.ctimeMs !== after.ctimeMs) {
+          throw new Error(`Verified archive changed during deduplication: ${donor}`);
+        }
+        fs.mkdirSync(path.dirname(stagedFilePath), { recursive: true });
+        fs.linkSync(donor, stagedFilePath); // Fails on collisions; no copy fallback.
+      } else {
+        // The first instance must be decompressed and verified against the pin.
+        const { bytes, sha256 } = await decompressAndVerifyToStaging(
+          sourceFilePath,
+          stagedFilePath,
+          entry.bytes,
         );
-      }
-      if (sha256 !== entry.sha256) {
-        throw new Error(
-          `Payload SHA-256 mismatch for ${entry.destination}: expected ${entry.sha256}, got ${sha256}`,
-        );
+        if (bytes !== entry.bytes) {
+          throw new Error(`Payload size mismatch for ${entry.destination}: expected ${entry.bytes}, got ${bytes}`);
+        }
+        if (sha256 !== entry.sha256) {
+          throw new Error(`Payload SHA-256 mismatch for ${entry.destination}: expected ${entry.sha256}, got ${sha256}`);
+        }
       }
 
       // Ensure current pointers equal pin
@@ -556,7 +581,7 @@ export async function prepareBenchmarkData(options = {}) {
         }
       }
 
-      verifiedPaths.set(entry.destination, stagedFilePath);
+      rememberVerified(entry, stagedFilePath);
       stagedFiles.push({ stagedFilePath, destFilePath });
     }
 

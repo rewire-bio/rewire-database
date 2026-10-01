@@ -1043,6 +1043,94 @@ describe('pinned artifact boundary regressions', () => {
     await expect(f.hydrate()).resolves.toMatchObject({ release_id: f.releaseId });
   });
 
+  function addDuplicateArchives(f: Awaited<ReturnType<typeof fixture>>) {
+    const content = Buffer.from('Repeated immutable audit payload\n');
+    const destinations = [f.releaseId, '2026-09-25-8af07e960e5f', '2026-09-16-b5213be10a49'].map(id => `public/omics/releases/${id}/audit-shared.bin`);
+    for (const destination of destinations) {
+      const source = `website/files/${destination}.gz`;
+      fs.mkdirSync(path.dirname(path.join(f.dataDir, source)), { recursive: true });
+      fs.writeFileSync(path.join(f.dataDir, source), zlib.gzipSync(content));
+      f.manifest.files.push({ destination, source, bytes: content.length,
+        sha256: crypto.createHash('sha256').update(content).digest('hex'),
+        scope: destination.includes(f.releaseId) ? 'current' : 'historical' });
+    }
+    f.pin();
+    return destinations.map(destination => path.join(f.websiteDir, destination));
+  }
+
+  it('hardlinks newly verified identical archives while keeping mutable pointers independent', async () => {
+    const f = await fixture();
+    const copies = addDuplicateArchives(f);
+    await f.hydrate();
+    expect(copies.map(file => fs.statSync(file).ino)).toEqual(Array(3).fill(fs.statSync(copies[0]).ino));
+    expect(fs.statSync(path.join(f.websiteDir, 'public/omics/catalogue.json')).ino)
+      .not.toBe(fs.statSync(path.join(f.websiteDir, `public/omics/releases/${f.releaseId}/catalogue.json`)).ino);
+    const before = copies.map(file => fs.statSync(file).ino);
+    await expect(f.hydrate()).resolves.toMatchObject({ hydratedCount: 0 });
+    expect(copies.map(file => fs.statSync(file).ino)).toEqual(before);
+  });
+
+  it('uses an existing archive only after verifying it and leaves its inode intact', async () => {
+    const f = await fixture();
+    const copies = addDuplicateArchives(f);
+    fs.mkdirSync(path.dirname(copies[0]), { recursive: true });
+    fs.writeFileSync(copies[0], 'Repeated immutable audit payload\n');
+    const inode = fs.statSync(copies[0]).ino;
+    await f.hydrate();
+    expect(copies.map(file => fs.statSync(file).ino)).toEqual(Array(3).fill(inode));
+  });
+
+  it('does not relink already existing identical archives', async () => {
+    const f = await fixture();
+    const copies = addDuplicateArchives(f);
+    for (const file of copies) {
+      fs.mkdirSync(path.dirname(file), { recursive: true });
+      fs.writeFileSync(file, 'Repeated immutable audit payload\n');
+    }
+    const inodes = copies.map(file => fs.statSync(file).ino);
+    expect(new Set(inodes).size).toBe(3);
+    await f.hydrate();
+    expect(copies.map(file => fs.statSync(file).ino)).toEqual(inodes);
+  });
+
+  it('rejects a deduplication donor changed after an earlier link', async () => {
+    const f = await fixture();
+    const copies = addDuplicateArchives(f);
+    const link = fs.linkSync.bind(fs);
+    let corrupted = false;
+    vi.spyOn(fs, 'linkSync').mockImplementation((source, destination) => {
+      link(source, destination);
+      if (!corrupted && String(source).endsWith('/audit-shared.bin')) {
+        fs.writeFileSync(source, 'Changed immutable audit payload!\n');
+        corrupted = true;
+      }
+    });
+    await expect(f.hydrate()).rejects.toThrow(/Verified archive changed before deduplication/);
+    expect(copies.some(file => fs.existsSync(file))).toBe(false);
+    expect(fs.readdirSync(path.join(f.websiteDir, 'workbench'))).toEqual(['keep-me.txt']);
+  });
+
+  it('refuses an existing conflicting duplicate without overwriting it', async () => {
+    const f = await fixture();
+    const copies = addDuplicateArchives(f);
+    fs.mkdirSync(path.dirname(copies[1]), { recursive: true });
+    fs.writeFileSync(copies[1], 'preserved conflicting bytes');
+    const inode = fs.statSync(copies[1]).ino;
+    await expect(f.hydrate()).rejects.toThrow(/conflicting immutable release file/);
+    expect(fs.readFileSync(copies[1], 'utf8')).toBe('preserved conflicting bytes');
+    expect(fs.statSync(copies[1]).ino).toBe(inode);
+    expect(fs.existsSync(copies[0])).toBe(false);
+  });
+
+  it('rejects corrupted first payload before using it as a deduplication donor', async () => {
+    const f = await fixture();
+    const copies = addDuplicateArchives(f);
+    const entry = f.manifest.files.find(item => item.destination === path.relative(f.websiteDir, copies[0]))!;
+    fs.writeFileSync(path.join(f.dataDir, entry.source), 'invalid gzip');
+    await expect(f.hydrate()).rejects.toThrow(/Corrupted gzip stream/);
+    expect(copies.some(file => fs.existsSync(file))).toBe(false);
+  });
+
   it('rejects unsafe release IDs', () => {
     expect(() => verifyLock({ schema_version: 1, repository: 'rewire-bio/rewire-benchmark-data', revision: 'a'.repeat(40), manifest_sha256: 'a'.repeat(64), release_id: '../escape' })).toThrow(/Invalid lock release_id/);
   });

@@ -165,6 +165,14 @@ both content-addressed source copies. That proves a clean checkout can serve
 the same evidence. The candidate's source inputs, receipt and archived files
 are reviewed together; freezing them does not by itself deploy the release.
 
+Restoration shares identical verified historical exports through hardlinks on
+the output filesystem. Every compressed payload is still decompressed and
+checked against its receipt, and an existing destination is never overwritten.
+These files share inodes and must remain immutable: changing one in place would
+change every linked copy. Publish changed evidence under a new release instead.
+This storage reuse preserves all historical paths and bytes while reducing the
+temporary space required for full builds.
+
 Do not add patient inputs, private contributor fields, automated clinical
 recommendations or automatically published AI-generated mappings. Proposed
 future mappings enter the normal review process.

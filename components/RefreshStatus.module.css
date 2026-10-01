@@ -1,0 +1,125 @@
+.panel {
+  margin: 0 0 32px;
+  padding: 20px 0;
+  border-bottom: 1px solid var(--line);
+  color: var(--ink-2);
+  line-height: 1.6;
+}
+.panel h2 {
+  color: var(--ink);
+  font-size: 22px;
+  margin: 0 0 16px;
+}
+.panel p {
+  margin: 14px 0;
+  max-width: 85ch;
+}
+.dates {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px 28px;
+  margin: 0 0 16px;
+}
+.dates dt {
+  color: var(--ink-3);
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+.dates dd {
+  margin: 0;
+  font-size: 14px;
+  overflow-wrap: anywhere;
+}
+.note {
+  display: block;
+  color: var(--ink-3);
+  font-size: 12px;
+}
+.panel .alert {
+  border-left: 3px solid var(--accent);
+  padding-left: 12px;
+}
+.gaps {
+  list-style: disc;
+  padding-left: 24px;
+  margin: 8px 0 16px;
+  max-width: 85ch;
+}
+.gaps li {
+  margin: 6px 0;
+}
+.panel .links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  margin-bottom: 0;
+}
+.links a {
+  color: var(--accent-ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.compact {
+  margin-bottom: 20px;
+  padding: 12px 0 16px;
+  font-size: 13px;
+}
+.compact h2 {
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+.compact .dates {
+  margin-bottom: 10px;
+}
+.compact p {
+  margin: 8px 0;
+}
+.caveat {
+  color: var(--ink-3);
+}
+/* On /updates/, the full overview is followed by the publication/run history.
+   This sibling scope does not affect the compact homepage or other pages. */
+.panel:not(.compact) ~ section {
+  margin: 36px 0;
+  line-height: 1.65;
+}
+.panel:not(.compact) ~ section h2 {
+  margin: 0 0 16px;
+}
+.panel:not(.compact) ~ section article {
+  padding: 24px 0;
+  border-bottom: 1px solid var(--line);
+}
+.panel:not(.compact) ~ section article h3 {
+  margin: 0 0 12px;
+}
+.panel:not(.compact) ~ section p {
+  margin: 12px 0;
+  max-width: 85ch;
+}
+.panel:not(.compact) ~ section ul {
+  list-style: disc;
+  padding-left: 24px;
+  margin: 12px 0;
+}
+.panel:not(.compact) ~ section li {
+  margin: 6px 0;
+}
+.panel:not(.compact) ~ section details {
+  margin: 16px 0;
+}
+@media (max-width: 640px) {
+  .dates {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .compact .dates > div {
+    display: grid;
+    grid-template-columns: minmax(110px, 1fr) minmax(0, 1.4fr);
+    gap: 12px;
+  }
+  .compact .dates dt {
+    margin: 0;
+  }
+}

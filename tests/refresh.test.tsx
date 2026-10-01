@@ -31,6 +31,17 @@ function directory() {
 }
 
 describe("public refresh contract", () => {
+  it("keeps the homepage compact while retaining detailed scope on the history view", () => {
+    const data = fixture();
+    const compact = renderToStaticMarkup(<RefreshStatus compact data={data} />);
+    const full = renderToStaticMarkup(<RefreshStatus data={data} />);
+    for (const label of ["Last published update", "Last completed evidence sweep", "Next planned review", "Latest attempt: completed", "does not mean every record was reverified", "/updates/", "/updates/feed.xml"])
+      expect(compact).toContain(label);
+    expect(compact).not.toContain("Last completed scope:");
+    expect(compact).not.toContain("Human scientific review remains unassigned.");
+    expect(full).toContain("Last completed scope:");
+    expect(full).toContain("<li>Human scientific review remains unassigned.</li>");
+  });
   it("preserves a no-change sweep without creating a publication", () => {
     const data = fixture(); data.updates = [];
     expect(parseRefresh(data).runs[0].outcome).toBe("no_change");

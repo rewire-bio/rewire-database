@@ -1,0 +1,2226 @@
+[
+  {
+    "use_case_id": "use-case-genetic-perturbation-response",
+    "issue": 334,
+    "existing_ids": [
+      "gears-2023-supp-table6-task-mse",
+      "gears-2023-supp-table6-task-pearson-de",
+      "gears-2023-supp-table6-evaluation-no-perturb-mse",
+      "gears-2023-supp-table6-evaluation-cpa-mse",
+      "gears-2023-supp-table6-evaluation-cpa-plus-kg-mse",
+      "gears-2023-supp-table6-evaluation-gears-mse",
+      "gears-2023-supp-table6-evaluation-no-perturb-pearson-de",
+      "gears-2023-supp-table6-evaluation-cpa-pearson-de",
+      "gears-2023-supp-table6-evaluation-cpa-plus-kg-pearson-de",
+      "gears-2023-supp-table6-evaluation-gears-pearson-de",
+      "gears-2023-supp-table6-result-cpa-mse-mse",
+      "gears-2023-supp-table6-result-cpa-pearson-de-pearson-delta-expression",
+      "gears-2023-supp-table6-result-cpa-plus-kg-mse-mse",
+      "gears-2023-supp-table6-result-cpa-plus-kg-pearson-de-pearson-delta-expression",
+      "gears-2023-supp-table6-result-gears-mse-mse",
+      "gears-2023-supp-table6-result-gears-pearson-de-pearson-delta-expression",
+      "gears-2023-supp-table6-result-no-perturb-mse-mse",
+      "gears-2023-supp-table6-result-no-perturb-pearson-de-pearson-delta-expression",
+      "perturbench-task-cb-cosine",
+      "perturbench-task-cb-rmse",
+      "perturbench-method-linear",
+      "perturbench-method-la"
+    ],
+    "existing_protocol_ids": [
+      "gears-2023-supp-table6-task-mse",
+      "gears-2023-supp-table6-task-pearson-de"
+    ],
+    "existing_evaluation_ids": [
+      "gears-2023-supp-table6-evaluation-no-perturb-mse",
+      "gears-2023-supp-table6-evaluation-cpa-mse",
+      "gears-2023-supp-table6-evaluation-cpa-plus-kg-mse",
+      "gears-2023-supp-table6-evaluation-gears-mse",
+      "gears-2023-supp-table6-evaluation-no-perturb-pearson-de",
+      "gears-2023-supp-table6-evaluation-cpa-pearson-de",
+      "gears-2023-supp-table6-evaluation-cpa-plus-kg-pearson-de",
+      "gears-2023-supp-table6-evaluation-gears-pearson-de"
+    ],
+    "existing_result_ids": [
+      "gears-2023-supp-table6-result-cpa-mse-mse",
+      "gears-2023-supp-table6-result-cpa-pearson-de-pearson-delta-expression",
+      "gears-2023-supp-table6-result-cpa-plus-kg-mse-mse",
+      "gears-2023-supp-table6-result-cpa-plus-kg-pearson-de-pearson-delta-expression",
+      "gears-2023-supp-table6-result-gears-mse-mse",
+      "gears-2023-supp-table6-result-gears-pearson-de-pearson-delta-expression",
+      "gears-2023-supp-table6-result-no-perturb-mse-mse",
+      "gears-2023-supp-table6-result-no-perturb-pearson-de-pearson-delta-expression"
+    ],
+    "new_ids": [
+      "uc20260930-baseline-gears-2023-supp-table6-method-no-perturb"
+    ],
+    "sources": [
+      {
+        "source_id": "coverage-source-gears-supp",
+        "url": "https://doi.org/10.1038/s41587-023-01905-6"
+      },
+      {
+        "source_id": "evidence-expansion-perturbench-5c480456",
+        "url": "https://arxiv.org/html/2408.10609v1"
+      }
+    ],
+    "queries": [
+      "GEARS genetic perturbation prediction Norman 2019 no perturb CPA supplementary table 6 benchmark"
+    ],
+    "coverage_verdict": "existing scoped endpoint coverage; supplemented and remaining gaps documented",
+    "summary": "Existing GEARS Norman2019 comparison already measures expression-response prediction with No Perturb, CPA, CPA+KG and GEARS. Eight source-checked evaluations span MSE and Pearson DE. PerturBench combination prediction is additional existing evidence with linear/latent-additive comparators. No duplicate measurements were added.",
+    "additions": "Added an explicit source-supported No Perturb baseline role linked to both existing GEARS protocols and their measured evaluations.",
+    "remaining_gaps": [
+      "A benchmark exists for expression responses, but prospective experiment-selection hit rates and transfer to a new cell system remain uncovered by this mapped comparison.",
+      "Table 6 scoring gene set, checkpoint revisions and exact split manifests remain unextracted; do not infer Top20 MSE or confidence intervals from the printed spreads."
+    ],
+    "suggested_mappings": [],
+    "draft_issue_comment": "Coverage audit — 30 September 2026\n\nExisting GEARS Norman2019 comparison already measures expression-response prediction with No Perturb, CPA, CPA+KG and GEARS. Eight source-checked evaluations span MSE and Pearson DE. PerturBench combination prediction is additional existing evidence with linear/latent-additive comparators. No duplicate measurements were added.\n\nAdded an explicit source-supported No Perturb baseline role linked to both existing GEARS protocols and their measured evaluations.\n\nRemaining coverage limits:\n- A benchmark exists for expression responses, but prospective experiment-selection hit rates and transfer to a new cell system remain uncovered by this mapped comparison.\n- Table 6 scoring gene set, checkpoint revisions and exact split manifests remain unextracted; do not infer Top20 MSE or confidence intervals from the printed spreads.\n\nPrimary sources: [source 1](https://doi.org/10.1038/s41587-023-01905-6), [source 2](https://arxiv.org/html/2408.10609v1).\n\nThe additions are source-checked author-reported evidence, not new model runs or human scientific review. Existing protocols and values are preserved; the local database changes still require the repository release/publication workflow.",
+    "review": {
+      "method": "automated_source_review",
+      "reviewed_at": "2026-09-30T21:44:09.816182+00:00",
+      "human_scientific_review": "outstanding"
+    }
+  },
+  {
+    "use_case_id": "use-case-mass-spectrum-molecule-shortlisting",
+    "issue": 335,
+    "existing_ids": [
+      "msalign-2026-table3-task-massspecgym-formula-split-no-formula-r-1",
+      "msalign-2026-table3-task-massspecgym-formula-split-no-formula-r-20",
+      "msalign-2026-table3-task-massspecgym-mces-split-no-formula-r-1",
+      "msalign-2026-table3-task-massspecgym-mces-split-no-formula-r-20",
+      "msalign-2026-table3-evaluation-deepsets-massspecgym-formula-split-no-formula-r-1",
+      "msalign-2026-table3-evaluation-emb-cos-massspecgym-formula-split-no-formula-r-1",
+      "msalign-2026-table3-evaluation-ffn-massspecgym-formula-split-no-formula-r-1",
+      "msalign-2026-table3-evaluation-jestr-massspecgym-formula-split-no-formula-r-1",
+      "msalign-2026-table3-evaluation-msalign-massspecgym-formula-split-no-formula-r-1",
+      "msalign-2026-table3-evaluation-sail-massspecgym-formula-split-no-formula-r-1",
+      "msalign-2026-table3-evaluation-deepsets-massspecgym-formula-split-no-formula-r-20",
+      "msalign-2026-table3-evaluation-emb-cos-massspecgym-formula-split-no-formula-r-20",
+      "msalign-2026-table3-evaluation-ffn-massspecgym-formula-split-no-formula-r-20",
+      "msalign-2026-table3-evaluation-jestr-massspecgym-formula-split-no-formula-r-20",
+      "msalign-2026-table3-evaluation-msalign-massspecgym-formula-split-no-formula-r-20",
+      "msalign-2026-table3-evaluation-sail-massspecgym-formula-split-no-formula-r-20",
+      "msalign-2026-table3-evaluation-deepsets-massspecgym-mces-split-no-formula-r-1",
+      "msalign-2026-table3-evaluation-emb-cos-massspecgym-mces-split-no-formula-r-1",
+      "msalign-2026-table3-evaluation-ffn-massspecgym-mces-split-no-formula-r-1",
+      "msalign-2026-table3-evaluation-jestr-massspecgym-mces-split-no-formula-r-1",
+      "msalign-2026-table3-evaluation-msalign-massspecgym-mces-split-no-formula-r-1",
+      "msalign-2026-table3-evaluation-sail-massspecgym-mces-split-no-formula-r-1",
+      "msalign-2026-table3-evaluation-deepsets-massspecgym-mces-split-no-formula-r-20",
+      "msalign-2026-table3-evaluation-emb-cos-massspecgym-mces-split-no-formula-r-20",
+      "msalign-2026-table3-evaluation-ffn-massspecgym-mces-split-no-formula-r-20",
+      "msalign-2026-table3-evaluation-jestr-massspecgym-mces-split-no-formula-r-20",
+      "msalign-2026-table3-evaluation-msalign-massspecgym-mces-split-no-formula-r-20",
+      "msalign-2026-table3-evaluation-sail-massspecgym-mces-split-no-formula-r-20",
+      "msalign-2026-table3-result-deepsets-massspecgym-formula-split-no-formula-r-1-recall-at-1",
+      "msalign-2026-table3-result-deepsets-massspecgym-formula-split-no-formula-r-20-recall-at-20",
+      "msalign-2026-table3-result-deepsets-massspecgym-mces-split-no-formula-r-1-recall-at-1",
+      "msalign-2026-table3-result-deepsets-massspecgym-mces-split-no-formula-r-20-recall-at-20",
+      "msalign-2026-table3-result-emb-cos-massspecgym-formula-split-no-formula-r-1-recall-at-1",
+      "msalign-2026-table3-result-emb-cos-massspecgym-formula-split-no-formula-r-20-recall-at-20",
+      "msalign-2026-table3-result-emb-cos-massspecgym-mces-split-no-formula-r-1-recall-at-1",
+      "msalign-2026-table3-result-emb-cos-massspecgym-mces-split-no-formula-r-20-recall-at-20",
+      "msalign-2026-table3-result-ffn-massspecgym-formula-split-no-formula-r-1-recall-at-1",
+      "msalign-2026-table3-result-ffn-massspecgym-formula-split-no-formula-r-20-recall-at-20",
+      "msalign-2026-table3-result-ffn-massspecgym-mces-split-no-formula-r-1-recall-at-1",
+      "msalign-2026-table3-result-ffn-massspecgym-mces-split-no-formula-r-20-recall-at-20",
+      "msalign-2026-table3-result-jestr-massspecgym-formula-split-no-formula-r-1-recall-at-1",
+      "msalign-2026-table3-result-jestr-massspecgym-formula-split-no-formula-r-20-recall-at-20",
+      "msalign-2026-table3-result-jestr-massspecgym-mces-split-no-formula-r-1-recall-at-1",
+      "msalign-2026-table3-result-jestr-massspecgym-mces-split-no-formula-r-20-recall-at-20",
+      "msalign-2026-table3-result-msalign-massspecgym-formula-split-no-formula-r-1-recall-at-1",
+      "msalign-2026-table3-result-msalign-massspecgym-formula-split-no-formula-r-20-recall-at-20",
+      "msalign-2026-table3-result-msalign-massspecgym-mces-split-no-formula-r-1-recall-at-1",
+      "msalign-2026-table3-result-msalign-massspecgym-mces-split-no-formula-r-20-recall-at-20",
+      "msalign-2026-table3-result-sail-massspecgym-formula-split-no-formula-r-1-recall-at-1",
+      "msalign-2026-table3-result-sail-massspecgym-formula-split-no-formula-r-20-recall-at-20",
+      "msalign-2026-table3-result-sail-massspecgym-mces-split-no-formula-r-1-recall-at-1",
+      "msalign-2026-table3-result-sail-massspecgym-mces-split-no-formula-r-20-recall-at-20"
+    ],
+    "existing_protocol_ids": [
+      "msalign-2026-table3-task-massspecgym-formula-split-no-formula-r-1",
+      "msalign-2026-table3-task-massspecgym-formula-split-no-formula-r-20",
+      "msalign-2026-table3-task-massspecgym-mces-split-no-formula-r-1",
+      "msalign-2026-table3-task-massspecgym-mces-split-no-formula-r-20"
+    ],
+    "existing_evaluation_ids": [
+      "msalign-2026-table3-evaluation-deepsets-massspecgym-formula-split-no-formula-r-1",
+      "msalign-2026-table3-evaluation-emb-cos-massspecgym-formula-split-no-formula-r-1",
+      "msalign-2026-table3-evaluation-ffn-massspecgym-formula-split-no-formula-r-1",
+      "msalign-2026-table3-evaluation-jestr-massspecgym-formula-split-no-formula-r-1",
+      "msalign-2026-table3-evaluation-msalign-massspecgym-formula-split-no-formula-r-1",
+      "msalign-2026-table3-evaluation-sail-massspecgym-formula-split-no-formula-r-1",
+      "msalign-2026-table3-evaluation-deepsets-massspecgym-formula-split-no-formula-r-20",
+      "msalign-2026-table3-evaluation-emb-cos-massspecgym-formula-split-no-formula-r-20",
+      "msalign-2026-table3-evaluation-ffn-massspecgym-formula-split-no-formula-r-20",
+      "msalign-2026-table3-evaluation-jestr-massspecgym-formula-split-no-formula-r-20",
+      "msalign-2026-table3-evaluation-msalign-massspecgym-formula-split-no-formula-r-20",
+      "msalign-2026-table3-evaluation-sail-massspecgym-formula-split-no-formula-r-20",
+      "msalign-2026-table3-evaluation-deepsets-massspecgym-mces-split-no-formula-r-1",
+      "msalign-2026-table3-evaluation-emb-cos-massspecgym-mces-split-no-formula-r-1",
+      "msalign-2026-table3-evaluation-ffn-massspecgym-mces-split-no-formula-r-1",
+      "msalign-2026-table3-evaluation-jestr-massspecgym-mces-split-no-formula-r-1",
+      "msalign-2026-table3-evaluation-msalign-massspecgym-mces-split-no-formula-r-1",
+      "msalign-2026-table3-evaluation-sail-massspecgym-mces-split-no-formula-r-1",
+      "msalign-2026-table3-evaluation-deepsets-massspecgym-mces-split-no-formula-r-20",
+      "msalign-2026-table3-evaluation-emb-cos-massspecgym-mces-split-no-formula-r-20",
+      "msalign-2026-table3-evaluation-ffn-massspecgym-mces-split-no-formula-r-20",
+      "msalign-2026-table3-evaluation-jestr-massspecgym-mces-split-no-formula-r-20",
+      "msalign-2026-table3-evaluation-msalign-massspecgym-mces-split-no-formula-r-20",
+      "msalign-2026-table3-evaluation-sail-massspecgym-mces-split-no-formula-r-20"
+    ],
+    "existing_result_ids": [
+      "msalign-2026-table3-result-deepsets-massspecgym-formula-split-no-formula-r-1-recall-at-1",
+      "msalign-2026-table3-result-deepsets-massspecgym-formula-split-no-formula-r-20-recall-at-20",
+      "msalign-2026-table3-result-deepsets-massspecgym-mces-split-no-formula-r-1-recall-at-1",
+      "msalign-2026-table3-result-deepsets-massspecgym-mces-split-no-formula-r-20-recall-at-20",
+      "msalign-2026-table3-result-emb-cos-massspecgym-formula-split-no-formula-r-1-recall-at-1",
+      "msalign-2026-table3-result-emb-cos-massspecgym-formula-split-no-formula-r-20-recall-at-20",
+      "msalign-2026-table3-result-emb-cos-massspecgym-mces-split-no-formula-r-1-recall-at-1",
+      "msalign-2026-table3-result-emb-cos-massspecgym-mces-split-no-formula-r-20-recall-at-20",
+      "msalign-2026-table3-result-ffn-massspecgym-formula-split-no-formula-r-1-recall-at-1",
+      "msalign-2026-table3-result-ffn-massspecgym-formula-split-no-formula-r-20-recall-at-20",
+      "msalign-2026-table3-result-ffn-massspecgym-mces-split-no-formula-r-1-recall-at-1",
+      "msalign-2026-table3-result-ffn-massspecgym-mces-split-no-formula-r-20-recall-at-20",
+      "msalign-2026-table3-result-jestr-massspecgym-formula-split-no-formula-r-1-recall-at-1",
+      "msalign-2026-table3-result-jestr-massspecgym-formula-split-no-formula-r-20-recall-at-20",
+      "msalign-2026-table3-result-jestr-massspecgym-mces-split-no-formula-r-1-recall-at-1",
+      "msalign-2026-table3-result-jestr-massspecgym-mces-split-no-formula-r-20-recall-at-20",
+      "msalign-2026-table3-result-msalign-massspecgym-formula-split-no-formula-r-1-recall-at-1",
+      "msalign-2026-table3-result-msalign-massspecgym-formula-split-no-formula-r-20-recall-at-20",
+      "msalign-2026-table3-result-msalign-massspecgym-mces-split-no-formula-r-1-recall-at-1",
+      "msalign-2026-table3-result-msalign-massspecgym-mces-split-no-formula-r-20-recall-at-20",
+      "msalign-2026-table3-result-sail-massspecgym-formula-split-no-formula-r-1-recall-at-1",
+      "msalign-2026-table3-result-sail-massspecgym-formula-split-no-formula-r-20-recall-at-20",
+      "msalign-2026-table3-result-sail-massspecgym-mces-split-no-formula-r-1-recall-at-1",
+      "msalign-2026-table3-result-sail-massspecgym-mces-split-no-formula-r-20-recall-at-20"
+    ],
+    "new_ids": [
+      "uc20260930-msalign-v2-config-deepset",
+      "uc20260930-msalign-v2-config-jestr",
+      "uc20260930-msalign-v2-config-emb-cos",
+      "uc20260930-msalign-v2-config-msalign",
+      "uc20260930-msalign-v2-config-msalign-score-fusion-overbar",
+      "uc20260930-msalign-v2-config-mist",
+      "uc20260930-msalign-v2-config-mvp",
+      "uc20260930-msalign-v2-config-flare",
+      "uc20260930-msalign-v2-config-msalign-score-fusion-filter-overbar",
+      "uc20260930-msalign-v2-data-spectraverse-formula-free",
+      "uc20260930-msalign-v2-protocol-spectraverse-formula-free",
+      "uc20260930-msalign-v2-eval-spectraverse-formula-free-deepset",
+      "uc20260930-msalign-v2-result-spectraverse-formula-free-deepset-r1",
+      "uc20260930-msalign-v2-result-spectraverse-formula-free-deepset-r5",
+      "uc20260930-msalign-v2-result-spectraverse-formula-free-deepset-r20",
+      "uc20260930-msalign-v2-baseline-spectraverse-formula-free",
+      "uc20260930-msalign-v2-eval-spectraverse-formula-free-jestr",
+      "uc20260930-msalign-v2-result-spectraverse-formula-free-jestr-r1",
+      "uc20260930-msalign-v2-result-spectraverse-formula-free-jestr-r5",
+      "uc20260930-msalign-v2-result-spectraverse-formula-free-jestr-r20",
+      "uc20260930-msalign-v2-eval-spectraverse-formula-free-emb-cos",
+      "uc20260930-msalign-v2-result-spectraverse-formula-free-emb-cos-r1",
+      "uc20260930-msalign-v2-result-spectraverse-formula-free-emb-cos-r5",
+      "uc20260930-msalign-v2-result-spectraverse-formula-free-emb-cos-r20",
+      "uc20260930-msalign-v2-eval-spectraverse-formula-free-msalign",
+      "uc20260930-msalign-v2-result-spectraverse-formula-free-msalign-r1",
+      "uc20260930-msalign-v2-result-spectraverse-formula-free-msalign-r5",
+      "uc20260930-msalign-v2-result-spectraverse-formula-free-msalign-r20",
+      "uc20260930-msalign-v2-eval-spectraverse-formula-free-msalign-score-fusion-overbar",
+      "uc20260930-msalign-v2-result-spectraverse-formula-free-msalign-score-fusion-overbar-r1",
+      "uc20260930-msalign-v2-result-spectraverse-formula-free-msalign-score-fusion-overbar-r5",
+      "uc20260930-msalign-v2-result-spectraverse-formula-free-msalign-score-fusion-overbar-r20",
+      "uc20260930-msalign-v2-data-spectraverse-formula-oracle",
+      "uc20260930-msalign-v2-protocol-spectraverse-formula-oracle",
+      "uc20260930-msalign-v2-eval-spectraverse-formula-oracle-mist",
+      "uc20260930-msalign-v2-result-spectraverse-formula-oracle-mist-r1",
+      "uc20260930-msalign-v2-result-spectraverse-formula-oracle-mist-r5",
+      "uc20260930-msalign-v2-result-spectraverse-formula-oracle-mist-r20",
+      "uc20260930-msalign-v2-eval-spectraverse-formula-oracle-mvp",
+      "uc20260930-msalign-v2-result-spectraverse-formula-oracle-mvp-r1",
+      "uc20260930-msalign-v2-result-spectraverse-formula-oracle-mvp-r5",
+      "uc20260930-msalign-v2-result-spectraverse-formula-oracle-mvp-r20",
+      "uc20260930-msalign-v2-eval-spectraverse-formula-oracle-flare",
+      "uc20260930-msalign-v2-result-spectraverse-formula-oracle-flare-r1",
+      "uc20260930-msalign-v2-result-spectraverse-formula-oracle-flare-r5",
+      "uc20260930-msalign-v2-result-spectraverse-formula-oracle-flare-r20",
+      "uc20260930-msalign-v2-eval-spectraverse-formula-oracle-msalign-score-fusion-filter-overbar",
+      "uc20260930-msalign-v2-result-spectraverse-formula-oracle-msalign-score-fusion-filter-overbar-r1",
+      "uc20260930-msalign-v2-result-spectraverse-formula-oracle-msalign-score-fusion-filter-overbar-r5",
+      "uc20260930-msalign-v2-result-spectraverse-formula-oracle-msalign-score-fusion-filter-overbar-r20",
+      "uc20260930-msalign-v2-data-massspecgym-formula-formula-free",
+      "uc20260930-msalign-v2-protocol-massspecgym-formula-formula-free",
+      "uc20260930-msalign-v2-eval-massspecgym-formula-formula-free-deepset",
+      "uc20260930-msalign-v2-result-massspecgym-formula-formula-free-deepset-r1",
+      "uc20260930-msalign-v2-result-massspecgym-formula-formula-free-deepset-r5",
+      "uc20260930-msalign-v2-result-massspecgym-formula-formula-free-deepset-r20",
+      "uc20260930-msalign-v2-baseline-massspecgym-formula-formula-free",
+      "uc20260930-msalign-v2-eval-massspecgym-formula-formula-free-jestr",
+      "uc20260930-msalign-v2-result-massspecgym-formula-formula-free-jestr-r1",
+      "uc20260930-msalign-v2-result-massspecgym-formula-formula-free-jestr-r5",
+      "uc20260930-msalign-v2-result-massspecgym-formula-formula-free-jestr-r20",
+      "uc20260930-msalign-v2-eval-massspecgym-formula-formula-free-emb-cos",
+      "uc20260930-msalign-v2-result-massspecgym-formula-formula-free-emb-cos-r1",
+      "uc20260930-msalign-v2-result-massspecgym-formula-formula-free-emb-cos-r5",
+      "uc20260930-msalign-v2-result-massspecgym-formula-formula-free-emb-cos-r20",
+      "uc20260930-msalign-v2-eval-massspecgym-formula-formula-free-msalign",
+      "uc20260930-msalign-v2-result-massspecgym-formula-formula-free-msalign-r1",
+      "uc20260930-msalign-v2-result-massspecgym-formula-formula-free-msalign-r5",
+      "uc20260930-msalign-v2-result-massspecgym-formula-formula-free-msalign-r20",
+      "uc20260930-msalign-v2-eval-massspecgym-formula-formula-free-msalign-score-fusion-overbar",
+      "uc20260930-msalign-v2-result-massspecgym-formula-formula-free-msalign-score-fusion-overbar-r1",
+      "uc20260930-msalign-v2-result-massspecgym-formula-formula-free-msalign-score-fusion-overbar-r5",
+      "uc20260930-msalign-v2-result-massspecgym-formula-formula-free-msalign-score-fusion-overbar-r20",
+      "uc20260930-msalign-v2-data-massspecgym-formula-formula-oracle",
+      "uc20260930-msalign-v2-protocol-massspecgym-formula-formula-oracle",
+      "uc20260930-msalign-v2-eval-massspecgym-formula-formula-oracle-mist",
+      "uc20260930-msalign-v2-result-massspecgym-formula-formula-oracle-mist-r1",
+      "uc20260930-msalign-v2-result-massspecgym-formula-formula-oracle-mist-r5",
+      "uc20260930-msalign-v2-result-massspecgym-formula-formula-oracle-mist-r20",
+      "uc20260930-msalign-v2-eval-massspecgym-formula-formula-oracle-mvp",
+      "uc20260930-msalign-v2-result-massspecgym-formula-formula-oracle-mvp-r1",
+      "uc20260930-msalign-v2-result-massspecgym-formula-formula-oracle-mvp-r5",
+      "uc20260930-msalign-v2-result-massspecgym-formula-formula-oracle-mvp-r20",
+      "uc20260930-msalign-v2-eval-massspecgym-formula-formula-oracle-flare",
+      "uc20260930-msalign-v2-result-massspecgym-formula-formula-oracle-flare-r1",
+      "uc20260930-msalign-v2-result-massspecgym-formula-formula-oracle-flare-r5",
+      "uc20260930-msalign-v2-result-massspecgym-formula-formula-oracle-flare-r20",
+      "uc20260930-msalign-v2-eval-massspecgym-formula-formula-oracle-msalign-score-fusion-filter-overbar",
+      "uc20260930-msalign-v2-result-massspecgym-formula-formula-oracle-msalign-score-fusion-filter-overbar-r1",
+      "uc20260930-msalign-v2-result-massspecgym-formula-formula-oracle-msalign-score-fusion-filter-overbar-r5",
+      "uc20260930-msalign-v2-result-massspecgym-formula-formula-oracle-msalign-score-fusion-filter-overbar-r20",
+      "uc20260930-msalign-v2-data-massspecgym-mces-formula-free",
+      "uc20260930-msalign-v2-protocol-massspecgym-mces-formula-free",
+      "uc20260930-msalign-v2-eval-massspecgym-mces-formula-free-deepset",
+      "uc20260930-msalign-v2-result-massspecgym-mces-formula-free-deepset-r1",
+      "uc20260930-msalign-v2-result-massspecgym-mces-formula-free-deepset-r5",
+      "uc20260930-msalign-v2-result-massspecgym-mces-formula-free-deepset-r20",
+      "uc20260930-msalign-v2-baseline-massspecgym-mces-formula-free",
+      "uc20260930-msalign-v2-eval-massspecgym-mces-formula-free-jestr",
+      "uc20260930-msalign-v2-result-massspecgym-mces-formula-free-jestr-r1",
+      "uc20260930-msalign-v2-result-massspecgym-mces-formula-free-jestr-r5",
+      "uc20260930-msalign-v2-result-massspecgym-mces-formula-free-jestr-r20",
+      "uc20260930-msalign-v2-eval-massspecgym-mces-formula-free-emb-cos",
+      "uc20260930-msalign-v2-result-massspecgym-mces-formula-free-emb-cos-r1",
+      "uc20260930-msalign-v2-result-massspecgym-mces-formula-free-emb-cos-r5",
+      "uc20260930-msalign-v2-result-massspecgym-mces-formula-free-emb-cos-r20",
+      "uc20260930-msalign-v2-eval-massspecgym-mces-formula-free-msalign",
+      "uc20260930-msalign-v2-result-massspecgym-mces-formula-free-msalign-r1",
+      "uc20260930-msalign-v2-result-massspecgym-mces-formula-free-msalign-r5",
+      "uc20260930-msalign-v2-result-massspecgym-mces-formula-free-msalign-r20",
+      "uc20260930-msalign-v2-eval-massspecgym-mces-formula-free-msalign-score-fusion-overbar",
+      "uc20260930-msalign-v2-result-massspecgym-mces-formula-free-msalign-score-fusion-overbar-r1",
+      "uc20260930-msalign-v2-result-massspecgym-mces-formula-free-msalign-score-fusion-overbar-r5",
+      "uc20260930-msalign-v2-result-massspecgym-mces-formula-free-msalign-score-fusion-overbar-r20",
+      "uc20260930-msalign-v2-data-massspecgym-mces-formula-oracle",
+      "uc20260930-msalign-v2-protocol-massspecgym-mces-formula-oracle",
+      "uc20260930-msalign-v2-eval-massspecgym-mces-formula-oracle-mist",
+      "uc20260930-msalign-v2-result-massspecgym-mces-formula-oracle-mist-r1",
+      "uc20260930-msalign-v2-result-massspecgym-mces-formula-oracle-mist-r5",
+      "uc20260930-msalign-v2-result-massspecgym-mces-formula-oracle-mist-r20",
+      "uc20260930-msalign-v2-eval-massspecgym-mces-formula-oracle-mvp",
+      "uc20260930-msalign-v2-result-massspecgym-mces-formula-oracle-mvp-r1",
+      "uc20260930-msalign-v2-result-massspecgym-mces-formula-oracle-mvp-r5",
+      "uc20260930-msalign-v2-result-massspecgym-mces-formula-oracle-mvp-r20",
+      "uc20260930-msalign-v2-eval-massspecgym-mces-formula-oracle-flare",
+      "uc20260930-msalign-v2-result-massspecgym-mces-formula-oracle-flare-r1",
+      "uc20260930-msalign-v2-result-massspecgym-mces-formula-oracle-flare-r5",
+      "uc20260930-msalign-v2-result-massspecgym-mces-formula-oracle-flare-r20",
+      "uc20260930-msalign-v2-eval-massspecgym-mces-formula-oracle-msalign-score-fusion-filter-overbar",
+      "uc20260930-msalign-v2-result-massspecgym-mces-formula-oracle-msalign-score-fusion-filter-overbar-r1",
+      "uc20260930-msalign-v2-result-massspecgym-mces-formula-oracle-msalign-score-fusion-filter-overbar-r5",
+      "uc20260930-msalign-v2-result-massspecgym-mces-formula-oracle-msalign-score-fusion-filter-overbar-r20",
+      "uc20260930-baseline-msalign-2026-table3-method-ffn",
+      "uc20260930-baseline-msalign-2026-table3-method-deepsets",
+      "uc20260930-model-massspecgym-deepsets-fingerprint-predictor",
+      "uc20260930-config-family-1f5f4e84667b5253",
+      "uc20260930-model-jestr",
+      "uc20260930-config-family-9698b5917d805587",
+      "uc20260930-model-emb-cos",
+      "uc20260930-config-family-81ed776017f4f91c",
+      "uc20260930-config-family-05faf370a8a1221e",
+      "uc20260930-config-family-c25666e7c2aac7e8",
+      "uc20260930-model-mist",
+      "uc20260930-config-family-0f156aad56a3d0e7",
+      "uc20260930-model-mvp",
+      "uc20260930-config-family-489da5563a3dde1c",
+      "uc20260930-model-flare",
+      "uc20260930-config-family-405827f1f30d2c2f",
+      "uc20260930-config-family-df1940bc6b4c4a7e",
+      "uc20260930-protocol-parent-c58cfe79194883b0",
+      "uc20260930-protocol-parent-d261025e6b568902",
+      "uc20260930-protocol-parent-b1e55d78e4a89bae",
+      "uc20260930-protocol-parent-61f8434a4a29c55a",
+      "uc20260930-protocol-parent-7acc50652955d9c8",
+      "uc20260930-protocol-parent-c115c7b2deb473ca"
+    ],
+    "sources": [
+      {
+        "source_id": "evidence-official-760ab2fa8c396aeb796c",
+        "url": "https://arxiv.org/pdf/2605.19752"
+      },
+      {
+        "source_id": "uc20260930-source-msalign-v2",
+        "url": "https://arxiv.org/pdf/2605.19752v2"
+      }
+    ],
+    "queries": [
+      "MassSpecGym MSAlign benchmark molecular structure retrieval formula unknown v2"
+    ],
+    "coverage_verdict": "existing scoped endpoint coverage; supplemented and remaining gaps documented",
+    "summary": "Existing v1 MSAlign comparison covers six formula-free configurations on MassSpecGym formula/MCES splits. Fresh retrieval found the unversioned arXiv URL now returns v2, dated 25 September 2026, with changed comparator sets and uncertainty reporting.",
+    "additions": "Added v2 Table 3 in full: 81 results, nine configurations, three datasets/splits and separate formula-free/oracle protocols. Formula-free use-case mappings include DeepSet, JESTR, Emb-Cos, MSAlign and its late-score-fusion variant; formula-oracle rows remain separate. Added explicit DeepSet and existing FFN/DeepSets baseline roles.",
+    "remaining_gaps": [
+      "v1 source record labels 2605.19752v1 but uses an unversioned URL that now serves v2; old source bytes/values must remain immutable. v1-specific URL returned HTTP406 during this audit.",
+      "For MCES, the v2 Table3 generic caption says three random splits, but Section5.1 explicitly uses two validation/test-swapped variants; the discrepancy is preserved.",
+      "Benchmark assumes the true structure is present among 256 neutral-mass-matched candidates. Unknown candidates, instrument-specific prospective performance and authenticated identification remain gaps."
+    ],
+    "suggested_mappings": [
+      {
+        "protocol_id": "uc20260930-msalign-v2-protocol-spectraverse-formula-free",
+        "evaluation_ids": [
+          "uc20260930-msalign-v2-eval-spectraverse-formula-free-deepset",
+          "uc20260930-msalign-v2-eval-spectraverse-formula-free-jestr",
+          "uc20260930-msalign-v2-eval-spectraverse-formula-free-emb-cos",
+          "uc20260930-msalign-v2-eval-spectraverse-formula-free-msalign",
+          "uc20260930-msalign-v2-eval-spectraverse-formula-free-msalign-score-fusion-overbar"
+        ],
+        "endpoint": "Formula-free candidate Recall@1, @5 and @20: spectraverse",
+        "relevance": "proxy",
+        "rationale": "Assay-matched measured comparison informs the research decision within its original population and protocol; prospective transfer is not established.",
+        "constraints": [
+          "Formula-oracle comparator records excluded from this use-case mapping.",
+          "Do not pool formula and MCES splits or candidate-set sizes."
+        ],
+        "limitations": [
+          "Requires true structure among 256 candidates; not open-world identification.",
+          "Three split seeds; not independently reproduced.",
+          "Separate v2 implementation and split summary from v1 measurements.",
+          "No instrument-specific prospective success, calibration or clinical validity."
+        ],
+        "citations": [
+          {
+            "source_id": "uc20260930-source-msalign-v2",
+            "locator": "Table 3 left panel; Section 5.1"
+          }
+        ]
+      },
+      {
+        "protocol_id": "uc20260930-msalign-v2-protocol-massspecgym-formula-formula-free",
+        "evaluation_ids": [
+          "uc20260930-msalign-v2-eval-massspecgym-formula-formula-free-deepset",
+          "uc20260930-msalign-v2-eval-massspecgym-formula-formula-free-jestr",
+          "uc20260930-msalign-v2-eval-massspecgym-formula-formula-free-emb-cos",
+          "uc20260930-msalign-v2-eval-massspecgym-formula-formula-free-msalign",
+          "uc20260930-msalign-v2-eval-massspecgym-formula-formula-free-msalign-score-fusion-overbar"
+        ],
+        "endpoint": "Formula-free candidate Recall@1, @5 and @20: massspecgym-formula",
+        "relevance": "proxy",
+        "rationale": "Assay-matched measured comparison informs the research decision within its original population and protocol; prospective transfer is not established.",
+        "constraints": [
+          "Formula-oracle comparator records excluded from this use-case mapping.",
+          "Do not pool formula and MCES splits or candidate-set sizes."
+        ],
+        "limitations": [
+          "Requires true structure among 256 candidates; not open-world identification.",
+          "Three split seeds; not independently reproduced.",
+          "Separate v2 implementation and split summary from v1 measurements.",
+          "No instrument-specific prospective success, calibration or clinical validity."
+        ],
+        "citations": [
+          {
+            "source_id": "uc20260930-source-msalign-v2",
+            "locator": "Table 3 left panel; Section 5.1"
+          }
+        ]
+      },
+      {
+        "protocol_id": "uc20260930-msalign-v2-protocol-massspecgym-mces-formula-free",
+        "evaluation_ids": [
+          "uc20260930-msalign-v2-eval-massspecgym-mces-formula-free-deepset",
+          "uc20260930-msalign-v2-eval-massspecgym-mces-formula-free-jestr",
+          "uc20260930-msalign-v2-eval-massspecgym-mces-formula-free-emb-cos",
+          "uc20260930-msalign-v2-eval-massspecgym-mces-formula-free-msalign",
+          "uc20260930-msalign-v2-eval-massspecgym-mces-formula-free-msalign-score-fusion-overbar"
+        ],
+        "endpoint": "Formula-free candidate Recall@1, @5 and @20: massspecgym-mces",
+        "relevance": "proxy",
+        "rationale": "Assay-matched measured comparison informs the research decision within its original population and protocol; prospective transfer is not established.",
+        "constraints": [
+          "Formula-oracle comparator records excluded from this use-case mapping.",
+          "Do not pool formula and MCES splits or candidate-set sizes."
+        ],
+        "limitations": [
+          "Requires true structure among 256 candidates; not open-world identification.",
+          "MCES uses two split variants per methods, in conflict with generic three-split caption.",
+          "Separate v2 implementation and split summary from v1 measurements.",
+          "No instrument-specific prospective success, calibration or clinical validity."
+        ],
+        "citations": [
+          {
+            "source_id": "uc20260930-source-msalign-v2",
+            "locator": "Table 3 left panel; Section 5.1"
+          }
+        ]
+      }
+    ],
+    "draft_issue_comment": "Coverage audit — 30 September 2026\n\nExisting v1 MSAlign comparison covers six formula-free configurations on MassSpecGym formula/MCES splits. Fresh retrieval found the unversioned arXiv URL now returns v2, dated 25 September 2026, with changed comparator sets and uncertainty reporting.\n\nAdded v2 Table 3 in full: 81 results, nine configurations, three datasets/splits and separate formula-free/oracle protocols. Formula-free use-case mappings include DeepSet, JESTR, Emb-Cos, MSAlign and its late-score-fusion variant; formula-oracle rows remain separate. Added explicit DeepSet and existing FFN/DeepSets baseline roles.\n\nRemaining coverage limits:\n- v1 source record labels 2605.19752v1 but uses an unversioned URL that now serves v2; old source bytes/values must remain immutable. v1-specific URL returned HTTP406 during this audit.\n- For MCES, the v2 Table3 generic caption says three random splits, but Section5.1 explicitly uses two validation/test-swapped variants; the discrepancy is preserved.\n- Benchmark assumes the true structure is present among 256 neutral-mass-matched candidates. Unknown candidates, instrument-specific prospective performance and authenticated identification remain gaps.\n\nPrimary sources: [source 1](https://arxiv.org/pdf/2605.19752v2), [source 2](https://github.com/pluskal-lab/MassSpecGym).\n\nThe additions are source-checked author-reported evidence, not new model runs or human scientific review. Existing protocols and values are preserved; the local database changes still require the repository release/publication workflow.",
+    "review": {
+      "method": "automated_source_review",
+      "reviewed_at": "2026-09-30T21:44:09.821812+00:00",
+      "human_scientific_review": "outstanding"
+    }
+  },
+  {
+    "use_case_id": "use-case-plant-promoter-reporters",
+    "issue": 336,
+    "existing_ids": [
+      "agront-2024-fig3e-task-maize-protoplasts-a-thaliana",
+      "agront-2024-fig3e-task-maize-protoplasts-s-bicolor",
+      "agront-2024-fig3e-task-maize-protoplasts-z-mays",
+      "agront-2024-fig3e-task-tobacco-leaves-a-thaliana",
+      "agront-2024-fig3e-task-tobacco-leaves-s-bicolor",
+      "agront-2024-fig3e-task-tobacco-leaves-z-mays",
+      "agront-2024-fig3e-evaluation-agront-promoter-strength-maize-protoplasts-maize-protoplasts-a-thaliana",
+      "agront-2024-fig3e-evaluation-cnn-jores-et-al-promoter-strength-maize-protoplasts-maize-protoplasts-a-thaliana",
+      "agront-2024-fig3e-evaluation-agront-promoter-strength-maize-protoplasts-maize-protoplasts-s-bicolor",
+      "agront-2024-fig3e-evaluation-cnn-jores-et-al-promoter-strength-maize-protoplasts-maize-protoplasts-s-bicolor",
+      "agront-2024-fig3e-evaluation-agront-promoter-strength-maize-protoplasts-maize-protoplasts-z-mays",
+      "agront-2024-fig3e-evaluation-cnn-jores-et-al-promoter-strength-maize-protoplasts-maize-protoplasts-z-mays",
+      "agront-2024-fig3e-evaluation-agront-promoter-strength-tobacco-leaves-tobacco-leaves-a-thaliana",
+      "agront-2024-fig3e-evaluation-cnn-jores-et-al-promoter-strength-tobacco-leaves-tobacco-leaves-a-thaliana",
+      "agront-2024-fig3e-evaluation-agront-promoter-strength-tobacco-leaves-tobacco-leaves-s-bicolor",
+      "agront-2024-fig3e-evaluation-cnn-jores-et-al-promoter-strength-tobacco-leaves-tobacco-leaves-s-bicolor",
+      "agront-2024-fig3e-evaluation-agront-promoter-strength-tobacco-leaves-tobacco-leaves-z-mays",
+      "agront-2024-fig3e-evaluation-cnn-jores-et-al-promoter-strength-tobacco-leaves-tobacco-leaves-z-mays",
+      "agront-2024-fig3e-result-agront-promoter-strength-maize-protoplasts-maize-protoplasts-a-thaliana-r2",
+      "agront-2024-fig3e-result-agront-promoter-strength-maize-protoplasts-maize-protoplasts-s-bicolor-r2",
+      "agront-2024-fig3e-result-agront-promoter-strength-maize-protoplasts-maize-protoplasts-z-mays-r2",
+      "agront-2024-fig3e-result-agront-promoter-strength-tobacco-leaves-tobacco-leaves-a-thaliana-r2",
+      "agront-2024-fig3e-result-agront-promoter-strength-tobacco-leaves-tobacco-leaves-s-bicolor-r2",
+      "agront-2024-fig3e-result-agront-promoter-strength-tobacco-leaves-tobacco-leaves-z-mays-r2",
+      "agront-2024-fig3e-result-cnn-jores-et-al-promoter-strength-maize-protoplasts-maize-protoplasts-a-thaliana-r2",
+      "agront-2024-fig3e-result-cnn-jores-et-al-promoter-strength-maize-protoplasts-maize-protoplasts-s-bicolor-r2",
+      "agront-2024-fig3e-result-cnn-jores-et-al-promoter-strength-maize-protoplasts-maize-protoplasts-z-mays-r2",
+      "agront-2024-fig3e-result-cnn-jores-et-al-promoter-strength-tobacco-leaves-tobacco-leaves-a-thaliana-r2",
+      "agront-2024-fig3e-result-cnn-jores-et-al-promoter-strength-tobacco-leaves-tobacco-leaves-s-bicolor-r2",
+      "agront-2024-fig3e-result-cnn-jores-et-al-promoter-strength-tobacco-leaves-tobacco-leaves-z-mays-r2"
+    ],
+    "existing_protocol_ids": [
+      "agront-2024-fig3e-task-maize-protoplasts-a-thaliana",
+      "agront-2024-fig3e-task-maize-protoplasts-s-bicolor",
+      "agront-2024-fig3e-task-maize-protoplasts-z-mays",
+      "agront-2024-fig3e-task-tobacco-leaves-a-thaliana",
+      "agront-2024-fig3e-task-tobacco-leaves-s-bicolor",
+      "agront-2024-fig3e-task-tobacco-leaves-z-mays"
+    ],
+    "existing_evaluation_ids": [
+      "agront-2024-fig3e-evaluation-agront-promoter-strength-maize-protoplasts-maize-protoplasts-a-thaliana",
+      "agront-2024-fig3e-evaluation-cnn-jores-et-al-promoter-strength-maize-protoplasts-maize-protoplasts-a-thaliana",
+      "agront-2024-fig3e-evaluation-agront-promoter-strength-maize-protoplasts-maize-protoplasts-s-bicolor",
+      "agront-2024-fig3e-evaluation-cnn-jores-et-al-promoter-strength-maize-protoplasts-maize-protoplasts-s-bicolor",
+      "agront-2024-fig3e-evaluation-agront-promoter-strength-maize-protoplasts-maize-protoplasts-z-mays",
+      "agront-2024-fig3e-evaluation-cnn-jores-et-al-promoter-strength-maize-protoplasts-maize-protoplasts-z-mays",
+      "agront-2024-fig3e-evaluation-agront-promoter-strength-tobacco-leaves-tobacco-leaves-a-thaliana",
+      "agront-2024-fig3e-evaluation-cnn-jores-et-al-promoter-strength-tobacco-leaves-tobacco-leaves-a-thaliana",
+      "agront-2024-fig3e-evaluation-agront-promoter-strength-tobacco-leaves-tobacco-leaves-s-bicolor",
+      "agront-2024-fig3e-evaluation-cnn-jores-et-al-promoter-strength-tobacco-leaves-tobacco-leaves-s-bicolor",
+      "agront-2024-fig3e-evaluation-agront-promoter-strength-tobacco-leaves-tobacco-leaves-z-mays",
+      "agront-2024-fig3e-evaluation-cnn-jores-et-al-promoter-strength-tobacco-leaves-tobacco-leaves-z-mays"
+    ],
+    "existing_result_ids": [
+      "agront-2024-fig3e-result-agront-promoter-strength-maize-protoplasts-maize-protoplasts-a-thaliana-r2",
+      "agront-2024-fig3e-result-agront-promoter-strength-maize-protoplasts-maize-protoplasts-s-bicolor-r2",
+      "agront-2024-fig3e-result-agront-promoter-strength-maize-protoplasts-maize-protoplasts-z-mays-r2",
+      "agront-2024-fig3e-result-agront-promoter-strength-tobacco-leaves-tobacco-leaves-a-thaliana-r2",
+      "agront-2024-fig3e-result-agront-promoter-strength-tobacco-leaves-tobacco-leaves-s-bicolor-r2",
+      "agront-2024-fig3e-result-agront-promoter-strength-tobacco-leaves-tobacco-leaves-z-mays-r2",
+      "agront-2024-fig3e-result-cnn-jores-et-al-promoter-strength-maize-protoplasts-maize-protoplasts-a-thaliana-r2",
+      "agront-2024-fig3e-result-cnn-jores-et-al-promoter-strength-maize-protoplasts-maize-protoplasts-s-bicolor-r2",
+      "agront-2024-fig3e-result-cnn-jores-et-al-promoter-strength-maize-protoplasts-maize-protoplasts-z-mays-r2",
+      "agront-2024-fig3e-result-cnn-jores-et-al-promoter-strength-tobacco-leaves-tobacco-leaves-a-thaliana-r2",
+      "agront-2024-fig3e-result-cnn-jores-et-al-promoter-strength-tobacco-leaves-tobacco-leaves-s-bicolor-r2",
+      "agront-2024-fig3e-result-cnn-jores-et-al-promoter-strength-tobacco-leaves-tobacco-leaves-z-mays-r2"
+    ],
+    "new_ids": [
+      "uc20260930-jores-data-tobacco-leaves",
+      "uc20260930-jores-protocol-tobacco-leaves",
+      "uc20260930-jores-config-tobacco-leaves-gc-motif-linear",
+      "uc20260930-jores-eval-tobacco-leaves-gc-motif-linear",
+      "uc20260930-jores-result-tobacco-leaves-gc-motif-linear",
+      "uc20260930-jores-baseline-tobacco-leaves",
+      "uc20260930-jores-config-tobacco-leaves-cnn",
+      "uc20260930-jores-eval-tobacco-leaves-cnn",
+      "uc20260930-jores-result-tobacco-leaves-cnn",
+      "uc20260930-jores-data-maize-protoplasts",
+      "uc20260930-jores-protocol-maize-protoplasts",
+      "uc20260930-jores-config-maize-protoplasts-gc-motif-linear",
+      "uc20260930-jores-eval-maize-protoplasts-gc-motif-linear",
+      "uc20260930-jores-result-maize-protoplasts-gc-motif-linear",
+      "uc20260930-jores-baseline-maize-protoplasts",
+      "uc20260930-jores-config-maize-protoplasts-cnn",
+      "uc20260930-jores-eval-maize-protoplasts-cnn",
+      "uc20260930-jores-result-maize-protoplasts-cnn",
+      "uc20260930-method-jores-gc-and-motif-linear-regression",
+      "uc20260930-config-family-698c5df3938a8279",
+      "uc20260930-model-jores-plant-promoter-cnn",
+      "uc20260930-config-family-9781ba6ee2018501",
+      "uc20260930-config-family-c50a9b2fc8d43993",
+      "uc20260930-config-family-c52286af9c9400f6",
+      "uc20260930-benchmark-jores-promoters",
+      "uc20260930-protocol-parent-b8c3f8458c7712bf",
+      "uc20260930-protocol-parent-5e27f1b32dcb8c23"
+    ],
+    "sources": [
+      {
+        "source_id": "agront-2024-fig3e-source",
+        "url": "https://huggingface.co/datasets/InstaDeepAI/plant-genomic-benchmark"
+      },
+      {
+        "source_id": "agront-2024-paper-methods",
+        "url": "https://www.nature.com/articles/s42003-024-06465-2"
+      },
+      {
+        "source_id": "uc20260930-source-jores-2021",
+        "url": "https://queitschlab.gs.washington.edu/pdf/Jores_et_al_2021.pdf"
+      }
+    ],
+    "queries": [
+      "plant core promoter Jores 2021 CNN linear model promoter strength R2"
+    ],
+    "coverage_verdict": "existing scoped endpoint coverage; supplemented and remaining gaps documented",
+    "summary": "Existing AgroNT Figure3e evidence covers two learned methods in six reporter-host-by-sequence-species conditions. That comparison lacked an explicit simple conventional comparator.",
+    "additions": "Added Jores 2021 GC-and-motif linear regression versus its CNN for both reporter hosts: four Pearson-correlation-squared measurements in two original pooled-species protocols. The linear model uses GC plus six core-element and 72 TF motif scores. These are distinct from AgroNT species-specific comparisons.",
+    "remaining_gaps": [
+      "Reporter-host and sequence-species conditions cannot be pooled. Jores pooled-species Fig8 and AgroNT species-specific Fig3e protocols remain separate.",
+      "Prospective experimental promoter evolution is described by Jores; no benchmarked prospective model-to-model design hit-rate or stable-plant endpoint has been extracted.",
+      "Uncertainty, exact test counts and split/checkpoint hashes remain unextracted for the newly added historical comparison."
+    ],
+    "suggested_mappings": [
+      {
+        "protocol_id": "uc20260930-jores-protocol-tobacco-leaves",
+        "evaluation_ids": [
+          "uc20260930-jores-eval-tobacco-leaves-gc-motif-linear",
+          "uc20260930-jores-eval-tobacco-leaves-cnn"
+        ],
+        "endpoint": "Held-out promoter reporter strength, Pearson correlation squared",
+        "relevance": "proxy",
+        "rationale": "Assay-matched measured comparison informs the research decision within its original population and protocol; prospective transfer is not established.",
+        "constraints": [
+          "Keep maize protoplast and tobacco leaf protocols separate.",
+          "No merging with AgroNT Fig3e scores."
+        ],
+        "limitations": [
+          "Pooled species and 35S enhancer setting differ from each AgroNT species-specific comparison.",
+          "No uncertainty or exact test count extracted.",
+          "Reporter prediction does not establish stable-plant expression or yield."
+        ],
+        "citations": [
+          {
+            "source_id": "uc20260930-source-jores-2021",
+            "locator": "Figure 8a,b; Methods: Computational modelling of promoter strength"
+          }
+        ]
+      },
+      {
+        "protocol_id": "uc20260930-jores-protocol-maize-protoplasts",
+        "evaluation_ids": [
+          "uc20260930-jores-eval-maize-protoplasts-gc-motif-linear",
+          "uc20260930-jores-eval-maize-protoplasts-cnn"
+        ],
+        "endpoint": "Held-out promoter reporter strength, Pearson correlation squared",
+        "relevance": "proxy",
+        "rationale": "Assay-matched measured comparison informs the research decision within its original population and protocol; prospective transfer is not established.",
+        "constraints": [
+          "Keep maize protoplast and tobacco leaf protocols separate.",
+          "No merging with AgroNT Fig3e scores."
+        ],
+        "limitations": [
+          "Pooled species and 35S enhancer setting differ from each AgroNT species-specific comparison.",
+          "No uncertainty or exact test count extracted.",
+          "Reporter prediction does not establish stable-plant expression or yield."
+        ],
+        "citations": [
+          {
+            "source_id": "uc20260930-source-jores-2021",
+            "locator": "Figure 8a,b; Methods: Computational modelling of promoter strength"
+          }
+        ]
+      }
+    ],
+    "draft_issue_comment": "Coverage audit — 30 September 2026\n\nExisting AgroNT Figure3e evidence covers two learned methods in six reporter-host-by-sequence-species conditions. That comparison lacked an explicit simple conventional comparator.\n\nAdded Jores 2021 GC-and-motif linear regression versus its CNN for both reporter hosts: four Pearson-correlation-squared measurements in two original pooled-species protocols. The linear model uses GC plus six core-element and 72 TF motif scores. These are distinct from AgroNT species-specific comparisons.\n\nRemaining coverage limits:\n- Reporter-host and sequence-species conditions cannot be pooled. Jores pooled-species Fig8 and AgroNT species-specific Fig3e protocols remain separate.\n- Prospective experimental promoter evolution is described by Jores; no benchmarked prospective model-to-model design hit-rate or stable-plant endpoint has been extracted.\n- Uncertainty, exact test counts and split/checkpoint hashes remain unextracted for the newly added historical comparison.\n\nPrimary sources: [source 1](https://doi.org/10.1038/s41477-021-00932-y), [source 2](https://huggingface.co/datasets/InstaDeepAI/plant-genomic-benchmark).\n\nThe additions are source-checked author-reported evidence, not new model runs or human scientific review. Existing protocols and values are preserved; the local database changes still require the repository release/publication workflow.",
+    "review": {
+      "method": "automated_source_review",
+      "reviewed_at": "2026-09-30T21:44:09.826689+00:00",
+      "human_scientific_review": "outstanding"
+    }
+  },
+  {
+    "use_case_id": "use-case-protein-stability",
+    "issue": 337,
+    "existing_ids": [
+      "rewire-protocol-proteingym-amfr-v13",
+      "rewire-protocol-proteingym-amfr-random-v13",
+      "rewire-local-20260920-evaluation-proteingym-esm2",
+      "rewire-local-20260921-evaluation-proteingym-random",
+      "rewire-local-20260920-result-proteingym-esm2-auc",
+      "rewire-local-20260920-result-proteingym-esm2-mcc",
+      "rewire-local-20260920-result-proteingym-esm2-ndcg",
+      "rewire-local-20260920-result-proteingym-esm2-spearman",
+      "rewire-local-20260920-result-proteingym-esm2-top-recall",
+      "rewire-local-20260921-result-proteingym-random-auc",
+      "rewire-local-20260921-result-proteingym-random-mcc",
+      "rewire-local-20260921-result-proteingym-random-ndcg",
+      "rewire-local-20260921-result-proteingym-random-spearman",
+      "rewire-local-20260921-result-proteingym-random-top-recall",
+      "reported-task-6243658a1bc215"
+    ],
+    "existing_protocol_ids": [
+      "rewire-protocol-proteingym-amfr-v13",
+      "rewire-protocol-proteingym-amfr-random-v13"
+    ],
+    "existing_evaluation_ids": [
+      "rewire-local-20260920-evaluation-proteingym-esm2",
+      "rewire-local-20260921-evaluation-proteingym-random"
+    ],
+    "existing_result_ids": [
+      "rewire-local-20260920-result-proteingym-esm2-auc",
+      "rewire-local-20260920-result-proteingym-esm2-mcc",
+      "rewire-local-20260920-result-proteingym-esm2-ndcg",
+      "rewire-local-20260920-result-proteingym-esm2-spearman",
+      "rewire-local-20260920-result-proteingym-esm2-top-recall",
+      "rewire-local-20260921-result-proteingym-random-auc",
+      "rewire-local-20260921-result-proteingym-random-mcc",
+      "rewire-local-20260921-result-proteingym-random-ndcg",
+      "rewire-local-20260921-result-proteingym-random-spearman",
+      "rewire-local-20260921-result-proteingym-random-top-recall"
+    ],
+    "new_ids": [
+      "uc20260930-proteingym-amfr-protocol",
+      "uc20260930-proteingym-amfr-data",
+      "uc20260930-proteingym-amfr-config-site-independent",
+      "uc20260930-proteingym-amfr-eval-site-independent",
+      "uc20260930-proteingym-amfr-result-site-independent",
+      "uc20260930-proteingym-amfr-baseline-site-independent",
+      "uc20260930-proteingym-amfr-config-evmutation",
+      "uc20260930-proteingym-amfr-eval-evmutation",
+      "uc20260930-proteingym-amfr-result-evmutation",
+      "uc20260930-proteingym-amfr-baseline-evmutation",
+      "uc20260930-proteingym-amfr-config-deepsequence-single",
+      "uc20260930-proteingym-amfr-eval-deepsequence-single",
+      "uc20260930-proteingym-amfr-result-deepsequence-single",
+      "uc20260930-proteingym-amfr-config-deepsequence-ensemble",
+      "uc20260930-proteingym-amfr-eval-deepsequence-ensemble",
+      "uc20260930-proteingym-amfr-result-deepsequence-ensemble",
+      "uc20260930-proteingym-amfr-config-eve-single",
+      "uc20260930-proteingym-amfr-eval-eve-single",
+      "uc20260930-proteingym-amfr-result-eve-single",
+      "uc20260930-proteingym-amfr-config-eve-ensemble",
+      "uc20260930-proteingym-amfr-eval-eve-ensemble",
+      "uc20260930-proteingym-amfr-result-eve-ensemble",
+      "uc20260930-proteingym-amfr-config-unirep",
+      "uc20260930-proteingym-amfr-eval-unirep",
+      "uc20260930-proteingym-amfr-result-unirep",
+      "uc20260930-proteingym-amfr-config-unirep-evotuned",
+      "uc20260930-proteingym-amfr-eval-unirep-evotuned",
+      "uc20260930-proteingym-amfr-result-unirep-evotuned",
+      "uc20260930-proteingym-amfr-config-msa-transformer-single",
+      "uc20260930-proteingym-amfr-eval-msa-transformer-single",
+      "uc20260930-proteingym-amfr-result-msa-transformer-single",
+      "uc20260930-proteingym-amfr-config-msa-transformer-ensemble",
+      "uc20260930-proteingym-amfr-eval-msa-transformer-ensemble",
+      "uc20260930-proteingym-amfr-result-msa-transformer-ensemble",
+      "uc20260930-proteingym-amfr-config-esm-1b",
+      "uc20260930-proteingym-amfr-eval-esm-1b",
+      "uc20260930-proteingym-amfr-result-esm-1b",
+      "uc20260930-proteingym-amfr-config-esm-1v-single",
+      "uc20260930-proteingym-amfr-eval-esm-1v-single",
+      "uc20260930-proteingym-amfr-result-esm-1v-single",
+      "uc20260930-proteingym-amfr-config-esm-1v-ensemble",
+      "uc20260930-proteingym-amfr-eval-esm-1v-ensemble",
+      "uc20260930-proteingym-amfr-result-esm-1v-ensemble",
+      "uc20260930-proteingym-amfr-config-esm2-8m",
+      "uc20260930-proteingym-amfr-eval-esm2-8m",
+      "uc20260930-proteingym-amfr-result-esm2-8m",
+      "uc20260930-proteingym-amfr-config-esm2-35m",
+      "uc20260930-proteingym-amfr-eval-esm2-35m",
+      "uc20260930-proteingym-amfr-result-esm2-35m",
+      "uc20260930-proteingym-amfr-config-esm2-150m",
+      "uc20260930-proteingym-amfr-eval-esm2-150m",
+      "uc20260930-proteingym-amfr-result-esm2-150m",
+      "uc20260930-proteingym-amfr-config-esm2-650m",
+      "uc20260930-proteingym-amfr-eval-esm2-650m",
+      "uc20260930-proteingym-amfr-result-esm2-650m",
+      "uc20260930-proteingym-amfr-config-esm2-3b",
+      "uc20260930-proteingym-amfr-eval-esm2-3b",
+      "uc20260930-proteingym-amfr-result-esm2-3b",
+      "uc20260930-proteingym-amfr-config-esm2-15b",
+      "uc20260930-proteingym-amfr-eval-esm2-15b",
+      "uc20260930-proteingym-amfr-result-esm2-15b",
+      "uc20260930-proteingym-amfr-config-wavenet",
+      "uc20260930-proteingym-amfr-eval-wavenet",
+      "uc20260930-proteingym-amfr-result-wavenet",
+      "uc20260930-proteingym-amfr-config-rita-s",
+      "uc20260930-proteingym-amfr-eval-rita-s",
+      "uc20260930-proteingym-amfr-result-rita-s",
+      "uc20260930-proteingym-amfr-config-rita-m",
+      "uc20260930-proteingym-amfr-eval-rita-m",
+      "uc20260930-proteingym-amfr-result-rita-m",
+      "uc20260930-proteingym-amfr-config-rita-l",
+      "uc20260930-proteingym-amfr-eval-rita-l",
+      "uc20260930-proteingym-amfr-result-rita-l",
+      "uc20260930-proteingym-amfr-config-rita-xl",
+      "uc20260930-proteingym-amfr-eval-rita-xl",
+      "uc20260930-proteingym-amfr-result-rita-xl",
+      "uc20260930-proteingym-amfr-config-progen2-s",
+      "uc20260930-proteingym-amfr-eval-progen2-s",
+      "uc20260930-proteingym-amfr-result-progen2-s",
+      "uc20260930-proteingym-amfr-config-progen2-m",
+      "uc20260930-proteingym-amfr-eval-progen2-m",
+      "uc20260930-proteingym-amfr-result-progen2-m",
+      "uc20260930-proteingym-amfr-config-progen2-base",
+      "uc20260930-proteingym-amfr-eval-progen2-base",
+      "uc20260930-proteingym-amfr-result-progen2-base",
+      "uc20260930-proteingym-amfr-config-progen2-l",
+      "uc20260930-proteingym-amfr-eval-progen2-l",
+      "uc20260930-proteingym-amfr-result-progen2-l",
+      "uc20260930-proteingym-amfr-config-progen2-xl",
+      "uc20260930-proteingym-amfr-eval-progen2-xl",
+      "uc20260930-proteingym-amfr-result-progen2-xl",
+      "uc20260930-proteingym-amfr-config-gemme",
+      "uc20260930-proteingym-amfr-eval-gemme",
+      "uc20260930-proteingym-amfr-result-gemme",
+      "uc20260930-proteingym-amfr-config-vespa",
+      "uc20260930-proteingym-amfr-eval-vespa",
+      "uc20260930-proteingym-amfr-result-vespa",
+      "uc20260930-proteingym-amfr-config-vespal",
+      "uc20260930-proteingym-amfr-eval-vespal",
+      "uc20260930-proteingym-amfr-result-vespal",
+      "uc20260930-proteingym-amfr-config-vespag",
+      "uc20260930-proteingym-amfr-eval-vespag",
+      "uc20260930-proteingym-amfr-result-vespag",
+      "uc20260930-proteingym-amfr-config-protgpt2",
+      "uc20260930-proteingym-amfr-eval-protgpt2",
+      "uc20260930-proteingym-amfr-result-protgpt2",
+      "uc20260930-proteingym-amfr-config-tranception-s-no-retrieval",
+      "uc20260930-proteingym-amfr-eval-tranception-s-no-retrieval",
+      "uc20260930-proteingym-amfr-result-tranception-s-no-retrieval",
+      "uc20260930-proteingym-amfr-config-tranception-m-no-retrieval",
+      "uc20260930-proteingym-amfr-eval-tranception-m-no-retrieval",
+      "uc20260930-proteingym-amfr-result-tranception-m-no-retrieval",
+      "uc20260930-proteingym-amfr-config-tranception-l-no-retrieval",
+      "uc20260930-proteingym-amfr-eval-tranception-l-no-retrieval",
+      "uc20260930-proteingym-amfr-result-tranception-l-no-retrieval",
+      "uc20260930-proteingym-amfr-config-tranception-s",
+      "uc20260930-proteingym-amfr-eval-tranception-s",
+      "uc20260930-proteingym-amfr-result-tranception-s",
+      "uc20260930-proteingym-amfr-config-tranception-m",
+      "uc20260930-proteingym-amfr-eval-tranception-m",
+      "uc20260930-proteingym-amfr-result-tranception-m",
+      "uc20260930-proteingym-amfr-config-tranception-l",
+      "uc20260930-proteingym-amfr-eval-tranception-l",
+      "uc20260930-proteingym-amfr-result-tranception-l",
+      "uc20260930-proteingym-amfr-config-trancepteve-s",
+      "uc20260930-proteingym-amfr-eval-trancepteve-s",
+      "uc20260930-proteingym-amfr-result-trancepteve-s",
+      "uc20260930-proteingym-amfr-config-trancepteve-m",
+      "uc20260930-proteingym-amfr-eval-trancepteve-m",
+      "uc20260930-proteingym-amfr-result-trancepteve-m",
+      "uc20260930-proteingym-amfr-config-trancepteve-l",
+      "uc20260930-proteingym-amfr-eval-trancepteve-l",
+      "uc20260930-proteingym-amfr-result-trancepteve-l",
+      "uc20260930-proteingym-amfr-config-carp-38m",
+      "uc20260930-proteingym-amfr-eval-carp-38m",
+      "uc20260930-proteingym-amfr-result-carp-38m",
+      "uc20260930-proteingym-amfr-config-carp-600k",
+      "uc20260930-proteingym-amfr-eval-carp-600k",
+      "uc20260930-proteingym-amfr-result-carp-600k",
+      "uc20260930-proteingym-amfr-config-carp-640m",
+      "uc20260930-proteingym-amfr-eval-carp-640m",
+      "uc20260930-proteingym-amfr-result-carp-640m",
+      "uc20260930-proteingym-amfr-config-carp-76m",
+      "uc20260930-proteingym-amfr-eval-carp-76m",
+      "uc20260930-proteingym-amfr-result-carp-76m",
+      "uc20260930-proteingym-amfr-config-mif",
+      "uc20260930-proteingym-amfr-eval-mif",
+      "uc20260930-proteingym-amfr-result-mif",
+      "uc20260930-proteingym-amfr-config-mif-st",
+      "uc20260930-proteingym-amfr-eval-mif-st",
+      "uc20260930-proteingym-amfr-result-mif-st",
+      "uc20260930-proteingym-amfr-config-esm-if1",
+      "uc20260930-proteingym-amfr-eval-esm-if1",
+      "uc20260930-proteingym-amfr-result-esm-if1",
+      "uc20260930-proteingym-amfr-config-proteinmpnn",
+      "uc20260930-proteingym-amfr-eval-proteinmpnn",
+      "uc20260930-proteingym-amfr-result-proteinmpnn",
+      "uc20260930-proteingym-amfr-config-protssn-k-10-h-512",
+      "uc20260930-proteingym-amfr-eval-protssn-k-10-h-512",
+      "uc20260930-proteingym-amfr-result-protssn-k-10-h-512",
+      "uc20260930-proteingym-amfr-config-protssn-k-10-h-768",
+      "uc20260930-proteingym-amfr-eval-protssn-k-10-h-768",
+      "uc20260930-proteingym-amfr-result-protssn-k-10-h-768",
+      "uc20260930-proteingym-amfr-config-protssn-k-10-h-1280",
+      "uc20260930-proteingym-amfr-eval-protssn-k-10-h-1280",
+      "uc20260930-proteingym-amfr-result-protssn-k-10-h-1280",
+      "uc20260930-proteingym-amfr-config-protssn-k-20-h-512",
+      "uc20260930-proteingym-amfr-eval-protssn-k-20-h-512",
+      "uc20260930-proteingym-amfr-result-protssn-k-20-h-512",
+      "uc20260930-proteingym-amfr-config-protssn-k-20-h-768",
+      "uc20260930-proteingym-amfr-eval-protssn-k-20-h-768",
+      "uc20260930-proteingym-amfr-result-protssn-k-20-h-768",
+      "uc20260930-proteingym-amfr-config-protssn-k-20-h-1280",
+      "uc20260930-proteingym-amfr-eval-protssn-k-20-h-1280",
+      "uc20260930-proteingym-amfr-result-protssn-k-20-h-1280",
+      "uc20260930-proteingym-amfr-config-protssn-k-30-h-512",
+      "uc20260930-proteingym-amfr-eval-protssn-k-30-h-512",
+      "uc20260930-proteingym-amfr-result-protssn-k-30-h-512",
+      "uc20260930-proteingym-amfr-config-protssn-k-30-h-768",
+      "uc20260930-proteingym-amfr-eval-protssn-k-30-h-768",
+      "uc20260930-proteingym-amfr-result-protssn-k-30-h-768",
+      "uc20260930-proteingym-amfr-config-protssn-k-30-h-1280",
+      "uc20260930-proteingym-amfr-eval-protssn-k-30-h-1280",
+      "uc20260930-proteingym-amfr-result-protssn-k-30-h-1280",
+      "uc20260930-proteingym-amfr-config-protssn-ensemble",
+      "uc20260930-proteingym-amfr-eval-protssn-ensemble",
+      "uc20260930-proteingym-amfr-result-protssn-ensemble",
+      "uc20260930-proteingym-amfr-config-saprot-650m",
+      "uc20260930-proteingym-amfr-eval-saprot-650m",
+      "uc20260930-proteingym-amfr-result-saprot-650m",
+      "uc20260930-proteingym-amfr-config-saprot-35m",
+      "uc20260930-proteingym-amfr-eval-saprot-35m",
+      "uc20260930-proteingym-amfr-result-saprot-35m",
+      "uc20260930-proteingym-amfr-config-poet-200m",
+      "uc20260930-proteingym-amfr-eval-poet-200m",
+      "uc20260930-proteingym-amfr-result-poet-200m",
+      "uc20260930-proteingym-amfr-config-mulan",
+      "uc20260930-proteingym-amfr-eval-mulan",
+      "uc20260930-proteingym-amfr-result-mulan",
+      "uc20260930-proteingym-amfr-config-prosst-k-20",
+      "uc20260930-proteingym-amfr-eval-prosst-k-20",
+      "uc20260930-proteingym-amfr-result-prosst-k-20",
+      "uc20260930-proteingym-amfr-config-prosst-k-128",
+      "uc20260930-proteingym-amfr-eval-prosst-k-128",
+      "uc20260930-proteingym-amfr-result-prosst-k-128",
+      "uc20260930-proteingym-amfr-config-prosst-k-512",
+      "uc20260930-proteingym-amfr-eval-prosst-k-512",
+      "uc20260930-proteingym-amfr-result-prosst-k-512",
+      "uc20260930-proteingym-amfr-config-prosst-k-1024",
+      "uc20260930-proteingym-amfr-eval-prosst-k-1024",
+      "uc20260930-proteingym-amfr-result-prosst-k-1024",
+      "uc20260930-proteingym-amfr-config-prosst-k-2048",
+      "uc20260930-proteingym-amfr-eval-prosst-k-2048",
+      "uc20260930-proteingym-amfr-result-prosst-k-2048",
+      "uc20260930-proteingym-amfr-config-prosst-k-4096",
+      "uc20260930-proteingym-amfr-eval-prosst-k-4096",
+      "uc20260930-proteingym-amfr-result-prosst-k-4096",
+      "uc20260930-proteingym-amfr-config-escott",
+      "uc20260930-proteingym-amfr-eval-escott",
+      "uc20260930-proteingym-amfr-result-escott",
+      "uc20260930-proteingym-amfr-config-venusrem",
+      "uc20260930-proteingym-amfr-eval-venusrem",
+      "uc20260930-proteingym-amfr-result-venusrem",
+      "uc20260930-proteingym-amfr-config-rsalor",
+      "uc20260930-proteingym-amfr-eval-rsalor",
+      "uc20260930-proteingym-amfr-result-rsalor",
+      "uc20260930-proteingym-amfr-config-s2f",
+      "uc20260930-proteingym-amfr-eval-s2f",
+      "uc20260930-proteingym-amfr-result-s2f",
+      "uc20260930-proteingym-amfr-config-s2f-msa",
+      "uc20260930-proteingym-amfr-eval-s2f-msa",
+      "uc20260930-proteingym-amfr-result-s2f-msa",
+      "uc20260930-proteingym-amfr-config-s3f",
+      "uc20260930-proteingym-amfr-eval-s3f",
+      "uc20260930-proteingym-amfr-result-s3f",
+      "uc20260930-proteingym-amfr-config-s3f-msa",
+      "uc20260930-proteingym-amfr-eval-s3f-msa",
+      "uc20260930-proteingym-amfr-result-s3f-msa",
+      "uc20260930-proteingym-amfr-config-siterm",
+      "uc20260930-proteingym-amfr-eval-siterm",
+      "uc20260930-proteingym-amfr-result-siterm",
+      "uc20260930-proteingym-amfr-config-esm3-open-1-4b",
+      "uc20260930-proteingym-amfr-eval-esm3-open-1-4b",
+      "uc20260930-proteingym-amfr-result-esm3-open-1-4b",
+      "uc20260930-proteingym-amfr-config-esm-c-300m",
+      "uc20260930-proteingym-amfr-eval-esm-c-300m",
+      "uc20260930-proteingym-amfr-result-esm-c-300m",
+      "uc20260930-proteingym-amfr-config-esm-c-600m",
+      "uc20260930-proteingym-amfr-eval-esm-c-600m",
+      "uc20260930-proteingym-amfr-result-esm-c-600m",
+      "uc20260930-proteingym-amfr-config-xtrimopglm-1b-mlm",
+      "uc20260930-proteingym-amfr-eval-xtrimopglm-1b-mlm",
+      "uc20260930-proteingym-amfr-result-xtrimopglm-1b-mlm",
+      "uc20260930-proteingym-amfr-config-xtrimopglm-3b-mlm",
+      "uc20260930-proteingym-amfr-eval-xtrimopglm-3b-mlm",
+      "uc20260930-proteingym-amfr-result-xtrimopglm-3b-mlm",
+      "uc20260930-proteingym-amfr-config-xtrimopglm-10b-mlm",
+      "uc20260930-proteingym-amfr-eval-xtrimopglm-10b-mlm",
+      "uc20260930-proteingym-amfr-result-xtrimopglm-10b-mlm",
+      "uc20260930-proteingym-amfr-config-xtrimopglm-1b-clm",
+      "uc20260930-proteingym-amfr-eval-xtrimopglm-1b-clm",
+      "uc20260930-proteingym-amfr-result-xtrimopglm-1b-clm",
+      "uc20260930-proteingym-amfr-config-xtrimopglm-3b-clm",
+      "uc20260930-proteingym-amfr-eval-xtrimopglm-3b-clm",
+      "uc20260930-proteingym-amfr-result-xtrimopglm-3b-clm",
+      "uc20260930-proteingym-amfr-config-xtrimopglm-7b-clm",
+      "uc20260930-proteingym-amfr-eval-xtrimopglm-7b-clm",
+      "uc20260930-proteingym-amfr-result-xtrimopglm-7b-clm",
+      "uc20260930-proteingym-amfr-config-xtrimopglm-100b-int4",
+      "uc20260930-proteingym-amfr-eval-xtrimopglm-100b-int4",
+      "uc20260930-proteingym-amfr-result-xtrimopglm-100b-int4",
+      "uc20260930-proteingym-amfr-config-progen3-112m",
+      "uc20260930-proteingym-amfr-eval-progen3-112m",
+      "uc20260930-proteingym-amfr-result-progen3-112m",
+      "uc20260930-proteingym-amfr-config-progen3-219m",
+      "uc20260930-proteingym-amfr-eval-progen3-219m",
+      "uc20260930-proteingym-amfr-result-progen3-219m",
+      "uc20260930-proteingym-amfr-config-progen3-339m",
+      "uc20260930-proteingym-amfr-eval-progen3-339m",
+      "uc20260930-proteingym-amfr-result-progen3-339m",
+      "uc20260930-proteingym-amfr-config-progen3-762m",
+      "uc20260930-proteingym-amfr-eval-progen3-762m",
+      "uc20260930-proteingym-amfr-result-progen3-762m",
+      "uc20260930-proteingym-amfr-config-progen3-1b",
+      "uc20260930-proteingym-amfr-eval-progen3-1b",
+      "uc20260930-proteingym-amfr-result-progen3-1b",
+      "uc20260930-proteingym-amfr-config-progen3-3b",
+      "uc20260930-proteingym-amfr-eval-progen3-3b",
+      "uc20260930-proteingym-amfr-result-progen3-3b",
+      "uc20260930-proteingym-amfr-config-aido-protein-rag-16b",
+      "uc20260930-proteingym-amfr-eval-aido-protein-rag-16b",
+      "uc20260930-proteingym-amfr-result-aido-protein-rag-16b",
+      "uc20260930-proteingym-amfr-config-protriever",
+      "uc20260930-proteingym-amfr-eval-protriever",
+      "uc20260930-proteingym-amfr-result-protriever",
+      "uc20260930-baseline-rewire-local-20260921-configuration-proteingym-random",
+      "uc20260930-method-site-independent",
+      "uc20260930-config-family-634b631e166ecdf6",
+      "uc20260930-method-evmutation",
+      "uc20260930-config-family-17f4f66206af8ec3",
+      "uc20260930-model-deepsequence",
+      "uc20260930-config-family-b7a5ac667a525317",
+      "uc20260930-config-family-de9724ba0a273a69",
+      "uc20260930-model-eve",
+      "uc20260930-config-family-ae1d92941b48466d",
+      "uc20260930-config-family-90860a68dbd4240b",
+      "uc20260930-model-unirep",
+      "uc20260930-config-family-d77ee442ecb46ef8",
+      "uc20260930-model-unirep-evotuned",
+      "uc20260930-config-family-8a781048ab9030da",
+      "uc20260930-model-msa-transformer",
+      "uc20260930-config-family-f070f2d88686dc4f",
+      "uc20260930-config-family-1d90bb1e246b959a",
+      "uc20260930-model-esm-1b",
+      "uc20260930-config-family-b6b0b5145878aca3",
+      "uc20260930-config-family-c2fcc670e1f30a3d",
+      "uc20260930-config-family-0d7222c56bdf5875",
+      "uc20260930-config-family-0fc50bcfa3bdd780",
+      "uc20260930-config-family-7a49db70c2e50af5",
+      "uc20260930-config-family-22b244de2d811aef",
+      "uc20260930-config-family-aa76d7825d00e076",
+      "uc20260930-config-family-3b475c8f0ccf653f",
+      "uc20260930-config-family-b8513e4cf019f3a5",
+      "uc20260930-model-wavenet",
+      "uc20260930-config-family-17cbaa12e733741c",
+      "uc20260930-model-rita",
+      "uc20260930-config-family-fdb66dbf522d2b95",
+      "uc20260930-config-family-a2b60b33570da11f",
+      "uc20260930-config-family-8d8900c6308b3885",
+      "uc20260930-config-family-9373a610d4d11c9f",
+      "uc20260930-model-progen2",
+      "uc20260930-config-family-d9a6817a013e2221",
+      "uc20260930-config-family-458108c159505067",
+      "uc20260930-config-family-25c8e33b504de977",
+      "uc20260930-config-family-9703362c1108656e",
+      "uc20260930-config-family-c9e4ede9b26936ac",
+      "uc20260930-method-gemme",
+      "uc20260930-config-family-17184f9ecf53680f",
+      "uc20260930-model-vespa",
+      "uc20260930-config-family-d4ee79a90622da31",
+      "uc20260930-model-vespal",
+      "uc20260930-config-family-007e9285e27184d1",
+      "uc20260930-model-vespag",
+      "uc20260930-config-family-9bc27ac9d5c08250",
+      "uc20260930-model-protgpt2",
+      "uc20260930-config-family-bc5d62f3e16e495a",
+      "uc20260930-model-tranception",
+      "uc20260930-config-family-e686470a9283a6c9",
+      "uc20260930-config-family-ef7201e9aed53686",
+      "uc20260930-config-family-486561020f9e2be2",
+      "uc20260930-config-family-663f96b5dbcd0472",
+      "uc20260930-config-family-2dc43281e357bedd",
+      "uc20260930-config-family-83d27f2d6266d853",
+      "uc20260930-model-trancepteve",
+      "uc20260930-config-family-7a97875389d4da4c",
+      "uc20260930-config-family-e458aa9b03c5883a",
+      "uc20260930-config-family-ce86124a60d819d1",
+      "uc20260930-model-carp",
+      "uc20260930-config-family-6792e2fadae548dd",
+      "uc20260930-config-family-8e8d314d45535f93",
+      "uc20260930-config-family-bf1471d78ec50664",
+      "uc20260930-config-family-ab2631215c9de860",
+      "uc20260930-model-mif",
+      "uc20260930-config-family-0d1281ddbf248bf8",
+      "uc20260930-model-mif-st",
+      "uc20260930-config-family-b31bcbd09fd408a1",
+      "uc20260930-config-family-706d10073972021e",
+      "uc20260930-config-family-ea94159687e6e788",
+      "uc20260930-model-protssn",
+      "uc20260930-config-family-fe8e6ff44e2d7c9c",
+      "uc20260930-config-family-4899227580cc25f8",
+      "uc20260930-config-family-4e11ccc98ddd3707",
+      "uc20260930-config-family-aba62fff13cc25f7",
+      "uc20260930-config-family-bdf5ce2b9f49235a",
+      "uc20260930-config-family-2bb70de0e562ada9",
+      "uc20260930-config-family-fbf4208f90b3f23c",
+      "uc20260930-config-family-a4150b329e9db8c7",
+      "uc20260930-config-family-ffb948153dc62234",
+      "uc20260930-config-family-73a883c6221e0ed8",
+      "uc20260930-model-saprot",
+      "uc20260930-config-family-f33fefe9428c5e02",
+      "uc20260930-config-family-352cc5efb7672cfb",
+      "uc20260930-model-poet",
+      "uc20260930-config-family-918b23835b89a12c",
+      "uc20260930-model-mulan",
+      "uc20260930-config-family-9ef794d06098dbc5",
+      "uc20260930-model-prosst",
+      "uc20260930-config-family-4ba318514aceb932",
+      "uc20260930-config-family-a6b5b12a648534dc",
+      "uc20260930-config-family-f90b47b461a68b50",
+      "uc20260930-config-family-20b57327122b70cf",
+      "uc20260930-config-family-71f35b1cb0833bfa",
+      "uc20260930-config-family-98d7362db26979e5",
+      "uc20260930-model-escott",
+      "uc20260930-config-family-efe14e3f17cca41b",
+      "uc20260930-model-venusrem",
+      "uc20260930-config-family-70be6ede29893c86",
+      "uc20260930-method-rsalor",
+      "uc20260930-config-family-b578353a2b08dd84",
+      "uc20260930-model-s2f",
+      "uc20260930-config-family-068fa892d8c0708e",
+      "uc20260930-model-s2f-msa",
+      "uc20260930-config-family-3dbaaf95f55f72e7",
+      "uc20260930-model-s3f",
+      "uc20260930-config-family-46ce752e5e834113",
+      "uc20260930-model-s3f-msa",
+      "uc20260930-config-family-a40a53b6c5a7c676",
+      "uc20260930-model-siterm",
+      "uc20260930-config-family-3dc8338d6ed1e07d",
+      "uc20260930-config-family-b2aa9ed7a7729807",
+      "uc20260930-config-family-c091d3c5673344ca",
+      "uc20260930-config-family-f503fc743c1b5ee2",
+      "uc20260930-model-xtrimopglm",
+      "uc20260930-config-family-bf4d8962f76bacb9",
+      "uc20260930-config-family-d2059d07d0816f07",
+      "uc20260930-config-family-51b5e68f40ba2cd8",
+      "uc20260930-config-family-e8c43d8100f47b85",
+      "uc20260930-config-family-e529b5ada7ca1af7",
+      "uc20260930-config-family-169707786ce15284",
+      "uc20260930-config-family-6b0ec602d2794477",
+      "uc20260930-model-progen3",
+      "uc20260930-config-family-845906dc9a9c528c",
+      "uc20260930-config-family-94a9edc3fa7914ba",
+      "uc20260930-config-family-2fd98c9097d39d14",
+      "uc20260930-config-family-e3a6adf1406789f4",
+      "uc20260930-config-family-1888ced0b4026dfb",
+      "uc20260930-config-family-78954e0a21c6979d",
+      "uc20260930-model-aido-protein-rag",
+      "uc20260930-config-family-26650f8b85a2e315",
+      "uc20260930-model-protriever",
+      "uc20260930-config-family-e07f64e25e978358",
+      "uc20260930-protocol-parent-fa51fe46268a4a99"
+    ],
+    "sources": [
+      {
+        "source_id": "expansion-p3-proteingym-2023",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10723403/"
+      },
+      {
+        "source_id": "profile-protocol-proteingym-reference-files-dms-substitutions-csv-a8f49801",
+        "url": "https://raw.githubusercontent.com/OATML-Markslab/ProteinGym/144fe22b07dfaeec2b366f2346203a9838a55b4c/reference_files/DMS_substitutions.csv"
+      },
+      {
+        "source_id": "proteingym-2023",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10723403/"
+      },
+      {
+        "source_id": "rewire-local-20260920-audit-source-proteingym-esm2",
+        "url": "https://github.com/rewire-bio/rewire-benchmarks/blob/ca73fa47136d182f2d4ddb083d084712198fc0e2/research/local-runs-2026-09-20/proteingym-esm2/audit.json"
+      },
+      {
+        "source_id": "rewire-local-20260920-instructions-proteingym",
+        "url": "https://github.com/rewire-bio/rewire-benchmarks/blob/ca73fa47136d182f2d4ddb083d084712198fc0e2/research/local-runs-2026-09-20/proteingym-esm2/README.md"
+      },
+      {
+        "source_id": "rewire-local-20260920-source-proteingym-esm2",
+        "url": "https://github.com/rewire-bio/rewire-benchmarks/blob/ca73fa47136d182f2d4ddb083d084712198fc0e2/research/local-runs-2026-09-20/proteingym-esm2/report.json"
+      },
+      {
+        "source_id": "rewire-local-20260921-audit-source-proteingym-random",
+        "url": "https://github.com/rewire-bio/rewire-benchmarks/blob/1663d1f04b2bbd6dfcff77fea78129d30b0de191/research/proteingym-null-2026-09-21/evidence/verification.json"
+      },
+      {
+        "source_id": "rewire-local-20260921-instructions-proteingym-random",
+        "url": "https://github.com/rewire-bio/rewire-benchmarks/blob/1663d1f04b2bbd6dfcff77fea78129d30b0de191/research/proteingym-null-2026-09-21/README.md"
+      },
+      {
+        "source_id": "rewire-local-20260921-source-proteingym-random",
+        "url": "https://github.com/rewire-bio/rewire-benchmarks/blob/1663d1f04b2bbd6dfcff77fea78129d30b0de191/research/proteingym-null-2026-09-21/evidence/seeded-random.report.json"
+      },
+      {
+        "source_id": "uc20260930-source-proteingym-amfr-spearman",
+        "url": "https://raw.githubusercontent.com/OATML-Markslab/ProteinGym/144fe22b07dfaeec2b366f2346203a9838a55b4c/benchmarks/DMS_zero_shot/substitutions/Spearman/DMS_substitutions_Spearman_DMS_level.csv"
+      }
+    ],
+    "queries": [
+      "ProteinGym Tsuboyama stability benchmark FoldX Rosetta Spearman 2023",
+      "ProteinGym pinned repository tree: benchmarks/DMS_zero_shot/substitutions/Spearman"
+    ],
+    "coverage_verdict": "existing scoped endpoint coverage; supplemented and remaining gaps documented",
+    "summary": "Existing local AMFR ESM-2 and random-ranking runs cover the same 2,972-variant short construct in separate protocols. The official pinned ProteinGym CSV supplies a much broader pre-existing assay-level comparison.",
+    "additions": "Added all 97 measured model columns from the official AMFR Spearman row, including Site-Independent 0.358 and EVmutation 0.418, with snapshot-specific configurations, canonical model/method identities and source-backed family associations. Added explicit evolutionary and random-ranking baseline roles.",
+    "remaining_gaps": [
+      "The official comparison contains 820 single and 2,152 double substitutions. It does not complete the planned matched singles-only local study.",
+      "Number of Mutants=2,972 is the assay count; exact scored count per model, source score transformations and model checkpoint hashes remain unextracted.",
+      "Method input modalities differ. These scores support short-construct folding-stability ranking, not a universal sequence-only winner, full-protein function or clinical pathogenicity."
+    ],
+    "suggested_mappings": [
+      {
+        "protocol_id": "uc20260930-proteingym-amfr-protocol",
+        "evaluation_ids": [
+          "uc20260930-proteingym-amfr-eval-site-independent",
+          "uc20260930-proteingym-amfr-eval-evmutation",
+          "uc20260930-proteingym-amfr-eval-deepsequence-single",
+          "uc20260930-proteingym-amfr-eval-deepsequence-ensemble",
+          "uc20260930-proteingym-amfr-eval-eve-single",
+          "uc20260930-proteingym-amfr-eval-eve-ensemble",
+          "uc20260930-proteingym-amfr-eval-unirep",
+          "uc20260930-proteingym-amfr-eval-unirep-evotuned",
+          "uc20260930-proteingym-amfr-eval-msa-transformer-single",
+          "uc20260930-proteingym-amfr-eval-msa-transformer-ensemble",
+          "uc20260930-proteingym-amfr-eval-esm-1b",
+          "uc20260930-proteingym-amfr-eval-esm-1v-single",
+          "uc20260930-proteingym-amfr-eval-esm-1v-ensemble",
+          "uc20260930-proteingym-amfr-eval-esm2-8m",
+          "uc20260930-proteingym-amfr-eval-esm2-35m",
+          "uc20260930-proteingym-amfr-eval-esm2-150m",
+          "uc20260930-proteingym-amfr-eval-esm2-650m",
+          "uc20260930-proteingym-amfr-eval-esm2-3b",
+          "uc20260930-proteingym-amfr-eval-esm2-15b",
+          "uc20260930-proteingym-amfr-eval-wavenet",
+          "uc20260930-proteingym-amfr-eval-rita-s",
+          "uc20260930-proteingym-amfr-eval-rita-m",
+          "uc20260930-proteingym-amfr-eval-rita-l",
+          "uc20260930-proteingym-amfr-eval-rita-xl",
+          "uc20260930-proteingym-amfr-eval-progen2-s",
+          "uc20260930-proteingym-amfr-eval-progen2-m",
+          "uc20260930-proteingym-amfr-eval-progen2-base",
+          "uc20260930-proteingym-amfr-eval-progen2-l",
+          "uc20260930-proteingym-amfr-eval-progen2-xl",
+          "uc20260930-proteingym-amfr-eval-gemme",
+          "uc20260930-proteingym-amfr-eval-vespa",
+          "uc20260930-proteingym-amfr-eval-vespal",
+          "uc20260930-proteingym-amfr-eval-vespag",
+          "uc20260930-proteingym-amfr-eval-protgpt2",
+          "uc20260930-proteingym-amfr-eval-tranception-s-no-retrieval",
+          "uc20260930-proteingym-amfr-eval-tranception-m-no-retrieval",
+          "uc20260930-proteingym-amfr-eval-tranception-l-no-retrieval",
+          "uc20260930-proteingym-amfr-eval-tranception-s",
+          "uc20260930-proteingym-amfr-eval-tranception-m",
+          "uc20260930-proteingym-amfr-eval-tranception-l",
+          "uc20260930-proteingym-amfr-eval-trancepteve-s",
+          "uc20260930-proteingym-amfr-eval-trancepteve-m",
+          "uc20260930-proteingym-amfr-eval-trancepteve-l",
+          "uc20260930-proteingym-amfr-eval-carp-38m",
+          "uc20260930-proteingym-amfr-eval-carp-600k",
+          "uc20260930-proteingym-amfr-eval-carp-640m",
+          "uc20260930-proteingym-amfr-eval-carp-76m",
+          "uc20260930-proteingym-amfr-eval-mif",
+          "uc20260930-proteingym-amfr-eval-mif-st",
+          "uc20260930-proteingym-amfr-eval-esm-if1",
+          "uc20260930-proteingym-amfr-eval-proteinmpnn",
+          "uc20260930-proteingym-amfr-eval-protssn-k-10-h-512",
+          "uc20260930-proteingym-amfr-eval-protssn-k-10-h-768",
+          "uc20260930-proteingym-amfr-eval-protssn-k-10-h-1280",
+          "uc20260930-proteingym-amfr-eval-protssn-k-20-h-512",
+          "uc20260930-proteingym-amfr-eval-protssn-k-20-h-768",
+          "uc20260930-proteingym-amfr-eval-protssn-k-20-h-1280",
+          "uc20260930-proteingym-amfr-eval-protssn-k-30-h-512",
+          "uc20260930-proteingym-amfr-eval-protssn-k-30-h-768",
+          "uc20260930-proteingym-amfr-eval-protssn-k-30-h-1280",
+          "uc20260930-proteingym-amfr-eval-protssn-ensemble",
+          "uc20260930-proteingym-amfr-eval-saprot-650m",
+          "uc20260930-proteingym-amfr-eval-saprot-35m",
+          "uc20260930-proteingym-amfr-eval-poet-200m",
+          "uc20260930-proteingym-amfr-eval-mulan",
+          "uc20260930-proteingym-amfr-eval-prosst-k-20",
+          "uc20260930-proteingym-amfr-eval-prosst-k-128",
+          "uc20260930-proteingym-amfr-eval-prosst-k-512",
+          "uc20260930-proteingym-amfr-eval-prosst-k-1024",
+          "uc20260930-proteingym-amfr-eval-prosst-k-2048",
+          "uc20260930-proteingym-amfr-eval-prosst-k-4096",
+          "uc20260930-proteingym-amfr-eval-escott",
+          "uc20260930-proteingym-amfr-eval-venusrem",
+          "uc20260930-proteingym-amfr-eval-rsalor",
+          "uc20260930-proteingym-amfr-eval-s2f",
+          "uc20260930-proteingym-amfr-eval-s2f-msa",
+          "uc20260930-proteingym-amfr-eval-s3f",
+          "uc20260930-proteingym-amfr-eval-s3f-msa",
+          "uc20260930-proteingym-amfr-eval-siterm",
+          "uc20260930-proteingym-amfr-eval-esm3-open-1-4b",
+          "uc20260930-proteingym-amfr-eval-esm-c-300m",
+          "uc20260930-proteingym-amfr-eval-esm-c-600m",
+          "uc20260930-proteingym-amfr-eval-xtrimopglm-1b-mlm",
+          "uc20260930-proteingym-amfr-eval-xtrimopglm-3b-mlm",
+          "uc20260930-proteingym-amfr-eval-xtrimopglm-10b-mlm",
+          "uc20260930-proteingym-amfr-eval-xtrimopglm-1b-clm",
+          "uc20260930-proteingym-amfr-eval-xtrimopglm-3b-clm",
+          "uc20260930-proteingym-amfr-eval-xtrimopglm-7b-clm",
+          "uc20260930-proteingym-amfr-eval-xtrimopglm-100b-int4",
+          "uc20260930-proteingym-amfr-eval-progen3-112m",
+          "uc20260930-proteingym-amfr-eval-progen3-219m",
+          "uc20260930-proteingym-amfr-eval-progen3-339m",
+          "uc20260930-proteingym-amfr-eval-progen3-762m",
+          "uc20260930-proteingym-amfr-eval-progen3-1b",
+          "uc20260930-proteingym-amfr-eval-progen3-3b",
+          "uc20260930-proteingym-amfr-eval-aido-protein-rag-16b",
+          "uc20260930-proteingym-amfr-eval-protriever"
+        ],
+        "endpoint": "AMFR construct folding-stability rank association, official assay-level Spearman",
+        "relevance": "proxy",
+        "rationale": "Assay-matched measured comparison informs the research decision within its original population and protocol; prospective transfer is not established.",
+        "constraints": [
+          "Keep official source snapshot separate from local ESM2/random runs."
+        ],
+        "limitations": [
+          "Mixed singles/doubles, not planned singles-only comparison.",
+          "Assay count 2,972 does not establish complete per-model prediction coverage.",
+          "No uncertainty or matched hardware measurements.",
+          "Some methods require MSA or structure inputs.",
+          "Construct folding stability is not clinical pathogenicity or full-protein function."
+        ],
+        "citations": [
+          {
+            "source_id": "uc20260930-source-proteingym-amfr-spearman",
+            "locator": "CSV row AMFR_HUMAN_Tsuboyama_2023_4G3O; DMS metadata row"
+          },
+          {
+            "source_id": "profile-protocol-proteingym-reference-files-dms-substitutions-csv-a8f49801",
+            "locator": "CSV row AMFR_HUMAN_Tsuboyama_2023_4G3O; DMS metadata row"
+          }
+        ]
+      }
+    ],
+    "draft_issue_comment": "Coverage audit — 30 September 2026\n\nExisting local AMFR ESM-2 and random-ranking runs cover the same 2,972-variant short construct in separate protocols. The official pinned ProteinGym CSV supplies a much broader pre-existing assay-level comparison.\n\nAdded all 97 measured model columns from the official AMFR Spearman row, including Site-Independent 0.358 and EVmutation 0.418, with snapshot-specific configurations, canonical model/method identities and source-backed family associations. Added explicit evolutionary and random-ranking baseline roles.\n\nRemaining coverage limits:\n- The official comparison contains 820 single and 2,152 double substitutions. It does not complete the planned matched singles-only local study.\n- Number of Mutants=2,972 is the assay count; exact scored count per model, source score transformations and model checkpoint hashes remain unextracted.\n- Method input modalities differ. These scores support short-construct folding-stability ranking, not a universal sequence-only winner, full-protein function or clinical pathogenicity.\n\nPrimary sources: [source 1](https://github.com/OATML-Markslab/ProteinGym/blob/144fe22b07dfaeec2b366f2346203a9838a55b4c/benchmarks/DMS_zero_shot/substitutions/Spearman/DMS_substitutions_Spearman_DMS_level.csv), [source 2](https://doi.org/10.1038/s41586-023-06328-6).\n\nThe additions are source-checked author-reported evidence, not new model runs or human scientific review. Existing protocols and values are preserved; the local database changes still require the repository release/publication workflow.",
+    "review": {
+      "method": "automated_source_review",
+      "reviewed_at": "2026-09-30T21:44:09.831384+00:00",
+      "human_scientific_review": "outstanding"
+    }
+  },
+  {
+    "use_case_id": "use-case-rhodopsin-wavelength-transfer",
+    "issue": 338,
+    "existing_ids": [
+      "rewire-protocol-flip2-rhomax-by-wild-type-v1",
+      "rewire-local-20260920-evaluation-flip2-composition",
+      "rewire-local-20260920-evaluation-flip2-train-mean",
+      "rewire-local-20260921-evaluation-composition22",
+      "rewire-local-20260921-evaluation-esm2-35m",
+      "rewire-local-20260921-evaluation-esm2-8m",
+      "rewire-local-20260920-result-flip2-composition-ndcg",
+      "rewire-local-20260920-result-flip2-composition-spearman",
+      "rewire-local-20260920-result-flip2-train-mean-ndcg",
+      "rewire-local-20260920-result-flip2-train-mean-spearman",
+      "rewire-local-20260921-result-composition22-ndcg",
+      "rewire-local-20260921-result-composition22-spearman",
+      "rewire-local-20260921-result-esm2-35m-ndcg",
+      "rewire-local-20260921-result-esm2-35m-spearman",
+      "rewire-local-20260921-result-esm2-8m-ndcg",
+      "rewire-local-20260921-result-esm2-8m-spearman",
+      "acquired-protocol-d689343c656902d1f852"
+    ],
+    "existing_protocol_ids": [
+      "rewire-protocol-flip2-rhomax-by-wild-type-v1"
+    ],
+    "existing_evaluation_ids": [
+      "rewire-local-20260920-evaluation-flip2-composition",
+      "rewire-local-20260920-evaluation-flip2-train-mean",
+      "rewire-local-20260921-evaluation-composition22",
+      "rewire-local-20260921-evaluation-esm2-35m",
+      "rewire-local-20260921-evaluation-esm2-8m"
+    ],
+    "existing_result_ids": [
+      "rewire-local-20260920-result-flip2-composition-ndcg",
+      "rewire-local-20260920-result-flip2-composition-spearman",
+      "rewire-local-20260920-result-flip2-train-mean-ndcg",
+      "rewire-local-20260920-result-flip2-train-mean-spearman",
+      "rewire-local-20260921-result-composition22-ndcg",
+      "rewire-local-20260921-result-composition22-spearman",
+      "rewire-local-20260921-result-esm2-35m-ndcg",
+      "rewire-local-20260921-result-esm2-35m-spearman",
+      "rewire-local-20260921-result-esm2-8m-ndcg",
+      "rewire-local-20260921-result-esm2-8m-spearman"
+    ],
+    "new_ids": [
+      "uc20260930-rhomax-config-rhomax",
+      "uc20260930-rhomax-config-rhomax-retinal",
+      "uc20260930-rhomax-config-blasso",
+      "uc20260930-rhomax-data-split-1",
+      "uc20260930-rhomax-protocol-split-1",
+      "uc20260930-rhomax-eval-split-1-rhomax",
+      "uc20260930-rhomax-eval-split-1-rhomax-retinal",
+      "uc20260930-rhomax-eval-split-1-blasso",
+      "uc20260930-rhomax-result-split-1-rhomax-median-absolute-error-ev",
+      "uc20260930-rhomax-result-split-1-rhomax-mean-absolute-error-ev",
+      "uc20260930-rhomax-result-split-1-rhomax-retinal-median-absolute-error-ev",
+      "uc20260930-rhomax-result-split-1-rhomax-retinal-mean-absolute-error-ev",
+      "uc20260930-rhomax-result-split-1-blasso-median-absolute-error-ev",
+      "uc20260930-rhomax-result-split-1-blasso-mean-absolute-error-ev",
+      "uc20260930-rhomax-data-split-2",
+      "uc20260930-rhomax-protocol-split-2",
+      "uc20260930-rhomax-eval-split-2-rhomax",
+      "uc20260930-rhomax-eval-split-2-rhomax-retinal",
+      "uc20260930-rhomax-eval-split-2-blasso",
+      "uc20260930-rhomax-result-split-2-rhomax-median-absolute-error-ev",
+      "uc20260930-rhomax-result-split-2-rhomax-mean-absolute-error-ev",
+      "uc20260930-rhomax-result-split-2-rhomax-retinal-median-absolute-error-ev",
+      "uc20260930-rhomax-result-split-2-rhomax-retinal-mean-absolute-error-ev",
+      "uc20260930-rhomax-result-split-2-blasso-median-absolute-error-ev",
+      "uc20260930-rhomax-result-split-2-blasso-mean-absolute-error-ev",
+      "uc20260930-rhomax-data-split-3",
+      "uc20260930-rhomax-protocol-split-3",
+      "uc20260930-rhomax-eval-split-3-rhomax",
+      "uc20260930-rhomax-eval-split-3-rhomax-retinal",
+      "uc20260930-rhomax-eval-split-3-blasso",
+      "uc20260930-rhomax-result-split-3-rhomax-median-absolute-error-ev",
+      "uc20260930-rhomax-result-split-3-rhomax-mean-absolute-error-ev",
+      "uc20260930-rhomax-result-split-3-rhomax-retinal-median-absolute-error-ev",
+      "uc20260930-rhomax-result-split-3-rhomax-retinal-mean-absolute-error-ev",
+      "uc20260930-rhomax-result-split-3-blasso-median-absolute-error-ev",
+      "uc20260930-rhomax-result-split-3-blasso-mean-absolute-error-ev",
+      "uc20260930-rhomax-data-split-4",
+      "uc20260930-rhomax-protocol-split-4",
+      "uc20260930-rhomax-eval-split-4-rhomax",
+      "uc20260930-rhomax-eval-split-4-rhomax-retinal",
+      "uc20260930-rhomax-eval-split-4-blasso",
+      "uc20260930-rhomax-result-split-4-rhomax-median-absolute-error-ev",
+      "uc20260930-rhomax-result-split-4-rhomax-mean-absolute-error-ev",
+      "uc20260930-rhomax-result-split-4-rhomax-retinal-median-absolute-error-ev",
+      "uc20260930-rhomax-result-split-4-rhomax-retinal-mean-absolute-error-ev",
+      "uc20260930-rhomax-result-split-4-blasso-median-absolute-error-ev",
+      "uc20260930-rhomax-result-split-4-blasso-mean-absolute-error-ev",
+      "uc20260930-rhomax-data-mean",
+      "uc20260930-rhomax-protocol-mean",
+      "uc20260930-rhomax-eval-mean-rhomax",
+      "uc20260930-rhomax-eval-mean-rhomax-retinal",
+      "uc20260930-rhomax-eval-mean-blasso",
+      "uc20260930-rhomax-result-mean-rhomax-median-absolute-error-ev",
+      "uc20260930-rhomax-result-mean-rhomax-mean-absolute-error-ev",
+      "uc20260930-rhomax-result-mean-rhomax-retinal-median-absolute-error-ev",
+      "uc20260930-rhomax-result-mean-rhomax-retinal-mean-absolute-error-ev",
+      "uc20260930-rhomax-result-mean-blasso-median-absolute-error-ev",
+      "uc20260930-rhomax-result-mean-blasso-mean-absolute-error-ev",
+      "uc20260930-rhomax-result-split-1-rhomax-median-absolute-error-nm",
+      "uc20260930-rhomax-result-split-1-rhomax-mean-absolute-error-nm",
+      "uc20260930-rhomax-result-split-1-rhomax-retinal-median-absolute-error-nm",
+      "uc20260930-rhomax-result-split-1-rhomax-retinal-mean-absolute-error-nm",
+      "uc20260930-rhomax-result-split-1-blasso-median-absolute-error-nm",
+      "uc20260930-rhomax-result-split-1-blasso-mean-absolute-error-nm",
+      "uc20260930-rhomax-result-split-2-rhomax-median-absolute-error-nm",
+      "uc20260930-rhomax-result-split-2-rhomax-mean-absolute-error-nm",
+      "uc20260930-rhomax-result-split-2-rhomax-retinal-median-absolute-error-nm",
+      "uc20260930-rhomax-result-split-2-rhomax-retinal-mean-absolute-error-nm",
+      "uc20260930-rhomax-result-split-2-blasso-median-absolute-error-nm",
+      "uc20260930-rhomax-result-split-2-blasso-mean-absolute-error-nm",
+      "uc20260930-rhomax-result-split-3-rhomax-median-absolute-error-nm",
+      "uc20260930-rhomax-result-split-3-rhomax-mean-absolute-error-nm",
+      "uc20260930-rhomax-result-split-3-rhomax-retinal-median-absolute-error-nm",
+      "uc20260930-rhomax-result-split-3-rhomax-retinal-mean-absolute-error-nm",
+      "uc20260930-rhomax-result-split-3-blasso-median-absolute-error-nm",
+      "uc20260930-rhomax-result-split-3-blasso-mean-absolute-error-nm",
+      "uc20260930-rhomax-result-split-4-rhomax-median-absolute-error-nm",
+      "uc20260930-rhomax-result-split-4-rhomax-mean-absolute-error-nm",
+      "uc20260930-rhomax-result-split-4-rhomax-retinal-median-absolute-error-nm",
+      "uc20260930-rhomax-result-split-4-rhomax-retinal-mean-absolute-error-nm",
+      "uc20260930-rhomax-result-split-4-blasso-median-absolute-error-nm",
+      "uc20260930-rhomax-result-split-4-blasso-mean-absolute-error-nm",
+      "uc20260930-rhomax-result-mean-rhomax-median-absolute-error-nm",
+      "uc20260930-rhomax-result-mean-rhomax-mean-absolute-error-nm",
+      "uc20260930-rhomax-result-mean-rhomax-retinal-median-absolute-error-nm",
+      "uc20260930-rhomax-result-mean-rhomax-retinal-mean-absolute-error-nm",
+      "uc20260930-rhomax-result-mean-blasso-median-absolute-error-nm",
+      "uc20260930-rhomax-result-mean-blasso-mean-absolute-error-nm",
+      "uc20260930-rhomax-baseline-blasso",
+      "uc20260930-baseline-rewire-local-20260920-configuration-flip2-train-mean",
+      "uc20260930-baseline-rewire-local-20260920-configuration-flip2-composition",
+      "uc20260930-baseline-rewire-local-20260921-configuration-composition22",
+      "uc20260930-model-rhomax",
+      "uc20260930-config-family-74c7f0b3e7589aee",
+      "uc20260930-config-family-eb1f4570d412714b",
+      "uc20260930-method-blasso-rhodopsin-predictor",
+      "uc20260930-config-family-fc694bfc42b81d66",
+      "uc20260930-benchmark-rhomax",
+      "uc20260930-protocol-parent-92654511318ac568",
+      "uc20260930-protocol-parent-d9d4d7039a5c5fb2",
+      "uc20260930-protocol-parent-5c7e8a1837dcac3f",
+      "uc20260930-protocol-parent-d2997e9995876322",
+      "uc20260930-protocol-parent-8bb6a1bf0289649b"
+    ],
+    "sources": [
+      {
+        "source_id": "evidence-expansion-flip2-d0e61ca2",
+        "url": "https://flip.protein.properties/assets/FLIP_manuscipt.pdf"
+      },
+      {
+        "source_id": "rewire-local-20260920-audit-source-flip2-composition",
+        "url": "https://github.com/rewire-bio/rewire-benchmarks/blob/ca73fa47136d182f2d4ddb083d084712198fc0e2/research/local-runs-2026-09-20/flip2-composition/audit.json"
+      },
+      {
+        "source_id": "rewire-local-20260920-audit-source-flip2-train-mean",
+        "url": "https://github.com/rewire-bio/rewire-benchmarks/blob/ca73fa47136d182f2d4ddb083d084712198fc0e2/research/local-runs-2026-09-20/flip2-train-mean/audit.json"
+      },
+      {
+        "source_id": "rewire-local-20260920-instructions-flip2",
+        "url": "https://github.com/rewire-bio/rewire-benchmarks/blob/ca73fa47136d182f2d4ddb083d084712198fc0e2/research/local-runs-2026-09-20/README.md"
+      },
+      {
+        "source_id": "rewire-local-20260920-source-flip2-composition",
+        "url": "https://github.com/rewire-bio/rewire-benchmarks/blob/ca73fa47136d182f2d4ddb083d084712198fc0e2/research/local-runs-2026-09-20/flip2-composition/report.json"
+      },
+      {
+        "source_id": "rewire-local-20260920-source-flip2-train-mean",
+        "url": "https://github.com/rewire-bio/rewire-benchmarks/blob/ca73fa47136d182f2d4ddb083d084712198fc0e2/research/local-runs-2026-09-20/flip2-train-mean/report.json"
+      },
+      {
+        "source_id": "rewire-local-20260921-audit-source-composition22",
+        "url": "https://github.com/rewire-bio/rewire-benchmarks/blob/1663d1f04b2bbd6dfcff77fea78129d30b0de191/research/baseline-programme-2026-09-21/rhomax/verification.json"
+      },
+      {
+        "source_id": "rewire-local-20260921-audit-source-esm2-35m",
+        "url": "https://github.com/rewire-bio/rewire-benchmarks/blob/1663d1f04b2bbd6dfcff77fea78129d30b0de191/research/baseline-programme-2026-09-21/rhomax-35m/verification.json"
+      },
+      {
+        "source_id": "rewire-local-20260921-audit-source-esm2-8m",
+        "url": "https://github.com/rewire-bio/rewire-benchmarks/blob/1663d1f04b2bbd6dfcff77fea78129d30b0de191/research/baseline-programme-2026-09-21/rhomax/verification.json"
+      },
+      {
+        "source_id": "rewire-local-20260921-instructions-composition22",
+        "url": "https://github.com/rewire-bio/rewire-benchmarks/blob/1663d1f04b2bbd6dfcff77fea78129d30b0de191/research/baseline-programme-2026-09-21/README.md"
+      },
+      {
+        "source_id": "rewire-local-20260921-instructions-esm2-35m",
+        "url": "https://github.com/rewire-bio/rewire-benchmarks/blob/1663d1f04b2bbd6dfcff77fea78129d30b0de191/research/baseline-programme-2026-09-21/README.md"
+      },
+      {
+        "source_id": "rewire-local-20260921-instructions-esm2-8m",
+        "url": "https://github.com/rewire-bio/rewire-benchmarks/blob/1663d1f04b2bbd6dfcff77fea78129d30b0de191/research/baseline-programme-2026-09-21/README.md"
+      },
+      {
+        "source_id": "rewire-local-20260921-source-composition22",
+        "url": "https://github.com/rewire-bio/rewire-benchmarks/blob/1663d1f04b2bbd6dfcff77fea78129d30b0de191/research/baseline-programme-2026-09-21/rhomax/protein-composition-probe-v1.report.json"
+      },
+      {
+        "source_id": "rewire-local-20260921-source-esm2-35m",
+        "url": "https://github.com/rewire-bio/rewire-benchmarks/blob/1663d1f04b2bbd6dfcff77fea78129d30b0de191/research/baseline-programme-2026-09-21/rhomax-35m/esm2.report.json"
+      },
+      {
+        "source_id": "rewire-local-20260921-source-esm2-8m",
+        "url": "https://github.com/rewire-bio/rewire-benchmarks/blob/1663d1f04b2bbd6dfcff77fea78129d30b0de191/research/baseline-programme-2026-09-21/rhomax/esm2.report.json"
+      },
+      {
+        "source_id": "uc20260930-source-rhomax-2024",
+        "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC11200256/fullTextXML"
+      }
+    ],
+    "queries": [
+      "Rhomax rhodopsin wavelength prediction FLIP2 benchmark RMSE"
+    ],
+    "coverage_verdict": "existing scoped endpoint coverage; supplemented and remaining gaps documented",
+    "summary": "Existing FLIP2 Rhomax by_wild_type mapping has five measured configurations: two composition probes, training mean and two ESM-2 sizes. Original RhoMax research supplies an additional direct wavelength-error comparison against Bayesian LASSO.",
+    "additions": "Added all 60 Table1 nm/eV median/mean-error cells, including the printed four-split summary, for RhoMax, RhoMax+retinal and BLASSO. Four WT-background holdout protocols and a separately labelled aggregate preserve their own split identity. Added canonical RhoMax and BLASSO identities plus explicit Bayesian LASSO, training-mean and composition baselines.",
+    "remaining_gaps": [
+      "Original RhoMax splits group 75 WT backgrounds (65 train/10 test per split) and are not the single FLIP2 by_wild_type partition. Do not pool their scores.",
+      "Reported standard deviations describe error dispersion; printed aggregate is a summary of four splits, not an independent experiment or pooled uncertainty interval.",
+      "New-background prospective calibration, target-specific candidate hit rates, expression, activation and photostability remain unestablished.",
+      "RhoMax Tables2–3 are feature/attention ablations; they were inspected but intentionally not added to this model-selection comparison."
+    ],
+    "suggested_mappings": [
+      {
+        "protocol_id": "uc20260930-rhomax-protocol-split-1",
+        "evaluation_ids": [
+          "uc20260930-rhomax-eval-split-1-rhomax",
+          "uc20260930-rhomax-eval-split-1-rhomax-retinal",
+          "uc20260930-rhomax-eval-split-1-blasso"
+        ],
+        "endpoint": "Absorption-maximum prediction error in nm and eV on split 1",
+        "relevance": "proxy",
+        "rationale": "Assay-matched measured comparison informs the research decision within its original population and protocol; prospective transfer is not established.",
+        "constraints": [
+          "75 WT backgrounds; 884 total sequences; WT and mutants remain in one partition.",
+          "BLASSO implementation adapted to eV training; not the original nm-trained benchmark.",
+          "RhoMax generates AlphaFold2-derived structural binding-pocket inputs; the +retinal variant additionally includes retinal. These differ from the sequence-only FLIP2 frozen probes."
+        ],
+        "limitations": [
+          "Different split definitions from FLIP2; scores must not be merged.",
+          "WT-group holdout does not prove prospective calibration or functional utility.",
+          "Printed mean row is a summary of split results, not an additional experiment.",
+          "Variant denominators and split hashes remain unextracted."
+        ],
+        "citations": [
+          {
+            "source_id": "uc20260930-source-rhomax-2024",
+            "locator": "Table 1; Data Set; Comparison to Previous Methods"
+          }
+        ]
+      },
+      {
+        "protocol_id": "uc20260930-rhomax-protocol-split-2",
+        "evaluation_ids": [
+          "uc20260930-rhomax-eval-split-2-rhomax",
+          "uc20260930-rhomax-eval-split-2-rhomax-retinal",
+          "uc20260930-rhomax-eval-split-2-blasso"
+        ],
+        "endpoint": "Absorption-maximum prediction error in nm and eV on split 2",
+        "relevance": "proxy",
+        "rationale": "Assay-matched measured comparison informs the research decision within its original population and protocol; prospective transfer is not established.",
+        "constraints": [
+          "75 WT backgrounds; 884 total sequences; WT and mutants remain in one partition.",
+          "BLASSO implementation adapted to eV training; not the original nm-trained benchmark.",
+          "RhoMax generates AlphaFold2-derived structural binding-pocket inputs; the +retinal variant additionally includes retinal. These differ from the sequence-only FLIP2 frozen probes."
+        ],
+        "limitations": [
+          "Different split definitions from FLIP2; scores must not be merged.",
+          "WT-group holdout does not prove prospective calibration or functional utility.",
+          "Printed mean row is a summary of split results, not an additional experiment.",
+          "Variant denominators and split hashes remain unextracted."
+        ],
+        "citations": [
+          {
+            "source_id": "uc20260930-source-rhomax-2024",
+            "locator": "Table 1; Data Set; Comparison to Previous Methods"
+          }
+        ]
+      },
+      {
+        "protocol_id": "uc20260930-rhomax-protocol-split-3",
+        "evaluation_ids": [
+          "uc20260930-rhomax-eval-split-3-rhomax",
+          "uc20260930-rhomax-eval-split-3-rhomax-retinal",
+          "uc20260930-rhomax-eval-split-3-blasso"
+        ],
+        "endpoint": "Absorption-maximum prediction error in nm and eV on split 3",
+        "relevance": "proxy",
+        "rationale": "Assay-matched measured comparison informs the research decision within its original population and protocol; prospective transfer is not established.",
+        "constraints": [
+          "75 WT backgrounds; 884 total sequences; WT and mutants remain in one partition.",
+          "BLASSO implementation adapted to eV training; not the original nm-trained benchmark.",
+          "RhoMax generates AlphaFold2-derived structural binding-pocket inputs; the +retinal variant additionally includes retinal. These differ from the sequence-only FLIP2 frozen probes."
+        ],
+        "limitations": [
+          "Different split definitions from FLIP2; scores must not be merged.",
+          "WT-group holdout does not prove prospective calibration or functional utility.",
+          "Printed mean row is a summary of split results, not an additional experiment.",
+          "Variant denominators and split hashes remain unextracted."
+        ],
+        "citations": [
+          {
+            "source_id": "uc20260930-source-rhomax-2024",
+            "locator": "Table 1; Data Set; Comparison to Previous Methods"
+          }
+        ]
+      },
+      {
+        "protocol_id": "uc20260930-rhomax-protocol-split-4",
+        "evaluation_ids": [
+          "uc20260930-rhomax-eval-split-4-rhomax",
+          "uc20260930-rhomax-eval-split-4-rhomax-retinal",
+          "uc20260930-rhomax-eval-split-4-blasso"
+        ],
+        "endpoint": "Absorption-maximum prediction error in nm and eV on split 4",
+        "relevance": "proxy",
+        "rationale": "Assay-matched measured comparison informs the research decision within its original population and protocol; prospective transfer is not established.",
+        "constraints": [
+          "75 WT backgrounds; 884 total sequences; WT and mutants remain in one partition.",
+          "BLASSO implementation adapted to eV training; not the original nm-trained benchmark.",
+          "RhoMax generates AlphaFold2-derived structural binding-pocket inputs; the +retinal variant additionally includes retinal. These differ from the sequence-only FLIP2 frozen probes."
+        ],
+        "limitations": [
+          "Different split definitions from FLIP2; scores must not be merged.",
+          "WT-group holdout does not prove prospective calibration or functional utility.",
+          "Printed mean row is a summary of split results, not an additional experiment.",
+          "Variant denominators and split hashes remain unextracted."
+        ],
+        "citations": [
+          {
+            "source_id": "uc20260930-source-rhomax-2024",
+            "locator": "Table 1; Data Set; Comparison to Previous Methods"
+          }
+        ]
+      },
+      {
+        "protocol_id": "uc20260930-rhomax-protocol-mean",
+        "evaluation_ids": [
+          "uc20260930-rhomax-eval-mean-rhomax",
+          "uc20260930-rhomax-eval-mean-rhomax-retinal",
+          "uc20260930-rhomax-eval-mean-blasso"
+        ],
+        "endpoint": "Absorption-maximum prediction error in nm and eV on mean",
+        "relevance": "proxy",
+        "rationale": "Assay-matched measured comparison informs the research decision within its original population and protocol; prospective transfer is not established.",
+        "constraints": [
+          "75 WT backgrounds; 884 total sequences; WT and mutants remain in one partition.",
+          "BLASSO implementation adapted to eV training; not the original nm-trained benchmark.",
+          "RhoMax generates AlphaFold2-derived structural binding-pocket inputs; the +retinal variant additionally includes retinal. These differ from the sequence-only FLIP2 frozen probes."
+        ],
+        "limitations": [
+          "Different split definitions from FLIP2; scores must not be merged.",
+          "WT-group holdout does not prove prospective calibration or functional utility.",
+          "Printed mean row is a summary of split results, not an additional experiment.",
+          "Variant denominators and split hashes remain unextracted."
+        ],
+        "citations": [
+          {
+            "source_id": "uc20260930-source-rhomax-2024",
+            "locator": "Table 1; Data Set; Comparison to Previous Methods"
+          }
+        ]
+      }
+    ],
+    "draft_issue_comment": "Coverage audit — 30 September 2026\n\nExisting FLIP2 Rhomax by_wild_type mapping has five measured configurations: two composition probes, training mean and two ESM-2 sizes. Original RhoMax research supplies an additional direct wavelength-error comparison against Bayesian LASSO.\n\nAdded all 60 Table1 nm/eV median/mean-error cells, including the printed four-split summary, for RhoMax, RhoMax+retinal and BLASSO. Four WT-background holdout protocols and a separately labelled aggregate preserve their own split identity. Added canonical RhoMax and BLASSO identities plus explicit Bayesian LASSO, training-mean and composition baselines.\n\nRemaining coverage limits:\n- Original RhoMax splits group 75 WT backgrounds (65 train/10 test per split) and are not the single FLIP2 by_wild_type partition. Do not pool their scores.\n- Reported standard deviations describe error dispersion; printed aggregate is a summary of four splits, not an independent experiment or pooled uncertainty interval.\n- New-background prospective calibration, target-specific candidate hit rates, expression, activation and photostability remain unestablished.\n- RhoMax Tables2–3 are feature/attention ablations; they were inspected but intentionally not added to this model-selection comparison.\n\nPrimary sources: [source 1](https://doi.org/10.1021/acs.jcim.4c00467).\n\nThe additions are source-checked author-reported evidence, not new model runs or human scientific review. Existing protocols and values are preserved; the local database changes still require the repository release/publication workflow.",
+    "review": {
+      "method": "automated_source_review",
+      "reviewed_at": "2026-09-30T21:44:09.835811+00:00",
+      "human_scientific_review": "outstanding"
+    }
+  },
+  {
+    "use_case_id": "use-case-splicing-follow-up",
+    "issue": 339,
+    "existing_ids": [
+      "rewire-mfass-matched-v1-protocol",
+      "rewire-mfass-matched-v1-evaluation-s0",
+      "rewire-mfass-matched-v1-evaluation-s1",
+      "rewire-mfass-matched-v1-evaluation-p0",
+      "rewire-mfass-matched-v1-evaluation-p1",
+      "rewire-mfass-matched-v1-result-p0-auroc",
+      "rewire-mfass-matched-v1-result-p0-average-precision-sklearn",
+      "rewire-mfass-matched-v1-result-p0-precision-at-capacity",
+      "rewire-mfass-matched-v1-result-p0-recall-at-capacity",
+      "rewire-mfass-matched-v1-result-p1-auroc",
+      "rewire-mfass-matched-v1-result-p1-average-precision-sklearn",
+      "rewire-mfass-matched-v1-result-p1-precision-at-capacity",
+      "rewire-mfass-matched-v1-result-p1-recall-at-capacity",
+      "rewire-mfass-matched-v1-result-s0-auroc",
+      "rewire-mfass-matched-v1-result-s0-average-precision-sklearn",
+      "rewire-mfass-matched-v1-result-s0-precision-at-capacity",
+      "rewire-mfass-matched-v1-result-s0-recall-at-capacity",
+      "rewire-mfass-matched-v1-result-s1-auroc",
+      "rewire-mfass-matched-v1-result-s1-average-precision-sklearn",
+      "rewire-mfass-matched-v1-result-s1-precision-at-capacity",
+      "rewire-mfass-matched-v1-result-s1-recall-at-capacity",
+      "rewire-mfass-v2",
+      "rewire-evaluation-baseline-kmer-position-v2",
+      "rewire-evaluation-dnabert2-117m-frozen-pair-logreg",
+      "rewire-local-20260921-evaluation-mfass-prior"
+    ],
+    "existing_protocol_ids": [
+      "rewire-mfass-matched-v1-protocol"
+    ],
+    "existing_evaluation_ids": [
+      "rewire-mfass-matched-v1-evaluation-s0",
+      "rewire-mfass-matched-v1-evaluation-s1",
+      "rewire-mfass-matched-v1-evaluation-p0",
+      "rewire-mfass-matched-v1-evaluation-p1"
+    ],
+    "existing_result_ids": [
+      "rewire-mfass-matched-v1-result-p0-auroc",
+      "rewire-mfass-matched-v1-result-p0-average-precision-sklearn",
+      "rewire-mfass-matched-v1-result-p0-precision-at-capacity",
+      "rewire-mfass-matched-v1-result-p0-recall-at-capacity",
+      "rewire-mfass-matched-v1-result-p1-auroc",
+      "rewire-mfass-matched-v1-result-p1-average-precision-sklearn",
+      "rewire-mfass-matched-v1-result-p1-precision-at-capacity",
+      "rewire-mfass-matched-v1-result-p1-recall-at-capacity",
+      "rewire-mfass-matched-v1-result-s0-auroc",
+      "rewire-mfass-matched-v1-result-s0-average-precision-sklearn",
+      "rewire-mfass-matched-v1-result-s0-precision-at-capacity",
+      "rewire-mfass-matched-v1-result-s0-recall-at-capacity",
+      "rewire-mfass-matched-v1-result-s1-auroc",
+      "rewire-mfass-matched-v1-result-s1-average-precision-sklearn",
+      "rewire-mfass-matched-v1-result-s1-precision-at-capacity",
+      "rewire-mfass-matched-v1-result-s1-recall-at-capacity"
+    ],
+    "new_ids": [
+      "uc20260930-baseline-rewire-mfass-matched-v1-configuration-s0",
+      "uc20260930-baseline-rewire-mfass-matched-v1-configuration-s1",
+      "uc20260930-baseline-rewire-model-baseline-kmer-position-v2",
+      "uc20260930-baseline-rewire-local-20260921-configuration-mfass-prior"
+    ],
+    "sources": [
+      {
+        "source_id": "evidence-benchmark-mfass-pinned-readme",
+        "url": "https://github.com/timini/rewire-benchmarks/blob/bee9133b83f3aedaf2bbb9013f1875515845607e/benchmarks/mfass/README.md"
+      },
+      {
+        "source_id": "evidence-expansion-mfass-readme-62a93814",
+        "url": "https://raw.githubusercontent.com/rewire-bio/rewire-benchmarks/bee9133b83f3aedaf2bbb9013f1875515845607e/benchmarks/mfass/README.md"
+      },
+      {
+        "source_id": "rewire-local-20260921-audit-source-mfass-prior",
+        "url": "https://github.com/rewire-bio/rewire-benchmarks/blob/1663d1f04b2bbd6dfcff77fea78129d30b0de191/research/mfass-null-2026-09-21/evidence/verification.json"
+      },
+      {
+        "source_id": "rewire-local-20260921-instructions-mfass-prior",
+        "url": "https://github.com/rewire-bio/rewire-benchmarks/blob/1663d1f04b2bbd6dfcff77fea78129d30b0de191/research/mfass-null-2026-09-21/README.md"
+      },
+      {
+        "source_id": "rewire-local-20260921-source-mfass-prior",
+        "url": "https://github.com/rewire-bio/rewire-benchmarks/blob/1663d1f04b2bbd6dfcff77fea78129d30b0de191/research/mfass-null-2026-09-21/evidence/training-prior.report.json"
+      },
+      {
+        "source_id": "rewire-mfass-matched-v1-source-exclusion-verification",
+        "url": "https://github.com/rewire-bio/rewire-benchmarks/blob/4be7a98e2553fa2378c29625b13eb3e8ac2e58fb/docs/mfass-matched-study-exclusions/verification.json"
+      },
+      {
+        "source_id": "rewire-mfass-matched-v1-source-manifest-v1",
+        "url": "https://github.com/rewire-bio/rewire-benchmarks/blob/093fd1ae198c80ce34408d84d6543bca4fc538f2/benchmarks/mfass/results/matched-annotation-v1/manifest-v1.json"
+      },
+      {
+        "source_id": "rewire-mfass-matched-v1-source-provenance",
+        "url": "https://github.com/rewire-bio/rewire-benchmarks/blob/093fd1ae198c80ce34408d84d6543bca4fc538f2/benchmarks/mfass/results/matched-annotation-v1/provenance.json"
+      },
+      {
+        "source_id": "rewire-mfass-matched-v1-source-report",
+        "url": "https://github.com/rewire-bio/rewire-benchmarks/blob/093fd1ae198c80ce34408d84d6543bca4fc538f2/benchmarks/mfass/results/matched-annotation-v1/report.json"
+      },
+      {
+        "source_id": "rewire-mfass-matched-v1-source-verification",
+        "url": "https://github.com/rewire-bio/rewire-benchmarks/blob/093fd1ae198c80ce34408d84d6543bca4fc538f2/benchmarks/mfass/results/matched-annotation-v1/verification.json"
+      },
+      {
+        "source_id": "rewire-mfass-v2-source",
+        "url": "https://github.com/timini/rewire-benchmarks/tree/bee9133b83f3aedaf2bbb9013f1875515845607e"
+      },
+      {
+        "source_id": "run-doc-mfass-pyproject-toml-68d1ee53",
+        "url": "https://github.com/rewire-bio/rewire-benchmarks/blob/68d1ee53a0fcd1104d9f427d68dedffdccf2c47f/benchmarks/mfass/pyproject.toml"
+      },
+      {
+        "source_id": "run-doc-mfass-readme-md-68d1ee53",
+        "url": "https://github.com/rewire-bio/rewire-benchmarks/blob/68d1ee53a0fcd1104d9f427d68dedffdccf2c47f/benchmarks/mfass/README.md"
+      },
+      {
+        "source_id": "runner-recipe-docs-hpc-md-f80cef7f",
+        "url": "https://github.com/rewire-bio/rewire-benchmarks/blob/f80cef7f818bec33e51b7f43ad499eb5078c8d87/docs/hpc.md"
+      },
+      {
+        "source_id": "runner-recipe-docs-mfass-md-f80cef7f",
+        "url": "https://github.com/rewire-bio/rewire-benchmarks/blob/f80cef7f818bec33e51b7f43ad499eb5078c8d87/docs/mfass.md"
+      },
+      {
+        "source_id": "runner-recipe-docs-sdk-md-f80cef7f",
+        "url": "https://github.com/rewire-bio/rewire-benchmarks/blob/f80cef7f818bec33e51b7f43ad499eb5078c8d87/docs/sdk.md"
+      },
+      {
+        "source_id": "runner-recipe-packages-rewirebench-src-rewirebench-adapters-mfass-py-f80cef7f",
+        "url": "https://github.com/rewire-bio/rewire-benchmarks/blob/f80cef7f818bec33e51b7f43ad499eb5078c8d87/packages/rewirebench/src/rewirebench/adapters/mfass.py"
+      },
+      {
+        "source_id": "runner-recipe-packages-rewirebench-src-rewirebench-protocols-mfass-py-f80cef7f",
+        "url": "https://github.com/rewire-bio/rewire-benchmarks/blob/f80cef7f818bec33e51b7f43ad499eb5078c8d87/packages/rewirebench/src/rewirebench/protocols/mfass.py"
+      }
+    ],
+    "queries": [
+      "Pangolin SpliceAI MFASS benchmark splice disrupting variants reporter performance"
+    ],
+    "coverage_verdict": "existing scoped endpoint coverage; supplemented and remaining gaps documented",
+    "summary": "Existing matched-annotation MFASS study already measures the top-100 follow-up decision across four SpliceAI/Pangolin configurations on the same 8,297 scored variants. Older corrected MFASS v2 additionally has a supervised gradient-boosted feature baseline, a training-prior control and DNABERT2, already recorded.",
+    "additions": "Added explicit baseline roles for matched-study SpliceAI comparators and the historical v2 supervised feature and constant-prior controls. Suggested a separate historical v2 mapping for the two exact baseline configurations; no new scores were invented or merged with matched annotation. DNABERT2 remains an existing pipeline evaluation outside the use-case mapping.",
+    "remaining_gaps": [
+      "The four matched conditions exclude the same 27 of 8,324 held-out variants; missing scores are not negative predictions.",
+      "Historical v2 marginal scores have different scored subsets/annotations and require their own paired comparisons. Constant-prior top-100 counts reflect tied-score order. DNABERT2 is a pipeline rather than an exact configuration and remains outside the active mapping.",
+      "MFASS reporter exon inclusion does not validate patient RNA, diagnosis or prospective clinical follow-up. Human scientific review and external reproduction remain outstanding."
+    ],
+    "suggested_mappings": [
+      {
+        "protocol_id": "rewire-mfass-v2",
+        "evaluation_ids": [
+          "rewire-evaluation-baseline-kmer-position-v2",
+          "rewire-local-20260921-evaluation-mfass-prior"
+        ],
+        "endpoint": "Historical corrected MFASS v2 ranking and top-100 follow-up precision for supervised feature and training-prior controls",
+        "relevance": "proxy",
+        "rationale": "Assay-matched measured comparison informs the research decision within its original population and protocol; prospective transfer is not established.",
+        "constraints": [
+          "Inspect scored and eligible counts for every condition.",
+          "Consult recorded paired comparisons before interpreting differences.",
+          "This mapping contains only the two baseline configurations. Historical specialist and DNABERT2 evaluations remain outside this mapping."
+        ],
+        "limitations": [
+          "Historical v2 annotation/coverage differs from matched-annotation v1: do not combine measurements.",
+          "Each method uses its own scored subset; marginal point scores do not establish a matched winner.",
+          "The constant prior has tied predictions; top-100 positives depend on fixed label-independent tie order.",
+          "Assay labels are not patient RNA or clinical endpoints.",
+          "DNABERT2 is represented as a pipeline, which is ineligible for this exact-configuration use-case mapping. Its existing evaluation remains in the catalogue and coverage audit; no record was promoted or score duplicated."
+        ],
+        "citations": [
+          {
+            "source_id": "rewire-mfass-v2-source",
+            "locator": "results/baseline-kmer-position-v2.json; matched specialist and DNABERT2 result files; training-prior.report.json"
+          },
+          {
+            "source_id": "rewire-local-20260921-source-mfass-prior",
+            "locator": "results/baseline-kmer-position-v2.json; matched specialist and DNABERT2 result files; training-prior.report.json"
+          }
+        ]
+      }
+    ],
+    "draft_issue_comment": "Coverage audit — 30 September 2026\n\nExisting matched-annotation MFASS study already measures the top-100 follow-up decision across four SpliceAI/Pangolin configurations on the same 8,297 scored variants. Older corrected MFASS v2 additionally has a supervised gradient-boosted feature baseline, a training-prior control and DNABERT2, already recorded.\n\nAdded explicit baseline roles for matched-study SpliceAI comparators and the historical v2 supervised feature and constant-prior controls. Suggested a separate historical v2 mapping for the two exact baseline configurations; no new scores were invented or merged with matched annotation. DNABERT2 remains an existing pipeline evaluation outside the use-case mapping.\n\nRemaining coverage limits:\n- The four matched conditions exclude the same 27 of 8,324 held-out variants; missing scores are not negative predictions.\n- Historical v2 marginal scores have different scored subsets/annotations and require their own paired comparisons. Constant-prior top-100 counts reflect tied-score order. DNABERT2 is a pipeline rather than an exact configuration and remains outside the active mapping.\n- MFASS reporter exon inclusion does not validate patient RNA, diagnosis or prospective clinical follow-up. Human scientific review and external reproduction remain outstanding.\n\nPrimary sources: [source 1](https://www.rewire.it/blog/spliceai-and-pangolin-on-one-shared-annotation/), [source 2](https://github.com/rewire-bio/rewire-benchmarks/blob/093fd1ae198c80ce34408d84d6543bca4fc538f2/benchmarks/mfass/results/matched-annotation-v1/report.json).\n\nThe additions are source-checked author-reported evidence, not new model runs or human scientific review. Existing protocols and values are preserved; the local database changes still require the repository release/publication workflow.",
+    "review": {
+      "method": "automated_source_review",
+      "reviewed_at": "2026-09-30T21:44:09.840139+00:00",
+      "human_scientific_review": "outstanding"
+    }
+  },
+  {
+    "use_case_id": "use-case-utr-translation-baselines",
+    "issue": 340,
+    "existing_ids": [
+      "rewire-protocol-mrnabench-designed-mrl-v1",
+      "rewire-local-20260920-evaluation-mrnabench-composition",
+      "rewire-local-20260920-evaluation-mrnabench-train-mean",
+      "rewire-local-20260920-result-mrnabench-composition-mse",
+      "rewire-local-20260920-result-mrnabench-composition-pearson",
+      "rewire-local-20260920-result-mrnabench-composition-spearman",
+      "rewire-local-20260920-result-mrnabench-train-mean-mse",
+      "rewire-local-20260920-result-mrnabench-train-mean-pearson",
+      "rewire-local-20260920-result-mrnabench-train-mean-spearman",
+      "mrnabench-task-mrl-mpra",
+      "mrnabench-variants-2025-task-mrl-mpra"
+    ],
+    "existing_protocol_ids": [
+      "rewire-protocol-mrnabench-designed-mrl-v1"
+    ],
+    "existing_evaluation_ids": [
+      "rewire-local-20260920-evaluation-mrnabench-composition",
+      "rewire-local-20260920-evaluation-mrnabench-train-mean"
+    ],
+    "existing_result_ids": [
+      "rewire-local-20260920-result-mrnabench-composition-mse",
+      "rewire-local-20260920-result-mrnabench-composition-pearson",
+      "rewire-local-20260920-result-mrnabench-composition-spearman",
+      "rewire-local-20260920-result-mrnabench-train-mean-mse",
+      "rewire-local-20260920-result-mrnabench-train-mean-pearson",
+      "rewire-local-20260920-result-mrnabench-train-mean-spearman"
+    ],
+    "new_ids": [
+      "uc20260930-framepool-data-random-50nt",
+      "uc20260930-framepool-protocol-random-50nt",
+      "uc20260930-framepool-config-optimus-50",
+      "uc20260930-framepool-eval-random-50nt-optimus-50",
+      "uc20260930-framepool-result-random-50nt-optimus-50",
+      "uc20260930-framepool-config-framepool-50",
+      "uc20260930-framepool-eval-random-50nt-framepool-50",
+      "uc20260930-framepool-result-random-50nt-framepool-50",
+      "uc20260930-framepool-config-optimus-100",
+      "uc20260930-framepool-eval-random-50nt-optimus-100",
+      "uc20260930-framepool-result-random-50nt-optimus-100",
+      "uc20260930-framepool-config-framepool-100",
+      "uc20260930-framepool-eval-random-50nt-framepool-100",
+      "uc20260930-framepool-result-random-50nt-framepool-100",
+      "uc20260930-framepool-config-framepool-combined",
+      "uc20260930-framepool-eval-random-50nt-framepool-combined",
+      "uc20260930-framepool-result-random-50nt-framepool-combined",
+      "uc20260930-framepool-data-random-25-100nt",
+      "uc20260930-framepool-protocol-random-25-100nt",
+      "uc20260930-framepool-eval-random-25-100nt-optimus-50",
+      "uc20260930-framepool-result-random-25-100nt-optimus-50",
+      "uc20260930-framepool-eval-random-25-100nt-framepool-50",
+      "uc20260930-framepool-result-random-25-100nt-framepool-50",
+      "uc20260930-framepool-eval-random-25-100nt-optimus-100",
+      "uc20260930-framepool-result-random-25-100nt-optimus-100",
+      "uc20260930-framepool-eval-random-25-100nt-framepool-100",
+      "uc20260930-framepool-result-random-25-100nt-framepool-100",
+      "uc20260930-framepool-eval-random-25-100nt-framepool-combined",
+      "uc20260930-framepool-result-random-25-100nt-framepool-combined",
+      "uc20260930-framepool-data-human-50nt",
+      "uc20260930-framepool-protocol-human-50nt",
+      "uc20260930-framepool-eval-human-50nt-optimus-50",
+      "uc20260930-framepool-result-human-50nt-optimus-50",
+      "uc20260930-framepool-eval-human-50nt-framepool-50",
+      "uc20260930-framepool-result-human-50nt-framepool-50",
+      "uc20260930-framepool-eval-human-50nt-optimus-100",
+      "uc20260930-framepool-result-human-50nt-optimus-100",
+      "uc20260930-framepool-eval-human-50nt-framepool-100",
+      "uc20260930-framepool-result-human-50nt-framepool-100",
+      "uc20260930-framepool-eval-human-50nt-framepool-combined",
+      "uc20260930-framepool-result-human-50nt-framepool-combined",
+      "uc20260930-framepool-data-human-25-100nt",
+      "uc20260930-framepool-protocol-human-25-100nt",
+      "uc20260930-framepool-eval-human-25-100nt-optimus-50",
+      "uc20260930-framepool-result-human-25-100nt-optimus-50",
+      "uc20260930-framepool-eval-human-25-100nt-framepool-50",
+      "uc20260930-framepool-result-human-25-100nt-framepool-50",
+      "uc20260930-framepool-eval-human-25-100nt-optimus-100",
+      "uc20260930-framepool-result-human-25-100nt-optimus-100",
+      "uc20260930-framepool-eval-human-25-100nt-framepool-100",
+      "uc20260930-framepool-result-human-25-100nt-framepool-100",
+      "uc20260930-framepool-eval-human-25-100nt-framepool-combined",
+      "uc20260930-framepool-result-human-25-100nt-framepool-combined",
+      "uc20260930-framepool-config-3mer-random-forest",
+      "uc20260930-framepool-eval-random-50nt-3mer-random-forest",
+      "uc20260930-framepool-result-random-50nt-3mer-random-forest",
+      "uc20260930-framepool-eval-random-25-100nt-3mer-random-forest",
+      "uc20260930-framepool-result-random-25-100nt-3mer-random-forest",
+      "uc20260930-framepool-baseline-3mer-random-forest",
+      "uc20260930-framepool-config-4mer-random-forest",
+      "uc20260930-framepool-eval-random-50nt-4mer-random-forest",
+      "uc20260930-framepool-result-random-50nt-4mer-random-forest",
+      "uc20260930-framepool-eval-random-25-100nt-4mer-random-forest",
+      "uc20260930-framepool-result-random-25-100nt-4mer-random-forest",
+      "uc20260930-framepool-baseline-4mer-random-forest",
+      "uc20260930-framepool-config-frame-forest-4mer",
+      "uc20260930-framepool-eval-random-50nt-frame-forest-4mer",
+      "uc20260930-framepool-result-random-50nt-frame-forest-4mer",
+      "uc20260930-framepool-eval-random-25-100nt-frame-forest-4mer",
+      "uc20260930-framepool-result-random-25-100nt-frame-forest-4mer",
+      "uc20260930-framepool-baseline-frame-forest-4mer",
+      "uc20260930-framepool-config-frame-forest-hyperopt",
+      "uc20260930-framepool-eval-random-50nt-frame-forest-hyperopt",
+      "uc20260930-framepool-result-random-50nt-frame-forest-hyperopt",
+      "uc20260930-framepool-eval-random-25-100nt-frame-forest-hyperopt",
+      "uc20260930-framepool-result-random-25-100nt-frame-forest-hyperopt",
+      "uc20260930-framepool-baseline-frame-forest-hyperopt",
+      "uc20260930-framepool-config-5mer-frame-forest",
+      "uc20260930-framepool-eval-random-50nt-5mer-frame-forest",
+      "uc20260930-framepool-result-random-50nt-5mer-frame-forest",
+      "uc20260930-framepool-eval-random-25-100nt-5mer-frame-forest",
+      "uc20260930-framepool-result-random-25-100nt-5mer-frame-forest",
+      "uc20260930-framepool-baseline-5mer-frame-forest",
+      "uc20260930-baseline-rewire-local-20260920-configuration-mrnabench-train-mean",
+      "uc20260930-baseline-rewire-local-20260920-configuration-mrnabench-composition",
+      "uc20260930-model-optimus-5-prime",
+      "uc20260930-config-family-3095197ea1f6d8ef",
+      "uc20260930-model-framepool",
+      "uc20260930-config-family-02052376787dc456",
+      "uc20260930-config-family-0658c850293f1460",
+      "uc20260930-config-family-581da3b1b27a0244",
+      "uc20260930-config-family-451e08dba6263b3b",
+      "uc20260930-method-k-mer-count-random-forest",
+      "uc20260930-config-family-4eda074ac81abca0",
+      "uc20260930-config-family-c30249ad4e7c5f05",
+      "uc20260930-method-frame-aware-k-mer-random-forest",
+      "uc20260930-config-family-a16addb2b4095e9d",
+      "uc20260930-config-family-e209cf703d16340f",
+      "uc20260930-config-family-b326d0cfebb0e6e2",
+      "uc20260930-benchmark-framepool",
+      "uc20260930-protocol-parent-b6a5b397be2cfc66",
+      "uc20260930-protocol-parent-9c66a82c516b230d",
+      "uc20260930-protocol-parent-f41565cc8be6754a",
+      "uc20260930-protocol-parent-fe382f327cba6053"
+    ],
+    "sources": [
+      {
+        "source_id": "expansion-p3-mrnabench-2025",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12265608/"
+      },
+      {
+        "source_id": "rewire-local-20260920-audit-source-mrnabench-composition",
+        "url": "https://github.com/rewire-bio/rewire-benchmarks/blob/ca73fa47136d182f2d4ddb083d084712198fc0e2/research/local-runs-2026-09-20/mrnabench-composition/audit.json"
+      },
+      {
+        "source_id": "rewire-local-20260920-audit-source-mrnabench-train-mean",
+        "url": "https://github.com/rewire-bio/rewire-benchmarks/blob/ca73fa47136d182f2d4ddb083d084712198fc0e2/research/local-runs-2026-09-20/mrnabench-train-mean/audit.json"
+      },
+      {
+        "source_id": "rewire-local-20260920-instructions-mrnabench",
+        "url": "https://github.com/rewire-bio/rewire-benchmarks/blob/ca73fa47136d182f2d4ddb083d084712198fc0e2/research/local-runs-2026-09-20/README.md"
+      },
+      {
+        "source_id": "rewire-local-20260920-source-mrnabench-composition",
+        "url": "https://github.com/rewire-bio/rewire-benchmarks/blob/ca73fa47136d182f2d4ddb083d084712198fc0e2/research/local-runs-2026-09-20/mrnabench-composition/report.json"
+      },
+      {
+        "source_id": "rewire-local-20260920-source-mrnabench-train-mean",
+        "url": "https://github.com/rewire-bio/rewire-benchmarks/blob/ca73fa47136d182f2d4ddb083d084712198fc0e2/research/local-runs-2026-09-20/mrnabench-train-mean/report.json"
+      },
+      {
+        "source_id": "uc20260930-source-framepool-2021",
+        "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC8136849/fullTextXML"
+      },
+      {
+        "source_id": "uc20260930-source-framepool-s1",
+        "url": "https://journals.plos.org/ploscompbiol/article/file?type=supplementary&id=10.1371/journal.pcbi.1008982.s020"
+      },
+      {
+        "source_id": "uc20260930-source-framepool-s4",
+        "url": "https://journals.plos.org/ploscompbiol/article/file?type=supplementary&id=10.1371/journal.pcbi.1008982.s023"
+      }
+    ],
+    "queries": [
+      "Optimus 5 prime Sample 2019 mean ribosome load model benchmark R2 0.93 designed UTR"
+    ],
+    "coverage_verdict": "existing scoped endpoint coverage; supplemented and remaining gaps documented",
+    "summary": "Existing local mRNABench designed-MRL protocol has two measured controls and no matched learned-model result. The broader catalogue already contains 21 author-reported mRNABench MRL-MPRA comparisons, which use a different probing/aggregation protocol.",
+    "additions": "Added FramePool 2021 Supplementary Tables S1 and S4 completely: 30 Pearson correlations across four MPRA sequence cohorts, five Optimus/FramePool configurations and five conventional random-forest variants. Added named model/method families, source-backed associations and explicit random-forest, training-mean and composition baseline roles.",
+    "remaining_gaps": [
+      "FramePool/Sample random and truncated-human libraries differ from the locally evaluated mRNABench designed-MRL split. Learned results exist for the use case, but no new result fills that exact local protocol gap.",
+      "Sequence-length transfer is measured; Pearson correlation does not establish absolute calibration, design success, therapeutic translation or full-length endogenous prediction.",
+      "Local protocol raw predictions/input reuse terms remain unresolved; supplementary tables do not establish permissions for those separate inputs.",
+      "Per-configuration uncertainty and exact human cohort denominators remain unextracted."
+    ],
+    "suggested_mappings": [
+      {
+        "protocol_id": "uc20260930-framepool-protocol-random-50nt",
+        "evaluation_ids": [
+          "uc20260930-framepool-eval-random-50nt-optimus-50",
+          "uc20260930-framepool-eval-random-50nt-framepool-50",
+          "uc20260930-framepool-eval-random-50nt-optimus-100",
+          "uc20260930-framepool-eval-random-50nt-framepool-100",
+          "uc20260930-framepool-eval-random-50nt-framepool-combined",
+          "uc20260930-framepool-eval-random-50nt-3mer-random-forest",
+          "uc20260930-framepool-eval-random-50nt-4mer-random-forest",
+          "uc20260930-framepool-eval-random-50nt-frame-forest-4mer",
+          "uc20260930-framepool-eval-random-50nt-frame-forest-hyperopt",
+          "uc20260930-framepool-eval-random-50nt-5mer-frame-forest"
+        ],
+        "endpoint": "Mean ribosome load prediction, Pearson correlation, random-50nt",
+        "relevance": "proxy",
+        "rationale": "Assay-matched measured comparison informs the research decision within its original population and protocol; prospective transfer is not established.",
+        "constraints": [
+          "Retain fixed/random, variable/random, fixed/human and variable/human panels separately."
+        ],
+        "limitations": [
+          "Not the locally evaluated mRNABench designed-MRL split.",
+          "Pearson correlation is not absolute MRL calibration or prospective design hit rate.",
+          "Human 50nt/25–100nt reporter sequences are truncated; not full-length endogenous UTR validation.",
+          "No per-configuration uncertainty interval is supplied in these tables."
+        ],
+        "citations": [
+          {
+            "source_id": "uc20260930-source-framepool-2021",
+            "locator": "S1 Table; S4 Table for random libraries; Model training/testing"
+          },
+          {
+            "source_id": "uc20260930-source-framepool-s1",
+            "locator": "S1 Table; S4 Table for random libraries; Model training/testing"
+          },
+          {
+            "source_id": "uc20260930-source-framepool-s4",
+            "locator": "S1 Table; S4 Table for random libraries; Model training/testing"
+          }
+        ]
+      },
+      {
+        "protocol_id": "uc20260930-framepool-protocol-random-25-100nt",
+        "evaluation_ids": [
+          "uc20260930-framepool-eval-random-25-100nt-optimus-50",
+          "uc20260930-framepool-eval-random-25-100nt-framepool-50",
+          "uc20260930-framepool-eval-random-25-100nt-optimus-100",
+          "uc20260930-framepool-eval-random-25-100nt-framepool-100",
+          "uc20260930-framepool-eval-random-25-100nt-framepool-combined",
+          "uc20260930-framepool-eval-random-25-100nt-3mer-random-forest",
+          "uc20260930-framepool-eval-random-25-100nt-4mer-random-forest",
+          "uc20260930-framepool-eval-random-25-100nt-frame-forest-4mer",
+          "uc20260930-framepool-eval-random-25-100nt-frame-forest-hyperopt",
+          "uc20260930-framepool-eval-random-25-100nt-5mer-frame-forest"
+        ],
+        "endpoint": "Mean ribosome load prediction, Pearson correlation, random-25-100nt",
+        "relevance": "proxy",
+        "rationale": "Assay-matched measured comparison informs the research decision within its original population and protocol; prospective transfer is not established.",
+        "constraints": [
+          "Retain fixed/random, variable/random, fixed/human and variable/human panels separately."
+        ],
+        "limitations": [
+          "Not the locally evaluated mRNABench designed-MRL split.",
+          "Pearson correlation is not absolute MRL calibration or prospective design hit rate.",
+          "Human 50nt/25–100nt reporter sequences are truncated; not full-length endogenous UTR validation.",
+          "No per-configuration uncertainty interval is supplied in these tables."
+        ],
+        "citations": [
+          {
+            "source_id": "uc20260930-source-framepool-2021",
+            "locator": "S1 Table; S4 Table for random libraries; Model training/testing"
+          },
+          {
+            "source_id": "uc20260930-source-framepool-s1",
+            "locator": "S1 Table; S4 Table for random libraries; Model training/testing"
+          },
+          {
+            "source_id": "uc20260930-source-framepool-s4",
+            "locator": "S1 Table; S4 Table for random libraries; Model training/testing"
+          }
+        ]
+      },
+      {
+        "protocol_id": "uc20260930-framepool-protocol-human-50nt",
+        "evaluation_ids": [
+          "uc20260930-framepool-eval-human-50nt-optimus-50",
+          "uc20260930-framepool-eval-human-50nt-framepool-50",
+          "uc20260930-framepool-eval-human-50nt-optimus-100",
+          "uc20260930-framepool-eval-human-50nt-framepool-100",
+          "uc20260930-framepool-eval-human-50nt-framepool-combined"
+        ],
+        "endpoint": "Mean ribosome load prediction, Pearson correlation, human-50nt",
+        "relevance": "proxy",
+        "rationale": "Assay-matched measured comparison informs the research decision within its original population and protocol; prospective transfer is not established.",
+        "constraints": [
+          "Retain fixed/random, variable/random, fixed/human and variable/human panels separately."
+        ],
+        "limitations": [
+          "Not the locally evaluated mRNABench designed-MRL split.",
+          "Pearson correlation is not absolute MRL calibration or prospective design hit rate.",
+          "Human 50nt/25–100nt reporter sequences are truncated; not full-length endogenous UTR validation.",
+          "No per-configuration uncertainty interval is supplied in these tables."
+        ],
+        "citations": [
+          {
+            "source_id": "uc20260930-source-framepool-2021",
+            "locator": "S1 Table; S4 Table for random libraries; Model training/testing"
+          },
+          {
+            "source_id": "uc20260930-source-framepool-s1",
+            "locator": "S1 Table; S4 Table for random libraries; Model training/testing"
+          }
+        ]
+      },
+      {
+        "protocol_id": "uc20260930-framepool-protocol-human-25-100nt",
+        "evaluation_ids": [
+          "uc20260930-framepool-eval-human-25-100nt-optimus-50",
+          "uc20260930-framepool-eval-human-25-100nt-framepool-50",
+          "uc20260930-framepool-eval-human-25-100nt-optimus-100",
+          "uc20260930-framepool-eval-human-25-100nt-framepool-100",
+          "uc20260930-framepool-eval-human-25-100nt-framepool-combined"
+        ],
+        "endpoint": "Mean ribosome load prediction, Pearson correlation, human-25-100nt",
+        "relevance": "proxy",
+        "rationale": "Assay-matched measured comparison informs the research decision within its original population and protocol; prospective transfer is not established.",
+        "constraints": [
+          "Retain fixed/random, variable/random, fixed/human and variable/human panels separately."
+        ],
+        "limitations": [
+          "Not the locally evaluated mRNABench designed-MRL split.",
+          "Pearson correlation is not absolute MRL calibration or prospective design hit rate.",
+          "Human 50nt/25–100nt reporter sequences are truncated; not full-length endogenous UTR validation.",
+          "No per-configuration uncertainty interval is supplied in these tables."
+        ],
+        "citations": [
+          {
+            "source_id": "uc20260930-source-framepool-2021",
+            "locator": "S1 Table; S4 Table for random libraries; Model training/testing"
+          },
+          {
+            "source_id": "uc20260930-source-framepool-s1",
+            "locator": "S1 Table; S4 Table for random libraries; Model training/testing"
+          }
+        ]
+      }
+    ],
+    "draft_issue_comment": "Coverage audit — 30 September 2026\n\nExisting local mRNABench designed-MRL protocol has two measured controls and no matched learned-model result. The broader catalogue already contains 21 author-reported mRNABench MRL-MPRA comparisons, which use a different probing/aggregation protocol.\n\nAdded FramePool 2021 Supplementary Tables S1 and S4 completely: 30 Pearson correlations across four MPRA sequence cohorts, five Optimus/FramePool configurations and five conventional random-forest variants. Added named model/method families, source-backed associations and explicit random-forest, training-mean and composition baseline roles.\n\nRemaining coverage limits:\n- FramePool/Sample random and truncated-human libraries differ from the locally evaluated mRNABench designed-MRL split. Learned results exist for the use case, but no new result fills that exact local protocol gap.\n- Sequence-length transfer is measured; Pearson correlation does not establish absolute calibration, design success, therapeutic translation or full-length endogenous prediction.\n- Local protocol raw predictions/input reuse terms remain unresolved; supplementary tables do not establish permissions for those separate inputs.\n- Per-configuration uncertainty and exact human cohort denominators remain unextracted.\n\nPrimary sources: [source 1](https://doi.org/10.1371/journal.pcbi.1008982), [source 2](https://www.ebi.ac.uk/europepmc/webservices/rest/PMC12265608/fullTextXML).\n\nThe additions are source-checked author-reported evidence, not new model runs or human scientific review. Existing protocols and values are preserved; the local database changes still require the repository release/publication workflow.",
+    "review": {
+      "method": "automated_source_review",
+      "reviewed_at": "2026-09-30T21:44:09.844612+00:00",
+      "human_scientific_review": "outstanding"
+    }
+  }
+]

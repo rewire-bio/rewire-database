@@ -1,11 +1,11 @@
 {
   "schema_version": "1.0",
   "review_method": "automated_source_review",
-  "reviewer": "Codex curation and independent automated cross-review",
-  "reviewed_at": "2026-09-28T14:58:13.232Z",
-  "baseline_release_id": "2026-09-28-f9f5770cef26",
+  "reviewer": "Codex source curation, independent worker cross-review and root integration review",
+  "reviewed_at": "2026-09-30T21:54:30.217Z",
+  "baseline_release_id": "2026-09-28-c7b5ac6d34f2",
   "files": {
-    "inputs.json": "8baa24f8542d29ab7ef16f84bb69acc2737697a1755f045bd246bccf169b85f0",
+    "inputs.json": "d07b487418d79335157aa224daac115d61668562418d65a1c6eddb1c72be7271",
     "sources.json": "3cc78ead1f9ca97bf2de25c130cbce04066994ad446ff38f49b9ce83d7c3abb2",
     "sources/mfass-matched-study-intake.md": "0af394e74888c01dbe2970d2e28b9bbacb4a83d355881feaaa3a704396a2074d",
     "sources/amfr-pilot-readme.md": "a3208aa4537e8d28c56f68f4559299f31241c50b8d8b2b3776cba5f1718caa43",
@@ -18,12 +18,11 @@
     "use-case-source-clinical-priorities-2026-09-28": "sources/clinical-priorities-2026-09-28.md",
     "use-case-source-research-priorities-2026-09-28": "sources/research-priorities-2026-09-28.md"
   },
-  "scope": "Seventeen use-case definitions: the seven previously published cases plus ten question-led priorities with explicit planned collection and zero new mappings. All previous questions, seventeen mappings, fifty-seven evaluation references and 26,124 scientific records are preserved. Two authored workflow documentation sources are added. Separate automated clinical-definition, research-definition and code reviews found no material issues; review concerns definitions, not clinical sign-off.",
+  "scope": "All17 use cases audited; preserve all17 prior mappings and every existing scientific record. Add45 scoped mappings to separately reviewed protocol evidence; update remaining gaps. New source records and numerical evidence are bound by data/omics/use-case-coverage-20260930/review.json.",
   "limitations": [
-    "Automated source curation and cross-review are not human domain review, clinical validation or independent experimental replication.",
-    "The ten new definitions contain proposed comparisons, conventional baselines and evidence needs; no model scores, rankings or applicability claims are introduced.",
-    "Workflow citations justify the user decision. They do not establish effectiveness of a named model or access rights to patient-level data.",
-    "Collection is planned. Qualified scientific reviewer roles and source-specific acquisition permissions remain unassigned or unverified where stated.",
-    "All existing mapping fingerprints and numerical results are unchanged; builds validate frozen review bytes and do not renew them automatically."
+    "Automated source curation and independent automated cross-review are not qualified human review or experimental replication.",
+    "Direct and proxy labels apply only to the declared endpoint; no general clinical or experiment-selection benefit is implied.",
+    "Incomplete controls, inaccessible source tables, conflicting denominators and unresolved independence remain explicit.",
+    "Historical mappings, result values and archived source bytes are unchanged."
   ]
 }

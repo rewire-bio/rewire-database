@@ -1,0 +1,38 @@
+{
+  "schema_version": "1.0",
+  "method": "automated_source_review",
+  "reviewer": "Codex root integration review and independent cross-worker source reviewers",
+  "reviewed_at": "2026-09-30T21:54:42.169287Z",
+  "scope": "All 17 article use cases checked against the existing catalogue and primary sources. Additive scientific records, numerical transcription and scoped mappings reviewed; see bound independent review receipts for exact checks.",
+  "limitations": [
+    "Automated source review is not qualified human scientific review or experimental reproduction.",
+    "No new model execution. Direct evidence labels apply only to each protocol endpoint; proxy coverage does not validate the whole use case.",
+    "Unresolved source contradictions, unavailable measurements and missing matched-input controls are explicitly retained.",
+    "Research is bounded by the recorded searches and retrieved sources, not proof that further benchmarks do not exist."
+  ],
+  "errors": [],
+  "files": {
+    "before.json": "b19063840ec2992eeb0598295531faa2e5b451f66b07ecf79c2cb80f7673f7b1",
+    "review-clinical.json": "b3cfe492fae7c23768a644342b57ffcc06e35dc264d2ba01b7d2feac2f08286c",
+    "review-research.json": "63b72a1a33cf819b0705d8f451bbe5b3781df22630765cb496ee596e1c234789",
+    "review-experimental.json": "76984905b6d166850b604d071646e64d1069f5f00896e867be49895f50bbf1f7",
+    "clinical/records.jsonl": "ce670bcef490178edf94719573c85c3cc5f2e2fa5a7f2cdacb99c02a79da7866",
+    "clinical/coverage.json": "3be6e112cd04a12c3b697f794a6e171204b8797aa64d540f9d9967db099be6ed",
+    "clinical/research.md": "01299b3ad960ef08b1a880f262eef9c0962a3763e0819d6ecc06342da5783d9b",
+    "clinical/sources.md": "274673ec76ef4b51f70713cfbbdbd0eb739fb466c54f162acbeb9ccefc06e643",
+    "clinical/claims.csv": "eceef27431bb83b98e6e78a48aee55b2c8ce5b88920463c1dd06ba98ba35a6b1",
+    "clinical/retrieval-log.md": "0bb446a9842eba7144c9c8ff987b445e6a45ade38ec9a668f4d8d2f7e13dd6c9",
+    "research/records.jsonl": "75473939d870557bc577fcb77ca66370dc5249512f70cd6f8881b9d4db50aaea",
+    "research/coverage.json": "d8cf916c33d8aaf10c142fe12488ec4aeb48fa9768623a12fdaab2d351ebcb22",
+    "research/research.md": "3b2c4289ffb13a484816708f24500d5b1a3820b1473f061679cd51bb6beb6c08",
+    "research/sources.md": "1d3a6087f65cad655bce84ae7cef09293a3ac3aac5ae7ebfb700fb61c877b622",
+    "research/claims.csv": "a970ad701e55e599c9690be005c25cc9eb31caae6285740fab95c598e11d6091",
+    "research/retrieval-log.md": "bd7101a6ec42b4b2bc0902fa1081be04d1a946aeedd91f34a65c8f48faa4c287",
+    "experimental/records.jsonl": "6630893bbdadd66616583c5deb4dabd468460a920f7fa83be8de2d1d69554731",
+    "experimental/coverage.json": "16671b2503925ee76ad051f24caf6dab40ac1131db9ded9b63d37aa270cdc606",
+    "experimental/research.md": "2f25c1c019991d882a1c6d1b374a660c55e6f066fd46a9005133ae7e75a32b5b",
+    "experimental/sources.md": "3255035510ce02798992f23e2f6a053a7b070ce821071b6cdd865d4ee57afdb0",
+    "experimental/claims.csv": "8a7d311a42c49db4882af2b3b6cae2f854d39af1e0f57c9947a88561c28846f8",
+    "experimental/retrieval-log.md": "67614826c2e0a45fa5b112e5ca40a75b273263ebb9ba8e3339fad8dd215e7f89"
+  }
+}

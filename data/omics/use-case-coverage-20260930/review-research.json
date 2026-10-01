@@ -1,0 +1,111 @@
+{
+  "reviewed_at": "2026-09-30T21:54:24+00:00",
+  "reviewer": "Codex independent clinical coverage worker",
+  "method": "automated_independent_source_review",
+  "lane": "research",
+  "scope": "Source transcription and use-case applicability, not human scientific review or experiment reproduction.",
+  "files_sha256": {
+    "records.jsonl": "75473939d870557bc577fcb77ca66370dc5249512f70cd6f8881b9d4db50aaea",
+    "coverage.json": "d8cf916c33d8aaf10c142fe12488ec4aeb48fa9768623a12fdaab2d351ebcb22"
+  },
+  "record_count": 734,
+  "result_count": 377,
+  "checks": [
+    {
+      "check": "FoldBench Table3 all performance cells",
+      "count": 175,
+      "status": "pass",
+      "note": "35 source rows times5 named methods; visual inspection confirms grouped task headers. Every numeric string matches."
+    },
+    {
+      "check": "FoldBench Table1 assessable counts",
+      "count": 45,
+      "status": "pass",
+      "note": "Table1 Protenix precedes HelixFold3; compared by named header, not Table3 position. All counts match. Source denominator incompatibilities already withheld."
+    },
+    {
+      "check": "scTab Tables1a/1b/2/6",
+      "count": 26,
+      "status": "pass",
+      "note": "All means, reported spreads and run counts checked.1a SD justified by main text;1b ambiguity retained. Unequal training samples and CPU/GPU budgets explicit. Default vs tuned XGBoost run-count conflict not merged."
+    },
+    {
+      "check": "MPRabc Table3 and narrative",
+      "count": 10,
+      "status": "pass",
+      "note": "All eight table means and16CI bounds plus two narrative means checked. Bootstrap over10000 pairs; no-CV limitation correctly stated."
+    },
+    {
+      "check": "CPPC named-hit count",
+      "count": 1,
+      "status": "pass",
+      "note": "Two named desired-state hits checked; no ratio or clinical efficacy inferred. Results57 selected genes added alongside61/59/50 counts; no common denominator asserted."
+    },
+    {
+      "check": "Use-case mappings",
+      "status": "pass",
+      "note": "Only protein-protein FoldBench mapped to350; all other structural groups catalogued separately. MPRabc proxy to allele followup; CPPC direct only to narrow desired-state selection and proxy to target validation."
+    },
+    {
+      "check": "CPPC Table S2 additive numeric values",
+      "count": 53,
+      "status": "pass",
+      "note": "Independently read raw XML numeric values from XLSX sheet Challenge 1 & 2: C2:C24 20 numeric cells, D2:D24 20 cells, J2:J24 13 cells; all exact numeric and printed strings agree. NA skipped; personal/contact columns excluded. Formula FD1 confirms SUM of five absolute errors, averaged over four final held-out perturbations. Original Challenge2 custom overlap-AUC robust filtered/unfiltered aggregation and post-hoc best reimplementation remain separate."
+    },
+    {
+      "check": "CPPC conventional expert nomination and denominators",
+      "status": "pass",
+      "note": "Primary P10 confirms70 expert-curated plus3essential-control targets; P31 confirms57 selected genes. Source inconsistencies61/57/59/50 remain explicit; expert nomination distinct from response prediction and unequal screens not equated."
+    },
+    {
+      "check": "Published study benchmark groupings",
+      "count": 4,
+      "association_claims": 18,
+      "status": "pass",
+      "note": "Four source-named study/challenge groups accurately contain all18 protocols. Checked part_of claims have primary source support and locators; groupings do not claim this intake is executable or reproduced."
+    },
+    {
+      "check": "ClusPro BM5 Table1 conventional docking addition",
+      "count": 112,
+      "numeric_values": 110,
+      "na_values": 2,
+      "status": "pass",
+      "note": "All printed values and denominators match independent primary-table parse. Literal87 total/easy/top10 inconsistency quarantined needs_review; enzyme/others mapped separately from FoldBench, antibody and aggregate excluded from350. Component-structure inputs and Others1500 vs overview1000 retained.",
+      "detailed_receipt": {
+        "reviewed_at": "2026-09-30T21:51:24.470119+00:00",
+        "record_count": 184,
+        "result_count": 112,
+        "numeric_result_count": 110,
+        "na_result_count": 2,
+        "method": "automated_independent_source_review",
+        "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7484347/",
+        "checks": [
+          "All112 Table1 result records compared with independently parsed primary table, including denominators,110 printed numeric values and2N/A.",
+          "Footnotes distinguish top10/top30 cluster centers. CAPRI/DockQ categories and category-specific input settings checked against Results and STAR Methods.",
+          "Printed aggregate easy/top10 count87 retained as needs_review: subgroup counts and printed51.68% imply77. No silent correction.",
+          "Exactly four enzyme/others mappings; antibody/aggregate excluded from use-case350. Structural-input docking is separately scoped from sequence-based FoldBench cofolding and does not validate physical binding.",
+          "Methods1500 Others structures versus Results1000 overview retained;227successfully scored denominator distinct from230BM5targets."
+        ],
+        "blockers": [],
+        "verdict": "pass_with_source_anomaly_quarantined",
+        "files_sha256": {
+          "proposed-records.jsonl": "f6824ee877d1d9af43651a3dc29c4ae641745313527415c3935c1aa71fcf15b5",
+          "suggested-mappings.json": "9c12dc77d70f8bcc2694c3287bede81c3d84a2c4319665db36757fa7fd93d924",
+          "pmc.html": "1c02bd7c53eb0e5d5c243b5e6da23168eb20bcc32ab970719666a5838fd58443"
+        }
+      }
+    }
+  ],
+  "blockers": [],
+  "requested_improvements": [
+    {
+      "item": "CPPC denominator notes should include57selected target genes from Results in addition to61abstract,59repository,50post-QC",
+      "status": "resolved"
+    },
+    {
+      "item": "Add source-supported expert73-gene nomination baseline for prospective selection, separate from response prediction baselines",
+      "status": "resolved"
+    }
+  ],
+  "verdict": "pass"
+}

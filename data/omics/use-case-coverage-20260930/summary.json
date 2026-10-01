@@ -1,0 +1,274 @@
+{
+  "review_date": "2026-09-30T21:57:38.363142+00:00",
+  "publication_status": "local_review_candidate_not_deployed",
+  "baseline_records": 26126,
+  "new_records": 2008,
+  "new_counts": {
+    "source": 25,
+    "configuration": 209,
+    "dataset": 29,
+    "protocol": 71,
+    "evaluation": 342,
+    "result": 959,
+    "baseline": 56,
+    "method": 25,
+    "claim": 207,
+    "pipeline": 1,
+    "benchmark": 12,
+    "model": 46,
+    "dataset_subset": 26
+  },
+  "use_cases": [
+    {
+      "issue": 334,
+      "use_case_id": "use-case-genetic-perturbation-response",
+      "title": "Assess models for genetic perturbation experiments",
+      "mappings": 2,
+      "evaluations": 8,
+      "results": 8,
+      "verdict": "existing scoped endpoint coverage; supplemented and remaining gaps documented",
+      "gaps": [
+        "A benchmark exists for expression responses, but prospective experiment-selection hit rates and transfer to a new cell system remain uncovered by this mapped comparison.",
+        "Table 6 scoring gene set, checkpoint revisions and exact split manifests remain unextracted; do not infer Top20 MSE or confidence intervals from the printed spreads."
+      ]
+    },
+    {
+      "issue": 335,
+      "use_case_id": "use-case-mass-spectrum-molecule-shortlisting",
+      "title": "Shortlist molecular identities from tandem mass spectra",
+      "mappings": 7,
+      "evaluations": 39,
+      "results": 69,
+      "verdict": "existing scoped endpoint coverage; supplemented and remaining gaps documented",
+      "gaps": [
+        "v1 source record labels 2605.19752v1 but uses an unversioned URL that now serves v2; old source bytes/values must remain immutable. v1-specific URL returned HTTP406 during this audit.",
+        "For MCES, the v2 Table3 generic caption says three random splits, but Section5.1 explicitly uses two validation/test-swapped variants; the discrepancy is preserved.",
+        "Benchmark assumes the true structure is present among 256 neutral-mass-matched candidates. Unknown candidates, instrument-specific prospective performance and authenticated identification remain gaps."
+      ]
+    },
+    {
+      "issue": 336,
+      "use_case_id": "use-case-plant-promoter-reporters",
+      "title": "Compare methods for plant promoter experiments",
+      "mappings": 8,
+      "evaluations": 16,
+      "results": 16,
+      "verdict": "existing scoped endpoint coverage; supplemented and remaining gaps documented",
+      "gaps": [
+        "Reporter-host and sequence-species conditions cannot be pooled. Jores pooled-species Fig8 and AgroNT species-specific Fig3e protocols remain separate.",
+        "Prospective experimental promoter evolution is described by Jores; no benchmarked prospective model-to-model design hit-rate or stable-plant endpoint has been extracted.",
+        "Uncertainty, exact test counts and split/checkpoint hashes remain unextracted for the newly added historical comparison."
+      ]
+    },
+    {
+      "issue": 337,
+      "use_case_id": "use-case-protein-stability",
+      "title": "Assess methods for protein stability experiments",
+      "mappings": 3,
+      "evaluations": 99,
+      "results": 107,
+      "verdict": "existing scoped endpoint coverage; supplemented and remaining gaps documented",
+      "gaps": [
+        "The official comparison contains 820 single and 2,152 double substitutions. It does not complete the planned matched singles-only local study.",
+        "Number of Mutants=2,972 is the assay count; exact scored count per model, source score transformations and model checkpoint hashes remain unextracted.",
+        "Method input modalities differ. These scores support short-construct folding-stability ranking, not a universal sequence-only winner, full-protein function or clinical pathogenicity."
+      ]
+    },
+    {
+      "issue": 338,
+      "use_case_id": "use-case-rhodopsin-wavelength-transfer",
+      "title": "Assess rhodopsin wavelength prediction across sequence backgrounds",
+      "mappings": 6,
+      "evaluations": 20,
+      "results": 70,
+      "verdict": "existing scoped endpoint coverage; supplemented and remaining gaps documented",
+      "gaps": [
+        "Original RhoMax splits group 75 WT backgrounds (65 train/10 test per split) and are not the single FLIP2 by_wild_type partition. Do not pool their scores.",
+        "Reported standard deviations describe error dispersion; printed aggregate is a summary of four splits, not an independent experiment or pooled uncertainty interval.",
+        "New-background prospective calibration, target-specific candidate hit rates, expression, activation and photostability remain unestablished.",
+        "RhoMax Tables2\u20133 are feature/attention ablations; they were inspected but intentionally not added to this model-selection comparison."
+      ]
+    },
+    {
+      "issue": 339,
+      "use_case_id": "use-case-splicing-follow-up",
+      "title": "Prioritise variants for splicing experiments",
+      "mappings": 2,
+      "evaluations": 6,
+      "results": 22,
+      "verdict": "existing scoped endpoint coverage; supplemented and remaining gaps documented",
+      "gaps": [
+        "The four matched conditions exclude the same 27 of 8,324 held-out variants; missing scores are not negative predictions.",
+        "Historical v2 marginal scores have different scored subsets/annotations and require their own paired comparisons. Constant-prior top-100 counts reflect tied-score order. DNABERT2 is a pipeline rather than an exact configuration and remains outside the active mapping.",
+        "MFASS reporter exon inclusion does not validate patient RNA, diagnosis or prospective clinical follow-up. Human scientific review and external reproduction remain outstanding."
+      ]
+    },
+    {
+      "issue": 340,
+      "use_case_id": "use-case-utr-translation-baselines",
+      "title": "Set baselines for UTR translation experiments",
+      "mappings": 5,
+      "evaluations": 32,
+      "results": 36,
+      "verdict": "existing scoped endpoint coverage; supplemented and remaining gaps documented",
+      "gaps": [
+        "FramePool/Sample random and truncated-human libraries differ from the locally evaluated mRNABench designed-MRL split. Learned results exist for the use case, but no new result fills that exact local protocol gap.",
+        "Sequence-length transfer is measured; Pearson correlation does not establish absolute calibration, design success, therapeutic translation or full-length endogenous prediction.",
+        "Local protocol raw predictions/input reuse terms remain unresolved; supplementary tables do not establish permissions for those separate inputs.",
+        "Per-configuration uncertainty and exact human cohort denominators remain unextracted."
+      ]
+    },
+    {
+      "issue": 341,
+      "use_case_id": "use-case-rare-disease-candidate-ranking",
+      "title": "Rank rare-disease variants for review",
+      "mappings": 7,
+      "evaluations": 13,
+      "results": 68,
+      "verdict": "scoped_candidate_recovery_and_workload_evidence",
+      "gaps": [
+        "Known callable diagnosis recovery is available, but no controlled addition of a molecular-effect model at identical review effort was established.",
+        "Family, site and temporal independence, calling failures and unresolved outcomes need explicit prospective evaluation.",
+        "Talos/Exomiser comparison has source denominator discrepancies (194 body versus 190 extended figure); rank limits are not equal effort."
+      ]
+    },
+    {
+      "issue": 342,
+      "use_case_id": "use-case-unresolved-rare-disease-reanalysis",
+      "title": "Reanalyse unresolved rare-disease cases",
+      "mappings": 1,
+      "evaluations": 1,
+      "results": 14,
+      "verdict": "programme_yield_available_equal_input_method_gap",
+      "gaps": [
+        "Equal updated calls, phenotypes and knowledge with matched review effort are not established in the extracted peer-reviewed programme.",
+        "A 2026 medRxiv automated-versus-manual comparison was discovered (10.64898/2026.05.16.26352295); full text retrieval failed with HTTP403 and indexed percentages conflict between text and caption. No measurements imported from that preprint.",
+        "False alerts, review time, retracted diagnoses and source denominator inconsistencies need adjudication."
+      ]
+    },
+    {
+      "issue": 343,
+      "use_case_id": "use-case-brca1-brca2-germline-interpretation",
+      "title": "Interpret BRCA1/BRCA2 germline variants",
+      "mappings": 5,
+      "evaluations": 5,
+      "results": 39,
+      "verdict": "functional_calibration_and_manual_pilot_proxy",
+      "gaps": [
+        "Independent complete clinical classifications, serious-error adjudication and equal-evidence reviewer-time comparison were not found in selected evidence.",
+        "BayesDel labels derive from functional assays; threshold calibration is not held-out pathogenicity validation.",
+        "Study v1.0 manual pilot revises specifications on the same variants; current specification version must be pinned for any new run.",
+        "Generic BayesDel thresholds from Pejaver are a relevant alternative described in Table S4; supplement download returned challenge HTML, so the four primary-body percentages/bounds are entered while unverified Table S4 cells remain missing."
+      ]
+    },
+    {
+      "issue": 344,
+      "use_case_id": "use-case-somatic-small-variant-oncogenicity",
+      "title": "Assess somatic small-variant oncogenicity",
+      "mappings": 4,
+      "evaluations": 5,
+      "results": 27,
+      "verdict": "direct_classification_with_reference_independence_gaps",
+      "gaps": [
+        "OncoVI direct SOP/ClinVar classification exists; prospective reviewer-effort, calibration and independent model-versus-expert evaluation remain missing.",
+        "MTB old labels measure protein-function impact, not oncogenicity; selected reassessment shares experts/resources and is disagreement-enriched.",
+        "Abstract/body accuracy conflicts remain flagged. Supplemental Table S6 download returned challenge HTML; only body-printed strata are extracted."
+      ]
+    },
+    {
+      "issue": 345,
+      "use_case_id": "use-case-egfr-nsclc-actionability-resistance-evidence",
+      "title": "Review EGFR lung-cancer actionability evidence",
+      "mappings": 1,
+      "evaluations": 3,
+      "results": 162,
+      "verdict": "pan_cancer_retrieval_proxy_egfr_specific_gap",
+      "gaps": [
+        "No independently adjudicated advanced EGFR-mutant NSCLC evidence-retrieval benchmark with prior therapy, treatment line, date, jurisdiction and contradictions was established by this bounded search.",
+        "CIViC study reports pan-cancer aggregate and predictive direction metrics; no published EGFR-only score was found.",
+        "OncoTraj (arXiv:2606.11144) predicts longitudinal resistance and is outside the requested evidence-retrieval endpoint.",
+        "Manual versioned lookup plus primary-source review still needs measured equal effort."
+      ]
+    },
+    {
+      "issue": 346,
+      "use_case_id": "use-case-therapeutic-target-validation",
+      "title": "Select therapeutic targets for validation",
+      "mappings": 2,
+      "evaluations": 21,
+      "results": 21,
+      "verdict": "Partial coverage: dependency/evidence scoring and prospective state-objective target nomination; therapeutic validation gap remains.",
+      "gaps": [
+        "61 nominations / Results 57 selected targets / README 59 targets / 50 post-QC perturbations need reconciliation; no success fraction calculated.",
+        "Custom ranking AUC is not ROC AUC, prospective hit rate or efficacy.",
+        "No matched-budget conventional/random prospective comparison; no antitumor efficacy, rescue or selectivity result in this endpoint.",
+        "Original model implementations/checkpoints are not pinned in the intake; no uncertainty printed.",
+        "Preprint v1; original and reimplemented ranking scores kept separate. Screen2 ranking population is enriched by original nomination methods.",
+        "Automated source review only; independent human scientific review remains outstanding."
+      ]
+    },
+    {
+      "issue": 347,
+      "use_case_id": "use-case-regulatory-variant-gene-follow-up",
+      "title": "Select regulatory variants and genes for functional follow-up",
+      "mappings": 1,
+      "evaluations": 6,
+      "results": 10,
+      "verdict": "Partial coverage: allele-effect catalogue evidence plus endogenous CRISPRi linking; allele editing, held-out-locus independence and experimental utility gaps remain.",
+      "gaps": [
+        "No allele-specific endogenous-edit benchmark or equal-budget prospective shortlist benefit established.",
+        "Training/test independence unresolved: paper explicitly says benchmarking pipeline does not perform cross-validation.",
+        "Automated source review only; independent human scientific review remains outstanding."
+      ]
+    },
+    {
+      "issue": 348,
+      "use_case_id": "use-case-phenotype-perturbation-selection",
+      "title": "Select perturbations for a defined cellular response",
+      "mappings": 2,
+      "evaluations": 21,
+      "results": 21,
+      "verdict": "Direct narrow desired-state selection coverage identified; broader response goals and matched-budget controls remain unproven.",
+      "gaps": [
+        "61 nominations / Results 57 selected targets / README 59 targets / 50 post-QC perturbations need reconciliation; no success fraction calculated.",
+        "Custom ranking AUC is not ROC AUC, prospective hit rate or efficacy.",
+        "No matched-budget conventional/random prospective comparison; no antitumor efficacy, rescue or selectivity result in this endpoint.",
+        "Original model implementations/checkpoints are not pinned in the intake; no uncertainty printed.",
+        "Preprint v1; original and reimplemented ranking scores kept separate. Screen2 ranking population is enriched by original nomination methods.",
+        "Automated source review only; independent human scientific review remains outstanding."
+      ]
+    },
+    {
+      "issue": 349,
+      "use_case_id": "use-case-cell-type-annotation-transfer",
+      "title": "Transfer cell-type annotations to a new dataset",
+      "mappings": 1,
+      "evaluations": 9,
+      "results": 9,
+      "verdict": "Partial coverage: donor-held-out annotation baselines and models; independent-study and coverage-aware unknown-type validation remain gaps.",
+      "gaps": [
+        "Checkpoint and split hashes unextracted; no deployment calibration claim.",
+        "Reference labels are author annotations, not independent ground truth.",
+        "Unknown-type rejection ROC appears in Supplementary Figure 4 but numerical curve labels are not extracted here.",
+        "Automated source review only; independent human scientific review remains outstanding."
+      ]
+    },
+    {
+      "issue": 350,
+      "use_case_id": "use-case-structural-hypotheses-experiments",
+      "title": "Choose structural hypotheses to guide experiments",
+      "mappings": 5,
+      "evaluations": 9,
+      "results": 64,
+      "verdict": "Non-antibody protein\u2013protein structural proxies covered by FoldBench cofolding and conventional ClusPro BM5 docking in separate protocols; experimental-choice benefit remains unmeasured.",
+      "gaps": [
+        "No intervals in Table 3; no prospective experimental utility or matched conventional mutation/construct baseline.",
+        "Scored target populations differ; Table 1 assessable counts are retained as coverage context, not verified metric denominators. Some Table 3 rates do not reconcile with integer counts after rounding. No complete-cohort estimate is inferred.",
+        "ClusPro uses component 3D structures and BM5 targets, so scores cannot be directly compared with FoldBench; BM4 parameter benchmarking limits holdout independence. Exact ClusPro revision and input hashes remain unextracted.",
+        "ClusPro Total/easy/top10 source prints 87 although subtotals and 51.68% imply 77; literal 87 is retained as needs_review outside use-case mappings. Antibody and aggregate classes are not mapped to this issue.",
+        "Automated source review only; independent human scientific review remains outstanding."
+      ]
+    }
+  ],
+  "scope_note": "Result rows include accuracy, reported spreads, subgroup counts and resources. They are not independent studies. Some complete source tables contain additional tasks outside the mapped use case."
+}

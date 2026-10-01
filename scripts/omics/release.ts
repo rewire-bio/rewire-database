@@ -1,4 +1,5 @@
 import { addMfassMatchedEvaluations } from "./mfass-matched-evaluations";
+import { addUseCaseCoverage, useCaseCoverageInputFiles } from "./use-case-coverage";
 import { validateSnapshot } from "../../services/omics/src/validation";
 import { addCoverageTables, coverageTableInputs } from "./model-coverage-tables";
 import { addModelEvaluationLinks, modelLinkInputs } from "./model-evaluation-links";
@@ -336,9 +337,9 @@ function main() {
     addAcquiredEvidence(addRunRecipes(separateEntities(profiled))),
   )))));
   const reviewedUseCases = loadUseCases();
-  const records = addUseCaseSources(addSourceLabelIdentities(
+  const records = addUseCaseCoverage(addUseCaseSources(addSourceLabelIdentities(
     addProfileEvidence(addModelEvaluationLinks(addCoverageTables(evaluated))),
-  ), reviewedUseCases);
+  ), reviewedUseCases));
   const profiles = records
     .filter((record) => record.attributes.profile)
     .map((record) => record.attributes.profile as OmicsProfile);
@@ -449,6 +450,7 @@ function main() {
                 "Counts derived from this release through the production relationship and chart gates. Figures are source-specific, and metric rows are not independent experiments. Source review is not reproduction.",
             },
             changelog: [
+              "Audit all 17 use cases; add source-reviewed, protocol-specific literature measurements and conventional baselines, with explicit remaining decision and transfer gaps. Automated source review is not independent experimental reproduction or human scientific review.",
               ...(reviewedUseCases ? ["Add two sourced research use cases linking questions to exact existing evaluations, with separate MFASS and AMFR protocol scopes, explicit clinical evidence gaps and an independently versioned, release-pinned use-case artifact. Add two documentation source records; preserve every prior scientific record and numerical result."] : []),
               "Add four MFASS matched canonical-annotation configurations and 16 exact metric rows on the identical 8,297/8,324 scored subset; retain 23 assembly-orientation exclusions and four canonical transcript-scope exclusions, with pinned automated evidence and separate comparison panels.",
               "Add complete bounded primary-source result tables for BEELINE, CAFA, CAMI, CAPRI, CASP, FLIP2, PLINDER, scIB and provisional Virtual Cell Challenge 2026 validation.",
@@ -489,6 +491,7 @@ function main() {
         ...profileEvidenceInputs(),
         ...sourceLabelInputs(),
         ...useCaseInputFiles(),
+        ...useCaseCoverageInputFiles(),
         ...researchInputFiles.filter(file => fs.existsSync(file)),
         ...reviewInputFiles.filter((file) => fs.existsSync(file)),
         ...profileInputs.filter((file) => fs.existsSync(file)),

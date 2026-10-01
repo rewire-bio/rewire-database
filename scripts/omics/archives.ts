@@ -85,6 +85,27 @@ export function restoreReleaseBundles(
   input = "data/omics/releases",
   output = "public/omics/releases",
 ) {
+  // Historical releases often repeat the same immutable audit exports. Keep
+  // their paths and bytes, but store verified identical content only once on
+  // the output filesystem. Never rewrite or relink an existing destination.
+  const verifiedFiles = new Map<string, string>();
+  const writeVerified = (target: string, bytes: Buffer) => {
+    const digest = createHash("sha256").update(bytes).digest("hex");
+    if (fs.existsSync(target)) {
+      if (!fs.lstatSync(target).isFile() || !fs.readFileSync(target).equals(bytes))
+        throw new Error(`Immutable release conflict: ${target}`);
+    } else {
+      const source = verifiedFiles.get(digest);
+      if (source) {
+        // Recheck the source itself before sharing its inode. A matching input
+        // receipt must never cause a changed output file to be propagated.
+        if (!fs.lstatSync(source).isFile() || !fs.readFileSync(source).equals(bytes))
+          throw new Error(`Immutable release conflict: ${source}`);
+        fs.linkSync(source, target);
+      } else fs.writeFileSync(target, bytes, { flag: "wx" });
+    }
+    if (!verifiedFiles.has(digest)) verifiedFiles.set(digest, target);
+  };
   // Large releases use one compressed file per artifact. A single JSON bundle
   // can exceed Node's string limit even when every individual artifact fits.
   for (const entry of fs.readdirSync(input, { withFileTypes: true })) {
@@ -128,10 +149,7 @@ export function restoreReleaseBundles(
       )
         throw new Error(`Archive checksum mismatch: ${entry.name}/${name}`);
       const target = path.join(dir, name);
-      if (fs.existsSync(target)) {
-        if (!fs.readFileSync(target).equals(bytes))
-          throw new Error(`Immutable release conflict: ${target}`);
-      } else fs.writeFileSync(target, bytes);
+      writeVerified(target, bytes);
     }
     restoreSourceCopies(manifest, readChecked, output);
   }
@@ -173,7 +191,7 @@ export function restoreReleaseBundles(
     fs.mkdirSync(path.join(output, id), { recursive: true });
     for (const [file, bytes] of Object.entries(files)) {
       const target = path.join(output, id, file);
-      if (!fs.existsSync(target)) fs.writeFileSync(target, bytes);
+      writeVerified(target, Buffer.from(bytes, "utf8"));
     }
     restoreSourceCopies(manifest, (name) => files[name], output);
   }

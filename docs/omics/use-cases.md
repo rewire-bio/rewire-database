@@ -1,8 +1,11 @@
 # Research and clinical use cases
 
 Use-case pages define important user decisions and the evidence needed to answer
-them. The collection has 17 questions: seven with scoped evidence mappings and
-ten with collection plans. Questions can be published before comparative evidence
+them. The collection has 17 questions. The [30 September coverage audit](use-case-coverage-2026-09-30.md)
+adds primary-source protocols, measurements, baselines and exact configurations,
+with explicit remaining gaps for every question. The original 28 September collection
+had seven questions with scoped mappings and ten with collection plans.
+Questions can be published before comparative evidence
 is available. They do not add measurements, expand numeric comparison groups or
 recommend clinical care. The initial splicing and protein-stability mappings and
 the [five-question expansion](use-case-expansion-2026-09-28.md) are preserved.
@@ -27,11 +30,14 @@ ten new definitions and how they lead evidence acquisition.
   result changes. This is a maintenance cadence, not a newly scheduled job.
 
 The input receipt is `data/omics/use-cases/review.json`; it binds the exact
-curation and source bytes. `inputs.json` contains 17 use cases and 17 protocol
-mappings. `sources.json` supplies four documentation source records: the two
+curation and source bytes. `inputs.json` contains the 17 use cases and their
+reviewed protocol mappings. The 30 September literature intake has a separate
+hash-bound receipt under `data/omics/use-case-coverage-20260930/review.json`.
+`sources.json` supplies four documentation source records: the two
 initial pinned documents and two authored, sourced workflow briefs. All 26,124
 records in baseline release `2026-09-28-f9f5770cef26` remain unchanged; the two
-new documentation records bring the total to 26,126.
+new documentation records brought that historical total to 26,126. The coverage
+audit appends new scientific records without replacing that inventory.
 Scientific result values are resolved from evaluation IDs rather than copied
 into these inputs.
 
@@ -158,6 +164,14 @@ into a clean temporary directory and verify its inventory, every checksum and
 both content-addressed source copies. That proves a clean checkout can serve
 the same evidence. The candidate's source inputs, receipt and archived files
 are reviewed together; freezing them does not by itself deploy the release.
+
+Restoration shares identical verified historical exports through hardlinks on
+the output filesystem. Every compressed payload is still decompressed and
+checked against its receipt, and an existing destination is never overwritten.
+These files share inodes and must remain immutable: changing one in place would
+change every linked copy. Publish changed evidence under a new release instead.
+This storage reuse preserves all historical paths and bytes while reducing the
+temporary space required for full builds.
 
 Do not add patient inputs, private contributor fields, automated clinical
 recommendations or automatically published AI-generated mappings. Proposed

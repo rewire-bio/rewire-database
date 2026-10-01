@@ -1,38 +1,34 @@
-# rewire-database
+# Rewire benchmark website
 
-Benchmark website intended for https://benchmarks.rewire.it; its certificate is pending as of 16 September 2026. The published baseline is available at https://rewire-it.web.app. This repository owns the frontend, reviewed records and deployment. Runners live in [rewire-benchmarks](https://github.com/rewire-bio/rewire-benchmarks); articles live in [rewire.it](https://github.com/rewire-bio/rewire.it).
+The benchmark frontend and public query/contribution API. Scientific records, source evidence, ingestion and immutable release generation live in [rewire-benchmark-data](https://github.com/rewire-bio/rewire-benchmark-data). Benchmark execution lives in [rewire-benchmarks](https://github.com/rewire-bio/rewire-benchmarks); articles live in [rewire.it](https://github.com/rewire-bio/rewire.it).
 
-**This branch is unpublished review work. Do not deploy or merge as part of the hosting migration.** It preserves the source working tree and generated release `2026-09-16-b5213be10a49`.
+## Development
 
-Main extracts the published baseline from rewire.it revision `5f7b8ce477cc7afabc36e02bd002222c931623e7`. Unpublished database and contribution features stay on a separate review branch.
-
-## Development and checks
-
-Node.js 22 or newer. No other checkout is needed.
+Requires Node.js 22 or newer and read access to the private data repository.
 
 ```sh
 npm ci
+npm run data:fetch
 npm run dev
-npm test
-npm run lint
-npm run build
-npm run typecheck
-npm run check:export
-npm run preview
 ```
 
-Next.js exports to `out/`. The Firebase Hosting emulator serves the static site locally without publication.
+`benchmark-data.lock.json` pins prepared data by Git revision, manifest SHA-256 and release ID. Builds verify and unpack that artifact; they never regenerate scientific records. `data/`, `public/omics/`, literature downloads and the generated candidate catalogue are ignored dependencies.
 
-## Deployment
+```sh
+npm run data:prepare -- --current-only
+npm test
+npm run lint
+npm run build:web
+npm run typecheck
+npm run check:export:web
+```
 
-The database website targets Firebase Hosting. Its API, Firebase Auth and Firestore belong to the same Firebase project and this repository; the unpublished review branch contains that service. DNS remains on Google Cloud DNS. The blog has its own Cloudflare deployment.
+Use `npm run build` and `npm run check:export` when a full export including historical downloads is required. Use `BENCHMARK_DATA_SOURCE=/path/to/rewire-benchmark-data` to consume an existing checkout at the pinned revision.
 
-Checks run on private pull requests without publishing previews. Main-branch Hosting deployment is enabled with `FIREBASE_PROJECT_ID=rewire-it` and repository-specific Google Workload Identity Federation; the first keyless CI deployment passed. `firebase.json` explicitly targets Hosting site `rewire-it`, so database releases do not deploy the separate blog redirect site. Backend and Cloudflare deployment remain disabled. No long-lived service account keys or Cloudflare tokens are required for this repository. Deployment never applies Terraform or enables billing.
+## Data and deployment
 
-See [Firebase deployment and rollback](docs/hosting/firebase.md). No backend or submission activation is included in this production-baseline migration.
+Make data edits in the data repository. Adopt a reviewed release with a pull request updating the lock. See [independent data setup](docs/hosting/benchmark-data-separation.md) and [incremental deployment](docs/hosting/incremental-deployment.md).
 
-The blog owns permanent redirects from `/benchmarks/…` to equivalent paths here. Downloads retain `/benchmark-literature/papers.json` and `/benchmark-literature/results.csv`; the overview retains `#mfass-v1`.
+Next.js exports to `out/`. The existing Cloudflare frontend and Firebase API/download publication workflows retain their independent deployment gates, live-release checks, archive preservation and rollback. Repository separation does not activate submission intake or change domains.
 
-See [extraction notes](docs/extraction.md) and [source checksums](docs/extraction-manifest.json). No contributor data, credentials, Terraform resources or benchmark execution is included. The contribution service source lives in `services/omics`, independently installed and tested.
-
-See [review extraction receipt](docs/review-extraction-manifest.json) and [deferred profile plan](docs/plans/model-benchmark-profiles.md). Historical release values and checksums are unchanged; route updates are presentation-only.
+The contribution service lives in `services/omics`, with its own dependencies and emulator tests. Keep private contributor data out of every public artifact. Historical extraction receipts remain under `docs/`; the new data repository retains the complete source-data extraction receipt.

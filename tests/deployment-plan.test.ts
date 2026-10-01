@@ -33,36 +33,48 @@ describe('publication classification', () => {
     expect(classify({ ...hashes, hosting: 'f'.repeat(64) }, receipt).mode).toBe('full');
   });
   it.each(['data/new.json', 'scripts/omics/new-helper.ts', 'lib/new-helper.ts', 'services/omics/src/new.ts', 'package-lock.json', 'tsconfig.json'])(
-    'includes generator dependency %s', name => expect(inputGroups(name).data).toBe(true),
+    'does not invalidate pinned data for consumer dependency %s', name => expect(inputGroups(name).data).toBe(false),
   );
   it.each(['services/omics/firestore.rules', 'services/omics/firestore.indexes.json', 'services/omics/package-lock.json', 'firebase.json', 'scripts/contribution-deployment.mjs', '.github/workflows/firebase.yml'])(
     'includes backend dependency %s', name => expect(inputGroups(name).backend).toBe(true),
   );
+  it('binds data changes to the immutable producer lock', () => {
+    expect(inputGroups('benchmark-data.lock.json').data).toBe(true);
+  });
   it('does not invalidate data for a UI-only change', () => {
     expect(inputGroups('components/header.tsx')).toEqual({ data: false, backend: false, hosting: false });
   });
-  it('hashes tracked changes, additions, deletions and names, excluding generated outputs', async () => {
-    const root = fixture(); file(root, 'data/input.json', 'one');
+  it('hashes producer lock changes and deletion, ignoring local hydrated data', async () => {
+    const root = fixture(); file(root, 'benchmark-data.lock.json', 'one');
     const first = await fingerprints(root, {});
+    file(root, 'data/input.json', 'local fixture');
     file(root, 'workbench/private.json', 'secret', false);
     expect(await fingerprints(root, {})).toEqual(first);
-    file(root, 'data/input.json', 'two', false);
+    file(root, 'benchmark-data.lock.json', 'two', false);
     expect((await fingerprints(root, {})).data).not.toBe(first.data);
-    file(root, 'data/input.json', 'one', false);
-    file(root, 'data/new.json', 'extra');
-    const added = await fingerprints(root, {}); expect(added.data).not.toBe(first.data);
-    fs.unlinkSync(path.join(root, 'data/new.json'));
-    expect((await fingerprints(root, {})).data).not.toBe(added.data);
-    file(root, 'data/new.json', 'extra');
-    execFileSync('git', ['mv', 'data/new.json', 'data/renamed.json'], { cwd: root });
-    expect((await fingerprints(root, {})).data).not.toBe(added.data);
+    fs.unlinkSync(path.join(root, 'benchmark-data.lock.json'));
+    expect((await fingerprints(root, {})).data).not.toBe(first.data);
+  });
+  it('hashes backend additions, names, deletions and nonsecret configuration', async () => {
+    const root = fixture(); file(root, 'services/omics/src/input.ts', 'one');
+    const first = await fingerprints(root, {});
+    file(root, 'services/omics/src/input.ts', 'two', false);
+    expect((await fingerprints(root, {})).backend).not.toBe(first.backend);
+    file(root, 'services/omics/src/input.ts', 'one', false);
+    file(root, 'services/omics/src/new.ts', 'extra');
+    const added = await fingerprints(root, {}); expect(added.backend).not.toBe(first.backend);
+    fs.unlinkSync(path.join(root, 'services/omics/src/new.ts'));
+    expect((await fingerprints(root, {})).backend).not.toBe(added.backend);
+    file(root, 'services/omics/src/new.ts', 'extra');
+    execFileSync('git', ['mv', 'services/omics/src/new.ts', 'services/omics/src/renamed.ts'], { cwd: root });
+    expect((await fingerprints(root, {})).backend).not.toBe(added.backend);
     expect((await fingerprints(root, { OMICS_MAIL_ENABLED: 'true' })).backend).not.toBe(first.backend);
-    expect((await fingerprints(root, { SECRET_TOKEN: 'never included' })).backend).toBe(first.backend);
+    expect((await fingerprints(root, { SECRET_TOKEN: 'never included' })).backend).toBe((await fingerprints(root, {})).backend);
   });
   it('rejects symlinked inputs', async () => {
-    const root = fixture(); file(root, 'data/input.json', 'one');
-    fs.unlinkSync(path.join(root, 'data/input.json'));
-    fs.symlinkSync('/etc/hosts', path.join(root, 'data/input.json'));
+    const root = fixture(); file(root, 'benchmark-data.lock.json', 'one');
+    fs.unlinkSync(path.join(root, 'benchmark-data.lock.json'));
+    fs.symlinkSync('/etc/hosts', path.join(root, 'benchmark-data.lock.json'));
     await expect(fingerprints(root, {})).rejects.toThrow('regular file');
   });
 });

@@ -1,14 +1,10 @@
-import { recordSchema } from "../scripts/omics/schema";
 import fs from "node:fs";
-import { gunzipSync } from "node:zlib";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it, vi } from "vitest";
 import {
   createCatalogueQuery,
   type CatalogueSnapshot,
 } from "../services/omics/src/catalogue-query";
-import { addCoverageTables } from "../scripts/omics/model-coverage-tables";
-import { addModelEvaluationLinks } from "../scripts/omics/model-evaluation-links";
 import RecordPage from "../app/database/[kind]/[id]/page";
 
 const fixture = vi.hoisted(() => ({
@@ -22,15 +18,11 @@ vi.mock("../lib/catalogue-build", () => ({
 }));
 
 const previous: CatalogueSnapshot = JSON.parse(
-  gunzipSync(
-    fs.readFileSync(
-      "data/omics/releases/2026-09-23-6c5e8b6b153f/catalogue.json.gz",
-    ),
-  ).toString(),
+  fs.readFileSync("public/omics/catalogue.json").toString(),
 );
 fixture.snapshot = {
   ...previous,
-  records: addModelEvaluationLinks(addCoverageTables(previous.records.map(record => recordSchema.parse(record)))),
+  records: previous.records,
 };
 const query = createCatalogueQuery(fixture.snapshot);
 const render = (id: string) =>

@@ -1,11 +1,10 @@
 import fs from "node:fs";
-import { gunzipSync } from "node:zlib";
 import { describe, expect, it, vi } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
 import { parseCatalogue, recordHref } from "../lib/omics";
 import { catalogueIndexPaths, indexRecords, indexMetadata, MODEL_PAGE_SIZE, modelPageCount, modelIndexHref, validModelPage } from "../lib/catalogue-index";
 import StaticIndex from "../components/catalogue/StaticIndex";
-const catalogue = parseCatalogue(JSON.parse(gunzipSync(fs.readFileSync("data/omics/releases/2026-09-22-f58a0f1d267f/catalogue.json.gz")).toString()));
+const catalogue = parseCatalogue(JSON.parse(fs.readFileSync("public/omics/catalogue.json").toString()));
 vi.mock("next/navigation", () => ({ usePathname: () => "/models/" }));
 import Header from "../components/header";
 

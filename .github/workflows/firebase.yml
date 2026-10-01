@@ -59,13 +59,49 @@ jobs:
       - run: |
           npm ci
           npm cache clean --force
-      # These unique checks used to run in a second workflow that also rebuilt
-      # the entire website. Keep their coverage in this single checked build.
-      - name: Verify reproducible migration and public-artifact review
+      - name: Read the reviewed data pin
+        id: data-pin
         run: |
-          npm run omics:migrate
-          git diff --exit-code -- data/omics/migrated.jsonl data/omics/scope-audit.jsonl
-          python3 -m unittest discover -s scripts/omics/tests -p "test_*.py"
+          node -e 'const p=require("./benchmark-data.lock.json"); if(p.repository!=="rewire-bio/rewire-benchmark-data" || !/^[a-f0-9]{40}$/.test(p.revision)) throw Error("Invalid data pin"); require("fs").appendFileSync(process.env.GITHUB_OUTPUT, "revision="+p.revision+"\n")'
+      - name: Restore pinned compressed data checkout
+        id: data-cache
+        uses: actions/cache/restore@v4
+        with:
+          path: workbench/benchmark-data
+          key: benchmark-data-${{ steps.data-pin.outputs.revision }}
+      - name: Require private data read access
+        if: steps.data-cache.outputs.cache-hit != 'true'
+        env:
+          DATA_READ_TOKEN: ${{ secrets.BENCHMARK_DATA_READ_TOKEN }}
+        run: |
+          if [ -z "$DATA_READ_TOKEN" ]; then
+            echo "Configure BENCHMARK_DATA_READ_TOKEN with read-only Contents access to rewire-bio/rewire-benchmark-data. See docs/hosting/benchmark-data-separation.md."
+            exit 1
+          fi
+      - name: Check out the immutable data artifact
+        if: steps.data-cache.outputs.cache-hit != 'true'
+        uses: actions/checkout@v4
+        with:
+          repository: rewire-bio/rewire-benchmark-data
+          ref: ${{ steps.data-pin.outputs.revision }}
+          token: ${{ secrets.BENCHMARK_DATA_READ_TOKEN }}
+          persist-credentials: false
+          path: workbench/benchmark-data
+          sparse-checkout: |
+            website
+            data/omics/releases
+      - name: Reserve build space after the compressed dependency checkout
+        if: runner.environment == 'github-hosted'
+        run: node scripts/prepare-runner-space.mjs
+      - name: Hydrate and verify the pinned release
+        run: |
+          if [ "${{ steps.plan.outputs.mode }}" = web ]; then npm run data:prepare -- --current-only; else npm run data:prepare; fi
+      - name: Cache verified compressed data
+        if: steps.data-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: workbench/benchmark-data
+          key: ${{ steps.data-cache.outputs.cache-primary-key }}
       - run: npm test
       - run: npm run lint
       - name: Validate contribution configuration and build website

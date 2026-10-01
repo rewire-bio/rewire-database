@@ -1,5 +1,4 @@
 import fs from 'node:fs';
-import { gunzipSync } from 'node:zlib';
 import { createHash } from 'node:crypto';
 import assert from 'node:assert/strict';
 
@@ -7,9 +6,12 @@ export const reviewRelease = '2026-09-22-f58a0f1d267f';
 export const domainIds = ['dna-genomes', 'rna-transcriptomes', 'proteins-complexes', 'cells-tissues', 'microbes-communities', 'molecular-interactions'];
 const digest = bytes => createHash('sha256').update(bytes).digest('hex');
 export function reviewedRedirects() {
-  const archivePath = `data/omics/releases/${reviewRelease}/catalogue.json.gz`;
-  const archive = fs.readFileSync(archivePath);
-  const catalogue = JSON.parse(gunzipSync(archive));
+  // Preserve the original redirect review; validate its identities against the
+  // pinned prepared catalogue without requiring a producer source archive.
+  const review = JSON.parse(fs.readFileSync('docs/seo/legacy-redirect-review-2026-09-23.json', 'utf8'));
+  assert.equal(review.release_id, reviewRelease);
+  const catalogue = JSON.parse(fs.readFileSync('public/omics/catalogue.json', 'utf8'));
+  assert.equal(catalogue.release_id, JSON.parse(fs.readFileSync('benchmark-data.lock.json', 'utf8')).release_id);
   const paperBytes = fs.readFileSync('data/benchmark-literature/papers.json');
   const scopeBytes = fs.readFileSync('data/omics/scope-audit.jsonl');
   const papers = JSON.parse(paperBytes);
@@ -37,8 +39,9 @@ export function reviewedRedirects() {
     ...domainIds.map(id => ({ source: `/${id}{,/}`, destination: `/?kind=model&area=${id}`, type: 301 })),
     ...mappings.map(mapping => ({ source: `/literature/papers/${mapping.paper_id}{,/}`, destination: mapping.destination, type: 301 })),
   ];
-  return {
-    review: { reviewed_at: '2026-09-23', review_method: 'Automated exact historical-paper/source identity comparison; no new scientific claims', release_id: reviewRelease, inputs: { [archivePath]: digest(archive), 'data/benchmark-literature/papers.json': digest(paperBytes), 'data/omics/scope-audit.jsonl': digest(scopeBytes) }, mappings, excluded },
-    redirects,
-  };
+  assert.deepEqual(mappings, review.mappings, 'Released legacy mappings differ from reviewed redirects');
+  assert.deepEqual(excluded, review.excluded, 'Released legacy exclusions differ from reviewed redirects');
+  assert.equal(digest(paperBytes), review.inputs['data/benchmark-literature/papers.json']);
+  assert.equal(digest(scopeBytes), review.inputs['data/omics/scope-audit.jsonl']);
+  return { review, redirects };
 }

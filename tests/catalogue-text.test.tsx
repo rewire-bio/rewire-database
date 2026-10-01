@@ -1,5 +1,4 @@
 import fs from "node:fs";
-import { gunzipSync } from "node:zlib";
 import { describe, it, expect } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
 import { catalogueText } from "../lib/catalogue-text";
@@ -49,11 +48,7 @@ describe("catalogue condition presentation", () => {
   });
   it("renders all 44 affected BEELINE comparisons, descriptions and result links without altering released records", () => {
     const catalogue = JSON.parse(
-      gunzipSync(
-        fs.readFileSync(
-          "data/omics/releases/2026-09-22-f58a0f1d267f/catalogue.json.gz",
-        ),
-      ).toString(),
+      fs.readFileSync("public/omics/catalogue.json").toString(),
     );
     const query = createCatalogueQuery(catalogue);
     const affected = catalogue.records.filter(
@@ -89,11 +84,7 @@ describe("catalogue condition presentation", () => {
 
 it("renders all ten empty BEELINE condition groups without JSON placeholders", () => {
   const catalogue = JSON.parse(
-    gunzipSync(
-      fs.readFileSync(
-        "data/omics/releases/2026-09-22-f58a0f1d267f/catalogue.json.gz",
-      ),
-    ).toString(),
+    fs.readFileSync("public/omics/catalogue.json").toString(),
   );
   const query = createCatalogueQuery(catalogue);
   const records = catalogue.records.filter(

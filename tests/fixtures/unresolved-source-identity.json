@@ -1,0 +1,197 @@
+{
+  "schema_version": "1.1",
+  "release_id": "2026-09-24-7909a0445238",
+  "released_at": "2026-09-24T12:00:00Z",
+  "records": [
+    {
+      "id": "benchmark",
+      "kind": "task",
+      "name": "benchmark",
+      "description": "",
+      "status": "source_checked",
+      "facets": {},
+      "source_ids": [],
+      "links": [],
+      "attributes": {}
+    },
+    {
+      "id": "config",
+      "kind": "configuration",
+      "name": "Unresolved method, cited as [Smith et al., 2020]",
+      "description": "",
+      "status": "source_checked",
+      "facets": {},
+      "source_ids": [
+        "paper"
+      ],
+      "links": [],
+      "attributes": {
+        "source_label": "[Smith et al., 2020]",
+        "source_identity": {
+          "status": "unresolved",
+          "label_form": "bracketed_citation",
+          "display_name": "Unresolved method, cited as [Smith et al., 2020]",
+          "identity": null,
+          "configuration": null,
+          "basis": "Citation conflicts.",
+          "source_ids": [
+            "paper"
+          ],
+          "source_locator": "Table 1",
+          "known_details": [],
+          "unknown": [
+            {
+              "label": "Method identity",
+              "note": "Not established."
+            }
+          ],
+          "original_name": "[Smith et al., 2020]",
+          "original_description": "",
+          "review": {
+            "method": "automated_source_review",
+            "date": "2026-09-24",
+            "note": "AI-assisted review against the cited primary sources. No human scientific review. Values, locators and comparison conditions are unchanged."
+          }
+        }
+      }
+    },
+    {
+      "id": "data",
+      "kind": "dataset",
+      "name": "data",
+      "description": "",
+      "status": "source_checked",
+      "facets": {},
+      "source_ids": [],
+      "links": [],
+      "attributes": {}
+    },
+    {
+      "id": "evaluation",
+      "kind": "evaluation",
+      "name": "Unresolved method, cited as [Smith et al., 2020] on Task",
+      "description": "Evaluation of an unresolved method cited as [Smith et al., 2020] on Task.",
+      "status": "source_checked",
+      "facets": {},
+      "source_ids": [],
+      "links": [
+        {
+          "relation": "model",
+          "target_id": "config"
+        },
+        {
+          "relation": "benchmark",
+          "target_id": "benchmark"
+        },
+        {
+          "relation": "dataset",
+          "target_id": "data"
+        }
+      ],
+      "attributes": {
+        "origin": "author_reported",
+        "comparison": {},
+        "source_label": "[Smith et al., 2020]",
+        "source_identity": {
+          "status": "unresolved",
+          "display_name": "Unresolved method, cited as [Smith et al., 2020] on Task",
+          "subject_id": "config",
+          "original_name": "[Smith et al., 2020] on Task",
+          "original_description": "Evaluation of [Smith et al., 2020] on Task."
+        }
+      }
+    },
+    {
+      "id": "paper",
+      "kind": "source",
+      "name": "paper",
+      "description": "",
+      "status": "source_checked",
+      "facets": {},
+      "source_ids": [],
+      "links": [],
+      "attributes": {
+        "url": "https://example.org",
+        "artifact_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "retrieved_at": "2026-09-24",
+        "version": "1"
+      }
+    },
+    {
+      "id": "plain",
+      "kind": "configuration",
+      "name": "CNN (Smith et al.)",
+      "description": "",
+      "status": "source_checked",
+      "facets": {},
+      "source_ids": [
+        "paper"
+      ],
+      "links": [],
+      "attributes": {}
+    },
+    {
+      "id": "result",
+      "kind": "result",
+      "name": "Unresolved method, cited as [Smith et al., 2020] · Task",
+      "description": "",
+      "status": "source_checked",
+      "facets": {},
+      "source_ids": [
+        "paper"
+      ],
+      "links": [
+        {
+          "relation": "evaluation",
+          "target_id": "evaluation"
+        }
+      ],
+      "attributes": {
+        "numeric_value": "0.5",
+        "printed_value": "0.50",
+        "metric": "auroc",
+        "unit": "fraction",
+        "metric_direction": "higher",
+        "source_locator": "Table 1",
+        "review": {},
+        "source_label": "[Smith et al., 2020]",
+        "source_identity": {
+          "status": "unresolved",
+          "display_name": "Unresolved method, cited as [Smith et al., 2020] · Task",
+          "subject_id": "config",
+          "original_name": "[Smith et al., 2020] · Task",
+          "original_description": ""
+        }
+      }
+    }
+  ],
+  "coverage": {
+    "entity_schema_version": "1.1",
+    "total_records": 7,
+    "public_records": 7,
+    "counts": {
+      "model": 0,
+      "method": 0,
+      "configuration": 2,
+      "pipeline": 0,
+      "service": 0,
+      "benchmark": 0,
+      "task": 1,
+      "protocol": 0,
+      "evaluator": 0,
+      "dataset": 1,
+      "dataset_subset": 0,
+      "baseline": 0,
+      "evaluation": 1,
+      "result": 1,
+      "source": 1,
+      "claim": 0
+    },
+    "quarantined_results": 0,
+    "scope_excluded_records": 0,
+    "source_checked_results": 1,
+    "rewire_result_rows": 0,
+    "scope": "Specialist omics and molecular models; no clinical assistants or standalone medical imaging.",
+    "limitation": "A dated discovery and source-transcription review, not an exhaustive census or independent reproduction of external experiments."
+  }
+}

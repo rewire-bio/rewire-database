@@ -239,6 +239,51 @@ describe('hosted runner space preparation', () => {
     for (const file of [active, ...siblings]) expect(fs.readFileSync(host.map(file), 'utf8')).toBe('preserve');
   });
 
+  it.each(['lstatSync', 'realpathSync'] as const)('preserves SDKs inaccessible to %s and reclaims accessible alternatives', method => {
+    const sizes = {
+      '/opt/hostedtoolcache/PyPy': 547_770_368,
+      '/home/runner/.dotnet': 183_328_768,
+      '/usr/local/aws-sam-cli': 206_561_280,
+    };
+    // Need all three accessible additions, despite skipping the Packer home.
+    const accessibleBytes = Object.values(sizes).reduce((a, b) => a + b, 0);
+    const host = fixture(MIN_FREE_BYTES - accessibleBytes, 0, sizes);
+    const inspect = host.files[method];
+    const files = { ...host.files, [method]: (file: string) => {
+      if (file.startsWith('/home/packer/')) throw Object.assign(new Error('permission denied'), { code: 'EACCES' });
+      return inspect(file);
+    } } as typeof fs;
+    const result = prepareRunnerSpace({ ...host.options, files });
+    expect(result.available).toBe(MIN_FREE_BYTES);
+    for (const directory of Object.keys(sizes)) expect(host.removed).toContain(directory);
+    for (const directory of ['/home/packer/.rustup', '/home/packer/.cargo', '/home/packer/.dotnet']) {
+      expect(host.removed).not.toContain(directory);
+      expect(host.log).toHaveBeenCalledWith(`Preserving inaccessible optional SDK (EACCES): ${directory}`);
+      expect(fs.readFileSync(host.map(`${directory}/unused-sdk`), 'utf8')).toBe('disposable');
+      expect(host.run.mock.calls.some(([program, args]) => program === 'sudo' && args.at(-1) === directory)).toBe(false);
+    }
+  });
+
+  it('still requires 45 GiB when inaccessible SDKs leave insufficient reclaimable space', () => {
+    const host = fixture(MIN_FREE_BYTES - 1, 0);
+    const files = { ...host.files, lstatSync: (file: string) => {
+      if (file.startsWith('/home/packer/')) throw Object.assign(new Error('permission denied'), { code: 'EACCES' });
+      return host.files.lstatSync(file);
+    } } as typeof fs;
+    expect(() => prepareRunnerSpace({ ...host.options, files })).toThrow('need at least 45 GiB');
+    expect(host.removed.some(directory => directory.startsWith('/home/packer/'))).toBe(false);
+  });
+
+  it('does not suppress other filesystem inspection failures', () => {
+    const host = fixture();
+    const files = { ...host.files, lstatSync: (file: string) => {
+      if (file === '/home/packer/.rustup') throw Object.assign(new Error('unexpected IO failure'), { code: 'EIO' });
+      return host.files.lstatSync(file);
+    } } as typeof fs;
+    expect(() => prepareRunnerSpace({ ...host.options, files })).toThrow('unexpected IO failure');
+    expect(host.run).not.toHaveBeenCalled();
+  });
+
   it('removes only documented preloaded images on the fixed local daemon without force', () => {
     const host = fixture(beforeCleanup(4));
     host.docker.enabled = true;

@@ -13,7 +13,7 @@ Producer run `36836317489` on image `20260927.320.1` failed after the previous a
 | `/home/packer/.dotnet` | 183,332,864 |
 | `/usr/local/aws-sam-cli` | 206,561,280 |
 
-These provide 1.65 GiB of additional cleanup capacity on the measured image; they are not a claim about future image sizes. The unchanged free-space check remains authoritative. An active PyPy executable causes the entire PyPy installation to be preserved. The fixture tests reproduce the observed shortfall, exercise active-runtime protection and verify that unrelated files in both homes survive.
+These total 1.65 GiB of theoretical additional cleanup capacity on the measured image. Run `36874882852` showed that the runner cannot inspect `/home/packer/.rustup` (`EACCES`). All optional SDK paths with an `EACCES` inspection error are therefore preserved and logged, without privileged inspection. Excluding all three Packer paths leaves 937,660,416 bytes (0.87 GiB) in the PyPy, runner .NET and AWS SAM installations. This exceeds the observed 282,509,312-byte shortfall, but only successful cleanup and a fresh disk measurement establish available space. Image sizes and permissions can change. The unchanged free-space check remains authoritative. An active PyPy executable causes the entire PyPy installation to be preserved. The fixture tests reproduce the observed shortfall, exercise active-runtime protection, preserve inaccessible SDKs during both `lstat` and `realpath` inspection, retain the 45 GiB failure when space is still insufficient, and verify that unrelated files in both homes survive. Other inspection errors continue to fail closed.
 
 Pinned upstream installer evidence for image `ubuntu24/20260927.320`:
 

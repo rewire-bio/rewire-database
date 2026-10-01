@@ -103,11 +103,20 @@ export function prepareRunnerSpace({
   for (const directory of [...UNUSED_TOOL_DIRECTORIES, ...versioned]) {
     if (contains(directory, workspace) || contains(workspace, directory))
       throw new Error(`Refusing cleanup that overlaps the checkout: ${directory}`);
-    let entry;
-    try { entry = files.lstatSync(directory); }
-    catch (error) { if (error.code === 'ENOENT') continue; throw error; }
-    if (!entry.isDirectory() || files.realpathSync(directory) !== directory)
-      throw new Error(`Refusing cleanup of a non-directory or symlinked SDK path: ${directory}`);
+    try {
+      const entry = files.lstatSync(directory);
+      if (!entry.isDirectory() || files.realpathSync(directory) !== directory)
+        throw new Error(`Refusing cleanup of a non-directory or symlinked SDK path: ${directory}`);
+    } catch (error) {
+      if (error.code === 'ENOENT') continue;
+      // Some image-builder homes cannot be traversed by the runner. Preserve
+      // these optional installations; never elevate inspection to bypass this.
+      if (error.code === 'EACCES') {
+        log(`Preserving inaccessible optional SDK (EACCES): ${directory}`);
+        continue;
+      }
+      throw error;
+    }
     planned.push(directory);
   }
 

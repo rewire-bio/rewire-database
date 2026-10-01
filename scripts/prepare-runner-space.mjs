@@ -37,6 +37,15 @@ export const UNUSED_TOOL_DIRECTORIES = Object.freeze([
   // Google Chrome, which is used by the separate manual mobile-lab script.
   '/usr/local/share/chromium',
   '/opt/microsoft/msedge',
+  // Image ubuntu24/20260927.320 left these optional SDK copies installed.
+  // Pinned installer provenance and measured sizes: docs/runner-space.md.
+  // Never remove either home directory itself or a general-purpose cache.
+  '/opt/hostedtoolcache/PyPy',
+  '/home/packer/.rustup',
+  '/home/packer/.cargo',
+  '/home/runner/.dotnet',
+  '/home/packer/.dotnet',
+  '/usr/local/aws-sam-cli',
 ]);
 
 // Pinned installer evidence for the failed CI image (20260920.314.1):
@@ -104,7 +113,7 @@ export function prepareRunnerSpace({
 
   // Miniconda/Homebrew must not supply any runtime or deployment dependency in
   // this job. Resolve the actual executables before allowing either installation
-  // to be removed. Keep every cached Node/Python/Java version regardless.
+  // to be removed. Keep every cached Node/CPython/Java version regardless; preserve PyPy if active.
   const requiredTools = ['node', 'python3', 'java', 'git', 'gcc', 'g++', 'make', 'gcloud'];
   const located = run('which', requiredTools).trim().split('\n');
   if (located.length !== requiredTools.length || located.some(file => !path.isAbsolute(file)))

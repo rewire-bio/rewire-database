@@ -9,7 +9,7 @@ const GiB = 1024 ** 3;
 const beforeCleanup = (additionalRemovals = 0) =>
   MIN_FREE_BYTES - (UNUSED_TOOL_DIRECTORIES.length + additionalRemovals) * GiB;
 
-function fixture(initialFree = 34 * GiB, perRemoval = GiB) {
+function fixture(initialFree = 34 * GiB, perRemoval = GiB, sizes: Record<string, number> = {}) {
   const root = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), 'rewire-runner-space-')));
   roots.push(root);
   const map = (logical: string) => path.join(root, logical);
@@ -73,7 +73,7 @@ function fixture(initialFree = 34 * GiB, perRemoval = GiB) {
     expect([...UNUSED_TOOL_DIRECTORIES, '/usr/local/julia1.13.0', '/usr/share/az_15.6.1']).toContain(directory);
     fs.rmSync(map(directory), { recursive: true });
     removed.push(directory);
-    available += perRemoval;
+    available += sizes[directory] ?? perRemoval;
     return '';
   });
   const log = vi.fn();
@@ -199,6 +199,44 @@ describe('hosted runner space preparation', () => {
     expect(host.removed).not.toContain('/usr/share/miniconda');
     expect(host.log).toHaveBeenCalledWith('Preserving active runtime or deployment dependency: /usr/share/miniconda');
     expect(fs.readFileSync(host.map('/usr/share/miniconda/bin/python3'), 'utf8')).toBe('active runtime');
+  });
+
+  it('covers the measured 20260927 image shortfall without lowering the 45 GiB reserve', () => {
+    const optionalSizes = {
+      '/opt/hostedtoolcache/PyPy': 547_770_368,
+      '/home/packer/.rustup': 630_726_656,
+      '/home/packer/.cargo': 21_131_264,
+      '/home/runner/.dotnet': 183_328_768,
+      '/home/packer/.dotnet': 183_332_864,
+      '/usr/local/aws-sam-cli': 206_561_280,
+    };
+    // Original allowlist and Docker cleanup had left exactly this much free.
+    const host = fixture(48_035_872_768, 0, optionalSizes);
+    const result = prepareRunnerSpace(host.options);
+    expect(MIN_FREE_BYTES).toBe(45 * GiB);
+    expect(result.available).toBe(48_035_872_768 + optionalSizes['/opt/hostedtoolcache/PyPy']);
+    expect(result.available).toBeGreaterThanOrEqual(MIN_FREE_BYTES);
+    expect(host.removed.at(-1)).toBe('/opt/hostedtoolcache/PyPy');
+    expect(host.removed).not.toContain('/home/packer/.rustup');
+    expect(Object.values(optionalSizes).reduce((a, b) => a + b, 0)).toBeGreaterThan(1.6 * GiB);
+  });
+
+  it('preserves active PyPy and removes only exact SDK directories in user homes', () => {
+    const host = fixture(beforeCleanup(-1));
+    const active = '/opt/hostedtoolcache/PyPy/3.11/bin/python3';
+    const siblings = ['/home/packer/keep', '/home/packer/.ssh/keep', '/home/runner/.ssh/keep', '/usr/local/aws-project/keep'];
+    for (const file of [active, ...siblings]) {
+      fs.mkdirSync(path.dirname(host.map(file)), { recursive: true });
+      fs.writeFileSync(host.map(file), 'preserve');
+    }
+    const run = vi.fn((program: string, args: string[]) => program === 'which'
+      ? host.run(program, args).replace('/opt/hostedtoolcache/Python/3.12/bin/python3', active)
+      : host.run(program, args));
+    expect(prepareRunnerSpace({ ...host.options, run }).available).toBe(MIN_FREE_BYTES);
+    expect(host.removed).not.toContain('/opt/hostedtoolcache/PyPy');
+    for (const directory of ['/home/packer/.rustup', '/home/packer/.cargo', '/home/runner/.dotnet', '/home/packer/.dotnet', '/usr/local/aws-sam-cli'])
+      expect(host.removed).toContain(directory);
+    for (const file of [active, ...siblings]) expect(fs.readFileSync(host.map(file), 'utf8')).toBe('preserve');
   });
 
   it('removes only documented preloaded images on the fixed local daemon without force', () => {

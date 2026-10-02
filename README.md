@@ -4,7 +4,7 @@ The benchmark frontend and public query/contribution API. Scientific records, so
 
 ## Development
 
-Requires Node.js 22 or newer and read access to the private data repository.
+Requires Node.js 22 or newer. The public data repository is fetched over HTTPS; no personal token or SSH key is required.
 
 ```sh
 npm ci

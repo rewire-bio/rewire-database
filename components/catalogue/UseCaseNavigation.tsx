@@ -10,14 +10,14 @@ function contextSearch(search: string) {
 
 function ContextLink({ href, useCasePath, children }: { href: string; useCasePath: string; children: ReactNode }) {
   const search = useSearchParams();
-  const destination = new URL(href, "https://benchmarks.rewire.it");
+  const destination = new URL(href, "https://benchmarks.rewirebio.io");
   destination.searchParams.set("return_to", useCasePath + contextSearch(search.toString()));
   return <a href={`${destination.pathname}${destination.search}${destination.hash}`}>{children}</a>;
 }
 
 /** Only the link is reactive; question, scope and evidence stay in exported HTML. */
 export function UseCaseRecordLink({ href, useCasePath, children }: { href: string; useCasePath: string; children: ReactNode }) {
-  const destination = new URL(href, "https://benchmarks.rewire.it");
+  const destination = new URL(href, "https://benchmarks.rewirebio.io");
   destination.searchParams.set("return_to", useCasePath);
   return <Suspense fallback={<a href={`${destination.pathname}${destination.search}${destination.hash}`}>{children}</a>}>
     <ContextLink href={href} useCasePath={useCasePath}>{children}</ContextLink>

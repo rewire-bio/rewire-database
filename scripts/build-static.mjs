@@ -38,9 +38,9 @@ function linkTree(source, destination) {
  * collisions manually without deleting either copy. Remove the empty staging
  * directories, recovery.json and lock directory after restoring everything.
  * A stale lock is never automatically stolen; unrelated workbench files remain.
- * @param {{root?: string, build?: (options: {root: string, signal?: AbortSignal}) => Promise<unknown>, signal?: AbortSignal}} [options]
+ * @param {{root?: string, build?: (options: {root: string, signal?: AbortSignal}) => Promise<unknown>, signal?: AbortSignal, currentOnly?: boolean}} [options]
  */
-export async function buildStatic({ root = process.cwd(), build, signal } = {}) {
+export async function buildStatic({ root = process.cwd(), build, signal, currentOnly = false } = {}) {
   if (typeof build !== 'function') throw new TypeError('A build callback is required');
   root = path.resolve(root);
   const releases = path.join(root, 'public/omics/releases');
@@ -105,7 +105,7 @@ export async function buildStatic({ root = process.cwd(), build, signal } = {}) 
       directory(path.join(output, current)); // Never report success without the current release export.
       for (const name of moved) if (exists(path.join(output, name))) throw new Error(`Export collision: ${path.join(output, name)}; no files overwritten`);
       for (const name of movedCurrent) if (exists(path.join(output, current, name))) throw new Error(`Export collision: ${path.join(output, current, name)}; no files overwritten`);
-      for (const name of moved) linkTree(path.join(releases, name), path.join(output, name));
+      if (!currentOnly) for (const name of moved) linkTree(path.join(releases, name), path.join(output, name));
       for (const name of movedCurrent) fs.linkSync(path.join(releases, current, name), path.join(output, current, name));
     }
   } catch (error) { failure = error; }
@@ -158,7 +158,7 @@ async function main() {
   const onTerminate = () => controller.abort('SIGTERM');
   process.on('SIGINT', onInterrupt);
   process.on('SIGTERM', onTerminate);
-  try { await buildStatic({ build: runNextBuild, signal: controller.signal }); }
+  try { await buildStatic({ build: runNextBuild, signal: controller.signal, currentOnly: process.argv.includes("--current-only") }); }
   catch (error) {
     console.error(error);
     process.exitCode = controller.signal.reason === 'SIGINT' ? 130 : controller.signal.reason === 'SIGTERM' ? 143 : 1;

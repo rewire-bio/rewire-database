@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { safeBrowseReturnTo } from "@/lib/omics-browse";
 import styles from "./SectionNavigation.module.css";
@@ -68,6 +68,29 @@ export default function SectionNavigation({
   sections: PageSection[];
 }) {
   const [active, setActive] = useState(sections[0]?.id || "");
+  const navRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const nav = navRef.current;
+    if (!nav) return;
+    const root = document.documentElement;
+    const previous = root.style.getPropertyValue("--section-nav-height");
+    const setHeight = () => {
+      root.style.setProperty("--section-nav-height", `${nav.offsetHeight}px`);
+    };
+    setHeight();
+    const observer = new ResizeObserver(setHeight);
+    observer.observe(nav);
+    return () => {
+      observer.disconnect();
+      if (previous) {
+        root.style.setProperty("--section-nav-height", previous);
+      } else {
+        root.style.removeProperty("--section-nav-height");
+      }
+    };
+  }, []);
+
   useEffect(() => {
     const reveal = () => revealFragment(window.location.hash);
     const click = (event: MouseEvent) => {
@@ -105,7 +128,7 @@ export default function SectionNavigation({
     };
   }, [sections]);
   return (
-    <nav className={styles.nav} aria-label="On this page">
+    <nav ref={navRef} className={styles.nav} aria-label="On this page">
       <div className={styles.links}>
         {sections.map((section) => (
           <a

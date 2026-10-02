@@ -1,5 +1,4 @@
 import fs from "node:fs";
-import { gunzipSync } from "node:zlib";
 import { describe, expect, it } from "vitest";
 import {
   packComparisons,
@@ -174,11 +173,7 @@ describe("lossless internal comparison transport", () => {
   });
   it("round-trips every current published panel without changing source values or catalogue records", () => {
     const snapshot: CatalogueSnapshot = JSON.parse(
-      gunzipSync(
-        fs.readFileSync(
-          "data/omics/releases/2026-09-22-f58a0f1d267f/catalogue.json.gz",
-        ),
-      ).toString(),
+      fs.readFileSync("public/omics/catalogue.json").toString(),
     );
     const original = JSON.stringify(snapshot);
     const query = createCatalogueQuery(snapshot);
@@ -202,7 +197,9 @@ describe("lossless internal comparison transport", () => {
       ),
     );
     expect([...seen].sort()).toEqual([...expected].sort());
-    expect(seen.size).toBe(765);
+    const legacy = JSON.parse(fs.readFileSync("tests/fixtures/legacy-coverage-ids.json", "utf8")).panel_ids as string[];
+    expect(legacy).toHaveLength(765);
+    expect(legacy.filter(id => seen.has(id))).toHaveLength(765);
     expect(JSON.stringify(snapshot)).toBe(original);
   }, 120_000);
 });

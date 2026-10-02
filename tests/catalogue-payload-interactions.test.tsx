@@ -2,7 +2,6 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { act, create, type ReactTestRenderer } from "react-test-renderer";
 import { renderToStaticMarkup } from "react-dom/server";
 import fs from "node:fs";
-import { gunzipSync } from "node:zlib";
 import { createCatalogueQuery } from "../services/omics/src/catalogue-query";
 import { packComparisons } from "../lib/comparison-transport";
 
@@ -19,11 +18,7 @@ import { ComparisonWorkspace } from "../components/catalogue/BenchmarkCharts";
 import Results from "../components/catalogue/Results";
 import EvidenceTable from "../components/catalogue/EvidenceTable";
 const catalogue = JSON.parse(
-  gunzipSync(
-    fs.readFileSync(
-      "data/omics/releases/2026-09-22-f58a0f1d267f/catalogue.json.gz",
-    ),
-  ).toString(),
+  fs.readFileSync("public/omics/catalogue.json").toString(),
 );
 const query = createCatalogueQuery(catalogue);
 const id = "discovery-benchmark-cafa";
@@ -39,7 +34,7 @@ async function flush() {
   });
 }
 async function changeLocation(search: string) {
-  url = new URL("https://benchmarks.rewire.it/test/" + search);
+  url = new URL("https://benchmarks.rewirebio.io/test/" + search);
   await act(async () => {
     events.dispatchEvent(new Event("popstate"));
   });
@@ -54,7 +49,7 @@ function text() {
 }
 beforeEach(() => {
   vi.clearAllMocks();
-  url = new URL("https://benchmarks.rewire.it/test/");
+  url = new URL("https://benchmarks.rewirebio.io/test/");
   events = new EventTarget();
   vi.stubGlobal("window", {
     get location() {

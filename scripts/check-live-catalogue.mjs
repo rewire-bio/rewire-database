@@ -7,7 +7,7 @@ import { contributionProbeMode, verifyContributionGate } from "./contribution-de
 // Read-only acceptance probe. No Firebase credentials, imports or writes.
 const args = process.argv.slice(2);
 const contributionMode = contributionProbeMode(args);
-const origin = (args.find(arg => !arg.startsWith("--")) || "https://benchmarks.rewire.it").replace(
+const origin = (args.find(arg => !arg.startsWith("--")) || "https://benchmarks.rewirebio.io").replace(
   /\/$/,
   "",
 );

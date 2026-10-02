@@ -9,7 +9,6 @@ const NAV = [
   { href: "/use-cases/", label: "Use cases" },
   { href: "/benchmarks/", label: "Benchmarks" },
   { href: "/models/", label: "Models" },
-  { href: "/investigations/", label: "Investigations" },
   { href: "/evidence/", label: "Evidence and sources" },
   { href: "/contribute/", label: "Contribute" },
 ];
@@ -47,7 +46,7 @@ export default function Header() {
           {label}
         </NavigationLink>;
       })}
-      <a href="https://rewire.it/blog/">Articles ↗</a>
+      <a href="https://rewirebio.io/blog/">Articles ↗</a>
     </>
   );
   return (

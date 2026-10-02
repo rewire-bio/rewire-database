@@ -4,31 +4,9 @@ import fs from "node:fs";
 import Profile from "../components/catalogue/Profile";
 import Results from "../components/catalogue/Results";
 import { createCatalogueQuery } from "../services/omics/src/catalogue-query";
-import { enrichProfiles } from "../lib/omics-profile";
-import { enrichAssociations } from "../scripts/omics/enrich";
-import { buildRelease } from "../scripts/omics/release";
-import { currentCatalogueBase } from "../scripts/omics/inputs";
-const read = (name: string) =>
-  fs
-    .readFileSync(`data/omics/${name}.jsonl`, "utf8")
-    .trim()
-    .split("\n")
-    .map((line) => JSON.parse(line));
-const records = enrichProfiles(
-  enrichAssociations(
-    currentCatalogueBase([...read("migrated"), ...read("discovery")]),
-    [
-      ...read("model-profile-associations"),
-      ...read("benchmark-profile-associations"),
-    ],
-  ),
-  [...read("model-profiles"), ...read("benchmark-profiles")],
-);
-const query = createCatalogueQuery(
-  buildRelease(records, "2026-09-16T17:14:09Z", {
-    entity_schema_version: "1.1",
-  }).snapshot,
-);
+const snapshot = JSON.parse(fs.readFileSync("public/omics/catalogue.json", "utf8"));
+const records = snapshot.records as import("../services/omics/src/catalogue-query").CatalogueRecord[];
+const query = createCatalogueQuery(snapshot);
 describe("scientific profile rendering", () => {
   it("renders BarcodeBERT's exact result with direct model, task, dataset and source links", () => {
     const initial = query.results({ id: "reported-model-05103f72325fe5" });

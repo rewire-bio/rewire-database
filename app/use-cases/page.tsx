@@ -11,7 +11,7 @@ const title = "Biological research use cases | rewire.it";
 const description = "Research and clinical research questions guide evidence gathering. Explore collection plans, reviewed model comparisons and the limits of their evidence.";
 export const metadata: Metadata = {
   title, description,
-  alternates: { canonical: "https://benchmarks.rewire.it/use-cases/" },
+  alternates: { canonical: "https://benchmarks.rewirebio.io/use-cases/" },
   ...socialMetadata({ title, description, path: "/use-cases/" }),
 };
 

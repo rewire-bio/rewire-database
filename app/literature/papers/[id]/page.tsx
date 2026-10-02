@@ -54,7 +54,7 @@ export function generateMetadata({
       ? `Source record for ${paper.title} in the benchmark database.`
       : `Historical source citation retained outside the current omics catalogue.`,
     alternates: {
-      canonical: `https://benchmarks.rewire.it${destination || `/literature/papers/${paper.id}/`}`,
+      canonical: `https://benchmarks.rewirebio.io${destination || `/literature/papers/${paper.id}/`}`,
     },
     ...(destination ? {} : { robots: { index: false, follow: true } }),
   };

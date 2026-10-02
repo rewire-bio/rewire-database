@@ -85,3 +85,12 @@ __pycache__/
 firebase-debug*.log
 *-debug.log
 gha-creds-*.json
+
+# Staged Cloudflare assets (generated from out/)
+/.cloudflare/
+
+/cloudflare-web.tar.gz
+
+# Hydrated, checksum-verified files owned by rewire-benchmark-data
+/data/
+/lib/generated-benchmark-catalog.ts

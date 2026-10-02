@@ -46,6 +46,30 @@ describe("correction publication across releases", () => {
 });
 
 describe("deployment rollback", () => {
+  it('reuses a verified catalogue without activation or pointer rollback', async () => {
+    const { actions, calls } = operations('website');
+    await expect(deployCatalogue({ ...actions, canReuseCatalogue: async () => true })).rejects.toThrow('retained or restored');
+    expect(calls).toEqual(['api', 'hosting', 'website', 'restore-hosting']);
+  });
+  it('does not roll back an intervening deployment when preflight rejects a stale plan', async () => {
+    const { actions, calls } = operations();
+    await expect(deployCatalogue({ ...actions, canReuseCatalogue: async () => { throw new Error('changed'); } })).rejects.toThrow('changed');
+    expect(calls).toEqual([]);
+  });
+  it('does not roll back live Hosting for failed draft preparation', async () => {
+    const { actions, calls } = operations();
+    await expect(deployCatalogue({ ...actions, canReuseCatalogue: async () => true,
+      publishHosting: async () => { throw new Error('stale base'); },
+    })).rejects.toThrow('retained or restored');
+    expect(calls).toEqual(['api']);
+  });
+  it('restores Hosting after an ambiguous live REST release attempt', async () => {
+    const { actions, calls } = operations();
+    await expect(deployCatalogue({ ...actions, canReuseCatalogue: async () => true,
+      publishHosting: async (_previous: unknown, markAttempt: () => void) => { markAttempt(); throw new Error('network'); },
+    })).rejects.toThrow('retained or restored');
+    expect(calls).toEqual(['api', 'restore-hosting']);
+  });
   it("verifies both surfaces before declaring success", async () => {
     const { actions, calls } = operations();
     await deployCatalogue(actions);

@@ -10,15 +10,19 @@ export default function Reproduction({
   evaluation,
   records,
   compact = false,
+  recordById,
 }: {
   evaluation?: OmicsRecord | null;
   records: OmicsRecord[];
   compact?: boolean;
+  recordById?: (id: string) => OmicsRecord | null | undefined;
 }) {
   if (!evaluation) return null;
-  const byId = new Map(records.map((r) => [r.id, r]));
+  // Static record pages already have an index for this immutable catalogue.
+  const byId = recordById ? undefined : new Map(records.map((r) => [r.id, r]));
+  const lookup = recordById || ((id: string) => byId!.get(id));
   const context = evaluation.links.flatMap((link) => {
-    const target = byId.get(link.target_id);
+    const target = lookup(link.target_id);
     return target &&
       [
         "model",
@@ -40,7 +44,7 @@ export default function Reproduction({
     evaluation.attributes.reproduction,
   );
   const recipeOwner = parsed.success
-    ? byId.get(parsed.data.recipe_owner_id)
+    ? lookup(parsed.data.recipe_owner_id)
     : undefined;
   const comparison = (evaluation.attributes.comparison || {}) as Record<
     string,

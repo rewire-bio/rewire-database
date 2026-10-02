@@ -10,7 +10,7 @@ const pageMetadata = {
   title: "Catalogue audit history",
   description:
     "Linked verification checks, source evidence and correction history for the rewire catalogue.",
-  alternates: { canonical: "https://benchmarks.rewire.it/audits/" },
+  alternates: { canonical: "https://benchmarks.rewirebio.io/audits/" },
 };
 export const metadata: Metadata = {
   ...pageMetadata,

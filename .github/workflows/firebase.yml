@@ -4,6 +4,11 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+    inputs:
+      force_full:
+        description: Rebuild all archives and redeploy the backend
+        type: boolean
+        default: false
 permissions:
   contents: read
   id-token: write
@@ -18,6 +23,15 @@ jobs:
     # bundles. That needs more heap than Node allows itself by default.
     env:
       NODE_OPTIONS: --max-old-space-size=8192
+      FIREBASE_PROJECT_ID: ${{ vars.FIREBASE_PROJECT_ID }}
+      OMICS_CONTRIBUTIONS_ENABLED: ${{ vars.OMICS_CONTRIBUTIONS_ENABLED || 'false' }}
+      OMICS_MAIL_ENABLED: ${{ vars.OMICS_MAIL_ENABLED || 'false' }}
+      NEXT_PUBLIC_OMICS_CONTRIBUTIONS_ENABLED: ${{ vars.NEXT_PUBLIC_OMICS_CONTRIBUTIONS_ENABLED || 'false' }}
+      NEXT_PUBLIC_FIREBASE_API_KEY: ${{ vars.NEXT_PUBLIC_FIREBASE_API_KEY }}
+      NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: ${{ vars.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN }}
+      NEXT_PUBLIC_FIREBASE_PROJECT_ID: ${{ vars.NEXT_PUBLIC_FIREBASE_PROJECT_ID }}
+      NEXT_PUBLIC_FIREBASE_APP_ID: ${{ vars.NEXT_PUBLIC_FIREBASE_APP_ID }}
+      NEXT_PUBLIC_GA_ID: ${{ vars.NEXT_PUBLIC_GA_ID }}
     steps:
       - uses: actions/checkout@v4
       - name: Free temporary runner space for immutable release exports
@@ -28,34 +42,84 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      # Avoid a second cache archive while the static export occupies the disk.
+      - name: Select publication work from the last live receipt
+        id: plan
+        run: node scripts/deployment-plan.mjs
+        env:
+          FORCE_FULL: ${{ inputs.force_full || 'false' }}
+      - name: Restore Next compilation cache
+        id: next-cache
+        uses: actions/cache/restore@v4
+        with:
+          path: .next/cache
+          key: ${{ runner.os }}-node22-next-${{ hashFiles('package-lock.json') }}-${{ steps.plan.outputs.compiler_env }}-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-node22-next-${{ hashFiles('package-lock.json') }}-${{ steps.plan.outputs.compiler_env }}-
+      # Expanded historical exports are intentionally never cached.
       - run: |
           npm ci
           npm cache clean --force
+      - name: Read the reviewed data pin
+        id: data-pin
+        run: |
+          node -e 'const p=require("./benchmark-data.lock.json"); if(p.repository!=="rewire-bio/rewire-benchmark-data" || !/^[a-f0-9]{40}$/.test(p.revision)) throw Error("Invalid data pin"); require("fs").appendFileSync(process.env.GITHUB_OUTPUT, "revision="+p.revision+"\n")'
+      - name: Restore pinned compressed data checkout
+        id: data-cache
+        uses: actions/cache/restore@v4
+        with:
+          path: workbench/benchmark-data
+          key: benchmark-data-${{ steps.data-pin.outputs.revision }}
+      - name: Check out the immutable data artifact
+        if: steps.data-cache.outputs.cache-hit != 'true'
+        uses: actions/checkout@v4
+        with:
+          repository: rewire-bio/rewire-benchmark-data
+          ref: ${{ steps.data-pin.outputs.revision }}
+          persist-credentials: false
+          path: workbench/benchmark-data
+          sparse-checkout: |
+            website
+            data/omics/releases
+      - name: Reserve build space after the compressed dependency checkout
+        if: runner.environment == 'github-hosted'
+        run: node scripts/prepare-runner-space.mjs --after-dependencies
+      - name: Hydrate and verify the pinned release
+        run: |
+          if [ "${{ steps.plan.outputs.mode }}" = web ]; then npm run data:prepare -- --current-only; else npm run data:prepare; fi
+      - name: Cache verified compressed data
+        if: steps.data-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: workbench/benchmark-data
+          key: ${{ steps.data-cache.outputs.cache-primary-key }}
       - run: npm test
       - run: npm run lint
       - name: Validate contribution configuration and build website
-        run: node scripts/check-analytics-config.mjs && node scripts/configure-contribution-deployment.mjs --validate-only && npm run build
-        env:
-          FIREBASE_PROJECT_ID: ${{ vars.FIREBASE_PROJECT_ID }}
-          OMICS_CONTRIBUTIONS_ENABLED: ${{ vars.OMICS_CONTRIBUTIONS_ENABLED || 'false' }}
-          NEXT_PUBLIC_OMICS_CONTRIBUTIONS_ENABLED: ${{ vars.NEXT_PUBLIC_OMICS_CONTRIBUTIONS_ENABLED || 'false' }}
-          OMICS_MAIL_ENABLED: ${{ vars.OMICS_MAIL_ENABLED || 'false' }}
-          NEXT_PUBLIC_FIREBASE_API_KEY: ${{ vars.NEXT_PUBLIC_FIREBASE_API_KEY }}
-          NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: ${{ vars.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN }}
-          NEXT_PUBLIC_FIREBASE_PROJECT_ID: ${{ vars.NEXT_PUBLIC_FIREBASE_PROJECT_ID }}
-          NEXT_PUBLIC_FIREBASE_APP_ID: ${{ vars.NEXT_PUBLIC_FIREBASE_APP_ID }}
-          NEXT_PUBLIC_GA_ID: ${{ vars.NEXT_PUBLIC_GA_ID }}
+        run: |
+          node scripts/check-analytics-config.mjs
+          node scripts/configure-contribution-deployment.mjs --validate-only
+          if [ "${{ steps.plan.outputs.mode }}" = web ]; then npm run build:web; else npm run build; fi
+          node scripts/deployment-plan.mjs --receipt
       - run: npm run typecheck
+      - name: Save Next compilation cache before cleanup
+        if: steps.next-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: .next/cache
+          key: ${{ steps.next-cache.outputs.cache-primary-key }}
       - name: Release intermediate Next build space
         # Static hosting uses out/. Keep generated types, exports and archives.
         run: |
           rm -rf .next/server .next/cache
           df -h .
-      - run: npm run check:export
+      - name: Verify exported website and release bytes
+        run: |
+          if [ "${{ steps.plan.outputs.mode }}" = web ]; then npm run check:export:web; else npm run check:export; fi
         env:
           NEXT_PUBLIC_GA_ID: ${{ vars.NEXT_PUBLIC_GA_ID }}
           NEXT_PUBLIC_OMICS_CONTRIBUTIONS_ENABLED: ${{ vars.NEXT_PUBLIC_OMICS_CONTRIBUTIONS_ENABLED || 'false' }}
+      - name: Stage and validate Cloudflare asset subset
+        run: npm run prepare:cloudflare && node scripts/check-cloudflare-local.mjs
       - name: Verify Firebase HTTP routing
         run: npx firebase emulators:exec --project demo-rewire-omics --only hosting 'npm run check:http'
       - uses: actions/setup-java@v4
@@ -66,27 +130,63 @@ jobs:
         run: npm ci --prefix services/omics && npm --prefix services/omics run build && npm --prefix services/omics run check:functions:load
       - name: Verify Hosting and API integration
         run: npx firebase emulators:exec --project demo-rewire-omics --only hosting,functions,auth,firestore 'npm --prefix services/omics test && node scripts/check-api-hosting.mjs'
+        env:
+          # The HTTP probe explicitly verifies the disabled-intake contract.
+          # Keep emulator settings independent of the production publication plan.
+          OMICS_CONTRIBUTIONS_ENABLED: 'false'
+          OMICS_MAIL_ENABLED: 'false'
+      - name: Package checked Cloudflare frontend for operator bootstrap
+        run: |
+          node -e 'require("node:fs").writeFileSync(".cloudflare/build.json", JSON.stringify({repository: process.env.GITHUB_REPOSITORY, commit: process.env.GITHUB_SHA, run: process.env.GITHUB_RUN_ID, wrangler: require("./package.json").devDependencies.wrangler}, null, 2) + "\n")'
+          tar -czf cloudflare-web.tar.gz .cloudflare/assets .cloudflare/inventory.json .cloudflare/build.json cloudflare wrangler.jsonc firebase.json
+      - name: Retain checked Cloudflare frontend briefly
+        uses: actions/upload-artifact@v4
+        with:
+          name: cloudflare-web-${{ github.sha }}
+          path: cloudflare-web.tar.gz
+          retention-days: 3
+          compression-level: 0
+          if-no-files-found: error
       - name: Authenticate to Google
         if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && vars.FIREBASE_DEPLOY_ENABLED == 'true' && vars.FIREBASE_BACKEND_DEPLOY_ENABLED == 'true'
         uses: google-github-actions/auth@v2
         with:
           workload_identity_provider: ${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER }}
           service_account: ${{ vars.GCP_DEPLOY_SERVICE_ACCOUNT }}
-      - name: Deploy reviewed API and private Firestore rules
+      - name: Check independent backend deployment state
+        id: backend
         if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && vars.FIREBASE_DEPLOY_ENABLED == 'true' && vars.FIREBASE_BACKEND_DEPLOY_ENABLED == 'true'
+        run: node scripts/backend-deployment.mjs
+        env:
+          GCLOUD_PROJECT: ${{ vars.FIREBASE_PROJECT_ID }}
+          NODE_ENV: production
+      - name: Deploy reviewed API and private Firestore rules
+        if: steps.backend.outputs.required == 'true' && github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && vars.FIREBASE_DEPLOY_ENABLED == 'true' && vars.FIREBASE_BACKEND_DEPLOY_ENABLED == 'true'
         run: |
+          node scripts/backend-deployment.mjs --begin
           node scripts/configure-contribution-deployment.mjs
           npx firebase deploy --only functions:omics,firestore --project "$FIREBASE_PROJECT_ID" --non-interactive
+          node scripts/backend-deployment.mjs --complete
         env:
+          GCLOUD_PROJECT: ${{ vars.FIREBASE_PROJECT_ID }}
+          NODE_ENV: production
           FIREBASE_PROJECT_ID: ${{ vars.FIREBASE_PROJECT_ID }}
           OMICS_CONTRIBUTIONS_ENABLED: ${{ vars.OMICS_CONTRIBUTIONS_ENABLED || 'false' }}
           OMICS_MAIL_ENABLED: ${{ vars.OMICS_MAIL_ENABLED || 'false' }}
       - name: Publish catalogue and website with rollback
         if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && vars.FIREBASE_DEPLOY_ENABLED == 'true' && vars.FIREBASE_BACKEND_DEPLOY_ENABLED == 'true'
-        run: node scripts/deploy-catalogue.mjs
+        run: node scripts/backend-deployment.mjs --assert && node scripts/deploy-catalogue.mjs
         env:
           GCLOUD_PROJECT: ${{ vars.FIREBASE_PROJECT_ID }}
           NODE_ENV: production
+          OMICS_CONTRIBUTIONS_ENABLED: ${{ vars.OMICS_CONTRIBUTIONS_ENABLED || 'false' }}
+      - name: Publish Cloudflare web frontend with rollback
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && vars.CLOUDFLARE_DEPLOY_ENABLED == 'true' && vars.FIREBASE_DEPLOY_ENABLED == 'true' && vars.FIREBASE_BACKEND_DEPLOY_ENABLED == 'true'
+        run: node scripts/deploy-cloudflare.mjs
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_PUBLIC_ORIGIN: ${{ vars.CLOUDFLARE_PUBLIC_ORIGIN }}
           OMICS_CONTRIBUTIONS_ENABLED: ${{ vars.OMICS_CONTRIBUTIONS_ENABLED || 'false' }}
       - name: Remove generated service environment
         if: always()

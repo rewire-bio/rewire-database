@@ -1,14 +1,10 @@
+import fs from "node:fs";
 import { describe, expect, it, vi } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
 import {
   createCatalogueQuery,
   type CatalogueSnapshot,
 } from "../services/omics/src/catalogue-query";
-import { currentCatalogueBase, readJsonl } from "../scripts/omics/inputs";
-import { enrichProfiles } from "../lib/omics-profile";
-import { enrichAssociations } from "../scripts/omics/enrich";
-import { buildRelease } from "../scripts/omics/release";
-import type { RecordEntry } from "../scripts/omics/schema";
 import RecordPage from "../app/database/[kind]/[id]/page";
 
 const fixture = vi.hoisted(() => ({
@@ -23,20 +19,12 @@ vi.mock("../lib/catalogue-build", () => ({
 
 describe("configuration profile ownership", () => {
   it("shows its own reviewed facts even when a related family has more complete coverage", () => {
-    const read = (name: string) => readJsonl<any>(`data/omics/${name}.jsonl`);
-    const records = enrichProfiles(
-      enrichAssociations(
-        currentCatalogueBase([...read("migrated"), ...read("discovery")]),
-        [
-          ...read("model-profile-associations"),
-          ...read("benchmark-profile-associations"),
-        ],
-      ),
-      [...read("model-profiles"), ...read("benchmark-profiles")],
-    );
+    const snapshot: CatalogueSnapshot = JSON.parse(fs.readFileSync("public/omics/catalogue.json", "utf8"));
+    const records = snapshot.records;
     const configured = records.find(
       (record) =>
-        record.kind === "model" &&
+        ["model", "configuration"].includes(record.kind) &&
+        Boolean(record.attributes.profile) &&
         record.links.some((link) => link.relation === "family"),
     )!;
     const profile = structuredClone(configured.attributes.profile) as any;
@@ -55,15 +43,9 @@ describe("configuration profile ownership", () => {
         ? { ...record, attributes: { ...record.attributes, profile } }
         : record,
     );
-    fixture.snapshot = buildRelease(
-      patched as RecordEntry[],
-      "2026-09-16T20:00:00Z",
-      {
-        entity_schema_version: "1.1",
-      },
-    ).snapshot;
+    fixture.snapshot = { ...snapshot, records: patched };
     const html = renderToStaticMarkup(
-      <RecordPage params={{ kind: "model", id: configured.id }} />,
+      <RecordPage params={{ kind: configured.kind, id: configured.id }} />,
     );
     expect(html).toContain("This exact configuration has its own evidence.");
     expect(html).toContain("Do not replace me with family metadata.");

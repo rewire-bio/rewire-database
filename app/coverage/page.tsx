@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { readFileSync } from "node:fs";
 import Link from "next/link";
 import { buildCatalogue } from "@/lib/catalogue-build";
-import type { benchmarkCoverage } from "@/services/omics/src/benchmark-coverage";
+import type { BenchmarkCoverageAudit } from "@/services/omics/src/benchmark-coverage";
 import { kindLabels } from "@/lib/omics-browse";
 import styles from "@/app/database/database.module.css";
 export const metadata: Metadata = {
@@ -12,7 +12,8 @@ export const metadata: Metadata = {
 };
 export default function CoveragePage() {
   const { catalogue } = buildCatalogue();
-  const audit: ReturnType<typeof benchmarkCoverage> = JSON.parse(readFileSync(`public/omics/coverage/${catalogue.release_id}.json`, "utf8"));
+  const audit: BenchmarkCoverageAudit = JSON.parse(readFileSync(`public/omics/coverage/${catalogue.release_id}.json`, "utf8"));
+  if (audit.release_id !== catalogue.release_id) throw new Error("Coverage audit does not match the pinned catalogue release");
   return <>
     <header className="page-head"><div className="wrap">
       <span className="kick">Collection coverage</span><h1>Benchmark results and remaining gaps</h1>

@@ -9,7 +9,7 @@ import {
   type PageMetadataContract,
 } from "../scripts/seo/check-page-metadata";
 
-const origin = "https://benchmarks.rewire.it";
+const origin = "https://benchmarks.rewirebio.io";
 const pagePath = "/database/model/test-model/";
 const title = "Test <model>";
 const description = "A model's results & sources.";

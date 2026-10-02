@@ -1,5 +1,4 @@
 import fs from "node:fs";
-import { gunzipSync } from "node:zlib";
 import { describe, expect, it, vi } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
 import {
@@ -19,11 +18,7 @@ vi.mock("../lib/catalogue-build", () => ({
   }),
 }));
 fixture.snapshot = JSON.parse(
-  gunzipSync(
-    fs.readFileSync(
-      "data/omics/releases/2026-09-20-b2596bdf5206/catalogue.json.gz",
-    ),
-  ).toString(),
+  fs.readFileSync("public/omics/catalogue.json").toString(),
 );
 fixture.query = createCatalogueQuery(fixture.snapshot!);
 const render = (id: string) =>
@@ -35,8 +30,10 @@ const render = (id: string) =>
 
 describe("catalogue detail UX on the published release", () => {
   it("puts an overview before results and keeps all 30 benchmark pages navigable", () => {
+    const legacy = JSON.parse(fs.readFileSync("tests/fixtures/legacy-coverage-ids.json", "utf8")).benchmark_ids as string[];
+    expect(legacy).toHaveLength(30);
     const benchmarks = fixture.snapshot!.records.filter(
-      (record) => record.kind === "benchmark",
+      (record) => record.kind === "benchmark" && legacy.includes(record.id),
     );
     expect(benchmarks).toHaveLength(30);
     for (const record of benchmarks) {

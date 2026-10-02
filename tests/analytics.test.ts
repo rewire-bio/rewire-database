@@ -1,6 +1,5 @@
 import { readFileSync } from "node:fs";
 import vm from "node:vm";
-import { gunzipSync } from "node:zlib";
 import { describe, expect, it } from "vitest";
 import { ANALYTICS_ORIGIN, ANALYTICS_FRAME_ORIGIN, isPublicAnalyticsPath, privacySignal, publicPage, publicReferrer, readConsent } from "../lib/analytics/privacy";
 
@@ -24,7 +23,7 @@ function analyticsFrame(origin = ANALYTICS_FRAME_ORIGIN) {
 
 describe("consented public analytics", () => {
   it("covers every current canonical record path, including dataset subsets", () => {
-    const records = JSON.parse(gunzipSync(readFileSync("data/omics/releases/2026-09-20-b2596bdf5206/catalogue.json.gz")).toString("utf8")).records as { kind: string; id: string }[];
+    const records = JSON.parse(readFileSync("public/omics/catalogue.json").toString("utf8")).records as { kind: string; id: string }[];
     expect(records.length).toBeGreaterThan(0);
     expect(records.filter(record => !isPublicAnalyticsPath(`/database/${record.kind}/${record.id}/`))).toEqual([]);
     const frame = analyticsFrame();

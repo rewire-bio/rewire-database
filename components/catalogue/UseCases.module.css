@@ -1,16 +1,20 @@
 /* Heading sizes and section rhythm come from the shared .content scale in globals.css. */
 .collectionStatus { display: inline-flex; max-width: 100%; padding: 4px 10px; border: 1px solid var(--line); border-radius: 999px; background: var(--accent-soft); color: var(--accent-ink); font-size: 12px; font-weight: 500; line-height: 1.5; }
-.collectionPlan { min-width: 0; padding: 28px; border: 1px solid var(--line); border-top: 3px solid var(--accent); border-radius: var(--radius-md); background: var(--bg-subtle); overflow-wrap: anywhere; }
-.planHeading { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 20px; }
-.planHeading h2 { margin: 0; }
+/* :global(#collection-plan) keeps the id literal (anchor links and tests match it as-is) while still
+   outranking globals.css's .content > section:first-child rhythm rule, which would otherwise strip this
+   panel's padding and accent border. */
+:global(#collection-plan).collectionPlan { min-width: 0; padding: 28px; border: 1px solid var(--line); border-top: 3px solid var(--accent); border-radius: var(--radius-md); background: var(--bg-subtle); overflow-wrap: anywhere; }
+.planHeading { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 20px; margin-bottom: 16px; }
+:global(.content) .planHeading h2 { margin: 0; }
 .planGrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 28px; }
 .planGrid > div { min-width: 0; }
 .nextCollectionTask { margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--line); }
-.nextCollectionTask h3 { margin-top: 0; }
+:global(.content) .nextCollectionTask h3 { margin-top: 0; }
 .nextCollectionTask p:last-child { margin-bottom: 0; }
 .section { scroll-margin-top: var(--section-scroll-offset); min-width: 0; }
 .section p, .section li { line-height: 1.65; }
-.section ul, .inputs { list-style: disc; padding-left: 22px; }
+/* :not(.cards) keeps the card grid a bare list; nested lists (inputs, exclusions, etc.) keep their bullets. */
+.section ul:not(.cards), .inputs { list-style: disc; padding-left: 22px; }
 .section li + li { margin-top: 8px; }
 .section a, .card a, .backlinks a, .example a, .compare a, .notice a { color: var(--accent-ink); text-decoration: underline; text-underline-offset: 3px; }
 .section a:focus-visible, .card a:focus-visible, .backlinks a:focus-visible, .filters :focus-visible, .button:focus-visible, .chip:focus-visible, .tableWrap:focus-visible { outline: 2px solid var(--accent-ink); outline-offset: 3px; }
@@ -70,7 +74,10 @@
 .status p { margin: 0; }
 
 .cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; padding: 0; margin: 0; list-style: none; }
-.card { display: flex; flex-direction: column; min-width: 0; padding: 20px 22px; border: 1px solid var(--line); border-radius: var(--radius-md); background: var(--card); }
+/* Cancels .section li + li's margin/max-width leaking onto card items, and stretches the <li> so the
+   visible .card border fills the row height instead of just the content height. */
+.section .cards > li { margin: 0; min-width: 0; max-width: none; display: flex; }
+.card { width: 100%; flex: 1 1 auto; display: flex; flex-direction: column; min-width: 0; padding: 20px 22px; border: 1px solid var(--line); border-radius: var(--radius-md); background: var(--card); }
 .card:hover { border-color: var(--line-2); }
 .tag { margin: 0; color: var(--ink-3); font-family: var(--mono); font-size: 12px; line-height: 1.6; }
 :global(.content) .card h3 { margin: 6px 0 8px; font-size: var(--fs-h3); line-height: 1.3; }
@@ -121,7 +128,9 @@
   .cards, .facts, .planGrid { grid-template-columns: 1fr; }
   .filters { grid-template-columns: 1fr; }
   .filters > .button { margin-top: 0; }
-  .card, .mapping, .notice, .example, .collectionPlan { padding: 16px; }
+  .card, .mapping, .notice, .example { padding: 16px; }
+  /* Must match the :global(#collection-plan).collectionPlan specificity above, or this loses the cascade tie and the desktop 28px padding sticks on mobile. */
+  :global(#collection-plan).collectionPlan { padding: 16px; }
   .fields { grid-template-columns: 1fr; gap: 6px; }
   .fields dd { margin-bottom: 12px; }
   .table { min-width: 580px; }

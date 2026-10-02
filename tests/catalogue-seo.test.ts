@@ -1,5 +1,4 @@
 import fs, { readFileSync } from "node:fs";
-import { gunzipSync } from "node:zlib";
 import { describe, expect, it, vi } from "vitest";
 import { recordSearchMetadata, recordIsIndexable } from "../lib/catalogue-seo";
 import { parseCatalogue, recordHref, type OmicsRecord } from "../lib/omics";
@@ -129,7 +128,7 @@ describe("record search metadata", () => {
     expect(recordSearchMetadata(variant, records).title).toContain("8M");
     expect(recordSearchMetadata(family, records).title).not.toContain("8M");
     expect(recordSearchMetadata(variant, records).alternates.canonical).toBe(
-      `https://benchmarks.rewire.it${recordHref(variant)}`,
+      `https://benchmarks.rewirebio.io${recordHref(variant)}`,
     );
   });
   it("keeps supporting claims crawlable with noindex and self-canonical", () => {
@@ -137,18 +136,14 @@ describe("record search metadata", () => {
     const metadata = recordSearchMetadata(claim, [claim]);
     expect(metadata.robots).toEqual({ index: false, follow: true });
     expect(metadata.alternates.canonical).toBe(
-      "https://benchmarks.rewire.it/database/claim/claim/",
+      "https://benchmarks.rewirebio.io/database/claim/claim/",
     );
     expect(robots().rules).toEqual({ userAgent: "*", allow: "/" });
   });
   it("covers every released record and uses exactly the same sitemap eligibility without unsupported timestamps", () => {
     // Tests run before exports are generated in a clean checkout. Give the
     // sitemap the same committed release used for the metadata assertions.
-    const release = gunzipSync(
-      fs.readFileSync(
-        "data/omics/releases/2026-09-23-5fd75097e2dd/catalogue.json.gz",
-      ),
-    ).toString("utf8");
+    const release = fs.readFileSync("public/omics/catalogue.json").toString("utf8");
     const catalogue = parseCatalogue(JSON.parse(release));
     vi.mocked(readFileSync).mockReturnValueOnce(release);
     const entries = sitemap();

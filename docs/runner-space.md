@@ -1,6 +1,6 @@
 # Hosted runner disk reserve
 
-The producer and website require at least **45 GiB free** before the data build. The cleanup script retains that guard and stops removing installations as soon as it is satisfied. It validates hosted Ubuntu metadata, rejects symlinked paths and checkout overlap, and protects the actual Node, Python, Java, compiler, Git and Google Cloud executables. It never removes either user home or general-purpose caches.
+The producer and website require at least **45 GiB free before dependency installation**. The website uses **44 GiB after dependencies and the pinned compressed checkout are installed**, because dependency installation is no longer part of the remaining budget. The cleanup script retains that guard and stops removing installations as soon as it is satisfied. It validates hosted Ubuntu metadata, rejects symlinked paths and checkout overlap, and protects the actual Node, Python, Java, compiler, Git and Google Cloud executables. It never removes either user home or general-purpose caches.
 
 Producer run `36836317489` on image `20260927.320.1` failed after the previous allowlist and preloaded Docker images were exhausted: 48,035,872,768 bytes (44.74 GiB) free, 282,509,312 bytes short. Its read-only inventory identified these additional unused installations:
 
@@ -23,3 +23,9 @@ Pinned upstream installer evidence for image `ubuntu24/20260927.320`:
 - [AWS installer](https://github.com/actions/runner-images/blob/ubuntu24/20260927.320/images/ubuntu/scripts/build/install-aws-tools.sh) installs AWS SAM CLI; the failed image inventory confirms its separate installation directory.
 
 Run `npx vitest run tests/omics-runner-space.test.ts` to exercise cleanup against disposable filesystem fixtures. Tests inject every command and never execute real `sudo`, Docker cleanup or filesystem cleanup outside their temporary fixtures.
+
+## Website budget after installed dependencies
+
+Run `36981931877` had 47,979,589,632 bytes (44.68 GiB) free after dependencies and the public data checkout. Requiring the original pre-installation budget again rejected an otherwise sufficient runner. The second check now uses the fixed `--after-dependencies` phase with a 44 GiB minimum; the initial and producer checks remain 45 GiB. No arbitrary threshold override is accepted.
+
+The clean 7,076-file hydration audit used 29.996 GiB allocated with verified immutable hardlinks. The completed 28,935-page local export used approximately 3.61 GiB for additional output files and 3.75 GiB for `.next` (excluding hardlinked archive copies). That is approximately 37.36 GiB for hydrated data plus both page trees, leaving over 6 GiB at the post-installation floor. Historical exports and staged downloads share existing inodes. These measurements justify crediting only 1 GiB for dependencies already installed; the second guard still fails below 44 GiB.

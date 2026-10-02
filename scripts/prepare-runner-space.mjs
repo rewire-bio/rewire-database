@@ -4,6 +4,8 @@ import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
 export const MIN_FREE_BYTES = 45 * 1024 ** 3;
+// Dependency installation is already paid for at the second website check.
+export const AFTER_DEPENDENCIES_FREE_BYTES = 44 * 1024 ** 3;
 
 // Only disposable SDK installations on GitHub's Ubuntu VM images. Preserve the
 // checkout, archives, Node, Python, Java, Git and system compiler dependencies.
@@ -72,11 +74,14 @@ function command(program, args) {
 
 /** Reclaim only known unused SDKs, never arbitrary caches or repository data.
  * Dependencies are injectable for filesystem fixtures; CLI cannot override the
- * platform, safety guards, path allowlist or minimum free-space requirement. */
+ * platform, safety guards, path allowlist or the two fixed phase budgets. */
 export function prepareRunnerSpace({
   env = process.env, platform = process.platform, files = fs,
-  run = command, log = console.log, dryRun = false,
+  run = command, log = console.log, dryRun = false, phase = 'before-dependencies',
 } = {}) {
+  if (!['before-dependencies', 'after-dependencies'].includes(phase)) throw new Error('Unknown runner preparation phase');
+  const required = phase === 'after-dependencies' ? AFTER_DEPENDENCIES_FREE_BYTES : MIN_FREE_BYTES;
+  const budgetContext = phase === 'after-dependencies' ? 'after dependency installation' : 'before dependency installation';
   // RUNNER_ENVIRONMENT is documented at:
   // https://docs.github.com/en/actions/reference/workflows-and-actions/variables
   if (platform !== 'linux' || env.GITHUB_ACTIONS !== 'true' ||
@@ -151,11 +156,11 @@ export function prepareRunnerSpace({
   const removed = [];
   if (dryRun) {
     for (const directory of planned) log(`Would remove unused SDK: ${directory}`);
-    log(`Dry run: no files removed; ${gib(available)} free, ${gib(MIN_FREE_BYTES)} required before dependency installation.`);
-    return { dryRun, available, required: MIN_FREE_BYTES, planned, removed };
+    log(`Dry run: no files removed; ${gib(available)} free, ${gib(required)} required ${budgetContext}.`);
+    return { dryRun, available, required, planned, removed };
   }
   for (const directory of planned) {
-    if (available >= MIN_FREE_BYTES) break;
+    if (available >= required) break;
     log(`Removing unused SDK: ${directory}`);
     log(run('sudo', ['-n', 'du', '-s', '-x', '-B1', '--', directory]).trim());
     run('sudo', ['-n', 'rm', '-rf', '--one-file-system', '--', directory]);
@@ -164,7 +169,7 @@ export function prepareRunnerSpace({
   }
 
   const removedImages = [];
-  if (available < MIN_FREE_BYTES) {
+  if (available < required) {
     // No global prune, container deletion, volume deletion or registry access.
     // The fixed Unix socket and absent context/TLS overrides restrict this to
     // the disposable hosted VM's own daemon, regardless of default CLI context.
@@ -184,7 +189,7 @@ export function prepareRunnerSpace({
         throw new Error('Refusing Docker cache cleanup because this runner already has containers.');
       const cached = new Set(docker(['image', 'ls', '--format', '{{.Repository}}:{{.Tag}}']).trim().split('\n'));
       for (const image of UNUSED_RUNNER_IMAGES) {
-        if (available >= MIN_FREE_BYTES) break;
+        if (available >= required) break;
         if (!cached.has(image)) continue;
         log(`Removing unused preloaded runner image: ${image}`);
         log(docker(['image', 'rm', image]).trim()); // Deliberately no --force.
@@ -198,20 +203,20 @@ export function prepareRunnerSpace({
   log('Workspace filesystem after preparation:');
   log(run('df', ['-h', workspace]).trim());
   log(`Free space: ${gib(available)} (${available} bytes); reclaimed ${gib(available - before)}.`);
-  if (available < MIN_FREE_BYTES) {
+  if (available < required) {
     log('Remaining installation sizes (read-only diagnostics):');
     try { log(run('sudo', ['-n', 'du', '-x', '-B1', '--max-depth=2', '--', '/usr/local', '/usr/share', '/opt', '/home', '/var/lib']).trim()); }
     catch (error) { log(`Size diagnostics failed: ${error.message}`); }
-    throw new Error(`Insufficient temporary build space: need at least 45 GiB free before dependency installation; found ${gib(available)}. All allowed SDK/image cleanup is exhausted. Preserve the catalogue archives and investigate the runner inventory above.`);
+    throw new Error(`Insufficient temporary build space: need at least ${required / 1024 ** 3} GiB free ${budgetContext}; found ${gib(available)}. All allowed SDK/image cleanup is exhausted. Preserve the catalogue archives and investigate the runner inventory above.`);
   }
-  return { dryRun, available, required: MIN_FREE_BYTES, planned, removed, removedImages };
+  return { dryRun, available, required, planned, removed, removedImages };
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   try {
     const args = process.argv.slice(2);
-    if (args.length > 1 || (args.length === 1 && args[0] !== '--dry-run'))
-      throw new Error('Usage: node scripts/prepare-runner-space.mjs [--dry-run]');
-    prepareRunnerSpace({ dryRun: args[0] === '--dry-run' });
+    if (new Set(args).size !== args.length || args.some(arg => !['--dry-run', '--after-dependencies'].includes(arg)))
+      throw new Error('Usage: node scripts/prepare-runner-space.mjs [--dry-run] [--after-dependencies]');
+    prepareRunnerSpace({ dryRun: args.includes('--dry-run'), phase: args.includes('--after-dependencies') ? 'after-dependencies' : 'before-dependencies' });
   } catch (error) { console.error(error.message); process.exitCode = 1; }
 }

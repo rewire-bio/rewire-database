@@ -82,7 +82,7 @@ jobs:
             data/omics/releases
       - name: Reserve build space after the compressed dependency checkout
         if: runner.environment == 'github-hosted'
-        run: node scripts/prepare-runner-space.mjs
+        run: node scripts/prepare-runner-space.mjs --after-dependencies
       - name: Hydrate and verify the pinned release
         run: |
           if [ "${{ steps.plan.outputs.mode }}" = web ]; then npm run data:prepare -- --current-only; else npm run data:prepare; fi

@@ -1,20 +1,20 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { gunzipSync } from "node:zlib";
 import { validateSnapshot } from "../src/validation.js";
 import { createCatalogueQuery } from "../src/catalogue-query.js";
 
-// Tracked immutable archive makes this run on a clean checkout, before export.
-const snapshot = JSON.parse(gunzipSync(readFileSync(new URL(
-  "../../../data/omics/releases/2026-09-22-f58a0f1d267f/catalogue.json.gz", import.meta.url,
-))).toString());
+// Exact reviewed record closure; see fixtures/README.md for archive provenance.
+// This fixture works before export and in current-only builds without producer access.
+const snapshot = JSON.parse(readFileSync(new URL(
+  "./fixtures/release-compatibility-2026-09-22.json", import.meta.url,
+), "utf8"));
 const id = "rewire-dataset-proteingym-amfr-random-v13";
 const targetId = "rewire-dataset-proteingym-amfr-v13";
 
-test("the complete reviewed release is accepted by service ingestion", () => {
+test("the reviewed historical record closure is accepted by service ingestion", () => {
   const validated = validateSnapshot(snapshot);
-  assert.equal(validated.records.length, 21974);
+  assert.equal(validated.records.length, 42);
   assert.deepEqual(validated.records.find(r => r.id === id)?.links,
     [{ relation: "same_data_as", target_id: targetId }]);
 });

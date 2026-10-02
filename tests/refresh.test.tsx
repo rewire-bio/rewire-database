@@ -16,7 +16,7 @@ function fixture(): RefreshData {
   return {
     schema_version: "1.0", generated_at: "2026-10-01T10:00:00Z",
     schedule: { status: "active", timezone: "Europe/London", description: "First day of each month at 09:00 Europe/London.", next_due_at: "2026-11-01T09:00:00Z", maintainer: null },
-    runs: [{ id: "october-1", cycle_id: "2026-10", attempt: 1, status: "completed", started_at: "2026-10-01T08:00:00Z", finished_at: "2026-10-01T09:00:00Z", baseline_release_id: release, outcome: "no_change", coverage: { target_ids: ["genomics", "use-cases"], checked_ids: ["genomics", "use-cases"], gaps: ["Human scientific review remains unassigned."] }, counts: { added: 0, revised: 0, excluded: 2, blocked: 0 }, report_url: null, pr_url: null }],
+    runs: [{ id: "october-1", cycle_id: "2026-10", attempt: 1, status: "completed", started_at: "2026-10-01T08:00:00Z", finished_at: "2026-10-01T09:00:00Z", baseline_release_id: release, outcome: "no_change", coverage: { target_ids: ["genomics", "use-cases"], checked_ids: ["genomics", "use-cases"], gaps: [] }, counts: { added: 0, revised: 0, excluded: 2, blocked: 0 }, report_url: null, pr_url: null }],
     updates: [{ release_id: release, manifest_sha256: manifestHash, commit: "b".repeat(40), published_at: "2026-09-30T12:00:00Z", time_basis: "observed", maintenance_run_id: null, summary: ["Added source evidence & clarified <coverage>."], links: [{ label: "Evidence", url: "/evidence/" }], receipt_url: "https://benchmarks.rewirebio.io/deployment.json" }],
   };
 }
@@ -33,9 +33,12 @@ function directory() {
 describe("public refresh contract", () => {
   it("keeps the homepage compact while retaining detailed scope on the history view", () => {
     const data = fixture();
+    data.runs.push({ ...data.runs[0], id: "november-partial", cycle_id: "2026-11", status: "blocked", outcome: null,
+      started_at: "2026-11-01T09:00:00Z", finished_at: "2026-11-01T10:00:00Z",
+      coverage: { target_ids: ["genomics", "use-cases"], checked_ids: ["genomics"], gaps: ["Human scientific review remains unassigned."] } });
     const compact = renderToStaticMarkup(<RefreshStatus compact data={data} />);
     const full = renderToStaticMarkup(<RefreshStatus data={data} />);
-    for (const label of ["Last published update", "Last completed evidence sweep", "Next planned review", "Latest attempt: completed", "does not mean every record was reverified", "/updates/", "/updates/feed.xml"])
+    for (const label of ["Last published update", "Last completed evidence sweep", "Next planned review", "Latest attempt: blocked", "does not mean every record was reverified", "/updates/", "/updates/feed.xml"])
       expect(compact).toContain(label);
     expect(compact).not.toContain("Last completed scope:");
     expect(compact).not.toContain("Human scientific review remains unassigned.");
@@ -51,7 +54,6 @@ describe("public refresh contract", () => {
     expect(html).toContain("No candidate catalogue changes found in this sweep.");
     expect(html).toContain("Publication receipt not recorded");
     expect(html).toContain("does not mean every record was reverified");
-    expect(html).toContain("Human scientific review remains unassigned.");
   });
 
   it("retains last completed sweep when a newer attempt fails or remains partial", () => {
@@ -105,12 +107,29 @@ describe("public refresh contract", () => {
       (data: RefreshData) => { data.runs[0].counts.added = -1; },
       (data: RefreshData) => { data.runs[0].finished_at = null; },
       (data: RefreshData) => { data.runs[0].coverage.checked_ids = ["outside-scope"]; },
+      (data: RefreshData) => { data.runs[0].coverage.checked_ids = []; },
+      (data: RefreshData) => { data.runs[0].coverage.gaps = ["An unresolved source"]; },
+      (data: RefreshData) => { data.runs[0].counts.blocked = 1; },
+      (data: RefreshData) => { data.runs[0].counts.added = 1; },
+      (data: RefreshData) => { data.runs[0].outcome = "review_required"; },
+      (data: RefreshData) => { data.runs[0].coverage.target_ids = []; data.runs[0].coverage.checked_ids = []; },
       (data: RefreshData) => { data.updates[0].receipt_url = "javascript:alert(1)"; },
       (data: RefreshData) => { data.updates[0].links[0].url = "//untrusted.example"; },
       (data: RefreshData) => { data.runs.push(structuredClone(data.runs[0])); },
       (data: RefreshData) => { data.updates[0].maintenance_run_id = "unknown-run"; },
     ];
     for (const change of cases) { const data = fixture(); change(data); expect(() => parseRefresh(data)).toThrow(); }
+  });
+
+  it("rejects an incomplete pilot relabelled as a completed sweep before displaying freshness", () => {
+    const data = fixture();
+    data.runs[0].outcome = "review_required";
+    data.runs[0].coverage = { target_ids: ["genomics", "existing-sources", "use-cases"], checked_ids: [], gaps: ["The pilot is incomplete"] };
+    data.runs[0].counts = { added: 1, revised: 0, excluded: 0, blocked: 1 };
+    const root = directory();
+    fs.writeFileSync(path.join(root, "public/omics/refresh.json"), JSON.stringify(data));
+    fs.writeFileSync(path.join(root, "public/omics/manifest.json"), manifest);
+    expect(() => readRefresh(root, release)).toThrow(/Incomplete coverage/);
   });
 
   it("filters unadopted publications and rejects a mismatched current manifest", () => {

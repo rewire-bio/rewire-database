@@ -33,6 +33,15 @@ const runSchema = z.object({
     if (new Set(entries).size !== entries.length) problem("Duplicate coverage ID");
   if (run.coverage.checked_ids.some((entry) => !run.coverage.target_ids.includes(entry)))
     problem("Checked coverage must belong to the declared target scope");
+  if (run.status === "completed") {
+    if (!run.coverage.target_ids.length ||
+        run.coverage.checked_ids.length !== run.coverage.target_ids.length ||
+        run.coverage.gaps.length || run.counts.blocked) {
+      problem("Incomplete coverage cannot be a completed sweep");
+    }
+    if ((run.outcome === "no_change") !== (run.counts.added + run.counts.revised === 0))
+      problem("Completed outcome disagrees with findings");
+  }
 });
 
 const updateSchema = z.object({

@@ -1,14 +1,10 @@
-import { recordSchema } from "../scripts/omics/schema";
 import fs from "node:fs";
-import { gunzipSync } from "node:zlib";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it, vi } from "vitest";
 import {
   createCatalogueQuery,
   type CatalogueSnapshot,
 } from "../services/omics/src/catalogue-query";
-import { addCoverageTables } from "../scripts/omics/model-coverage-tables";
-import { addModelEvaluationLinks } from "../scripts/omics/model-evaluation-links";
 import RecordPage from "../app/database/[kind]/[id]/page";
 
 const fixture = vi.hoisted(() => ({
@@ -22,15 +18,11 @@ vi.mock("../lib/catalogue-build", () => ({
 }));
 
 const previous: CatalogueSnapshot = JSON.parse(
-  gunzipSync(
-    fs.readFileSync(
-      "data/omics/releases/2026-09-23-6c5e8b6b153f/catalogue.json.gz",
-    ),
-  ).toString(),
+  fs.readFileSync("public/omics/catalogue.json").toString(),
 );
 fixture.snapshot = {
   ...previous,
-  records: addModelEvaluationLinks(addCoverageTables(previous.records.map(record => recordSchema.parse(record)))),
+  records: previous.records,
 };
 const query = createCatalogueQuery(fixture.snapshot);
 const render = (id: string) =>
@@ -91,7 +83,7 @@ describe("model coverage profile rendering", () => {
   it("links ProteinMPNN checkpoint visitors to family evidence without assigning its scores to the checkpoint", () => {
     const id = "catalog-model-proteinmpnn";
     expect(query.results({ id }).total).toBe(0);
-    expect(query.results({ id: "discovery-model-proteinmpnn" }).total).toBe(18);
+    expect(query.results({ id: "discovery-model-proteinmpnn" }).total).toBe(19);
     const html = render(id);
     const link = html.indexOf(
       'href="/database/model/discovery-model-proteinmpnn#results"',
@@ -99,7 +91,7 @@ describe("model coverage profile rendering", () => {
     expect(link).toBeGreaterThanOrEqual(0);
     expect(link).toBeLessThan(html.indexOf('id="use-model"'));
     expect(closedDisclosuresAt(html, link)).toBe(0);
-    expect(html).toContain("View 18 results for the broader family");
+    expect(html).toContain("View 19 results for the broader family");
     expect(html).toContain(
       "their attribution to this exact checkpoint has not been verified",
     );

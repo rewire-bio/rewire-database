@@ -7,15 +7,15 @@ contains no credentials or private records.
 
 ## Selecting work
 
-`scripts/deployment-plan.mjs` hashes tracked input names and bytes. Data inputs,
-generator code, shared libraries, dependency locks and deployment code invalidate
-the data fingerprint. Hosting configuration has a separate fingerprint. Missing,
+`scripts/deployment-plan.mjs` hashes tracked input names and bytes. `benchmark-data.lock.json` alone determines the data fingerprint. Data inputs and
+generation belong to the separate data repository; frontend code and dependencies
+do not invalidate the catalogue. Hosting configuration has a separate fingerprint. Missing,
 unavailable or invalid receipts select the full path; a manual `force_full` run
-also rebuilds all archives and redeploys the backend.
+also restores all prepared archives and redeploys the backend.
 
 When the data and Hosting fingerprints match, `npm run build:web` prepares only
-the current release. Research pins are read from checksum-verified compressed
-archives without expanding the entire release history. The static build keeps
+the current release. All current artifacts arrive prebuilt and checksum-verified from the pinned
+data repository, without running its generator or expanding historical downloads. The static build keeps
 local historical files intact but omits them from `out/`. Export verification
 still checks every generated page and current artifact; only exact historical
 paths declared by archive receipts may be absent locally.
@@ -50,7 +50,7 @@ transaction.
 Changed data or Hosting configuration takes the full build/publication path,
 with complete archive checks. Full publication refuses to omit already
 published historical downloads. Archive a newly published release in
-`data/omics/releases/` before a later full release would supersede it. Do not
+`data/omics/releases/` in the data repository before a later full release would supersede it. Do not
 bypass this guard or remove historical URLs to recover a failed deployment.
 
 Backend skips use an independent private Firestore document,

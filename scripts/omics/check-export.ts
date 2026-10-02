@@ -30,8 +30,8 @@ import { fileSha256, chunksSha256 } from "./stream-files";
 import { validateRecords } from "./schema";
 import { verifyContributionExport } from "./contribution-export";
 import { createUseCaseQuery, validateUseCaseArtifact } from "../../services/omics/src/use-cases";
-import { parseUseCaseSourceDeclaration } from "./use-cases";
-import { researchFiles } from "./research-release";
+import { parseUseCaseSourceDeclaration } from "./released-contracts";
+import { researchFiles } from "./released-contracts";
 import { deriveResearchReadiness, getResearch } from "../../services/omics/src/research";
 const catalogue = JSON.parse(
   fs.readFileSync("out/omics/catalogue.json", "utf8"),

@@ -90,3 +90,7 @@ gha-creds-*.json
 /.cloudflare/
 
 /cloudflare-web.tar.gz
+
+# Hydrated, checksum-verified files owned by rewire-benchmark-data
+/data/
+/lib/generated-benchmark-catalog.ts

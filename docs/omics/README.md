@@ -1,3 +1,5 @@
+> Ownership update: data inputs and generator commands described below now belong to [rewire-benchmark-data](https://github.com/rewire-bio/rewire-benchmark-data). For website builds, use the [pinned dependency workflow](../hosting/benchmark-data-separation.md). The sections below retain historical architecture context.
+
 # Omics evidence database
 
 ## Stack and scope

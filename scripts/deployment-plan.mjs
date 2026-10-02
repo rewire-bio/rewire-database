@@ -46,8 +46,8 @@ export async function publishedReceipt(options) {
 export function inputGroups(filename) {
   const shared = filename === '.github/workflows/firebase.yml' || /^package(-lock)?\.json$/.test(filename) || /^(scripts\/(deployment-plan|backend-deployment|configure-contribution-deployment|contribution-deployment|deploy-catalogue|hosting-web-deploy|deployment-transaction)\.mjs)$/.test(filename);
   return {
-    data: shared || /^(data\/|scripts\/omics\/|services\/omics\/(src\/|package(?:-lock)?\.json$|tsconfig.*\.json$)|lib\/|tsconfig.*\.json$)/.test(filename) ||
-      /^scripts\/(build-static|check-export|export-benchmark-literature|validate-benchmark-literature)\.mjs$/.test(filename),
+    // Published artifact identity is independent of frontend source changes.
+    data: filename === 'benchmark-data.lock.json',
     backend: shared || /^services\/omics\/(src\/|package(?:-lock)?\.json$|tsconfig.*\.json$|firestore\..*)/.test(filename) ||
       /^(firebase\.json|firestore\..*)$/.test(filename),
     hosting: filename === 'firebase.json',

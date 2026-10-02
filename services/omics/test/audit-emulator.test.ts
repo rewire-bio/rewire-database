@@ -3,12 +3,7 @@ import assert from "node:assert/strict";
 import { createHash, randomUUID } from "node:crypto";
 import { initializeApp, deleteApp } from "firebase-admin/app";
 import { getFirestore, type Firestore } from "firebase-admin/firestore";
-import { auditFiles } from "../../../scripts/omics/audit/release.js";
-import {
-  auditTarget,
-  type AuditBundle,
-  type AuditCheck,
-} from "../src/audit.js";
+import { readFileSync } from "node:fs";
 import { importAuditFiles } from "../src/audit-import.js";
 import { auditChecks, auditRecords, auditRuns } from "../src/audit-service.js";
 const enabled = Boolean(process.env.FIRESTORE_EMULATOR_HOST);
@@ -27,59 +22,11 @@ after(async () => {
   if (db) await db.terminate();
   if (app) await deleteApp(app);
 });
-function makeBundle(): AuditBundle {
-  const checks: AuditCheck[] = [];
-  for (let n = 0; n < 3; n++)
-    for (const category of ["structure", "source_transcription"] as const) {
-      const record = {
-        id: `record-${n}`,
-        attributes: { numeric_value: String(n) },
-      };
-      checks.push({
-        id: `check-${n}-${category.replaceAll("_", "-")}`,
-        run_id: "run-one",
-        record_id: record.id,
-        record_kind: "result",
-        record_name: `Record ${n}`,
-        field_paths: ["attributes.numeric_value"],
-        target_sha256: auditTarget(record, ["attributes.numeric_value"]),
-        category,
-        outcome:
-          category === "structure" ? "supported" : "insufficient_evidence",
-        checked_at: "2026-09-19",
-        source_ids: ["source-one"],
-        source_hashes: ["a".repeat(64)],
-        source_locators: ["Table 1"],
-        evidence_row_ids: [],
-        receipt_ids: [],
-        explanation: "A bounded check",
-        prior_check_ids: [],
-      });
-    }
-  return {
-    schema_version: "1.0",
-    runs: [
-      {
-        id: "run-one",
-        baseline_release_id: "release-baseline",
-        inventory_sha256: "a".repeat(64),
-        started_at: "2026-09-19",
-        completed_at: "2026-09-19",
-        reviewer: "test",
-        review_method: "automated",
-        verifier_revision: "test",
-        scope: "fixture",
-        limitations: [],
-        record_count: 3,
-        check_count: 6,
-      },
-    ],
-    checks,
-    resolutions: [],
-  };
-}
-function filesFor(releaseId: string, bundle = makeBundle()) {
-  const generated = auditFiles(bundle).files;
+function filesFor(releaseId: string) {
+  // Fixed producer-prepared test input; service tests must not run the generator.
+  const generated = JSON.parse(readFileSync(
+    new URL("./fixtures/audit-files.json", import.meta.url), "utf8",
+  )) as Record<string, string>;
   const files = Object.fromEntries(
     Object.entries(generated).map(([k, v]) => [k, Buffer.from(v)]),
   );

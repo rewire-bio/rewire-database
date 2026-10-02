@@ -44,7 +44,7 @@ export function fetchBenchmarkData({ root = process.cwd(), git } = {}) {
     }
   } else {
     fs.mkdirSync(workbench, { recursive: true });
-    command(['clone', '--no-checkout', '--filter=blob:none', `git@github.com:${lock.repository}.git`, directory]);
+    command(['clone', '--no-checkout', '--filter=blob:none', `https://github.com/${lock.repository}.git`, directory]);
   }
   // Only published artifact objects are needed by a frontend build.
   command(['-C', directory, 'sparse-checkout', 'set', 'website', 'data/omics/releases']);

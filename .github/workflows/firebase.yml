@@ -69,22 +69,12 @@ jobs:
         with:
           path: workbench/benchmark-data
           key: benchmark-data-${{ steps.data-pin.outputs.revision }}
-      - name: Require private data read access
-        if: steps.data-cache.outputs.cache-hit != 'true'
-        env:
-          DATA_READ_TOKEN: ${{ secrets.BENCHMARK_DATA_READ_TOKEN }}
-        run: |
-          if [ -z "$DATA_READ_TOKEN" ]; then
-            echo "Configure BENCHMARK_DATA_READ_TOKEN with read-only Contents access to rewire-bio/rewire-benchmark-data. See docs/hosting/benchmark-data-separation.md."
-            exit 1
-          fi
       - name: Check out the immutable data artifact
         if: steps.data-cache.outputs.cache-hit != 'true'
         uses: actions/checkout@v4
         with:
           repository: rewire-bio/rewire-benchmark-data
           ref: ${{ steps.data-pin.outputs.revision }}
-          token: ${{ secrets.BENCHMARK_DATA_READ_TOKEN }}
           persist-credentials: false
           path: workbench/benchmark-data
           sparse-checkout: |

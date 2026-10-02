@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { MIN_FREE_BYTES, UNUSED_TOOL_DIRECTORIES, UNUSED_RUNNER_IMAGES, prepareRunnerSpace } from '../scripts/prepare-runner-space.mjs';
+import { AFTER_DEPENDENCIES_FREE_BYTES, MIN_FREE_BYTES, UNUSED_TOOL_DIRECTORIES, UNUSED_RUNNER_IMAGES, prepareRunnerSpace } from '../scripts/prepare-runner-space.mjs';
 
 const roots: string[] = [];
 const GiB = 1024 ** 3;
@@ -86,6 +86,26 @@ afterEach(() => {
 });
 
 describe('hosted runner space preparation', () => {
+  it('reserves 44 GiB after installed dependencies without reclaiming an already sufficient budget', () => {
+    const host = fixture(47_979_589_632);
+    const result = prepareRunnerSpace({ ...host.options, phase: 'after-dependencies' });
+    expect(result.required).toBe(AFTER_DEPENDENCIES_FREE_BYTES);
+    expect(result.available).toBe(47_979_589_632);
+    expect(host.removed).toEqual([]);
+  });
+
+  it('still refuses an insufficient post-dependency budget', () => {
+    const host = fixture(43 * GiB, 0);
+    expect(() => prepareRunnerSpace({ ...host.options, phase: 'after-dependencies' }))
+      .toThrow(/44 GiB free after dependency installation/);
+  });
+
+  it('rejects an unknown budget phase before any command', () => {
+    const host = fixture();
+    expect(() => prepareRunnerSpace({ ...host.options, phase: 'arbitrary' as never })).toThrow(/Unknown runner preparation phase/);
+    expect(host.run).not.toHaveBeenCalled();
+  });
+
   it('reclaims known SDKs until 45 GiB is available and preserves repository/runtime files', () => {
     const host = fixture();
     const result = prepareRunnerSpace(host.options);

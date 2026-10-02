@@ -76,10 +76,10 @@ describe('dedicated benchmark data checkout', () => {
     ]);
   });
 
-  it('creates a fresh dedicated clone and fetches only the pinned revision', () => {
+  it('creates a public HTTPS clone without SSH credentials and fetches only the pinned revision', () => {
     const f = fixture(false);
     f.run();
-    expect(f.calls[0]).toEqual(['clone', '--no-checkout', '--filter=blob:none', 'git@github.com:rewire-bio/rewire-benchmark-data.git', f.directory]);
+    expect(f.calls[0]).toEqual(['clone', '--no-checkout', '--filter=blob:none', 'https://github.com/rewire-bio/rewire-benchmark-data.git', f.directory]);
     expect(f.calls.at(-1)).toEqual(['-C', f.directory, 'checkout', '--detach', '1'.repeat(40)]);
   });
 });

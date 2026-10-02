@@ -63,6 +63,7 @@ const expectedSitemap = new Set(
     "/runs/mfass-v2/",
     "/evidence/",
     "/audits/",
+    "/coverage/",
     "/use-cases/",
     "/investigations/",
     ...getResearch(catalogue).investigations.map((report) => `/investigations/${report.id}/`),

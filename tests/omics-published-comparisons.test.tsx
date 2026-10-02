@@ -181,6 +181,17 @@ describe("source-scoped comparison figures", () => {
         .published_comparisons,
     ).toHaveLength(1);
   });
+  it("rejects conflicting inherited panel IDs while retaining identical duplicates", () => {
+    const snapshot = fixture();
+    const benchmark = snapshot.records.find(r => r.id === "benchmark")!;
+    const panels = structuredClone(benchmark.attributes.comparison_panels) as PublishedComparison[];
+    snapshot.records.push(record("parent", "benchmark", { comparison_panels: panels }),
+      record("claim", "claim", { field: "links:evaluates_task:parent", value: "parent", source_locator: "Methods" }, [{ relation: "subject", target_id: "benchmark" }]));
+    benchmark.links.push({ relation: "evaluates_task", target_id: "parent" });
+    expect(createCatalogueQuery(snapshot).get({ id: "parent" })!.published_comparisons).toHaveLength(1);
+    panels[0].title = "Conflicting figure";
+    expect(() => createCatalogueQuery(snapshot).get({ id: "parent" })).toThrow("Conflicting inherited comparison: comparison");
+  });
   it("never upgrades incomplete comparisons to the stronger compatibility gate", () => {
     const query = createCatalogueQuery(fixture());
     expect(query.get({ id: "benchmark" })!.published_comparisons).toHaveLength(

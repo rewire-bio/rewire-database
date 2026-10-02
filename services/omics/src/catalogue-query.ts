@@ -447,13 +447,14 @@ export function createCatalogueQuery(snapshot: CatalogueSnapshot) {
           .sort((a, b) => a.id.localeCompare(b.id))
           .flatMap((r) => resolveComparisons(r, byId, rowsById))
       : [];
-    return [
-      ...new Map(
-        [...resolveComparisons(record, byId, rowsById), ...childPanels].map(
-          (panel) => [panel.id, panel],
-        ),
-      ).values(),
-    ];
+    const unique = new Map<string, ResolvedComparison>();
+    for (const panel of [...resolveComparisons(record, byId, rowsById), ...childPanels]) {
+      const existing = unique.get(panel.id);
+      if (existing && canonical(existing) !== canonical(panel))
+        throw new Error(`Conflicting inherited comparison: ${panel.id}`);
+      unique.set(panel.id, panel);
+    }
+    return [...unique.values()];
   }
   return {
     /** Exact public record lookup, without comparison or relationship expansion. */

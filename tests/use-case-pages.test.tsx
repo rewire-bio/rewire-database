@@ -30,6 +30,8 @@ vi.mock("../lib/use-cases-build", () => ({
       list: () => ({ release_id: "fixture", input_sha256: "b".repeat(64), items: [state.entry], total: 1, next_cursor: null, available: { areas: [state.entry.area], contexts: ["research", "clinical_research"] } }),
     },
   }),
+  fullUseCaseDetail: () => ({ use_case: state.entry, mappings: state.mappings, sources: [], release_id: "fixture", input_sha256: "b".repeat(64) }),
+  accumulateUseCaseDetail: (query: { get: (input: { slug: string }) => unknown }, slug: string) => query.get({ slug }),
 }));
 
 async function detail(entry: UseCase, mappings: ResolvedMapping[] = [mapping("m1", "proxy", ["c1", "c2"])]) {

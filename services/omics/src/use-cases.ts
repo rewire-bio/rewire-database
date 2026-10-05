@@ -81,7 +81,12 @@ export type UseCaseArtifact = z.infer<typeof artifactSchema>;
 export type UseCaseDeclaration = z.infer<typeof declarationSchema>;
 export type ResolvedMapping = Mapping & {
   protocol: CatalogueRecord | null; task: CatalogueRecord | null;
-  evaluations: { evaluation: CatalogueRecord; configurations: CatalogueRecord[]; results: ResultRow[] }[];
+  evaluations: {
+    evaluation: CatalogueRecord; configurations: CatalogueRecord[];
+    // A bounded first page of this evaluation's result rows. The rest is
+    // reachable through useCaseEvaluationResults using results_next_cursor.
+    results: ResultRow[]; results_total: number; results_next_cursor: string | null;
+  }[];
   sources: CatalogueRecord[];
 };
 
@@ -95,6 +100,90 @@ function canonical(value: unknown): unknown {
 }
 export function useCaseHash(value: unknown): string {
   return createHash("sha256").update(JSON.stringify(canonical(value))).digest("hex");
+}
+/** Default/maximum page sizes for the bounded use-case detail contract.
+ * A single use case may reference up to 100 evaluations per mapping and an
+ * unbounded number of result rows per evaluation, and each evaluation's own
+ * closure (its linked protocol/configuration/source records, repeated per
+ * result row) can be far larger than a fixed item count assumes. So every
+ * page is bounded by both an item count AND a serialized-byte budget; the
+ * byte budget is the binding constraint whenever individual items are large,
+ * while the full evidence remains reachable through cursors regardless. */
+const EVALUATION_PAGE_LIMIT = 20;
+const EVALUATION_PAGE_MAX = 100;
+const RESULT_PAGE_LIMIT = 10;
+const RESULT_PAGE_MAX = 100;
+// Conservative margins under the probe's 1 MB response budget. The evaluation
+// and result-page budgets are kept well under 1 MB on their own because a
+// get() response also carries the use_case/mapping metadata that wraps them,
+// and because one evaluation's own inline result preview (bounded separately
+// below) adds to the evaluation-page total. A real production response hit
+// 3.7x the 1 MB budget under a fixed item-count cap alone, so these leave a
+// wide margin rather than only just clearing it.
+const EVALUATION_PAGE_BYTE_BUDGET = 400_000;
+const RESULT_PAGE_BYTE_BUDGET = 400_000;
+const RESULT_PREVIEW_BYTE_BUDGET = 60_000;
+// Hard ceiling on the full wrapped response (release_id/use_case/mapping
+// metadata included), left under the probe's 1 MB budget as a margin for the
+// tRPC envelope. Hit if a page's items stay under their own byte budget but
+// fixed metadata (many mappings, long use-case text) pushes the total over.
+const MAX_USE_CASE_RESPONSE_BYTES = 900_000;
+function byteSize(value: unknown): number {
+  return Buffer.byteLength(JSON.stringify(value));
+}
+/** A silently oversized response is worse than a loud failure: it would have
+ * shipped straight past the probe's budget, as a real release once did at
+ * 3.7x. This throws during whichever step first serializes the response —
+ * the static build (every use case, every page), the live probe, or a live
+ * request — so oversized evidence is caught before it reaches production,
+ * never served past the budget. */
+function assertResponseBudget(value: unknown, label: string): void {
+  const bytes = byteSize({ result: { data: value } });
+  if (bytes > MAX_USE_CASE_RESPONSE_BYTES)
+    throw Error(`${label} response of ${bytes} bytes exceeds the ${MAX_USE_CASE_RESPONSE_BYTES}-byte safety budget; reduce its page size or investigate oversized evidence`);
+}
+function paginateBy<T>(
+  items: T[],
+  input: { cursor?: string; limit?: number },
+  scopeValue: unknown,
+  maxLimit: number,
+  label: string,
+  byteBudget: number,
+  sizeOf: (item: T) => number,
+) {
+  const limit = input.limit ?? Math.min(25, maxLimit);
+  if (!Number.isInteger(limit) || limit < 1 || limit > maxLimit) throw Error(`${label} limit must be 1–${maxLimit}`);
+  const scope = useCaseHash(scopeValue);
+  let offset = 0;
+  if (input.cursor) {
+    if (input.cursor.length > 1000) throw Error(`Invalid ${label} cursor`);
+    try {
+      const decoded = JSON.parse(Buffer.from(input.cursor, "base64url").toString("utf8"));
+      if (decoded.scope !== scope || !Number.isInteger(decoded.offset) || decoded.offset < 0 || decoded.offset > items.length) throw Error();
+      offset = decoded.offset;
+    } catch { throw Error(`${label} cursor does not match this release and query`); }
+  }
+  // Bytes are checked incrementally, not by item count or average, so one
+  // oversized item cannot hide behind smaller neighbours. A single item that
+  // alone exceeds the budget is never silently admitted (that would ship an
+  // oversized response past the probe's check): it fails loudly instead, so
+  // oversized evidence is caught and fixed upstream rather than served.
+  const page: T[] = [];
+  let bytes = 0;
+  let index = offset;
+  while (index < items.length && page.length < limit) {
+    const itemBytes = sizeOf(items[index]);
+    if (itemBytes > byteBudget)
+      throw Error(`${label} item of ${itemBytes} bytes alone exceeds its ${byteBudget}-byte safety budget; this evidence must be reduced upstream, not silently served oversized`);
+    if (page.length > 0 && bytes + itemBytes > byteBudget) break;
+    page.push(items[index]);
+    bytes += itemBytes;
+    index++;
+  }
+  return {
+    items: page, total: items.length,
+    next_cursor: index < items.length ? Buffer.from(JSON.stringify({ scope, offset: index })).toString("base64url") : null,
+  };
 }
 function unique(values: string[], label: string) {
   if (new Set(values).size !== values.length) throw Error(`Duplicate ${label}`);
@@ -338,6 +427,9 @@ export function createUseCaseQuery(snapshot: CatalogueSnapshot, value?: UseCaseA
   const entriesById = new Map(entries.map((u) => [u.id, u]));
   const sourceRecords = (citations: Citation[]) => [...new Set(citations.map((c) => c.source_id))]
     .flatMap((id) => { const r = ix.records.get(id); return r && r.status !== "excluded" ? [recordReference(r)] : []; });
+  // Full per-(mapping, evaluation) result rows, keyed for useCaseEvaluationResults.
+  // Evaluation entries below only embed a bounded preview of this array.
+  const resultsByEvaluation = new Map<string, ResultRow[]>();
   for (const m of artifact?.mappings || []) {
     const live = m.lifecycle === "active" && positive(m);
     const protocol = m.protocol_id ? ix.records.get(m.protocol_id) || null : null;
@@ -346,13 +438,20 @@ export function createUseCaseQuery(snapshot: CatalogueSnapshot, value?: UseCaseA
       const evaluation = ix.records.get(id)!;
       const configurations = evaluationLinks(ix, evaluation, "configuration").map((l) => recordReference(ix.records.get(l.target_id)!));
       const results: ResultRow[] = [];
-      let cursor: string | undefined;
+      let resultsCursor: string | undefined;
       do {
-        const page = q.results({ id, limit: 100, ...(cursor ? { cursor } : {}) });
+        const page = q.results({ id, limit: 100, ...(resultsCursor ? { cursor: resultsCursor } : {}) });
         results.push(...page.items.filter((r) => r.evaluation?.id === id && checked(r.result)));
-        cursor = page.next_cursor || undefined;
-      } while (cursor);
-      return { evaluation: recordReference(evaluation), configurations, results };
+        resultsCursor = page.next_cursor || undefined;
+      } while (resultsCursor);
+      resultsByEvaluation.set(`${m.id}|${id}`, results);
+      const preview = paginateBy(
+        results, { limit: RESULT_PAGE_LIMIT },
+        { kind: "use-case-evaluation-results", release_id, input_sha256, mapping_id: m.id, evaluation_id: id },
+        RESULT_PAGE_MAX, "Use-case evaluation results page",
+        RESULT_PREVIEW_BYTE_BUDGET, byteSize,
+      );
+      return { evaluation: recordReference(evaluation), configurations, results: preview.items, results_total: preview.total, results_next_cursor: preview.next_cursor };
     }) : [];
     const resolved: ResolvedMapping = {
       ...m, protocol: protocol ? recordReference(protocol) : null, task: task ? recordReference(task) : null,
@@ -416,10 +515,48 @@ export function createUseCaseQuery(snapshot: CatalogueSnapshot, value?: UseCaseA
         available: { areas: [...new Set(entries.map((u) => u.area))].sort(), contexts: [...new Set(entries.flatMap((u) => u.contexts))].sort() },
       };
     },
-    get({ slug }: { slug: string }) {
+    // Mappings are always returned in full; their evaluations are paginated
+    // across the whole use case so one page cannot be inflated by a single
+    // mapping with many evaluations. Call again with next_cursor via
+    // evaluations_next_cursor until it is null for the complete evidence set.
+    get({ slug, cursor, limit }: { slug: string; cursor?: string; limit?: number }) {
       const entry = entries.find((u) => u.slug === slug);
       if (!entry) return null;
-      return { release_id, input_sha256, use_case: entry, mappings: mappingsByCase.get(entry.id) || [], sources: sourceRecords(entry.citations) };
+      const mappings = mappingsByCase.get(entry.id) || [];
+      const flattened = mappings.flatMap((m) => m.evaluations.map((evaluation, position) => ({ mapping_id: m.id, position, evaluation })));
+      const page = paginateBy(
+        flattened, { cursor, limit: limit ?? EVALUATION_PAGE_LIMIT },
+        { kind: "use-case-evaluations", release_id, input_sha256, slug },
+        EVALUATION_PAGE_MAX, "Use-case evidence page",
+        EVALUATION_PAGE_BYTE_BUDGET, (item) => byteSize(item.evaluation),
+      );
+      const byMapping = new Map<string, ResolvedMapping["evaluations"]>();
+      for (const item of page.items) byMapping.set(item.mapping_id, [...(byMapping.get(item.mapping_id) || []), item.evaluation]);
+      const response = {
+        release_id, input_sha256, use_case: entry,
+        mappings: mappings.map((m) => ({ ...m, evaluations: byMapping.get(m.id) || [] })),
+        sources: sourceRecords(entry.citations),
+        evaluations_total: flattened.length,
+        evaluations_next_cursor: page.next_cursor,
+      };
+      // Per-item budgets bound the evaluations array itself, but mapping and
+      // use-case metadata (many mappings, long question/review text) is not
+      // paginated, so the fully wrapped response is checked here too.
+      assertResponseBudget(response, "Use-case detail");
+      return response;
+    },
+    // The rest of one evaluation's result rows beyond the preview embedded in get().
+    evaluationResults({ mapping_id, evaluation_id, cursor, limit }: { mapping_id: string; evaluation_id: string; cursor?: string; limit?: number }) {
+      const all = resultsByEvaluation.get(`${mapping_id}|${evaluation_id}`) || [];
+      const page = paginateBy(
+        all, { cursor, limit: limit ?? RESULT_PAGE_LIMIT },
+        { kind: "use-case-evaluation-results", release_id, input_sha256, mapping_id, evaluation_id },
+        RESULT_PAGE_MAX, "Use-case evaluation results page",
+        RESULT_PAGE_BYTE_BUDGET, byteSize,
+      );
+      const response = { release_id, input_sha256, items: page.items, total: page.total, next_cursor: page.next_cursor };
+      assertResponseBudget(response, "Use-case evaluation results");
+      return response;
     },
     links({ id }: { id: string }) { return { release_id, input_sha256, items: backlinks.get(id) || [] }; },
   };

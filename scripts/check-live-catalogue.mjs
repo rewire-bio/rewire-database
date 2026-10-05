@@ -184,22 +184,54 @@ if (useCases) {
   } while (cursor);
   assert.deepEqual(entries, useCases.use_cases, "Published use-case questions must match the reviewed artifact");
   for (const entry of entries) {
-    const detail = await query("useCase", { ...pinned, slug: entry.slug });
-    assert.equal(detail.input_sha256, useCases.input_sha256);
-    assert.deepEqual(detail.use_case, entry);
+    // The detail response paginates evaluations across all of a use case's
+    // mappings so one oversized mapping cannot blow the probe response budget;
+    // accumulate every page to recover the complete reviewed evidence.
+    const byMappingId = new Map();
+    let detail, detailCursor;
+    do {
+      const page = await query("useCase", { ...pinned, slug: entry.slug, limit: 20, ...(detailCursor ? { cursor: detailCursor } : {}) });
+      assert.equal(page.input_sha256, useCases.input_sha256);
+      assert.deepEqual(page.use_case, entry);
+      assert.equal(page.mappings.length, useCases.mappings.filter(mapping => mapping.use_case_id === entry.id).length);
+      for (const resolved of page.mappings) {
+        const bucket = byMappingId.get(resolved.id) || { ...resolved, evaluations: [] };
+        bucket.evaluations.push(...resolved.evaluations);
+        byMappingId.set(resolved.id, bucket);
+      }
+      detail = page;
+      detailCursor = page.evaluations_next_cursor;
+    } while (detailCursor);
+    assert.ok(detail.evaluations_total >= 0);
     const mappings = useCases.mappings.filter(mapping => mapping.use_case_id === entry.id);
-    assert.equal(detail.mappings.length, mappings.length);
+    assert.equal(byMappingId.size, mappings.length);
     for (const mapping of mappings) {
-      const resolved = detail.mappings.find(item => item.id === mapping.id);
+      const resolved = byMappingId.get(mapping.id);
       assert.ok(resolved, "Every reviewed mapping must be served");
       assert.deepEqual(Object.fromEntries(Object.keys(mapping).map(key => [key, resolved[key]])), mapping);
       const live = mapping.lifecycle === "active" && ["direct", "proxy"].includes(mapping.relevance);
       assert.deepEqual(resolved.evaluations.map(item => item.evaluation.id), live ? mapping.evaluation_ids : []);
-      for (const evaluation of resolved.evaluations) for (const configuration of evaluation.configurations) {
-        const links = await query("useCaseLinks", { ...pinned, id: configuration.id });
-        assert.equal(links.input_sha256, useCases.input_sha256);
-        assert.deepEqual(links.items.find(item => item.mapping_id === mapping.id)?.configuration_ids, [configuration.id],
-          "A configuration backlink must not claim evidence from sibling configurations");
+      for (const evaluation of resolved.evaluations) {
+        // Each evaluation embeds only a bounded preview of its result rows;
+        // follow results_next_cursor to confirm the rest remain reachable.
+        const allResults = [...evaluation.results];
+        let resultsCursor = evaluation.results_next_cursor;
+        while (resultsCursor) {
+          const resultsPage = await query("useCaseEvaluationResults", {
+            ...pinned, mapping_id: mapping.id, evaluation_id: evaluation.evaluation.id, limit: 50, cursor: resultsCursor,
+          });
+          assert.equal(resultsPage.input_sha256, useCases.input_sha256);
+          allResults.push(...resultsPage.items);
+          resultsCursor = resultsPage.next_cursor;
+        }
+        assert.equal(allResults.length, evaluation.results_total,
+          "All evidence rows for an evaluation must be reachable through pagination");
+        for (const configuration of evaluation.configurations) {
+          const links = await query("useCaseLinks", { ...pinned, id: configuration.id });
+          assert.equal(links.input_sha256, useCases.input_sha256);
+          assert.deepEqual(links.items.find(item => item.mapping_id === mapping.id)?.configuration_ids, [configuration.id],
+            "A configuration backlink must not claim evidence from sibling configurations");
+        }
       }
     }
   }

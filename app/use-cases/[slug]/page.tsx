@@ -5,7 +5,7 @@ import UseCaseEvidence, { UseCaseCitations, UseCaseReview, type ExecutionLink } 
 import UseCaseCollectionPlan from "@/components/catalogue/UseCaseCollectionPlan";
 import { UseCaseReturn } from "@/components/catalogue/UseCaseNavigation";
 import SectionNavigation from "@/components/catalogue/SectionNavigation";
-import { buildUseCases } from "@/lib/use-cases-build";
+import { buildUseCases, fullUseCaseDetail } from "@/lib/use-cases-build";
 import { buildCatalogue } from "@/lib/catalogue-build";
 import { recordHref } from "@/lib/omics";
 import { researchAreaLabel } from "@/lib/omics-browse";
@@ -17,7 +17,7 @@ import styles from "@/components/catalogue/UseCases.module.css";
 type Params = { slug: string };
 export function generateStaticParams() { return buildUseCases().entries.map(({ slug }) => ({ slug })); }
 export function generateMetadata({ params }: { params: Params }): Metadata {
-  const detail = buildUseCases().query.get({ slug: params.slug });
+  const detail = fullUseCaseDetail(params.slug);
   if (!detail) return {};
   const title = `${detail.use_case.title} | rewire.it`;
   const description = detail.use_case.question;
@@ -26,7 +26,7 @@ export function generateMetadata({ params }: { params: Params }): Metadata {
 }
 
 export default function UseCasePage({ params }: { params: Params }) {
-  const detail = buildUseCases().query.get({ slug: params.slug });
+  const detail = fullUseCaseDetail(params.slug);
   if (!detail) notFound();
   const entry = detail.use_case;
   const path = `/use-cases/${entry.slug}/`;

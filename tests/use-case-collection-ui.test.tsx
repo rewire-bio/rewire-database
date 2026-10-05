@@ -14,7 +14,11 @@ vi.mock("next/navigation", () => ({
   useSearchParams: () => new URLSearchParams(state.search),
   notFound: () => { throw new Error("Question not found"); },
 }));
-vi.mock("@/lib/use-cases-build", () => ({ buildUseCases: () => ({ entries: [], query: { get: state.get, list: state.initial } }) }));
+vi.mock("@/lib/use-cases-build", () => ({
+  buildUseCases: () => ({ entries: [], query: { get: state.get, list: state.initial } }),
+  fullUseCaseDetail: (slug: string) => state.get({ slug }),
+  accumulateUseCaseDetail: (_query: unknown, slug: string) => state.get({ slug }),
+}));
 vi.mock("@/lib/catalogue-build", () => ({ buildCatalogue: () => ({ query: { get: () => null } }) }));
 vi.mock("@/lib/use-cases-client", async (original) => ({ ...(await original<object>()), createUseCasesClient: () => ({ list: state.list }) }));
 
@@ -58,7 +62,10 @@ function mapping(): ResolvedMapping {
   };
 }
 function detail(entry: UseCase, mappings: ResolvedMapping[] = []): UseCaseDetail {
-  return { release_id: "fixture", input_sha256: "a".repeat(64), use_case: entry, mappings, sources: [record("source", "source")] };
+  return {
+    release_id: "fixture", input_sha256: "a".repeat(64), use_case: entry, mappings, sources: [record("source", "source")],
+    evaluations_total: mappings.reduce((sum, mapping) => sum + mapping.evaluations.length, 0), evaluations_next_cursor: null,
+  };
 }
 function detailMarkup(entry: UseCase, mappings: ResolvedMapping[] = []) {
   state.get.mockReturnValue(detail(entry, mappings));

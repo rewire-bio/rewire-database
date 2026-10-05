@@ -68,7 +68,7 @@ export default function UseCasePage({ params }: { params: Params }) {
     <div className="wrap">
       <SectionNavigation sections={sections} />
       <div className={`content ${styles.detail}`}>
-        {entry.collection_plan && <UseCaseCollectionPlan plan={entry.collection_plan} />}
+        {entry.collection_plan && <UseCaseCollectionPlan plan={entry.collection_plan} summary={summary} />}
         <section id="question" className={styles.section}>
           <h2>{heading("question")}</h2>
           <p className={styles.lead}>{entry.decision}</p>

@@ -8,6 +8,7 @@ import UseCaseCollectionPlan from "../components/catalogue/UseCaseCollectionPlan
 import type { UseCaseDetail, UseCasePage as QuestionPage } from "../lib/use-cases-client";
 import type { CatalogueRecord } from "../services/omics/src/catalogue-query";
 import type { ResolvedMapping, UseCase } from "../services/omics/src/use-cases";
+import { summariseUseCaseEvidence } from "../lib/use-case-summary";
 
 const state = vi.hoisted(() => ({ search: "", get: vi.fn(), initial: vi.fn(), list: vi.fn() }));
 vi.mock("next/navigation", () => ({
@@ -118,7 +119,7 @@ describe("use-case evidence collection plans", () => {
     expect(markup).toContain(review.note);
     expect(markup).not.toContain("No applicability mappings");
     expect(markup).not.toContain("Evaluated configurations");
-    const planMarkup = renderToStaticMarkup(<UseCaseCollectionPlan plan={entry.collection_plan!} />);
+    const planMarkup = renderToStaticMarkup(<UseCaseCollectionPlan plan={entry.collection_plan!} summary={summariseUseCaseEvidence([], 0)} />);
     expect(planMarkup).not.toContain("<details");
     expect(planMarkup).not.toContain("<table");
   });
@@ -154,6 +155,46 @@ describe("use-case evidence collection plans", () => {
       expect(markup).not.toContain("No model comparison has been collected for this question yet");
       expect(markup.includes('id="collection-plan"')).toBe(Boolean(entry.collection_plan));
     }
+  });
+
+  it("distinguishes already-collected evidence from an open comparison plan across zero-mapping, mapped-with-plan and mapped-without-plan questions", () => {
+    const withMapping = [mapping()];
+    const zeroMappingsWithPlan = { ...plannedQuestion("collecting"), id: "zero-with-plan", slug: "zero-with-plan", title: "Zero mappings with an open plan" };
+    const mappedWithPlan = { ...plannedQuestion("collecting"), id: "mapped-with-plan", slug: "mapped-with-plan", title: "Rank rare-disease variants for review" };
+    const mappedWithoutPlan = { ...question, id: "mapped-without-plan", slug: "mapped-without-plan", title: "Mapped evidence without an open plan" };
+    const summaries = {
+      [zeroMappingsWithPlan.slug]: summariseUseCaseEvidence([], zeroMappingsWithPlan.evidence_gaps.length),
+      [mappedWithPlan.slug]: summariseUseCaseEvidence(withMapping, mappedWithPlan.evidence_gaps.length),
+      [mappedWithoutPlan.slug]: summariseUseCaseEvidence(withMapping, mappedWithoutPlan.evidence_gaps.length),
+    };
+
+    const cardMarkup = renderToStaticMarkup(<UseCaseExplorer initial={page([zeroMappingsWithPlan, mappedWithPlan, mappedWithoutPlan])} summaries={summaries} />);
+    const cards = [...cardMarkup.matchAll(/<article\b[^>]*>[\s\S]*?<\/article>/g)].map(([card]) => card);
+    expect(cards[0]).toContain("Collecting evidence");
+    expect(cards[0]).not.toContain("Mapped evidence already covers");
+    expect(cards[0]).toContain("Opens with 0 evaluated endpoints · 0 tested configurations · No current evaluated evidence");
+    expect(cards[1]).toContain("Collecting evidence");
+    expect(cards[1]).toContain("Mapped evidence already covers 1 evaluated endpoint");
+    expect(cards[1]).toContain("Opens with 1 evaluated endpoint");
+    expect(cards[2]).not.toContain("Collection planned");
+    expect(cards[2]).not.toContain("Collecting evidence");
+    expect(cards[2]).not.toContain("Mapped evidence already covers");
+    expect(cards[2]).toContain("Opens with 1 evaluated endpoint");
+
+    const zeroDetail = detailMarkup(zeroMappingsWithPlan);
+    expect(zeroDetail).toContain("Evidence collection is in progress for this question.");
+    expect(zeroDetail).not.toContain("Mapped evidence already covers");
+
+    const mappedWithPlanDetail = detailMarkup(mappedWithPlan, withMapping);
+    expect(mappedWithPlanDetail).toContain("Collecting evidence");
+    expect(mappedWithPlanDetail).toContain("Mapped evidence already covers 1 evaluated endpoint");
+    expect(mappedWithPlanDetail).toContain("remains open; it does not mean no evidence has been collected");
+    expect(mappedWithPlanDetail).not.toContain("Evidence collection is in progress for this question.");
+    expect(mappedWithPlanDetail).not.toContain("No model comparison has been collected for this question yet");
+
+    const mappedWithoutPlanDetail = detailMarkup(mappedWithoutPlan, withMapping);
+    expect(mappedWithoutPlanDetail).not.toContain('id="collection-plan"');
+    expect(mappedWithoutPlanDetail).not.toContain("Mapped evidence already covers");
   });
 
   it("preserves filtered pagination and return context for plans loaded through the client", async () => {

@@ -11,10 +11,10 @@ export const contributions = onRequest(
     invoker: "public",
     minInstances: 0,
     maxInstances: 2,
-    memory: "512MiB",
+    memory: "1GiB",
     concurrency: 4,
     cors: ["https://benchmarks.rewire.it", "https://benchmarks.rewirebio.io"],
-    timeoutSeconds: 30,
+    timeoutSeconds: 120,
   },
   deployedContributionHttpHandler,
 );

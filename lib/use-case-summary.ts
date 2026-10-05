@@ -30,7 +30,7 @@ export const evidenceRelevanceLabels: Record<EvidenceSummary["relevance"], strin
   none: "No current evaluated evidence",
 };
 
-const plural = (count: number, one: string, many = `${one}s`) => `${count} ${count === 1 ? one : many}`;
+export const plural = (count: number, one: string, many = `${one}s`) => `${count} ${count === 1 ? one : many}`;
 
 export function evidenceSummaryParts(summary: EvidenceSummary): string[] {
   return [
@@ -39,4 +39,9 @@ export function evidenceSummaryParts(summary: EvidenceSummary): string[] {
     evidenceRelevanceLabels[summary.relevance],
     plural(summary.gaps, "recorded evidence gap"),
   ];
+}
+
+/** Describes mapped evidence already on record, independent of any open collection plan. A plan tracks one further unresolved comparison; it is not a statement that no evidence exists. */
+export function evidenceCollectedLabel(summary: EvidenceSummary): string {
+  return summary.endpoints > 0 ? `Mapped evidence already covers ${plural(summary.endpoints, "evaluated endpoint")}` : "No evaluated endpoints are recorded yet";
 }

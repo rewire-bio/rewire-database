@@ -1,4 +1,5 @@
 import type { UseCase } from "@/services/omics/src/use-cases";
+import { evidenceCollectedLabel, type EvidenceSummary } from "@/lib/use-case-summary";
 import styles from "./UseCases.module.css";
 
 type CollectionPlan = NonNullable<UseCase["collection_plan"]>;
@@ -7,13 +8,19 @@ export function UseCaseCollectionStatus({ status }: { status: CollectionPlan["st
   return <span className={styles.collectionStatus}>{status === "planned" ? "Collection planned" : "Collecting evidence"}</span>;
 }
 
-export default function UseCaseCollectionPlan({ plan }: { plan: CollectionPlan }) {
+export default function UseCaseCollectionPlan({ plan, summary }: { plan: CollectionPlan; summary: EvidenceSummary }) {
+  const hasEvidence = summary.endpoints > 0;
   return <section id="collection-plan" className={`${styles.section} ${styles.collectionPlan}`} aria-labelledby="collection-plan-heading">
     <div className={styles.planHeading}>
       <h2 id="collection-plan-heading">Evidence collection plan</h2>
       <UseCaseCollectionStatus status={plan.status} />
     </div>
-    <p>{plan.status === "planned" ? "Evidence collection is planned for this question." : "Evidence collection is in progress for this question."} The plan defines a comparison to investigate; it does not establish model performance or suitability.</p>
+    <p>
+      {hasEvidence
+        ? <>{evidenceCollectedLabel(summary)}, detailed below. The status above describes only the specific comparison in this plan, which remains open; it does not mean no evidence has been collected.</>
+        : plan.status === "planned" ? "Evidence collection is planned for this question." : "Evidence collection is in progress for this question."}
+      {" "}The plan defines a comparison to investigate; it does not establish model performance or suitability.
+    </p>
     <h3>Comparison question</h3>
     <p className={styles.intro}>{plan.comparison_question}</p>
     <div className={styles.planGrid}>

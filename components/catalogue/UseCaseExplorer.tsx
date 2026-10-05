@@ -6,7 +6,7 @@ import {
   createUseCasesClient, USE_CASE_PAGE_SIZE, type UseCasePage, type UseCaseFilters,
 } from "@/lib/use-cases-client";
 import { researchAreaLabel } from "@/lib/omics-browse";
-import { evidenceSummaryParts, type EvidenceSummary } from "@/lib/use-case-summary";
+import { evidenceCollectedLabel, evidenceSummaryParts, type EvidenceSummary } from "@/lib/use-case-summary";
 import { UseCaseCollectionStatus } from "./UseCaseCollectionPlan";
 import styles from "./UseCases.module.css";
 
@@ -17,7 +17,10 @@ function Cards({ data, search, summaries }: { data: UseCasePage; search: string;
       return <li key={entry.id}><article className={styles.card}>
         <p className={styles.tag}>{researchAreaLabel(entry.area)} · {entry.contexts.map(caseContextLabel).join(" and ")}</p>
         <h3><a href={`/use-cases/${entry.slug}/${search}`}>{entry.title}</a></h3>
-        {entry.collection_plan && <p><UseCaseCollectionStatus status={entry.collection_plan.status} /></p>}
+        {entry.collection_plan && <p>
+          <UseCaseCollectionStatus status={entry.collection_plan.status} />
+          {summary && summary.endpoints > 0 && <span className={styles.muted}> · {evidenceCollectedLabel(summary)}</span>}
+        </p>}
         <p className={styles.question}>{entry.question}</p>
         <h4 className={styles.cardLabel}>You bring</h4>
         <ul className={styles.inputs}>{entry.inputs.map((input) => <li key={input}>{input}</li>)}</ul>

@@ -37,9 +37,41 @@ export async function catalogueQuery(
   }
   const found = cache.get(releaseId);
   if (found) return found;
+  // Bounded load-path diagnostics (RCA for catalogue.release failures on large
+  // releases): counts, elapsed time and process memory only. Never record
+  // contents, error messages or unvalidated caller input. Remove once the
+  // production incident is root-caused.
+  const loadStart = performance.now();
+  let loadStage = "start";
+  // Caller-supplied via pinnedRelease; only log it if it matches the same
+  // shape the public API already requires release IDs to have (see `id` in
+  // validation.ts), so arbitrary request content never reaches the logs.
+  const loggableReleaseId = /^[a-z0-9][a-z0-9-]{0,254}$/.test(releaseId)
+    ? releaseId
+    : null;
+  const mem = () => {
+    const { heapUsed, rss } = process.memoryUsage();
+    return { heap_mb: Math.round(heapUsed / 1048576), rss_mb: Math.round(rss / 1048576) };
+  };
+  const errorClass = (error: unknown) =>
+    error instanceof Error ? error.name : typeof error;
+  const markStage = (stage: string, extra: Record<string, unknown> = {}) => {
+    loadStage = stage;
+    console.log(
+      JSON.stringify({
+        at: "catalogueQuery",
+        release_id: loggableReleaseId,
+        stage,
+        elapsed_ms: Math.round(performance.now() - loadStart),
+        ...mem(),
+        ...extra,
+      }),
+    );
+  };
   const pending = (async () => {
     const ref = db.collection("catalogueReleases").doc(releaseId);
     const meta = (await ref.get()).data();
+    markStage("meta", { record_count: meta?.record_count, query_chunks: meta?.query_chunks });
     // Import completion alone never makes a release public.
     if (meta?.state !== "ready" || !meta.published_at)
       throw new TRPCError({
@@ -68,6 +100,7 @@ export async function catalogueQuery(
         .stream() as unknown as AsyncIterable<QueryDocumentSnapshot>)
         records.push(doc.data());
     }
+    markStage("records_loaded", { records_length: records.length });
     if (records.length !== meta.record_count)
       throw new Error("Catalogue record count mismatch");
     const snapshot = validateSnapshot({
@@ -78,13 +111,30 @@ export async function catalogueQuery(
       records,
       ...((meta.research_schema_version || meta.coverage?.research_schema_version) ? { research: await readResearchChunks(ref, meta) } : {}),
     });
+    markStage("validated");
     if (
       meta.records_digest &&
       recordsDigest(snapshot.records) !== meta.records_digest
     )
       throw new Error("Catalogue serving snapshot integrity failure");
-    return createCatalogueQuery(snapshot);
-  })();
+    markStage("digest_verified");
+    const query = createCatalogueQuery(snapshot);
+    markStage("query_built");
+    return query;
+  })().catch((error) => {
+    console.error(
+      JSON.stringify({
+        at: "catalogueQuery",
+        release_id: loggableReleaseId,
+        stage: "failed",
+        failed_after_stage: loadStage,
+        elapsed_ms: Math.round(performance.now() - loadStart),
+        ...mem(),
+        error_class: errorClass(error),
+      }),
+    );
+    throw error;
+  });
   cache.set(releaseId, pending);
   // One full release per instance; historical requests remain supported but do
   // not retain several complete catalogues alongside the current release.

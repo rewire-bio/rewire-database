@@ -10,7 +10,7 @@ test("use-case GET procedures retain public validation while contributions are d
   await new Promise<void>((resolve) => server.listen(0, "127.0.0.1", resolve));
   const base = `http://127.0.0.1:${(server.address() as { port: number }).port}/api/trpc/`;
   try {
-    for (const name of ["useCases", "useCase", "useCaseLinks"]) {
+    for (const name of ["useCases", "useCase", "useCaseEvaluationResults", "useCaseLinks"]) {
       const response = await fetch(
         `${base}catalogue.${name}?input=${encodeURIComponent(JSON.stringify({ release_id: "INVALID RELEASE" }))}`,
       );

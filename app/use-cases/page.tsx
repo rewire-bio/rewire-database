@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import PageHeader from "@/components/PageHeader";
 import UseCaseExplorer from "@/components/catalogue/UseCaseExplorer";
-import { buildUseCases } from "@/lib/use-cases-build";
+import { buildUseCases, accumulateUseCaseDetail } from "@/lib/use-cases-build";
 import { socialMetadata } from "@/lib/catalogue-sharing";
 import { researchAreaLabel } from "@/lib/omics-browse";
 import { evidenceSummaryParts, summariseUseCaseEvidence, type EvidenceSummary } from "@/lib/use-case-summary";
@@ -23,7 +23,10 @@ export default function UseCasesPage() {
   const summaries: Record<string, EvidenceSummary> = {};
   const areaCounts: Record<string, number> = {};
   for (const entry of entries) {
-    const detail = query.get({ slug: entry.slug });
+    // A bare query.get() only resolves the first evaluation page; the index
+    // summary needs every evaluation's configurations counted, so it
+    // accumulates all pages the same way the use-case detail page does.
+    const detail = accumulateUseCaseDetail(query, entry.slug);
     if (detail) summaries[entry.slug] = summariseUseCaseEvidence(detail.mappings, entry.evidence_gaps.length);
     areaCounts[entry.area] = (areaCounts[entry.area] || 0) + 1;
   }

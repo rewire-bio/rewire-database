@@ -24,7 +24,7 @@ function mapping(): ResolvedMapping {
   return {
     id: "mapping", use_case_id: "question", lifecycle: "active", revision: 1, reason: "Reviewed source", protocol_id: "protocol", task_id: "task", evaluation_ids: ["evaluation"], endpoint: "Reporter assay splicing", relevance: "proxy", rationale: "The assay is a proxy for broader follow-up", constraints: ["Human SNVs"], limitations: ["Missing predictions are not negatives"], citations: [{ source_id: "source", locator: "/coverage" }], review, evidence_sha256: "a".repeat(64),
     protocol: record("protocol", "protocol"), task: { ...record("task", "task"), status: "discovered" }, sources: [record("source", "source", { url: "https://example.org/source" })],
-    evaluations: [{ evaluation, configurations: [configuration], results: [{ result, evaluation, configurations: [configuration], models: [], benchmarks: [], methods: [], pipelines: [], services: [], tasks: [], protocols: [], evaluators: [], datasets: [], dataset_subsets: [], sources: [], origin: "rewire_run", review_status: "source_checked" }] }],
+    evaluations: [{ evaluation, configurations: [configuration], results: [{ result, evaluation, configurations: [configuration], models: [], benchmarks: [], methods: [], pipelines: [], services: [], tasks: [], protocols: [], evaluators: [], datasets: [], dataset_subsets: [], sources: [], origin: "rewire_run", review_status: "source_checked" }], results_total: 1, results_next_cursor: null }],
   };
 }
 function html(value = mapping()) {

@@ -121,10 +121,22 @@ export const appRouter = t.router({
         }),
       ),
     useCase: t.procedure
-      .input(z.object({ ...pinned, slug: id }).strict())
+      .input(z.object({ ...pinned, slug: id, ...pagination }).strict())
       .query(({ input }) =>
         readUseCases(input.release_id, (query) =>
-          query.get({ slug: input.slug }),
+          query.get({ slug: input.slug, cursor: input.cursor, limit: input.limit }),
+        ),
+      ),
+    useCaseEvaluationResults: t.procedure
+      .input(z.object({ ...pinned, mapping_id: id, evaluation_id: id, ...pagination }).strict())
+      .query(({ input }) =>
+        readUseCases(input.release_id, (query) =>
+          query.evaluationResults({
+            mapping_id: input.mapping_id,
+            evaluation_id: input.evaluation_id,
+            cursor: input.cursor,
+            limit: input.limit,
+          }),
         ),
       ),
     useCaseLinks: t.procedure

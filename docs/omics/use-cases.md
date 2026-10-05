@@ -98,10 +98,40 @@ targets and their source and relationship dependencies enter the same stale
 evidence checks as canonical roles.
 
 The public read procedures are `catalogue.useCases` (question/input search,
-area/context filters and pagination), `catalogue.useCase` (detail by slug) and
-`catalogue.useCaseLinks` (reverse links by record ID). All accept `release_id`;
-website requests pin it and verify the returned input digest. List pages default
-to 10 entries and allow at most 100. Cursors bind to the release and filters.
+area/context filters and pagination), `catalogue.useCase` (detail by slug,
+paginated evaluations), `catalogue.useCaseEvaluationResults` (the rest of one
+evaluation's result rows) and `catalogue.useCaseLinks` (reverse links by
+record ID). All accept `release_id`; website requests pin it and verify the
+returned input digest. List pages default to 10 entries and allow at most 100.
+
+`catalogue.useCase` returns every mapping for the question in full, but
+batches the mappings' evaluations across the whole question: `limit` (1-100,
+default 20) bounds how many evaluations one call returns, further capped so
+the serialized page cannot exceed its own response budget even when
+individual evaluations are large. `evaluations_total` and
+`evaluations_next_cursor` report the complete count and whether more remain;
+a client walks `evaluations_next_cursor` with the same `slug` until it is
+`null` to recover every evaluation, regrouping entries by their enclosing
+mapping ID (a mapping with no evaluations on a given page is still present,
+just empty on that page). Each evaluation embeds a bounded preview of its
+result rows (`results`, up to 10) plus `results_total` and
+`results_next_cursor`; `catalogue.useCaseEvaluationResults` (`release_id`,
+`mapping_id`, `evaluation_id`, `cursor`, `limit` 1-100, default 10) pages
+through the rest the same way. Both cursors are opaque and bind to the
+release, input digest and, for results, the exact mapping/evaluation pair; a
+cursor from a different release, question or evaluation is rejected, as is a
+cursor that does not decode to a valid prior offset.
+
+Every page is bounded both by item count and by its own serialized-byte
+budget, and the fully wrapped response (including use-case and mapping
+metadata, which is not itself paginated) is checked against the live probe's
+1 MB response budget with a safety margin. A single evaluation or result row
+that alone exceeds its page's byte budget, or wrapped metadata large enough to
+exceed the overall budget on its own, fails the call outright rather than
+being served past the limit — a response is never silently larger than its
+budget. The static site accumulates every page at build time so a generated
+page always shows complete evidence; only the live API bounds each call.
+
 These procedures use the existing public GET API and do not enable contribution
 submission or private reads.
 

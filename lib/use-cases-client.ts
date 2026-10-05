@@ -6,6 +6,7 @@ import type { createUseCaseQuery } from "../services/omics/src/use-cases";
 type Query = ReturnType<typeof createUseCaseQuery>;
 export type UseCasePage = ReturnType<Query["list"]>;
 export type UseCaseDetail = NonNullable<ReturnType<Query["get"]>>;
+export type UseCaseEvaluationResults = ReturnType<Query["evaluationResults"]>;
 export type UseCaseLinks = ReturnType<Query["links"]>;
 export type UseCaseFilters = {
   q: string;
@@ -49,7 +50,9 @@ export function createUseCasesClient(releaseId: string, inputSha256: string | nu
   }
   return {
     list: (input: Parameters<Query["list"]>[0], signal?: AbortSignal) => read<UseCasePage>("useCases", input || {}, signal),
-    get: (input: { slug: string }, signal?: AbortSignal) => read<UseCaseDetail | null>("useCase", input, signal),
+    get: (input: { slug: string; cursor?: string; limit?: number }, signal?: AbortSignal) => read<UseCaseDetail | null>("useCase", input, signal),
+    evaluationResults: (input: { mapping_id: string; evaluation_id: string; cursor?: string; limit?: number }, signal?: AbortSignal) =>
+      read<UseCaseEvaluationResults>("useCaseEvaluationResults", input, signal),
     links: (input: { id: string }, signal?: AbortSignal) => read<UseCaseLinks>("useCaseLinks", input, signal),
   };
 }

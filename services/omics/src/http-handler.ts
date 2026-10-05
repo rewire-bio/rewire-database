@@ -22,6 +22,7 @@ const catalogueProcedures = new Set([
   "catalogue.auditChecks",
   "catalogue.useCases",
   "catalogue.useCase",
+  "catalogue.useCaseEvaluationResults",
   "catalogue.useCaseLinks",
   "catalogue.researchReadiness",
   "catalogue.investigations",

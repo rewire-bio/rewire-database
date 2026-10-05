@@ -5,6 +5,8 @@ import {
   useCaseDeclaration, useCaseHash, validateUseCaseArtifact,
   type Mapping, type UseCase, type UseCaseInputs,
 } from "../services/omics/src/use-cases";
+import { accumulateUseCaseDetail } from "../lib/use-cases-build";
+import { summariseUseCaseEvidence } from "../lib/use-case-summary";
 
 const review = { method: "automated_source_review" as const, actor: "Automated test fixture", reviewed_at: "2026-09-25T12:00:00Z", note: "Synthetic fixture, not scientific review" };
 function fixture() {
@@ -399,5 +401,234 @@ describe("release-bound query contract", () => {
     f.entry.evidence_gaps.push("Another reviewed gap");
     expect(useCaseDeclaration(f.inputs).input_sha256).not.toBe(old.input_sha256);
     expect(useCaseHash({ z: 1, a: 2 })).toBe(useCaseHash({ a: 2, z: 1 }));
+  });
+});
+
+// A single mapping can reference up to 100 evaluations (the schema maximum),
+// and each evaluation can have an unbounded number of result rows. Production
+// releases have hit both shapes: one mapping with 3 evaluations and 162
+// result rows, and another with 99 evaluations across 3 mappings. Both
+// exceeded the probe's 1 MB response budget when fully embedded in one
+// `useCase` response. These fixtures reproduce that shape at unit scale.
+function manyEvaluationsFixture(options: { evaluationCount: number; resultsForFirst?: number; padDescription?: number; releaseId?: string }) {
+  const { evaluationCount, resultsForFirst = 1, padDescription = 0, releaseId = "2026-09-25-222222222222" } = options;
+  const pad = padDescription ? "x".repeat(padDescription) : undefined;
+  const record = (id: string, kind: CatalogueRecord["kind"], extra: Partial<CatalogueRecord> = {}): CatalogueRecord => ({
+    id, kind, name: id, description: pad || "Synthetic fixture", status: "source_checked", facets: { areas: ["genomics"] },
+    source_ids: kind === "source" ? [] : ["source"], links: [], attributes: {}, ...extra,
+  });
+  const claim = (id: string, subject: string, relation: string, target: string) => record(id, "claim", {
+    links: [{ relation: "subject", target_id: subject }], attributes: { field: `links:${relation}:${target}`, value: target, source_locator: "Synthetic relationship" },
+  });
+  const records: CatalogueRecord[] = [
+    record("source", "source", { attributes: { url: "https://example.org/fixture", sha256: "a".repeat(64) } }),
+    record("suite", "benchmark"), record("task", "task", { status: "discovered" }),
+    record("protocol", "protocol", { links: [{ relation: "evaluates_task", target_id: "task" }, { relation: "part_of", target_id: "suite" }] }),
+    claim("task-link", "protocol", "evaluates_task", "task"), claim("suite-link", "protocol", "part_of", "suite"),
+  ];
+  const evaluationIds: string[] = [];
+  for (let i = 0; i < evaluationCount; i++) {
+    const evaluationId = `evaluation-${i}`;
+    evaluationIds.push(evaluationId);
+    // One distinct configuration per evaluation, so a distinct-configuration
+    // count (as the use-case index summary computes) only grows past the
+    // first evaluation page if the whole accumulated evidence is counted.
+    records.push(record(`config-${i}`, "configuration"));
+    records.push(record(evaluationId, "evaluation", {
+      links: [{ relation: "configuration", target_id: `config-${i}` }, { relation: "protocol", target_id: "protocol" }],
+      attributes: { origin: "rewire_run" },
+    }));
+    const resultCount = i === 0 ? resultsForFirst : 1;
+    for (let j = 0; j < resultCount; j++) {
+      records.push(record(`result-${i}-${j}`, "result", {
+        links: [{ relation: "evaluation", target_id: evaluationId }],
+        attributes: { metric: "Spearman", numeric_value: (0.5 + j * 0.001).toFixed(3), uncertainty: null, source_locator: "/metric" },
+      }));
+    }
+  }
+  const snapshot: CatalogueSnapshot = { schema_version: "1.1", release_id: releaseId, released_at: "2026-09-25T12:00:00Z", coverage: {}, records };
+  const review = { method: "automated_source_review" as const, actor: "Automated test fixture", reviewed_at: "2026-09-25T12:00:00Z", note: "Synthetic fixture, not scientific review" };
+  const entry: UseCase = {
+    id: "many-case", slug: "many-evaluations", title: "Many evaluations", question: "Does this scale?", area: "genomics",
+    contexts: ["research"], search_terms: ["scale"], intended_users: ["Researcher"], decision: "Choose a method", inputs: ["Inputs"],
+    output: "Output", setting: "Setting", exclusions: [], clinical_scope: "Research only", evidence_gaps: [],
+    citations: [{ source_id: "source", locator: "Scope" }], review, planned_work: [],
+  };
+  const mapping: Mapping = {
+    id: "many-mapping", use_case_id: "many-case", lifecycle: "active", revision: 1, reason: "Source review",
+    protocol_id: "protocol", task_id: "task", evaluation_ids: evaluationIds, endpoint: "Scaled endpoint", relevance: "proxy",
+    rationale: "Synthetic scale test", constraints: [], limitations: [], citations: [{ source_id: "source", locator: "/metric" }], review,
+  };
+  mapping.evidence_sha256 = mappingEvidenceHash(snapshot, entry, mapping);
+  const inputs: UseCaseInputs = { schema_version: "1.0", use_cases: [entry], mappings: [mapping] };
+  const declaration = useCaseDeclaration(inputs);
+  const artifact = buildUseCaseArtifact(snapshot, inputs);
+  return { snapshot, entry, mapping, evaluationIds, query: createUseCaseQuery(snapshot, artifact, declaration) };
+}
+
+describe("bounded, paginated use-case evidence", () => {
+  it("bounds the detail response within the probe's safety budget even with 100 large evaluations", () => {
+    // A fixed item-count cap is not enough: each evaluation's own closure
+    // (its linked protocol/configuration/source records, repeated once per
+    // result row) can be large on its own, so the page must shrink by bytes,
+    // not just by count, whenever individual items are this big. Kept under
+    // each per-item safety budget (see the dedicated "fails explicitly"
+    // test below for what happens when a single item exceeds it).
+    const { query } = manyEvaluationsFixture({ evaluationCount: 100, padDescription: 5_000 });
+    const detail = query.get({ slug: "many-evaluations" })!;
+    expect(detail.mappings).toHaveLength(1);
+    const included = detail.mappings[0].evaluations.length;
+    expect(included).toBeGreaterThan(0);
+    expect(included).toBeLessThan(100);
+    expect(detail.evaluations_total).toBe(100);
+    expect(detail.evaluations_next_cursor).toBeTruthy();
+    const bytes = Buffer.byteLength(JSON.stringify({ result: { data: detail } }));
+    expect(bytes).toBeLessThan(1_000_000);
+  });
+  it("still bounds the response when a single evaluation's own preview is itself large", () => {
+    // One evaluation with many large result rows: the inline preview must
+    // stay small on its own so it cannot dominate an evaluation page shared
+    // with other evaluations. Each row stays under the preview's own byte
+    // budget so this exercises graceful shrinking, not the hard failure
+    // guard for a single row that is oversized on its own.
+    const { query } = manyEvaluationsFixture({ evaluationCount: 5, resultsForFirst: 40, padDescription: 5_000 });
+    const detail = query.get({ slug: "many-evaluations" })!;
+    const first = detail.mappings[0].evaluations.find((e) => e.evaluation.id === "evaluation-0")!;
+    expect(first.results.length).toBeLessThan(40);
+    expect(first.results_total).toBe(40);
+    const bytes = Buffer.byteLength(JSON.stringify({ result: { data: detail } }));
+    expect(bytes).toBeLessThan(1_000_000);
+  });
+  it("accumulates the complete evidence for 100 large evaluations across many byte-capped pages without loss or duplication", () => {
+    const { query, evaluationIds } = manyEvaluationsFixture({ evaluationCount: 100, padDescription: 5_000 });
+    const full = accumulateUseCaseDetail(query, "many-evaluations")!;
+    expect(full.mappings[0].evaluations.map((e) => e.evaluation.id)).toEqual(evaluationIds);
+    for (const evaluation of full.mappings[0].evaluations) {
+      expect(evaluation.results.length).toBe(evaluation.results_total);
+      expect(evaluation.results_next_cursor).toBeNull();
+    }
+  });
+  it("repeated accumulation calls are idempotent and never mutate the query's cached preview", () => {
+    const { query } = manyEvaluationsFixture({ evaluationCount: 6, resultsForFirst: 23 });
+    // A real caller: generateMetadata and the page component both call this
+    // for the same route, so a second call must reproduce the first exactly.
+    const first = accumulateUseCaseDetail(query, "many-evaluations")!;
+    const second = accumulateUseCaseDetail(query, "many-evaluations")!;
+    expect(second).toEqual(first);
+    const firstEvaluation = first.mappings[0].evaluations.find((e) => e.evaluation.id === "evaluation-0")!;
+    expect(firstEvaluation.results).toHaveLength(23);
+    // The query's own bounded preview must still be exactly the original
+    // preview size after accumulation ran: it must not have been mutated.
+    const freshPage = query.get({ slug: "many-evaluations", limit: 20 })!;
+    const freshPreview = freshPage.mappings[0].evaluations.find((e) => e.evaluation.id === "evaluation-0")!;
+    expect(freshPreview.results.length).toBeLessThanOrEqual(10);
+    expect(freshPreview.results_total).toBe(23);
+    expect(freshPreview.results_next_cursor).toBeTruthy();
+  });
+  it("caps an evaluationResults page by bytes even when the caller asks for the probe's limit of 50", () => {
+    const { query, mapping } = manyEvaluationsFixture({ evaluationCount: 1, resultsForFirst: 60, padDescription: 5_000 });
+    const page = query.evaluationResults({ mapping_id: mapping.id, evaluation_id: "evaluation-0", limit: 50 });
+    expect(page.items.length).toBeLessThan(50);
+    expect(page.total).toBe(60);
+    expect(page.next_cursor).toBeTruthy();
+    const bytes = Buffer.byteLength(JSON.stringify({ result: { data: page } }));
+    expect(bytes).toBeLessThan(1_000_000);
+    const all = [...page.items];
+    let cursor = page.next_cursor || undefined;
+    while (cursor) {
+      const next = query.evaluationResults({ mapping_id: mapping.id, evaluation_id: "evaluation-0", limit: 50, cursor });
+      expect(Buffer.byteLength(JSON.stringify({ result: { data: next } }))).toBeLessThan(1_000_000);
+      all.push(...next.items);
+      cursor = next.next_cursor || undefined;
+    }
+    expect(new Set(all.map((r) => r.result.id)).size).toBe(60);
+  });
+  it("paginates evaluations across pages and recovers the complete, correctly ordered evidence", () => {
+    const { query, evaluationIds } = manyEvaluationsFixture({ evaluationCount: 45, resultsForFirst: 15 });
+    const collected: string[] = [];
+    let cursor: string | undefined;
+    let pages = 0;
+    do {
+      const page = query.get({ slug: "many-evaluations", cursor, limit: 20 })!;
+      expect(page.mappings).toHaveLength(1);
+      expect(page.mappings[0].evaluations.length).toBeLessThanOrEqual(20);
+      collected.push(...page.mappings[0].evaluations.map((e) => e.evaluation.id));
+      cursor = page.evaluations_next_cursor || undefined;
+      pages++;
+    } while (cursor);
+    expect(pages).toBeGreaterThan(1);
+    expect(collected).toEqual(evaluationIds);
+  });
+  it("paginates one evaluation's results and recovers them all without loss or duplication", () => {
+    const { query, mapping } = manyEvaluationsFixture({ evaluationCount: 3, resultsForFirst: 23 });
+    const detail = query.get({ slug: "many-evaluations" })!;
+    const first = detail.mappings[0].evaluations.find((e) => e.evaluation.id === "evaluation-0")!;
+    expect(first.results.length).toBeLessThanOrEqual(10);
+    expect(first.results_total).toBe(23);
+    expect(first.results_next_cursor).toBeTruthy();
+    const all = [...first.results];
+    let cursor = first.results_next_cursor || undefined;
+    while (cursor) {
+      const page = query.evaluationResults({ mapping_id: mapping.id, evaluation_id: "evaluation-0", cursor, limit: 10 });
+      all.push(...page.items);
+      cursor = page.next_cursor || undefined;
+    }
+    expect(all.map((r) => r.result.id).sort()).toEqual(Array.from({ length: 23 }, (_, j) => `result-0-${j}`).sort());
+    expect(new Set(all.map((r) => r.result.id)).size).toBe(23);
+  });
+  it("rejects an evaluation-results cursor minted for a different evaluation", () => {
+    const { query, mapping } = manyEvaluationsFixture({ evaluationCount: 2, resultsForFirst: 15 });
+    const first = query.evaluationResults({ mapping_id: mapping.id, evaluation_id: "evaluation-0", limit: 10 });
+    expect(first.next_cursor).toBeTruthy();
+    expect(() => query.evaluationResults({ mapping_id: mapping.id, evaluation_id: "evaluation-1", cursor: first.next_cursor! })).toThrow(/cursor/);
+  });
+  it("rejects a malformed or foreign use-case evidence cursor", () => {
+    const { query } = manyEvaluationsFixture({ evaluationCount: 25 });
+    expect(() => query.get({ slug: "many-evaluations", cursor: "not-a-real-cursor" })).toThrow(/cursor/);
+    const other = manyEvaluationsFixture({ evaluationCount: 30 });
+    const otherCursor = other.query.get({ slug: "many-evaluations", limit: 20 })!.evaluations_next_cursor!;
+    expect(() => query.get({ slug: "many-evaluations", cursor: otherCursor })).toThrow(/cursor/);
+  });
+  it("an index summary built from only the first evaluation page undercounts configurations", () => {
+    // app/use-cases/page.tsx builds every question's index-card evidence
+    // summary by calling summariseUseCaseEvidence on the resolved mappings.
+    // A bare query.get({slug}) only resolves the first evaluation page, so
+    // with 45 evaluations each testing a distinct configuration, a naive
+    // index implementation would report 20 (the page size) configurations
+    // instead of all 45 — the exact understatement this test guards against.
+    const { query, evaluationIds } = manyEvaluationsFixture({ evaluationCount: 45 });
+    const firstPageOnly = query.get({ slug: "many-evaluations" })!;
+    const firstPageSummary = summariseUseCaseEvidence(firstPageOnly.mappings, 0);
+    expect(firstPageSummary.configurations).toBeLessThan(evaluationIds.length);
+    const full = accumulateUseCaseDetail(query, "many-evaluations")!;
+    const fullSummary = summariseUseCaseEvidence(full.mappings, 0);
+    expect(fullSummary.configurations).toBe(evaluationIds.length);
+    expect(fullSummary.configurations).toBeGreaterThan(firstPageSummary.configurations);
+    // Accumulating twice (as an index page rendering every question's card
+    // would) must not mutate the cached preview or grow on repeated calls.
+    const again = accumulateUseCaseDetail(query, "many-evaluations")!;
+    expect(summariseUseCaseEvidence(again.mappings, 0)).toEqual(fullSummary);
+    expect(summariseUseCaseEvidence(query.get({ slug: "many-evaluations" })!.mappings, 0)).toEqual(firstPageSummary);
+  });
+  it("fails explicitly at construction instead of silently serving an oversized evaluation or result", () => {
+    // A result row embeds a full copy of its evaluation, configuration,
+    // protocol and source records (the exact duplication that hit 3.7x the
+    // response budget in production). So one evaluation/result pair this
+    // large is caught here, during query construction, by the inline result
+    // preview's own byte budget — well before any client could request a
+    // page and receive it. A fixed item-count cap would have admitted it as
+    // the one guaranteed-first item of a page; the byte guard must not.
+    expect(() => manyEvaluationsFixture({ evaluationCount: 1, padDescription: 500_000 })).toThrow(/safety budget/);
+  });
+  it("fails explicitly when use-case question metadata alone pushes the wrapped response over budget", () => {
+    // Per-item budgets bound the evaluations/results arrays, but use_case
+    // and mapping metadata (long question text, many search terms) is not
+    // paginated at all. A use case that is schema-valid (up to 100 search
+    // terms of up to 10,000 characters each) but this verbose must still
+    // fail the overall response-size guard rather than ship past it.
+    const f = fixture();
+    f.entry.search_terms = Array.from({ length: 100 }, (_, i) => `term-${i}-${"x".repeat(9900)}`);
+    const { query } = build(f);
+    expect(() => query.get({ slug: f.entry.slug })).toThrow(/safety budget/);
   });
 });

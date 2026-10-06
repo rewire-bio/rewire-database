@@ -377,7 +377,7 @@ export async function prepareBenchmarkData(options = {}) {
     if (releaseMatch && !RELEASE_ID.test(releaseMatch[1])) throw new Error(`Invalid release directory: ${entry.destination}`);
     const expectedScope = releaseMatch && releaseMatch[1] !== lock.release_id ? 'historical' : 'current';
     if (entry.scope !== expectedScope) throw new Error(`Invalid scope for ${entry.destination}: expected ${expectedScope}`);
-    assertSafePath(sourceDir, entry.source, { required: true });
+    assertSafePath(sourceDir, entry.source, { required: !currentOnly || isCurrentOnlyEntry(entry) });
     assertSafePath(websiteRoot, entry.destination);
 
     // Duplicate checks

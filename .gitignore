@@ -11,6 +11,7 @@
 
 # next.js
 /.next/
+/.detail-cache/
 /out/
 /public/benchmark-literature/results.csv
 /public/benchmark-literature/papers.json

@@ -133,6 +133,9 @@ function pageForKind(kind: string, id: string, url: string): string | null {
   return page(url);
 }
 for (const record of records) {
+  // Inventory/sitemap validation above still covers every record. Metadata
+  // resolution is only needed for pages actually rendered in this export.
+  if (smoke && !recordRouteKinds(record).some(kind => builtInSmoke(kind, record.id))) continue;
   const url = recordHref(record);
   const metadata = recordSearchMetadata(record, records);
   const contract = {
@@ -406,7 +409,7 @@ for (const [name, expected] of Object.entries(baselineExport.files)) {
 }
 if (failures.length) throw new Error(failures.join("\n"));
 console.log(
-  `Verified ${records.length} record pages, generated metadata and local links, ${papers.length} historical paper pages, MFASS history and release checksums.`,
+  `Verified ${smoke ? Object.values(smoke.ids_by_kind).reduce((sum, ids) => sum + ids.length, 0) : records.length} rendered record pages, ${records.length} catalogue identities, generated metadata and local links, ${papers.length} historical paper pages, MFASS history and release checksums.`,
 );
 
 const contributionPage = utilityPages.get("/contribute/")!;

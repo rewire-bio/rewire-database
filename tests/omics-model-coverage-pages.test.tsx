@@ -5,7 +5,7 @@ import {
   createCatalogueQuery,
   type CatalogueSnapshot,
 } from "../services/omics/src/catalogue-query";
-import RecordPage from "../app/database/[kind]/[id]/page";
+import RecordPage from "../app/database/model/[id]/page";
 
 const fixture = vi.hoisted(() => ({
   snapshot: null as CatalogueSnapshot | null,
@@ -26,7 +26,7 @@ fixture.snapshot = {
 };
 const query = createCatalogueQuery(fixture.snapshot);
 const render = (id: string) =>
-  renderToStaticMarkup(<RecordPage params={{ kind: "model", id }} />);
+  renderToStaticMarkup(<RecordPage params={{ id }} />);
 
 // SSR text can exist inside a closed disclosure without being initially visible.
 const closedDisclosuresAt = (html: string, position: number) => {

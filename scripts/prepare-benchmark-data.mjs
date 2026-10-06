@@ -163,6 +163,12 @@ async function decompressAndVerifyToStaging(sourceGzPath, stagedPath, expectedBy
   return { sha256, bytes };
 }
 
+// Shared with the CI sparse selector: current-only retains every immutable receipt.
+export function isCurrentOnlyEntry(entry) {
+  return entry.scope !== 'historical' ||
+    (entry.destination.startsWith('data/omics/releases/') && entry.destination.endsWith('.json'));
+}
+
 /**
  * Prepare benchmark data for the website consumer.
  *
@@ -371,7 +377,7 @@ export async function prepareBenchmarkData(options = {}) {
     if (releaseMatch && !RELEASE_ID.test(releaseMatch[1])) throw new Error(`Invalid release directory: ${entry.destination}`);
     const expectedScope = releaseMatch && releaseMatch[1] !== lock.release_id ? 'historical' : 'current';
     if (entry.scope !== expectedScope) throw new Error(`Invalid scope for ${entry.destination}: expected ${expectedScope}`);
-    assertSafePath(sourceDir, entry.source, { required: true });
+    assertSafePath(sourceDir, entry.source, { required: !currentOnly || isCurrentOnlyEntry(entry) });
     assertSafePath(websiteRoot, entry.destination);
 
     // Duplicate checks
@@ -433,12 +439,9 @@ export async function prepareBenchmarkData(options = {}) {
 
   try {
     for (const entry of manifest.files) {
-      const isReceipt =
-        entry.destination.startsWith('data/omics/releases/') &&
-        entry.destination.endsWith('.json');
-
+      const isReceipt = entry.destination.startsWith('data/omics/releases/') && entry.destination.endsWith('.json');
       // Scope filtering: --current-only skips historical public files, but hydrates current and receipts
-      if (currentOnly && entry.scope === 'historical' && !isReceipt) {
+      if (currentOnly && !isCurrentOnlyEntry(entry)) {
         skippedCount++;
         continue;
       }

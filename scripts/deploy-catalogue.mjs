@@ -5,7 +5,10 @@ import { deployCatalogue, hostingVersion } from "./deployment-transaction.mjs";
 import { contributionProbeMode } from "./contribution-deployment.mjs";
 import { assertPublishedBase, classify, fingerprints, publishedReceipt, publicBytes, validReceipt } from "./deployment-plan.mjs";
 import { assertHistoricalDownloadsPresent, deployWebHosting } from "./hosting-web-deploy.mjs";
+import { assertNotSmokeExport } from "./assert-not-smoke-export.mjs";
 const contributionProbeArgument = `--contributions=${contributionProbeMode()}`;
+
+assertNotSmokeExport();
 
 // Run only from the reviewed deployment workflow with WIF/ADC. Tests exercise
 // deployment-transaction.mjs using injected operations and never contact production.

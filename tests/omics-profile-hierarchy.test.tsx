@@ -7,7 +7,7 @@ import {
 } from "../services/omics/src/catalogue-query";
 import { profileSchema } from "../lib/omics-profile";
 import Profile from "../components/catalogue/Profile";
-import RecordPage from "../app/database/[kind]/[id]/page";
+import RecordPage from "../app/database/model/[id]/page";
 
 const fixture = vi.hoisted(() => ({
   snapshot: null as CatalogueSnapshot | null,
@@ -20,10 +20,7 @@ vi.mock("../lib/catalogue-build", () => ({
 }));
 fixture.snapshot = JSON.parse(fs.readFileSync("tests/fixtures/profile-hierarchy.json", "utf8"));
 const query = createCatalogueQuery(fixture.snapshot!);
-const render = (id: string) =>
-  renderToStaticMarkup(
-    <RecordPage params={{ id, kind: query.get({ id })!.record.kind }} />,
-  );
+const render = (id: string) => renderToStaticMarkup(<RecordPage params={{ id }} />);
 const escaped = (value: string) => renderToStaticMarkup(<>{value}</>);
 
 describe("model profile information hierarchy", () => {

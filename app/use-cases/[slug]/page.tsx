@@ -7,6 +7,7 @@ import { UseCaseReturn } from "@/components/catalogue/UseCaseNavigation";
 import SectionNavigation from "@/components/catalogue/SectionNavigation";
 import { buildUseCases, fullUseCaseDetail } from "@/lib/use-cases-build";
 import { buildCatalogue } from "@/lib/catalogue-build";
+import { filterSlugsForSmoke } from "@/lib/smoke-selection";
 import { recordHref } from "@/lib/omics";
 import { researchAreaLabel } from "@/lib/omics-browse";
 import { socialMetadata } from "@/lib/catalogue-sharing";
@@ -15,7 +16,10 @@ import { reproductionSchema } from "@/services/omics/src/run-recipe";
 import styles from "@/components/catalogue/UseCases.module.css";
 
 type Params = { slug: string };
-export function generateStaticParams() { return buildUseCases().entries.map(({ slug }) => ({ slug })); }
+export function generateStaticParams() {
+  const slugs = buildUseCases().entries.map(({ slug }) => slug);
+  return filterSlugsForSmoke(slugs).map((slug) => ({ slug }));
+}
 export function generateMetadata({ params }: { params: Params }): Metadata {
   const detail = fullUseCaseDetail(params.slug);
   if (!detail) return {};

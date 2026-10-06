@@ -5,7 +5,15 @@ import {
   createCatalogueQuery,
   type CatalogueSnapshot,
 } from "../services/omics/src/catalogue-query";
-import RecordPage from "../app/database/[kind]/[id]/page";
+import BenchmarkPage from "../app/database/benchmark/[id]/page";
+import ResultPage from "../app/database/result/[id]/page";
+import EvaluationPage from "../app/database/evaluation/[id]/page";
+
+const pageFor = {
+  benchmark: BenchmarkPage,
+  result: ResultPage,
+  evaluation: EvaluationPage,
+} as const;
 
 const fixture = vi.hoisted(() => ({
   snapshot: null as CatalogueSnapshot | null,
@@ -21,12 +29,11 @@ fixture.snapshot = JSON.parse(
   fs.readFileSync("public/omics/catalogue.json").toString(),
 );
 fixture.query = createCatalogueQuery(fixture.snapshot!);
-const render = (id: string) =>
-  renderToStaticMarkup(
-    <RecordPage
-      params={{ id, kind: fixture.query!.get({ id })!.record.kind }}
-    />,
-  );
+const render = (id: string) => {
+  const kind = fixture.query!.get({ id })!.record.kind as keyof typeof pageFor;
+  const RecordPage = pageFor[kind];
+  return renderToStaticMarkup(<RecordPage params={{ id }} />);
+};
 
 describe("catalogue detail UX on the published release", () => {
   it("puts an overview before results and keeps all 30 benchmark pages navigable", () => {

@@ -14,10 +14,23 @@ import {
   testedEntities,
   groupEntities,
 } from "../lib/omics-browse";
-import RecordPage, {
-  generateMetadata,
-  generateStaticParams,
-} from "../app/database/[kind]/[id]/page";
+import ModelPage, {
+  generateMetadata as modelMetadata,
+  generateStaticParams as modelStaticParams,
+} from "../app/database/model/[id]/page";
+import ConfigurationPage, {
+  generateStaticParams as configurationStaticParams,
+} from "../app/database/configuration/[id]/page";
+import BenchmarkPage from "../app/database/benchmark/[id]/page";
+import TaskPage from "../app/database/task/[id]/page";
+import ProtocolPage from "../app/database/protocol/[id]/page";
+import DatasetPage, {
+  generateStaticParams as datasetStaticParams,
+} from "../app/database/dataset/[id]/page";
+import ResultPage from "../app/database/result/[id]/page";
+import SourcePage, {
+  generateMetadata as sourceMetadata,
+} from "../app/database/source/[id]/page";
 import Results from "../components/catalogue/Results";
 
 const fixture = vi.hoisted(() => ({
@@ -153,9 +166,7 @@ describe("explicit catalogue entity UI", () => {
   });
   it("shows result context as configuration, protocol and dataset", () => {
     snapshot();
-    const html = renderToStaticMarkup(
-      <RecordPage params={{ kind: "result", id: "finding" }} />,
-    );
+    const html = renderToStaticMarkup(<ResultPage params={{ id: "finding" }} />);
     expect(html).toContain("Tested configuration");
     expect(html).toContain("<dt>Protocol</dt>");
     expect(html).toContain("<dt>Dataset</dt>");
@@ -163,41 +174,28 @@ describe("explicit catalogue entity UI", () => {
   });
   it("preserves declared old URLs while metadata and links use canonical kinds", () => {
     snapshot();
-    expect(generateStaticParams()).toContainEqual({
-      kind: "model",
-      id: "configured",
-    });
-    expect(generateStaticParams()).toContainEqual({
-      kind: "configuration",
-      id: "configured",
-    });
+    expect(modelStaticParams().map((p) => p.id)).toContain("configured");
+    expect(configurationStaticParams().map((p) => p.id)).toContain("configured");
     expect(
-      generateMetadata({ params: { kind: "model", id: "configured" } })
-        .alternates?.canonical,
+      modelMetadata({ params: { id: "configured" } }).alternates?.canonical,
     ).toBe("https://benchmarks.rewirebio.io/database/configuration/configured/");
-    const html = renderToStaticMarkup(
-      <RecordPage params={{ kind: "model", id: "configured" }} />,
-    );
+    const html = renderToStaticMarkup(<ModelPage params={{ id: "configured" }} />);
     expect(html).toContain('<span class="kick">Configuration</span>');
     expect(html).toContain("Underlying model:");
     expect(html).not.toContain("model · method");
-    expect(
-      generateMetadata({ params: { kind: "source", id: "configured" } }),
-    ).toEqual({});
+    expect(sourceMetadata({ params: { id: "configured" } })).toEqual({});
   });
   it("exposes the source-backed suite-task-protocol hierarchy and recorded evaluations", () => {
     snapshot();
-    const suite = renderToStaticMarkup(
-      <RecordPage params={{ kind: "benchmark", id: "suite" }} />,
-    );
+    const suite = renderToStaticMarkup(<BenchmarkPage params={{ id: "suite" }} />);
     expect(suite).toContain("Evaluation design");
     expect(suite).toContain("/database/task/biological-task");
     const task = renderToStaticMarkup(
-      <RecordPage params={{ kind: "task", id: "biological-task" }} />,
+      <TaskPage params={{ id: "biological-task" }} />,
     );
     expect(task).toContain("/database/protocol/procedure");
     const protocol = renderToStaticMarkup(
-      <RecordPage params={{ kind: "protocol", id: "procedure" }} />,
+      <ProtocolPage params={{ id: "procedure" }} />,
     );
     expect(protocol).toContain("Recorded evaluations");
     expect(protocol).toContain("/database/evaluation/evaluation");
@@ -228,22 +226,17 @@ describe("explicit catalogue entity UI", () => {
     evaluation.links = evaluation.links.map((link) =>
       link.relation === "dataset" ? { ...link, target_id: subset.id } : link,
     );
-    const html = renderToStaticMarkup(
-      <RecordPage params={{ kind: "result", id: "finding" }} />,
-    );
+    const html = renderToStaticMarkup(<ResultPage params={{ id: "finding" }} />);
     expect(html).toContain("<dt>Dataset subset</dt>");
     expect(html).toContain("/database/dataset_subset/held-out-cohort");
     expect(html).not.toContain("<dt>Dataset</dt>");
     const subsetHtml = renderToStaticMarkup(
-      <RecordPage params={{ kind: "dataset", id: subset.id }} />,
+      <DatasetPage params={{ id: subset.id }} />,
     );
     expect(subsetHtml).toContain('<span class="kick">Dataset subset</span>');
     expect(subsetHtml).toContain("Subset and evaluation context");
     expect(subsetHtml).toContain("/database/dataset/dataset");
-    expect(generateStaticParams()).toContainEqual({
-      kind: "dataset",
-      id: subset.id,
-    });
+    expect(datasetStaticParams().map((p) => p.id)).toContain(subset.id);
   });
   it("includes reviewed run instructions and makes their scope explicit", () => {
     snapshot();
@@ -270,7 +263,7 @@ describe("explicit catalogue entity UI", () => {
       review: { method: "official_repository_review", date: "2026-09-17" },
     };
     const html = renderToStaticMarkup(
-      <RecordPage params={{ kind: "protocol", id: "procedure" }} />,
+      <ProtocolPage params={{ id: "procedure" }} />,
     );
     expect(html).toContain('href="#execution"');
     expect(html).toContain('id="execution"');
@@ -284,12 +277,10 @@ describe("explicit catalogue entity UI", () => {
     fixture.snapshot!.records = fixture.snapshot!.records.filter(
       (item) => item.kind !== "claim",
     );
-    const suite = renderToStaticMarkup(
-      <RecordPage params={{ kind: "benchmark", id: "suite" }} />,
-    );
+    const suite = renderToStaticMarkup(<BenchmarkPage params={{ id: "suite" }} />);
     expect(suite).not.toContain('id="evaluation-design"');
     const configuration = renderToStaticMarkup(
-      <RecordPage params={{ kind: "configuration", id: "configured" }} />,
+      <ConfigurationPage params={{ id: "configured" }} />,
     );
     expect(configuration).not.toContain("Underlying model:");
   });

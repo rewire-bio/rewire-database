@@ -1032,6 +1032,31 @@ describe('pinned artifact boundary regressions', () => {
     await expect(f.hydrate(true)).rejects.toThrow(/catalogue_sha256 mismatch/);
   });
 
+  it('hydrates a sparse current-only checkout with historical source directories absent', async () => {
+    const f = await fixture();
+    const historical = f.manifest.files.filter(entry => entry.scope === 'historical');
+    expect(historical.length).toBeGreaterThan(0);
+    for (const entry of historical) {
+      fs.rmSync(path.dirname(path.join(f.dataDir, entry.source)), { recursive: true, force: true });
+    }
+    const result = await f.hydrate(true);
+    expect(result.skippedCount).toBe(historical.length);
+    expect(fs.existsSync(path.join(f.websiteDir, `public/omics/releases/${f.releaseId}/catalogue.json`))).toBe(true);
+    for (const entry of f.manifest.files.filter(entry => entry.destination.startsWith('data/omics/releases/'))) {
+      expect(fs.existsSync(path.join(f.websiteDir, entry.destination))).toBe(true);
+    }
+    await expect(f.hydrate(false)).rejects.toThrow(/ENOENT/);
+  });
+
+  it('still rejects symlink ancestors of skipped historical sources', async () => {
+    const f = await fixture();
+    const entry = f.manifest.files.find(item => item.scope === 'historical')!;
+    const directory = path.dirname(path.join(f.dataDir, entry.source));
+    fs.rmSync(directory, { recursive: true, force: true });
+    fs.symlinkSync(path.join(f.tmpRoot, 'missing-target'), directory);
+    await expect(f.hydrate(true)).rejects.toThrow(/Symlink path rejected/);
+  });
+
   it('supports direct immutable archive sources', async () => {
     const f = await fixture();
     const entry = f.manifest.files.find(item => item.scope === 'historical')!;

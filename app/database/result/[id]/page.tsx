@@ -1,4 +1,3 @@
-import { filterCachedDetailIds } from "@/lib/detail-cache/selection";
 import { socialMetadata } from "@/lib/catalogue-sharing";
 import { recordSearchMetadata } from "@/lib/catalogue-seo";
 import type { Metadata } from "next";
@@ -17,7 +16,7 @@ export function generateStaticParams() {
     ...catalogue.records.filter((record) => record.kind === KIND),
     ...legacyAliasRecords(catalogue, KIND),
   ].map((record) => record.id);
-  return filterCachedDetailIds(KIND, filterIdsForSmoke(KIND, ids)).map((id) => ({ id }));
+  return filterIdsForSmoke(KIND, ids).map((id) => ({ id }));
 }
 
 export function generateMetadata({ params }: { params: Params }): Metadata {

@@ -24,8 +24,7 @@
     "prepare:cloudflare": "node scripts/prepare-cloudflare.mjs",
     "deploy:cloudflare": "node scripts/deploy-cloudflare.mjs",
     "data:fetch": "node scripts/fetch-benchmark-data.mjs",
-    "data:prepare": "node scripts/prepare-benchmark-data.mjs",
-    "build:cached": "npm run data:prepare -- --current-only && tsx scripts/detail-cache/run.ts"
+    "data:prepare": "node scripts/prepare-benchmark-data.mjs"
   },
   "dependencies": {
     "@noble/hashes": "2.4.0",

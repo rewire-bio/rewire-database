@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import { buildCatalogue } from "@/lib/catalogue-build";
 import { recordRouteKinds } from "@/lib/omics";
 import { getDetailOr404, legacyAliasRecords } from "@/lib/entity-detail";
+import { filterIdsForSmoke } from "@/lib/smoke-selection";
 import { PredictiveEntityDetail } from "@/app/database/_entities/predictive";
 import { DatasetDetail } from "@/app/database/_entities/dataset";
 
@@ -12,10 +13,11 @@ const KIND = "model" as const;
 
 export function generateStaticParams() {
   const { catalogue } = buildCatalogue();
-  return [
+  const ids = [
     ...catalogue.records.filter((record) => record.kind === KIND),
     ...legacyAliasRecords(catalogue, KIND),
-  ].map((record) => ({ id: record.id }));
+  ].map((record) => record.id);
+  return filterIdsForSmoke(KIND, ids).map((id) => ({ id }));
 }
 
 export function generateMetadata({ params }: { params: Params }): Metadata {

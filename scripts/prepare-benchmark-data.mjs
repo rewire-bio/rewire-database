@@ -163,6 +163,12 @@ async function decompressAndVerifyToStaging(sourceGzPath, stagedPath, expectedBy
   return { sha256, bytes };
 }
 
+// Shared with the CI sparse selector: current-only retains every immutable receipt.
+export function isCurrentOnlyEntry(entry) {
+  return entry.scope !== 'historical' ||
+    (entry.destination.startsWith('data/omics/releases/') && entry.destination.endsWith('.json'));
+}
+
 /**
  * Prepare benchmark data for the website consumer.
  *
@@ -433,12 +439,9 @@ export async function prepareBenchmarkData(options = {}) {
 
   try {
     for (const entry of manifest.files) {
-      const isReceipt =
-        entry.destination.startsWith('data/omics/releases/') &&
-        entry.destination.endsWith('.json');
-
+      const isReceipt = entry.destination.startsWith('data/omics/releases/') && entry.destination.endsWith('.json');
       // Scope filtering: --current-only skips historical public files, but hydrates current and receipts
-      if (currentOnly && entry.scope === 'historical' && !isReceipt) {
+      if (currentOnly && !isCurrentOnlyEntry(entry)) {
         skippedCount++;
         continue;
       }

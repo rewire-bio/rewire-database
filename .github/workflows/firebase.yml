@@ -16,7 +16,193 @@ concurrency:
   group: database-${{ github.ref }}
   cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 jobs:
+  # Fast pull_request path: a small deterministic sample of pages (one fixed
+  # published use case plus representatives of every entity kind and legacy
+  # alias shape — see lib/smoke-selection.ts and
+  # docs/pr-ci.md), not the full ~28,800-route
+  # catalogue. Three independent lanes run in parallel, each budgeted to finish
+  # well inside 5 minutes; `timeout-minutes` fails the job outright on
+  # overrun rather than letting an incomplete run report success. Skips the
+  # full-history disk cleanup, production receipt/live-network planning,
+  # Cloudflare packaging/upload and Firebase/Java/workerd emulators that only
+  # matter for an actual publish — those stay on the `checks` job below,
+  # unchanged, for push to main and workflow_dispatch.
+  pr-tests:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      NODE_OPTIONS: --max-old-space-size=8192
+    steps:
+      - id: start
+        run: echo "epoch=$(date +%s)" >> "$GITHUB_OUTPUT"
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Restore installed root dependencies
+        id: node-modules-cache
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node22-modules-v2-${{ hashFiles('package-lock.json') }}
+      - run: npm ci --no-audit --no-fund
+        if: steps.node-modules-cache.outputs.cache-hit != 'true'
+      - name: Read the reviewed data pin
+        id: data-pin
+        run: |
+          node -e 'const p=require("./benchmark-data.lock.json"); if(p.repository!=="rewire-bio/rewire-benchmark-data" || !/^[a-f0-9]{40}$/.test(p.revision) || !/^\d{4}-\d{2}-\d{2}-[a-f0-9]{12}$/.test(p.release_id)) throw Error("Invalid data pin"); require("fs").appendFileSync(process.env.GITHUB_OUTPUT, "revision="+p.revision+"\nrelease_id="+p.release_id+"\n")'
+      - name: Restore current-release-only data checkout
+        id: data-cache
+        uses: actions/cache/restore@v4
+        with:
+          path: workbench/benchmark-data
+          key: benchmark-data-current-v2-${{ steps.data-pin.outputs.revision }}-${{ hashFiles('benchmark-data.lock.json') }}
+      - name: Check out only the current release's website files
+        if: steps.data-cache.outputs.cache-hit != 'true'
+        uses: actions/checkout@v4
+        with:
+          repository: rewire-bio/rewire-benchmark-data
+          ref: ${{ steps.data-pin.outputs.revision }}
+          persist-credentials: false
+          path: workbench/benchmark-data
+          sparse-checkout-cone-mode: false
+          sparse-checkout: /website/manifest.json
+      - name: Select exact current payloads from the authenticated manifest
+        if: steps.data-cache.outputs.cache-hit != 'true'
+        run: node scripts/select-current-data.mjs
+      - name: Report cache hits before spending the time budget on them
+        run: |
+          echo "node_modules cache hit: ${{ steps.node-modules-cache.outputs.cache-hit == 'true' }}"
+          echo "current-release data cache hit: ${{ steps.data-cache.outputs.cache-hit == 'true' }}"
+      - run: npm run data:prepare -- --current-only
+      - name: Cache the current-release-only checkout
+        if: steps.data-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: workbench/benchmark-data
+          key: benchmark-data-current-v2-${{ steps.data-pin.outputs.revision }}-${{ hashFiles('benchmark-data.lock.json') }}
+      - run: npm test
+      - run: npm run lint
+      - run: npm run typecheck
+      - name: Report elapsed time
+        if: always()
+        run: |
+          echo "pr-tests elapsed: $(( $(date +%s) - ${{ steps.start.outputs.epoch }} ))s (budget 300s)"
+
+  pr-smoke:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      NODE_OPTIONS: --max-old-space-size=8192
+    steps:
+      - id: start
+        run: echo "epoch=$(date +%s)" >> "$GITHUB_OUTPUT"
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Restore installed root dependencies
+        id: node-modules-cache
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node22-modules-v2-${{ hashFiles('package-lock.json') }}
+      - run: npm ci --no-audit --no-fund
+        if: steps.node-modules-cache.outputs.cache-hit != 'true'
+      - name: Restore Next compilation cache
+        id: next-cache
+        uses: actions/cache/restore@v4
+        with:
+          path: .next/cache
+          key: ${{ runner.os }}-node22-next-smoke-default-env-v2-${{ hashFiles('package-lock.json') }}-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-node22-next-smoke-default-env-v2-${{ hashFiles('package-lock.json') }}-
+      - name: Read the reviewed data pin
+        id: data-pin
+        run: |
+          node -e 'const p=require("./benchmark-data.lock.json"); if(p.repository!=="rewire-bio/rewire-benchmark-data" || !/^[a-f0-9]{40}$/.test(p.revision) || !/^\d{4}-\d{2}-\d{2}-[a-f0-9]{12}$/.test(p.release_id)) throw Error("Invalid data pin"); require("fs").appendFileSync(process.env.GITHUB_OUTPUT, "revision="+p.revision+"\nrelease_id="+p.release_id+"\n")'
+      - name: Restore current-release-only data checkout
+        id: data-cache
+        uses: actions/cache/restore@v4
+        with:
+          path: workbench/benchmark-data
+          key: benchmark-data-current-v2-${{ steps.data-pin.outputs.revision }}-${{ hashFiles('benchmark-data.lock.json') }}
+      - name: Check out only the current release's website files
+        if: steps.data-cache.outputs.cache-hit != 'true'
+        uses: actions/checkout@v4
+        with:
+          repository: rewire-bio/rewire-benchmark-data
+          ref: ${{ steps.data-pin.outputs.revision }}
+          persist-credentials: false
+          path: workbench/benchmark-data
+          sparse-checkout-cone-mode: false
+          sparse-checkout: /website/manifest.json
+      - name: Select exact current payloads from the authenticated manifest
+        if: steps.data-cache.outputs.cache-hit != 'true'
+        run: node scripts/select-current-data.mjs
+      - name: Report cache hits before spending the time budget on them
+        run: |
+          echo "node_modules cache hit: ${{ steps.node-modules-cache.outputs.cache-hit == 'true' }}"
+          echo "Next exact cache hit: ${{ steps.next-cache.outputs.cache-hit == 'true' }}"
+          echo "Next requested key: ${{ steps.next-cache.outputs.cache-primary-key }}"
+          echo "Next restored key (empty = cold): ${{ steps.next-cache.outputs.cache-matched-key }}"
+          echo "current-release data cache hit: ${{ steps.data-cache.outputs.cache-hit == 'true' }}"
+      - run: npm run build:smoke
+      - run: npm run check:export:smoke
+      - name: Cache the current-release-only checkout
+        if: steps.data-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: workbench/benchmark-data
+          key: benchmark-data-current-v2-${{ steps.data-pin.outputs.revision }}-${{ hashFiles('benchmark-data.lock.json') }}
+      - name: Save Next compilation cache
+        if: steps.next-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: .next/cache
+          key: ${{ steps.next-cache.outputs.cache-primary-key }}
+      - name: Report elapsed time
+        if: always()
+        run: |
+          echo "pr-smoke elapsed: $(( $(date +%s) - ${{ steps.start.outputs.epoch }} ))s (budget 300s)"
+
+  pr-api:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - id: start
+        run: echo "epoch=$(date +%s)" >> "$GITHUB_OUTPUT"
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: services/omics/package-lock.json
+      - name: Restore installed API dependencies
+        id: api-cache
+        uses: actions/cache@v4
+        with:
+          path: services/omics/node_modules
+          key: ${{ runner.os }}-node22-api-modules-v2-${{ hashFiles('services/omics/package-lock.json') }}
+      - run: npm ci --prefix services/omics --no-audit --no-fund
+        if: steps.api-cache.outputs.cache-hit != 'true'
+      - name: Build and test API against tracked fixtures
+        run: |
+          echo "API dependencies exact hit: ${{ steps.api-cache.outputs.cache-hit == 'true' }}"
+          npm --prefix services/omics run build
+          npm --prefix services/omics test
+      - name: Report elapsed time
+        if: always()
+        run: |
+          echo "pr-api elapsed: $(( $(date +%s) - ${{ steps.start.outputs.epoch }} ))s (budget 300s)"
+
   checks:
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     # Several steps load the whole catalogue into memory: the static export
     # prerenders a page per record, and the export checks read the release

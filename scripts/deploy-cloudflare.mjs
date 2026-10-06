@@ -1,4 +1,7 @@
 import { spawn } from "node:child_process";
+import { assertNotSmokeExport } from "./assert-not-smoke-export.mjs";
+
+assertNotSmokeExport();
 
 // Firebase publication must have completed successfully first. Keep its origin
 // and immutable historical releases available to both old and new Worker versions.

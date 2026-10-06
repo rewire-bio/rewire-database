@@ -7,6 +7,7 @@ import {
   MODEL_PAGE_SIZE,
 } from "../../lib/catalogue-index";
 import { recordHref, recordRouteKinds } from "../../lib/omics";
+import { knownCataloguePaths } from "../../lib/smoke-selection";
 import {
   recordIsIndexable,
   recordSearchMetadata,
@@ -47,6 +48,38 @@ const useCaseArtifact = useCaseDeclaration ? validateUseCaseArtifact(catalogue, 
 const useCaseQuery = createUseCaseQuery(catalogue, useCaseArtifact, useCaseDeclaration);
 const useCaseEntries = useCaseArtifact?.use_cases || [];
 const failures: string[] = [];
+
+// A PR smoke export (npm run build:smoke) renders only a small deterministic
+// sample of entity and use-case pages (see lib/smoke-selection.ts and
+// workbench/pr-smoke-export-checkpoint.md). scripts/omics/write-smoke-manifest.ts
+// both writes and self-validates out/omics/smoke-manifest.json, so its
+// presence is the authoritative signal here. When present, a record or
+// use-case link that was never selected to render is "legitimately omitted",
+// not broken — but a link to an id that is not in the real catalogue at all
+// is still a genuine failure in every mode.
+type SmokeManifest = {
+  smoke: true;
+  ids_by_kind: Record<string, string[]>;
+  use_case_slugs: string[];
+};
+const smoke: SmokeManifest | null = process.argv.includes("--smoke")
+  ? JSON.parse(fs.readFileSync("out/omics/smoke-manifest.json", "utf8"))
+  : null;
+if (process.argv.includes("--smoke") && !smoke?.smoke) throw new Error("out/omics/smoke-manifest.json is missing its smoke marker");
+const smokeIdsByKind: Record<string, Set<string>> = Object.fromEntries(
+  Object.entries(smoke?.ids_by_kind || {}).map(([kind, ids]) => [kind, new Set(ids)]),
+);
+const builtInSmoke = (kind: string, id: string) => !smoke || smokeIdsByKind[kind]?.has(id) === true;
+// Every real canonical and alias path, and every real use-case path, known
+// from the complete pinned catalogue — independent of which of them a smoke
+// export actually rendered. A link to one of these is legitimate even when
+// unrendered; a link to anything else is not a known catalogue/use-case URL.
+const knownPaths = knownCataloguePaths(
+  records,
+  (useCaseArtifact?.use_cases || []).map((entry) => entry.slug),
+);
+const resolvableLink = (pathname: string, file: string) =>
+  fs.existsSync(file) || historicalPaths.has(pathname) || (smoke !== null && knownPaths.has(pathname));
 for (const source of parseUseCaseSourceDeclaration(currentManifest.coverage?.use_case_sources || [])) {
   const archived = path.join("out/omics/releases", catalogue.release_id, source.file);
   const alias = path.join("out/omics/sources", `${source.sha256}.md`);
@@ -91,9 +124,16 @@ function page(url: string) {
   if (!fs.existsSync(file)) failures.push(file);
   return fs.existsSync(file) ? fs.readFileSync(file, "utf8") : "";
 }
+/** Like page(), but for a record's canonical or alias path specifically: in a
+ * smoke export, a kind/id pair outside the selection was never expected to
+ * render, so returns null and raises no failure instead of reporting a
+ * "missing" page that was legitimately never built. */
+function pageForKind(kind: string, id: string, url: string): string | null {
+  if (!builtInSmoke(kind, id)) return null;
+  return page(url);
+}
 for (const record of records) {
   const url = recordHref(record);
-  const html = page(url);
   const metadata = recordSearchMetadata(record, records);
   const contract = {
     canonical: metadata.alternates.canonical,
@@ -103,34 +143,39 @@ for (const record of records) {
     social: true,
     breadcrumbs: recordBreadcrumbs(record),
   };
-  failures.push(
-    ...checkPageMetadata(
-      html,
-      { ...contract, path: url, inSitemap: contract.indexable },
-      sitemap.urls,
-    ),
-  );
+  const html = pageForKind(record.kind, record.id, url);
+  if (html !== null) {
+    failures.push(
+      ...checkPageMetadata(
+        html,
+        { ...contract, path: url, inSitemap: contract.indexable },
+        sitemap.urls,
+      ),
+    );
+    if (!html.includes('id="evidence"'))
+      failures.push(`Missing evidence table: ${record.id}`);
+    for (const match of html.matchAll(/<a\b[^>]*\bhref="([^"]+)"/g)) {
+      const href = match[1];
+      if (!href.startsWith("/database/") && !href.startsWith("/omics/") && !href.startsWith("/use-cases/")) continue;
+      const linkUrl = new URL(href, "https://benchmarks.rewirebio.io");
+      let file = path.join("out", decodeURIComponent(linkUrl.pathname));
+      if (linkUrl.pathname.endsWith("/")) file = path.join(file, "index.html");
+      if (!resolvableLink(decodeURIComponent(linkUrl.pathname), file)) failures.push(href);
+    }
+  }
   for (const kind of recordRouteKinds(record).filter(
     (kind) => kind !== record.kind,
   )) {
     const aliasPath = `/database/${kind}/${record.id}/`;
+    const aliasHtml = pageForKind(kind, record.id, aliasPath);
+    if (aliasHtml === null) continue;
     failures.push(
       ...checkPageMetadata(
-        page(aliasPath),
+        aliasHtml,
         { ...contract, path: aliasPath, inSitemap: false },
         sitemap.urls,
       ),
     );
-  }
-  if (!html.includes('id="evidence"'))
-    failures.push(`Missing evidence table: ${record.id}`);
-  for (const match of html.matchAll(/<a\b[^>]*\bhref="([^"]+)"/g)) {
-    const href = match[1];
-    if (!href.startsWith("/database/") && !href.startsWith("/omics/") && !href.startsWith("/use-cases/")) continue;
-    const url = new URL(href, "https://benchmarks.rewirebio.io");
-    let file = path.join("out", decodeURIComponent(url.pathname));
-    if (url.pathname.endsWith("/")) file = path.join(file, "index.html");
-    if (!fs.existsSync(file) && !historicalPaths.has(decodeURIComponent(url.pathname))) failures.push(href);
   }
 }
 // Use-case discovery and decision evidence must be exported, not client-only.
@@ -146,6 +191,7 @@ failures.push(...checkPageMetadata(useCaseIndex, {
   breadcrumbs: [{ name: "Database", path: "/" }, { name: "Use cases", path: "/use-cases/" }],
 }, sitemap.urls));
 for (const entry of useCaseEntries) {
+  if (smoke && !smoke.use_case_slugs.includes(entry.slug)) continue;
   const url = `/use-cases/${entry.slug}/`;
   const html = page(url);
   failures.push(...checkPageMetadata(html, {
@@ -172,7 +218,7 @@ for (const entry of useCaseEntries) {
     if (!/^\/(?:database|omics|use-cases)\//.test(href)) continue;
     const target = new URL(href, origin);
     const file = path.join("out", decodeURIComponent(target.pathname), target.pathname.endsWith("/") ? "index.html" : "");
-    if (!fs.existsSync(file) && !historicalPaths.has(decodeURIComponent(target.pathname))) failures.push(`Use-case link missing: ${href}`);
+    if (!resolvableLink(decodeURIComponent(target.pathname), file)) failures.push(`Use-case link missing: ${href}`);
   }
 }
 for (const entry of useCaseQuery.list({ limit: 10 }).items)
@@ -306,6 +352,7 @@ for (const report of research.investigations) {
 }
 for (const item of deriveResearchReadiness(catalogue).filter(item => item.manifest_ids.length)) {
   const record = records.find(record => record.id === item.record_id)!;
+  if (!builtInSmoke(record.kind, record.id)) continue;
   if (!page(recordHref(record)).includes('id="research-readiness"'))
     failures.push(`Missing research readiness panel: ${item.record_id}`);
 }

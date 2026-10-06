@@ -5,7 +5,10 @@ import {
   createCatalogueQuery,
   type CatalogueSnapshot,
 } from "../services/omics/src/catalogue-query";
-import RecordPage from "../app/database/[kind]/[id]/page";
+import ModelPage from "../app/database/model/[id]/page";
+import ConfigurationPage from "../app/database/configuration/[id]/page";
+
+const pageFor = { model: ModelPage, configuration: ConfigurationPage } as const;
 
 const fixture = vi.hoisted(() => ({
   snapshot: null as CatalogueSnapshot | null,
@@ -44,8 +47,9 @@ describe("configuration profile ownership", () => {
         : record,
     );
     fixture.snapshot = { ...snapshot, records: patched };
+    const RecordPage = pageFor[configured.kind as keyof typeof pageFor];
     const html = renderToStaticMarkup(
-      <RecordPage params={{ kind: configured.kind, id: configured.id }} />,
+      <RecordPage params={{ id: configured.id }} />,
     );
     expect(html).toContain("This exact configuration has its own evidence.");
     expect(html).toContain("Do not replace me with family metadata.");

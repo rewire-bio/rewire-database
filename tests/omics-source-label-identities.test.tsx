@@ -8,7 +8,9 @@ import {
 import { validateSnapshot } from "../services/omics/src/validation";
 import { filterCatalogue } from "../lib/omics-browse";
 import { testedSearchText } from "../components/catalogue/BenchmarkCharts";
-import RecordPage from "../app/database/[kind]/[id]/page";
+import ConfigurationPage from "../app/database/configuration/[id]/page";
+import ResultPage from "../app/database/result/[id]/page";
+import TaskPage from "../app/database/task/[id]/page";
 
 const fixture = vi.hoisted(() => ({ snapshot: null as CatalogueSnapshot | null }));
 vi.mock("../lib/catalogue-build", () => ({
@@ -42,19 +44,19 @@ describe("reviewed source-label identities", () => {
   it("renders identity notices on configuration and result pages and cited labels in tables", () => {
     fixture.snapshot = released;
     const configuration = renderToStaticMarkup(
-      <RecordPage params={{ kind: "configuration", id: "atom3d-method-karimi-et-al-2019" }} />);
+      <ConfigurationPage params={{ id: "atom3d-method-karimi-et-al-2019" }} />);
     expect(configuration).toContain("Identified as DeepAffinity. The source table prints [Karimi et al., 2019].");
     expect(configuration).toContain("DSSP");
     expect(configuration).toContain("/database/model/identity-model-deepaffinity");
     expect(configuration).toContain("no human scientific review");
     const result = renderToStaticMarkup(
-      <RecordPage params={{ kind: "result", id: "hest-result-ciga-ccrcc-pearson-r" }} />);
+      <ResultPage params={{ id: "hest-result-ciga-ccrcc-pearson-r" }} />);
     expect(result).toContain("The source table prints the tested method as Ciga.");
     expect(result).toContain("/database/configuration/hest-method-ciga");
-    const hest = renderToStaticMarkup(<RecordPage params={{ kind: "configuration", id: "hest-method-ciga" }} />);
+    const hest = renderToStaticMarkup(<ConfigurationPage params={{ id: "hest-method-ciga" }} />);
     expect(hest).toContain("Not established: Backbone.");
     expect(hest).toContain("labels the recipe");
-    const task = renderToStaticMarkup(<RecordPage params={{ kind: "task", id: "atom3d-task-lba-rmse" }} />);
+    const task = renderToStaticMarkup(<TaskPage params={{ id: "atom3d-task-lba-rmse" }} />);
     expect(task).toContain("DeepDTA (ATOM3D baseline)");
     expect(task).toContain("(cited as [Öztürk et al., 2018])");
     expect(task).not.toMatch(/>\[Karimi et al\., 2019\]</);
@@ -64,7 +66,7 @@ describe("reviewed source-label identities", () => {
 describe("source-label identity guards", () => {
   it("renders an unresolved identity on linked result pages", () => {
     fixture.snapshot = JSON.parse(fs.readFileSync("tests/fixtures/unresolved-source-identity.json", "utf8"));
-    const html = renderToStaticMarkup(<RecordPage params={{ kind: "result", id: "result" }} />);
+    const html = renderToStaticMarkup(<ResultPage params={{ id: "result" }} />);
     expect(html).toContain("the method it refers to is unresolved");
     expect(html).toContain('data-source-identity="unresolved"');
     expect(html).toContain("/database/configuration/config");

@@ -7,8 +7,38 @@ import { recordBreadcrumbs, safeJsonLd, SOCIAL_IMAGE } from "../lib/catalogue-sh
 import Breadcrumbs from "../components/catalogue/Breadcrumbs";
 import StaticIndex from "../components/catalogue/StaticIndex";
 import { indexMetadata } from "../lib/catalogue-index";
-import RecordPage, { generateMetadata } from "../app/database/[kind]/[id]/page";
+import ModelPage, { generateMetadata as modelMetadata } from "../app/database/model/[id]/page";
+import MethodPage, { generateMetadata as methodMetadata } from "../app/database/method/[id]/page";
+import ConfigurationPage, { generateMetadata as configurationMetadata } from "../app/database/configuration/[id]/page";
+import PipelinePage, { generateMetadata as pipelineMetadata } from "../app/database/pipeline/[id]/page";
+import ServicePage, { generateMetadata as serviceMetadata } from "../app/database/service/[id]/page";
+import BenchmarkPage, { generateMetadata as benchmarkMetadata } from "../app/database/benchmark/[id]/page";
+import TaskPage, { generateMetadata as taskMetadata } from "../app/database/task/[id]/page";
+import ProtocolPage, { generateMetadata as protocolMetadata } from "../app/database/protocol/[id]/page";
+import EvaluatorPage, { generateMetadata as evaluatorMetadata } from "../app/database/evaluator/[id]/page";
+import DatasetPage, { generateMetadata as datasetMetadata } from "../app/database/dataset/[id]/page";
+import DatasetSubsetPage, { generateMetadata as datasetSubsetMetadata } from "../app/database/dataset_subset/[id]/page";
+import BaselinePage, { generateMetadata as baselineMetadata } from "../app/database/baseline/[id]/page";
+import EvaluationPage, { generateMetadata as evaluationMetadata } from "../app/database/evaluation/[id]/page";
+import ResultPage, { generateMetadata as resultMetadata } from "../app/database/result/[id]/page";
+import SourcePage, { generateMetadata as sourceMetadata } from "../app/database/source/[id]/page";
+import ClaimPage, { generateMetadata as claimMetadata } from "../app/database/claim/[id]/page";
 import { metadata as homeMetadata } from "../app/page";
+
+const pageFor = {
+  model: ModelPage, method: MethodPage, configuration: ConfigurationPage,
+  pipeline: PipelinePage, service: ServicePage, benchmark: BenchmarkPage,
+  task: TaskPage, protocol: ProtocolPage, evaluator: EvaluatorPage,
+  dataset: DatasetPage, dataset_subset: DatasetSubsetPage, baseline: BaselinePage,
+  evaluation: EvaluationPage, result: ResultPage, source: SourcePage, claim: ClaimPage,
+} as const;
+const metadataFor = {
+  model: modelMetadata, method: methodMetadata, configuration: configurationMetadata,
+  pipeline: pipelineMetadata, service: serviceMetadata, benchmark: benchmarkMetadata,
+  task: taskMetadata, protocol: protocolMetadata, evaluator: evaluatorMetadata,
+  dataset: datasetMetadata, dataset_subset: datasetSubsetMetadata, baseline: baselineMetadata,
+  evaluation: evaluationMetadata, result: resultMetadata, source: sourceMetadata, claim: claimMetadata,
+} as const;
 
 const fixture = vi.hoisted(() => ({ snapshot: null as CatalogueSnapshot | null }));
 vi.mock("../lib/catalogue-build", () => ({ buildCatalogue: () => ({ catalogue: fixture.snapshot!, query: createCatalogueQuery(fixture.snapshot!) }) }));
@@ -43,7 +73,8 @@ describe("truthful catalogue sharing", () => {
   it("renders breadcrumbs into actual record pages, separate from return-to-filter navigation", () => {
     for (const kind of ["model", "benchmark", "source", "dataset"] as const) {
       const record = records.find((record) => record.kind === kind)!;
-      const html = renderToStaticMarkup(<RecordPage params={{ kind, id: record.id }} />);
+      const RecordPage = pageFor[kind];
+      const html = renderToStaticMarkup(<RecordPage params={{ id: record.id }} />);
       expect(jsonLd(html).itemListElement.at(-1).item).toBe(`https://benchmarks.rewirebio.io${recordHref(record)}`);
       expect(html).toContain('aria-current="page"');
       expect(html).toContain("Back to results");
@@ -57,7 +88,7 @@ describe("truthful catalogue sharing", () => {
     expect(html).toContain('aria-current="page">Page 2');
   });
   it("shares each page's title, description and canonical rather than inherited homepage metadata", () => {
-    const pages = [homeMetadata, indexMetadata("model", 2), indexMetadata("benchmark"), ...records.map((record) => generateMetadata({ params: { kind: record.kind, id: record.id } }))];
+    const pages = [homeMetadata, indexMetadata("model", 2), indexMetadata("benchmark"), ...records.map((record) => metadataFor[record.kind]({ params: { id: record.id } }))];
     for (const metadata of pages) {
       expect(metadata.openGraph).toMatchObject({ title: metadata.title, description: metadata.description, url: metadata.alternates?.canonical, type: "website", images: [{ ...SOCIAL_IMAGE, type: "image/png" }] });
       expect(metadata.twitter).toMatchObject({ card: "summary_large_image", title: metadata.title, description: metadata.description });
@@ -66,7 +97,7 @@ describe("truthful catalogue sharing", () => {
   it("keeps legacy-kind sharing URLs canonical", () => {
     const record = records.find((record) => record.kind === "model")!;
     record.attributes.legacy_kinds = ["baseline"];
-    expect(generateMetadata({ params: { id: record.id, kind: "baseline" } }).openGraph).toMatchObject({ url: `https://benchmarks.rewirebio.io${recordHref(record)}` });
+    expect(baselineMetadata({ params: { id: record.id } }).openGraph).toMatchObject({ url: `https://benchmarks.rewirebio.io${recordHref(record)}` });
     delete record.attributes.legacy_kinds;
   });
   it("prevents record strings from breaking out of JSON-LD script elements", () => {

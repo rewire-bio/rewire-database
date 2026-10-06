@@ -1,0 +1,138 @@
+import fs from "node:fs";
+import { describe, expect, it, vi } from "vitest";
+import {
+  createCatalogueQuery,
+  type CatalogueSnapshot,
+} from "../services/omics/src/catalogue-query";
+import { entityKinds, type EntityKind } from "../services/omics/src/entity-kinds";
+import { recordRouteKinds } from "../lib/omics";
+
+const fixture = vi.hoisted(() => ({
+  snapshot: null as CatalogueSnapshot | null,
+  query: null as ReturnType<typeof createCatalogueQuery> | null,
+}));
+vi.mock("../lib/catalogue-build", () => ({
+  buildCatalogue: () => ({
+    catalogue: fixture.snapshot!,
+    query: fixture.query!,
+  }),
+}));
+// Mirrors the existing notFound() mock pattern used by
+// tests/omics-investigation-ui.test.tsx and tests/use-case-pages.test.tsx.
+vi.mock("next/navigation", () => ({
+  notFound: () => {
+    throw new Error("NOT_FOUND");
+  },
+}));
+fixture.snapshot = JSON.parse(
+  fs.readFileSync("public/omics/catalogue.json", "utf8"),
+);
+fixture.query = createCatalogueQuery(fixture.snapshot!);
+
+import ModelPage, { generateMetadata as modelMetadata } from "../app/database/model/[id]/page";
+import MethodPage, { generateMetadata as methodMetadata } from "../app/database/method/[id]/page";
+import ConfigurationPage, { generateMetadata as configurationMetadata } from "../app/database/configuration/[id]/page";
+import PipelinePage, { generateMetadata as pipelineMetadata } from "../app/database/pipeline/[id]/page";
+import ServicePage, { generateMetadata as serviceMetadata } from "../app/database/service/[id]/page";
+import BenchmarkPage, { generateMetadata as benchmarkMetadata } from "../app/database/benchmark/[id]/page";
+import TaskPage, { generateMetadata as taskMetadata } from "../app/database/task/[id]/page";
+import ProtocolPage, { generateMetadata as protocolMetadata } from "../app/database/protocol/[id]/page";
+import EvaluatorPage, { generateMetadata as evaluatorMetadata } from "../app/database/evaluator/[id]/page";
+import DatasetPage, { generateMetadata as datasetMetadata } from "../app/database/dataset/[id]/page";
+import DatasetSubsetPage, { generateMetadata as datasetSubsetMetadata } from "../app/database/dataset_subset/[id]/page";
+import BaselinePage, { generateMetadata as baselineMetadata } from "../app/database/baseline/[id]/page";
+import EvaluationPage, { generateMetadata as evaluationMetadata } from "../app/database/evaluation/[id]/page";
+import ResultPage, { generateMetadata as resultMetadata } from "../app/database/result/[id]/page";
+import SourcePage, { generateMetadata as sourceMetadata } from "../app/database/source/[id]/page";
+import ClaimPage, { generateMetadata as claimMetadata } from "../app/database/claim/[id]/page";
+
+type Page = (props: { params: { id: string } }) => unknown;
+type GenerateMetadata = (props: { params: { id: string } }) => unknown;
+
+const pagesByKind: Record<EntityKind, { Page: Page; generateMetadata: GenerateMetadata }> = {
+  model: { Page: ModelPage, generateMetadata: modelMetadata },
+  method: { Page: MethodPage, generateMetadata: methodMetadata },
+  configuration: { Page: ConfigurationPage, generateMetadata: configurationMetadata },
+  pipeline: { Page: PipelinePage, generateMetadata: pipelineMetadata },
+  service: { Page: ServicePage, generateMetadata: serviceMetadata },
+  benchmark: { Page: BenchmarkPage, generateMetadata: benchmarkMetadata },
+  task: { Page: TaskPage, generateMetadata: taskMetadata },
+  protocol: { Page: ProtocolPage, generateMetadata: protocolMetadata },
+  evaluator: { Page: EvaluatorPage, generateMetadata: evaluatorMetadata },
+  dataset: { Page: DatasetPage, generateMetadata: datasetMetadata },
+  dataset_subset: { Page: DatasetSubsetPage, generateMetadata: datasetSubsetMetadata },
+  baseline: { Page: BaselinePage, generateMetadata: baselineMetadata },
+  evaluation: { Page: EvaluationPage, generateMetadata: evaluationMetadata },
+  result: { Page: ResultPage, generateMetadata: resultMetadata },
+  source: { Page: SourcePage, generateMetadata: sourceMetadata },
+  claim: { Page: ClaimPage, generateMetadata: claimMetadata },
+};
+
+// A representative, real id for every kind, taken from the pinned release
+// rather than hardcoded, so this stays valid across future data releases.
+const sampleIdByKind = Object.fromEntries(
+  entityKinds.map((kind) => [
+    kind,
+    fixture.snapshot!.records.find((record) => record.kind === kind)?.id,
+  ]),
+) as Record<EntityKind, string | undefined>;
+
+// `source` and `claim` records are never legacy-kind alias sources or
+// targets in the current data model (only model/benchmark/dataset segments
+// receive aliases, from the predictive/evaluation-design/dataset families
+// respectively — see workbench/entity-page-split-checkpoint.md). Probing
+// with one of these two guarantees a genuine kind mismatch, not an alias
+// hit, regardless of which kind is under test.
+function wrongKindProbe(kind: EntityKind): { id: string; probeKind: EntityKind } {
+  const probeKind: EntityKind = kind === "claim" ? "source" : "claim";
+  const probeRecord = fixture.snapshot!.records.find(
+    (record) => record.id === sampleIdByKind[probeKind],
+  )!;
+  if (recordRouteKinds(probeRecord).includes(kind))
+    throw new Error(
+      `Test fixture assumption broken: ${probeRecord.id} (${probeKind}) aliases into ${kind}`,
+    );
+  return { id: probeRecord.id, probeKind };
+}
+
+describe("entity detail route guards (404 and metadata) across all 16 kinds", () => {
+  it("has a real sample record for every kind in the pinned release", () => {
+    for (const kind of entityKinds) expect(sampleIdByKind[kind], kind).toBeDefined();
+  });
+
+  it.each(entityKinds)("renders its own canonical id without a 404: %s", (kind) => {
+    const { Page } = pagesByKind[kind];
+    expect(() => Page({ params: { id: sampleIdByKind[kind]! } })).not.toThrow();
+  });
+
+  it.each(entityKinds)("404s on an id that does not exist anywhere in the catalogue: %s", (kind) => {
+    const { Page } = pagesByKind[kind];
+    expect(() => Page({ params: { id: "does-not-exist-in-any-release" } })).toThrow(
+      "NOT_FOUND",
+    );
+  });
+
+  it.each(entityKinds)("404s on a real id that belongs to a different, non-aliased kind: %s", (kind) => {
+    const { id } = wrongKindProbe(kind);
+    const { Page } = pagesByKind[kind];
+    expect(() => Page({ params: { id } })).toThrow("NOT_FOUND");
+  });
+
+  it.each(entityKinds)("returns empty metadata, not another kind's canonical, for a wrong-kind id: %s", (kind) => {
+    const { id, probeKind } = wrongKindProbe(kind);
+    const { generateMetadata } = pagesByKind[kind];
+    expect(generateMetadata({ params: { id } })).toEqual({});
+    // Confirms the probe id itself remains valid on its real kind's page,
+    // so the empty result above is the guard rejecting it, not a typo.
+    expect(
+      pagesByKind[probeKind].generateMetadata({ params: { id } }),
+    ).not.toEqual({});
+  });
+
+  it.each(entityKinds)("returns empty metadata for an id that does not exist anywhere: %s", (kind) => {
+    const { generateMetadata } = pagesByKind[kind];
+    expect(generateMetadata({ params: { id: "does-not-exist-in-any-release" } })).toEqual(
+      {},
+    );
+  });
+});

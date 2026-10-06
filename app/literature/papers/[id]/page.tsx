@@ -4,15 +4,14 @@ import { notFound } from "next/navigation";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { getLiterature } from "@/lib/benchmark-literature";
-import { parseCatalogue, recordHref } from "@/lib/omics";
+import { recordHref } from "@/lib/omics";
+import { buildCatalogue } from "@/lib/catalogue-build";
 import LegacyCatalogueRedirect from "../../../LegacyCatalogueRedirect";
 
 function paperDestination(id: string) {
-  const catalogue = parseCatalogue(
-    JSON.parse(
-      readFileSync(join(process.cwd(), "public/omics/catalogue.json"), "utf8"),
-    ),
-  );
+  // Reuse the validated build snapshot. Parsing it twice for each historical
+  // paper dominated even a small PR export (100 legacy papers).
+  const { catalogue } = buildCatalogue();
   const record = catalogue.records.find(
     (item) => item.kind === "source" && item.id === id,
   );

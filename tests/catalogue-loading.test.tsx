@@ -2,9 +2,12 @@ import { act, create, type ReactTestRenderer } from "react-test-renderer";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import Explorer from "../app/database/Explorer";
 
-const { list } = vi.hoisted(() => ({ list: vi.fn() }));
+const { list, compare } = vi.hoisted(() => ({
+  list: vi.fn(),
+  compare: vi.fn(),
+}));
 vi.mock("@/lib/catalogue-client", () => ({
-  catalogueClient: () => ({ list }),
+  catalogueClient: () => ({ list, compare }),
 }));
 
 vi.mock("next/link", () => ({
@@ -80,6 +83,7 @@ function text(): string {
 beforeEach(() => {
   vi.useFakeTimers();
   list.mockReset();
+  compare.mockReset();
   events = new EventTarget();
   const changeUrl = (_state: unknown, _title: string, next: string) => {
     url = new URL(next, url);
@@ -199,5 +203,86 @@ describe("requested catalogue results", () => {
     });
     await act(async () => next.resolve(page("benchmark", "Other benchmark")));
     expect(text()).toContain("Other benchmark");
+  });
+});
+
+describe("explorer controls after component extraction", () => {
+  it("clears a readiness-only filter and its cursor while retaining the record type", async () => {
+    list.mockResolvedValue(page("dataset", "Ready dataset"));
+    await render("?kind=dataset&readiness=replay&cursor=page2");
+    expect(list.mock.calls[0][0]).toMatchObject({
+      readiness: "replay",
+      cursor: "page2",
+    });
+    await click("Clear search and filters");
+    expect(url.searchParams.get("kind")).toBe("dataset");
+    expect(url.searchParams.has("readiness")).toBe(false);
+    expect(url.searchParams.has("cursor")).toBe(false);
+    expect(list.mock.lastCall![0]).toMatchObject({
+      kind: "dataset",
+      readiness: undefined,
+      cursor: undefined,
+    });
+  });
+
+  it("uses server pagination cursors and clears them when searching", async () => {
+    list.mockResolvedValue({
+      ...page("benchmark", "Benchmark"),
+      next_cursor: "next+opaque/==",
+      previous_cursor: null,
+      range_start: 1,
+      range_end: 1,
+    });
+    await render();
+    await click("Next");
+    expect(url.searchParams.get("cursor")).toBe("next+opaque/==");
+    expect(list.mock.lastCall![0].cursor).toBe("next+opaque/==");
+    await act(async () =>
+      tree.root
+        .findByProps({ id: "catalogue-search" })
+        .props.onChange({ target: { value: "RNA" } }),
+    );
+    expect(url.searchParams.get("q")).toBe("RNA");
+    expect(url.searchParams.has("cursor")).toBe(false);
+    expect(rows()).toHaveLength(0);
+    await act(async () => {
+      vi.advanceTimersByTime(200);
+    });
+    expect(list.mock.lastCall![0]).toMatchObject({
+      q: "RNA",
+      cursor: undefined,
+    });
+  });
+
+  it("ignores a compatibility response after selection has been cleared", async () => {
+    const pending = deferred();
+    compare.mockReturnValue(pending.promise);
+    list.mockResolvedValue({
+      ...page("result", "First"),
+      total: 2,
+      items: [
+        ...page("result", "First").items,
+        ...page("result", "Second").items,
+      ],
+    });
+    await render("?kind=result");
+    const checks = () => tree.root.findAllByProps({ type: "checkbox" });
+    await act(async () =>
+      checks()[0].props.onChange({ target: { checked: true } }),
+    );
+    await act(async () =>
+      checks()[1].props.onChange({ target: { checked: true } }),
+    );
+    expect(compare).toHaveBeenCalledWith({ ids: ["First", "Second"] });
+    await click("Clear selection");
+    await act(async () =>
+      pending.resolve({
+        compatible: false,
+        reasons: ["Stale comparison"],
+        release_id: "test",
+      } as never),
+    );
+    expect(text()).not.toContain("Stale comparison");
+    expect(checks().every((check) => !check.props.checked)).toBe(true);
   });
 });

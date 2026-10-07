@@ -84,7 +84,8 @@ exact manifest bytes, use-case artifact hash and representative published pages.
 Cloudflare uses the same acceptance selection. Data/backend changes and forced
 full runs retain exhaustive audit and use-case/result/configuration/source checks.
 This reduces repeated catalogue walks without weakening immutable release or
-rollback checks.
+rollback checks. Hosting hashing and uploads use at most 16 concurrent streams
+(up from 6), preserving the existing bound, hash checks and in-flight cleanup.
 
 ## Remaining cost
 

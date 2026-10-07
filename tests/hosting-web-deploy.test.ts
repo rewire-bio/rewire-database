@@ -102,6 +102,63 @@ describe("immutable-history Hosting web publication", () => {
     expect(f.request.mock.calls.filter(([r]) => r.bodyFile)).toHaveLength(3);
   });
 
+  it.each([undefined, 3])("bounds overlapping uploads with concurrency %s", async (concurrency) => {
+    const f = await fixture();
+    await Promise.all(Array.from({ length: 20 }, (_, index) =>
+      writeFile(path.join(f.root, "out", `unique-${index}.html`), `Distinct page ${index}`)));
+    const base = f.request.getMockImplementation()!;
+    let active = 0, peak = 0;
+    f.request.mockImplementation(async (request) => {
+      if (!request.bodyFile) return base(request);
+      active++; peak = Math.max(peak, active);
+      try {
+        // Hold the request for one event-loop turn so all pool workers overlap.
+        await new Promise<void>(resolve => setImmediate(resolve));
+        return await base(request);
+      } finally { active--; }
+    });
+    await deployWebHosting({ ...f.options, ...(concurrency === undefined ? {} : { concurrency }) });
+    if (concurrency === undefined) {
+      expect(peak).toBeGreaterThan(6);
+      expect(peak).toBeLessThanOrEqual(16);
+    } else expect(peak).toBe(concurrency);
+    expect(active).toBe(0);
+    expect(f.uploaded.size).toBe(22);
+    expect(await readdir(path.join(f.root, "workbench"))).toEqual([]);
+  });
+
+  it("waits for active uploads before deleting staging after a request fails", async () => {
+    const f = await fixture();
+    await Promise.all(Array.from({ length: 20 }, (_, index) =>
+      writeFile(path.join(f.root, "out", `unique-${index}.html`), `Distinct page ${index}`)));
+    const base = f.request.getMockImplementation()!;
+    let unblock!: () => void, started!: () => void;
+    const gate = new Promise<void>(resolve => { unblock = resolve; });
+    const allStarted = new Promise<void>(resolve => { started = resolve; });
+    let uploads = 0, settled = false;
+    f.request.mockImplementation(async (request) => {
+      if (!request.bodyFile) return base(request);
+      const first = uploads++ === 0;
+      if (uploads === 16) started();
+      if (first) { await Promise.resolve(); throw new Error("Upload failed while peers remain active"); }
+      await gate;
+      // This reads the staging file after the first worker has already failed.
+      return base(request);
+    });
+    const publication = deployWebHosting(f.options).finally(() => { settled = true; });
+    const rejected = expect(publication).rejects.toThrow("Upload failed while peers remain active");
+    await allStarted;
+    await new Promise<void>(resolve => setImmediate(resolve));
+    expect(settled).toBe(false);
+    expect(await readdir(path.join(f.root, "workbench"))).toHaveLength(1);
+    unblock();
+    await rejected;
+    expect(uploads).toBe(16); // Failure stops new work but lets the active streams finish.
+    expect(f.uploaded.size).toBe(15);
+    expect(f.events).not.toContain("release");
+    expect(await readdir(path.join(f.root, "workbench"))).toEqual([]);
+  });
+
   it.each(["symlink", "traversal"])("rejects %s input before creating a draft", async (mode) => {
     const f = await fixture();
     if (mode === "symlink") await symlink("index.html", path.join(f.root, "out/link.html"));

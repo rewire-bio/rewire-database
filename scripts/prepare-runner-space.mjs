@@ -54,7 +54,14 @@ export const UNUSED_TOOL_DIRECTORIES = Object.freeze([
   '/usr/local/share/vcpkg',
   '/usr/local/share/edge_driver',
   '/usr/share/kotlinc',
+  // Optional isolated CLI environments; pinned packages and measured capacity
+  // are documented in docs/runner-space.md. System Python stays protected.
+  '/opt/pipx/venvs',
 ]);
+
+export const GUARDED_CHILDREN = Object.freeze({
+  '/opt/pipx/venvs': Object.freeze(['ansible-core', 'yamllint']),
+});
 
 // Pinned installer evidence for the failed CI image (20260920.314.1):
 // https://github.com/actions/runner-images/blob/ubuntu24/20260920.314/images/ubuntu/scripts/build/install-docker.sh
@@ -131,6 +138,17 @@ export function prepareRunnerSpace({
       }
       throw error;
     }
+    const allowed = GUARDED_CHILDREN[directory];
+    if (allowed) {
+      let children;
+      try { children = files.readdirSync(directory); }
+      catch (error) {
+        if (error.code === 'EACCES') { log(`Preserving inaccessible optional SDK: ${directory}`); continue; }
+        throw error;
+      }
+      const unknown = children.filter(name => !allowed.includes(name));
+      if (unknown.length) { log(`Preserving ${directory}: unknown installation(s) ${unknown.join(', ')}`); continue; }
+    }
     planned.push(directory);
   }
 
@@ -141,9 +159,9 @@ export function prepareRunnerSpace({
   const located = run('which', requiredTools).trim().split('\n');
   if (located.length !== requiredTools.length || located.some(file => !path.isAbsolute(file)))
     throw new Error('Cannot identify required runtime and deployment executables.');
-  const protectedPaths = located.map(file => files.realpathSync(file));
+  const protectedPaths = located.flatMap(file => [file, files.realpathSync(file)]);
   for (const key of ['JAVA_HOME', 'CLOUDSDK_PYTHON', 'PYTHONHOME', 'CONDA_PREFIX'])
-    if (env[key] && path.isAbsolute(env[key])) protectedPaths.push(files.realpathSync(env[key]));
+    if (env[key] && path.isAbsolute(env[key])) protectedPaths.push(env[key], files.realpathSync(env[key]));
   planned = planned.filter(directory => {
     if (!protectedPaths.some(file => contains(directory, file))) return true;
     log(`Preserving active runtime or deployment dependency: ${directory}`);

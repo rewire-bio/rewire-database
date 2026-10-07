@@ -76,9 +76,11 @@
   margin: 6px 0 0;
 }
 .more summary {
-  display: inline-block;
+  display: list-item;
+  width: fit-content;
   color: var(--accent-ink);
   cursor: pointer;
+  min-height: 44px;
   padding: 6px 0;
   font-size: 14px;
 }
@@ -205,6 +207,10 @@
   .filter {
     flex: 1 1 100%;
     min-width: 0;
+  }
+  .filter select {
+    min-height: 44px;
+    font-size: 16px;
   }
   .pagination {
     gap: 10px;

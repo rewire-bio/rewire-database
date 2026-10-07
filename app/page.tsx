@@ -60,10 +60,6 @@ export default function BenchmarksPage() {
         </nav>
       </PageHeader>
       <div className="wrap content">
-        <RefreshStatus
-          compact
-          data={readRefresh(process.cwd(), catalogue.release_id)}
-        />
         <section
           id="browse"
           className={styles.browse}
@@ -77,6 +73,10 @@ export default function BenchmarksPage() {
             release={query.release()}
           />
         </section>
+        <RefreshStatus
+          compact
+          data={readRefresh(process.cwd(), catalogue.release_id)}
+        />
         <CatalogueEvidence catalogue={catalogue} />
         <CatalogueDownloads
           releaseId={catalogue.release_id}

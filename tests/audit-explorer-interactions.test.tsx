@@ -1,0 +1,114 @@
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { act, create, type ReactTestRenderer } from "react-test-renderer";
+import AuditExplorer from "../app/audits/AuditExplorer";
+import type { AuditCheck, AuditRun } from "../services/omics/src/audit";
+vi.mock("next/link", () => ({ default: ({ children, ...props }: React.ComponentProps<"a">) => <a {...props}>{children}</a> }));
+const row = { record_id: "model-a", record_name: "Model A", record_kind: "model", run_ids: ["run-a"], outcomes: ["supported"], categories: ["metadata"], checks_filter: [], check_count: 2, latest_check_at: "2026-10-01" };
+const initial = { items: [row], total: 2, next_cursor: "records-next" };
+const run: AuditRun = { id: "run-a", baseline_release_id: "release-a", inventory_sha256: "a".repeat(64), started_at: "2026-10-01", completed_at: "2026-10-01", reviewer: "reviewer", review_method: "human", verifier_revision: "1", scope: "metadata", limitations: [], record_count: 1, check_count: 2 };
+const check = (id: string): AuditCheck => ({ id, run_id: run.id, record_id: row.record_id, record_kind: "model", record_name: row.record_name, field_paths: ["name"], target_sha256: "a".repeat(64), category: "metadata", outcome: "supported", checked_at: "2026-10-01", source_ids: ["source-a", "source-b"], evidence_row_ids: [], source_locators: ["Table 1"], source_hashes: [], receipt_ids: [], explanation: `Reviewed ${id}`, prior_check_ids: [] });
+const page = (items = [check("check-a")], next: string | null = null) => ({ items, total: 2, next_cursor: next, record_url: "/database/model/model-a/", source_urls: { "source-a": "https://example.test/source" } });
+const response = (data: unknown) => ({ ok: true, json: async () => ({ result: { data } }) });
+let renderer: ReactTestRenderer;
+let fetchMock: ReturnType<typeof vi.fn>;
+const text = () => JSON.stringify(renderer.toJSON());
+const button = (label: string) => renderer.root.findAllByType("button").find((node) => node.children.join("") === label)!;
+const click = async (label: string) => { await act(async () => { button(label).props.onClick(); }); };
+const mount = async () => { await act(async () => { renderer = create(<AuditExplorer releaseId="release-a" runs={[run]} initial={initial} />); }); };
+beforeEach(() => {
+  fetchMock = vi.fn(); vi.stubGlobal("fetch", fetchMock);
+  vi.stubGlobal("window", { location: { search: "" } });
+  vi.stubGlobal("requestAnimationFrame", (fn: () => void) => { fn(); return 1; });
+  vi.stubGlobal("document", { getElementById: vi.fn(() => ({ scrollIntoView: vi.fn() })) });
+});
+afterEach(() => { if (renderer) act(() => renderer.unmount()); vi.unstubAllGlobals(); });
+
+describe("audit explorer interactions", () => {
+  it("submits all audit filters and pages through records", async () => {
+    await mount();
+    const values = ["Model", "result", "2026-09-01", "2026-10-01"];
+    act(() => renderer.root.findAllByType("input").forEach((node, i) => node.props.onChange({ target: { value: values[i] } })));
+    act(() => renderer.root.findAllByType("select").forEach((node, i) => node.props.onChange({ target: { value: ["supported", "run-a", "metadata"][i] } })));
+    fetchMock.mockResolvedValue(response(initial));
+    const preventDefault = vi.fn();
+    await act(async () => renderer.root.findByType("form").props.onSubmit({ preventDefault }));
+    expect(preventDefault).toHaveBeenCalledOnce();
+    const input = JSON.parse(new URL(fetchMock.mock.calls[0][0], "https://example.test").searchParams.get("input")!);
+    expect(input).toMatchObject({ q: "Model", kind: "result", outcome: "supported", run_id: "run-a", category: "metadata", date_from: "2026-09-01", date_to: "2026-10-01", release_id: "release-a" });
+    fetchMock.mockResolvedValue(response({ items: [], total: 0, next_cursor: null }));
+    await click("Next records");
+    expect(decodeURIComponent(fetchMock.mock.lastCall![0])).toContain('"cursor":"records-next"');
+    expect(text()).toContain("0 records with audit history");
+  });
+  it("opens history through record links, appends checks and preserves provenance", async () => {
+    await mount();
+    fetchMock.mockResolvedValue(response(page([{ ...check("check-a"), applies_to_current_record: false } as AuditCheck], "checks-next")));
+    await act(async () => renderer.root.findAllByType("a")[0].props.onClick({ preventDefault: vi.fn() }));
+    expect(text()).toContain("Historical, changed or resolved");
+    expect(text()).toContain("Inspect the pinned record version");
+    expect(text()).toContain("https://example.test/source");
+    fetchMock.mockResolvedValue(response(page([{ ...check("check-b"), receipt_ids: ["receipt"], prior_check_ids: ["check-a"], recorded_value_json: "1", observed_value_json: "1" }])));
+    await click("More checks");
+    expect(renderer.root.findAllByType("article")).toHaveLength(2);
+    expect(text()).toContain("Reviewed check-b");
+    fetchMock.mockResolvedValue(response({ ...page(), record_url: null, source_urls: undefined }));
+    await click("View checks");
+    expect(text()).toContain("archived release downloads");
+    expect(renderer.root.findAllByType("article")).toHaveLength(1);
+  });
+  it("loads a linked record and reveals earlier and follow-up checks across pages", async () => {
+    window.location.search = "?record=model-a";
+    const resolutions = [{ id: "resolution", check_ids: ["check-b"], followup_check_ids: ["check-a"], published_release_id: "release-a", resolved_at: "2026-10-01", explanation: "Resolved" }];
+    fetchMock.mockResolvedValue(response({ ...page(undefined, "next"), resolutions }));
+    await mount();
+    const scrollIntoView = vi.fn();
+    vi.mocked(document.getElementById).mockReturnValue({ scrollIntoView } as unknown as HTMLElement);
+    fetchMock.mockResolvedValue(response({ ...page([check("check-b")]), resolutions }));
+    await click("check-b");
+    expect(renderer.root.findAllByType("article")).toHaveLength(3);
+    expect(scrollIntoView).toHaveBeenCalledWith({ block: "center" });
+    await click("check-a");
+    expect(scrollIntoView).toHaveBeenCalledTimes(2);
+  });
+  it("reports failed and malformed responses and allows retry", async () => {
+    await mount();
+    fetchMock.mockResolvedValue({ ok: false });
+    await click("Next records");
+    expect(text()).toContain("Audit data could not be loaded");
+    fetchMock.mockResolvedValue({ ok: true, json: async () => ({}) });
+    await click("View checks");
+    expect(text()).toContain("Invalid audit response");
+    fetchMock.mockResolvedValue(response(page()));
+    await click("View checks");
+    expect(renderer.root.findAllByProps({ role: "alert" })).toHaveLength(0);
+    expect(text()).toContain("Reviewed check-a");
+  });
+  it("ignores stale history and search responses while a newer request completes", async () => {
+    await mount();
+    let resolveOld!: (value: unknown) => void;
+    fetchMock.mockImplementationOnce(() => new Promise((resolve) => { resolveOld = resolve; }));
+    act(() => button("View checks").props.onClick());
+    expect(text()).toContain("Loading…");
+    const busyLink = renderer.root.findAllByType("a")[0];
+    act(() => busyLink.props.onClick({ preventDefault: vi.fn() }));
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    fetchMock.mockResolvedValue(response({ items: [], total: 0, next_cursor: null }));
+    await act(async () => renderer.root.findByType("form").props.onSubmit({ preventDefault: vi.fn() }));
+    await act(async () => resolveOld(response(page())));
+    expect(text()).not.toContain("Reviewed check-a");
+    expect(text()).toContain("0 records with audit history");
+  });
+  it("reports failures when resolving a check on a later history page", async () => {
+    await mount();
+    fetchMock.mockResolvedValue(response({ ...page(undefined, "next"), resolutions: [{ id: "resolution", check_ids: ["check-b"], followup_check_ids: [], published_release_id: "release-a", resolved_at: "2026-10-01", explanation: "Resolved" }] }));
+    await click("View checks");
+    fetchMock.mockRejectedValue(new Error("History unavailable"));
+    await click("check-b");
+    expect(text()).toContain("History unavailable");
+    expect(button("check-b").props.disabled).toBe(false);
+    fetchMock.mockResolvedValue(response(page([])));
+    await click("check-b");
+    expect(renderer.root.findAllByProps({ role: "alert" })).toHaveLength(0);
+  });
+
+});

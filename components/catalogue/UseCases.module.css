@@ -1,8 +1,6 @@
 /* Heading sizes and section rhythm come from the shared .content scale in globals.css. */
 .collectionStatus { display: inline-flex; max-width: 100%; padding: 4px 10px; border: 1px solid var(--line); border-radius: 999px; background: var(--accent-soft); color: var(--accent-ink); font-size: 12px; font-weight: 500; line-height: 1.5; }
-/* :global(#collection-plan) keeps the id literal (anchor links and tests match it as-is) while still
-   outranking globals.css's .content > section:first-child rhythm rule, which would otherwise strip this
-   panel's padding and accent border. */
+/* Preserve the anchor target and the panel padding over the shared section rhythm. */
 :global(#collection-plan).collectionPlan { min-width: 0; padding: 28px; border: 1px solid var(--line); border-top: 3px solid var(--accent); border-radius: var(--radius-md); background: var(--bg-subtle); overflow-wrap: anywhere; }
 .planHeading { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 20px; margin-bottom: 16px; }
 :global(.content) .planHeading h2 { margin: 0; }
@@ -95,9 +93,17 @@
 .notice { margin: 18px 0; padding: 18px 22px; border-left: 3px solid var(--accent); background: var(--accent-soft); }
 :global(.content) .notice h2, :global(.content) .notice h3 { margin: 0 0 10px; }
 .notice p:last-child { margin-bottom: 0; }
-.mapping { margin: 24px 0; padding: 22px 24px; border: 1px solid var(--line); border-radius: var(--radius-md); min-width: 0; }
+.mapping { margin: 24px 0; padding: 22px 24px; border: 1px solid var(--line); border-radius: var(--radius-md); min-width: 0; scroll-margin-top: var(--section-scroll-offset); overflow-wrap: anywhere; }
 :global(.content) .mapping > h3 { margin-top: 0; }
 .mapping > details { margin-top: 20px; }
+.evaluation { margin: 24px 0 0; padding-top: 20px; border-top: 1px solid var(--line); min-width: 0; }
+:global(.content) .evaluation > h5 { margin: 0 0 8px; font-size: 16px; line-height: 1.5; }
+:global(.content) .evaluation > p { margin-bottom: 12px; }
+.disclosure { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); margin: 16px 0; }
+.disclosure > summary { color: var(--accent-ink); font-size: 14px; font-weight: 600; min-height: 44px; }
+.disclosure[open] { padding-bottom: 16px; }
+.section summary:focus-visible { outline: 2px solid var(--accent-ink); outline-offset: 3px; }
+.fields dd p:last-child { margin-bottom: 0; }
 .mapping summary, .section summary { cursor: pointer; padding: 10px 0; }
 .mapping code, .section code { overflow-wrap: anywhere; font-size: 12px; }
 .tableWrap { max-width: 100%; overflow-x: auto; margin: 16px 0; border: 1px solid var(--line); border-radius: var(--radius-sm); }

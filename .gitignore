@@ -95,3 +95,7 @@ gha-creds-*.json
 # Hydrated, checksum-verified files owned by rewire-benchmark-data
 /data/
 /lib/generated-benchmark-catalog.ts
+
+# Local UI review and browser smoke artifacts
+/scratch/ui-review/
+/scratch/browser-smoke/

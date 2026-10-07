@@ -50,12 +50,12 @@ export default function UseCasePage({ params }: { params: Params }) {
   const summary = summariseUseCaseEvidence(detail.mappings, entry.evidence_gaps.length);
   // Navigation labels are the section headings, so the two cannot drift apart.
   const sections = [
-    ...(entry.collection_plan ? [{ id: "collection-plan", label: "Evidence collection plan" }] : []),
     { id: "question", label: "Question and applicability" },
     { id: "inputs", label: "Inputs and expected output" },
     ...(clinical ? [{ id: "clinical-scope", label: "Clinical research scope" }] : []),
     { id: "evidence", label: "Evaluated evidence" },
     { id: "gaps", label: "Limitations and missing evidence" },
+    ...(entry.collection_plan ? [{ id: "collection-plan", label: "Evidence collection plan" }] : []),
     { id: "sources", label: "Sources and review" },
   ];
   const heading = (id: string) => sections.find((section) => section.id === id)!.label;
@@ -72,7 +72,6 @@ export default function UseCasePage({ params }: { params: Params }) {
     <div className="wrap">
       <SectionNavigation sections={sections} />
       <div className={`content ${styles.detail}`}>
-        {entry.collection_plan && <UseCaseCollectionPlan plan={entry.collection_plan} summary={summary} />}
         <section id="question" className={styles.section}>
           <h2>{heading("question")}</h2>
           <p className={styles.lead}>{entry.decision}</p>
@@ -111,6 +110,7 @@ export default function UseCasePage({ params }: { params: Params }) {
           </>}
           <p><a href="/contribute/">Contribute evidence or propose a correction</a></p>
         </section>
+        {entry.collection_plan && <UseCaseCollectionPlan plan={entry.collection_plan} summary={summary} />}
         <section id="sources" className={styles.section}>
           <h2>{heading("sources")}</h2><UseCaseReview review={entry.review} />
           <UseCaseCitations citations={entry.citations} sources={detail.sources} useCasePath={path} />

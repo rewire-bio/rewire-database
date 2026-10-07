@@ -331,3 +331,35 @@ describe("comparison score ordering", () => {
     });
   }
 });
+
+describe("table filter controls", () => {
+  it("applies result facets, resets empty matches, retries errors and pages both directions", async () => {
+    const paged = {...results, next_cursor:"next", previous_cursor:"previous"};
+    api.results.mockResolvedValue(paged);
+    await act(async()=>{tree=create(<Results id={id} initial={paged}/>)});
+    for (const select of tree.root.findAllByType("select")) {
+      const option=select.findAllByType("option")[1];
+      await act(async()=>select.props.onChange({target:{value:option?.props.value || "synthetic"}}));
+    }
+    expect(api.results).toHaveBeenCalled();
+    await act(async()=>button("Next").props.onClick()); expect(api.results.mock.calls.at(-1)![0].cursor).toBe("next");
+    await act(async()=>button("Previous").props.onClick()); expect(api.results.mock.calls.at(-1)![0].cursor).toBe("previous");
+    await act(async()=>button("Reset filters").props.onClick()); expect(url.search).toBe("");
+    api.results.mockRejectedValueOnce(Error("offline")); await act(async()=>tree.root.findAllByType("select")[0].props.onChange({target:{value:"missing"}}));
+    expect(text()).toContain("could not be loaded"); await act(async()=>button("Retry").props.onClick()); expect(text()).not.toContain("could not be loaded");
+    api.results.mockResolvedValueOnce({...results,items:[],total:0}); await act(async()=>tree.root.findAllByType("select")[0].props.onChange({target:{value:"empty"}}));
+    expect(text()).toContain("No results match"); await act(async()=>tree.root.findAllByType("button").filter(n=>n.children.join("")==="Reset filters")[1].props.onClick());
+    expect(text()).not.toContain("No results match");
+  });
+  it("searches evidence, changes scope, retries and navigates evidence pages", async () => {
+    const paged={...evidence,next_cursor:"next"}; api.evidence.mockResolvedValue(paged);
+    await act(async()=>{tree=create(<EvidenceTable id={id} initial={paged} initialScope="individual_claim"/>)});
+    await act(async()=>tree.root.findByType("input").props.onChange({target:{value:"claim"}}));
+    await act(async()=>tree.root.findByType("form").props.onSubmit({preventDefault:vi.fn()}));
+    expect(api.evidence.mock.calls.at(-1)![0].q).toBe("claim");
+    await act(async()=>button("Next evidence rows").props.onClick()); expect(api.evidence.mock.calls.at(-1)![0].cursor).toBe("next");
+    await act(async()=>button("First evidence page").props.onClick()); expect(api.evidence.mock.calls.at(-1)![0].cursor).toBeUndefined();
+    api.evidence.mockRejectedValueOnce(Error("offline")); await act(async()=>tree.root.findByType("select").props.onChange({target:{value:""}}));
+    expect(text()).toContain("Evidence could not be refreshed"); await act(async()=>button("Retry evidence").props.onClick()); expect(text()).not.toContain("Evidence could not be refreshed");
+  });
+});

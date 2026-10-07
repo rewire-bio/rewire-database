@@ -1,3 +1,4 @@
+import { measureDeploymentStage as measure } from "./deployment-metrics.mjs";
 import { spawn } from "node:child_process";
 import { createHash } from 'node:crypto';
 import { readFile } from "node:fs/promises";
@@ -77,11 +78,11 @@ async function currentHostingVersion() {
 await deployCatalogue({
   async capture() {
     const current = JSON.parse(
-      await run(
+      await measure("catalogue.capture", () => run(
         "node",
         ["--import", "tsx", "services/omics/src/import-cli.ts", "--current"],
         true,
-      ),
+      )),
     );
     const listing = JSON.parse(
       await run(
@@ -122,19 +123,19 @@ await deployCatalogue({
     return true;
   },
   importRelease: () =>
-    importer("public/omics/catalogue.json", "public/omics/manifest.json"),
-  activate: () => importer("--activate", manifest.release_id),
+    measure("catalogue.import", () => importer("public/omics/catalogue.json", "public/omics/manifest.json")),
+  activate: () => measure("catalogue.activation", () => importer("--activate", manifest.release_id)),
   verifyApi: () =>
-    run("node", [
+    measure("catalogue.api_verification", () => run("node", [
       "scripts/check-live-catalogue.mjs",
       "https://europe-west2-rewire-it.cloudfunctions.net/contributions",
       contributionProbeArgument,
       acceptanceArgument,
-    ]),
+    ])),
   async publishHosting(previous, markReleaseAttempt) {
     if (plan.mode === 'full') {
       markReleaseAttempt();
-      return firebase('deploy', '--only', 'hosting');
+      return measure("hosting.full_publication", () => firebase('deploy', '--only', 'hosting'));
     }
     await assertPublishedBase(plan, manifestBytes);
     return deployWebHosting({
@@ -148,14 +149,14 @@ await deployCatalogue({
     });
   },
   verifyWebsite: () =>
-    run("node", [
+    measure("hosting.website_verification", () => run("node", [
       "scripts/check-live-catalogue.mjs",
       "https://rewire-it.web.app",
       contributionProbeArgument,
       acceptanceArgument,
       "--website",
-    ]),
+    ])),
   restoreHosting: (version) =>
-    firebase("hosting:clone", `${site}@${version}`, `${site}:live`),
-  restoreRelease: (release) => importer("--activate", release),
+    measure("hosting.rollback", () => firebase("hosting:clone", `${site}@${version}`, `${site}:live`)),
+  restoreRelease: (release) => measure("catalogue.rollback", () => importer("--activate", release)),
 });

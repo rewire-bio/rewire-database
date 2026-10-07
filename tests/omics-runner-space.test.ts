@@ -274,8 +274,81 @@ describe('hosted runner space preparation', () => {
     for (const file of host.preserved) expect(fs.readFileSync(host.map(file), 'utf8')).toBe('preserve');
   });
 
+  it('covers the source-staging admission shortfall only after all existing SDKs and images are exhausted', () => {
+    // Run 37647702339: remaining free bytes and the exact Chrome installation
+    // size from the read-only inventory on image 20260927.320.1.
+    const observedFree = 46_974_304_256;
+    const chromeBytes = 457_588_736;
+    expect(AFTER_DEPENDENCIES_FREE_BYTES - observedFree).toBe(270_336_000);
+    const host = fixture(observedFree, 0, { '/opt/google/chrome': chromeBytes });
+    for (const lock of ['.ansible-core.lock', '.yamllint.lock'])
+      fs.writeFileSync(host.map(`/opt/pipx/venvs/${lock}`), 'preserve');
+    host.docker.enabled = true;
+    host.docker.reclaimed = 0;
+    host.docker.images = new Set(UNUSED_RUNNER_IMAGES);
+    const result = prepareRunnerSpace({ ...host.options, phase: 'after-dependencies' });
+    expect(result.available).toBe(observedFree + chromeBytes);
+    expect(result.required).toBe(44 * GiB);
+    expect(MIN_FREE_BYTES).toBe(45 * GiB);
+    expect(result.removedImages).toEqual(UNUSED_RUNNER_IMAGES);
+    expect(host.removed.at(-1)).toBe('/opt/google/chrome');
+    expect(host.removed).not.toContain('/opt/pipx/venvs');
+    for (const lock of ['.ansible-core.lock', '.yamllint.lock'])
+      expect(fs.readFileSync(host.map(`/opt/pipx/venvs/${lock}`), 'utf8')).toBe('preserve');
+    expect(fs.readFileSync(host.map('/opt/pipx/venvs/ansible-core/unused-sdk'), 'utf8')).toBe('disposable');
+    const lastImage = host.run.mock.calls.findLastIndex(([program, args]) => program === 'docker' && args.includes('rm'));
+    const chromeRemoval = host.run.mock.calls.findIndex(([program, args]) => program === 'sudo' && args[1] === 'rm' && args.at(-1) === '/opt/google/chrome');
+    expect(chromeRemoval).toBeGreaterThan(lastImage);
+    for (const file of host.preserved) expect(fs.readFileSync(host.map(file), 'utf8')).toBe('preserve');
+  });
+
+  it('keeps preinstalled Chrome when earlier image cleanup supplies the unchanged budget', () => {
+    const host = fixture(AFTER_DEPENDENCIES_FREE_BYTES - 1, 0, { '/opt/google/chrome': GiB });
+    host.docker.enabled = true;
+    host.docker.reclaimed = 1;
+    host.docker.images = new Set(UNUSED_RUNNER_IMAGES);
+    const result = prepareRunnerSpace({ ...host.options, phase: 'after-dependencies' });
+    expect(result.available).toBe(AFTER_DEPENDENCIES_FREE_BYTES);
+    expect(host.removed).not.toContain('/opt/google/chrome');
+    expect(fs.readFileSync(host.map('/opt/google/chrome/unused-sdk'), 'utf8')).toBe('disposable');
+  });
+
+  it.each(['/usr/bin/google-chrome', 'google-chrome'])('preserves a browser explicitly selected by PERF_CHROME=%s', selected => {
+    const host = fixture(AFTER_DEPENDENCIES_FREE_BYTES - 1, 0, { '/opt/google/chrome': GiB });
+    fs.writeFileSync(host.map('/opt/google/chrome/chrome'), 'selected browser');
+    fs.symlinkSync(host.map('/opt/google/chrome/chrome'), host.map('/usr/bin/google-chrome'));
+    const run = vi.fn((program: string, args: string[]) => program === 'which' && args.length === 1
+      ? '/usr/bin/google-chrome\n' : host.run(program, args));
+    expect(() => prepareRunnerSpace({ ...host.options, run, phase: 'after-dependencies', env: { ...host.env, PERF_CHROME: selected } }))
+      .toThrow('44 GiB free after dependency installation');
+    expect(host.removed).not.toContain('/opt/google/chrome');
+    expect(host.log).toHaveBeenCalledWith('Preserving active runtime or deployment dependency: /opt/google/chrome');
+    expect(fs.readFileSync(host.map('/opt/google/chrome/chrome'), 'utf8')).toBe('selected browser');
+  });
+
+  it('fails closed before any removal when the selected browser cannot be identified', () => {
+    const host = fixture();
+    const run = vi.fn((program: string, args: string[]) => program === 'which' && args.length === 1
+      ? '' : host.run(program, args));
+    expect(() => prepareRunnerSpace({ ...host.options, run, env: { ...host.env, PERF_CHROME: 'unknown-browser' } }))
+      .toThrow('Cannot identify the explicitly selected PERF_CHROME browser');
+    expect(host.removed).toEqual([]);
+  });
+
+  it('preserves an explicitly selected browser path inside Chrome when its target is outside the installation', () => {
+    const host = fixture(AFTER_DEPENDENCIES_FREE_BYTES - 1, 0, { '/opt/google/chrome': GiB });
+    const selected = '/opt/google/chrome/selected-browser';
+    fs.writeFileSync(host.map('/usr/bin/custom-browser'), 'selected browser');
+    fs.symlinkSync(host.map('/usr/bin/custom-browser'), host.map(selected));
+    expect(() => prepareRunnerSpace({ ...host.options, phase: 'after-dependencies', env: { ...host.env, PERF_CHROME: selected } }))
+      .toThrow('44 GiB free after dependency installation');
+    expect(host.removed).not.toContain('/opt/google/chrome');
+    expect(fs.readFileSync(host.map(selected), 'utf8')).toBe('selected browser');
+    expect(fs.readFileSync(host.map('/usr/bin/custom-browser'), 'utf8')).toBe('selected browser');
+  });
+
   it.each([
-    '/usr/local/share/vcpkg', '/usr/local/share/edge_driver', '/usr/share/kotlinc', '/usr/share/gradle-9.8.0',
+    '/usr/local/share/vcpkg', '/usr/local/share/edge_driver', '/usr/share/kotlinc', '/usr/share/gradle-9.8.0', '/opt/google/chrome',
   ])('preserves %s when an active executable resolves into it', directory => {
     const host = fixture(MIN_FREE_BYTES - 1, 0);
     fs.mkdirSync(host.map(directory), { recursive: true });
@@ -303,7 +376,7 @@ describe('hosted runner space preparation', () => {
       expect(fs.existsSync(host.map(`${directory}/sentinel`))).toBe(true);
   });
 
-  it.each(['/usr/local/share/vcpkg', '/usr/share/kotlinc', '/usr/share/gradle-9.8.0'])('rejects checkout overlap with %s before any removal', directory => {
+  it.each(['/usr/local/share/vcpkg', '/usr/share/kotlinc', '/usr/share/gradle-9.8.0', '/opt/google/chrome'])('rejects checkout overlap with %s before any removal', directory => {
     const host = fixture();
     fs.mkdirSync(host.map(directory), { recursive: true });
     host.env.GITHUB_WORKSPACE = directory;
@@ -311,7 +384,7 @@ describe('hosted runner space preparation', () => {
     expect(host.run).not.toHaveBeenCalled();
   });
 
-  it.each(['/usr/local/share/edge_driver', '/usr/share/gradle-9.8.0'])('rejects a symlinked %s before any removal', directory => {
+  it.each(['/usr/local/share/edge_driver', '/usr/share/gradle-9.8.0', '/opt/google/chrome'])('rejects a symlinked %s before any removal', directory => {
     const host = fixture();
     const target = host.map(directory);
     fs.rmSync(target, { recursive: true, force: true });
@@ -385,7 +458,8 @@ describe('hosted runner space preparation', () => {
   });
 
   it('removes only documented preloaded images on the fixed local daemon without force', () => {
-    const host = fixture(beforeCleanup(4));
+    // Chrome is deferred until after Docker: only the other SDKs contribute.
+    const host = fixture(beforeCleanup(3));
     host.docker.enabled = true;
     host.docker.images = new Set([...UNUSED_RUNNER_IMAGES, 'company/application:keep']);
     const result = prepareRunnerSpace(host.options);

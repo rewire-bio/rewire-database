@@ -35,8 +35,8 @@ export const UNUSED_TOOL_DIRECTORIES = Object.freeze([
   '/opt/microsoft/powershell',
   '/usr/local/aws-cli',
   // Measured on image 20260920.314.1: 689,377,280 and 672,690,176 bytes.
-  // These CI workflows run Node/HTTP tests, with no browser automation. Retain
-  // Google Chrome, which is used by the separate manual mobile-lab script.
+  // These CI checks do not use the preinstalled browsers. Deployment smoke
+  // tests download their own Playwright Chromium after the build.
   '/usr/local/share/chromium',
   '/opt/microsoft/msedge',
   // Image ubuntu24/20260927.320 left these optional SDK copies installed.
@@ -57,7 +57,12 @@ export const UNUSED_TOOL_DIRECTORIES = Object.freeze([
   // Optional isolated CLI environments; pinned packages and measured capacity
   // are documented in docs/runner-space.md. System Python stays protected.
   '/opt/pipx/venvs',
+  // Final fallback, after all other SDKs and preloaded Docker images. The
+  // separate manual mobile-lab can preserve its browser with PERF_CHROME.
+  '/opt/google/chrome',
 ]);
+
+const FALLBACK_BROWSER_DIRECTORY = '/opt/google/chrome';
 
 export const GUARDED_CHILDREN = Object.freeze({
   '/opt/pipx/venvs': Object.freeze(['ansible-core', 'yamllint']),
@@ -162,6 +167,12 @@ export function prepareRunnerSpace({
   const protectedPaths = located.flatMap(file => [file, files.realpathSync(file)]);
   for (const key of ['JAVA_HOME', 'CLOUDSDK_PYTHON', 'PYTHONHOME', 'CONDA_PREFIX'])
     if (env[key] && path.isAbsolute(env[key])) protectedPaths.push(env[key], files.realpathSync(env[key]));
+  if (env.PERF_CHROME) {
+    const browser = path.isAbsolute(env.PERF_CHROME)
+      ? env.PERF_CHROME : run('which', [env.PERF_CHROME]).trim();
+    if (!path.isAbsolute(browser)) throw new Error('Cannot identify the explicitly selected PERF_CHROME browser.');
+    protectedPaths.push(browser, files.realpathSync(browser));
+  }
   planned = planned.filter(directory => {
     if (!protectedPaths.some(file => contains(directory, file))) return true;
     log(`Preserving active runtime or deployment dependency: ${directory}`);
@@ -186,13 +197,16 @@ export function prepareRunnerSpace({
     log(`Dry run: no files removed; ${gib(available)} free, ${gib(required)} required ${budgetContext}.`);
     return { dryRun, available, required, planned, removed };
   }
-  for (const directory of planned) {
-    if (available >= required) break;
+  const removeDirectory = directory => {
     log(`Removing unused SDK: ${directory}`);
     log(run('sudo', ['-n', 'du', '-s', '-x', '-B1', '--', directory]).trim());
     run('sudo', ['-n', 'rm', '-rf', '--one-file-system', '--', directory]);
     removed.push(directory);
     available = free();
+  };
+  for (const directory of planned) {
+    if (available >= required) break;
+    if (directory !== FALLBACK_BROWSER_DIRECTORY) removeDirectory(directory);
   }
 
   const removedImages = [];
@@ -227,6 +241,8 @@ export function prepareRunnerSpace({
       log(docker(['system', 'df']).trim());
     } else log('No local Docker socket; no container-cache cleanup attempted.');
   }
+  if (available < required && planned.includes(FALLBACK_BROWSER_DIRECTORY))
+    removeDirectory(FALLBACK_BROWSER_DIRECTORY);
   log('Workspace filesystem after preparation:');
   log(run('df', ['-h', workspace]).trim());
   log(`Free space: ${gib(available)} (${available} bytes); reclaimed ${gib(available - before)}.`);

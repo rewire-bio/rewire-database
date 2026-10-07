@@ -29,3 +29,22 @@ Run `npx vitest run tests/omics-runner-space.test.ts` to exercise cleanup agains
 Run `36981931877` had 47,979,589,632 bytes (44.68 GiB) free after dependencies and the public data checkout. Requiring the original pre-installation budget again rejected an otherwise sufficient runner. The second check now uses the fixed `--after-dependencies` phase with a 44 GiB minimum; the initial and producer checks remain 45 GiB. No arbitrary threshold override is accepted.
 
 The clean 7,076-file hydration audit used 29.996 GiB allocated with verified immutable hardlinks. The completed 28,935-page local export used approximately 3.61 GiB for additional output files and 3.75 GiB for `.next` (excluding hardlinked archive copies). That is approximately 37.36 GiB for hydrated data plus both page trees, leaving over 6 GiB at the post-installation floor. Historical exports and staged downloads share existing inodes. These measurements justify crediting only 1 GiB for dependencies already installed; the second guard still fails below 44 GiB.
+
+## Full-history publication staging
+
+Consumer production run `37638882775` on image `20260927.320.1` stopped before publication with 46,886,711,296 bytes free after dependencies: 357,928,960 bytes below the unchanged 44 GiB floor. Read-only inventory and pinned upstream installers identify four additional optional installations unused by this workflow:
+
+| Exact directory | Measured bytes | Primary installation evidence |
+| --- | ---: | --- |
+| `/opt/pipx/venvs` | 509,980,672 | [pipx installer](https://github.com/actions/runner-images/blob/ubuntu24/20260927.320/images/ubuntu/scripts/build/install-pipx-packages.sh), [toolset](https://github.com/actions/runner-images/blob/ubuntu24/20260927.320/images/ubuntu/toolsets/toolset-2404.json) |
+| `/usr/local/share/vcpkg` | 217,796,608 | [vcpkg installer](https://github.com/actions/runner-images/blob/ubuntu24/20260927.320/images/ubuntu/scripts/build/install-vcpkg.sh) |
+| `/usr/share/gradle-9.8.0` | 172,609,536 | [Java tools installer](https://github.com/actions/runner-images/blob/ubuntu24/20260927.320/images/ubuntu/scripts/build/install-java-tools.sh) |
+| `/opt/hostedtoolcache/copilot-cli` | 178,475,008 | [Copilot installer](https://github.com/actions/runner-images/blob/ubuntu24/20260927.320/images/ubuntu/scripts/build/install-copilot-cli.sh) |
+
+These add 1,078,861,824 measured bytes of potential capacity. The pipx directory is preserved if any child differs from the pinned `ansible-core`/`yamllint` installations. Existing active-runtime, symlink, checkout-overlap and inaccessible-path protections apply to all four paths. The 45/44 GiB floors remain unchanged. Measured optional-tool sizes address the admission deficit; they do not establish enough space for the final full-history build.
+
+The combined AMP producer package has 34 immutable snapshots and about 42.36 GiB of unique expanded payload content. A full production run first strictly hydrates every package entry, saves the verified compressed producer checkout to its revision-bound cache, then invokes `release-prepared-data-checkout.mjs`. That helper re-runs native full hydration with the committed pin, checks the exact public remote, clean pinned HEAD, plain checkout directories and hosted Ubuntu metadata, and removes only `workbench/benchmark-data`. Hydrated archives, website outputs, the consumer Git directory and all other workbench entries remain. It records the producer revision, package digest, release and actual available bytes in an ignored receipt. It refuses local worktrees, overridden revisions, symlinks, unsafe receipt paths and verification failures.
+
+The full build then invokes `build-static.mjs` directly because hydration has passed and the temporary source has been released. Web-only and pull-request paths retain their existing preparation. Export, full-history retention, Firebase/API, Cloudflare and rollback gates remain. Cache save precedes removal; a future run restores the complete compressed source.
+
+Run `npx vitest run tests/omics-runner-space.test.ts tests/release-prepared-data-checkout.test.ts` for disposable-fixture verification. The tests never clean an actual runner or data checkout.

@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { AFTER_DEPENDENCIES_FREE_BYTES, MIN_FREE_BYTES, UNUSED_TOOL_DIRECTORIES, UNUSED_RUNNER_IMAGES, prepareRunnerSpace } from '../scripts/prepare-runner-space.mjs';
+import { AFTER_DEPENDENCIES_FREE_BYTES, GUARDED_CHILDREN, MIN_FREE_BYTES, UNUSED_TOOL_DIRECTORIES, UNUSED_RUNNER_IMAGES, prepareRunnerSpace } from '../scripts/prepare-runner-space.mjs';
 
 const roots: string[] = [];
 const GiB = 1024 ** 3;
@@ -23,8 +23,9 @@ function fixture(initialFree = 34 * GiB, perRemoval = GiB, sizes: Record<string,
     '/usr/lib/google-cloud-sdk/bin/gcloud',
   ];
   for (const directory of UNUSED_TOOL_DIRECTORIES) {
-    fs.mkdirSync(map(directory), { recursive: true });
-    fs.writeFileSync(map(`${directory}/unused-sdk`), 'disposable');
+    const child = GUARDED_CHILDREN[directory as keyof typeof GUARDED_CHILDREN]?.[0];
+    fs.mkdirSync(map(child ? `${directory}/${child}` : directory), { recursive: true });
+    fs.writeFileSync(map(`${directory}/${child ? `${child}/` : ''}unused-sdk`), 'disposable');
   }
   for (const file of preserved) {
     fs.mkdirSync(path.dirname(map(file)), { recursive: true });
@@ -132,8 +133,10 @@ describe('hosted runner space preparation', () => {
     expect(result.available).toBe(34 * GiB);
     expect(result.planned).toEqual(UNUSED_TOOL_DIRECTORIES);
     expect(host.removed).toEqual([]);
-    for (const directory of UNUSED_TOOL_DIRECTORIES)
-      expect(fs.readFileSync(host.map(`${directory}/unused-sdk`), 'utf8')).toBe('disposable');
+    for (const directory of UNUSED_TOOL_DIRECTORIES) {
+      const child = GUARDED_CHILDREN[directory as keyof typeof GUARDED_CHILDREN]?.[0];
+      expect(fs.readFileSync(host.map(`${directory}/${child ? `${child}/` : ''}unused-sdk`), 'utf8')).toBe('disposable');
+    }
   });
 
   it.each([
@@ -341,5 +344,46 @@ describe('hosted runner space preparation', () => {
     host.docker.socketSafe = false;
     expect(() => prepareRunnerSpace(host.options)).toThrow('unexpected socket');
     expect(host.run.mock.calls.some(([program]) => program === 'docker')).toBe(false);
+  });
+
+  it('covers the four measured 20260927 optional tools within existing safeguards', () => {
+    const sizes = {
+      '/opt/pipx/venvs': 509_980_672,
+      '/usr/local/share/vcpkg': 217_796_608,
+      '/usr/share/gradle-9.8.0': 172_609_536,
+      '/opt/hostedtoolcache/copilot-cli': 178_475_008,
+    };
+    expect(Object.values(sizes).reduce((a, b) => a + b, 0)).toBe(1_078_861_824);
+    for (const directory of Object.keys(sizes)) expect(UNUSED_TOOL_DIRECTORIES).toContain(directory);
+    const failedRun = 46_886_711_296;
+    const host = fixture(failedRun, 0, sizes);
+    const result = prepareRunnerSpace({ ...host.options, phase: 'after-dependencies' });
+    expect(AFTER_DEPENDENCIES_FREE_BYTES).toBe(44 * GiB);
+    expect(result.available).toBeGreaterThanOrEqual(AFTER_DEPENDENCIES_FREE_BYTES);
+    expect(UNUSED_TOOL_DIRECTORIES.filter(d => d.startsWith('/opt/pipx') || d.includes('vcpkg') || d.includes('gradle') || d.includes('copilot')))
+      .toEqual(Object.keys(sizes));
+  });
+
+  it('preserves pipx venvs with an unknown child installation', () => {
+    const host = fixture(beforeCleanup(-1), GiB);
+    fs.mkdirSync(host.map('/opt/pipx/venvs/other-tool'));
+    const result = prepareRunnerSpace(host.options);
+    expect(result.planned).not.toContain('/opt/pipx/venvs');
+    expect(fs.existsSync(host.map('/opt/pipx/venvs/other-tool'))).toBe(true);
+    expect(host.log).toHaveBeenCalledWith(expect.stringContaining('unknown installation(s) other-tool'));
+  });
+
+  it('preserves an active deployment tool inside a newly listed directory', () => {
+    const host = fixture(beforeCleanup(-1), GiB);
+    const gradle = '/usr/share/gradle-9.8.0/bin/java';
+    fs.mkdirSync(host.map('/usr/share/gradle-9.8.0/bin'), { recursive: true });
+    fs.writeFileSync(host.map(gradle), 'x');
+    const run = vi.fn((program: string, args: string[]) => program === 'which'
+      ? ['/node', '/python3', gradle, '/git', '/gcc', '/g++', '/make', '/gcloud'].join('\n') + '\n'
+      : host.run(program, args));
+    for (const file of ['/node', '/python3', '/git', '/gcc', '/g++', '/make', '/gcloud'])
+      fs.writeFileSync(host.map(file), 'x');
+    const result = prepareRunnerSpace({ ...host.options, run });
+    expect(result.planned).not.toContain('/usr/share/gradle-9.8.0');
   });
 });

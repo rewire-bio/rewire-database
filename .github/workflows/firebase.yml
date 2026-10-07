@@ -321,6 +321,13 @@ jobs:
         with:
           path: workbench/benchmark-data
           key: ${{ steps.data-cache.outputs.cache-primary-key }}
+      - name: Release the temporary compressed producer checkout
+        id: release-source
+        # Runs after the verified cache save above. Re-runs the full native
+        # preparation before deleting only workbench/benchmark-data; hydrated
+        # data and the consumer Git stay in place.
+        if: steps.plan.outputs.mode == 'full' && runner.environment == 'github-hosted'
+        run: node scripts/release-prepared-data-checkout.mjs
       - name: Cache verified current-release files
         if: steps.plan.outputs.mode == 'web' && steps.current-data-cache.outputs.cache-hit != 'true'
         uses: actions/cache/save@v4
@@ -333,7 +340,11 @@ jobs:
         run: |
           node scripts/check-analytics-config.mjs
           node scripts/configure-contribution-deployment.mjs --validate-only
-          if [ "${{ steps.plan.outputs.mode }}" = web ]; then npm run build:web; else npm run build; fi
+          # After the checkout is released, hydration has already passed; npm run
+          # build would hydrate again from the removed source.
+          if [ "${{ steps.plan.outputs.mode }}" = web ]; then npm run build:web
+          elif [ "${{ steps.release-source.outcome }}" = success ]; then node scripts/build-static.mjs
+          else npm run build; fi
           node scripts/deployment-plan.mjs --receipt
       - run: npm run typecheck
       - name: Save Next compilation cache before cleanup

@@ -361,11 +361,15 @@ jobs:
         run: |
           node scripts/check-analytics-config.mjs
           node scripts/configure-contribution-deployment.mjs --validate-only
+          df -h .
+          df -i .
           # After the checkout is released, hydration has already passed; npm run
           # build would hydrate again from the removed source.
           if [ "${{ steps.plan.outputs.mode }}" = web ]; then npm run build:web
           elif [ "${{ steps.release-source.outcome }}" = success ]; then node scripts/build-static.mjs
           else npm run build; fi
+          df -h .
+          df -i .
           node scripts/deployment-plan.mjs --receipt
       - run: npm run typecheck
       - name: Save Next compilation cache before cleanup

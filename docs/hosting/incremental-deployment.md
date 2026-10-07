@@ -89,6 +89,26 @@ rollback checks. Hosting hashing and uploads use at most 16 concurrent streams
 
 ## Remaining cost
 
+Full publication authenticates the pinned compressed producer checkout before
+caching it, then hydrates and verifies every current and historical payload. This
+keeps the temporary cache archive from occupying disk alongside the expanded
+catalogue and Next.js output.
+
+On GitHub-hosted Ubuntu runners, `release-prepared-data-checkout.mjs` repeats full
+native payload verification before removing only `workbench/benchmark-data`.
+It requires a clean ordinary clone at the reviewed revision with the expected
+public producer remote, rejects symlinks and local worktrees, and preserves
+hydrated data, historical downloads, the consumer checkout and workbench siblings.
+The full build then calls `build-static.mjs` directly because preparation has
+already passed and the temporary source is gone. Other build paths retain their
+existing preparation. The 45/44 GiB admission floors, complete archive checks,
+Firebase/API checks, Cloudflare checks and rollback gates remain required.
+
+Run `npx vitest run tests/release-prepared-data-checkout.test.ts
+tests/omics-runner-space.test.ts tests/build-static.test.ts
+tests/benchmark-data-consumer.test.ts` to exercise the staging guards and payload
+preservation with disposable fixtures.
+
 All record pages are still exported with their complete content and metadata.
 Reproduction panels reuse the existing catalogue index and metadata avoids
 unnecessary relationship queries, but compilation caching does not eliminate

@@ -41,7 +41,7 @@ export default function HistoricalMfassPage() {
       <section className="block first">
         <div className="wrap prose-brief">
           <p>
-            For rewire.it runs, the aim is to publish a floor that anyone can measure against
+            For rewirebio.io runs, the aim is to publish a floor that anyone can measure against
             and re-run. These six requirements guide each independent result and its published
             protocol.
           </p>

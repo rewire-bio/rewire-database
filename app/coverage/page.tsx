@@ -8,7 +8,7 @@ import styles from "@/app/database/database.module.css";
 export const metadata: Metadata = {
   title: "Benchmark result coverage",
   description: "A release-pinned audit of results, source-scoped charts and collection gaps across every benchmark, task, protocol and evaluator.",
-  alternates: { canonical: "https://benchmarks.rewire.it/coverage/" },
+  alternates: { canonical: "https://benchmarks.rewirebio.io/coverage/" },
 };
 export default function CoveragePage() {
   const { catalogue } = buildCatalogue();

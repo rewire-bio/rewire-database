@@ -13,7 +13,7 @@ export function legacyCatalogueDestination(
     destination.username ||
     destination.password
   )
-    throw new Error("Catalogue redirects must stay on benchmarks.rewire.it.");
+    throw new Error("Catalogue redirects must stay on benchmarks.rewirebio.io.");
   const params = new URLSearchParams(search);
   const targetKeys = new Set(destination.searchParams.keys());
   for (const key of targetKeys) params.delete(key);

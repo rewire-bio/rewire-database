@@ -62,10 +62,10 @@ export default function Header() {
         <a
           className="brand"
           href="/"
-          aria-label="rewire.it benchmark database home"
+          aria-label="rewirebio.io benchmark database home"
         >
           <span className="dot" />
-          rewire.it
+          rewirebio.io
           <span className="brand-sub">benchmarks</span>
         </a>
         <nav className="nav desktop" aria-label="Primary">

@@ -7,7 +7,7 @@ export const SOCIAL_IMAGE = {
   url: `${ORIGIN}/images/social/catalogue.png`,
   width: 1200,
   height: 630,
-  alt: "rewire.it biological model benchmark database: models, benchmarks and source-linked evidence",
+  alt: "rewirebio.io biological model benchmark database: models, benchmarks and source-linked evidence",
 };
 
 /** Share the page's existing factual snippet, never invent a second description. */
@@ -15,7 +15,7 @@ export function socialMetadata({ title, description, path }: { title: string; de
   return {
     openGraph: {
       type: "website",
-      siteName: "rewire.it benchmark database",
+      siteName: "rewirebio.io benchmark database",
       title,
       description,
       url: new URL(path, ORIGIN).href,

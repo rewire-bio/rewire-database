@@ -57,6 +57,22 @@ describe("use-case evidence summary", () => {
 });
 
 describe("use-case detail template", () => {
+  it("links relevant reading from the page navigation without adding it to evaluated evidence", async () => {
+    const html = await detail({ ...base, slug: "splicing-follow-up" });
+    expect(html).toContain('href="#related-articles"');
+    expect(html).toContain('<section id="related-articles"');
+    expect(html).toContain('href="https://rewirebio.io/blog/mfass-v1/"');
+    expect(html).not.toContain('href="https://rewirebio.io/blog/an-rna-sequence-is-not-a-molecular-state/"');
+    const start = html.indexOf('<section id="evidence"');
+    const end = html.indexOf('<section id="gaps"');
+    expect(html.slice(start, end)).not.toContain('href="https://rewirebio.io/blog/');
+  });
+  it("omits article links and navigation for a question without relevant coverage", async () => {
+    const html = await detail({ ...base, slug: "mass-spectrum-molecule-shortlisting" }, []);
+    expect(html).not.toContain('id="related-articles"');
+    expect(html).not.toContain('href="#related-articles"');
+    expect(html).not.toContain('href="https://rewirebio.io/blog/');
+  });
   it("has one h1, section navigation that matches h2 headings, and no skipped heading levels", async () => {
     const html = await detail(base);
     expect(html.match(/<h1\b/g)).toHaveLength(1);
@@ -96,6 +112,8 @@ describe("use-case index", () => {
     state.entry = { ...base, slug: "genetic-perturbation-response" }; state.mappings = [mapping("m1", "proxy", ["c1"])];
     const { default: Page } = await import("../app/use-cases/page");
     const html = renderToStaticMarkup(<Page />);
+    expect(html).toContain('href="https://rewirebio.io/blog/genomic-foundation-models-in-2026/"');
+    expect(html).toContain('href="/use-cases/genetic-perturbation-response/#related-articles"');
     expect(html.match(/<h1\b/g)).toHaveLength(1);
     const explorer = html.indexOf('role="search"');
     expect(html.indexOf("What a use case shows")).toBeLessThan(explorer);

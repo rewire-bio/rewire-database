@@ -6,7 +6,7 @@ import run from "@/data/benchmark-runs/mfass-v2.json";
 import styles from "./run.module.css";
 
 const pageMetadata = {
-  title: "MFASS v2: corrected baseline and DNABERT-2 | rewire.it",
+  title: "MFASS v2: corrected baseline and DNABERT-2 | rewirebio.io",
   description: "A complete local MFASS run with a corrected baseline, a frozen DNABERT-2 pair-embedding protocol, full coverage and group-resampled comparisons.",
   alternates: { canonical: "https://benchmarks.rewirebio.io/runs/mfass-v2/" },
 };
@@ -31,7 +31,7 @@ export default function MfassV2Page() {
   return <>
     <header className="page-head"><div className="wrap">
       <Breadcrumbs items={[{ name: "Database", path: "/" }, { name: "Rewire evaluations", path: "/?kind=result&origin=rewire#browse" }, { name: "MFASS v2", path: "/runs/mfass-v2/" }]} />
-      <span className="kick">Independent rewire.it run</span>
+      <span className="kick">Independent rewirebio.io run</span>
       <h1>{run.label}</h1>
       <p className="intro">A corrected baseline and one zero-cost local DNABERT-2 protocol on MFASS. The held-out ranking result is complete.</p>
     </div></header>

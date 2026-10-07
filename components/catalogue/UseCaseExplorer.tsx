@@ -8,12 +8,14 @@ import {
 import { researchAreaLabel } from "@/lib/omics-browse";
 import { evidenceCollectedLabel, evidenceSummaryParts, type EvidenceSummary } from "@/lib/use-case-summary";
 import { UseCaseCollectionStatus } from "./UseCaseCollectionPlan";
+import { relatedUseCaseArticles, articleHref } from "@/lib/use-case-articles";
 import styles from "./UseCases.module.css";
 
 function Cards({ data, search, summaries }: { data: UseCasePage; search: string; summaries: Record<string, EvidenceSummary> }) {
   return <ul className={styles.cards}>
     {data.items.map((entry) => {
       const summary = summaries[entry.slug];
+      const articles = relatedUseCaseArticles(entry.slug);
       return <li key={entry.id}><article className={styles.card}>
         <p className={styles.tag}>{researchAreaLabel(entry.area)} · {entry.contexts.map(caseContextLabel).join(" and ")}</p>
         <h3><a href={`/use-cases/${entry.slug}/${search}`}>{entry.title}</a></h3>
@@ -26,6 +28,11 @@ function Cards({ data, search, summaries }: { data: UseCasePage; search: string;
         <ul className={styles.inputs}>{entry.inputs.map((input) => <li key={input}>{input}</li>)}</ul>
         <p className={styles.cardFoot}>{summary ? <>Opens with {evidenceSummaryParts(summary).slice(0, 3).join(" · ")}, plus limitations and sources.</> : "Opens with evaluated evidence, limitations and sources."}</p>
       <a href={`/use-cases/${entry.slug}/${search}${entry.collection_plan ? "#collection-plan" : ""}`}>{entry.collection_plan ? "View question and evidence plan →" : "Inspect evidence and limitations →"}</a>
+      {articles.length > 0 && <div className={styles.cardArticles}>
+        <h4 className={styles.cardLabel}>Related articles</h4>
+        <a href={articleHref(articles[0])}>{articles[0].title}</a>
+        {articles.length > 1 && <a className={styles.moreArticles} href={`/use-cases/${entry.slug}/${search}#related-articles`}>View all {articles.length} articles →</a>}
+      </div>}
       </article></li>;
     })}
   </ul>;

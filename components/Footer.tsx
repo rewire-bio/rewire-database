@@ -6,7 +6,7 @@ export default function Footer() {
           <div className="lead">
             <a className="brand" href="https://rewirebio.io/">
               <span className="dot" />
-              rewire.it
+              rewirebio.io
             </a>
           </div>
           <div className="col">
@@ -25,7 +25,7 @@ export default function Footer() {
           </div>
         </div>
         <div className="legal">
-          <span>© {new Date().getFullYear()} rewire.it</span>
+          <span>© {new Date().getFullYear()} rewirebio.io</span>
           <span>Genomics · Proteins · Molecular Design</span>
         </div>
       </div>

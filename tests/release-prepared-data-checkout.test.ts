@@ -17,12 +17,12 @@ function fixture() {
   fs.writeFileSync(path.join(source, 'compressed.json.gz'), 'temporary');
   const pin = { repository: 'rewire-bio/rewire-benchmark-data', revision, release_id: 'fixture-release', manifest_sha256: 'b'.repeat(64) };
   fs.writeFileSync(path.join(root, 'benchmark-data.lock.json'), JSON.stringify(pin));
-  const env = { GITHUB_ACTIONS: 'true', RUNNER_ENVIRONMENT: 'github-hosted', RUNNER_OS: 'Linux', ImageOS: 'ubuntu24', HOME: '/home/runner', GITHUB_WORKSPACE: root };
+  const env = { NODE_ENV: 'test' as const, GITHUB_ACTIONS: 'true', RUNNER_ENVIRONMENT: 'github-hosted', RUNNER_OS: 'Linux', ImageOS: 'ubuntu24', HOME: '/home/runner', GITHUB_WORKSPACE: root };
   const git = vi.fn((_cwd: string, args: string[]) => args[0] === 'remote' ? 'https://github.com/rewire-bio/rewire-benchmark-data' : args[0] === 'status' ? '' : revision);
-  const prepare = vi.fn(async (options: { currentOnly: boolean }) => {
+  const prepare = vi.fn(async (options?: { currentOnly?: boolean }) => {
     expect(options).toEqual({ source, websiteRoot: root, currentOnly: false });
     expect(fs.existsSync(source)).toBe(true);
-    return { release_id: pin.release_id };
+    return { release_id: pin.release_id, hydratedCount: 0, reusedCount: 0, skippedCount: 0 };
   });
   return { root, source, pin, env, git, prepare, preserved, options: { env, platform: 'linux' as NodeJS.Platform, cwd: root, git, prepare, free: () => 50 * 1024 ** 3, log: vi.fn(), now: () => new Date('2026-10-07T15:00:00Z') } };
 }
@@ -75,11 +75,11 @@ describe('release only a verified CI temporary data checkout', () => {
     expect(fs.readFileSync(outside, 'utf8')).toBe('preserve'); expect(fs.existsSync(f.source)).toBe(true);
   });
   it('rejects an incorrect prepared release', async () => {
-    const f = fixture(); f.prepare.mockResolvedValueOnce({ release_id: 'other' });
+    const f = fixture(); f.prepare.mockResolvedValueOnce({ release_id: 'other', hydratedCount: 0, reusedCount: 0, skippedCount: 0 });
     await expect(releasePreparedDataCheckout(f.options)).rejects.toThrow('does not match'); expect(fs.existsSync(f.source)).toBe(true);
   });
   it('preserves a checkout modified during preparation', async () => {
-    const f = fixture(); f.prepare.mockImplementationOnce(async () => { f.git.mockImplementation((_cwd, args) => args[0] === 'status' ? '?? changed' : revision); return { release_id: 'fixture-release' }; });
+    const f = fixture(); f.prepare.mockImplementationOnce(async () => { f.git.mockImplementation((_cwd, args) => args[0] === 'status' ? '?? changed' : revision); return { release_id: 'fixture-release', hydratedCount: 0, reusedCount: 0, skippedCount: 0 }; });
     await expect(releasePreparedDataCheckout(f.options)).rejects.toThrow('changed during'); expect(fs.existsSync(f.source)).toBe(true);
   });
   it('keeps full hydration and cache save ahead of removal and builds directly only after successful removal', () => {

@@ -182,3 +182,62 @@ describe("bounded live probe retry", () => {
     expect(fetchImpl).toHaveBeenCalledTimes(3);
   });
 });
+
+describe("live probe readiness window", () => {
+  function slowGenuineResponse(delayMs: number) {
+    return vi.fn(
+      (_url: string, { signal }: { signal: AbortSignal }) =>
+        new Promise<Response>((resolve, reject) => {
+          const timer = setTimeout(
+            () =>
+              resolve(
+                new Response("{}", {
+                  status: 200,
+                  headers: { "content-type": "application/json" },
+                }),
+              ),
+            delayMs,
+          );
+          signal.addEventListener("abort", () => {
+            clearTimeout(timer);
+            reject(new DOMException("Aborted", "AbortError"));
+          });
+        }),
+    );
+  }
+  it("accepts a slow cold-start response when the configured timeout covers it", async () => {
+    const fetchImpl = slowGenuineResponse(40);
+    const response = await fetchWithRetry("https://example.test", {
+      fetchImpl,
+      sleep: vi.fn(),
+      timeoutMs: 200,
+    });
+    expect(response.status).toBe(200);
+    expect(fetchImpl).toHaveBeenCalledTimes(1);
+  });
+  it("a too-short readiness window aborts a genuine slow response and exhausts retries, not a contract mismatch", async () => {
+    const fetchImpl = slowGenuineResponse(40);
+    await expect(
+      fetchWithRetry("https://example.test", {
+        fetchImpl,
+        sleep: vi.fn(),
+        timeoutMs: 10,
+      }),
+    ).rejects.toThrow("Aborted");
+    expect(fetchImpl).toHaveBeenCalledTimes(3);
+  });
+  it("still fails fast on a genuine contract mismatch regardless of the timeout window", async () => {
+    const fetchImpl = vi
+      .fn()
+      .mockResolvedValue(
+        new Response("{}", { status: 404, headers: { "content-type": "application/json" } }),
+      );
+    const response = await fetchWithRetry("https://example.test", {
+      fetchImpl,
+      sleep: vi.fn(),
+      timeoutMs: 200,
+    });
+    expect(response.status).toBe(404);
+    expect(fetchImpl).toHaveBeenCalledTimes(1);
+  });
+});

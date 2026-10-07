@@ -4,7 +4,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
-import { assertPublishedBase, classify, fingerprints, inputGroups, publishedReceipt, validReceipt, writeReceipt } from '../scripts/deployment-plan.mjs';
+import { assertPublishedBase, classify, fingerprints, inputGroups, liveAcceptanceProfile, publishedReceipt, validReceipt, writeReceipt } from '../scripts/deployment-plan.mjs';
 
 const roots: string[] = [];
 const hashes = { data: 'a'.repeat(64), backend: 'b'.repeat(64), hosting: 'c'.repeat(64) };
@@ -35,9 +35,23 @@ describe('publication classification', () => {
   it.each(['data/new.json', 'scripts/omics/new-helper.ts', 'lib/new-helper.ts', 'services/omics/src/new.ts', 'package-lock.json', 'tsconfig.json'])(
     'does not invalidate pinned data for consumer dependency %s', name => expect(inputGroups(name).data).toBe(false),
   );
-  it.each(['services/omics/firestore.rules', 'services/omics/firestore.indexes.json', 'services/omics/package-lock.json', 'firebase.json', 'scripts/contribution-deployment.mjs', '.github/workflows/firebase.yml'])(
+  it.each(['services/omics/firestore.rules', 'services/omics/firestore.indexes.json', 'services/omics/package-lock.json', 'firebase.json', 'scripts/contribution-deployment.mjs'])(
     'includes backend dependency %s', name => expect(inputGroups(name).backend).toBe(true),
   );
+  it('does not redeploy the backend for a workflow-only edit', async () => {
+    const root = fixture(); file(root, '.github/workflows/firebase.yml', 'first');
+    const first = await fingerprints(root, {});
+    file(root, '.github/workflows/firebase.yml', 'second', false);
+    expect(await fingerprints(root, {})).toEqual(first);
+    expect(inputGroups('.github/workflows/firebase.yml')).toEqual({ data: false, backend: false, hosting: false });
+  });
+  it('permits core acceptance only for a verified UI-only plan', () => {
+    const plan = {mode: 'web', backend: false, fingerprints: hashes, previous: receipt};
+    expect(liveAcceptanceProfile(plan)).toBe('core');
+    for (const changed of [{mode: 'full'}, {backend: true}, {backend: undefined}, {previous: null}, {force_full: true}, {fingerprints: {...hashes, backend: 'f'.repeat(64)}}, {fingerprints: {...hashes, data: 'f'.repeat(64)}}]) {
+      expect(liveAcceptanceProfile({...plan, ...changed})).toBe('full');
+    }
+  });
   it('binds data changes to the immutable producer lock', () => {
     expect(inputGroups('benchmark-data.lock.json').data).toBe(true);
   });

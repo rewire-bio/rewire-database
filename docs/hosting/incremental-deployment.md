@@ -66,9 +66,26 @@ The initial run has no receipts and deliberately follows the full path. Use
 required checks and rollback are retained. An unexpected live base change
 requires a new checked build, not an edited plan file.
 
-Cloudflare continues to publish the checked frontend artifact after Firebase.
-This change does not enable automatic Cloudflare deployment or change its
-credentials, domain configuration or immutable download routing.
+Cloudflare publishes the checked frontend after Firebase, followed by HTTP and
+Chromium smoke tests. Production CI fails early if automatic Cloudflare
+publication is disabled or its account/token secrets are missing, rather than
+reporting success after publishing only the Firebase origin.
+
+Verified website-only runs restore the current-release-only cache used by PR
+checks. On a cache miss, the authenticated pinned manifest selects the exact
+current compressed payloads; historical archives are fetched only for full runs.
+Workflow edits alone do not invalidate the backend fingerprint.
+
+When the live receipt and fingerprints confirm unchanged data, Hosting
+configuration and backend, publication uses bounded core acceptance inside the
+existing rollback transaction. It verifies the active release/count, representative
+queries, chart/result/evidence links, BRCA details/backlinks, contribution gates,
+exact manifest bytes, use-case artifact hash and representative published pages.
+Cloudflare uses the same acceptance selection. Data/backend changes and forced
+full runs retain exhaustive audit and use-case/result/configuration/source checks.
+This reduces repeated catalogue walks without weakening immutable release or
+rollback checks. Hosting hashing and uploads use at most 16 concurrent streams
+(up from 6), preserving the existing bound, hash checks and in-flight cleanup.
 
 ## Remaining cost
 

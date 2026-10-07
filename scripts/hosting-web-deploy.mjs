@@ -218,7 +218,7 @@ export async function assertHistoricalDownloadsPresent({ previousVersion, site =
  * @param {{previousVersion: string, site?: string, root?: string, client?: HostingClient, beforeRelease: () => Promise<unknown>, onReleaseAttempt: () => unknown, concurrency?: number, pollAttempts?: number, pollIntervalMs?: number, sleep?: (ms: number) => Promise<void>}} options
  */
 export async function deployWebHosting({ previousVersion, site = "rewire-it", root = process.cwd(), client,
-  beforeRelease, onReleaseAttempt, concurrency = 6, pollAttempts = 120, pollIntervalMs = 1000, sleep = pause }) {
+  beforeRelease, onReleaseAttempt, concurrency = 16, pollAttempts = 120, pollIntervalMs = 1000, sleep = pause }) {
   requireCondition(ID.test(site) && typeof site === "string" && typeof previousVersion === "string" && ID.test(previousVersion),
     "Invalid Hosting site or previous version");
   requireCondition(typeof beforeRelease === "function" && typeof onReleaseAttempt === "function", "Release guard callbacks are required");

@@ -6,6 +6,8 @@ import { createHash } from "node:crypto";
 import { gunzipSync } from "node:zlib";
 import { assertHistoricalDownloadsPresent, createHostingClient, deployWebHosting } from "../scripts/hosting-web-deploy.mjs";
 
+import { createDeploymentMetrics } from "../scripts/deployment-metrics.mjs";
+
 const roots: string[] = [];
 const API = "https://firebasehosting.googleapis.com/v1beta1/";
 const VERSION = "sites/rewire-it/versions/draft";
@@ -82,6 +84,35 @@ async function fixture() {
 }
 
 describe("immutable-history Hosting web publication", () => {
+  it("records phase timings and transferred bytes, including failed uploads", async () => {
+    const f = await fixture();
+    const metricsFile = path.join(f.root, "metrics.jsonl");
+    const metrics = createDeploymentMetrics({ file: metricsFile });
+    await deployWebHosting({ ...f.options, metrics });
+    const records = (await readFile(metricsFile, "utf8")).trim().split("\n").map(line => JSON.parse(line));
+    expect(records.find(record => record.stage === "hosting.enumeration").files).toBe(2);
+    expect(records.find(record => record.stage === "hosting.compression_hashing").compressed_bytes).toBeGreaterThan(0);
+    expect(records.find(record => record.stage === "hosting.upload").uploaded_files).toBe(2);
+    expect(records.find(record => record.stage === "hosting.upload").uploaded_bytes).toBeGreaterThan(0);
+    expect(records.filter(record => record.stage === "hosting.remote_enumeration")).toHaveLength(4);
+    expect(records.at(-1).stage).toBe("hosting.activation");
+    expect(records.every(record => record.status === "success")).toBe(true);
+
+    const failing = await fixture();
+    const failureFile = path.join(failing.root, "metrics.jsonl");
+    const request = failing.request.getMockImplementation()!;
+    failing.request.mockImplementation(async input => {
+      if (input.bodyFile) throw new Error("private transport details");
+      return request(input);
+    });
+    await expect(deployWebHosting({ ...failing.options, metrics: createDeploymentMetrics({ file: failureFile }) })).rejects.toThrow("private transport details");
+    const failureContent = await readFile(failureFile, "utf8");
+    const failureRecords = failureContent.trim().split("\n").map(line => JSON.parse(line));
+    expect(failureRecords.at(-1)).toMatchObject({ stage: "hosting.upload", status: "failed", uploaded_files: 0 });
+    expect(failureContent).not.toContain("private transport details");
+    expect(failing.options.onReleaseAttempt).not.toHaveBeenCalled();
+  });
+
   it("paginates all history, excludes stale UI and ignored files, and guards the release", async () => {
     const f = await fixture();
     expect(await deployWebHosting(f.options)).toBe(VERSION);

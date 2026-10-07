@@ -1,3 +1,4 @@
+import { createDeploymentMetrics } from "./deployment-metrics.mjs";
 import { createReadStream, createWriteStream, constants } from "node:fs";
 import { lstat, readdir, mkdir, mkdtemp, rm, stat } from "node:fs/promises";
 import path from "node:path";
@@ -131,7 +132,7 @@ async function uiFiles(root) {
       if (info.isDirectory()) await walk(file, name);
       else {
         requireCondition(info.isFile() && info.size < 2_000_000_000, "Hosting requires regular files below 2 GB");
-        files.push({ path: `/${name}`, source: file });
+        files.push({ path: `/${name}`, source: file, bytes: info.size });
       }
     }
   }
@@ -179,19 +180,23 @@ function requiredUploads(result, version, hashes) {
 /** Refuse a full CLI publication which would remove previously published downloads.
  * Generated full exports separately validate archive checksums. This read-only guard
  * checks remote inventory against local presence, without assuming identical gzip settings.
- * @param {{previousVersion: string, site?: string, root?: string, client?: HostingClient}} options
+ * @param {{previousVersion: string, site?: string, root?: string, client?: HostingClient, metrics?: ReturnType<typeof createDeploymentMetrics>}} options
  * @returns {Promise<number>} Number of retained historical/source files checked.
  */
-export async function assertHistoricalDownloadsPresent({ previousVersion, site = "rewire-it", root = process.cwd(), client }) {
+export async function assertHistoricalDownloadsPresent({ previousVersion, site = "rewire-it", root = process.cwd(), client, metrics = createDeploymentMetrics() }) {
   requireCondition(typeof site === "string" && ID.test(site) && typeof previousVersion === "string" && ID.test(previousVersion),
     "Invalid Hosting site or previous version");
   const output = path.join(path.resolve(root), "out");
   requireCondition((await lstat(output)).isDirectory(), "out must be a real directory");
   client ||= await createHostingClient();
-  const files = await activeFiles(client, `sites/${site}/versions/${previousVersion}`);
+  const details = {};
+  const files = await metrics.measure("hosting.historical_enumeration", async () => {
+    const result = await activeFiles(client, `sites/${site}/versions/${previousVersion}`);
+    details.files = result.size; return result;
+  }, details);
   const historical = [...files.keys()].filter((name) => /^\/omics\/(?:releases|sources)\//.test(name));
   const checkedDirectories = new Set([output]);
-  await pool(historical, 6, async (name) => {
+  await metrics.measure("hosting.historical_presence", () => pool(historical, 6, async (name) => {
     let current = output;
     const parts = name.slice(1).split("/");
     try {
@@ -206,7 +211,7 @@ export async function assertHistoricalDownloadsPresent({ previousVersion, site =
     } catch {
       throw new Error(`Full Hosting publication would remove or replace an unsafe historical download: ${name}. Archive the published release/source with verified checksums and restore it into out before retrying; do not bypass this guard.`);
     }
-  });
+  }), { files: historical.length });
   return historical.length;
 }
 
@@ -215,10 +220,10 @@ export async function assertHistoricalDownloadsPresent({ previousVersion, site =
  * beforeRelease and onReleaseAttempt are mandatory: the transaction owns live drift checks
  * and rollback. A failure before onReleaseAttempt must never roll back another publication.
  * Official API: https://firebase.google.com/docs/hosting/api-deploy
- * @param {{previousVersion: string, site?: string, root?: string, client?: HostingClient, beforeRelease: () => Promise<unknown>, onReleaseAttempt: () => unknown, concurrency?: number, pollAttempts?: number, pollIntervalMs?: number, sleep?: (ms: number) => Promise<void>}} options
+ * @param {{previousVersion: string, site?: string, root?: string, client?: HostingClient, beforeRelease: () => Promise<unknown>, onReleaseAttempt: () => unknown, concurrency?: number, pollAttempts?: number, pollIntervalMs?: number, sleep?: (ms: number) => Promise<void>, metrics?: ReturnType<typeof createDeploymentMetrics>}} options
  */
 export async function deployWebHosting({ previousVersion, site = "rewire-it", root = process.cwd(), client,
-  beforeRelease, onReleaseAttempt, concurrency = 16, pollAttempts = 120, pollIntervalMs = 1000, sleep = pause }) {
+  beforeRelease, onReleaseAttempt, concurrency = 16, pollAttempts = 120, pollIntervalMs = 1000, sleep = pause, metrics = createDeploymentMetrics() }) {
   requireCondition(ID.test(site) && typeof site === "string" && typeof previousVersion === "string" && ID.test(previousVersion),
     "Invalid Hosting site or previous version");
   requireCondition(typeof beforeRelease === "function" && typeof onReleaseAttempt === "function", "Release guard callbacks are required");
@@ -226,23 +231,35 @@ export async function deployWebHosting({ previousVersion, site = "rewire-it", ro
     Number.isInteger(pollAttempts) && pollAttempts >= 1 && pollAttempts <= 600 &&
     Number.isFinite(pollIntervalMs) && pollIntervalMs >= 0 && pollIntervalMs <= 10_000, "Invalid Hosting bounds");
   root = path.resolve(root);
-  const files = await uiFiles(root);
+  const inventory = {};
+  const files = await metrics.measure("hosting.enumeration", async () => {
+    const result = await uiFiles(root); inventory.files = result.length;
+    inventory.bytes = result.reduce((sum, file) => sum + file.bytes, 0); return result;
+  }, inventory);
   const workspace = path.join(root, "workbench");
   await mkdir(workspace, { recursive: true });
   requireCondition((await lstat(workspace)).isDirectory(), "workbench must be a real directory");
   const staging = await mkdtemp(path.join(workspace, "hosting-web-"));
   try {
-    await pool(files, concurrency, async (file, index) => {
+    const compression = { ...inventory, compressed_bytes: 0 };
+    await metrics.measure("hosting.compression_hashing", () => pool(files, concurrency, async (file, index) => {
       file.compressed = path.join(staging, `${index}.gz`);
       const digest = createHash("sha256");
       const hashStream = new Transform({ transform(chunk, _encoding, callback) { digest.update(chunk); callback(null, chunk); } });
       await pipeline(createReadStream(file.source, { flags: constants.O_RDONLY | constants.O_NOFOLLOW }),
         createGzip({ level: 9 }), hashStream, createWriteStream(file.compressed, { flags: "wx", mode: 0o600 }));
       file.hash = digest.digest("hex");
-    });
+      compression.compressed_bytes += (await stat(file.compressed)).size;
+    }), compression);
     client ||= await createHostingClient();
     const source = `sites/${site}/versions/${previousVersion}`;
-    const original = await activeFiles(client, source);
+    const enumerate = (version) => {
+      const details = {};
+      return metrics.measure("hosting.remote_enumeration", async () => {
+        const result = await activeFiles(client, version); details.files = result.size; return result;
+      }, details);
+    };
+    const original = await enumerate(source);
     const retained = new Map([...original].filter(([name]) => name.startsWith("/omics/")));
     const managed = new Map([...original].filter(([name]) => MANAGED_FILES.has(name)));
     requireCondition(files.every((file) => !file.path.startsWith("/__/")), "UI cannot overwrite Firebase's reserved paths");
@@ -252,20 +269,23 @@ export async function deployWebHosting({ previousVersion, site = "rewire-it", ro
       if (release) requireCondition(retained.has(`/omics/releases/${release}/manifest.json`),
         "Source version lacks a historical release manifest");
     }
-    let operation = await client.request({ method: "POST", url: `${API}sites/${site}/versions:clone`,
-      json: { sourceVersion: source, finalize: false, include: { regexes: ["^/omics/.*$"] } }, retry: false });
-    for (let attempts = 0; !operation.done && attempts < pollAttempts; attempts++) {
-      requireCondition(typeof operation.name === "string" &&
-        /^projects\/[a-zA-Z0-9_-]+\/operations\/[a-zA-Z0-9_-]+$/.test(operation.name), "Invalid clone operation identity");
-      await sleep(pollIntervalMs);
-      operation = await client.request({ method: "GET", url: `${API}${operation.name}` });
-    }
-    requireCondition(operation.done === true && !operation.error, "Hosting clone failed or timed out");
+    const operation = await metrics.measure("hosting.clone", async () => {
+      let operation = await client.request({ method: "POST", url: `${API}sites/${site}/versions:clone`,
+        json: { sourceVersion: source, finalize: false, include: { regexes: ["^/omics/.*$"] } }, retry: false });
+      for (let attempts = 0; !operation.done && attempts < pollAttempts; attempts++) {
+        requireCondition(typeof operation.name === "string" &&
+          /^projects\/[a-zA-Z0-9_-]+\/operations\/[a-zA-Z0-9_-]+$/.test(operation.name), "Invalid clone operation identity");
+        await sleep(pollIntervalMs);
+        operation = await client.request({ method: "GET", url: `${API}${operation.name}` });
+      }
+      requireCondition(operation.done === true && !operation.error, "Hosting clone failed or timed out");
+      return operation;
+    });
     const version = versionName(operation.response?.name, site);
     requireCondition(version !== source && operation.response.status === "CREATED",
     "Clone did not return a new same-site CREATED version");
     const preserved = new Map([...retained, ...managed]);
-    const cloned = await activeFiles(client, version);
+    const cloned = await enumerate(version);
     requireCondition([...cloned].every(([name, hash]) => preserved.get(name) === hash), "Clone contains an unexpected file or changed hash");
     // A real CREATED clone can expose only a subset of the source's paths. Explicitly
     // register every retained mapping: these hashes already exist in this same site,
@@ -273,12 +293,12 @@ export async function deployWebHosting({ previousVersion, site = "rewire-it", ro
     const retainedEntries = [...retained];
     for (let i = 0; i < retainedEntries.length; i += 1000) {
       const batch = retainedEntries.slice(i, i + 1000);
-      const result = await client.request({ method: "POST", url: `${API}${version}:populateFiles`,
-        json: { files: Object.fromEntries(batch) } });
+      const result = await metrics.measure("hosting.populate", () => client.request({ method: "POST", url: `${API}${version}:populateFiles`,
+        json: { files: Object.fromEntries(batch) } }), { files: batch.length });
       requireCondition(requiredUploads(result, version, new Set(batch.map(([, hash]) => hash))).length === 0,
         "Previously published history requires an upload; aborting without changing live Hosting");
     }
-    equalFiles(preserved, await activeFiles(client, version));
+    equalFiles(preserved, await enumerate(version));
     // Each populate operation adds mappings. No stale UI is cloned, and no /omics mapping is overwritten.
     const batches = [];
     for (let i = 0; i < files.length; i += 1000) batches.push(files.slice(i, i + 1000));
@@ -286,21 +306,23 @@ export async function deployWebHosting({ previousVersion, site = "rewire-it", ro
     const uploaded = new Set();
     for (const batch of batches) {
       const hashes = new Map(batch.map((file) => [file.hash, file.compressed]));
-      const result = await client.request({ method: "POST", url: `${API}${version}:populateFiles`,
-        json: { files: Object.fromEntries(batch.map((file) => [file.path, file.hash])) } });
+      const result = await metrics.measure("hosting.populate", () => client.request({ method: "POST", url: `${API}${version}:populateFiles`,
+        json: { files: Object.fromEntries(batch.map((file) => [file.path, file.hash])) } }), { files: batch.length });
       const requested = requiredUploads(result, version, hashes);
-      await pool(requested.filter((hash) => !uploaded.has(hash)), concurrency, async (hash) => {
+      const upload = { uploaded_bytes: 0, uploaded_files: 0 };
+      await metrics.measure("hosting.upload", () => pool(requested.filter((hash) => !uploaded.has(hash)), concurrency, async (hash) => {
         await client.request({ method: "POST", url: `${result.uploadUrl}/${hash}`, bodyFile: hashes.get(hash) });
         uploaded.add(hash);
-      });
+        upload.uploaded_files++; upload.uploaded_bytes += (await stat(hashes.get(hash))).size;
+      }), upload);
     }
     const expected = new Map([...preserved, ...files.map((file) => [file.path, file.hash])]);
-    equalFiles(expected, await activeFiles(client, version));
-    const finalized = await client.request({ method: "PATCH", url: `${API}${version}?updateMask=status`, json: { status: "FINALIZED" } });
+    equalFiles(expected, await enumerate(version));
+    const finalized = await metrics.measure("hosting.finalize", () => client.request({ method: "PATCH", url: `${API}${version}?updateMask=status`, json: { status: "FINALIZED" } }));
     requireCondition(versionName(finalized.name, site) === version && finalized.status === "FINALIZED", "Hosting finalization failed");
-    await beforeRelease();
+    await metrics.measure("hosting.release_guard", beforeRelease);
     await onReleaseAttempt();
-    const release = await client.request({ method: "POST", url: `${API}sites/${site}/releases?${new URLSearchParams({ versionName: version })}`, retry: false });
+    const release = await metrics.measure("hosting.activation", () => client.request({ method: "POST", url: `${API}sites/${site}/releases?${new URLSearchParams({ versionName: version })}`, retry: false }));
     requireCondition(versionName(release.version?.name, site) === version, "Hosting release response mismatch");
     return version;
   } finally { await rm(staging, { recursive: true, force: true }); }

@@ -11,10 +11,6 @@ on:
         default: false
 permissions:
   contents: read
-  id-token: write
-concurrency:
-  group: database-${{ github.ref }}
-  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 jobs:
   # Fast pull_request path: a small deterministic sample of pages (one fixed
   # published use case plus representatives of every entity kind and legacy
@@ -26,8 +22,11 @@ jobs:
   # full-history disk cleanup, production receipt/live-network planning,
   # Cloudflare packaging/upload and Firebase/Java/workerd emulators that only
   # matter for an actual publish — those stay on the `checks` job below,
-  # unchanged, for push to main and workflow_dispatch.
+  # for push to main and workflow_dispatch. Publication is a separate serialized job.
   pr-tests:
+    concurrency:
+      group: database-pr-tests-${{ github.ref }}
+      cancel-in-progress: true
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     timeout-minutes: 5
@@ -92,6 +91,9 @@ jobs:
           echo "pr-tests elapsed: $(( $(date +%s) - ${{ steps.start.outputs.epoch }} ))s (budget 300s)"
 
   pr-smoke:
+    concurrency:
+      group: database-pr-smoke-${{ github.ref }}
+      cancel-in-progress: true
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     timeout-minutes: 5
@@ -171,6 +173,9 @@ jobs:
           echo "pr-smoke elapsed: $(( $(date +%s) - ${{ steps.start.outputs.epoch }} ))s (budget 300s)"
 
   pr-api:
+    concurrency:
+      group: database-pr-api-${{ github.ref }}
+      cancel-in-progress: true
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     timeout-minutes: 5
@@ -202,12 +207,18 @@ jobs:
           echo "pr-api elapsed: $(( $(date +%s) - ${{ steps.start.outputs.epoch }} ))s (budget 300s)"
 
   checks:
+    concurrency:
+      group: database-build-${{ github.ref }}
+      cancel-in-progress: true
+    outputs:
+      mode: ${{ steps.plan.outputs.mode }}
     if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     # Several steps load the whole catalogue into memory: the static export
     # prerenders a page per record, and the export checks read the release
     # bundles. That needs more heap than Node allows itself by default.
     env:
+      DEPLOYMENT_METRICS_FILE: workbench/build-metrics.jsonl
       NODE_OPTIONS: --max-old-space-size=8192
       FIREBASE_PROJECT_ID: ${{ vars.FIREBASE_PROJECT_ID }}
       OMICS_CONTRIBUTIONS_ENABLED: ${{ vars.OMICS_CONTRIBUTIONS_ENABLED || 'false' }}
@@ -341,7 +352,7 @@ jobs:
           key: ${{ steps.data-cache.outputs.cache-primary-key }}
       - name: Hydrate and verify the pinned release
         run: |
-          if [ "${{ steps.plan.outputs.mode }}" = web ]; then npm run data:prepare -- --current-only; else npm run data:prepare; fi
+          if [ "${{ steps.plan.outputs.mode }}" = web ]; then node scripts/deployment-metrics.mjs run hydration -- npm run data:prepare -- --current-only; else node scripts/deployment-metrics.mjs run hydration -- npm run data:prepare; fi
       - name: Release the temporary compressed producer checkout
         id: release-source
         # Runs after the authenticated cache save and full hydration above. Re-runs the full native
@@ -365,9 +376,9 @@ jobs:
           df -i .
           # After the checkout is released, hydration has already passed; npm run
           # build would hydrate again from the removed source.
-          if [ "${{ steps.plan.outputs.mode }}" = web ]; then npm run build:web
-          elif [ "${{ steps.release-source.outcome }}" = success ]; then node scripts/build-static.mjs
-          else npm run build; fi
+          if [ "${{ steps.plan.outputs.mode }}" = web ]; then node scripts/deployment-metrics.mjs run rendering -- npm run build:web
+          elif [ "${{ steps.release-source.outcome }}" = success ]; then node scripts/deployment-metrics.mjs run rendering -- node scripts/build-static.mjs
+          else node scripts/deployment-metrics.mjs run rendering -- npm run build; fi
           df -h .
           df -i .
           node scripts/deployment-plan.mjs --receipt
@@ -385,7 +396,7 @@ jobs:
           df -h .
       - name: Verify exported website and release bytes
         run: |
-          if [ "${{ steps.plan.outputs.mode }}" = web ]; then npm run check:export:web; else npm run check:export; fi
+          if [ "${{ steps.plan.outputs.mode }}" = web ]; then node scripts/deployment-metrics.mjs run export_verification -- npm run check:export:web; else node scripts/deployment-metrics.mjs run export_verification -- npm run check:export; fi
         env:
           NEXT_PUBLIC_GA_ID: ${{ vars.NEXT_PUBLIC_GA_ID }}
           NEXT_PUBLIC_OMICS_CONTRIBUTIONS_ENABLED: ${{ vars.NEXT_PUBLIC_OMICS_CONTRIBUTIONS_ENABLED || 'false' }}
@@ -418,21 +429,134 @@ jobs:
           retention-days: 3
           compression-level: 0
           if-no-files-found: error
+      - name: Package checked publication without historical downloads
+        run: node scripts/deployment-metrics.mjs run artifact_pack -- node scripts/publication-artifact.mjs pack
+      - name: Retain checked publication for the serialized publisher
+        uses: actions/upload-artifact@v4
+        with:
+          name: checked-publication-${{ github.sha }}-${{ github.run_attempt }}
+          path: workbench/publication
+          include-hidden-files: true
+          retention-days: 1
+          compression-level: 0
+          if-no-files-found: error
+      - name: Summarize build timings
+        if: always()
+        run: node scripts/deployment-metrics.mjs summary
+      - name: Retain build timing receipts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-timings-${{ github.run_id }}-${{ github.run_attempt }}
+          path: workbench/build-metrics.jsonl
+          retention-days: 7
+          if-no-files-found: ignore
+
+  publish:
+    needs: checks
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && vars.FIREBASE_DEPLOY_ENABLED == 'true' && vars.FIREBASE_BACKEND_DEPLOY_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    concurrency:
+      # Only this job writes production. Never cancel a transaction in progress.
+      group: database-publication
+      cancel-in-progress: false
+    permissions:
+      contents: read
+      id-token: write
+    env:
+      DEPLOYMENT_METRICS_FILE: workbench/publication-metrics.jsonl
+      NODE_OPTIONS: --max-old-space-size=8192
+      FIREBASE_PROJECT_ID: ${{ vars.FIREBASE_PROJECT_ID }}
+      OMICS_CONTRIBUTIONS_ENABLED: ${{ vars.OMICS_CONTRIBUTIONS_ENABLED || 'false' }}
+      OMICS_MAIL_ENABLED: ${{ vars.OMICS_MAIL_ENABLED || 'false' }}
+      NEXT_PUBLIC_OMICS_CONTRIBUTIONS_ENABLED: ${{ vars.NEXT_PUBLIC_OMICS_CONTRIBUTIONS_ENABLED || 'false' }}
+      NEXT_PUBLIC_FIREBASE_API_KEY: ${{ vars.NEXT_PUBLIC_FIREBASE_API_KEY }}
+      NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: ${{ vars.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN }}
+      NEXT_PUBLIC_FIREBASE_PROJECT_ID: ${{ vars.NEXT_PUBLIC_FIREBASE_PROJECT_ID }}
+      NEXT_PUBLIC_FIREBASE_APP_ID: ${{ vars.NEXT_PUBLIC_FIREBASE_APP_ID }}
+      NEXT_PUBLIC_GA_ID: ${{ vars.NEXT_PUBLIC_GA_ID }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - uses: actions/download-artifact@v4
+        with:
+          name: checked-publication-${{ github.sha }}-${{ github.run_attempt }}
+          path: workbench/checked-publication
+      - name: Verify source and artifact before hydration
+        id: artifact
+        run: node scripts/publication-artifact.mjs verify workbench/checked-publication
+      - name: Restore the checked publication plan
+        run: |
+          cp workbench/checked-publication/workbench/deployment-plan.json workbench/deployment-plan.json
+          node scripts/publication-queue-metrics.mjs
+      - name: Reject superseded or stale publication before setup
+        id: preflight
+        run: node scripts/publication-preflight.mjs
+      - name: Reserve full-release space
+        if: steps.preflight.outputs.publish == 'true' && steps.artifact.outputs.mode == 'full'
+        run: node scripts/prepare-runner-space.mjs
+      - name: Install pinned publication dependencies
+        if: steps.preflight.outputs.publish == 'true'
+        run: node scripts/deployment-metrics.mjs run dependencies -- npm ci --no-audit --no-fund
+      - name: Read full-release data pin
+        if: steps.preflight.outputs.publish == 'true' && steps.artifact.outputs.mode == 'full'
+        id: data-pin
+        run: node -e 'require("fs").appendFileSync(process.env.GITHUB_OUTPUT, "revision="+require("./benchmark-data.lock.json").revision+"\n")'
+      - name: Restore pinned compressed full-release checkout
+        id: data-cache
+        if: steps.preflight.outputs.publish == 'true' && steps.artifact.outputs.mode == 'full'
+        uses: actions/cache/restore@v4
+        with:
+          path: workbench/benchmark-data
+          key: benchmark-data-${{ steps.data-pin.outputs.revision }}
+      - name: Check out missing pinned full-release data
+        if: steps.preflight.outputs.publish == 'true' && steps.artifact.outputs.mode == 'full' && steps.data-cache.outputs.cache-hit != 'true'
+        uses: actions/checkout@v4
+        with:
+          repository: rewire-bio/rewire-benchmark-data
+          ref: ${{ steps.data-pin.outputs.revision }}
+          persist-credentials: false
+          path: workbench/benchmark-data
+          sparse-checkout: |
+            website
+            data/omics/releases
+      - name: Hydrate full historical downloads without rendering pages again
+        if: steps.preflight.outputs.publish == 'true' && steps.artifact.outputs.mode == 'full'
+        run: node scripts/deployment-metrics.mjs run publication_hydration -- npm run data:prepare
+      - name: Release compressed full-release source after verification
+        if: steps.preflight.outputs.publish == 'true' && steps.artifact.outputs.mode == 'full'
+        run: node scripts/release-prepared-data-checkout.mjs
+      - name: Restore checked UI and current release identity
+        if: steps.preflight.outputs.publish == 'true'
+        run: node scripts/deployment-metrics.mjs run artifact_restore -- node scripts/publication-artifact.mjs restore workbench/checked-publication
+      - name: Prepare verified Cloudflare subset
+        if: steps.preflight.outputs.publish == 'true'
+        run: npm run prepare:cloudflare && node scripts/check-cloudflare-local.mjs
+      - name: Build the pinned publication API tools
+        if: steps.preflight.outputs.publish == 'true'
+        run: npm ci --prefix services/omics --no-audit --no-fund && npm --prefix services/omics run build && npm --prefix services/omics run check:functions:load
+      - name: Recheck source and live publication immediately before writes
+        id: final-preflight
+        if: steps.preflight.outputs.publish == 'true'
+        run: node scripts/publication-preflight.mjs --refresh-ui-base
       - name: Authenticate to Google
-        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && vars.FIREBASE_DEPLOY_ENABLED == 'true' && vars.FIREBASE_BACKEND_DEPLOY_ENABLED == 'true'
+        if: steps.final-preflight.outputs.publish == 'true' && github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && vars.FIREBASE_DEPLOY_ENABLED == 'true' && vars.FIREBASE_BACKEND_DEPLOY_ENABLED == 'true'
         uses: google-github-actions/auth@v2
         with:
           workload_identity_provider: ${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER }}
           service_account: ${{ vars.GCP_DEPLOY_SERVICE_ACCOUNT }}
       - name: Check independent backend deployment state
         id: backend
-        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && vars.FIREBASE_DEPLOY_ENABLED == 'true' && vars.FIREBASE_BACKEND_DEPLOY_ENABLED == 'true'
+        if: steps.final-preflight.outputs.publish == 'true' && github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && vars.FIREBASE_DEPLOY_ENABLED == 'true' && vars.FIREBASE_BACKEND_DEPLOY_ENABLED == 'true'
         run: node scripts/backend-deployment.mjs
         env:
           GCLOUD_PROJECT: ${{ vars.FIREBASE_PROJECT_ID }}
           NODE_ENV: production
       - name: Deploy reviewed API and private Firestore rules
-        if: steps.backend.outputs.required == 'true' && github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && vars.FIREBASE_DEPLOY_ENABLED == 'true' && vars.FIREBASE_BACKEND_DEPLOY_ENABLED == 'true'
+        if: steps.final-preflight.outputs.publish == 'true' && steps.backend.outputs.required == 'true' && github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && vars.FIREBASE_DEPLOY_ENABLED == 'true' && vars.FIREBASE_BACKEND_DEPLOY_ENABLED == 'true'
         run: |
           node scripts/backend-deployment.mjs --begin
           node scripts/configure-contribution-deployment.mjs
@@ -445,22 +569,22 @@ jobs:
           OMICS_CONTRIBUTIONS_ENABLED: ${{ vars.OMICS_CONTRIBUTIONS_ENABLED || 'false' }}
           OMICS_MAIL_ENABLED: ${{ vars.OMICS_MAIL_ENABLED || 'false' }}
       - name: Publish catalogue and website with rollback
-        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && vars.FIREBASE_DEPLOY_ENABLED == 'true' && vars.FIREBASE_BACKEND_DEPLOY_ENABLED == 'true'
-        run: node scripts/backend-deployment.mjs --assert && node scripts/deploy-catalogue.mjs
+        if: steps.final-preflight.outputs.publish == 'true' && github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && vars.FIREBASE_DEPLOY_ENABLED == 'true' && vars.FIREBASE_BACKEND_DEPLOY_ENABLED == 'true'
+        run: node scripts/backend-deployment.mjs --assert && node scripts/deployment-metrics.mjs run catalogue_publication -- node scripts/deploy-catalogue.mjs
         env:
           GCLOUD_PROJECT: ${{ vars.FIREBASE_PROJECT_ID }}
           NODE_ENV: production
           OMICS_CONTRIBUTIONS_ENABLED: ${{ vars.OMICS_CONTRIBUTIONS_ENABLED || 'false' }}
       - name: Publish Cloudflare web frontend with rollback
-        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && vars.CLOUDFLARE_DEPLOY_ENABLED == 'true' && vars.FIREBASE_DEPLOY_ENABLED == 'true' && vars.FIREBASE_BACKEND_DEPLOY_ENABLED == 'true'
-        run: node scripts/deploy-cloudflare.mjs
+        if: steps.final-preflight.outputs.publish == 'true' && github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && vars.CLOUDFLARE_DEPLOY_ENABLED == 'true' && vars.FIREBASE_DEPLOY_ENABLED == 'true' && vars.FIREBASE_BACKEND_DEPLOY_ENABLED == 'true'
+        run: node scripts/deployment-metrics.mjs run cloudflare_publication -- node scripts/deploy-cloudflare.mjs
         env:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_PUBLIC_ORIGIN: ${{ vars.CLOUDFLARE_PUBLIC_ORIGIN }}
           OMICS_CONTRIBUTIONS_ENABLED: ${{ vars.OMICS_CONTRIBUTIONS_ENABLED || 'false' }}
       - name: Smoke test deployed public website
-        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && vars.CLOUDFLARE_DEPLOY_ENABLED == 'true' && vars.FIREBASE_DEPLOY_ENABLED == 'true' && vars.FIREBASE_BACKEND_DEPLOY_ENABLED == 'true'
+        if: steps.final-preflight.outputs.publish == 'true' && github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && vars.CLOUDFLARE_DEPLOY_ENABLED == 'true' && vars.FIREBASE_DEPLOY_ENABLED == 'true' && vars.FIREBASE_BACKEND_DEPLOY_ENABLED == 'true'
         run: |
           npm run smoke:deployment -- "$SMOKE_ORIGIN"
           npx playwright install --with-deps chromium
@@ -470,3 +594,14 @@ jobs:
       - name: Remove generated service environment
         if: always()
         run: rm -f services/omics/.env
+      - name: Summarize publication timings
+        if: always()
+        run: node scripts/deployment-metrics.mjs summary
+      - name: Retain publication timing receipts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: publication-timings-${{ github.run_id }}-${{ github.run_attempt }}
+          path: workbench/publication-metrics.jsonl
+          retention-days: 7
+          if-no-files-found: ignore

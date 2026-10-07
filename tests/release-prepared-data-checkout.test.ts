@@ -91,6 +91,6 @@ describe('release only a verified CI temporary data checkout', () => {
     const auth = workflow.indexOf('- name: Authenticate the compressed checkout before caching');
     expect(auth).toBeGreaterThan(0); expect(auth).toBeLessThan(cache);
     expect(workflow.slice(release)).toContain('steps.release-source.outcome');
-    expect(workflow.slice(release)).toContain('then node scripts/build-static.mjs');
+    expect(workflow.slice(release)).toContain('then node scripts/deployment-metrics.mjs run rendering -- node scripts/build-static.mjs');
   });
 });

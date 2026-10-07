@@ -1,3 +1,4 @@
+import { measureDeploymentStage as measure } from "./deployment-metrics.mjs";
 import { spawn } from "node:child_process";
 import { readFile } from "node:fs/promises";
 import { liveAcceptanceProfile } from "./deployment-plan.mjs";
@@ -34,16 +35,16 @@ function run(args) {
 }
 // Bootstrap once with Wrangler OAuth before enabling CI. Requiring a rollback
 // target prevents a failed first upload from replacing the old production site.
-const previous = (await api()).deployments?.[0];
+const previous = (await measure("cloudflare.capture", () => api())).deployments?.[0];
 if (!previous?.versions?.length) throw new Error("Bootstrap and verify the Worker before enabling automated deployment");
 try {
-  await run(["npx", "--no-install", "wrangler", "deploy"]);
-  await run(["node", "scripts/check-hosting-http.mjs", origin]);
-  await run(["node", "scripts/check-cloudflare-ranges.mjs", origin]);
-  await run(["node", "scripts/check-live-catalogue.mjs", origin, "--website", acceptanceArgument]);
+  await measure("cloudflare.upload_activation", () => run(["npx", "--no-install", "wrangler", "deploy"]));
+  await measure("cloudflare.http_verification", () => run(["node", "scripts/check-hosting-http.mjs", origin]));
+  await measure("cloudflare.range_verification", () => run(["node", "scripts/check-cloudflare-ranges.mjs", origin]));
+  await measure("cloudflare.catalogue_verification", () => run(["node", "scripts/check-live-catalogue.mjs", origin, "--website", acceptanceArgument]));
 } catch (error) {
   try {
-    await api("POST", { strategy: "percentage", versions: previous.versions });
+    await measure("cloudflare.rollback", () => api("POST", { strategy: "percentage", versions: previous.versions }));
   } catch (rollbackError) {
     throw new AggregateError([error, rollbackError], "Cloudflare deploy failed and rollback requires operator attention");
   }

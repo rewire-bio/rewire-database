@@ -1,0 +1,38 @@
+name: Public deployment smoke
+
+on:
+  workflow_dispatch:
+    inputs:
+      origin:
+        description: Public deployment origin to verify
+        required: true
+        default: https://benchmarks.rewirebio.io
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      SMOKE_ORIGIN: ${{ inputs.origin }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - run: npm run smoke:deployment -- "$SMOKE_ORIGIN"
+      - run: npx playwright install --with-deps chromium
+      - run: npm run smoke:browser
+      - name: Retain browser diagnostics on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: browser-smoke-failure
+          path: scratch/browser-smoke/
+          if-no-files-found: ignore
+          retention-days: 3

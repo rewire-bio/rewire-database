@@ -86,3 +86,12 @@ Vitest discovery and the UI coverage denominator.
 For this change, test collection was verified without launching Playwright
 locally; equivalent desktop and mobile journeys were reviewed through CUA.
 The automated browser execution takes place in deployment CI.
+
+For an operator deployment while automatic Cloudflare publication is disabled,
+run the `Public deployment smoke` workflow after publishing the checked artifact:
+
+```sh
+gh workflow run deployment-smoke.yml -f origin=https://benchmarks.rewirebio.io
+```
+
+This runs the same HTTP and browser checks without rebuilding or publishing.

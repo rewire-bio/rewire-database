@@ -127,8 +127,12 @@ export async function buildStatic({ root = process.cwd(), build, signal, current
 export function runNextBuild({ root, signal }) {
   signal?.throwIfAborted();
   return new Promise((resolve, reject) => {
-    const child = spawn(process.execPath, [path.join(root, 'node_modules/next/dist/bin/next'), 'build'], {
+    const child = spawn(process.execPath, [
+      '--require', path.join(root, 'scripts/prerender-export-copy.cjs'),
+      path.join(root, 'node_modules/next/dist/bin/next'), 'build',
+    ], {
       cwd: root, stdio: 'inherit', detached: process.platform !== 'win32',
+      env: { ...process.env, REWIRE_PRERENDER_EXPORT_ROOT: fs.realpathSync(root) },
     });
     let signalError;
     const abort = () => {

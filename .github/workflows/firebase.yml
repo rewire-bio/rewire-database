@@ -312,15 +312,43 @@ jobs:
       - name: Reserve build space after the compressed dependency checkout
         if: runner.environment == 'github-hosted'
         run: node scripts/prepare-runner-space.mjs --after-dependencies
-      - name: Hydrate and verify the pinned release
+      - name: Authenticate the compressed checkout before caching
+        if: steps.plan.outputs.mode == 'full'
         run: |
-          if [ "${{ steps.plan.outputs.mode }}" = web ]; then npm run data:prepare -- --current-only; else npm run data:prepare; fi
-      - name: Cache verified compressed data
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          import path from 'node:path';
+          import crypto from 'node:crypto';
+          import { execFileSync } from 'node:child_process';
+          const root = fs.realpathSync(process.cwd());
+          const source = path.join(root, 'workbench/benchmark-data');
+          for (const name of ['workbench', 'workbench/benchmark-data', 'workbench/benchmark-data/.git']) {
+            const file = path.join(root, name), stat = fs.lstatSync(file);
+            if (stat.isSymbolicLink() || !stat.isDirectory() || fs.realpathSync(file) !== file) throw Error('Unsafe producer checkout');
+          }
+          const pin = JSON.parse(fs.readFileSync('benchmark-data.lock.json'));
+          const git = args => execFileSync('git', args, { cwd: source, encoding: 'utf8' }).trim();
+          if (pin.repository !== 'rewire-bio/rewire-benchmark-data' || git(['rev-parse', 'HEAD']) !== pin.revision || git(['status', '--porcelain', '--untracked-files=all'])) throw Error('Producer clone must be clean and at the reviewed pin');
+          if (!['https://github.com/rewire-bio/rewire-benchmark-data', 'https://github.com/rewire-bio/rewire-benchmark-data.git'].includes(git(['remote', 'get-url', 'origin']))) throw Error('Unexpected producer remote');
+          const bytes = fs.readFileSync(path.join(source, 'website/manifest.json'));
+          if (crypto.createHash('sha256').update(bytes).digest('hex') !== pin.manifest_sha256 || JSON.parse(bytes).release_id !== pin.release_id) throw Error('Pinned package identity mismatch');
+          NODE
+      - name: Cache authenticated compressed data before expansion
         if: steps.plan.outputs.mode == 'full' && steps.data-cache.outputs.cache-hit != 'true'
         uses: actions/cache/save@v4
         with:
           path: workbench/benchmark-data
           key: ${{ steps.data-cache.outputs.cache-primary-key }}
+      - name: Hydrate and verify the pinned release
+        run: |
+          if [ "${{ steps.plan.outputs.mode }}" = web ]; then npm run data:prepare -- --current-only; else npm run data:prepare; fi
+      - name: Release the temporary compressed producer checkout
+        id: release-source
+        # Runs after the authenticated cache save and full hydration above. Re-runs the full native
+        # preparation before deleting only workbench/benchmark-data; hydrated
+        # data and the consumer Git stay in place.
+        if: steps.plan.outputs.mode == 'full' && runner.environment == 'github-hosted'
+        run: node scripts/release-prepared-data-checkout.mjs
       - name: Cache verified current-release files
         if: steps.plan.outputs.mode == 'web' && steps.current-data-cache.outputs.cache-hit != 'true'
         uses: actions/cache/save@v4
@@ -333,7 +361,11 @@ jobs:
         run: |
           node scripts/check-analytics-config.mjs
           node scripts/configure-contribution-deployment.mjs --validate-only
-          if [ "${{ steps.plan.outputs.mode }}" = web ]; then npm run build:web; else npm run build; fi
+          # After the checkout is released, hydration has already passed; npm run
+          # build would hydrate again from the removed source.
+          if [ "${{ steps.plan.outputs.mode }}" = web ]; then npm run build:web
+          elif [ "${{ steps.release-source.outcome }}" = success ]; then node scripts/build-static.mjs
+          else npm run build; fi
           node scripts/deployment-plan.mjs --receipt
       - run: npm run typecheck
       - name: Save Next compilation cache before cleanup

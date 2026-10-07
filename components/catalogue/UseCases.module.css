@@ -84,6 +84,12 @@
 .inputs { margin: 0 0 14px; font-size: 14px; line-height: 1.5; color: var(--ink-2); }
 .inputs li + li { margin-top: 4px; }
 .cardFoot { margin: auto 0 0; padding-top: 12px; border-top: 1px solid var(--line); font-size: 13px; line-height: 1.5; color: var(--ink-3); }
+.cardArticles { margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--line); font-size: 14px; line-height: 1.55; overflow-wrap: anywhere; }
+.moreArticles { display: block; margin-top: 8px; }
+.section .articleList { list-style: none; margin: 0; padding: 0; }
+.section .articleList > li { max-width: none; margin: 0; padding: 18px 0; border-top: 1px solid var(--line); }
+:global(.content) .articleList h3 { margin: 0 0 8px; font-size: 18px; line-height: 1.4; }
+.articleList p { margin: 0; color: var(--ink-2); }
 
 /* Shared evidence components */
 .fields { display: grid; grid-template-columns: minmax(120px, 180px) minmax(0, 1fr); gap: 12px 24px; margin: 18px 0; }

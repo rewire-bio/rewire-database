@@ -3,6 +3,8 @@ import { notFound } from "next/navigation";
 import PageHeader from "@/components/PageHeader";
 import UseCaseEvidence, { UseCaseCitations, UseCaseReview, type ExecutionLink } from "@/components/catalogue/UseCaseEvidence";
 import UseCaseCollectionPlan from "@/components/catalogue/UseCaseCollectionPlan";
+import UseCaseArticles from "@/components/catalogue/UseCaseArticles";
+import { relatedUseCaseArticles } from "@/lib/use-case-articles";
 import { UseCaseReturn } from "@/components/catalogue/UseCaseNavigation";
 import SectionNavigation from "@/components/catalogue/SectionNavigation";
 import { buildUseCases, fullUseCaseDetail } from "@/lib/use-cases-build";
@@ -56,6 +58,7 @@ export default function UseCasePage({ params }: { params: Params }) {
     { id: "evidence", label: "Evaluated evidence" },
     { id: "gaps", label: "Limitations and missing evidence" },
     ...(entry.collection_plan ? [{ id: "collection-plan", label: "Evidence collection plan" }] : []),
+    ...(relatedUseCaseArticles(entry.slug).length ? [{ id: "related-articles", label: "Related articles" }] : []),
     { id: "sources", label: "Sources and review" },
   ];
   const heading = (id: string) => sections.find((section) => section.id === id)!.label;
@@ -111,6 +114,7 @@ export default function UseCasePage({ params }: { params: Params }) {
           <p><a href="/contribute/">Contribute evidence or propose a correction</a></p>
         </section>
         {entry.collection_plan && <UseCaseCollectionPlan plan={entry.collection_plan} summary={summary} />}
+        <UseCaseArticles slug={entry.slug} />
         <section id="sources" className={styles.section}>
           <h2>{heading("sources")}</h2><UseCaseReview review={entry.review} />
           <UseCaseCitations citations={entry.citations} sources={detail.sources} useCasePath={path} />

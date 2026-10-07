@@ -1,6 +1,7 @@
 import type fs from 'node:fs';
 export const MIN_FREE_BYTES: number;
 export const AFTER_DEPENDENCIES_FREE_BYTES: number;
+export const GUARDED_CHILDREN: Readonly<Record<string, readonly string[]>>;
 export const UNUSED_TOOL_DIRECTORIES: readonly string[];
 export const UNUSED_RUNNER_IMAGES: readonly string[];
 export function prepareRunnerSpace(options?: {

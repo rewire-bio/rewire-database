@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { AFTER_DEPENDENCIES_FREE_BYTES, MIN_FREE_BYTES, UNUSED_TOOL_DIRECTORIES, UNUSED_RUNNER_IMAGES, prepareRunnerSpace } from '../scripts/prepare-runner-space.mjs';
+import { AFTER_DEPENDENCIES_FREE_BYTES, GUARDED_CHILDREN, MIN_FREE_BYTES, UNUSED_TOOL_DIRECTORIES, UNUSED_RUNNER_IMAGES, prepareRunnerSpace } from '../scripts/prepare-runner-space.mjs';
 
 const roots: string[] = [];
 const GiB = 1024 ** 3;
@@ -23,8 +23,9 @@ function fixture(initialFree = 34 * GiB, perRemoval = GiB, sizes: Record<string,
     '/usr/lib/google-cloud-sdk/bin/gcloud',
   ];
   for (const directory of UNUSED_TOOL_DIRECTORIES) {
-    fs.mkdirSync(map(directory), { recursive: true });
-    fs.writeFileSync(map(`${directory}/unused-sdk`), 'disposable');
+    const child = GUARDED_CHILDREN[directory as keyof typeof GUARDED_CHILDREN]?.[0];
+    fs.mkdirSync(map(child ? `${directory}/${child}` : directory), { recursive: true });
+    fs.writeFileSync(map(`${directory}/${child ? `${child}/` : ''}unused-sdk`), 'disposable');
   }
   for (const file of preserved) {
     fs.mkdirSync(path.dirname(map(file)), { recursive: true });
@@ -132,8 +133,10 @@ describe('hosted runner space preparation', () => {
     expect(result.available).toBe(34 * GiB);
     expect(result.planned).toEqual(UNUSED_TOOL_DIRECTORIES);
     expect(host.removed).toEqual([]);
-    for (const directory of UNUSED_TOOL_DIRECTORIES)
-      expect(fs.readFileSync(host.map(`${directory}/unused-sdk`), 'utf8')).toBe('disposable');
+    for (const directory of UNUSED_TOOL_DIRECTORIES) {
+      const child = GUARDED_CHILDREN[directory as keyof typeof GUARDED_CHILDREN]?.[0];
+      expect(fs.readFileSync(host.map(`${directory}/${child ? `${child}/` : ''}unused-sdk`), 'utf8')).toBe('disposable');
+    }
   });
 
   it.each([
@@ -254,6 +257,7 @@ describe('hosted runner space preparation', () => {
     const shortfall = AFTER_DEPENDENCIES_FREE_BYTES - observedFree;
     expect(shortfall).toBe(357_928_960);
     const host = fixture(observedFree, 0, optionalSizes);
+    fs.rmSync(host.map('/opt/pipx/venvs'), { recursive: true });
     fs.mkdirSync(host.map('/usr/share/gradle-9.8.0'));
     fs.writeFileSync(host.map('/usr/share/gradle-9.8.0/unused-sdk'), 'disposable');
     const result = prepareRunnerSpace({ ...host.options, phase: 'after-dependencies' });
@@ -418,4 +422,62 @@ describe('hosted runner space preparation', () => {
     expect(() => prepareRunnerSpace(host.options)).toThrow('unexpected socket');
     expect(host.run.mock.calls.some(([program]) => program === 'docker')).toBe(false);
   });
+  it('covers the AMP checkout admission deficit with only pinned optional pipx environments', () => {
+    const observedFree = 46_974_353_408;
+    const bytes = 509_935_616;
+    const host = fixture(observedFree, 0, { '/opt/pipx/venvs': bytes });
+    expect(AFTER_DEPENDENCIES_FREE_BYTES - observedFree).toBe(270_286_848);
+    const result = prepareRunnerSpace({ ...host.options, phase: 'after-dependencies' });
+    expect(AFTER_DEPENDENCIES_FREE_BYTES).toBe(44 * GiB); expect(MIN_FREE_BYTES).toBe(45 * GiB);
+    expect(result.available).toBe(observedFree + bytes);
+    expect(result.available).toBeGreaterThanOrEqual(AFTER_DEPENDENCIES_FREE_BYTES);
+    expect(host.removed.at(-1)).toBe('/opt/pipx/venvs');
+    for (const file of host.preserved) expect(fs.readFileSync(host.map(file), 'utf8')).toBe('preserve');
+  });
+
+  it('preserves all pipx environments if an unknown package is present', () => {
+    const host = fixture(beforeCleanup(-1));
+    fs.mkdirSync(host.map('/opt/pipx/venvs/unexpected'));
+    const result = prepareRunnerSpace(host.options);
+    expect(result.planned).not.toContain('/opt/pipx/venvs');
+    expect(fs.existsSync(host.map('/opt/pipx/venvs/unexpected'))).toBe(true);
+  });
+
+  it('preserves optional pipx environments when their child inventory is inaccessible', () => {
+    const host = fixture(beforeCleanup(-1));
+    const files = { ...host.files, readdirSync: (file: string) => {
+      if (file === '/opt/pipx/venvs') throw Object.assign(new Error('permission denied'), { code: 'EACCES' });
+      return host.files.readdirSync(file);
+    } } as typeof fs;
+    const result = prepareRunnerSpace({ ...host.options, files });
+    expect(result.planned).not.toContain('/opt/pipx/venvs');
+    expect(host.log).toHaveBeenCalledWith('Preserving inaccessible optional SDK: /opt/pipx/venvs');
+  });
+
+  it('preserves pipx when the active Python resolves into a known environment', () => {
+    const host = fixture(beforeCleanup(-1));
+    const python = '/opt/pipx/venvs/ansible-core/bin/python3';
+    fs.mkdirSync(path.dirname(host.map(python)), { recursive: true }); fs.writeFileSync(host.map(python), 'active');
+    const run = vi.fn((program: string, args: string[]) => program === 'which'
+      ? host.run(program, args).replace('/opt/hostedtoolcache/Python/3.12/bin/python3', python)
+      : host.run(program, args));
+    const result = prepareRunnerSpace({ ...host.options, run });
+    expect(result.planned).not.toContain('/opt/pipx/venvs');
+    expect(fs.readFileSync(host.map(python), 'utf8')).toBe('active');
+  });
+
+  it('preserves an active pipx Python symlink as well as its system interpreter target', () => {
+    const host = fixture(beforeCleanup(-1));
+    const python = '/opt/pipx/venvs/ansible-core/bin/python3';
+    const system = '/opt/hostedtoolcache/Python/3.12/bin/python3';
+    fs.mkdirSync(path.dirname(host.map(python)), { recursive: true });
+    fs.symlinkSync(host.map(system), host.map(python));
+    const run = vi.fn((program: string, args: string[]) => program === 'which'
+      ? host.run(program, args).replace(system, python) : host.run(program, args));
+    const result = prepareRunnerSpace({ ...host.options, run });
+    expect(result.planned).not.toContain('/opt/pipx/venvs');
+    expect(fs.readFileSync(host.map(python), 'utf8')).toBe('preserve');
+    expect(fs.readFileSync(host.map(system), 'utf8')).toBe('preserve');
+  });
+
 });

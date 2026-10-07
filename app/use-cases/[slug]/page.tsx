@@ -25,7 +25,7 @@ export function generateStaticParams() {
 export function generateMetadata({ params }: { params: Params }): Metadata {
   const detail = fullUseCaseDetail(params.slug);
   if (!detail) return {};
-  const title = `${detail.use_case.title} | rewire.it`;
+  const title = `${detail.use_case.title} | rewirebio.io`;
   const description = detail.use_case.question;
   const path = `/use-cases/${detail.use_case.slug}/`;
   return { title, description, alternates: { canonical: `https://benchmarks.rewirebio.io${path}` }, ...socialMetadata({ title, description, path }) };

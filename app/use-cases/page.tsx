@@ -7,7 +7,7 @@ import { researchAreaLabel } from "@/lib/omics-browse";
 import { evidenceSummaryParts, summariseUseCaseEvidence, type EvidenceSummary } from "@/lib/use-case-summary";
 import styles from "@/components/catalogue/UseCases.module.css";
 
-const title = "Biological research use cases | rewire.it";
+const title = "Biological research use cases | rewirebio.io";
 const description = "Research and clinical research questions guide evidence gathering. Explore collection plans, reviewed model comparisons and the limits of their evidence.";
 export const metadata: Metadata = {
   title, description,

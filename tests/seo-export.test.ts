@@ -15,7 +15,7 @@ const title = "Test <model>";
 const description = "A model's results & sources.";
 const image = `${origin}/images/social/catalogue.png`;
 const alt =
-  "rewire.it biological model benchmark database: models, benchmarks and source-linked evidence";
+  "rewirebio.io biological model benchmark database: models, benchmarks and source-linked evidence";
 const breadcrumbs = [
   { name: "Database", path: "/" },
   { name: "Models", path: "/models/" },

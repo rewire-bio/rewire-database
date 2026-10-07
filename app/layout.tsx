@@ -25,11 +25,11 @@ const plexMono = IBM_Plex_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://benchmarks.rewirebio.io"),
-  title: { default: "Biological model benchmarks | rewire.it", template: "%s" },
+  title: { default: "Biological model benchmarks | rewirebio.io", template: "%s" },
   description:
-    "Biological models, evaluation protocols, published results and reproducible rewire.it benchmark runs.",
+    "Biological models, evaluation protocols, published results and reproducible rewirebio.io benchmark runs.",
   authors: [{ name: "Tim Richardson" }],
-  publisher: "rewire.it",
+  publisher: "rewirebio.io",
   alternates: { canonical: "https://benchmarks.rewirebio.io/" },
 };
 

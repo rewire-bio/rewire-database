@@ -10,7 +10,7 @@ import { ImageResponse } from "next/og";
 async function main() {
   const image = new ImageResponse(
     <div style={{ width: "100%", height: "100%", display: "flex", flexDirection: "column", justifyContent: "space-between", background: "#111f25", color: "#f5f4ed", padding: "56px 64px", borderBottom: "18px solid #7dd3be" }}>
-      <div style={{ display: "flex", justifyContent: "space-between", fontSize: 27, color: "#7dd3be" }}><span>rewire.it</span><span>benchmarks.rewire.it</span></div>
+      <div style={{ display: "flex", justifyContent: "space-between", fontSize: 27, color: "#7dd3be" }}><span>rewirebio.io</span><span>benchmarks.rewirebio.io</span></div>
       <div style={{ display: "flex", flexDirection: "column" }}>
         <div style={{ fontSize: 68, lineHeight: 1.12, letterSpacing: -2 }}>Biological model</div>
         <div style={{ fontSize: 68, lineHeight: 1.12, letterSpacing: -2 }}>benchmark database</div>

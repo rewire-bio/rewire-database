@@ -48,6 +48,12 @@ export const UNUSED_TOOL_DIRECTORIES = Object.freeze([
   '/home/runner/.dotnet',
   '/home/packer/.dotnet',
   '/usr/local/aws-sam-cli',
+  // Image ubuntu24/20261004.327 left these C++ package, Edge WebDriver and Kotlin
+  // installations after all earlier entries were exhausted (run 37638882775).
+  // Pinned installer provenance and measured sizes: docs/runner-space.md.
+  '/usr/local/share/vcpkg',
+  '/usr/local/share/edge_driver',
+  '/usr/share/kotlinc',
 ]);
 
 // Pinned installer evidence for the failed CI image (20260920.314.1):
@@ -95,11 +101,14 @@ export function prepareRunnerSpace({
   if (!files.lstatSync(workspace).isDirectory()) throw new Error('GITHUB_WORKSPACE must be a directory.');
 
   // Installers use versioned names. Match only their exact naming contracts,
-  // never broad directory globs: install-julia.sh and Install-PowerShellAzModules.ps1.
+  // never broad directory globs: install-julia.sh, Install-PowerShellAzModules.ps1
+  // and the Gradle archive extracted by install-java-tools.sh.
   const versioned = [
     ...files.readdirSync('/usr/local').filter(name => /^julia\d+\.\d+\.\d+$/.test(name))
       .map(name => `/usr/local/${name}`),
     ...files.readdirSync('/usr/share').filter(name => /^az_\d+\.\d+\.\d+$/.test(name))
+      .map(name => `/usr/share/${name}`),
+    ...files.readdirSync('/usr/share').filter(name => /^gradle-\d+\.\d+(\.\d+)?$/.test(name))
       .map(name => `/usr/share/${name}`),
   ].sort();
   // Validate the complete plan before the first removal. Symlinks (including

@@ -68,7 +68,7 @@ test('deployed public database core journeys', async ({ page, baseURL }) => {
   });
 
   await test.step('benchmark filter returns benchmark records and opens a real detail', async () => {
-    const filtered = listResponse(page, { kind: 'benchmark', q: '' });
+    const filtered = listResponse(page, { kind: 'benchmark', q: undefined });
     await page.getByRole('group', { name: 'Record type' }).getByRole('button', { name: /^Benchmarks/ }).click();
     await page.getByRole('searchbox', { name: 'Search the database' }).fill('');
     const benchmarks = await records(filtered, 'benchmark');

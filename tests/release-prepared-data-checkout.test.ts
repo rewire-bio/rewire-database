@@ -85,9 +85,11 @@ describe('release only a verified CI temporary data checkout', () => {
   it('keeps full hydration and cache save ahead of removal and builds directly only after successful removal', () => {
     const workflow = fs.readFileSync('.github/workflows/firebase.yml', 'utf8');
     const hydrate = workflow.indexOf('- name: Hydrate and verify the pinned release');
-    const cache = workflow.indexOf('- name: Cache verified compressed data', hydrate);
+    const cache = workflow.indexOf('- name: Cache authenticated compressed data before expansion');
     const release = workflow.indexOf('- name: Release the temporary compressed producer checkout', cache);
-    expect(hydrate).toBeGreaterThan(0); expect(cache).toBeGreaterThan(hydrate); expect(release).toBeGreaterThan(cache);
+    expect(hydrate).toBeGreaterThan(0); expect(cache).toBeGreaterThan(0); expect(hydrate).toBeGreaterThan(cache); expect(release).toBeGreaterThan(hydrate);
+    const auth = workflow.indexOf('- name: Authenticate the compressed checkout before caching');
+    expect(auth).toBeGreaterThan(0); expect(auth).toBeLessThan(cache);
     expect(workflow.slice(release)).toContain('steps.release-source.outcome');
     expect(workflow.slice(release)).toContain('then node scripts/build-static.mjs');
   });

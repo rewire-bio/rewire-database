@@ -26,6 +26,8 @@ function fixture(initialFree = 34 * GiB, perRemoval = GiB, sizes: Record<string,
     const child = GUARDED_CHILDREN[directory as keyof typeof GUARDED_CHILDREN]?.[0];
     fs.mkdirSync(map(child ? `${directory}/${child}` : directory), { recursive: true });
     fs.writeFileSync(map(`${directory}/${child ? `${child}/` : ''}unused-sdk`), 'disposable');
+    for (const name of GUARDED_CHILDREN[directory as keyof typeof GUARDED_CHILDREN]?.filter(name => name.endsWith('.lock')) || [])
+      fs.writeFileSync(map(`${directory}/${name}`), '');
   }
   for (const file of preserved) {
     fs.mkdirSync(path.dirname(map(file)), { recursive: true });
@@ -478,6 +480,35 @@ describe('hosted runner space preparation', () => {
     expect(result.planned).not.toContain('/opt/pipx/venvs');
     expect(fs.readFileSync(host.map(python), 'utf8')).toBe('preserve');
     expect(fs.readFileSync(host.map(system), 'utf8')).toBe('preserve');
+  });
+
+  it.each(['symlink', 'directory', 'inaccessible', 'nonempty'])('preserves pipx for an unsafe %s lock companion', kind => {
+    const host = fixture(beforeCleanup(-1));
+    const logical = '/opt/pipx/venvs/.ansible-core.lock';
+    const target = host.map(logical);
+    let files = host.files;
+    if (kind === 'inaccessible') {
+      files = { ...files, lstatSync: (file: string) => {
+        if (file === logical) throw Object.assign(new Error('permission denied'), { code: 'EACCES' });
+        return host.files.lstatSync(file);
+      } } as typeof fs;
+    } else {
+      fs.unlinkSync(target);
+      if (kind === 'symlink') fs.symlinkSync(host.map(host.preserved[0]), target);
+      else if (kind === 'nonempty') fs.writeFileSync(target, 'unestablished content');
+      else fs.mkdirSync(target);
+    }
+    const result = prepareRunnerSpace({ ...host.options, files });
+    expect(result.planned).not.toContain('/opt/pipx/venvs');
+    expect(fs.readFileSync(host.map(host.preserved[0]), 'utf8')).toBe('preserve');
+  });
+
+  it('preserves pipx for a lock belonging to an unknown environment', () => {
+    const host = fixture(beforeCleanup(-1));
+    fs.writeFileSync(host.map('/opt/pipx/venvs/.unknown.lock'), '');
+    const result = prepareRunnerSpace(host.options);
+    expect(result.planned).not.toContain('/opt/pipx/venvs');
+    expect(fs.existsSync(host.map('/opt/pipx/venvs/.unknown.lock'))).toBe(true);
   });
 
 });

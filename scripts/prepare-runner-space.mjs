@@ -60,7 +60,7 @@ export const UNUSED_TOOL_DIRECTORIES = Object.freeze([
 ]);
 
 export const GUARDED_CHILDREN = Object.freeze({
-  '/opt/pipx/venvs': Object.freeze(['ansible-core', 'yamllint']),
+  '/opt/pipx/venvs': Object.freeze(['ansible-core', 'yamllint', '.ansible-core.lock', '.yamllint.lock']),
 });
 
 // Pinned installer evidence for the failed CI image (20260920.314.1):
@@ -146,6 +146,20 @@ export function prepareRunnerSpace({
         if (error.code === 'EACCES') { log(`Preserving inaccessible optional SDK: ${directory}`); continue; }
         throw error;
       }
+      // pipx creates a persistent FileLock beside each environment. Only the
+      // two exact pinned companions are accepted, as plain regular files.
+      let unsafeLock = false;
+      for (const name of children.filter(name => name.endsWith('.lock') && allowed.includes(name))) {
+        const target = path.join(directory, name);
+        try {
+          const stat = files.lstatSync(target);
+          if (stat.isSymbolicLink() || !stat.isFile() || stat.size !== 0 || files.realpathSync(target) !== target) unsafeLock = true;
+        } catch (error) {
+          if (error.code === 'EACCES') { unsafeLock = true; continue; }
+          throw error;
+        }
+      }
+      if (unsafeLock) { log(`Preserving ${directory}: unsafe or inaccessible lock companion`); continue; }
       const unknown = children.filter(name => !allowed.includes(name));
       if (unknown.length) { log(`Preserving ${directory}: unknown installation(s) ${unknown.join(', ')}`); continue; }
     }

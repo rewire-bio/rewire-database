@@ -48,21 +48,13 @@ export const UNUSED_TOOL_DIRECTORIES = Object.freeze([
   '/home/runner/.dotnet',
   '/home/packer/.dotnet',
   '/usr/local/aws-sam-cli',
-  // Image ubuntu24/20260927.320 optional tools, measured at 509,980,672,
-  // 217,796,608, 172,609,536 and 178,475,008 bytes (1,078,861,824 total).
-  // Evidence: docs/runner-space.md. Node, Python, Java, Git, Google and
-  // compiler installations are separate and stay protected below.
-  '/opt/pipx/venvs',
+  // Image ubuntu24/20261004.327 left these C++ package, Edge WebDriver and Kotlin
+  // installations after all earlier entries were exhausted (run 37638882775).
+  // Pinned installer provenance and measured sizes: docs/runner-space.md.
   '/usr/local/share/vcpkg',
-  '/usr/share/gradle-9.8.0',
-  '/opt/hostedtoolcache/copilot-cli',
+  '/usr/local/share/edge_driver',
+  '/usr/share/kotlinc',
 ]);
-
-// Directories removed only when every child is a known pinned installation
-// (toolset-2404.json). Any other child means the image changed: preserve all.
-export const GUARDED_CHILDREN = Object.freeze({
-  '/opt/pipx/venvs': Object.freeze(['ansible-core', 'yamllint']),
-});
 
 // Pinned installer evidence for the failed CI image (20260920.314.1):
 // https://github.com/actions/runner-images/blob/ubuntu24/20260920.314/images/ubuntu/scripts/build/install-docker.sh
@@ -109,11 +101,14 @@ export function prepareRunnerSpace({
   if (!files.lstatSync(workspace).isDirectory()) throw new Error('GITHUB_WORKSPACE must be a directory.');
 
   // Installers use versioned names. Match only their exact naming contracts,
-  // never broad directory globs: install-julia.sh and Install-PowerShellAzModules.ps1.
+  // never broad directory globs: install-julia.sh, Install-PowerShellAzModules.ps1
+  // and the Gradle archive extracted by install-java-tools.sh.
   const versioned = [
     ...files.readdirSync('/usr/local').filter(name => /^julia\d+\.\d+\.\d+$/.test(name))
       .map(name => `/usr/local/${name}`),
     ...files.readdirSync('/usr/share').filter(name => /^az_\d+\.\d+\.\d+$/.test(name))
+      .map(name => `/usr/share/${name}`),
+    ...files.readdirSync('/usr/share').filter(name => /^gradle-\d+\.\d+(\.\d+)?$/.test(name))
       .map(name => `/usr/share/${name}`),
   ].sort();
   // Validate the complete plan before the first removal. Symlinks (including
@@ -135,14 +130,6 @@ export function prepareRunnerSpace({
         continue;
       }
       throw error;
-    }
-    const allowed = GUARDED_CHILDREN[directory];
-    if (allowed) {
-      const unknown = files.readdirSync(directory).filter(name => !allowed.includes(name));
-      if (unknown.length) {
-        log(`Preserving ${directory}: unknown installation(s) ${unknown.join(', ')}`);
-        continue;
-      }
     }
     planned.push(directory);
   }

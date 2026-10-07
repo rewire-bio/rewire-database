@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { AFTER_DEPENDENCIES_FREE_BYTES, GUARDED_CHILDREN, MIN_FREE_BYTES, UNUSED_TOOL_DIRECTORIES, UNUSED_RUNNER_IMAGES, prepareRunnerSpace } from '../scripts/prepare-runner-space.mjs';
+import { AFTER_DEPENDENCIES_FREE_BYTES, MIN_FREE_BYTES, UNUSED_TOOL_DIRECTORIES, UNUSED_RUNNER_IMAGES, prepareRunnerSpace } from '../scripts/prepare-runner-space.mjs';
 
 const roots: string[] = [];
 const GiB = 1024 ** 3;
@@ -23,9 +23,8 @@ function fixture(initialFree = 34 * GiB, perRemoval = GiB, sizes: Record<string,
     '/usr/lib/google-cloud-sdk/bin/gcloud',
   ];
   for (const directory of UNUSED_TOOL_DIRECTORIES) {
-    const child = GUARDED_CHILDREN[directory as keyof typeof GUARDED_CHILDREN]?.[0];
-    fs.mkdirSync(map(child ? `${directory}/${child}` : directory), { recursive: true });
-    fs.writeFileSync(map(`${directory}/${child ? `${child}/` : ''}unused-sdk`), 'disposable');
+    fs.mkdirSync(map(directory), { recursive: true });
+    fs.writeFileSync(map(`${directory}/unused-sdk`), 'disposable');
   }
   for (const file of preserved) {
     fs.mkdirSync(path.dirname(map(file)), { recursive: true });
@@ -71,7 +70,7 @@ function fixture(initialFree = 34 * GiB, perRemoval = GiB, sizes: Record<string,
     if (args[1] === 'du') return `${perRemoval}\t${args.at(-1)}\n`;
     expect(args.slice(0, -1)).toEqual(['-n', 'rm', '-rf', '--one-file-system', '--']);
     const directory = args.at(-1)!;
-    expect([...UNUSED_TOOL_DIRECTORIES, '/usr/local/julia1.13.0', '/usr/share/az_15.6.1']).toContain(directory);
+    expect([...UNUSED_TOOL_DIRECTORIES, '/usr/local/julia1.13.0', '/usr/share/az_15.6.1', '/usr/share/gradle-9.8.0', '/usr/share/gradle-9.8']).toContain(directory);
     fs.rmSync(map(directory), { recursive: true });
     removed.push(directory);
     available += sizes[directory] ?? perRemoval;
@@ -133,10 +132,8 @@ describe('hosted runner space preparation', () => {
     expect(result.available).toBe(34 * GiB);
     expect(result.planned).toEqual(UNUSED_TOOL_DIRECTORIES);
     expect(host.removed).toEqual([]);
-    for (const directory of UNUSED_TOOL_DIRECTORIES) {
-      const child = GUARDED_CHILDREN[directory as keyof typeof GUARDED_CHILDREN]?.[0];
-      expect(fs.readFileSync(host.map(`${directory}/${child ? `${child}/` : ''}unused-sdk`), 'utf8')).toBe('disposable');
-    }
+    for (const directory of UNUSED_TOOL_DIRECTORIES)
+      expect(fs.readFileSync(host.map(`${directory}/unused-sdk`), 'utf8')).toBe('disposable');
   });
 
   it.each([
@@ -244,6 +241,82 @@ describe('hosted runner space preparation', () => {
     expect(Object.values(optionalSizes).reduce((a, b) => a + b, 0)).toBeGreaterThan(1.6 * GiB);
   });
 
+  it('covers the measured 20261007 post-dependency shortfall without lowering the 44 GiB reserve', () => {
+    // Production run 37638882775 on image 20261004.327.1: du -B1 sizes from its
+    // read-only inventory. Everything earlier in the allowlist was exhausted.
+    const optionalSizes = {
+      '/usr/local/share/vcpkg': 217_796_608,
+      '/usr/local/share/edge_driver': 35_524_608,
+      '/usr/share/kotlinc': 97_673_216,
+      '/usr/share/gradle-9.8.0': 172_609_536,
+    };
+    const observedFree = 46_886_711_296;
+    const shortfall = AFTER_DEPENDENCIES_FREE_BYTES - observedFree;
+    expect(shortfall).toBe(357_928_960);
+    const host = fixture(observedFree, 0, optionalSizes);
+    fs.mkdirSync(host.map('/usr/share/gradle-9.8.0'));
+    fs.writeFileSync(host.map('/usr/share/gradle-9.8.0/unused-sdk'), 'disposable');
+    const result = prepareRunnerSpace({ ...host.options, phase: 'after-dependencies' });
+    expect(AFTER_DEPENDENCIES_FREE_BYTES).toBe(44 * GiB);
+    expect(MIN_FREE_BYTES).toBe(45 * GiB);
+    const total = Object.values(optionalSizes).reduce((a, b) => a + b, 0);
+    expect(total).toBe(523_603_968);
+    expect(result.available).toBe(observedFree + total);
+    expect(result.available).toBeGreaterThanOrEqual(AFTER_DEPENDENCIES_FREE_BYTES);
+    // Vcpkg alone, and the first three together, remain short; Gradle is needed.
+    expect(optionalSizes['/usr/local/share/vcpkg']).toBeLessThan(shortfall);
+    expect(total - optionalSizes['/usr/share/gradle-9.8.0']).toBeLessThan(shortfall);
+    expect(host.removed.slice(-4)).toEqual(Object.keys(optionalSizes).slice(0, 3).concat('/usr/share/gradle-9.8.0'));
+    for (const file of host.preserved) expect(fs.readFileSync(host.map(file), 'utf8')).toBe('preserve');
+  });
+
+  it.each([
+    '/usr/local/share/vcpkg', '/usr/local/share/edge_driver', '/usr/share/kotlinc', '/usr/share/gradle-9.8.0',
+  ])('preserves %s when an active executable resolves into it', directory => {
+    const host = fixture(MIN_FREE_BYTES - 1, 0);
+    fs.mkdirSync(host.map(directory), { recursive: true });
+    fs.writeFileSync(host.map(`${directory}/active`), 'active runtime');
+    const run = vi.fn((program: string, args: string[]) => program === 'which'
+      ? host.run(program, args).replace('/usr/bin/make', `${directory}/active`)
+      : host.run(program, args));
+    expect(() => prepareRunnerSpace({ ...host.options, run })).toThrow('need at least 45 GiB');
+    expect(host.removed).not.toContain(directory);
+    expect(host.log).toHaveBeenCalledWith(`Preserving active runtime or deployment dependency: ${directory}`);
+    expect(fs.readFileSync(host.map(`${directory}/active`), 'utf8')).toBe('active runtime');
+    expect(host.removed).toContain('/usr/local/aws-sam-cli');
+  });
+
+  it('removes only exact versioned Gradle installation directories', () => {
+    const host = fixture(beforeCleanup(2));
+    for (const directory of ['/usr/share/gradle-9.8.0', '/usr/share/gradle-9.8', '/usr/share/gradle', '/usr/share/gradle-9.8.0-bin', '/usr/share/gradle-wrapper', '/usr/share/gradle-9.9.0-rc-1']) {
+      fs.mkdirSync(host.map(directory));
+      fs.writeFileSync(host.map(`${directory}/sentinel`), 'preserve unless SDK');
+    }
+    prepareRunnerSpace(host.options);
+    expect(host.removed).toContain('/usr/share/gradle-9.8.0');
+    expect(fs.existsSync(host.map('/usr/share/gradle-9.8/sentinel'))).toBe(false);
+    for (const directory of ['/usr/share/gradle', '/usr/share/gradle-9.8.0-bin', '/usr/share/gradle-wrapper', '/usr/share/gradle-9.9.0-rc-1'])
+      expect(fs.existsSync(host.map(`${directory}/sentinel`))).toBe(true);
+  });
+
+  it.each(['/usr/local/share/vcpkg', '/usr/share/kotlinc', '/usr/share/gradle-9.8.0'])('rejects checkout overlap with %s before any removal', directory => {
+    const host = fixture();
+    fs.mkdirSync(host.map(directory), { recursive: true });
+    host.env.GITHUB_WORKSPACE = directory;
+    expect(() => prepareRunnerSpace(host.options)).toThrow('overlaps the checkout');
+    expect(host.run).not.toHaveBeenCalled();
+  });
+
+  it.each(['/usr/local/share/edge_driver', '/usr/share/gradle-9.8.0'])('rejects a symlinked %s before any removal', directory => {
+    const host = fixture();
+    const target = host.map(directory);
+    fs.rmSync(target, { recursive: true, force: true });
+    fs.mkdirSync(path.dirname(target), { recursive: true });
+    fs.symlinkSync(host.map(host.workspace), target, 'dir');
+    expect(() => prepareRunnerSpace(host.options)).toThrow('symlinked SDK path');
+    expect(host.run).not.toHaveBeenCalled();
+  });
+
   it('preserves active PyPy and removes only exact SDK directories in user homes', () => {
     const host = fixture(beforeCleanup(-1));
     const active = '/opt/hostedtoolcache/PyPy/3.11/bin/python3';
@@ -344,46 +417,5 @@ describe('hosted runner space preparation', () => {
     host.docker.socketSafe = false;
     expect(() => prepareRunnerSpace(host.options)).toThrow('unexpected socket');
     expect(host.run.mock.calls.some(([program]) => program === 'docker')).toBe(false);
-  });
-
-  it('covers the four measured 20260927 optional tools within existing safeguards', () => {
-    const sizes = {
-      '/opt/pipx/venvs': 509_980_672,
-      '/usr/local/share/vcpkg': 217_796_608,
-      '/usr/share/gradle-9.8.0': 172_609_536,
-      '/opt/hostedtoolcache/copilot-cli': 178_475_008,
-    };
-    expect(Object.values(sizes).reduce((a, b) => a + b, 0)).toBe(1_078_861_824);
-    for (const directory of Object.keys(sizes)) expect(UNUSED_TOOL_DIRECTORIES).toContain(directory);
-    const failedRun = 46_886_711_296;
-    const host = fixture(failedRun, 0, sizes);
-    const result = prepareRunnerSpace({ ...host.options, phase: 'after-dependencies' });
-    expect(AFTER_DEPENDENCIES_FREE_BYTES).toBe(44 * GiB);
-    expect(result.available).toBeGreaterThanOrEqual(AFTER_DEPENDENCIES_FREE_BYTES);
-    expect(UNUSED_TOOL_DIRECTORIES.filter(d => d.startsWith('/opt/pipx') || d.includes('vcpkg') || d.includes('gradle') || d.includes('copilot')))
-      .toEqual(Object.keys(sizes));
-  });
-
-  it('preserves pipx venvs with an unknown child installation', () => {
-    const host = fixture(beforeCleanup(-1), GiB);
-    fs.mkdirSync(host.map('/opt/pipx/venvs/other-tool'));
-    const result = prepareRunnerSpace(host.options);
-    expect(result.planned).not.toContain('/opt/pipx/venvs');
-    expect(fs.existsSync(host.map('/opt/pipx/venvs/other-tool'))).toBe(true);
-    expect(host.log).toHaveBeenCalledWith(expect.stringContaining('unknown installation(s) other-tool'));
-  });
-
-  it('preserves an active deployment tool inside a newly listed directory', () => {
-    const host = fixture(beforeCleanup(-1), GiB);
-    const gradle = '/usr/share/gradle-9.8.0/bin/java';
-    fs.mkdirSync(host.map('/usr/share/gradle-9.8.0/bin'), { recursive: true });
-    fs.writeFileSync(host.map(gradle), 'x');
-    const run = vi.fn((program: string, args: string[]) => program === 'which'
-      ? ['/node', '/python3', gradle, '/git', '/gcc', '/g++', '/make', '/gcloud'].join('\n') + '\n'
-      : host.run(program, args));
-    for (const file of ['/node', '/python3', '/git', '/gcc', '/g++', '/make', '/gcloud'])
-      fs.writeFileSync(host.map(file), 'x');
-    const result = prepareRunnerSpace({ ...host.options, run });
-    expect(result.planned).not.toContain('/usr/share/gradle-9.8.0');
   });
 });

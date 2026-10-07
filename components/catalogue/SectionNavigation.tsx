@@ -21,7 +21,7 @@ export function revealFragment(hash: string) {
   if (!id) return;
   const target = document.getElementById(id);
   if (!target) return;
-  let parent = target.parentElement;
+  let parent: HTMLElement | null = target;
   while (parent) {
     if (parent instanceof HTMLDetailsElement) parent.open = true;
     parent = parent.parentElement;
@@ -94,12 +94,14 @@ export default function SectionNavigation({
   useEffect(() => {
     const reveal = () => revealFragment(window.location.hash);
     const click = (event: MouseEvent) => {
+      if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
       const link = (event.target as Element).closest?.("a[href]");
       if (!(link instanceof HTMLAnchorElement)) return;
       const url = new URL(link.href, window.location.href);
       if (
         url.origin === window.location.origin &&
         url.pathname === window.location.pathname &&
+        url.search === window.location.search &&
         url.hash
       ) {
         revealFragment(url.hash);
@@ -108,23 +110,29 @@ export default function SectionNavigation({
     reveal();
     window.addEventListener("hashchange", reveal);
     document.addEventListener("click", click);
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries
-          .filter((entry) => entry.isIntersecting)
-          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
-        if (visible[0]) setActive(visible[0].target.id);
-      },
-      { rootMargin: "-120px 0px -55% 0px" },
-    );
-    sections.forEach((section) => {
-      const node = document.getElementById(section.id);
-      if (node) observer.observe(node);
-    });
+    let frame = 0;
+    const updateActive = () => {
+      frame = 0;
+      const boundary = navRef.current?.getBoundingClientRect().bottom ?? 120;
+      const nodes = sections.map(({ id }) => document.getElementById(id)).filter((node): node is HTMLElement => !!node);
+      // Include the 24px scroll-margin gap plus rounding tolerance at anchor stops.
+      // The last section may be too short to reach the sticky navigation.
+      const atBottom = window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 2;
+      const current = atBottom ? nodes.at(-1) : nodes.filter((node) => node.getBoundingClientRect().top <= boundary + 32).at(-1) || nodes[0];
+      if (current) setActive(current.id);
+    };
+    const scheduleUpdate = () => {
+      if (!frame) frame = requestAnimationFrame(updateActive);
+    };
+    updateActive();
+    window.addEventListener("scroll", scheduleUpdate, { passive: true });
+    window.addEventListener("resize", scheduleUpdate);
     return () => {
       window.removeEventListener("hashchange", reveal);
       document.removeEventListener("click", click);
-      observer.disconnect();
+      window.removeEventListener("scroll", scheduleUpdate);
+      window.removeEventListener("resize", scheduleUpdate);
+      cancelAnimationFrame(frame);
     };
   }, [sections]);
   return (
@@ -148,6 +156,7 @@ export default function SectionNavigation({
           onChange={(event) => {
             setActive(event.target.value);
             window.location.hash = event.target.value;
+            revealFragment(`#${event.target.value}`);
           }}
         >
           {sections.map((section) => (

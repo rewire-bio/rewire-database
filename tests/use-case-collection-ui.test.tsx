@@ -102,13 +102,13 @@ describe("use-case evidence collection plans", () => {
     expect(cards[2]).not.toContain("#collection-plan");
   });
 
-  it("exports the complete plan as primary visible content and keeps scope and review alongside it", () => {
+  it("puts applicability and existing evidence before the plan while preserving its complete content", () => {
     const entry = plannedQuestion();
     const markup = detailMarkup(entry);
     expect(markup).toContain('aria-labelledby="collection-plan-heading"');
     expect(markup).toContain('href="#collection-plan"');
-    expect(markup.indexOf('id="collection-plan"')).toBeLessThan(markup.indexOf('id="question"'));
-    expect(markup.indexOf('id="collection-plan"')).toBeLessThan(markup.indexOf('id="evidence"'));
+    expect(markup.indexOf('id="question"')).toBeLessThan(markup.indexOf('id="collection-plan"'));
+    expect(markup.indexOf('id="evidence"')).toBeLessThan(markup.indexOf('id="collection-plan"'));
     for (const value of [entry.collection_plan!.comparison_question, ...entry.collection_plan!.baselines, ...entry.collection_plan!.outcomes, ...entry.collection_plan!.validation_requirements, entry.collection_plan!.next_step]) expect(markup).toContain(value);
     expect(markup).toContain("Next collection task");
     expect(markup).toContain("No model comparison has been collected for this question yet");
@@ -120,7 +120,17 @@ describe("use-case evidence collection plans", () => {
     expect(markup).not.toContain("No applicability mappings");
     expect(markup).not.toContain("Evaluated configurations");
     const planMarkup = renderToStaticMarkup(<UseCaseCollectionPlan plan={entry.collection_plan!} summary={summariseUseCaseEvidence([], 0)} />);
-    expect(planMarkup).not.toContain("<details");
+    expect(planMarkup).toContain("<details");
+    expect(planMarkup).not.toMatch(/<details[^>]*\bopen/);
+    expect(planMarkup).toContain("<summary>Baselines, outcomes and validation requirements</summary>");
+    const disclosureStart = planMarkup.indexOf("<details");
+    const disclosureEnd = planMarkup.indexOf("</details>");
+    expect(planMarkup.indexOf(entry.collection_plan!.comparison_question)).toBeLessThan(disclosureStart);
+    for (const value of [...entry.collection_plan!.baselines, ...entry.collection_plan!.outcomes, ...entry.collection_plan!.validation_requirements]) {
+      expect(planMarkup.indexOf(value)).toBeGreaterThan(disclosureStart);
+      expect(planMarkup.indexOf(value)).toBeLessThan(disclosureEnd);
+    }
+    expect(planMarkup.indexOf(entry.collection_plan!.next_step)).toBeGreaterThan(disclosureEnd);
     expect(planMarkup).not.toContain("<table");
   });
 

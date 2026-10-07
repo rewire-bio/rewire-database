@@ -431,6 +431,7 @@ h1, h2, h3, h4 { margin: 0; font-weight: 600; letter-spacing: -0.02em; line-heig
 .page-head { padding: 48px 0 36px; border-bottom: 1px solid var(--line); }
 .page-head h1 { font-size: clamp(30px, 3.8vw, 44px); line-height: 1.1; letter-spacing: -0.025em; font-weight: 600; }
 .page-head .intro { font-family: var(--sans); font-size: clamp(16px, 1.8vw, 18.5px); line-height: 1.55; color: var(--ink-2); margin: 14px 0 0; max-width: 60ch; }
+.page-head .kick { display: block; margin-bottom: 8px; font-family: var(--mono); font-size: 12px; line-height: 1.7; color: var(--ink-3); }
 
 /* ---------------- blog filter bar ---------------- */
 .filterbar {
@@ -799,6 +800,13 @@ details.qa .qa-body { font-family: var(--sans); font-size: 15px; line-height: 1.
 .content h4 { font-size: var(--fs-h4); line-height: 1.35; margin: 22px 0 8px; }
 .content h5 { font-size: var(--fs-h5); line-height: 1.4; margin: 20px 0 8px; letter-spacing: -0.01em; }
 .content p, .content li { max-width: var(--measure); }
+/* Restore prose rhythm after Tailwind's reset without overriding component cards. */
+.content :where(p) { margin-block: 0 16px; }
+.content :where(ul, ol) { margin-block: 12px 20px; }
+.content :where(li + li) { margin-top: 6px; }
+.content :where(p:last-child, ul:last-child, ol:last-child) { margin-bottom: 0; }
+.content :where(section, article, details, dl) { min-width: 0; }
+.content :where(p, li, dd, code) { overflow-wrap: anywhere; }
 .content > section, .content-section { padding: 36px 0; border-top: 1px solid var(--line); }
 .content > section:first-child, .content-section:first-child { border-top: 0; padding-top: 28px; }
 

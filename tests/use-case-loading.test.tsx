@@ -83,4 +83,18 @@ describe("use-case question discovery", () => {
     await act(async () => failed.reject(new Error("service unavailable")));
     expect(text()).toContain("could not be loaded"); expect(text()).not.toContain("No use cases match"); expect(text()).not.toContain("0 matching use cases");
   });
+  it("applies edited search/settings, area shortcuts, and page navigation", async () => {
+    list.mockResolvedValue({...page("Matching"),next_cursor:"next"}); await render("");
+    await act(async()=>tree!.root.findByProps({id:"use-case-q"}).props.onChange({target:{value:"RNA"}}));
+    await act(async()=>tree!.root.findByProps({id:"use-case-context"}).props.onChange({target:{value:"research"}}));
+    await act(async()=>tree!.root.findByType("form").props.onSubmit({preventDefault:vi.fn()}));
+    expect(url.search).toContain("q=RNA"); expect(url.search).toContain("context=research");
+    const click=async(label:string)=>act(async()=>tree!.root.findAllByType("button").find(n=>n.children[0]===label)!.props.onClick());
+    await click("Next page"); expect(list.mock.calls.at(-1)![0].cursor).toBe("next");
+    await click("First page"); expect(list.mock.calls.at(-1)![0].cursor).toBeUndefined();
+    await act(async()=>tree!.root.findAllByType("button").find(n=>n.props["aria-pressed"]===false)!.props.onClick());
+    expect(url.search).toContain("area=dna-genomes"); await click("All areas"); expect(url.search).not.toContain("area=");
+    list.mockResolvedValue(page("",0)); await click("Next page"); await click("Show all use cases"); expect(text()).toContain("Initial question");
+  });
+
 });

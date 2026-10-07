@@ -102,31 +102,34 @@ export default function UseCaseEvidence({ mapping, useCasePath, executionLinks }
           const note = object(row.result.attributes.missing_metadata).uncertainty;
           return row.result.attributes.uncertainty == null && typeof note === "string" ? [note] : [];
         }))];
-        return <section key={evaluation.id} aria-label={catalogueText(evaluation.name)}>
+        return <section key={evaluation.id} className={styles.evaluation} aria-label={catalogueText(evaluation.name)}>
           <h5>{configurations.map((configuration, index) => <span key={configuration.id}>{index > 0 && "; "}<UseCaseRecordLink href={recordHref(configuration)} useCasePath={useCasePath}>{catalogueText(configuration.name)}</UseCaseRecordLink></span>)}</h5>
           <p className={styles.muted}>{originLabel(evaluation.attributes.origin)} · {statusLabel(evaluation.status)}</p>
           <p>{catalogueText(evaluation.description)}</p>
-          <dl className={styles.fields}>
-            <dt>Population and split</dt><dd>{displayValue(comparison.population)} · {displayValue(comparison.split)}</dd>
-            <dt>Inputs and adaptation</dt><dd>{displayValue(comparison.inputs)} · {displayValue(comparison.adaptation)}</dd>
-            <dt>Evaluation budget</dt><dd>{displayValue(comparison.budget)}</dd>
-            <dt>Runtime and memory</dt><dd><Resources evaluation={evaluation} /></dd>
-          </dl>
-          {results.length ? <div className={styles.tableWrap} tabIndex={0} role="region" aria-label={`Results for ${catalogueText(evaluation.name)}`}>
-            <table className={styles.table}>
-              <caption>Recorded results for this configuration</caption>
-              <thead><tr><th scope="col">Metric</th><th scope="col">Value</th><th scope="col">Coverage</th><th scope="col">Uncertainty and source</th></tr></thead>
-              <tbody>{results.map((row) => <tr key={row.result.id}>
-                <th scope="row"><UseCaseRecordLink href={recordHref(row.result)} useCasePath={useCasePath}>{displayValue(row.result.attributes.metric)}</UseCaseRecordLink></th>
-                <td><span className={styles.score}>{explorerPrintedScore(row.result.attributes.printed_value, row.result.attributes.unit)}</span><p className={styles.muted}>{displayValue(row.result.attributes.unit)} · {displayValue(row.result.attributes.metric_direction)}</p></td>
-                <td>{row.result.attributes.coverage ? displayValue(row.result.attributes.coverage) : `${displayValue(row.result.attributes.scored_count)} scored / ${displayValue(row.result.attributes.eligible_count)} eligible`}</td>
-                <td><p>{displayValue(row.result.attributes.uncertainty)}</p><details><summary>Result provenance</summary><UseCaseCitations citations={row.result.source_ids.map((source_id) => ({ source_id, locator: String(row.result.attributes.source_locator || "See the source record for the evidence location") }))} sources={row.sources} useCasePath={useCasePath} /></details></td>
-              </tr>)}</tbody>
-            </table>
-          </div> : <p>No eligible result rows are recorded for this evaluation. Missing results are not zero scores.</p>}
-          {uncertaintyNotes.map((note) => <p className={styles.muted} key={note}>Uncertainty: {note}</p>)}
-          <p><UseCaseRecordLink href={`${recordHref(evaluation)}#reproduction`} useCasePath={useCasePath}>Evaluation methods, evidence and reproduction</UseCaseRecordLink></p>
-          {execution ? <><p><UseCaseRecordLink href={execution.href} useCasePath={useCasePath}>{execution.label}</UseCaseRecordLink></p><p className={styles.muted}>{execution.explanation}</p></> : <p className={styles.muted}>No execution recipe has been verified for this exact configuration and evaluation. Inspect its methods and original run documentation before attempting reproduction.</p>}
+          <details className={styles.disclosure}>
+            <summary>Inspect results, conditions and reproduction ({results.length} recorded {results.length === 1 ? "result" : "results"})</summary>
+            <dl className={styles.fields}>
+              <dt>Population and split</dt><dd>{displayValue(comparison.population)} · {displayValue(comparison.split)}</dd>
+              <dt>Inputs and adaptation</dt><dd>{displayValue(comparison.inputs)} · {displayValue(comparison.adaptation)}</dd>
+              <dt>Evaluation budget</dt><dd>{displayValue(comparison.budget)}</dd>
+              <dt>Runtime and memory</dt><dd><Resources evaluation={evaluation} /></dd>
+            </dl>
+            {results.length ? <div className={styles.tableWrap} tabIndex={0} role="region" aria-label={`Results for ${catalogueText(evaluation.name)}`}>
+              <table className={styles.table}>
+                <caption>Recorded results for this configuration</caption>
+                <thead><tr><th scope="col">Metric</th><th scope="col">Value</th><th scope="col">Coverage</th><th scope="col">Uncertainty and source</th></tr></thead>
+                <tbody>{results.map((row) => <tr key={row.result.id}>
+                  <th scope="row"><UseCaseRecordLink href={recordHref(row.result)} useCasePath={useCasePath}>{displayValue(row.result.attributes.metric)}</UseCaseRecordLink></th>
+                  <td><span className={styles.score}>{explorerPrintedScore(row.result.attributes.printed_value, row.result.attributes.unit)}</span><p className={styles.muted}>{displayValue(row.result.attributes.unit)} · {displayValue(row.result.attributes.metric_direction)}</p></td>
+                  <td>{row.result.attributes.coverage ? displayValue(row.result.attributes.coverage) : `${displayValue(row.result.attributes.scored_count)} scored / ${displayValue(row.result.attributes.eligible_count)} eligible`}</td>
+                  <td><p>{displayValue(row.result.attributes.uncertainty)}</p><details><summary>Result provenance</summary><UseCaseCitations citations={row.result.source_ids.map((source_id) => ({ source_id, locator: String(row.result.attributes.source_locator || "See the source record for the evidence location") }))} sources={row.sources} useCasePath={useCasePath} /></details></td>
+                </tr>)}</tbody>
+              </table>
+            </div> : <p>No eligible result rows are recorded for this evaluation. Missing results are not zero scores.</p>}
+            {uncertaintyNotes.map((note) => <p className={styles.muted} key={note}>Uncertainty: {note}</p>)}
+            <p><UseCaseRecordLink href={`${recordHref(evaluation)}#reproduction`} useCasePath={useCasePath}>Evaluation methods, evidence and reproduction</UseCaseRecordLink></p>
+            {execution ? <><p><UseCaseRecordLink href={execution.href} useCasePath={useCasePath}>{execution.label}</UseCaseRecordLink></p><p className={styles.muted}>{execution.explanation}</p></> : <p className={styles.muted}>No execution recipe has been verified for this exact configuration and evaluation. Inspect its methods and original run documentation before attempting reproduction.</p>}
+          </details>
         </section>;
       })}
       {mapping.protocol && <p><UseCaseRecordLink href={`${recordHref(mapping.protocol)}#results`} useCasePath={useCasePath}>Open the protocol&apos;s results and comparison checks →</UseCaseRecordLink></p>}

@@ -319,6 +319,14 @@
   border: 1px solid var(--line-2);
   border-radius: var(--radius-sm);
   font-size: 14px;
+  min-height: 44px;
+}
+.heroActions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin: 18px 0 0;
 }
 .tableScroll {
   width: 100%;
@@ -413,7 +421,7 @@
   border-radius: var(--radius-md);
 }
 .section {
-  scroll-margin-top: 100px;
+  scroll-margin-top: var(--section-scroll-offset);
 }
 .section p {
   line-height: 1.75;
@@ -444,6 +452,27 @@
   overflow-wrap: anywhere;
   min-width: 0;
 }
+.section :where(p) {
+  margin-block: 0 16px;
+}
+.section :where(h3) {
+  font-size: var(--fs-h3);
+  line-height: 1.3;
+  margin: 24px 0 10px;
+}
+.section :where(h4) {
+  font-size: var(--fs-h4);
+  line-height: 1.35;
+  margin: 20px 0 8px;
+}
+.section :where(ul:not([class]), ol:not([class])) {
+  padding-left: 24px;
+  margin: 12px 0 20px;
+}
+.section :where(ul:not([class])) { list-style: disc; }
+.section :where(ol:not([class])) { list-style: decimal; }
+.section :where(li + li) { margin-top: 6px; }
+.section :where(p:last-child) { margin-bottom: 0; }
 
 .evidenceTable {
   table-layout: fixed;
@@ -847,6 +876,12 @@
   }
   .profileCitation > summary {
     padding-block: 8px;
+  }
+  .label input,
+  .label select,
+  .label textarea {
+    min-height: 44px;
+    font-size: 16px;
   }
 }
 

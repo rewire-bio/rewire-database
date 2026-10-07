@@ -189,7 +189,7 @@ export function PredictiveEntityDetail({ detail }: { detail: RecordDetail }) {
                       : "No reviewed evaluations are linked here in this release. See the sources and separately identified configurations below."}
                 </p>
               )}
-              <p>
+              <p className={styles.heroActions}>
                 {(results.total > 0 || (!evaluatedDownstream.length && !broaderFamilyOnly)) && (
                   <a href="#results" className={styles.resultCount}>
                     {countLabel(results.evaluation_count, "evaluation")} ·{" "}
@@ -198,7 +198,6 @@ export function PredictiveEntityDetail({ detail }: { detail: RecordDetail }) {
                 )}
                 {evaluatedDownstream.length > 0 && (
                   <>
-                    {results.total > 0 ? " · " : ""}
                     <a href="#configurations" className={styles.resultCount}>
                       {evaluatedDownstream.length} evaluated{" "}
                       {evaluatedDownstream.length === 1

@@ -83,7 +83,7 @@ jobs:
         with:
           path: workbench/benchmark-data
           key: benchmark-data-current-v2-${{ steps.data-pin.outputs.revision }}-${{ hashFiles('benchmark-data.lock.json') }}
-      - run: npm test
+      - run: npm run test:ui:coverage
       - run: npm run lint
       - run: npm run typecheck
       - name: Report elapsed time
@@ -278,7 +278,7 @@ jobs:
         with:
           path: workbench/benchmark-data
           key: ${{ steps.data-cache.outputs.cache-primary-key }}
-      - run: npm test
+      - run: npm run test:ui:coverage
       - run: npm run lint
       - name: Validate contribution configuration and build website
         run: |
@@ -374,6 +374,14 @@ jobs:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_PUBLIC_ORIGIN: ${{ vars.CLOUDFLARE_PUBLIC_ORIGIN }}
           OMICS_CONTRIBUTIONS_ENABLED: ${{ vars.OMICS_CONTRIBUTIONS_ENABLED || 'false' }}
+      - name: Smoke test deployed public website
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && vars.CLOUDFLARE_DEPLOY_ENABLED == 'true' && vars.FIREBASE_DEPLOY_ENABLED == 'true' && vars.FIREBASE_BACKEND_DEPLOY_ENABLED == 'true'
+        run: |
+          npm run smoke:deployment -- "$SMOKE_ORIGIN"
+          npx playwright install --with-deps chromium
+          npm run smoke:browser
+        env:
+          SMOKE_ORIGIN: ${{ vars.CLOUDFLARE_PUBLIC_ORIGIN || 'https://benchmarks.rewirebio.io' }}
       - name: Remove generated service environment
         if: always()
         run: rm -f services/omics/.env

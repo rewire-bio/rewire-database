@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
@@ -12,9 +12,32 @@ const NAV = [
   { href: "/evidence/", label: "Evidence and sources" },
   { href: "/contribute/", label: "Contribute" },
 ];
+export function primaryNavigationHref(pathname: string) {
+  const path = `${pathname.replace(/\/+$/, "")}/`;
+  if (path.startsWith("/database/model/")) return "/models/";
+  if (path.startsWith("/database/benchmark/")) return "/benchmarks/";
+  if (["/literature/", "/audits/", "/investigations/"].some((prefix) => path.startsWith(prefix))) return "/evidence/";
+  return NAV.find(({ href }) => href !== "/" && path.startsWith(href))?.href
+    || (path === "/" || path.startsWith("/database/") ? "/" : undefined);
+}
+
 export default function Header() {
   const pathname = usePathname() || "/";
   const [open, setOpen] = useState(false);
+  const toggleRef = useRef<HTMLButtonElement>(null);
+  const activeHref = primaryNavigationHref(pathname);
+  useEffect(() => setOpen(false), [pathname]);
+  useEffect(() => {
+    if (!open) return;
+    const dismiss = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setOpen(false);
+        toggleRef.current?.focus();
+      }
+    };
+    document.addEventListener("keydown", dismiss);
+    return () => document.removeEventListener("keydown", dismiss);
+  }, [open]);
   const links = (
     <>
       {NAV.map(({ href, label }) => {
@@ -23,24 +46,8 @@ export default function Header() {
         return <NavigationLink
           key={href}
           href={href}
-          className={
-            (
-              href === "/"
-                ? pathname === "/" || pathname.startsWith("/database/")
-                : pathname.startsWith(href)
-            )
-              ? "active"
-              : ""
-          }
-          aria-current={
-            (
-              href === "/"
-                ? pathname === "/" || pathname.startsWith("/database/")
-                : pathname.startsWith(href)
-            )
-              ? "page"
-              : undefined
-          }
+          className={activeHref === href ? "active" : ""}
+          aria-current={activeHref === href ? (pathname.replace(/\/+$/, "") === href.replace(/\/+$/, "") ? "page" : "location") : undefined}
           onClick={() => setOpen(false)}
         >
           {label}
@@ -65,13 +72,15 @@ export default function Header() {
           {links}
         </nav>
         <button
+          ref={toggleRef}
+          type="button"
           className="nav-toggle"
           onClick={() => setOpen(!open)}
           aria-label={open ? "Close menu" : "Open menu"}
           aria-expanded={open}
           aria-controls="mobile-primary-navigation"
         >
-          {open ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+          {open ? <X aria-hidden="true" className="h-6 w-6" /> : <Menu aria-hidden="true" className="h-6 w-6" />}
         </button>
       </div>
       {open && (

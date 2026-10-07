@@ -4,7 +4,7 @@ import { safeBrowseReturnTo } from "../lib/omics-browse";
 import { readUseCaseFilters, encodeUseCaseSearch } from "../lib/use-cases-client";
 import type { CatalogueRecord } from "../services/omics/src/catalogue-query";
 import type { ResolvedMapping, UseCase } from "../services/omics/src/use-cases";
-import UseCaseEvidence from "../components/catalogue/UseCaseEvidence";
+import UseCaseEvidence, { UseCaseCitations, UseCaseReview } from "../components/catalogue/UseCaseEvidence";
 import UseCaseBacklinks from "../components/catalogue/UseCaseBacklinks";
 import { UseCaseRecordLink, UseCaseReturn } from "../components/catalogue/UseCaseNavigation";
 
@@ -75,6 +75,23 @@ describe("use-case evidence rendering", () => {
     expect(markup).toContain("/coverage");
     expect(markup).toContain("Not yet reviewed");
   });
+  it("keeps applicability and limitations visible while placing configuration details in an initially closed disclosure", () => {
+    const markup = html();
+    const start = markup.indexOf("<details");
+    expect(start).toBeGreaterThan(0);
+    expect(markup.slice(0, start)).toContain("The assay is a proxy for broader follow-up");
+    expect(markup.slice(0, start)).toContain("Missing predictions are not negatives");
+    expect(markup.slice(0, start)).toContain("Fixture configuration");
+    expect(markup).toContain("<summary>Inspect results, conditions and reproduction (1 recorded result)</summary>");
+    expect(markup).not.toMatch(/<details[^>]*\bopen/);
+    expect(markup.indexOf("0.75")).toBeGreaterThan(start);
+    expect(markup.indexOf("Population and split")).toBeGreaterThan(start);
+    expect(markup.indexOf("Evaluation methods, evidence and reproduction")).toBeGreaterThan(start);
+    const value = mapping();
+    value.evaluations[0].results = [];
+    expect(html(value)).toContain("Inspect results, conditions and reproduction (0 recorded results)");
+    expect(html(value)).toContain("Missing results are not zero scores");
+  });
   it("distinguishes recorded execution timings from complete runtime and shows individual uncertainty limitations", () => {
     const value = mapping();
     value.evaluations[0].evaluation.attributes.execution = { inference_and_fit_seconds: 0.187794, batch_size: 32, adapter_provenance: { device: "cpu" } };
@@ -116,6 +133,57 @@ describe("use-case evidence rendering", () => {
     const direct = mapping(); direct.relevance = "direct"; direct.evaluations = [];
     expect(html(direct)).toContain("Direct evidence for the stated endpoint");
     expect(html(direct)).toContain("No relevant evaluation is recorded");
+  });
+  it("preserves source locators even when a source is missing or its URL is unsafe", () => {
+    const markup = renderToStaticMarkup(<UseCaseCitations citations={[
+      { source_id: "missing", locator: "Figure 2" },
+      { source_id: "unsafe", locator: "Appendix" },
+    ]} sources={[record("unsafe", "source", { url: "javascript:alert(1)" })]} useCasePath="/use-cases/splicing-follow-up/" />);
+    expect(markup).toContain("missing");
+    expect(markup).toContain("Figure 2");
+    expect(markup).toContain("Fixture unsafe");
+    expect(markup).toContain("Appendix");
+    expect(markup).not.toContain("javascript:");
+    expect(markup).not.toContain("Original source");
+  });
+  it("distinguishes human review and displays verified execution links with their scope", () => {
+    expect(renderToStaticMarkup(<UseCaseReview review={{ ...review, method: "human_domain_review" }} />)).toContain("Human domain review");
+    const value = mapping();
+    value.protocol!.attributes.reproduction_url = "https://example.org/methods";
+    value.evaluations[0].results[0].result.source_ids = ["source"];
+    value.evaluations[0].results[0].sources = value.sources;
+    value.evaluations[0].results[0].result.attributes.source_locator = "Table 1";
+    delete value.evaluations[0].results[0].result.attributes.coverage;
+    value.evaluations[0].results[0].result.attributes.scored_count = 8;
+    value.evaluations[0].results[0].result.attributes.eligible_count = 10;
+    const markup = renderToStaticMarkup(<UseCaseEvidence mapping={value} useCasePath="/use-cases/splicing-follow-up/" executionLinks={{ evaluation: { href: "/database/protocol/protocol/#run-recipes", label: "Recompute metrics", explanation: "Uses saved predictions only" } }} />);
+    expect(markup).toContain("Recompute metrics");
+    expect(markup).toContain("Uses saved predictions only");
+    expect(markup).toContain("Original execution documentation");
+    expect(markup).toContain("https://example.org/methods");
+    expect(markup).toContain("8 scored / 10 eligible");
+    expect(markup).toContain("Table 1");
+    expect(markup).not.toContain("No execution recipe has been verified");
+  });
+  it("retains superseded mapping provenance without exposing stale endpoint claims", () => {
+    const value = mapping();
+    value.lifecycle = "superseded";
+    value.supersedes_id = "earlier-mapping";
+    value.protocol = null;
+    const markup = html(value);
+    expect(markup).toContain("Superseded mapping");
+    expect(markup).toContain("earlier-mapping");
+    expect(markup).not.toContain("Reporter assay splicing");
+    expect(markup).toContain("Reviewed evidence fingerprint");
+  });
+  it("renders empty backlinks as nothing and retains missing configuration identifiers", () => {
+    const links = { release_id: "fixture", input_sha256: "a".repeat(64), items: [] };
+    expect(renderToStaticMarkup(<UseCaseBacklinks links={links} configurations={{}} />)).toBe("");
+    const entries = [[], ["missing", "configuration"]].map((configuration_ids, index) => ({ use_case_id: "question", slug: "splicing-follow-up", title: "Splicing follow-up", mapping_id: `mapping-${index}`, configuration_ids }));
+    const markup = renderToStaticMarkup(<UseCaseBacklinks links={{ ...links, items: entries }} configurations={{ configuration: record("configuration", "configuration") }} />);
+    expect(markup).toContain("No evaluated configuration is linked");
+    expect(markup).toContain("missing");
+    expect(markup).toContain("Fixture configuration");
   });
   it("identifies exact configurations behind a model or suite backlink", () => {
     const markup = renderToStaticMarkup(<UseCaseBacklinks links={{ release_id: "fixture", input_sha256: "a".repeat(64), items: [{ use_case_id: "question", slug: "splicing-follow-up", title: "Splicing follow-up", mapping_id: "mapping", configuration_ids: ["configuration"] }] }} configurations={{ configuration: record("configuration", "configuration") }} />);

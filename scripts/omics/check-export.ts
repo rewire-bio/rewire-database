@@ -188,7 +188,7 @@ function escaped(value: string) {
 }
 const useCaseIndex = page("/use-cases/");
 failures.push(...checkPageMetadata(useCaseIndex, {
-  path: "/use-cases/", canonical: `${origin}/use-cases/`, title: "Biological research use cases | rewire.it",
+  path: "/use-cases/", canonical: `${origin}/use-cases/`, title: "Biological research use cases | rewirebio.io",
   description: "Research and clinical research questions guide evidence gathering. Explore collection plans, reviewed model comparisons and the limits of their evidence.",
   indexable: true, inSitemap: true, social: true,
   breadcrumbs: [{ name: "Database", path: "/" }, { name: "Use cases", path: "/use-cases/" }],
@@ -198,7 +198,7 @@ for (const entry of useCaseEntries) {
   const url = `/use-cases/${entry.slug}/`;
   const html = page(url);
   failures.push(...checkPageMetadata(html, {
-    path: url, canonical: origin + url, title: `${entry.title} | rewire.it`, description: entry.question,
+    path: url, canonical: origin + url, title: `${entry.title} | rewirebio.io`, description: entry.question,
     indexable: true, inSitemap: true, social: true,
     breadcrumbs: [{ name: "Database", path: "/" }, { name: "Use cases", path: "/use-cases/" }, { name: entry.title, path: url }],
   }, sitemap.urls));

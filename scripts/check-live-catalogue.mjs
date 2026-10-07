@@ -37,10 +37,14 @@ const useCaseBytes = manifest.coverage.use_cases ? await readFile(new URL(
 )) : undefined;
 const useCases = useCaseBytes ? JSON.parse(useCaseBytes.toString("utf8")) : undefined;
 const probe = Date.now();
+// The contributions function allows up to 120s per invocation; a shorter
+// probe timeout would abort a legitimate cold-start/full-catalogue response
+// and pile on competing retries instead of waiting for the real answer.
+const CATALOGUE_QUERY_TIMEOUT_MS = 135_000;
 async function query(name, input) {
   const response = await fetchWithRetry(
     `${origin}/api/trpc/catalogue.${name}?input=${encodeURIComponent(JSON.stringify(input))}&verify=${probe}`,
-    { redirect: "manual" },
+    { redirect: "manual", timeoutMs: CATALOGUE_QUERY_TIMEOUT_MS },
   );
   assert.equal(response.status, 200, `${name} must return 200`);
   assert.match(response.headers.get("content-type") || "", /application\/json/);

@@ -44,7 +44,7 @@ export async function publishedReceipt(options) {
 }
 
 export function inputGroups(filename) {
-  const shared = filename === '.github/workflows/firebase.yml' || /^package(-lock)?\.json$/.test(filename) || /^(scripts\/(deployment-plan|backend-deployment|configure-contribution-deployment|contribution-deployment|deploy-catalogue|hosting-web-deploy|deployment-transaction)\.mjs)$/.test(filename);
+  const shared = /^package(-lock)?\.json$/.test(filename) || /^(scripts\/(deployment-plan|backend-deployment|configure-contribution-deployment|contribution-deployment|deploy-catalogue|hosting-web-deploy|deployment-transaction)\.mjs)$/.test(filename);
   return {
     // Published artifact identity is independent of frontend source changes.
     data: filename === 'benchmark-data.lock.json',
@@ -81,6 +81,11 @@ export function classify(current, previous, forceFull = false) {
     mode: !forceFull && valid && current.data === previous.fingerprints.data && current.hosting === previous.fingerprints.hosting ? 'web' : 'full',
     backend: forceFull || !valid || current.backend !== previous.fingerprints.backend,
   };
+}
+/** Core acceptance is available only after a verified UI-only plan. */
+export function liveAcceptanceProfile(plan) {
+  const checked = classify(plan.fingerprints, plan.previous, plan.force_full);
+  return plan.mode === 'web' && plan.backend === false && checked.mode === 'web' && checked.backend === false ? 'core' : 'full';
 }
 export async function writeReceipt(root = process.cwd()) {
   const plan = JSON.parse(await readFile(path.join(root, 'workbench/deployment-plan.json'), 'utf8'));

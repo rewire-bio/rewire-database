@@ -3,7 +3,7 @@ import { createHash } from 'node:crypto';
 import { readFile } from "node:fs/promises";
 import { deployCatalogue, hostingVersion } from "./deployment-transaction.mjs";
 import { contributionProbeMode } from "./contribution-deployment.mjs";
-import { assertPublishedBase, classify, fingerprints, publishedReceipt, publicBytes, validReceipt } from "./deployment-plan.mjs";
+import { assertPublishedBase, classify, fingerprints, liveAcceptanceProfile, publishedReceipt, publicBytes, validReceipt } from "./deployment-plan.mjs";
 import { assertHistoricalDownloadsPresent, deployWebHosting } from "./hosting-web-deploy.mjs";
 import { assertNotSmokeExport } from "./assert-not-smoke-export.mjs";
 const contributionProbeArgument = `--contributions=${contributionProbeMode()}`;
@@ -40,6 +40,7 @@ if (!plan.backend) {
   if (!live || JSON.stringify(live) !== JSON.stringify(plan.previous))
     throw new Error('Backend deployment base changed; rebuild before publishing');
 }
+const acceptanceArgument = `--acceptance=${liveAcceptanceProfile(plan)}`;
 async function run(command, args, capture = false) {
   return new Promise((resolve, reject) => {
     const child = spawn(command, args, {
@@ -128,6 +129,7 @@ await deployCatalogue({
       "scripts/check-live-catalogue.mjs",
       "https://europe-west2-rewire-it.cloudfunctions.net/contributions",
       contributionProbeArgument,
+      acceptanceArgument,
     ]),
   async publishHosting(previous, markReleaseAttempt) {
     if (plan.mode === 'full') {
@@ -150,6 +152,7 @@ await deployCatalogue({
       "scripts/check-live-catalogue.mjs",
       "https://rewire-it.web.app",
       contributionProbeArgument,
+      acceptanceArgument,
       "--website",
     ]),
   restoreHosting: (version) =>

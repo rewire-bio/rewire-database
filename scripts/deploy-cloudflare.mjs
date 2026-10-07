@@ -1,4 +1,6 @@
 import { spawn } from "node:child_process";
+import { readFile } from "node:fs/promises";
+import { liveAcceptanceProfile } from "./deployment-plan.mjs";
 import { assertNotSmokeExport } from "./assert-not-smoke-export.mjs";
 
 assertNotSmokeExport();
@@ -10,6 +12,8 @@ const token = process.env.CLOUDFLARE_API_TOKEN;
 const origin = process.env.CLOUDFLARE_PUBLIC_ORIGIN;
 if (!account || !token || !origin) throw new Error("Cloudflare account, scoped API token and public verification origin are required");
 if (new URL(origin).protocol !== "https:") throw new Error("Use an HTTPS Cloudflare verification origin");
+const plan = JSON.parse(await readFile("workbench/deployment-plan.json", "utf8"));
+const acceptanceArgument = `--acceptance=${liveAcceptanceProfile(plan)}`;
 const endpoint = `https://api.cloudflare.com/client/v4/accounts/${account}/workers/scripts/rewire-database-web/deployments`;
 async function api(method = "GET", body) {
   const response = await fetch(endpoint, {
@@ -36,7 +40,7 @@ try {
   await run(["npx", "--no-install", "wrangler", "deploy"]);
   await run(["node", "scripts/check-hosting-http.mjs", origin]);
   await run(["node", "scripts/check-cloudflare-ranges.mjs", origin]);
-  await run(["node", "scripts/check-live-catalogue.mjs", origin, "--website"]);
+  await run(["node", "scripts/check-live-catalogue.mjs", origin, "--website", acceptanceArgument]);
 } catch (error) {
   try {
     await api("POST", { strategy: "percentage", versions: previous.versions });

@@ -1,11 +1,15 @@
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { readFile } from "node:fs/promises";
+import { pathToFileURL } from "node:url";
 import { fetchWithRetry, verifyResolutionPublications } from "./deployment-transaction.mjs";
 import { contributionProbeMode, verifyContributionGate } from "./contribution-deployment.mjs";
 
 // Read-only acceptance probe. No Firebase credentials, imports or writes.
-const args = process.argv.slice(2);
+export async function checkLiveCatalogue({ args = process.argv.slice(2), read = readFile, fetchImpl = fetchWithRetry, verifyGate = verifyContributionGate } = {}) {
+const acceptance = args.find(arg => arg.startsWith("--acceptance="))?.slice("--acceptance=".length) || "full";
+assert.ok(["core", "full"].includes(acceptance), "Unknown live acceptance profile");
+const core = acceptance === "core";
 const contributionMode = contributionProbeMode(args);
 const origin = (args.find(arg => !arg.startsWith("--")) || "https://benchmarks.rewirebio.io").replace(
   /\/$/,
@@ -21,18 +25,14 @@ assert.ok(
   !parsed.username && !parsed.password,
   "Do not put credentials in probe URLs",
 );
-const manifest = JSON.parse(
-  await readFile(
-    new URL("../public/omics/manifest.json", import.meta.url),
-    "utf8",
-  ),
-);
+const manifestBytes = await read(new URL("../public/omics/manifest.json", import.meta.url));
+const manifest = JSON.parse(manifestBytes.toString("utf8"));
 const expectedCount = Object.values(manifest.counts).reduce(
   (sum, count) => sum + Number(count),
   0,
 );
 const pinned = { release_id: manifest.release_id };
-const useCaseBytes = manifest.coverage.use_cases ? await readFile(new URL(
+const useCaseBytes = manifest.coverage.use_cases ? await read(new URL(
   `../public/omics/releases/${manifest.release_id}/use-cases.json`, import.meta.url,
 )) : undefined;
 const useCases = useCaseBytes ? JSON.parse(useCaseBytes.toString("utf8")) : undefined;
@@ -42,7 +42,7 @@ const probe = Date.now();
 // and pile on competing retries instead of waiting for the real answer.
 const CATALOGUE_QUERY_TIMEOUT_MS = 135_000;
 async function query(name, input) {
-  const response = await fetchWithRetry(
+  const response = await fetchImpl(
     `${origin}/api/trpc/catalogue.${name}?input=${encodeURIComponent(JSON.stringify(input))}&verify=${probe}`,
     { redirect: "manual", timeoutMs: CATALOGUE_QUERY_TIMEOUT_MS },
   );
@@ -122,7 +122,7 @@ assert.ok(
       item.review_status === "source_checked",
   ),
 );
-if (manifest.coverage.audit_history) {
+if (!core && manifest.coverage.audit_history) {
   const runs = await query("auditRuns", { ...pinned, limit: 2 });
   assert.equal(runs.total, manifest.coverage.audit_history.runs);
   const audit = await query("auditRecords", { ...pinned, limit: 2 });
@@ -144,7 +144,7 @@ if (manifest.coverage.audit_history) {
     corrected.resolutions.length > 0,
     "Exact-source correction must have linked resolution",
   );
-  const publishedResolutions = JSON.parse(await readFile(new URL(
+  const publishedResolutions = JSON.parse(await read(new URL(
     `../public/omics/releases/${manifest.release_id}/audit-resolutions.json`,
     import.meta.url,
   ), "utf8"));
@@ -176,7 +176,30 @@ if (manifest.coverage.audit_history) {
   }
 }
 
-if (useCases) {
+if (useCases && core) {
+  const entry = useCases.use_cases.find(item => item.slug === "brca1-brca2-germline-interpretation");
+  assert.ok(entry, "Core acceptance requires the BRCA use case");
+  const index = await query("useCases", { ...pinned, limit: 1 });
+  assert.equal(index.input_sha256, manifest.coverage.use_cases.input_sha256);
+  assert.equal(index.total, useCases.use_cases.length);
+  assert.deepEqual(index.items, useCases.use_cases.slice(0, 1));
+  const detail = await query("useCase", { ...pinned, slug: entry.slug, limit: 1 });
+  assert.equal(detail.input_sha256, useCases.input_sha256);
+  assert.deepEqual(detail.use_case, entry);
+  const mappings = useCases.mappings.filter(mapping => mapping.use_case_id === entry.id);
+  assert.equal(detail.mappings.length, mappings.length);
+  assert.ok(detail.evaluations_total > 0, "BRCA must retain evaluated evidence");
+  const mapping = mappings.find(item => item.lifecycle === "active" && ["direct", "proxy"].includes(item.relevance));
+  assert.ok(mapping, "BRCA must retain an active reviewed mapping");
+  const resolved = detail.mappings.find(item => item.id === mapping.id);
+  assert.ok(resolved, "BRCA must serve its reviewed mapping");
+  assert.deepEqual(Object.fromEntries(Object.keys(mapping).map(key => [key, resolved[key]])), mapping);
+  const links = await query("useCaseLinks", { ...pinned, id: mapping.protocol_id });
+  assert.equal(links.input_sha256, useCases.input_sha256);
+  assert.ok(links.items.some(item => item.mapping_id === mapping.id && item.slug === entry.slug), "BRCA protocol must link back to its use case");
+}
+
+if (useCases && !core) {
   const entries = [];
   let cursor;
   do {
@@ -241,50 +264,54 @@ if (useCases) {
   }
 }
 
-await verifyContributionGate(origin, {
+await verifyGate(origin, {
   mode: contributionMode,
   releaseId: manifest.release_id,
   probe,
 });
 
-if (process.argv.includes("--website")) {
-  const response = await fetchWithRetry(
+if (args.includes("--website")) {
+  const response = await fetchImpl(
     `${origin}/omics/manifest.json?verify=${probe}`,
     { redirect: "manual", headers: { "Cache-Control": "no-cache" } },
   );
   assert.equal(response.status, 200, "Live website manifest must be available");
-  if (manifest.coverage.audit_history) {
-    const auditPage = await fetchWithRetry(`${origin}/audits/?verify=${probe}`);
+  if (!core && manifest.coverage.audit_history) {
+    const auditPage = await fetchImpl(`${origin}/audits/?verify=${probe}`);
     assert.equal(auditPage.status, 200);
     assert.ok((await auditPage.text()).includes("Catalogue audit history"));
   }
   if (useCases) {
-    const index = await fetchWithRetry(`${origin}/use-cases/?verify=${probe}`);
+    const index = await fetchImpl(`${origin}/use-cases/?verify=${probe}`);
     assert.equal(index.status, 200, "Use-case navigation must be published");
     const html = await index.text();
     for (const entry of useCases.use_cases.slice(0, 10)) assert.ok(html.includes(`/use-cases/${entry.slug}/`));
-    for (const entry of useCases.use_cases) {
-      const page = await fetchWithRetry(`${origin}/use-cases/${entry.slug}/?verify=${probe}`);
+    for (const entry of useCases.use_cases.filter(entry => !core || entry.slug === "brca1-brca2-germline-interpretation")) {
+      const page = await fetchImpl(`${origin}/use-cases/${entry.slug}/?verify=${probe}`);
       assert.equal(page.status, 200, "Reviewed use-case page must be published");
       const detailHtml = await page.text();
       assert.ok(detailHtml.includes(useCases.release_id) && detailHtml.includes(useCases.input_sha256));
     }
-    const artifact = await fetchWithRetry(`${origin}/omics/releases/${manifest.release_id}/use-cases.json?verify=${probe}`);
+    const artifact = await fetchImpl(`${origin}/omics/releases/${manifest.release_id}/use-cases.json?verify=${probe}`);
     assert.equal(artifact.status, 200);
     assert.equal(createHash("sha256").update(Buffer.from(await artifact.arrayBuffer())).digest("hex"), manifest.files["use-cases.json"]);
-    for (const source of manifest.coverage.use_case_sources || []) {
-      const copy = await fetchWithRetry(`${origin}/omics/sources/${source.sha256}.md?verify=${probe}`);
+    for (const source of core ? [] : manifest.coverage.use_case_sources || []) {
+      const copy = await fetchImpl(`${origin}/omics/sources/${source.sha256}.md?verify=${probe}`);
       assert.equal(copy.status, 200, "Reviewed source copies must be publicly accessible");
       assert.equal(createHash("sha256").update(Buffer.from(await copy.arrayBuffer())).digest("hex"), source.sha256);
     }
   }
   assert.equal(
-    (await response.json()).release_id,
-    manifest.release_id,
-    "Live website and API must use the same release",
+    createHash("sha256").update(Buffer.from(await response.arrayBuffer())).digest("hex"),
+    createHash("sha256").update(manifestBytes).digest("hex"),
+    "Live website manifest bytes must match the checked release",
   );
 }
 
 console.log(
-  `Read-only live check passed: ${origin}, release ${manifest.release_id}, ${expectedCount} records; BarcodeBERT links and ${contributionMode} contribution gates verified.`,
+  `Read-only ${acceptance} live check passed: ${origin}, release ${manifest.release_id}, ${expectedCount} records; BarcodeBERT links and ${contributionMode} contribution gates verified.`,
 );
+
+}
+
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) await checkLiveCatalogue();

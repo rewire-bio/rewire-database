@@ -27,6 +27,8 @@ Direct static asset requests are unlimited and free. Worker invocations, includi
 
 The existing workflow stages assets on every checked build. Set the database repository's `CLOUDFLARE_API_TOKEN` secret to a durable token scoped to this account's Workers Scripts edit permission (and account read if required by Wrangler). Existing `CLOUDFLARE_ACCOUNT_ID` is reused. Set `CLOUDFLARE_PUBLIC_ORIGIN=https://benchmarks.rewirebio.io` and enable `CLOUDFLARE_DEPLOY_ENABLED=true` only after bootstrap and domain verification.
 
+Production publication now checks this configuration before building. A disabled Cloudflare flag or missing token fails the production run instead of reporting a partial Firebase-only publication as successful. UI-only builds use SHA-verified current-release files and bounded core catalogue acceptance; data/backend changes retain exhaustive checks.
+
 GitHub secrets cannot be read back or copied out of the blog repository. Supply the scoped token directly to the database repository or use an organization secret explicitly shared with this repository. Never put a short-lived Wrangler OAuth token into CI, logs, commits or documentation.
 
 On main, Firebase publishes its API and complete origin first with its existing rollback transaction. Cloudflare then captures the previous Worker deployment, publishes the corresponding core UI, and checks HTTP behavior and the live catalogue. A failed Cloudflare publish/probe restores the prior Worker deployment; Firebase retains the newly reviewed, backward-compatible release and all historical release IDs. Cloudflare CI refuses to run without an existing rollback target. Backend contract changes must remain compatible with the preceding frontend; this is already required for Firebase rollback.

@@ -127,7 +127,8 @@ export async function buildStatic({ root = process.cwd(), build, signal, current
 export function runNextBuild({ root, signal }) {
   signal?.throwIfAborted();
   return new Promise((resolve, reject) => {
-    const child = spawn(process.execPath, [path.join(root, 'node_modules/next/dist/bin/next'), 'build'], {
+    const preload = fileURLToPath(new URL('./static-export-links-preload.mjs', import.meta.url));
+    const child = spawn(process.execPath, ['--import', preload, path.join(root, 'node_modules/next/dist/bin/next'), 'build'], {
       cwd: root, stdio: 'inherit', detached: process.platform !== 'win32',
     });
     let signalError;

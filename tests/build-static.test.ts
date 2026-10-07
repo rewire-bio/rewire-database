@@ -216,6 +216,10 @@ describe('static build CLI interruption', () => {
     const root = fixture();
     const fakeNext = path.join(root, 'node_modules/next/dist/bin/next');
     fs.mkdirSync(path.dirname(fakeNext), { recursive: true });
+    const nextRoot = path.join(root, 'node_modules/next');
+    fs.writeFileSync(path.join(nextRoot, 'package.json'), JSON.stringify({ version: '14.2.16' }));
+    fs.mkdirSync(path.join(nextRoot, 'dist/export'), { recursive: true });
+    fs.copyFileSync(fileURLToPath(new URL('../node_modules/next/dist/export/index.js', import.meta.url)), path.join(nextRoot, 'dist/export/index.js'));
     fs.writeFileSync(fakeNext, "require('node:fs').writeFileSync('child-ready', String(process.pid)); setInterval(() => {}, 1000);\n");
     const script = fileURLToPath(new URL('../scripts/build-static.mjs', import.meta.url));
     const child = spawn(process.execPath, [script], { cwd: root, stdio: 'pipe' });

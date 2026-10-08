@@ -2,15 +2,14 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { readFileSync } from "node:fs";
-import { join } from "node:path";
 import { getLiterature } from "@/lib/benchmark-literature";
+import { dataPath } from "@/lib/data-pin";
 import { recordHref } from "@/lib/omics";
 import { buildCatalogue } from "@/lib/catalogue-build";
 import LegacyCatalogueRedirect from "../../../LegacyCatalogueRedirect";
 
 function paperDestination(id: string) {
-  // Reuse the validated build snapshot. Parsing it twice for each historical
-  // paper dominated even a small PR export (100 legacy papers).
+  // Reuse the instance's validated snapshot rather than parsing it per request.
   const { catalogue } = buildCatalogue();
   const record = catalogue.records.find(
     (item) => item.kind === "source" && item.id === id,
@@ -19,7 +18,7 @@ function paperDestination(id: string) {
 }
 function exclusionReason(id: string) {
   const decisions = readFileSync(
-    join(process.cwd(), "data/omics/scope-audit.jsonl"),
+    dataPath("data/omics/scope-audit.jsonl"),
     "utf8",
   )
     .trim()
@@ -35,9 +34,6 @@ function exclusionReason(id: string) {
   return decisions.find(
     (item) => item.paper_id === id && item.decision === "excluded",
   )?.reason;
-}
-export function generateStaticParams() {
-  return getLiterature().papers.map((paper) => ({ id: paper.id }));
 }
 export function generateMetadata({
   params,

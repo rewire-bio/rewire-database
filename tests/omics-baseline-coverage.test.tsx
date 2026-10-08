@@ -109,5 +109,3 @@ describe("baseline coverage and model evaluation audit", () => {
   });
 
 });
-
-vi.mock("../lib/downloads", async () => import("./fixtures/downloads"));

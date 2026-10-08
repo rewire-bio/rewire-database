@@ -4,19 +4,10 @@ import type { Metadata } from "next";
 import { buildCatalogue } from "@/lib/catalogue-build";
 import { recordRouteKinds } from "@/lib/omics";
 import { getDetailOr404 } from "@/lib/entity-detail";
-import { filterIdsForSmoke } from "@/lib/smoke-selection";
 import { DatasetDetail } from "@/app/database/_entities/dataset";
 
 type Params = { id: string };
 const KIND = "dataset_subset" as const;
-
-export function generateStaticParams() {
-  const { catalogue } = buildCatalogue();
-  const ids = catalogue.records
-    .filter((record) => record.kind === KIND)
-    .map((record) => record.id);
-  return filterIdsForSmoke(KIND, ids).map((id) => ({ id }));
-}
 
 export function generateMetadata({ params }: { params: Params }): Metadata {
   const { catalogue, query } = buildCatalogue();

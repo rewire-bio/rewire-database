@@ -3,21 +3,11 @@ import { recordSearchMetadata } from "@/lib/catalogue-seo";
 import type { Metadata } from "next";
 import { buildCatalogue } from "@/lib/catalogue-build";
 import { recordRouteKinds } from "@/lib/omics";
-import { getDetailOr404, legacyAliasRecords } from "@/lib/entity-detail";
-import { filterIdsForSmoke } from "@/lib/smoke-selection";
+import { getDetailOr404 } from "@/lib/entity-detail";
 import { ClaimDetail } from "./detail";
 
 type Params = { id: string };
 const KIND = "claim" as const;
-
-export function generateStaticParams() {
-  const { catalogue } = buildCatalogue();
-  const ids = [
-    ...catalogue.records.filter((record) => record.kind === KIND),
-    ...legacyAliasRecords(catalogue, KIND),
-  ].map((record) => record.id);
-  return filterIdsForSmoke(KIND, ids).map((id) => ({ id }));
-}
 
 export function generateMetadata({ params }: { params: Params }): Metadata {
   const { catalogue, query } = buildCatalogue();

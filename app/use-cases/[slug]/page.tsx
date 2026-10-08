@@ -1,4 +1,4 @@
-import { githubDownloadUrl } from "@/lib/downloads";
+import { downloadHref } from "@/lib/downloads";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import PageHeader from "@/components/PageHeader";
@@ -8,9 +8,8 @@ import UseCaseArticles from "@/components/catalogue/UseCaseArticles";
 import { relatedUseCaseArticles } from "@/lib/use-case-articles";
 import { UseCaseReturn } from "@/components/catalogue/UseCaseNavigation";
 import SectionNavigation from "@/components/catalogue/SectionNavigation";
-import { buildUseCases, fullUseCaseDetail } from "@/lib/use-cases-build";
+import { fullUseCaseDetail } from "@/lib/use-cases-build";
 import { buildCatalogue } from "@/lib/catalogue-build";
-import { filterSlugsForSmoke } from "@/lib/smoke-selection";
 import { recordHref } from "@/lib/omics";
 import { researchAreaLabel } from "@/lib/omics-browse";
 import { socialMetadata } from "@/lib/catalogue-sharing";
@@ -19,10 +18,6 @@ import { reproductionSchema } from "@/services/omics/src/run-recipe";
 import styles from "@/components/catalogue/UseCases.module.css";
 
 type Params = { slug: string };
-export function generateStaticParams() {
-  const slugs = buildUseCases().entries.map(({ slug }) => slug);
-  return filterSlugsForSmoke(slugs).map((slug) => ({ slug }));
-}
 export function generateMetadata({ params }: { params: Params }): Metadata {
   const detail = fullUseCaseDetail(params.slug);
   if (!detail) return {};
@@ -121,7 +116,7 @@ export default function UseCasePage({ params }: { params: Params }) {
           <UseCaseCitations citations={entry.citations} sources={detail.sources} useCasePath={path} />
           <details><summary>Release provenance and downloads</summary>
             <p>Release <code>{detail.release_id}</code></p><p>Use-case input digest <code>{detail.input_sha256}</code></p>
-            <p><a href={githubDownloadUrl(`/omics/releases/${detail.release_id}/use-cases.json`)}>Download questions, collection plans and review metadata (JSON) (gzip)</a> · <a href={githubDownloadUrl(`/omics/releases/${detail.release_id}/manifest.json`)}>Verify release checksums (gzip)</a></p>
+            <p><a href={downloadHref(`/omics/releases/${detail.release_id}/use-cases.json`)}>Download questions, collection plans and review metadata (JSON) (gzip)</a> · <a href={downloadHref(`/omics/releases/${detail.release_id}/manifest.json`)}>Verify release checksums (gzip)</a></p>
             <p>Question <code>{entry.id}</code>. Any numerical results on this page come from this release&apos;s existing evaluation records.</p>
           </details>
         </section>

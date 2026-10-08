@@ -1,10 +1,9 @@
-import { githubDownloadUrl } from "@/lib/downloads";
+import { downloadHref } from "@/lib/downloads";
 import Breadcrumbs from "@/components/catalogue/Breadcrumbs";
 import { recordBreadcrumbs } from "@/lib/catalogue-sharing";
 import { catalogueText } from "@/lib/catalogue-text";
 import Link from "next/link";
 import { Fragment } from "react";
-import { buildCatalogue } from "@/lib/catalogue-build";
 import UseCaseBacklinks from "@/components/catalogue/UseCaseBacklinks";
 import { recordHref, displayValue, originLabel, safeSourceUrl, type OmicsRecord } from "@/lib/omics";
 import { EvidenceConcerns } from "@/components/catalogue/Profile";
@@ -17,9 +16,8 @@ import SectionNavigation, {
 } from "@/components/catalogue/SectionNavigation";
 import ResearchReadiness from "@/components/catalogue/ResearchReadiness";
 import { InvestigationList } from "@/components/catalogue/ResearchInvestigation";
-import { getResearch } from "@/services/omics/src/research";
 import { singularKindLabels, groupEntities, testedEntities, evaluationEntities, datasetEntities } from "@/lib/omics-browse";
-import { loadUseCaseContext, type RecordDetail } from "@/lib/entity-detail";
+import type { EvaluationRecordPage } from "@/lib/record-page";
 import styles from "../../database.module.css";
 
 function Links({ records }: { records: OmicsRecord[] }) {
@@ -59,31 +57,17 @@ function Fields({
 }
 
 /** An evaluation: the model, data and conditions behind a result, plus its
- * own reviewed research readiness. No alias records currently route to the
- * `evaluation` legacy segment (see workbench/entity-page-split-checkpoint.md). */
-export function EvaluationDetail({ detail }: { detail: RecordDetail }) {
-  const { query, catalogue } = buildCatalogue();
+ * own reviewed research readiness. Renders only the prepared page, which the
+ * importer builds with the release's query engine. */
+export function EvaluationDetail({ page }: { page: EvaluationRecordPage }) {
+  const { detail, results, evidence, manifests } = page;
   const { record } = detail;
-  const { useCaseLinks, useCaseConfigurations } = loadUseCaseContext(
-    query,
-    record,
-  );
-  const readiness = query.researchReadiness({ id: record.id, limit: 1 }).items[0];
-  const manifests = readiness
-    ? getResearch(catalogue).manifests.filter((manifest) =>
-        readiness.manifest_ids.includes(manifest.id),
-      )
-    : [];
-  const investigations = readiness
-    ? query.investigations({ record_id: record.id, limit: 25 })
-    : undefined;
-  const results = query.results({ id: record.id, limit: 25 });
+  const useCaseLinks = page.use_case_links;
+  const useCaseConfigurations = page.use_case_configurations;
+  const context = new Map(page.context.map((item) => [item.id, item]));
+  const readiness = page.readiness ?? undefined;
+  const investigations = page.investigations ?? undefined;
   const first = results.items[0];
-  const evidence = query.evidence({
-    id: record.id,
-    scope: "record_context",
-    limit: 10,
-  });
   const summary = catalogueText(record.description);
   const modelLinks = first
     ? testedEntities(first)
@@ -113,13 +97,7 @@ export function EvaluationDetail({ detail }: { detail: RecordDetail }) {
     ...benchmarkLinks,
     ...datasetLinks,
   ]);
-  const identitySubjectId = (
-    record.attributes.source_identity as { subject_id?: unknown } | undefined
-  )?.subject_id;
-  const identitySubject =
-    typeof identitySubjectId === "string"
-      ? query.get({ id: identitySubjectId, include_comparisons: false })?.record
-      : undefined;
+  const identitySubject = page.identity_subject ?? undefined;
   const proposals = [...detail.direct, ...detail.reverse].filter(
     (item) => item.relation === "applicable_to",
   );
@@ -167,13 +145,7 @@ export function EvaluationDetail({ detail }: { detail: RecordDetail }) {
             <ResearchReadiness
               assessment={readiness}
               manifests={manifests}
-              records={manifests.flatMap((manifest) => {
-                const protocol = query.get({
-                  id: manifest.protocol_id,
-                  include_comparisons: false,
-                })?.record;
-                return protocol ? [protocol] : [];
-              })}
+              records={page.manifest_protocols}
             />
           )}
           {investigations && investigations.items.length > 0 && (
@@ -188,7 +160,7 @@ export function EvaluationDetail({ detail }: { detail: RecordDetail }) {
             </section>
           )}
           <Results
-            key={`${catalogue.release_id}:${record.id}`}
+            key={`${page.release_id}:${record.id}`}
             id={record.id}
             initial={results}
             title="Evaluation results"
@@ -222,8 +194,8 @@ export function EvaluationDetail({ detail }: { detail: RecordDetail }) {
           </section>
           <Reproduction
             evaluation={record}
-            records={catalogue.records}
-            recordById={query.record}
+            records={page.context}
+            recordById={(id) => context.get(id)}
             compact
           />
           {proposals.length > 0 && (
@@ -253,7 +225,7 @@ export function EvaluationDetail({ detail }: { detail: RecordDetail }) {
               not establish independent reproduction.
             </p>
             <EvidenceTable
-              key={`${catalogue.release_id}:${record.id}:evidence`}
+              key={`${page.release_id}:${record.id}:evidence`}
               id={record.id}
               initial={evidence}
               initialScope="record_context"
@@ -262,7 +234,7 @@ export function EvaluationDetail({ detail }: { detail: RecordDetail }) {
             />
             <section id="sources" className={styles.section}>
               <h2>Sources and history</h2>
-              {!!catalogue.coverage.audit_history && (
+              {page.audit_history && (
                 <p>
                   <Link
                     href={`/audits/?record=${encodeURIComponent(record.id)}`}
@@ -272,7 +244,7 @@ export function EvaluationDetail({ detail }: { detail: RecordDetail }) {
                 </p>
               )}
               <p className={styles.muted}>
-                Release {catalogue.release_id} · Record review:{" "}
+                Release {page.release_id} · Record review:{" "}
                 {record.status.replace(/_/g, " ")}
               </p>
               <details className={styles.profileDisclosure}>
@@ -323,7 +295,7 @@ export function EvaluationDetail({ detail }: { detail: RecordDetail }) {
                     </p>
                   ))}
                 <a
-                  href={githubDownloadUrl(`/omics/releases/${catalogue.release_id}/records.jsonl`)}
+                  href={downloadHref(`/omics/releases/${page.release_id}/records.jsonl`)}
                 >
                   Download this release (gzip)
                 </a>

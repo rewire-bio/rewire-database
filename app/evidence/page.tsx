@@ -1,4 +1,4 @@
-import { githubDownloadUrl } from "@/lib/downloads";
+import { downloadHref } from "@/lib/downloads";
 import Breadcrumbs from "@/components/catalogue/Breadcrumbs";
 import { socialMetadata } from "@/lib/catalogue-sharing";
 import type { Metadata } from "next";
@@ -229,13 +229,13 @@ export default function EvidenceGuide() {
               count of independent findings.
             </p>
             <div className={styles.downloads}>
-              <a href={githubDownloadUrl(`${release}/evidence.csv`)}>
+              <a href={downloadHref(`${release}/evidence.csv`)}>
                 Evidence table (CSV) (gzip)
               </a>
-              <a href={githubDownloadUrl(`${release}/evidence.jsonl`)}>
+              <a href={downloadHref(`${release}/evidence.jsonl`)}>
                 Evidence table (JSONL) (gzip)
               </a>
-              <a href={githubDownloadUrl(`${release}/manifest.json`)}>Release checksums (gzip)</a>
+              <a href={downloadHref(`${release}/manifest.json`)}>Release checksums (gzip)</a>
             </div>
             <p>
               Each row stores the stable record and field, original value,

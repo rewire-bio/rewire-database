@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import { dataPath } from "./data-pin";
 
 export const DOMAIN_IDS = [
   "dna-genomes",
@@ -140,7 +141,7 @@ export function validateLiterature(papers: LiteraturePaper[], results: Literatur
 }
 
 export function getLiterature(): { papers: LiteraturePaper[]; results: LiteratureResult[] } {
-  const root = path.join(process.cwd(), "data", "benchmark-literature");
+  const root = dataPath("data", "benchmark-literature");
   if (!fs.existsSync(path.join(root, "papers.json")) || !fs.existsSync(path.join(root, "results.csv"))) return { papers: [], results: [] };
   const papers = JSON.parse(fs.readFileSync(path.join(root, "papers.json"), "utf8")) as LiteraturePaper[];
   const csvRows = parseCsv(fs.readFileSync(path.join(root, "results.csv"), "utf8"));

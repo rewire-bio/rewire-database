@@ -23,6 +23,10 @@ const plexMono = IBM_Plex_Mono({
   display: "swap",
 });
 
+// Every page renders on request from the running revision's data pin, so a
+// data release is adopted without rebuilding. The edge caches the HTML.
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   metadataBase: new URL("https://benchmarks.rewirebio.io"),
   title: { default: "Biological model benchmarks | rewirebio.io", template: "%s" },

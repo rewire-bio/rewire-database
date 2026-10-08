@@ -8,42 +8,43 @@ import { assertPublicationBase, publicationDecision } from '../scripts/publicati
 const roots: string[] = [];
 const commit = 'a'.repeat(40);
 const release_id = '2026-10-07-aaaaaaaaaaaa';
-const fingerprints = {data: 'b'.repeat(64), backend: 'c'.repeat(64), hosting: 'd'.repeat(64)};
+const fingerprints = {data: 'b'.repeat(64), backend: 'c'.repeat(64), hosting: 'd'.repeat(64), frontend: 'e'.repeat(64)};
 const manifest = JSON.stringify({release_id});
-const receipt = {schema: 2, producer_repository: 'rewire-bio/rewire-benchmark-data', producer_revision: '1'.repeat(40), commit, release_id, fingerprints, manifest_sha256: createHash('sha256').update(manifest).digest('hex')};
+const receipt = {schema: 3, producer_repository: 'rewire-bio/rewire-benchmark-data', producer_revision: '1'.repeat(40), producer_manifest_sha256: '2'.repeat(64),
+  commit, frontend_version: commit, release_id, fingerprints, manifest_sha256: createHash('sha256').update(manifest).digest('hex')};
 async function file(root: string, name: string, content: string) {
   await mkdir(path.dirname(path.join(root, name)), {recursive: true});
   await writeFile(path.join(root, name), content);
 }
 async function fixture(mode = 'web') {
   const root = await mkdtemp(path.join(os.tmpdir(), 'publication-')); roots.push(root);
-  await file(root, 'out/index.html', 'checked homepage');
-  await file(root, 'out/404.html', 'checked missing');
-  await file(root, 'out/deployment.json', JSON.stringify(receipt));
-  await file(root, 'out/omics/releases/huge.jsonl', 'historical data not transported');
+  await file(root, 'build/web/server.js', 'checked server');
+  await file(root, 'build/web/.next/static/chunk.js', 'checked chunk');
+  await file(root, 'public/omics/releases/huge.jsonl', 'historical data not transported');
   await file(root, 'public/omics/manifest.json', manifest);
   await file(root, 'public/omics/catalogue.json', '[]');
   await file(root, 'workbench/deployment-plan.json', JSON.stringify({mode, commit, fingerprints, previous: receipt}));
+  await file(root, 'workbench/deployment-receipt.json', JSON.stringify(receipt));
   return root;
 }
 afterEach(async () => { for (const root of roots.splice(0)) await rm(root, {recursive:true, force:true}); });
 describe('checked publication handoff', () => {
-  it('transports verified UI and current identity without historical downloads', async () => {
+  it('transports the checked standalone frontend and current identity without downloads', async () => {
     const root = await fixture(); const stage = path.join(root, 'workbench/publication');
     await packPublication(root); const metadata = await verifyPublication(stage, commit);
     expect(metadata.files.some((file: {path: string}) => file.path.includes('huge.jsonl'))).toBe(false);
     const target = await mkdtemp(path.join(os.tmpdir(), 'restored-')); roots.push(target);
     await restorePublication(stage, target, commit);
-    expect(await readFile(path.join(target, 'out/index.html'), 'utf8')).toBe('checked homepage');
-    expect(await readFile(path.join(target, 'public/omics/manifest.json'), 'utf8')).toBe(manifest);
+    expect(await readFile(path.join(target, 'build/web/server.js'), 'utf8')).toBe('checked server');
+    expect(await readFile(path.join(target, 'workbench/deployment-receipt.json'), 'utf8')).toBe(JSON.stringify(receipt));
   });
   it('rejects corrupted payloads and foreign source commits before restoring', async () => {
     const root = await fixture(); await packPublication(root); const stage = path.join(root, 'workbench/publication');
     await expect(verifyPublication(stage, 'f'.repeat(40))).rejects.toThrow('Invalid');
-    await writeFile(path.join(stage, 'out/index.html'), 'tampered');
+    await writeFile(path.join(stage, 'build/web/server.js'), 'tampered');
     await expect(verifyPublication(stage, commit)).rejects.toThrow('checksum');
   });
-  it('rejects unexpected files, path traversal and symlinks', async () => {
+  it('rejects unexpected files, path traversal and symlinks, in the build too', async () => {
     const root = await fixture(); await packPublication(root); const stage = path.join(root, 'workbench/publication');
     await symlink('/etc/passwd', path.join(stage, 'private'));
     await expect(verifyPublication(stage, commit)).rejects.toThrow('symlinks');
@@ -52,27 +53,13 @@ describe('checked publication handoff', () => {
     metadata.files.push({path: '../secret', bytes:0, sha256: 'a'.repeat(64)});
     await writeFile(path.join(stage, 'artifact.json'), JSON.stringify(metadata));
     await expect(verifyPublication(stage, commit)).rejects.toThrow('Unsafe');
+    const linked = await fixture(); await symlink('/usr/lib', path.join(linked, 'build/web/node_modules'));
+    await expect(packPublication(linked)).rejects.toThrow('symlinks');
   });
-  it('requires identical hydrated data and preserves full historical exports', async () => {
+  it('requires the hydrated release to equal the checked one', async () => {
     const root = await fixture('full'); await packPublication(root); const stage = path.join(root, 'workbench/publication');
-    const target = await fixture('full'); await rm(path.join(target, 'out'), {recursive:true});
-    await file(target, 'public/omics/releases/history.jsonl', 'immutable');
-    await restorePublication(stage, target, commit);
-    expect(await readFile(path.join(target, 'out/omics/releases/history.jsonl'), 'utf8')).toBe('immutable');
     const wrong = await fixture('full'); await file(wrong, 'public/omics/catalogue.json', '[1]');
     await expect(restorePublication(stage, wrong, commit)).rejects.toThrow('differs');
-  });
-  it('restores a changed-data frontend without transporting or restoring historical downloads', async () => {
-    const root = await fixture('full'); await packPublication(root);
-    const target = await fixture('full'); await rm(path.join(target, 'out'), {recursive:true});
-    await file(target, 'public/omics/releases/history.jsonl', 'immutable');
-    await restorePublication(path.join(root, 'workbench/publication'), target, commit, {frontendOnly:true});
-    expect(await readFile(path.join(target, 'out/index.html'), 'utf8')).toBe('checked homepage');
-    await expect(readFile(path.join(target, 'out/omics/releases/history.jsonl'))).rejects.toThrow();
-    expect(await readFile(path.join(target, 'public/omics/releases/history.jsonl'), 'utf8')).toBe('immutable');
-    const wrong = await fixture('full'); await rm(path.join(wrong, 'out'), {recursive:true});
-    await file(wrong, 'public/omics/catalogue.json', '[1]');
-    await expect(restorePublication(path.join(root, 'workbench/publication'), wrong, commit, {frontendOnly:true})).rejects.toThrow('differs');
   });
 });
 describe('publication lock preflight', () => {

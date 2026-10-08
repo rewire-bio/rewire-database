@@ -67,6 +67,24 @@ export const entityKindLabel = (kind: string): string =>
     source: "Source",
     claim: "Evidence claim",
   })[kind] || kind;
+/** Alias routes preserve published links: the canonical kind plus any listed legacy kinds. */
+export function recordRouteKinds(record: {
+  kind: EntityKind;
+  attributes: Record<string, unknown>;
+}): EntityKind[] {
+  const aliases = record.attributes.legacy_kinds;
+  return [
+    ...new Set([
+      record.kind,
+      ...(Array.isArray(aliases)
+        ? aliases.filter((kind): kind is EntityKind =>
+            (entityKinds as readonly unknown[]).includes(kind),
+          )
+        : []),
+    ]),
+  ];
+}
+
 /** Legacy links use model/benchmark as evaluation roles, not current entity kinds. */
 export function relationAcceptsKind(relation: string, kind: string): boolean {
   if (relation === "model") return isModelSubject(kind);

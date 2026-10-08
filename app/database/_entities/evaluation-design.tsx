@@ -1,4 +1,4 @@
-import { githubDownloadUrl } from "@/lib/downloads";
+import { downloadHref } from "@/lib/downloads";
 import Breadcrumbs from "@/components/catalogue/Breadcrumbs";
 import BenchmarkCoverage from "@/components/catalogue/BenchmarkCoverage";
 import { recordBreadcrumbs } from "@/lib/catalogue-sharing";
@@ -527,7 +527,7 @@ export function EvaluationDesignEntityDetail({ detail }: { detail: RecordDetail 
                     </p>
                   ))}
                 <a
-                  href={githubDownloadUrl(`/omics/releases/${catalogue.release_id}/records.jsonl`)}
+                  href={downloadHref(`/omics/releases/${catalogue.release_id}/records.jsonl`)}
                 >
                   Download this release (gzip)
                 </a>

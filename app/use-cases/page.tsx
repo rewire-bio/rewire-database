@@ -1,4 +1,4 @@
-import { githubDownloadUrl } from "@/lib/downloads";
+import { downloadHref } from "@/lib/downloads";
 import type { Metadata } from "next";
 import PageHeader from "@/components/PageHeader";
 import UseCaseExplorer from "@/components/catalogue/UseCaseExplorer";
@@ -82,8 +82,8 @@ export default function UseCasesPage() {
         <p><a href="/contribute/">Contribute evidence or a correction</a> · <a href="/evidence/">Evidence and review methods</a></p>
         <details><summary>Release and downloads</summary>
           <p>Release <code>{initial.release_id}</code></p>
-          {initial.input_sha256 && <><p>Use-case input digest <code>{initial.input_sha256}</code></p><p><a href={githubDownloadUrl(`/omics/releases/${initial.release_id}/use-cases.json`)}>Download questions, collection plans and applicability mappings (JSON) (gzip)</a></p></>}
-          <p><a href={githubDownloadUrl(`/omics/releases/${initial.release_id}/manifest.json`)}>Release checksums (gzip)</a></p>
+          {initial.input_sha256 && <><p>Use-case input digest <code>{initial.input_sha256}</code></p><p><a href={downloadHref(`/omics/releases/${initial.release_id}/use-cases.json`)}>Download questions, collection plans and applicability mappings (JSON) (gzip)</a></p></>}
+          <p><a href={downloadHref(`/omics/releases/${initial.release_id}/manifest.json`)}>Release checksums (gzip)</a></p>
         </details>
       </section>
     </div>

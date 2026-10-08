@@ -75,6 +75,14 @@ export async function smokeDeployment(origin, { request = fetch, log = console.l
   for (const record of [models.items[0], benchmarks.items[0]]) {
     assert.match(await html(`/database/${record.kind}/${encodeURIComponent(record.id)}/`), /<h1[ >]/, 'Detail page missing heading');
   }
+  // Result and evaluation pages render on request from prepared page documents.
+  for (const kind of ['result', 'evaluation']) {
+    const [record] = (await list({ kind, limit: 1 })).items;
+    assert.ok(record, `No ${kind} record to check`);
+    const page = await html(`/database/${kind}/${encodeURIComponent(record.id)}/`);
+    assert.match(page, /<h1[ >]/, `${kind} page missing heading`);
+    assert.ok(page.includes(release), `${kind} page must name its release`);
+  }
   log(`Deployment smoke passed for ${base.origin} (${release}).`);
 }
 

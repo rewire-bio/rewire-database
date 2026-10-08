@@ -132,5 +132,3 @@ describe("copying official commands and reviewed recipes", () => {
     expect(environment.remove).toHaveBeenCalledWith("popstate", expect.any(Function));
   });
 });
-
-vi.mock("../lib/downloads", async () => import("./fixtures/downloads"));

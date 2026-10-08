@@ -15,7 +15,8 @@ export async function assertPublicationBase(plan, { receipt = publishedReceipt, 
   if (validReceipt(plan.previous)) {
     if (!current) throw Error('Live publication receipt is unavailable');
     const same = JSON.stringify(current) === JSON.stringify(plan.previous);
-    const original = !same && plan.mode === 'web' && plan.backend === false && plan.fingerprints
+    // A plan that reuses the live image cannot be retargeted onto another image.
+    const original = !same && plan.mode === 'web' && plan.backend === false && plan.frontend !== false && plan.fingerprints
       ? classify(plan.fingerprints, plan.previous, plan.force_full) : null;
     const compatibleUi = original?.mode === 'web' && original.backend === false && validReceipt(current) &&
       current.release_id === plan.previous.release_id && current.manifest_sha256 === plan.previous.manifest_sha256 &&
@@ -27,7 +28,7 @@ export async function assertPublicationBase(plan, { receipt = publishedReceipt, 
       throw Error('Live manifest does not match its publication receipt');
     return same ? plan : { ...plan, previous: current };
   } else {
-    // Bootstrap remains a full transaction with rollback targets captured by deployCatalogue.
+    // Bootstrap remains a full transaction with rollback targets captured by the publisher.
     // A newly available receipt means this build lost the race and must be replanned.
     if (plan.mode !== 'full' || current) throw Error('Publication base changed or is missing');
     return plan;

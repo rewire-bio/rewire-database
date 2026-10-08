@@ -192,5 +192,3 @@ describe("use-case evidence rendering", () => {
     expect(markup).toContain("scope and transfer limitations");
   });
 });
-
-vi.mock("../lib/downloads", async () => import("./fixtures/downloads"));

@@ -16,17 +16,12 @@ import {
 } from "../lib/omics-browse";
 import ModelPage, {
   generateMetadata as modelMetadata,
-  generateStaticParams as modelStaticParams,
 } from "../app/database/model/[id]/page";
-import ConfigurationPage, {
-  generateStaticParams as configurationStaticParams,
-} from "../app/database/configuration/[id]/page";
+import ConfigurationPage from "../app/database/configuration/[id]/page";
 import BenchmarkPage from "../app/database/benchmark/[id]/page";
 import TaskPage from "../app/database/task/[id]/page";
 import ProtocolPage from "../app/database/protocol/[id]/page";
-import DatasetPage, {
-  generateStaticParams as datasetStaticParams,
-} from "../app/database/dataset/[id]/page";
+import DatasetPage from "../app/database/dataset/[id]/page";
 import ResultPage from "../app/database/result/[id]/page";
 import SourcePage, {
   generateMetadata as sourceMetadata,
@@ -164,9 +159,9 @@ describe("explicit catalogue entity UI", () => {
     expect(html).not.toContain("Model:");
     expect(html).toContain("78.5");
   });
-  it("shows result context as configuration, protocol and dataset", () => {
+  it("shows result context as configuration, protocol and dataset", async () => {
     snapshot();
-    const html = renderToStaticMarkup(<ResultPage params={{ id: "finding" }} />);
+    const html = renderToStaticMarkup(await ResultPage({ params: { id: "finding" } }));
     expect(html).toContain("Tested configuration");
     expect(html).toContain("<dt>Protocol</dt>");
     expect(html).toContain("<dt>Dataset</dt>");
@@ -174,8 +169,9 @@ describe("explicit catalogue entity UI", () => {
   });
   it("preserves declared old URLs while metadata and links use canonical kinds", () => {
     snapshot();
-    expect(modelStaticParams().map((p) => p.id)).toContain("configured");
-    expect(configurationStaticParams().map((p) => p.id)).toContain("configured");
+    // Pages render on request: the declared old URL and the canonical one both resolve.
+    expect(() => ModelPage({ params: { id: "configured" } })).not.toThrow();
+    expect(() => ConfigurationPage({ params: { id: "configured" } })).not.toThrow();
     expect(
       modelMetadata({ params: { id: "configured" } }).alternates?.canonical,
     ).toBe("https://benchmarks.rewirebio.io/database/configuration/configured/");
@@ -200,7 +196,7 @@ describe("explicit catalogue entity UI", () => {
     expect(protocol).toContain("Recorded evaluations");
     expect(protocol).toContain("/database/evaluation/evaluation");
   });
-  it("keeps evaluated subsets distinct from their parent datasets", () => {
+  it("keeps evaluated subsets distinct from their parent datasets", async () => {
     snapshot();
     const subset = record(
       "held-out-cohort",
@@ -226,7 +222,7 @@ describe("explicit catalogue entity UI", () => {
     evaluation.links = evaluation.links.map((link) =>
       link.relation === "dataset" ? { ...link, target_id: subset.id } : link,
     );
-    const html = renderToStaticMarkup(<ResultPage params={{ id: "finding" }} />);
+    const html = renderToStaticMarkup(await ResultPage({ params: { id: "finding" } }));
     expect(html).toContain("<dt>Dataset subset</dt>");
     expect(html).toContain("/database/dataset_subset/held-out-cohort");
     expect(html).not.toContain("<dt>Dataset</dt>");
@@ -236,7 +232,7 @@ describe("explicit catalogue entity UI", () => {
     expect(subsetHtml).toContain('<span class="kick">Dataset subset</span>');
     expect(subsetHtml).toContain("Subset and evaluation context");
     expect(subsetHtml).toContain("/database/dataset/dataset");
-    expect(datasetStaticParams().map((p) => p.id)).toContain(subset.id);
+    expect(() => DatasetPage({ params: { id: subset.id } })).not.toThrow();
   });
   it("includes reviewed run instructions and makes their scope explicit", () => {
     snapshot();
@@ -286,4 +282,4 @@ describe("explicit catalogue entity UI", () => {
   });
 });
 
-vi.mock("../lib/downloads", async () => import("./fixtures/downloads"));
+vi.mock("../lib/record-page", async (original) => (await import("./fixtures/record-pages")).localRecordPages(original));

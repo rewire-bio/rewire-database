@@ -75,7 +75,7 @@ export default function BenchmarksPage() {
         </section>
         <RefreshStatus
           compact
-          data={readRefresh(process.cwd(), catalogue.release_id)}
+          data={readRefresh(undefined, catalogue.release_id)}
         />
         <CatalogueEvidence catalogue={catalogue} />
         <CatalogueDownloads

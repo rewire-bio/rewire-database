@@ -1,18 +1,46 @@
+const privateHeaders = [
+  { key: "Cache-Control", value: "no-store" },
+  { key: "Referrer-Policy", value: "no-referrer" },
+  { key: "X-Robots-Tag", value: "noindex, nofollow" },
+];
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  /**
-   * Enables static export for the app.
-   * This generates a completely static site in the 'out' folder,
-   * which can be deployed to any static hosting service like Cloudflare Workers Static Assets.
-   * @see https://nextjs.org/docs/app/building-your-application/deploying/static-exports
-   */
-  output: "export",
-  // Each worker holds the reviewed catalogue; keep builds within laptop/CI memory.
-  experimental: { cpus: 2 },
+  // A self-contained Node server for Cloud Run. The image holds code only:
+  // scripts/server-entry.mjs fixes the data pin at startup and every page
+  // renders on request from that release (see app/layout.tsx).
+  output: "standalone",
   trailingSlash: true,
+  poweredByHeader: false,
+  experimental: {
+    cpus: 2,
+    // The server reads the release from its verified runtime copy only.
+    // Excluding checkout data keeps the image small and pin-independent.
+    outputFileTracingExcludes: {
+      // Patterns also match inside node_modules, so name only this checkout's data paths.
+      "*": ["benchmark-data.lock.json", "public/omics/**", "public/benchmark-literature/**", "data/omics/**", "data/benchmark-literature/**",
+        "data/benchmark-runs/**", "workbench/**", "services/omics/node_modules/**", "services/omics/dist/**"],
+    },
+  },
+  async headers() {
+    return [
+      { source: "/contribute/:path*", headers: privateHeaders },
+      {
+        source: "/_analytics/:path*",
+        headers: [
+          { key: "Content-Security-Policy", value: "frame-ancestors https://benchmarks.rewire.it https://benchmarks.rewirebio.io" },
+          ...privateHeaders,
+        ],
+      },
+    ];
+  },
+  async rewrites() {
+    // Static hosting served this directory index; the Node server needs the file named.
+    return { beforeFiles: [{ source: "/_analytics/", destination: "/_analytics/index.html" }] };
+  },
   webpack(config) {
     // Shared Firebase modules use NodeNext .js specifiers; resolve their TS
-    // sources when bundling the static website, while retaining real JS imports.
+    // sources when bundling the website, while retaining real JS imports.
     config.resolve.extensionAlias = {
       ...config.resolve.extensionAlias,
       ".js": [".ts", ".tsx", ".js"],

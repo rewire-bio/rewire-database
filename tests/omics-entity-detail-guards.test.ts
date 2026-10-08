@@ -6,6 +6,7 @@ import {
 } from "../services/omics/src/catalogue-query";
 import { entityKinds, type EntityKind } from "../services/omics/src/entity-kinds";
 import { recordRouteKinds } from "../lib/omics";
+import { recordPageKinds } from "../services/omics/src/record-pages";
 
 const fixture = vi.hoisted(() => ({
   snapshot: null as CatalogueSnapshot | null,
@@ -24,6 +25,7 @@ vi.mock("next/navigation", () => ({
     throw new Error("NOT_FOUND");
   },
 }));
+vi.mock("../lib/record-page", async (original) => (await import("./fixtures/record-pages")).localRecordPages(original));
 fixture.snapshot = JSON.parse(
   fs.readFileSync("public/omics/catalogue.json", "utf8"),
 );
@@ -95,44 +97,55 @@ function wrongKindProbe(kind: EntityKind): { id: string; probeKind: EntityKind }
   return { id: probeRecord.id, probeKind };
 }
 
+// Static routes answer synchronously; server-rendered routes are async and
+// their metadata 404s with the page instead of returning empty metadata.
+async function settle(run: () => unknown) {
+  try {
+    return await run();
+  } catch (error) {
+    if (error instanceof Error && error.message === "NOT_FOUND") return "NOT_FOUND";
+    throw error;
+  }
+}
+const absentMetadata = (kind: EntityKind) =>
+  (recordPageKinds as readonly string[]).includes(kind) ? "NOT_FOUND" : {};
+
 describe("entity detail route guards (404 and metadata) across all 16 kinds", () => {
   it("has a real sample record for every kind in the pinned release", () => {
     for (const kind of entityKinds) expect(sampleIdByKind[kind], kind).toBeDefined();
   });
 
-  it.each(entityKinds)("renders its own canonical id without a 404: %s", (kind) => {
+  it.each(entityKinds)("renders its own canonical id without a 404: %s", async (kind) => {
     const { Page } = pagesByKind[kind];
-    expect(() => Page({ params: { id: sampleIdByKind[kind]! } })).not.toThrow();
+    expect(await settle(() => Page({ params: { id: sampleIdByKind[kind]! } }))).not.toBe("NOT_FOUND");
   });
 
-  it.each(entityKinds)("404s on an id that does not exist anywhere in the catalogue: %s", (kind) => {
+  it.each(entityKinds)("404s on an id that does not exist anywhere in the catalogue: %s", async (kind) => {
     const { Page } = pagesByKind[kind];
-    expect(() => Page({ params: { id: "does-not-exist-in-any-release" } })).toThrow(
-      "NOT_FOUND",
-    );
+    expect(await settle(() => Page({ params: { id: "does-not-exist-in-any-release" } }))).toBe("NOT_FOUND");
   });
 
-  it.each(entityKinds)("404s on a real id that belongs to a different, non-aliased kind: %s", (kind) => {
+  it.each(entityKinds)("404s on a real id that belongs to a different, non-aliased kind: %s", async (kind) => {
     const { id } = wrongKindProbe(kind);
     const { Page } = pagesByKind[kind];
-    expect(() => Page({ params: { id } })).toThrow("NOT_FOUND");
+    expect(await settle(() => Page({ params: { id } }))).toBe("NOT_FOUND");
   });
 
-  it.each(entityKinds)("returns empty metadata, not another kind's canonical, for a wrong-kind id: %s", (kind) => {
+  it.each(entityKinds)("returns no metadata, not another kind's canonical, for a wrong-kind id: %s", async (kind) => {
     const { id, probeKind } = wrongKindProbe(kind);
     const { generateMetadata } = pagesByKind[kind];
-    expect(generateMetadata({ params: { id } })).toEqual({});
+    expect(await settle(() => generateMetadata({ params: { id } }))).toEqual(absentMetadata(kind));
     // Confirms the probe id itself remains valid on its real kind's page,
     // so the empty result above is the guard rejecting it, not a typo.
-    expect(
-      pagesByKind[probeKind].generateMetadata({ params: { id } }),
-    ).not.toEqual({});
+    const valid = await settle(() => pagesByKind[probeKind].generateMetadata({ params: { id } }));
+    expect(valid).not.toEqual({});
+    expect(valid).not.toBe("NOT_FOUND");
   });
 
-  it.each(entityKinds)("returns empty metadata for an id that does not exist anywhere: %s", (kind) => {
+  it.each(entityKinds)("returns no metadata for an id that does not exist anywhere: %s", async (kind) => {
     const { generateMetadata } = pagesByKind[kind];
-    expect(generateMetadata({ params: { id: "does-not-exist-in-any-release" } })).toEqual(
-      {},
+    expect(await settle(() => generateMetadata({ params: { id: "does-not-exist-in-any-release" } }))).toEqual(
+      absentMetadata(kind),
     );
   });
 });

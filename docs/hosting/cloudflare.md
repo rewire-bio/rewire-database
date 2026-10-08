@@ -1,5 +1,7 @@
 # Cloudflare website deployment
 
+> Superseded: the Worker now proxies pages to the Cloud Run frontend and uploads no static assets. See [docs/independent-frontend.md](../independent-frontend.md). This page records the earlier static-asset migration.
+
 The public database hostname is `benchmarks.rewirebio.io`; article links point to `rewirebio.io`. Firebase project `rewire-it` continues to own Auth, Functions, Firestore, the complete static origin and immutable downloads. This is a web delivery migration, not a scientific-data migration.
 
 ## Routing and limits

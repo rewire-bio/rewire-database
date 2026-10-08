@@ -1,25 +1,29 @@
 import { describe, expect, it } from 'vitest';
 import crypto from 'node:crypto';
-import { downloadLocations } from '../scripts/generate-download-locations.mjs';
-import { githubDownloadUrl, optionalGithubDownloadUrl } from '../lib/downloads';
+import fs from 'node:fs';
+import { downloadLocations, downloadUrls } from '../scripts/download-locations.mjs';
+import { downloadHref, optionalDownloadHref } from '../lib/downloads';
 import { safeSourceUrl } from '../lib/omics';
 import lock from '../benchmark-data.lock.json';
 
 describe('GitHub downloads', () => {
-  it('uses actual producer sources pinned to the scientific revision', () => {
-    expect(githubDownloadUrl(`/omics/releases/${lock.release_id}/records.csv`)).toBe(`https://raw.githubusercontent.com/${lock.repository}/${lock.revision}/data/omics/releases/${lock.release_id}/records.csv.gz`);
-    expect(githubDownloadUrl(`/omics/releases/${lock.release_id}/manifest.json`)).toContain(`/website/files/public/omics/releases/${lock.release_id}/manifest.json.gz`);
-    expect(githubDownloadUrl('/benchmark-literature/results.csv')).toContain('/website/files/public/benchmark-literature/results.csv.gz');
+  it('redirects site paths to the exact producer sources of the pinned revision', () => {
+    const urls = downloadUrls(downloadLocations(lock, fs.readFileSync('workbench/benchmark-data/website/manifest.json')));
+    expect(urls.get(`/omics/releases/${lock.release_id}/records.csv`)).toBe(`https://raw.githubusercontent.com/${lock.repository}/${lock.revision}/data/omics/releases/${lock.release_id}/records.csv.gz`);
+    expect(urls.get(`/omics/releases/${lock.release_id}/manifest.json`)).toContain(`/website/files/public/omics/releases/${lock.release_id}/manifest.json.gz`);
+    expect(urls.get('/benchmark-literature/results.csv')).toContain('/website/files/public/benchmark-literature/results.csv.gz');
+    expect(urls.has('/omics/releases/invented/records.csv')).toBe(false);
   });
-  it('refuses invented downloads and routes genuine source URLs through the inventory', () => {
-    expect(() => githubDownloadUrl('/omics/releases/invented/records.csv')).toThrow('absent');
-    expect(optionalGithubDownloadUrl('https://evil.example/omics/catalogue.json')).toBeUndefined();
-    expect(safeSourceUrl('/omics/manifest.json')).toBe(githubDownloadUrl('/omics/manifest.json'));
+  it('links our own download URLs as site paths, the same in server and browser renders', () => {
+    expect(downloadHref(`/omics/releases/${lock.release_id}/records.csv`)).toBe(`/omics/releases/${lock.release_id}/records.csv`);
+    expect(() => downloadHref('/database/model/x/')).toThrow('Not a published download');
+    expect(() => downloadHref('/omics/../secret')).toThrow();
+    expect(optionalDownloadHref('https://evil.example/omics/catalogue.json')).toBeUndefined();
+    expect(safeSourceUrl('/omics/manifest.json')).toBe('/omics/manifest.json');
     expect(safeSourceUrl('https://example.org/paper')).toBe('https://example.org/paper');
     expect(safeSourceUrl('javascript:alert(1)')).toBeUndefined();
     expect(safeSourceUrl('https://')).toBeUndefined();
-    expect(safeSourceUrl('https://benchmarks.rewire.it/omics/manifest.json')).toBe(githubDownloadUrl('/omics/manifest.json'));
-    expect(safeSourceUrl('https://benchmarks.rewire.it/omics/missing.json')).toBeUndefined();
+    expect(safeSourceUrl('https://benchmarks.rewire.it/omics/manifest.json')).toBe('/omics/manifest.json');
   });
 });
 

@@ -1,28 +1,29 @@
-import lock from '../benchmark-data.lock.json';
-import locations from './generated-download-locations.json';
+// Download links are site paths, identical in server and browser renders. The
+// frontend redirects each to the exact gzip export named by the running
+// revision's pinned producer manifest (app/omics, app/benchmark-literature),
+// so links follow a data release without rebuilding the frontend.
+const SITE_HOSTS = ["benchmarks.rewire.it", "benchmarks.rewirebio.io", "rewire-omics.web.app", "rewire-omics.firebaseapp.com"];
+const DOWNLOAD_PATH = /^\/(?:omics|benchmark-literature)\/[A-Za-z0-9._/-]+$/;
 
-if (locations.revision !== lock.revision || locations.manifest_sha256 !== lock.manifest_sha256 || locations.repository !== lock.repository) {
-  throw new Error('Download locations are stale. Run npm run data:prepare.');
+export function isDownloadPath(pathname: string): boolean {
+  return DOWNLOAD_PATH.test(pathname) && !pathname.split("/").some((part) => part === "." || part === "..");
 }
-const urls = new Map<string, string>();
-for (const group of locations.groups) {
-  for (const file of group.files) {
-    urls.set(`${group.destination}/${file}`, `https://raw.githubusercontent.com/${locations.repository}/${locations.revision}/${group.source}/${encodeURIComponent(file)}.gz`);
-  }
+
+/** The site path of a published export. */
+export function downloadHref(value: string): string {
+  const href = optionalDownloadHref(value);
+  if (!href) throw new Error(`Not a published download path: ${value}`);
+  return href;
 }
-/** Exact producer-manifest mapping; exports on GitHub are gzip compressed. */
-export function githubDownloadUrl(value: string): string {
-  const mapped = optionalGithubDownloadUrl(value);
-  if (!mapped) throw new Error(`Download is absent from the pinned producer manifest: ${value}`);
-  return mapped;
-}
-export function optionalGithubDownloadUrl(value: string): string | undefined {
+
+/** Site path for our own download URLs or paths; undefined for anything else. */
+export function optionalDownloadHref(value: string): string | undefined {
   let pathname = value;
   if (/^https?:/.test(value)) {
     let url: URL;
     try { url = new URL(value); } catch { return; }
-    if (!['benchmarks.rewire.it', 'benchmarks.rewirebio.io', 'rewire-omics.web.app', 'rewire-omics.firebaseapp.com'].includes(url.hostname)) return;
+    if (!SITE_HOSTS.includes(url.hostname)) return;
     pathname = url.pathname;
   }
-  return urls.get(pathname);
+  return isDownloadPath(pathname) ? pathname : undefined;
 }

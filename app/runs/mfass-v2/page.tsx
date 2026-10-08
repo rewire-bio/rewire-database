@@ -2,8 +2,14 @@ import Breadcrumbs from "@/components/catalogue/Breadcrumbs";
 import { socialMetadata } from "@/lib/catalogue-sharing";
 import type { Metadata } from "next";
 import Link from "next/link";
-import run from "@/data/benchmark-runs/mfass-v2.json";
+import fs from "node:fs";
+import { dataPath } from "@/lib/data-pin";
+import type runShape from "@/data/benchmark-runs/mfass-v2.json";
 import styles from "./run.module.css";
+
+// Producer-owned run summary, read from the pinned release like every other
+// page's data so a data release can never pair it with another revision.
+const readRun = (): typeof runShape => JSON.parse(fs.readFileSync(dataPath("data/benchmark-runs/mfass-v2.json"), "utf8"));
 
 const pageMetadata = {
   title: "MFASS v2: corrected baseline and DNABERT-2 | rewirebio.io",
@@ -28,6 +34,7 @@ function interval(metric: { delta: number; ci95: number[] }): string {
 }
 
 export default function MfassV2Page() {
+  const run = readRun();
   return <>
     <header className="page-head"><div className="wrap">
       <Breadcrumbs items={[{ name: "Database", path: "/" }, { name: "Rewire evaluations", path: "/?kind=result&origin=rewire#browse" }, { name: "MFASS v2", path: "/runs/mfass-v2/" }]} />

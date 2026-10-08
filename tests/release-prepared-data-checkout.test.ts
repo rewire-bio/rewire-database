@@ -87,7 +87,8 @@ describe('release only a verified CI temporary data checkout', () => {
     expect(workflow).not.toContain('node scripts/release-prepared-data-checkout.mjs');
     expect(workflow).not.toContain('node scripts/prepare-runner-space.mjs');
     expect(workflow).not.toContain('firebase deploy --only hosting');
-    expect(workflow).toContain('npm run build:web');
+    expect(workflow).toContain('node scripts/build-web.mjs');
+    expect(workflow).not.toContain('prepare:cloudflare');
     expect(workflow).toContain('run publication_hydration -- npm run data:prepare -- --current-only');
     expect(workflow).toContain('node scripts/deploy-independent-frontend.mjs');
   });

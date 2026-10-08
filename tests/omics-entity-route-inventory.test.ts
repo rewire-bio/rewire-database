@@ -6,6 +6,7 @@ import {
 } from "../services/omics/src/catalogue-query";
 import { entityKinds } from "../services/omics/src/entity-kinds";
 import { recordRouteKinds } from "../lib/omics";
+import { recordPageKinds, recordPageRoutes } from "../services/omics/src/record-pages";
 
 const fixture = vi.hoisted(() => ({
   snapshot: null as CatalogueSnapshot | null,
@@ -49,21 +50,23 @@ describe("entity detail route inventory", () => {
     expect(fs.existsSync("app/database/[kind]")).toBe(false);
   });
 
-  it("every generated route matches recordRouteKinds exactly: full canonical and alias parity", async () => {
+  it("renders every route on request: no module bakes a release into build-time parameters", async () => {
+    for (const [kind, load] of Object.entries(pageModules))
+      expect("generateStaticParams" in (await load()), `${kind} must render on demand`).toBe(false);
+  });
+
+  it("materializes exactly the canonical and alias result/evaluation routes", () => {
     const generated = new Set<string>();
-    for (const [kind, load] of Object.entries(pageModules)) {
-      const mod = await load();
-      const params = mod.generateStaticParams() as { id: string }[];
-      const ids = new Set(params.map((p) => p.id));
-      expect(ids.size, `${kind} generateStaticParams has duplicate ids`).toBe(
-        params.length,
-      );
-      for (const id of ids) generated.add(`${kind}/${id}`);
+    for (const route of recordPageRoutes(fixture.snapshot!)) {
+      const key = `${route.kind}/${route.record.id}`;
+      expect(generated.has(key), `${key} materialized twice`).toBe(false);
+      generated.add(key);
     }
     const expected = new Set<string>();
     for (const record of fixture.snapshot!.records)
-      for (const kind of recordRouteKinds(record))
-        expected.add(`${kind}/${record.id}`);
+      if (record.status !== "excluded")
+        for (const kind of recordRouteKinds(record))
+          if ((recordPageKinds as readonly string[]).includes(kind)) expected.add(`${kind}/${record.id}`);
 
     const missing = [...expected].filter((route) => !generated.has(route));
     const extra = [...generated].filter((route) => !expected.has(route));

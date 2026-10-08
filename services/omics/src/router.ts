@@ -11,6 +11,8 @@ import { catalogueQuery } from "./catalogue-service.js";
 import type { CatalogueQuery } from "./catalogue-query.js";
 import { useCaseQuery } from "./use-case-service.js";
 import { researchCapabilities } from "./research.js";
+import { recordPageKinds } from "./record-pages.js";
+import { readRecordPage } from "./record-page-store.js";
 const t = initTRPC.context<Context>().create();
 const authenticated = t.procedure.use(({ ctx, next }) => {
   if (!ctx.user?.email_verified || !ctx.user.email)
@@ -101,6 +103,13 @@ export const appRouter = t.router({
         readCatalogue(input.release_id, (q) =>
           q.get({ ...input, include_comparisons: false }),
         ),
+      ),
+    // Server-rendered pages: one prepared document, never the full release.
+    // null means this release has no such page; failures are errors.
+    page: t.procedure
+      .input(z.object({ ...pinned, kind: z.enum(recordPageKinds), id }).strict())
+      .query(({ input }) =>
+        readRecordPage(firebase().db, input.release_id, input.kind, input.id),
       ),
     useCases: t.procedure
       .input(

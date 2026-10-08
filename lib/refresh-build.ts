@@ -2,9 +2,10 @@ import fs from "node:fs";
 import path from "node:path";
 import { createHash } from "node:crypto";
 import { adoptRefresh, parseRefresh, type RefreshData } from "./refresh";
+import { dataPath } from "./data-pin";
 
 /** Missing legacy metadata is unknown; malformed or mismatched metadata fails. */
-export function readRefresh(root = process.cwd(), expectedReleaseId?: string): RefreshData | null {
+export function readRefresh(root = dataPath(), expectedReleaseId?: string): RefreshData | null {
   const file = path.join(root, "public/omics/refresh.json");
   let bytes: string;
   try { bytes = fs.readFileSync(file, "utf8"); }

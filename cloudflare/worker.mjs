@@ -1,24 +1,59 @@
 import firebase from "../firebase.json" with { type: "json" };
-import lock from "../benchmark-data.lock.json" with { type: "json" };
-import downloads from "../lib/generated-download-locations.json" with { type: "json" };
 import { FUNCTIONS_ORIGIN, FUNCTIONS_PATH, AUTH_ORIGIN, backendUrl, isDownload, isProxied } from "./routing.mjs";
+import { IDENTITY_TTL_MS, browserResponse, cacheableRequest, cacheKey, edgeCopy, responseIdentity, storableResponse } from "./page-cache.mjs";
 
-// This checked-in index is derived from the exact producer manifest pinned in
-// benchmark-data.lock.json. Only listed exports can become GitHub redirects.
-const downloadUrls = new Map();
-if (downloads.revision !== lock.revision || downloads.manifest_sha256 !== lock.manifest_sha256) throw new Error("Stale download locations; run npm run data:prepare");
-if (downloads.repository !== "rewire-bio/rewire-benchmark-data") throw new Error("Unexpected download repository");
-if (!/^[a-f0-9]{40}$/.test(downloads.revision)) throw new Error("Unpinned download revision");
-for (const group of downloads.groups) {
-  for (const file of group.files) {
-    const source = `${group.source}/${file}.gz`;
-    if (source.split("/").some(segment => !segment || segment === "." || segment === "..") || /[\\\x00-\x1f]/.test(source)) throw new Error("Unsafe download source");
-    downloadUrls.set(`${group.destination}/${file}`, `https://raw.githubusercontent.com/rewire-bio/rewire-benchmark-data/${downloads.revision}/${source.split("/").map(encodeURIComponent).join("/")}`);
+// The Worker carries no data release. Pages, assets and download redirects
+// come from the frontend server on Cloud Run, whose revision fixes the data
+// pin; the cache identity is whatever that origin last reported.
+let observed = null;
+export function resetObservedIdentity() { observed = null; }
+
+function frontendOrigin(env) {
+  let origin;
+  try { origin = new URL(env.FRONTEND_ORIGIN); } catch { return null; }
+  if (!["https:", "http:"].includes(origin.protocol) || origin.username || origin.password || origin.pathname !== "/" || origin.search) return null;
+  return origin.origin;
+}
+
+async function frontend(request, env, ctx, url) {
+  const origin = frontendOrigin(env);
+  if (!origin) return new Response("Frontend origin is not configured", { status: 503, headers: { "Cache-Control": "no-store" } });
+  const cacheable = cacheableRequest(request);
+  if (cacheable && observed && observed.expires > Date.now()) {
+    const hit = await caches.default.match(cacheKey(request, observed.identity)).catch(() => undefined);
+    if (hit) return browserResponse(hit, url.pathname, "HIT");
   }
+  const upstream = new URL(url.pathname + url.search, origin);
+  const forwarded = new Request(upstream, request);
+  forwarded.headers.delete("host");
+  // Download redirects need no credentials; never pass them along.
+  if (isDownload(url.pathname)) for (const name of ["cookie", "authorization"]) forwarded.headers.delete(name);
+  const response = await fetch(forwarded, { redirect: "manual", cf: { cacheTtl: 0, cacheEverything: false } });
+  const headers = new Headers(response.headers);
+  const location = headers.get("location");
+  if (location) {
+    const destination = new URL(location, upstream);
+    if (destination.origin === origin) {
+      destination.protocol = url.protocol;
+      destination.host = url.host;
+      headers.set("location", destination.href);
+    }
+  }
+  const result = new Response(response.body, { status: response.status, statusText: response.statusText, headers });
+  const identity = responseIdentity(result);
+  if (identity) observed = { identity, expires: Date.now() + IDENTITY_TTL_MS };
+  if (!cacheable || !identity || !storableResponse(result, identity)) {
+    result.headers.set("X-Rewire-Cache", "BYPASS");
+    return result;
+  }
+  // The cache only accelerates: a failed write must not fail a healthy response.
+  const stored = caches.default.put(cacheKey(request, identity), edgeCopy(result.clone())).catch(() => {});
+  if (ctx?.waitUntil) ctx.waitUntil(stored); else await stored;
+  return browserResponse(result, url.pathname, "MISS");
 }
 
 const worker = {
-  async fetch(request, env) {
+  async fetch(request, env, ctx) {
     const url = new URL(request.url);
     const legacy = firebase.hosting.redirects.find(rule => {
       const source = rule.source.replace("{,/}", "");
@@ -29,24 +64,9 @@ const worker = {
       if (url.search) destination.search += (destination.search ? "&" : "?") + url.search.slice(1);
       return Response.redirect(destination.href, legacy.type);
     }
-    if (isDownload(url.pathname)) {
-      const target = downloadUrls.get(url.pathname);
-      if (!target || !["GET", "HEAD"].includes(request.method)) return new Response("Not found", { status: 404 });
-      // Do not forward credentials, cookies or bodies to GitHub. GET and HEAD
-      // redirects retain Range and If-Range for byte-exact upstream downloads.
-      return new Response(null, { status: 307, headers: {
-        Location: target + url.search, "Cache-Control": "no-store", "Referrer-Policy": "no-referrer",
-      } });
-    }
-    if (!isProxied(url.pathname)) {
-      const asset = await env.ASSETS.fetch(request);
-      if (asset.status !== 404) return asset;
-      // Missing chunks must stay missing in this version. Never fall back to
-      // another service whose HTML and content-addressed chunks may differ.
-      if (url.pathname.startsWith("/_next/static/")) return new Response("Not found", { status: 404 });
-      const missing = await env.ASSETS.fetch(new Request(new URL("/404", request.url), request));
-      return new Response(missing.body, { status: 404, headers: missing.headers });
-    }
+    // Downloads are redirects to exact GitHub exports; bodies are never forwarded.
+    if (isDownload(url.pathname) && !["GET", "HEAD"].includes(request.method)) return new Response("Not found", { status: 404 });
+    if (!isProxied(url.pathname)) return frontend(request, env, ctx, url);
     const upstream = backendUrl(url);
     const forwarded = new Request(upstream, request);
     forwarded.headers.delete("host");

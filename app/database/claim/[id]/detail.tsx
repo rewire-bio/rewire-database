@@ -1,4 +1,4 @@
-import { githubDownloadUrl } from "@/lib/downloads";
+import { downloadHref } from "@/lib/downloads";
 import Breadcrumbs from "@/components/catalogue/Breadcrumbs";
 import { recordBreadcrumbs } from "@/lib/catalogue-sharing";
 import { catalogueText } from "@/lib/catalogue-text";
@@ -197,7 +197,7 @@ export function ClaimDetail({ detail }: { detail: RecordDetail }) {
                     </p>
                   ))}
                 <a
-                  href={githubDownloadUrl(`/omics/releases/${catalogue.release_id}/records.jsonl`)}
+                  href={downloadHref(`/omics/releases/${catalogue.release_id}/records.jsonl`)}
                 >
                   Download this release (gzip)
                 </a>

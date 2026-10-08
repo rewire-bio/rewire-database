@@ -87,8 +87,8 @@ describe("truthful catalogue sharing", () => {
     expect(html).toContain('href="/models/"');
     expect(html).toContain('aria-current="page">Page 2');
   });
-  it("shares each page's title, description and canonical rather than inherited homepage metadata", () => {
-    const pages = [homeMetadata, indexMetadata("model", 2), indexMetadata("benchmark"), ...records.map((record) => metadataFor[record.kind]({ params: { id: record.id } }))];
+  it("shares each page's title, description and canonical rather than inherited homepage metadata", async () => {
+    const pages = [homeMetadata, indexMetadata("model", 2), indexMetadata("benchmark"), ...await Promise.all(records.map((record) => metadataFor[record.kind]({ params: { id: record.id } })))];
     for (const metadata of pages) {
       expect(metadata.openGraph).toMatchObject({ title: metadata.title, description: metadata.description, url: metadata.alternates?.canonical, type: "website", images: [{ ...SOCIAL_IMAGE, type: "image/png" }] });
       expect(metadata.twitter).toMatchObject({ card: "summary_large_image", title: metadata.title, description: metadata.description });
@@ -117,4 +117,4 @@ describe("truthful catalogue sharing", () => {
   });
 });
 
-vi.mock("../lib/downloads", async () => import("./fixtures/downloads"));
+vi.mock("../lib/record-page", async (original) => (await import("./fixtures/record-pages")).localRecordPages(original));

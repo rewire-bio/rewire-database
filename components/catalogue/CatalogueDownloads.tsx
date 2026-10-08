@@ -1,4 +1,4 @@
-import { githubDownloadUrl } from "@/lib/downloads";
+import { downloadHref } from "@/lib/downloads";
 import styles from "@/app/database/database.module.css";
 
 export function CatalogueDownloads({
@@ -17,20 +17,20 @@ export function CatalogueDownloads({
       </p>
       <p>Downloads are hosted on GitHub at the pinned data revision and compressed with gzip.</p>
       <div className={styles.downloads}>
-        <a href={githubDownloadUrl(`${release}/records.jsonl`)}>
+        <a href={downloadHref(`${release}/records.jsonl`)}>
           JSONL (gzip)
         </a>
-        <a href={githubDownloadUrl(`${release}/records.csv`)}>
+        <a href={downloadHref(`${release}/records.csv`)}>
           CSV (gzip)
         </a>
-        <a href={githubDownloadUrl(`${release}/evidence.csv`)}>
+        <a href={downloadHref(`${release}/evidence.csv`)}>
           Evidence table (CSV) (gzip)
         </a>
-        <a href={githubDownloadUrl(`${release}/evidence.jsonl`)}>
+        <a href={downloadHref(`${release}/evidence.jsonl`)}>
           Evidence table (JSONL) (gzip)
         </a>
         <a href="/evidence/">Evidence and review methods</a>
-        <a href={githubDownloadUrl(`${release}/manifest.json`)}>Checksums and release manifest (gzip)</a>
+        <a href={downloadHref(`${release}/manifest.json`)}>Checksums and release manifest (gzip)</a>
       </div>
       <details>
         <summary>Original literature downloads</summary>
@@ -40,10 +40,10 @@ export function CatalogueDownloads({
           scope; use the database release above for the reviewed collection.
         </p>
         <div className={styles.downloads}>
-          <a href={githubDownloadUrl("/benchmark-literature/results.csv")}>
+          <a href={downloadHref("/benchmark-literature/results.csv")}>
             Original results CSV (gzip)
           </a>
-          <a href={githubDownloadUrl("/benchmark-literature/papers.json")}>
+          <a href={downloadHref("/benchmark-literature/papers.json")}>
             Original papers JSON (gzip)
           </a>
         </div>

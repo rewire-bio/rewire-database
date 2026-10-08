@@ -1,4 +1,4 @@
-import { githubDownloadUrl } from "@/lib/downloads";
+import { downloadHref } from "@/lib/downloads";
 import type { Metadata } from "next";
 import PageHeader from "@/components/PageHeader";
 import RefreshStatus from "@/components/RefreshStatus";
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 
 export default function UpdatesPage() {
   const { catalogue } = buildCatalogue();
-  const data = readRefresh(process.cwd(), catalogue.release_id);
+  const data = readRefresh(undefined, catalogue.release_id);
   const runs = [...(data?.runs ?? [])].sort((a, b) => Date.parse(b.started_at) - Date.parse(a.started_at));
   return <>
     <PageHeader title="Database updates" intro="What was published, what was checked and what remains unresolved." breadcrumbs={[{ name: "Database", path: "/" }, { name: "Updates", path: "/updates/" }]} />
@@ -29,7 +29,7 @@ export default function UpdatesPage() {
           {update.time_basis === "observed" && <p>Verified published at this observation time; the exact deployment time is not available.</p>}
           <ul>{update.summary.map((line, index) => <li key={index}>{line}</li>)}</ul>
           {update.links.length > 0 && <ul>{update.links.map((link, index) => <li key={index}><a href={link.url}>{link.label}</a></li>)}</ul>}
-          <p><a href={githubDownloadUrl(update.receipt_url)}>Publication receipt (gzip)</a> · <a href={githubDownloadUrl(`/omics/releases/${update.release_id}/manifest.json`)}>Release checksums (gzip)</a></p>
+          <p><a href={downloadHref(update.receipt_url)}>Publication receipt (gzip)</a> · <a href={downloadHref(`/omics/releases/${update.release_id}/manifest.json`)}>Release checksums (gzip)</a></p>
         </article>)}
       </section>
       <section aria-labelledby="sweeps-heading">
@@ -38,7 +38,7 @@ export default function UpdatesPage() {
         {!runs.length && <p>No evidence sweep attempts have been recorded.</p>}
         {runs.map((run) => <article key={run.id} id={`sweep-${run.id}`}>
           <h3>{run.cycle_id} · attempt {run.attempt} · {run.status}</h3>
-          <p>Started <time dateTime={run.started_at}>{refreshDate(run.started_at)}</time>{run.finished_at && <>; finished <time dateTime={run.finished_at}>{refreshDate(run.finished_at)}</time></>}. Baseline: <a href={githubDownloadUrl(`/omics/releases/${run.baseline_release_id}/manifest.json`)}>{run.baseline_release_id} (gzip)</a>.</p>
+          <p>Started <time dateTime={run.started_at}>{refreshDate(run.started_at)}</time>{run.finished_at && <>; finished <time dateTime={run.finished_at}>{refreshDate(run.finished_at)}</time></>}. Baseline: <a href={downloadHref(`/omics/releases/${run.baseline_release_id}/manifest.json`)}>{run.baseline_release_id} (gzip)</a>.</p>
           {run.outcome === "no_change" && <p>No candidate catalogue changes found in this sweep.</p>}
           {run.outcome === "review_required" && <p>Candidate changes prepared for review. See the publication history for changes that reached this website.</p>}
           <p>Coverage: {run.coverage.checked_ids.length} of {run.coverage.target_ids.length} declared targets checked. Added: {run.counts.added}; revised: {run.counts.revised}; excluded: {run.counts.excluded}; blocked: {run.counts.blocked}. These are run counts, not a claim of new published records.</p>

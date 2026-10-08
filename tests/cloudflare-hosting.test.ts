@@ -23,6 +23,18 @@ beforeEach(() => {
 });
 afterEach(() => { vi.unstubAllGlobals(); });
 
+describe("Worker deployment configuration", () => {
+  it("explicitly turns Cloudflare's outer Worker cache off, so the gateway runs on every request", async () => {
+    // Read with Wrangler's own parser: it uploads `cache` only when the config sets it.
+    const { experimental_readRawConfig } = await import("wrangler");
+    const { rawConfig } = experimental_readRawConfig({ config: "wrangler.jsonc" });
+    expect(rawConfig.cache).toEqual({ enabled: false });
+    expect(rawConfig.main).toBe("cloudflare/worker.mjs");
+    expect(rawConfig.vars).toHaveProperty("FRONTEND_ORIGIN");
+    expect(rawConfig).not.toHaveProperty("assets");
+  });
+});
+
 describe("independent Cloudflare frontend", () => {
   it("forwards known download paths to the frontend's exact-manifest redirect without credentials", async () => {
     const fetcher = vi.fn(async () => new Response(null, { status: 307, headers: { location: "https://raw.githubusercontent.com/rewire-bio/rewire-benchmark-data/a/x.csv.gz" } }));

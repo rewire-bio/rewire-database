@@ -29,6 +29,8 @@ Repository variables (no new infrastructure is created by this code):
 
 Secrets: `CLOUDFLARE_ACCOUNT_ID` and `CLOUDFLARE_API_TOKEN`, as before. The deploy service account also needs permission to push to the repository, deploy the service and act as the runtime account. `CLOUDFLARE_ASSET_LIMIT` is no longer used: the Worker uploads no assets.
 
+The Worker sets `"cache": { "enabled": false }` in `wrangler.jsonc`. Cloudflare's outer Worker cache would answer before the Worker runs, so it could serve another release's HTML, or a cached download redirect without `no-store`. The Worker's own cache (`cloudflare/page-cache.mjs`) is the only cache for public pages. Wrangler uploads this setting only when it is present, which is why it is explicit.
+
 Service shape (`scripts/deploy-cloud-run.mjs`): `rewire-database-web`, `europe-west2`, 1 vCPU, 2 GiB, concurrency 20, timeout 60 s, `--cpu-throttling` (request-based billing), `--cpu-boost`, min 0 instances, unauthenticated ingress. The Worker reaches the `run.app` URL directly; there is no Google load balancer.
 
 ## One-time bootstrap (operator, outside CI)

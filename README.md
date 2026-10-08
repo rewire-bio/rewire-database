@@ -4,26 +4,24 @@ The benchmark frontend and public query/contribution API. Scientific records, so
 
 ## Architecture
 
-```
-                  browser
-                     |
-        Cloudflare Worker (benchmarks.rewirebio.io)
-        - legacy redirects
-        - edge cache: anonymous public GETs only
-          (key = URL + frontend version + data release)
-           |                      |                         |
-   /api, /__/auth          pages, assets,            nothing else
-           |               /omics/* downloads
-           v                      v
-  Firebase Functions      Cloud Run: Next.js server ------> GitHub raw
-  (catalogue API,         (one image, code only;            (exact gzip export
-   contributions)          REWIRE_DATA_PIN per revision)     at the pinned revision)
-           |                      |  catalogue.page
-           v                      |  (result and evaluation pages)
-       Firestore  <---------------+
-  (releases, prepared
-   record pages, private
-   submissions)
+```mermaid
+flowchart TD
+    Browser["Browser"]
+    Worker["Cloudflare Worker<br/>edge cache: anonymous public pages<br/>key: frontend + release + URL"]
+    SSR["Cloud Run: Next.js server"]
+    Functions["Firebase Functions<br/>catalogue API, contributions"]
+    Auth["Firebase Auth handler"]
+    Firestore["Firestore<br/>public releases, prepared pages,<br/>private submissions"]
+    GitHub["GitHub: rewire-benchmark-data<br/>at the pinned revision"]
+
+    Browser --> Worker
+    Worker -->|"pages, assets, download redirects"| SSR
+    Worker -->|"/api"| Functions
+    Worker -->|"/__/auth"| Auth
+    SSR -->|"catalogue.page<br/>result and evaluation pages"| Functions
+    Functions --> Firestore
+    SSR -.->|"manifest and data files, at startup"| GitHub
+    Browser -.->|"follows 307 to the gzip download"| GitHub
 ```
 
 | Component | Owns | Released by |

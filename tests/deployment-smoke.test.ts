@@ -1,6 +1,7 @@
 import { createHash } from "node:crypto";
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { smokeDeployment } from "../scripts/smoke-deployment.mjs";
+import worker, { resetObservedIdentity } from "../cloudflare/worker.mjs";
 
 const release = "2026-10-06-161b59a1d02c";
 function fixture(breakPath?: string) {
@@ -92,5 +93,53 @@ describe('independent frontend smoke', () => {
   it.each(['release', 'producer', 'redirect', 'download'])('rejects %s drift', async (corrupt) => {
     const f = independentFixture(corrupt);
     await expect(smokeDeployment('https://example.test', { ...f, independentFrontend: true, log: vi.fn() })).rejects.toThrow();
+  });
+  it('requests every public HTML page with one per-run verification nonce, leaving other requests unchanged', async () => {
+    const f = independentFixture();
+    await smokeDeployment('https://example.test', { ...f, independentFrontend: true, log: vi.fn() });
+    const urls = f.request.mock.calls.map(([url]) => new URL(String(url))).filter(url => url.hostname === 'example.test');
+    const pages = urls.filter(url => url.pathname === '/' || url.pathname.endsWith('/') && !url.pathname.startsWith('/api/'));
+    const nonces = new Set(pages.map(url => url.searchParams.get('verify')));
+    expect(pages.length).toBeGreaterThan(5);
+    expect(nonces.size).toBe(1);
+    expect([...nonces][0]).toMatch(/\S{8,}/);
+    for (const url of urls.filter(url => !pages.includes(url))) expect(url.searchParams.has('verify')).toBe(false);
+  });
+});
+
+describe('data-only publication behind an unchanged Worker', () => {
+  const previous = '2026-10-01-aaaaaaaaaaaa';
+  const frontend = 'c'.repeat(40);
+  afterEach(() => { vi.unstubAllGlobals(); resetObservedIdentity(); });
+  it('verifies the new pin even while the edge still holds the previous release home page', async () => {
+    const store = new Map<string, Response>();
+    vi.stubGlobal('caches', { default: {
+      match: async (key: Request) => store.get(key.url)?.clone(),
+      put: async (key: Request, response: Response) => { store.set(key.url, response); },
+    } });
+    const env = { FRONTEND_ORIGIN: 'https://frontend-x-nw.a.run.app' };
+    // The origin as the Worker sees it: the image is unchanged, only the data pin moves.
+    let pinned = previous;
+    const f = independentFixture();
+    vi.stubGlobal('fetch', async (input: Request) => {
+      const url = new URL(input.url);
+      const response = await f.request(new URL(url.pathname.replace(/^\/contributions/, '') + url.search, 'https://example.test'));
+      const headers = new Headers(response.headers);
+      for (const [name, value] of [['x-rewire-frontend', frontend], ['x-rewire-data-release', pinned], ['x-rewire-edge-cache', 'public']]) headers.set(name, value);
+      const body = pinned === previous ? (await response.text()).replaceAll(release, previous) : response.body;
+      return new Response(body, { status: response.status, headers });
+    });
+    const viaWorker = (input: Parameters<typeof fetch>[0], init?: RequestInit) => {
+      const url = new URL(input instanceof Request ? input.url : String(input));
+      return url.hostname === 'example.test' ? worker.fetch(new Request(url, init), env) : f.request(url);
+    };
+    // Before the traffic switch: the previous release's home page is cached and its identity observed.
+    expect((await viaWorker('https://example.test/')).headers.get('x-rewire-cache')).toBe('MISS');
+    pinned = release;
+    const stale = await viaWorker('https://example.test/');
+    expect(stale.headers.get('x-rewire-cache')).toBe('HIT');
+    expect(await stale.text()).toContain(previous);
+    // Acceptance of the new pin must render on the live origin, not read that copy.
+    await smokeDeployment('https://example.test', { ...f, request: viaWorker as typeof fetch, independentFrontend: true, log: vi.fn() });
   });
 });

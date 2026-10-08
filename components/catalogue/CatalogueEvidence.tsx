@@ -5,11 +5,21 @@ import { researchAreaLabel } from "@/lib/omics-browse";
 import { benchmarkCoverage } from "@/scripts/omics/audit-benchmark-evidence";
 import styles from "@/app/database/database.module.css";
 
-export function CatalogueEvidence({
-  catalogue,
-}: {
-  catalogue: ReturnType<typeof buildCatalogue>["catalogue"];
-}) {
+type Catalogue = Pick<ReturnType<typeof buildCatalogue>["catalogue"], "records">;
+export type CatalogueEvidenceSummary = ReturnType<typeof computeSummary>;
+
+// The benchmark coverage pass builds a complete query engine over the release
+// (seconds of CPU), so the summary is computed once per immutable catalogue and
+// reused by every later render. Keyed by the records array: a changed or new
+// catalogue is a new array and recomputes; an unused one is garbage-collected.
+const summaries = new WeakMap<Catalogue["records"], CatalogueEvidenceSummary>();
+export function catalogueEvidenceSummary(catalogue: Catalogue): CatalogueEvidenceSummary {
+  let summary = summaries.get(catalogue.records);
+  if (!summary) summaries.set(catalogue.records, (summary = computeSummary(catalogue)));
+  return summary;
+}
+
+function computeSummary(catalogue: Catalogue) {
   const external = catalogue.records.filter(
     (record) => record.kind === "result" && record.status === "source_checked",
   ).length;
@@ -39,6 +49,15 @@ export function CatalogueEvidence({
     muted: entry.evaluations === 0,
   }));
   const covered = coverage.filter((entry) => entry.evaluations > 0).length;
+  return { records: catalogue.records.length, external, own, kindRows, areaRows, coverageRows, covered, benchmarks: coverage.length };
+}
+
+export function CatalogueEvidence({
+  catalogue,
+}: {
+  catalogue: ReturnType<typeof buildCatalogue>["catalogue"];
+}) {
+  const { records, external, own, kindRows, areaRows, coverageRows, covered, benchmarks } = catalogueEvidenceSummary(catalogue);
 
   return (
     <section id="evidence" className={styles.information}>
@@ -46,7 +65,7 @@ export function CatalogueEvidence({
       <details className={styles.section}>
         <summary>Coverage: records and linked evaluations</summary>
         <p>
-          {catalogue.records.length.toLocaleString()} records across{" "}
+          {records.toLocaleString()} records across{" "}
           {kindRows.length} record types. These counts describe catalogue
           coverage, not model performance.
         </p>
@@ -54,7 +73,7 @@ export function CatalogueEvidence({
         <h3>Benchmark evidence coverage</h3>
         <CoverageChart
           covered={covered}
-          total={coverage.length}
+          total={benchmarks}
           rows={coverageRows}
         />
       </details>

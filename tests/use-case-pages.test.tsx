@@ -125,3 +125,5 @@ describe("use-case index", () => {
     expect(html).toContain('aria-describedby="use-case-context-hint"');
   });
 });
+
+vi.mock("../lib/downloads", async () => import("./fixtures/downloads"));

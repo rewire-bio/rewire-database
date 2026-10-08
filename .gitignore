@@ -99,3 +99,6 @@ gha-creds-*.json
 # Local UI review and browser smoke artifacts
 /scratch/ui-review/
 /scratch/browser-smoke/
+
+# Verified producer download inventory
+/lib/generated-download-locations.json

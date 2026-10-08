@@ -238,3 +238,5 @@ describe("use-case evidence collection plans", () => {
     expect(markup).toContain("reviewed evidence is available");
   });
 });
+
+vi.mock("../lib/downloads", async () => import("./fixtures/downloads"));

@@ -89,11 +89,11 @@ export async function verifyPublication(source, commit) {
     JSON.parse(bytes).release_id !== receipt.release_id) throw Error('Publication manifest mismatch');
   return manifest;
 }
-export async function restorePublication(source, root = process.cwd(), commit) {
+export async function restorePublication(source, root = process.cwd(), commit, { frontendOnly = false } = {}) {
   const manifest = await verifyPublication(source, commit);
   // Full publications hydrate pinned archives before restore. Check identity, then reuse
   // those verified bytes through hardlinks without putting historical data in Actions artifacts.
-  if (manifest.mode === 'full') {
+  if (manifest.mode === 'full' && !frontendOnly) {
     for (const name of ['catalogue.json', 'manifest.json']) {
       const current = path.join(root, 'public/omics', name);
       if (await hash(current) !== await hash(path.join(source, 'public/omics', name))) throw Error('Hydrated release differs from checked build');
@@ -105,7 +105,14 @@ export async function restorePublication(source, root = process.cwd(), commit) {
     }
   }
   for (const file of manifest.files) {
-    if (manifest.mode === 'full' && file.path.startsWith('public/omics/')) continue;
+    if (manifest.mode === 'full' && !frontendOnly && file.path.startsWith('public/omics/')) continue;
+    if (frontendOnly && file.path.startsWith('public/omics/')) {
+      try {
+        await regular(path.join(root, file.path));
+        if (await hash(path.join(root, file.path)) !== file.sha256) throw Error('Hydrated release differs from checked build');
+        continue;
+      } catch (error) { if (error.code !== 'ENOENT') throw error; }
+    }
     if (file.path === 'workbench/deployment-plan.json') {
       try {
         await regular(path.join(root, file.path));
@@ -122,7 +129,7 @@ async function main() {
   if (mode === 'pack') console.log(JSON.stringify(await packPublication()));
   else if (mode === 'verify' || mode === 'restore') {
     const commit = execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim();
-    const manifest = mode === 'verify' ? await verifyPublication(source, commit) : await restorePublication(source, process.cwd(), commit);
+    const manifest = mode === 'verify' ? await verifyPublication(source, commit) : await restorePublication(source, process.cwd(), commit, { frontendOnly: process.argv.includes('--frontend-only') });
     if (process.env.GITHUB_OUTPUT) {
       const { appendFile } = await import('node:fs/promises');
       await appendFile(process.env.GITHUB_OUTPUT, `mode=${manifest.mode}\n`);

@@ -116,3 +116,5 @@ describe("truthful catalogue sharing", () => {
     expect(png.readUInt32BE(20)).toBe(630);
   });
 });
+
+vi.mock("../lib/downloads", async () => import("./fixtures/downloads"));

@@ -1,3 +1,4 @@
+import { githubDownloadUrl } from "@/lib/downloads";
 import styles from "@/app/database/database.module.css";
 
 export function CatalogueDownloads({
@@ -14,21 +15,22 @@ export function CatalogueDownloads({
       <p className={styles.muted}>
         Release {releaseId} · {releasedAt.slice(0, 10)}
       </p>
+      <p>Downloads are hosted on GitHub at the pinned data revision and compressed with gzip.</p>
       <div className={styles.downloads}>
-        <a href={`${release}/records.jsonl`} download>
-          JSONL
+        <a href={githubDownloadUrl(`${release}/records.jsonl`)}>
+          JSONL (gzip)
         </a>
-        <a href={`${release}/records.csv`} download>
-          CSV
+        <a href={githubDownloadUrl(`${release}/records.csv`)}>
+          CSV (gzip)
         </a>
-        <a href={`${release}/evidence.csv`} download>
-          Evidence table (CSV)
+        <a href={githubDownloadUrl(`${release}/evidence.csv`)}>
+          Evidence table (CSV) (gzip)
         </a>
-        <a href={`${release}/evidence.jsonl`} download>
-          Evidence table (JSONL)
+        <a href={githubDownloadUrl(`${release}/evidence.jsonl`)}>
+          Evidence table (JSONL) (gzip)
         </a>
         <a href="/evidence/">Evidence and review methods</a>
-        <a href={`${release}/manifest.json`}>Checksums and release manifest</a>
+        <a href={githubDownloadUrl(`${release}/manifest.json`)}>Checksums and release manifest (gzip)</a>
       </div>
       <details>
         <summary>Original literature downloads</summary>
@@ -38,11 +40,11 @@ export function CatalogueDownloads({
           scope; use the database release above for the reviewed collection.
         </p>
         <div className={styles.downloads}>
-          <a href="/benchmark-literature/results.csv" download>
-            Original results CSV
+          <a href={githubDownloadUrl("/benchmark-literature/results.csv")}>
+            Original results CSV (gzip)
           </a>
-          <a href="/benchmark-literature/papers.json" download>
-            Original papers JSON
+          <a href={githubDownloadUrl("/benchmark-literature/papers.json")}>
+            Original papers JSON (gzip)
           </a>
         </div>
       </details>

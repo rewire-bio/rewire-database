@@ -6,8 +6,7 @@ import { assertNotSmokeExport } from "./assert-not-smoke-export.mjs";
 
 assertNotSmokeExport();
 
-// Firebase publication must have completed successfully first. Keep its origin
-// and immutable historical releases available to both old and new Worker versions.
+// Current API data is prepared independently; all website assets are served here.
 const account = process.env.CLOUDFLARE_ACCOUNT_ID;
 const token = process.env.CLOUDFLARE_API_TOKEN;
 const origin = process.env.CLOUDFLARE_PUBLIC_ORIGIN;
@@ -39,14 +38,14 @@ const previous = (await measure("cloudflare.capture", () => api())).deployments?
 if (!previous?.versions?.length) throw new Error("Bootstrap and verify the Worker before enabling automated deployment");
 try {
   await measure("cloudflare.upload_activation", () => run(["npx", "--no-install", "wrangler", "deploy"]));
-  await measure("cloudflare.http_verification", () => run(["node", "scripts/check-hosting-http.mjs", origin]));
-  await measure("cloudflare.range_verification", () => run(["node", "scripts/check-cloudflare-ranges.mjs", origin]));
-  await measure("cloudflare.catalogue_verification", () => run(["node", "scripts/check-live-catalogue.mjs", origin, "--website", acceptanceArgument]));
+  await measure("cloudflare.smoke_verification", () => run(["node", "scripts/smoke-deployment.mjs", origin, "--independent-frontend"]));
+  await measure("cloudflare.download_verification", () => run(["node", "scripts/check-cloudflare-ranges.mjs", origin]));
+  await measure("cloudflare.catalogue_verification", () => run(["node", "scripts/check-live-catalogue.mjs", origin, "--website", "--independent-frontend", acceptanceArgument]));
 } catch (error) {
   try {
     await measure("cloudflare.rollback", () => api("POST", { strategy: "percentage", versions: previous.versions }));
   } catch (rollbackError) {
     throw new AggregateError([error, rollbackError], "Cloudflare deploy failed and rollback requires operator attention");
   }
-  throw new Error("Cloudflare deploy failed; previous Worker version restored. Firebase retains the reviewed release.", { cause: error });
+  throw new Error("Cloudflare deploy failed; previous Worker version restored.", { cause: error });
 }

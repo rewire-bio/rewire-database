@@ -285,3 +285,5 @@ describe("explicit catalogue entity UI", () => {
     expect(configuration).not.toContain("Underlying model:");
   });
 });
+
+vi.mock("../lib/downloads", async () => import("./fixtures/downloads"));

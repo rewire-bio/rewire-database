@@ -1,3 +1,4 @@
+import { githubDownloadUrl } from "@/lib/downloads";
 import { socialMetadata } from "@/lib/catalogue-sharing";
 import fs from "node:fs";
 import Link from "next/link";
@@ -61,27 +62,27 @@ export default function Audits() {
             <>
               <p>
                 <a
-                  href={`/omics/releases/${catalogue.release_id}/audit-checks.csv`}
+                  href={githubDownloadUrl(`/omics/releases/${catalogue.release_id}/audit-checks.csv`)}
                 >
-                  Audit checks CSV
+                  Audit checks CSV (gzip)
                 </a>{" "}
                 ·{" "}
                 <a
-                  href={`/omics/releases/${catalogue.release_id}/audit-checks.jsonl`}
+                  href={githubDownloadUrl(`/omics/releases/${catalogue.release_id}/audit-checks.jsonl`)}
                 >
-                  Audit checks JSONL
+                  Audit checks JSONL (gzip)
                 </a>{" "}
                 ·{" "}
                 <a
-                  href={`/omics/releases/${catalogue.release_id}/audit-runs.json`}
+                  href={githubDownloadUrl(`/omics/releases/${catalogue.release_id}/audit-runs.json`)}
                 >
-                  Audit runs
+                  Audit runs (gzip)
                 </a>{" "}
                 ·{" "}
                 <a
-                  href={`/omics/releases/${catalogue.release_id}/audit-resolutions.json`}
+                  href={githubDownloadUrl(`/omics/releases/${catalogue.release_id}/audit-resolutions.json`)}
                 >
-                  Resolutions
+                  Resolutions (gzip)
                 </a>
               </p>
               <AuditExplorer

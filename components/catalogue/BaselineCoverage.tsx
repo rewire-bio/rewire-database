@@ -1,3 +1,4 @@
+import { githubDownloadUrl } from "@/lib/downloads";
 import { catalogueText } from "@/lib/catalogue-text";
 import Link from "next/link";
 import { Fragment } from "react";
@@ -141,19 +142,19 @@ export default function BaselineCoverage({
         </details>
       )}
       <p>
-        <a href={`${downloads}/protocol-baselines.csv`} download>
-          Protocol coverage CSV
+        <a href={githubDownloadUrl(`${downloads}/protocol-baselines.csv`)}>
+          Protocol coverage CSV (gzip)
         </a>
         {" · "}
-        <a href={`${downloads}/model-evaluation-matrix.csv`} download>
-          Model evaluation matrix
+        <a href={githubDownloadUrl(`${downloads}/model-evaluation-matrix.csv`)}>
+          Model evaluation matrix (gzip)
         </a>
         {" · "}
-        <a href={`${downloads}/sources.csv`} download>
-          Source table
+        <a href={githubDownloadUrl(`${downloads}/sources.csv`)}>
+          Source table (gzip)
         </a>
         {" · "}
-        <a href={`${downloads}/manifest.json`}>Release and checksums</a>
+        <a href={githubDownloadUrl(`${downloads}/manifest.json`)}>Release and checksums (gzip)</a>
       </p>
       <p className={styles.muted}>
         Coverage is derived from release {catalogue.release_id}. Source

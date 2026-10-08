@@ -8,7 +8,7 @@ vi.mock("node:child_process",async(original)=>({...(await original<object>()),sp
   const child=new EventEmitter();queueMicrotask(()=>child.emit("exit",args.includes(state.failure) ? 1 : 0));return child;
 })}));
 const fingerprints={data:"a".repeat(64),backend:"b".repeat(64),hosting:"c".repeat(64)};
-const receipt={schema:1,commit:"d".repeat(40),release_id:"2026-10-07-aaaaaaaaaaaa",manifest_sha256:"e".repeat(64),fingerprints};
+const receipt={schema:2,producer_repository:"rewire-bio/rewire-benchmark-data",producer_revision:"1".repeat(40),commit:"d".repeat(40),release_id:"2026-10-07-aaaaaaaaaaaa",manifest_sha256:"e".repeat(64),fingerprints};
 const versions=[{version_id:"previous",percentage:100}];
 let fetcher: Mock<[string, RequestInit?], Promise<Response>>;
 beforeEach(()=>{
@@ -20,13 +20,13 @@ beforeEach(()=>{
 });
 afterEach(()=>{vi.unstubAllGlobals();vi.unstubAllEnvs();});
 describe("Cloudflare publication acceptance",()=>{
-  it("uses the checked UI-only plan for core acceptance after normal hosting checks",async()=>{
+  it("uses the checked UI-only plan for core acceptance with independent frontend checks",async()=>{
     await import("../scripts/deploy-cloudflare.mjs");
     expect(state.commands).toEqual([
       ["npx","--no-install","wrangler","deploy"],
-      ["node","scripts/check-hosting-http.mjs","https://example.test"],
+      ["node","scripts/smoke-deployment.mjs","https://example.test","--independent-frontend"],
       ["node","scripts/check-cloudflare-ranges.mjs","https://example.test"],
-      ["node","scripts/check-live-catalogue.mjs","https://example.test","--website","--acceptance=core"],
+      ["node","scripts/check-live-catalogue.mjs","https://example.test","--website","--independent-frontend","--acceptance=core"],
     ]);
   });
   it.each([{backend:true},{mode:"full"},{fingerprints:{...fingerprints,backend:"f".repeat(64)}}])("keeps full acceptance for backend/data or inconsistent plans (%j)",async(change)=>{

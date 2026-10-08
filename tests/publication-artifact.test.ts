@@ -10,7 +10,7 @@ const commit = 'a'.repeat(40);
 const release_id = '2026-10-07-aaaaaaaaaaaa';
 const fingerprints = {data: 'b'.repeat(64), backend: 'c'.repeat(64), hosting: 'd'.repeat(64)};
 const manifest = JSON.stringify({release_id});
-const receipt = {schema: 1, commit, release_id, fingerprints, manifest_sha256: createHash('sha256').update(manifest).digest('hex')};
+const receipt = {schema: 2, producer_repository: 'rewire-bio/rewire-benchmark-data', producer_revision: '1'.repeat(40), commit, release_id, fingerprints, manifest_sha256: createHash('sha256').update(manifest).digest('hex')};
 async function file(root: string, name: string, content: string) {
   await mkdir(path.dirname(path.join(root, name)), {recursive: true});
   await writeFile(path.join(root, name), content);
@@ -61,6 +61,18 @@ describe('checked publication handoff', () => {
     expect(await readFile(path.join(target, 'out/omics/releases/history.jsonl'), 'utf8')).toBe('immutable');
     const wrong = await fixture('full'); await file(wrong, 'public/omics/catalogue.json', '[1]');
     await expect(restorePublication(stage, wrong, commit)).rejects.toThrow('differs');
+  });
+  it('restores a changed-data frontend without transporting or restoring historical downloads', async () => {
+    const root = await fixture('full'); await packPublication(root);
+    const target = await fixture('full'); await rm(path.join(target, 'out'), {recursive:true});
+    await file(target, 'public/omics/releases/history.jsonl', 'immutable');
+    await restorePublication(path.join(root, 'workbench/publication'), target, commit, {frontendOnly:true});
+    expect(await readFile(path.join(target, 'out/index.html'), 'utf8')).toBe('checked homepage');
+    await expect(readFile(path.join(target, 'out/omics/releases/history.jsonl'))).rejects.toThrow();
+    expect(await readFile(path.join(target, 'public/omics/releases/history.jsonl'), 'utf8')).toBe('immutable');
+    const wrong = await fixture('full'); await rm(path.join(wrong, 'out'), {recursive:true});
+    await file(wrong, 'public/omics/catalogue.json', '[1]');
+    await expect(restorePublication(path.join(root, 'workbench/publication'), wrong, commit, {frontendOnly:true})).rejects.toThrow('differs');
   });
 });
 describe('publication lock preflight', () => {

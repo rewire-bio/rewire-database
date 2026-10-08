@@ -1,4 +1,4 @@
-name: Database checks and Firebase deployment
+name: Database checks and independent frontend deployment
 on:
   pull_request:
   push:
@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
     inputs:
       force_full:
-        description: Rebuild all archives and redeploy the backend
+        description: Recheck current data and redeploy the backend
         type: boolean
         default: false
 permissions:
@@ -218,6 +218,7 @@ jobs:
     # prerenders a page per record, and the export checks read the release
     # bundles. That needs more heap than Node allows itself by default.
     env:
+      CLOUDFLARE_ASSET_LIMIT: ${{ vars.CLOUDFLARE_ASSET_LIMIT || '20000' }}
       DEPLOYMENT_METRICS_FILE: workbench/build-metrics.jsonl
       NODE_OPTIONS: --max-old-space-size=8192
       FIREBASE_PROJECT_ID: ${{ vars.FIREBASE_PROJECT_ID }}
@@ -231,22 +232,21 @@ jobs:
       NEXT_PUBLIC_GA_ID: ${{ vars.NEXT_PUBLIC_GA_ID }}
     steps:
       - uses: actions/checkout@v4
-      - name: Free temporary runner space for immutable release exports
-        if: runner.environment == 'github-hosted'
-        # Archive restoration, generated pages and dependencies exceeded the
-        # previous 35 GiB allowance. Keep 45 GiB before installing dependencies.
-        run: node scripts/prepare-runner-space.mjs
       - uses: actions/setup-node@v4
         with:
           node-version: 22
       - name: Require automatic public deployment configuration
-        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && vars.FIREBASE_DEPLOY_ENABLED == 'true' && vars.FIREBASE_BACKEND_DEPLOY_ENABLED == 'true'
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && vars.CLOUDFLARE_DEPLOY_ENABLED == 'true' && vars.FIREBASE_BACKEND_DEPLOY_ENABLED == 'true'
         env:
           CLOUDFLARE_DEPLOY_ENABLED: ${{ vars.CLOUDFLARE_DEPLOY_ENABLED }}
           CLOUDFLARE_PUBLIC_ORIGIN: ${{ vars.CLOUDFLARE_PUBLIC_ORIGIN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         run: |
+          if [ "$CLOUDFLARE_ASSET_LIMIT" != 100000 ]; then
+            echo '::error::The complete current frontend exceeds 20,000 files. Confirm Workers Paid capacity and set CLOUDFLARE_ASSET_LIMIT=100000 before enabling this migration. No billing changes are made by this workflow.'
+            exit 1
+          fi
           if [ "$CLOUDFLARE_DEPLOY_ENABLED" != true ] || [ -z "$CLOUDFLARE_ACCOUNT_ID" ] || [ -z "$CLOUDFLARE_API_TOKEN" ] || [ -z "$CLOUDFLARE_PUBLIC_ORIGIN" ]; then
             echo '::error::Public deployment requires CLOUDFLARE_DEPLOY_ENABLED=true, CLOUDFLARE_ACCOUNT_ID, CLOUDFLARE_PUBLIC_ORIGIN and a durable CLOUDFLARE_API_TOKEN. Configure them before publishing.'
             exit 1
@@ -283,14 +283,13 @@ jobs:
         run: |
           node -e 'const p=require("./benchmark-data.lock.json"); if(p.repository!=="rewire-bio/rewire-benchmark-data" || !/^[a-f0-9]{40}$/.test(p.revision)) throw Error("Invalid data pin"); require("fs").appendFileSync(process.env.GITHUB_OUTPUT, "revision="+p.revision+"\n")'
       - name: Restore current-release website files
-        if: steps.plan.outputs.mode == 'web'
         id: current-data-cache
         uses: actions/cache/restore@v4
         with:
           path: workbench/benchmark-data
           key: benchmark-data-current-v2-${{ steps.data-pin.outputs.revision }}-${{ hashFiles('benchmark-data.lock.json') }}
       - name: Check out the current release manifest
-        if: steps.plan.outputs.mode == 'web' && steps.current-data-cache.outputs.cache-hit != 'true'
+        if: steps.current-data-cache.outputs.cache-hit != 'true'
         uses: actions/checkout@v4
         with:
           repository: rewire-bio/rewire-benchmark-data
@@ -300,68 +299,12 @@ jobs:
           sparse-checkout-cone-mode: false
           sparse-checkout: /website/manifest.json
       - name: Select SHA-verified current payloads
-        if: steps.plan.outputs.mode == 'web' && steps.current-data-cache.outputs.cache-hit != 'true'
+        if: steps.current-data-cache.outputs.cache-hit != 'true'
         run: node scripts/select-current-data.mjs
-      - name: Restore pinned compressed data checkout
-        id: data-cache
-        if: steps.plan.outputs.mode == 'full'
-        uses: actions/cache/restore@v4
-        with:
-          path: workbench/benchmark-data
-          key: benchmark-data-${{ steps.data-pin.outputs.revision }}
-      - name: Check out the immutable data artifact
-        if: steps.plan.outputs.mode == 'full' && steps.data-cache.outputs.cache-hit != 'true'
-        uses: actions/checkout@v4
-        with:
-          repository: rewire-bio/rewire-benchmark-data
-          ref: ${{ steps.data-pin.outputs.revision }}
-          persist-credentials: false
-          path: workbench/benchmark-data
-          sparse-checkout: |
-            website
-            data/omics/releases
-      - name: Reserve build space after the compressed dependency checkout
-        if: runner.environment == 'github-hosted'
-        run: node scripts/prepare-runner-space.mjs --after-dependencies
-      - name: Authenticate the compressed checkout before caching
-        if: steps.plan.outputs.mode == 'full'
-        run: |
-          node --input-type=module <<'NODE'
-          import fs from 'node:fs';
-          import path from 'node:path';
-          import crypto from 'node:crypto';
-          import { execFileSync } from 'node:child_process';
-          const root = fs.realpathSync(process.cwd());
-          const source = path.join(root, 'workbench/benchmark-data');
-          for (const name of ['workbench', 'workbench/benchmark-data', 'workbench/benchmark-data/.git']) {
-            const file = path.join(root, name), stat = fs.lstatSync(file);
-            if (stat.isSymbolicLink() || !stat.isDirectory() || fs.realpathSync(file) !== file) throw Error('Unsafe producer checkout');
-          }
-          const pin = JSON.parse(fs.readFileSync('benchmark-data.lock.json'));
-          const git = args => execFileSync('git', args, { cwd: source, encoding: 'utf8' }).trim();
-          if (pin.repository !== 'rewire-bio/rewire-benchmark-data' || git(['rev-parse', 'HEAD']) !== pin.revision || git(['status', '--porcelain', '--untracked-files=all'])) throw Error('Producer clone must be clean and at the reviewed pin');
-          if (!['https://github.com/rewire-bio/rewire-benchmark-data', 'https://github.com/rewire-bio/rewire-benchmark-data.git'].includes(git(['remote', 'get-url', 'origin']))) throw Error('Unexpected producer remote');
-          const bytes = fs.readFileSync(path.join(source, 'website/manifest.json'));
-          if (crypto.createHash('sha256').update(bytes).digest('hex') !== pin.manifest_sha256 || JSON.parse(bytes).release_id !== pin.release_id) throw Error('Pinned package identity mismatch');
-          NODE
-      - name: Cache authenticated compressed data before expansion
-        if: steps.plan.outputs.mode == 'full' && steps.data-cache.outputs.cache-hit != 'true'
-        uses: actions/cache/save@v4
-        with:
-          path: workbench/benchmark-data
-          key: ${{ steps.data-cache.outputs.cache-primary-key }}
-      - name: Hydrate and verify the pinned release
-        run: |
-          if [ "${{ steps.plan.outputs.mode }}" = web ]; then node scripts/deployment-metrics.mjs run hydration -- npm run data:prepare -- --current-only; else node scripts/deployment-metrics.mjs run hydration -- npm run data:prepare; fi
-      - name: Release the temporary compressed producer checkout
-        id: release-source
-        # Runs after the authenticated cache save and full hydration above. Re-runs the full native
-        # preparation before deleting only workbench/benchmark-data; hydrated
-        # data and the consumer Git stay in place.
-        if: steps.plan.outputs.mode == 'full' && runner.environment == 'github-hosted'
-        run: node scripts/release-prepared-data-checkout.mjs
+      - name: Hydrate and verify only the pinned current release
+        run: node scripts/deployment-metrics.mjs run hydration -- npm run data:prepare -- --current-only
       - name: Cache verified current-release files
-        if: steps.plan.outputs.mode == 'web' && steps.current-data-cache.outputs.cache-hit != 'true'
+        if: steps.current-data-cache.outputs.cache-hit != 'true'
         uses: actions/cache/save@v4
         with:
           path: workbench/benchmark-data
@@ -374,11 +317,7 @@ jobs:
           node scripts/configure-contribution-deployment.mjs --validate-only
           df -h .
           df -i .
-          # After the checkout is released, hydration has already passed; npm run
-          # build would hydrate again from the removed source.
-          if [ "${{ steps.plan.outputs.mode }}" = web ]; then node scripts/deployment-metrics.mjs run rendering -- npm run build:web
-          elif [ "${{ steps.release-source.outcome }}" = success ]; then node scripts/deployment-metrics.mjs run rendering -- node scripts/build-static.mjs
-          else node scripts/deployment-metrics.mjs run rendering -- npm run build; fi
+          node scripts/deployment-metrics.mjs run rendering -- npm run build:web
           df -h .
           df -i .
           node scripts/deployment-plan.mjs --receipt
@@ -396,39 +335,25 @@ jobs:
           df -h .
       - name: Verify exported website and release bytes
         run: |
-          if [ "${{ steps.plan.outputs.mode }}" = web ]; then node scripts/deployment-metrics.mjs run export_verification -- npm run check:export:web; else node scripts/deployment-metrics.mjs run export_verification -- npm run check:export; fi
+          node scripts/deployment-metrics.mjs run export_verification -- npm run check:export:web
         env:
           NEXT_PUBLIC_GA_ID: ${{ vars.NEXT_PUBLIC_GA_ID }}
           NEXT_PUBLIC_OMICS_CONTRIBUTIONS_ENABLED: ${{ vars.NEXT_PUBLIC_OMICS_CONTRIBUTIONS_ENABLED || 'false' }}
-      - name: Stage and validate Cloudflare asset subset
+      - name: Stage and validate all current frontend pages
         run: npm run prepare:cloudflare && node scripts/check-cloudflare-local.mjs
-      - name: Verify Firebase HTTP routing
-        run: npx firebase emulators:exec --project demo-rewire-omics --only hosting 'npm run check:http'
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '21'
       - name: Install and build the API
         run: npm ci --prefix services/omics && npm --prefix services/omics run build && npm --prefix services/omics run check:functions:load
-      - name: Verify Hosting and API integration
+      - name: Verify API and submission integration in local emulators
         run: npx firebase emulators:exec --project demo-rewire-omics --only hosting,functions,auth,firestore 'npm --prefix services/omics test && node scripts/check-api-hosting.mjs'
         env:
           # The HTTP probe explicitly verifies the disabled-intake contract.
           # Keep emulator settings independent of the production publication plan.
           OMICS_CONTRIBUTIONS_ENABLED: 'false'
           OMICS_MAIL_ENABLED: 'false'
-      - name: Package checked Cloudflare frontend for operator bootstrap
-        run: |
-          node -e 'require("node:fs").writeFileSync(".cloudflare/build.json", JSON.stringify({repository: process.env.GITHUB_REPOSITORY, commit: process.env.GITHUB_SHA, run: process.env.GITHUB_RUN_ID, wrangler: require("./package.json").devDependencies.wrangler}, null, 2) + "\n")'
-          tar -czf cloudflare-web.tar.gz .cloudflare/assets .cloudflare/inventory.json .cloudflare/build.json cloudflare wrangler.jsonc firebase.json
-      - name: Retain checked Cloudflare frontend briefly
-        uses: actions/upload-artifact@v4
-        with:
-          name: cloudflare-web-${{ github.sha }}
-          path: cloudflare-web.tar.gz
-          retention-days: 3
-          compression-level: 0
-          if-no-files-found: error
       - name: Package checked publication without historical downloads
         run: node scripts/deployment-metrics.mjs run artifact_pack -- node scripts/publication-artifact.mjs pack
       - name: Retain checked publication for the serialized publisher
@@ -454,7 +379,7 @@ jobs:
 
   publish:
     needs: checks
-    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && vars.FIREBASE_DEPLOY_ENABLED == 'true' && vars.FIREBASE_BACKEND_DEPLOY_ENABLED == 'true'
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && vars.CLOUDFLARE_DEPLOY_ENABLED == 'true' && vars.FIREBASE_BACKEND_DEPLOY_ENABLED == 'true'
     runs-on: ubuntu-latest
     concurrency:
       # Only this job writes production. Never cancel a transaction in progress.
@@ -464,6 +389,7 @@ jobs:
       contents: read
       id-token: write
     env:
+      CLOUDFLARE_ASSET_LIMIT: ${{ vars.CLOUDFLARE_ASSET_LIMIT || '20000' }}
       DEPLOYMENT_METRICS_FILE: workbench/publication-metrics.jsonl
       NODE_OPTIONS: --max-old-space-size=8192
       FIREBASE_PROJECT_ID: ${{ vars.FIREBASE_PROJECT_ID }}
@@ -495,44 +421,45 @@ jobs:
       - name: Reject superseded or stale publication before setup
         id: preflight
         run: node scripts/publication-preflight.mjs
-      - name: Reserve full-release space
-        if: steps.preflight.outputs.publish == 'true' && steps.artifact.outputs.mode == 'full'
-        run: node scripts/prepare-runner-space.mjs
       - name: Install pinned publication dependencies
         if: steps.preflight.outputs.publish == 'true'
         run: node scripts/deployment-metrics.mjs run dependencies -- npm ci --no-audit --no-fund
-      - name: Read full-release data pin
-        if: steps.preflight.outputs.publish == 'true' && steps.artifact.outputs.mode == 'full'
+      - name: Read current publication data pin
+        if: steps.preflight.outputs.publish == 'true'
         id: data-pin
-        run: node -e 'require("fs").appendFileSync(process.env.GITHUB_OUTPUT, "revision="+require("./benchmark-data.lock.json").revision+"\n")'
-      - name: Restore pinned compressed full-release checkout
-        id: data-cache
-        if: steps.preflight.outputs.publish == 'true' && steps.artifact.outputs.mode == 'full'
+        run: |
+          node -e 'const p=require("./benchmark-data.lock.json"); if(p.repository!=="rewire-bio/rewire-benchmark-data" || !/^[a-f0-9]{40}$/.test(p.revision)) throw Error("Invalid data pin"); require("fs").appendFileSync(process.env.GITHUB_OUTPUT, "revision="+p.revision+"\n")'
+      - name: Restore current-release website files
+        if: steps.preflight.outputs.publish == 'true'
+        id: current-data-cache
         uses: actions/cache/restore@v4
         with:
           path: workbench/benchmark-data
-          key: benchmark-data-${{ steps.data-pin.outputs.revision }}
-      - name: Check out missing pinned full-release data
-        if: steps.preflight.outputs.publish == 'true' && steps.artifact.outputs.mode == 'full' && steps.data-cache.outputs.cache-hit != 'true'
+          key: benchmark-data-current-v2-${{ steps.data-pin.outputs.revision }}-${{ hashFiles('benchmark-data.lock.json') }}
+      - name: Check out the current release manifest
+        if: steps.preflight.outputs.publish == 'true' && steps.current-data-cache.outputs.cache-hit != 'true'
         uses: actions/checkout@v4
         with:
           repository: rewire-bio/rewire-benchmark-data
           ref: ${{ steps.data-pin.outputs.revision }}
           persist-credentials: false
           path: workbench/benchmark-data
-          sparse-checkout: |
-            website
-            data/omics/releases
-      - name: Hydrate full historical downloads without rendering pages again
-        if: steps.preflight.outputs.publish == 'true' && steps.artifact.outputs.mode == 'full'
-        run: node scripts/deployment-metrics.mjs run publication_hydration -- npm run data:prepare
-      - name: Release compressed full-release source after verification
-        if: steps.preflight.outputs.publish == 'true' && steps.artifact.outputs.mode == 'full'
-        run: node scripts/release-prepared-data-checkout.mjs
+          sparse-checkout-cone-mode: false
+          sparse-checkout: /website/manifest.json
+      - name: Select SHA-verified current payloads
+        if: steps.preflight.outputs.publish == 'true' && steps.current-data-cache.outputs.cache-hit != 'true'
+        run: node scripts/select-current-data.mjs
+      - name: Hydrate only current API artifacts
+        if: steps.preflight.outputs.publish == 'true'
+        run: node scripts/deployment-metrics.mjs run publication_hydration -- npm run data:prepare -- --current-only
       - name: Restore checked UI and current release identity
         if: steps.preflight.outputs.publish == 'true'
-        run: node scripts/deployment-metrics.mjs run artifact_restore -- node scripts/publication-artifact.mjs restore workbench/checked-publication
-      - name: Prepare verified Cloudflare subset
+        run: node scripts/deployment-metrics.mjs run artifact_restore -- node scripts/publication-artifact.mjs restore workbench/checked-publication --frontend-only
+      - name: Inspect current API release without Google credentials
+        id: api-plan
+        if: steps.preflight.outputs.publish == 'true'
+        run: node scripts/deploy-independent-frontend.mjs --inspect
+      - name: Prepare verified independent frontend
         if: steps.preflight.outputs.publish == 'true'
         run: npm run prepare:cloudflare && node scripts/check-cloudflare-local.mjs
       - name: Build the pinned publication API tools
@@ -543,20 +470,20 @@ jobs:
         if: steps.preflight.outputs.publish == 'true'
         run: node scripts/publication-preflight.mjs --refresh-ui-base
       - name: Authenticate to Google
-        if: steps.final-preflight.outputs.publish == 'true' && github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && vars.FIREBASE_DEPLOY_ENABLED == 'true' && vars.FIREBASE_BACKEND_DEPLOY_ENABLED == 'true'
+        if: steps.final-preflight.outputs.publish == 'true' && github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && vars.CLOUDFLARE_DEPLOY_ENABLED == 'true' && vars.FIREBASE_BACKEND_DEPLOY_ENABLED == 'true' && (steps.api-plan.outputs.data_required == 'true' || steps.api-plan.outputs.backend_required == 'true')
         uses: google-github-actions/auth@v2
         with:
           workload_identity_provider: ${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER }}
           service_account: ${{ vars.GCP_DEPLOY_SERVICE_ACCOUNT }}
       - name: Check independent backend deployment state
         id: backend
-        if: steps.final-preflight.outputs.publish == 'true' && github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && vars.FIREBASE_DEPLOY_ENABLED == 'true' && vars.FIREBASE_BACKEND_DEPLOY_ENABLED == 'true'
+        if: steps.final-preflight.outputs.publish == 'true' && github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && vars.CLOUDFLARE_DEPLOY_ENABLED == 'true' && vars.FIREBASE_BACKEND_DEPLOY_ENABLED == 'true' && (steps.api-plan.outputs.data_required == 'true' || steps.api-plan.outputs.backend_required == 'true')
         run: node scripts/backend-deployment.mjs
         env:
           GCLOUD_PROJECT: ${{ vars.FIREBASE_PROJECT_ID }}
           NODE_ENV: production
       - name: Deploy reviewed API and private Firestore rules
-        if: steps.final-preflight.outputs.publish == 'true' && steps.backend.outputs.required == 'true' && github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && vars.FIREBASE_DEPLOY_ENABLED == 'true' && vars.FIREBASE_BACKEND_DEPLOY_ENABLED == 'true'
+        if: steps.final-preflight.outputs.publish == 'true' && steps.backend.outputs.required == 'true' && github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && vars.CLOUDFLARE_DEPLOY_ENABLED == 'true' && vars.FIREBASE_BACKEND_DEPLOY_ENABLED == 'true'
         run: |
           node scripts/backend-deployment.mjs --begin
           node scripts/configure-contribution-deployment.mjs
@@ -568,25 +495,19 @@ jobs:
           FIREBASE_PROJECT_ID: ${{ vars.FIREBASE_PROJECT_ID }}
           OMICS_CONTRIBUTIONS_ENABLED: ${{ vars.OMICS_CONTRIBUTIONS_ENABLED || 'false' }}
           OMICS_MAIL_ENABLED: ${{ vars.OMICS_MAIL_ENABLED || 'false' }}
-      - name: Publish catalogue and website with rollback
-        if: steps.final-preflight.outputs.publish == 'true' && github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && vars.FIREBASE_DEPLOY_ENABLED == 'true' && vars.FIREBASE_BACKEND_DEPLOY_ENABLED == 'true'
-        run: node scripts/backend-deployment.mjs --assert && node scripts/deployment-metrics.mjs run catalogue_publication -- node scripts/deploy-catalogue.mjs
+      - name: Publish current API data and independent frontend with rollback
+        if: steps.final-preflight.outputs.publish == 'true'
+        run: node scripts/deployment-metrics.mjs run independent_publication -- node scripts/deploy-independent-frontend.mjs
         env:
           GCLOUD_PROJECT: ${{ vars.FIREBASE_PROJECT_ID }}
           NODE_ENV: production
-          OMICS_CONTRIBUTIONS_ENABLED: ${{ vars.OMICS_CONTRIBUTIONS_ENABLED || 'false' }}
-      - name: Publish Cloudflare web frontend with rollback
-        if: steps.final-preflight.outputs.publish == 'true' && github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && vars.CLOUDFLARE_DEPLOY_ENABLED == 'true' && vars.FIREBASE_DEPLOY_ENABLED == 'true' && vars.FIREBASE_BACKEND_DEPLOY_ENABLED == 'true'
-        run: node scripts/deployment-metrics.mjs run cloudflare_publication -- node scripts/deploy-cloudflare.mjs
-        env:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_PUBLIC_ORIGIN: ${{ vars.CLOUDFLARE_PUBLIC_ORIGIN }}
-          OMICS_CONTRIBUTIONS_ENABLED: ${{ vars.OMICS_CONTRIBUTIONS_ENABLED || 'false' }}
       - name: Smoke test deployed public website
-        if: steps.final-preflight.outputs.publish == 'true' && github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && vars.CLOUDFLARE_DEPLOY_ENABLED == 'true' && vars.FIREBASE_DEPLOY_ENABLED == 'true' && vars.FIREBASE_BACKEND_DEPLOY_ENABLED == 'true'
+        if: steps.final-preflight.outputs.publish == 'true' && github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && vars.CLOUDFLARE_DEPLOY_ENABLED == 'true' && vars.FIREBASE_BACKEND_DEPLOY_ENABLED == 'true'
         run: |
-          npm run smoke:deployment -- "$SMOKE_ORIGIN"
+          npm run smoke:deployment -- "$SMOKE_ORIGIN" --independent-frontend
           npx playwright install --with-deps chromium
           npm run smoke:browser
         env:

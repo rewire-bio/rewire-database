@@ -133,3 +133,5 @@ describe("utility-page export contracts", () => {
       .toContain(`${page.path}: unexpected structured data context/type`);
   });
 });
+
+vi.mock("../lib/downloads", async () => import("./fixtures/downloads"));

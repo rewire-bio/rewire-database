@@ -22,7 +22,7 @@ describe("release-pinned coverage presentation", () => {
   it("renders the prepared audit with release-specific download and collection-gap language", () => {
     const html = renderToStaticMarkup(<CoveragePage />);
     expect(fixture.read).toHaveBeenCalledWith("public/omics/coverage/reviewed-release.json", "utf8");
-    expect(html).toContain('href="/omics/coverage/reviewed-release.json"');
+    expect(html).toContain(`href="https://raw.githubusercontent.com/rewire-bio/rewire-benchmark-data/${'a'.repeat(40)}/website/files/public/omics/coverage/reviewed-release.json.gz"`);
     expect(html).toContain("Example benchmark");
     expect(html).toContain("Published results still to collect.");
     expect(html).toContain("Source table awaits review.");
@@ -44,3 +44,5 @@ describe("release-pinned coverage presentation", () => {
     expect(html).toContain("Explore 2 source-scoped charts");
   });
 });
+
+vi.mock("../lib/downloads", async () => import("./fixtures/downloads"));

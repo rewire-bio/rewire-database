@@ -1,3 +1,4 @@
+import { githubDownloadUrl } from "@/lib/downloads";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import PageHeader from "@/components/PageHeader";
@@ -120,7 +121,7 @@ export default function UseCasePage({ params }: { params: Params }) {
           <UseCaseCitations citations={entry.citations} sources={detail.sources} useCasePath={path} />
           <details><summary>Release provenance and downloads</summary>
             <p>Release <code>{detail.release_id}</code></p><p>Use-case input digest <code>{detail.input_sha256}</code></p>
-            <p><a href={`/omics/releases/${detail.release_id}/use-cases.json`} download>Download questions, collection plans and review metadata (JSON)</a> · <a href={`/omics/releases/${detail.release_id}/manifest.json`}>Verify release checksums</a></p>
+            <p><a href={githubDownloadUrl(`/omics/releases/${detail.release_id}/use-cases.json`)}>Download questions, collection plans and review metadata (JSON) (gzip)</a> · <a href={githubDownloadUrl(`/omics/releases/${detail.release_id}/manifest.json`)}>Verify release checksums (gzip)</a></p>
             <p>Question <code>{entry.id}</code>. Any numerical results on this page come from this release&apos;s existing evaluation records.</p>
           </details>
         </section>

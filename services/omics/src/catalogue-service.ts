@@ -97,7 +97,11 @@ export async function catalogueQuery(
   }
 }
 /** Publication and rollback use the same atomic pointer operation. */
-export async function activateRelease(db: Firestore, releaseId: string) {
+export async function activateRelease(
+  db: Firestore,
+  releaseId: string,
+  { expectedPreviousReleaseId }: { expectedPreviousReleaseId?: string } = {},
+) {
   const ref = db.collection("catalogueReleases").doc(releaseId);
   // Validate complete data before exposing it. No unreviewed source is imported here.
   const meta = (await ref.get()).data();
@@ -139,6 +143,11 @@ export async function activateRelease(db: Firestore, releaseId: string) {
   const previous = await db.runTransaction(async (tx) => {
     const current = await tx.get(db.doc("cataloguePublication/active"));
     const release = await tx.get(ref);
+    if (
+      expectedPreviousReleaseId !== undefined &&
+      current.data()?.release_id !== expectedPreviousReleaseId
+    )
+      throw new Error("Catalogue publication pointer changed; refusing to overwrite another release");
     if (
       release.data()?.state !== "ready" ||
       release.data()?.digest !== meta.digest

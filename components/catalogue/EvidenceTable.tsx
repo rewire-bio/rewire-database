@@ -1,4 +1,5 @@
 "use client";
+import { githubDownloadUrl } from "@/lib/downloads";
 import EvidenceValue from "./EvidenceValue";
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
@@ -313,11 +314,11 @@ export default function EvidenceTable({
               Next evidence rows
             </button>
           )}
-          <a href={`${release}/evidence.csv`} download>
-            All evidence (CSV)
+          <a href={githubDownloadUrl(`${release}/evidence.csv`)}>
+            All evidence (CSV) (gzip)
           </a>
-          <a href={`${release}/evidence.jsonl`} download>
-            All evidence (JSONL)
+          <a href={githubDownloadUrl(`${release}/evidence.jsonl`)}>
+            All evidence (JSONL) (gzip)
           </a>
           <Link href="/evidence/">How to read the evidence</Link>
         </div>

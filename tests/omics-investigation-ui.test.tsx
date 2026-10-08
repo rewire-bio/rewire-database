@@ -225,3 +225,5 @@ describe("reviewed investigation routes", () => {
     expect(renderToStaticMarkup(<InvestigationsPage />)).toContain("All current reports are exploratory");
   });
 });
+
+vi.mock("../lib/downloads", async () => import("./fixtures/downloads"));

@@ -1,3 +1,4 @@
+import { optionalGithubDownloadUrl } from "./downloads";
 import { catalogueText } from "./catalogue-text";
 import { assertNoPrivateFields } from "../services/omics/src/private-fields";
 import { validateResearchData, type ResearchData } from "../services/omics/src/research";
@@ -87,8 +88,12 @@ export function recordRouteKinds(
 }
 export function safeSourceUrl(value: unknown): string | undefined {
   if (typeof value !== "string") return;
+  const download = optionalGithubDownloadUrl(value);
+  if (download) return download;
+  if (value.startsWith("/omics/")) return;
   try {
     const url = new URL(value);
+    if (url.pathname.startsWith("/omics/") && ["benchmarks.rewire.it", "benchmarks.rewirebio.io", "rewire-omics.web.app", "rewire-omics.firebaseapp.com"].includes(url.hostname)) return;
     if (["https:", "http:"].includes(url.protocol)) return url.href;
   } catch {
     /* Not a URL. */

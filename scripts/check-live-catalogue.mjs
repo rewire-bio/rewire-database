@@ -5,11 +5,15 @@ import { pathToFileURL } from "node:url";
 import { fetchWithRetry, verifyResolutionPublications } from "./deployment-transaction.mjs";
 import { contributionProbeMode, verifyContributionGate } from "./contribution-deployment.mjs";
 
+import { pinnedDownloads, assertProducerReceipt, fetchGithubDownload } from "./github-downloads.mjs";
+
 // Read-only acceptance probe. No Firebase credentials, imports or writes.
 export async function checkLiveCatalogue({ args = process.argv.slice(2), read = readFile, fetchImpl = fetchWithRetry, verifyGate = verifyContributionGate } = {}) {
 const acceptance = args.find(arg => arg.startsWith("--acceptance="))?.slice("--acceptance=".length) || "full";
 assert.ok(["core", "full"].includes(acceptance), "Unknown live acceptance profile");
 const core = acceptance === "core";
+const independent = args.includes("--independent-frontend");
+const downloads = independent ? await pinnedDownloads(read) : undefined;
 const contributionMode = contributionProbeMode(args);
 const origin = (args.find(arg => !arg.startsWith("--")) || "https://benchmarks.rewirebio.io").replace(
   /\/$/,
@@ -27,6 +31,7 @@ assert.ok(
 );
 const manifestBytes = await read(new URL("../public/omics/manifest.json", import.meta.url));
 const manifest = JSON.parse(manifestBytes.toString("utf8"));
+if (independent) assert.equal(manifest.release_id, downloads.lock.release_id, "Checked manifest must match pinned producer release");
 const expectedCount = Object.values(manifest.counts).reduce(
   (sum, count) => sum + Number(count),
   0,
@@ -272,10 +277,15 @@ await verifyGate(origin, {
 
 if (args.includes("--website")) {
   const response = await fetchImpl(
-    `${origin}/omics/manifest.json?verify=${probe}`,
+    `${origin}/${independent ? "release-manifest.json" : "omics/manifest.json"}?verify=${probe}`,
     { redirect: "manual", headers: { "Cache-Control": "no-cache" } },
   );
   assert.equal(response.status, 200, "Live website manifest must be available");
+  if (independent) {
+    const receiptResponse = await fetchImpl(`${origin}/deployment.json?verify=${probe}`, { redirect: "manual" });
+    assert.equal(receiptResponse.status, 200, "Frontend producer receipt must be available");
+    assertProducerReceipt(await receiptResponse.json(), downloads.lock, manifest.release_id);
+  }
   if (!core && manifest.coverage.audit_history) {
     const auditPage = await fetchImpl(`${origin}/audits/?verify=${probe}`);
     assert.equal(auditPage.status, 200);
@@ -292,13 +302,15 @@ if (args.includes("--website")) {
       const detailHtml = await page.text();
       assert.ok(detailHtml.includes(useCases.release_id) && detailHtml.includes(useCases.input_sha256));
     }
-    const artifact = await fetchImpl(`${origin}/omics/releases/${manifest.release_id}/use-cases.json?verify=${probe}`);
-    assert.equal(artifact.status, 200);
-    assert.equal(createHash("sha256").update(Buffer.from(await artifact.arrayBuffer())).digest("hex"), manifest.files["use-cases.json"]);
+    const artifactBytes = independent
+      ? await fetchGithubDownload(origin, `/omics/releases/${manifest.release_id}/use-cases.json`, downloads, fetchImpl)
+      : await (async () => { const artifact = await fetchImpl(`${origin}/omics/releases/${manifest.release_id}/use-cases.json?verify=${probe}`); assert.equal(artifact.status, 200); return Buffer.from(await artifact.arrayBuffer()); })();
+    assert.equal(createHash("sha256").update(artifactBytes).digest("hex"), manifest.files["use-cases.json"]);
     for (const source of core ? [] : manifest.coverage.use_case_sources || []) {
-      const copy = await fetchImpl(`${origin}/omics/sources/${source.sha256}.md?verify=${probe}`);
-      assert.equal(copy.status, 200, "Reviewed source copies must be publicly accessible");
-      assert.equal(createHash("sha256").update(Buffer.from(await copy.arrayBuffer())).digest("hex"), source.sha256);
+      const copyBytes = independent
+        ? await fetchGithubDownload(origin, `/omics/sources/${source.sha256}.md`, downloads, fetchImpl)
+        : await (async () => { const copy = await fetchImpl(`${origin}/omics/sources/${source.sha256}.md?verify=${probe}`); assert.equal(copy.status, 200, "Reviewed source copies must be publicly accessible"); return Buffer.from(await copy.arrayBuffer()); })();
+      assert.equal(createHash("sha256").update(copyBytes).digest("hex"), source.sha256);
     }
   }
   assert.equal(

@@ -5,8 +5,8 @@ import { execFileSync } from 'node:child_process';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 
-export const RECEIPT_SCHEMA = 1;
-export const ORIGIN = 'https://rewire-it.web.app';
+export const RECEIPT_SCHEMA = 2;
+export const ORIGIN = 'https://benchmarks.rewirebio.io';
 const digest = value => createHash('sha256').update(value).digest('hex');
 const sha = value => typeof value === 'string' && /^[a-f0-9]{64}$/.test(value);
 export function validReceipt(value) {
@@ -14,11 +14,13 @@ export function validReceipt(value) {
     /^[a-f0-9]{40}$/.test(value.commit || '') &&
     /^\d{4}-\d{2}-\d{2}-[a-f0-9]{12}$/.test(value.release_id || '') &&
     ['data', 'backend', 'hosting'].every(key => sha(value.fingerprints?.[key])) &&
+    value.producer_repository === 'rewire-bio/rewire-benchmark-data' && /^[a-f0-9]{40}$/.test(value.producer_revision || '') &&
     sha(value.manifest_sha256);
 }
 export async function publicBytes(filename, { fetchImpl = fetch, limit = 256 * 1024 } = {}) {
   if (!['deployment.json', 'omics/manifest.json'].includes(filename)) throw new Error('Unexpected publication metadata path');
-  const response = await fetchImpl(`${ORIGIN}/${filename}?verify=${Date.now()}`, {
+  const metadata = filename === 'omics/manifest.json' ? 'release-manifest.json' : filename;
+  const response = await fetchImpl(`${ORIGIN}/${metadata}?verify=${Date.now()}`, {
     redirect: 'manual', headers: { 'Cache-Control': 'no-cache' }, signal: AbortSignal.timeout(15_000),
   });
   if (response.status !== 200) throw new Error(`Publication metadata unavailable (${response.status})`);
@@ -44,7 +46,7 @@ export async function publishedReceipt(options) {
 }
 
 export function inputGroups(filename) {
-  const shared = /^package(-lock)?\.json$/.test(filename) || /^(scripts\/(deployment-plan|backend-deployment|configure-contribution-deployment|contribution-deployment|deploy-catalogue|hosting-web-deploy|deployment-transaction)\.mjs)$/.test(filename);
+  const shared = /^(scripts\/(configure-contribution-deployment|contribution-deployment)\.mjs)$/.test(filename);
   return {
     // Published artifact identity is independent of frontend source changes.
     data: filename === 'benchmark-data.lock.json',
@@ -90,13 +92,16 @@ export function liveAcceptanceProfile(plan) {
 export async function writeReceipt(root = process.cwd()) {
   const plan = JSON.parse(await readFile(path.join(root, 'workbench/deployment-plan.json'), 'utf8'));
   const bytes = await readFile(path.join(root, 'public/omics/manifest.json'));
+  const pin = JSON.parse(await readFile(path.join(root, 'benchmark-data.lock.json'), 'utf8'));
   const receipt = { schema: RECEIPT_SCHEMA, commit: plan.commit, release_id: JSON.parse(bytes).release_id,
+    producer_repository: pin.repository, producer_revision: pin.revision,
     fingerprints: plan.fingerprints, manifest_sha256: digest(bytes) };
   if (!validReceipt(receipt)) throw new Error('Invalid generated deployment receipt');
   if (plan.mode === 'web' && (receipt.release_id !== plan.previous.release_id || receipt.manifest_sha256 !== plan.previous.manifest_sha256)) {
     throw new Error('Current catalogue differs from the published release; run a full build');
   }
   await writeFile(path.join(root, 'out/deployment.json'), JSON.stringify(receipt, null, 2) + '\n');
+  await writeFile(path.join(root, 'out/release-manifest.json'), bytes);
   return receipt;
 }
 export async function assertPublishedBase(plan, expectedManifest, options) {

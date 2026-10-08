@@ -72,3 +72,5 @@ describe("source-label identity guards", () => {
     expect(html).toContain("/database/configuration/config");
   });
 });
+
+vi.mock("../lib/downloads", async () => import("./fixtures/downloads"));

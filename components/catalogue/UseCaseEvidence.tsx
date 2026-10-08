@@ -1,3 +1,4 @@
+import { githubDownloadUrl } from "@/lib/downloads";
 import type { Citation, ResolvedMapping, Review } from "@/services/omics/src/use-cases";
 import type { CatalogueRecord } from "@/services/omics/src/catalogue-query";
 import { catalogueText } from "@/lib/catalogue-text";
@@ -78,7 +79,7 @@ export default function UseCaseEvidence({ mapping, useCasePath, executionLinks }
     {!active ? <div className={styles.notice}>
       <p>{mapping.reason}</p>
       <p>This mapping does not support a current applicability claim or a result comparison.</p>
-      {mapping.prior_release_id && <p><a href={`/omics/releases/${mapping.prior_release_id}/use-cases.json`}>Inspect the previous release&apos;s mapping evidence</a></p>}
+      {mapping.prior_release_id && <p><a href={githubDownloadUrl(`/omics/releases/${mapping.prior_release_id}/use-cases.json`)}>Inspect the previous release&apos;s mapping evidence (gzip)</a></p>}
     </div> : <>
       <p><strong>{mapping.relevance && relevanceLabels[mapping.relevance]}</strong></p>
       <p>{mapping.rationale}</p>

@@ -1,3 +1,4 @@
+import { githubDownloadUrl } from "@/lib/downloads";
 import type { Metadata } from "next";
 import { readFileSync } from "node:fs";
 import Link from "next/link";
@@ -23,7 +24,7 @@ export default function CoveragePage() {
       <nav className={styles.nav} aria-label="Coverage navigation"><Link href="/">Benchmark database</Link>{Object.keys(audit.summary).map((kind) => <a key={kind} href={`#${kind}`}>{kindLabels[kind as keyof typeof kindLabels]}</a>)}</nav>
       <p>Release {audit.release_id}. Counts include results reached through source-backed membership links. A metric row is not an independent experiment. Charts keep a source, protocol, dataset and metric together.</p>
       <p>Pages without results indicate gaps in this collection. A paper may contain experiments we have not yet transcribed. We do not substitute unrelated results or zero scores for missing evidence.</p>
-      <p><a href={`/omics/coverage/${audit.release_id}.json`}>Download the complete audit (JSON)</a></p>
+      <p><a href={githubDownloadUrl(`/omics/coverage/${audit.release_id}.json`)}>Download the complete audit (JSON) (gzip)</a></p>
       {Object.entries(audit.summary).map(([kind, counts]) => <section key={kind} id={kind} className={styles.section}>
         <h2>{kindLabels[kind as keyof typeof kindLabels]}</h2>
         <p>{counts.pages} pages · {counts.with_results} with results · {counts.with_charts} with charts.</p>

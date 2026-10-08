@@ -54,7 +54,7 @@ describe("detail pages with incomplete and historical evidence", () => {
     expect(html).toContain("No supporting source is linked yet");
     expect(html).toContain("Technical metadata and extraction receipts");
     expect(html).toContain("Suggest a correction");
-    expect(html).toContain('href="/omics/releases/fixture/records.jsonl"');
+    expect(html).toContain(`href="https://raw.githubusercontent.com/rewire-bio/rewire-benchmark-data/${'a'.repeat(40)}/website/files/public/omics/releases/fixture/records.jsonl.gz"`);
     expect(html).not.toContain("Applicable tests and references");
     expect(html).not.toContain("Original source</a>");
     if (kind === "result") {
@@ -159,3 +159,5 @@ describe("verified entity relationships and profile ownership", () => {
     expect(html).not.toContain("0.75");
   });
 });
+
+vi.mock("../lib/downloads", async () => import("./fixtures/downloads"));

@@ -1,3 +1,4 @@
+import { githubDownloadUrl } from "@/lib/downloads";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { buildCatalogue } from "@/lib/catalogue-build";
@@ -34,7 +35,7 @@ export default function InvestigationsPage() {
         <h3>Start with the evidence</h3>
         <p>Dataset and evaluation pages assess four separate capabilities: replay metrics, investigate discrepancies, run locally and validate independently. Missing evidence is listed explicitly. Complete evidence does not imply that the necessary files are installed on your computer.</p>
         <p><Link href="/?kind=dataset#browse">Explore datasets and evidence gaps</Link></p>
-        {catalogue.research && <p><a href={`/omics/releases/${catalogue.release_id}/research-readiness.json`}>Download readiness assessments</a> · <a href={`/omics/releases/${catalogue.release_id}/research-manifests.json`}>Artifact manifests</a> · <a href={`/omics/releases/${catalogue.release_id}/research-investigations.json`}>Reviewed reports</a></p>}
+        {catalogue.research && <p><a href={githubDownloadUrl(`/omics/releases/${catalogue.release_id}/research-readiness.json`)}>Download readiness assessments (gzip)</a> · <a href={githubDownloadUrl(`/omics/releases/${catalogue.release_id}/research-manifests.json`)}>Artifact manifests (gzip)</a> · <a href={githubDownloadUrl(`/omics/releases/${catalogue.release_id}/research-investigations.json`)}>Reviewed reports (gzip)</a></p>}
       </section>
     </div></section>
   </>;

@@ -4,6 +4,15 @@
   "main": "cloudflare/worker.mjs",
   "compatibility_date": "2026-09-30",
   "workers_dev": true,
+  // The Worker is the gateway and must run on every request: it keeps API,
+  // auth, private and download responses (307, no-store) out of any cache and
+  // keys public HTML by frontend version and data release (cloudflare/page-cache.mjs).
+  // Cloudflare's outer Worker cache would answer before the Worker and could
+  // serve another release. Wrangler sends this setting only when it is set, so
+  // it stays explicit rather than relying on the account default.
+  "cache": {
+    "enabled": false
+  },
   // Pages come from the Next.js server on Cloud Run (its run.app URL). The
   // Worker holds no data release, so neither frontend nor data publication
   // redeploys it. An empty value answers 503 rather than proxying elsewhere.

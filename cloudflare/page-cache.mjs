@@ -17,7 +17,8 @@ const RSC_HEADERS = ["rsc", "next-router-state-tree", "next-router-prefetch", "n
 const PERSONAL_HEADERS = ["authorization", "cookie"];
 const CACHEABLE_TYPES = /^(text\/html|text\/css|text\/plain|text\/javascript|application\/javascript|application\/xml|text\/xml|application\/atom\+xml|image\/[a-z0-9.+-]+|font\/[a-z0-9.+-]+)\s*(;|$)/i;
 
-const privatePath = pathname => UNCACHED_FILES.has(pathname) ||
+/** Paths never cached anywhere: private pages, API/auth, downloads and publication metadata. */
+export const privatePath = pathname => UNCACHED_FILES.has(pathname) ||
   PRIVATE_PREFIXES.some(prefix => pathname === prefix || pathname.startsWith(`${prefix}/`));
 
 /**

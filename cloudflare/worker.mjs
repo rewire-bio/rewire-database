@@ -1,12 +1,23 @@
 import firebase from "../firebase.json" with { type: "json" };
 import { FUNCTIONS_ORIGIN, FUNCTIONS_PATH, AUTH_ORIGIN, backendUrl, isDownload, isProxied } from "./routing.mjs";
-import { IDENTITY_TTL_MS, browserResponse, cacheableRequest, cacheKey, edgeCopy, responseIdentity, storableResponse } from "./page-cache.mjs";
+import { IDENTITY_TTL_MS, browserResponse, cacheableRequest, cacheKey, edgeCopy, privatePath, responseIdentity, storableResponse } from "./page-cache.mjs";
 
 // The Worker carries no data release. Pages, assets and download redirects
 // come from the frontend server on Cloud Run, whose revision fixes the data
 // pin; the cache identity is whatever that origin last reported.
 let observed = null;
 export function resetObservedIdentity() { observed = null; }
+
+// Upstream requests always reach the origin: cache "no-store" bypasses
+// Cloudflare's CDN cache for these non-Cloudflare origins. Public HTML is
+// cached only by this Worker, under the frontend version and data release.
+export const UPSTREAM_FETCH = { redirect: "manual", cache: "no-store" };
+/** The reviewed contract for private, API, download and metadata responses. */
+function noStore(headers) {
+  headers.set("Cache-Control", "no-store");
+  headers.delete("CDN-Cache-Control");
+  headers.delete("Cloudflare-CDN-Cache-Control");
+}
 
 function frontendOrigin(env) {
   let origin;
@@ -28,8 +39,9 @@ async function frontend(request, env, ctx, url) {
   forwarded.headers.delete("host");
   // Download redirects need no credentials; never pass them along.
   if (isDownload(url.pathname)) for (const name of ["cookie", "authorization"]) forwarded.headers.delete(name);
-  const response = await fetch(forwarded, { redirect: "manual", cf: { cacheTtl: 0, cacheEverything: false } });
+  const response = await fetch(forwarded, UPSTREAM_FETCH);
   const headers = new Headers(response.headers);
+  if (privatePath(url.pathname)) noStore(headers);
   const location = headers.get("location");
   if (location) {
     const destination = new URL(location, upstream);
@@ -65,18 +77,14 @@ const worker = {
       return Response.redirect(destination.href, legacy.type);
     }
     // Downloads are redirects to exact GitHub exports; bodies are never forwarded.
-    if (isDownload(url.pathname) && !["GET", "HEAD"].includes(request.method)) return new Response("Not found", { status: 404 });
+    if (isDownload(url.pathname) && !["GET", "HEAD"].includes(request.method)) return new Response("Not found", { status: 404, headers: { "Cache-Control": "no-store" } });
     if (!isProxied(url.pathname)) return frontend(request, env, ctx, url);
     const upstream = backendUrl(url);
     const forwarded = new Request(upstream, request);
     forwarded.headers.delete("host");
-    const response = await fetch(forwarded, {
-      redirect: "manual", cf: { cacheTtl: 0, cacheEverything: false },
-    });
+    const response = await fetch(forwarded, UPSTREAM_FETCH);
     const headers = new Headers(response.headers);
-    headers.set("Cache-Control", "no-store");
-    headers.delete("CDN-Cache-Control");
-    headers.delete("Cloudflare-CDN-Cache-Control");
+    noStore(headers);
     const location = headers.get("location");
     if (location) {
       const destination = new URL(location, upstream);

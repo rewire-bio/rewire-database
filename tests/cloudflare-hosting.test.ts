@@ -1,5 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import worker, { resetObservedIdentity } from "../cloudflare/worker.mjs";
+import fs from "node:fs";
+import ts from "typescript";
+import worker, { UPSTREAM_FETCH, resetObservedIdentity } from "../cloudflare/worker.mjs";
 import { isProxied } from "../cloudflare/routing.mjs";
 import { cacheableRequest, storableResponse } from "../cloudflare/page-cache.mjs";
 
@@ -23,6 +25,19 @@ beforeEach(() => {
 });
 afterEach(() => { vi.unstubAllGlobals(); });
 
+describe("Worker deployment configuration", () => {
+  it("explicitly turns Cloudflare's outer Worker cache off, so the gateway runs on every request", () => {
+    // Wrangler uploads `cache` only when the config sets it. TypeScript's JSONC
+    // reader (a declared dependency) parses the file without loading Wrangler.
+    const { config: rawConfig, error } = ts.parseConfigFileTextToJson("wrangler.jsonc", fs.readFileSync("wrangler.jsonc", "utf8"));
+    expect(error).toBeUndefined();
+    expect(rawConfig.cache).toEqual({ enabled: false });
+    expect(rawConfig.main).toBe("cloudflare/worker.mjs");
+    expect(rawConfig.vars).toHaveProperty("FRONTEND_ORIGIN");
+    expect(rawConfig).not.toHaveProperty("assets");
+  });
+});
+
 describe("independent Cloudflare frontend", () => {
   it("forwards known download paths to the frontend's exact-manifest redirect without credentials", async () => {
     const fetcher = vi.fn(async () => new Response(null, { status: 307, headers: { location: "https://raw.githubusercontent.com/rewire-bio/rewire-benchmark-data/a/x.csv.gz" } }));
@@ -36,9 +51,46 @@ describe("independent Cloudflare frontend", () => {
     expect(response.status).toBe(307);
     expect(response.headers.get("location")).toContain("raw.githubusercontent.com");
   });
+  it("always reaches the frontend origin past Cloudflare's CDN cache", async () => {
+    const fetcher = vi.fn(async () => page());
+    vi.stubGlobal("fetch", fetcher);
+    for (const path of ["/", "/models/", "/omics/releases/id/records.csv", "/release-manifest.json", "/contribute/"])
+      await worker.fetch(new Request(`https://benchmarks.rewirebio.io${path}`), env);
+    expect(fetcher.mock.calls.length).toBe(5);
+    for (const call of fetcher.mock.calls as unknown as [Request, RequestInit][]) expect(call[1]).toEqual({ redirect: "manual", cache: "no-store" });
+    expect(UPSTREAM_FETCH).toEqual({ redirect: "manual", cache: "no-store" });
+  });
+  it.each([
+    ["a download redirect", "/omics/releases/id/records.csv", 307],
+    ["a literature download", "/benchmark-literature/results.csv", 307],
+    ["a missing download", "/omics/releases/invented/records.csv", 404],
+    ["the release manifest", "/release-manifest.json", 200],
+    ["the publication receipt", "/deployment.json", 200],
+    ["a contribution page", "/contribute/", 200],
+  ])("serves %s as no-store even if the origin response looks cacheable", async (_name, path, status) => {
+    vi.stubGlobal("fetch", vi.fn(async () => new Response(status === 307 ? null : "{}", { status, headers: {
+      "cache-control": "public, max-age=14400", "cdn-cache-control": "max-age=14400", "cloudflare-cdn-cache-control": "max-age=14400",
+      ...(status === 307 ? { location: "https://raw.githubusercontent.com/rewire-bio/rewire-benchmark-data/a/x.csv.gz" } : {}),
+    } })));
+    const response = await worker.fetch(new Request(`https://benchmarks.rewirebio.io${path}`), env);
+    expect(response.status).toBe(status);
+    expect(response.headers.get("cache-control")).toBe("no-store");
+    expect(response.headers.has("cdn-cache-control")).toBe(false);
+    expect(response.headers.has("cloudflare-cdn-cache-control")).toBe(false);
+    if (status === 307) expect(response.headers.get("location")).toBe("https://raw.githubusercontent.com/rewire-bio/rewire-benchmark-data/a/x.csv.gz");
+    expect(store.size).toBe(0);
+  });
+  it("leaves the origin's headers on public pages it does not cache", async () => {
+    vi.stubGlobal("fetch", vi.fn(async () => page("x", { "cache-control": "private, no-cache, no-store, max-age=0, must-revalidate" })));
+    const response = await worker.fetch(new Request("https://benchmarks.rewirebio.io/models/", { headers: { cookie: "a=1" } }), env);
+    expect(response.headers.get("cache-control")).toBe("private, no-cache, no-store, max-age=0, must-revalidate");
+    expect(response.headers.get("x-rewire-cache")).toBe("BYPASS");
+  });
   it("never forwards download POST bodies", async () => {
     vi.stubGlobal("fetch", vi.fn());
-    expect((await worker.fetch(new Request("https://example.test/omics/releases/id/records.csv", { method: "POST", body: "private" }), env)).status).toBe(404);
+    const refused = await worker.fetch(new Request("https://example.test/omics/releases/id/records.csv", { method: "POST", body: "private" }), env);
+    expect(refused.status).toBe(404);
+    expect(refused.headers.get("cache-control")).toBe("no-store");
     expect(fetch).not.toHaveBeenCalled();
   });
   it("preserves reviewed legacy redirects and repeated encoded query values", async () => {
@@ -156,8 +208,7 @@ describe("independent Cloudflare frontend", () => {
     expect(upstream.headers.get("authorization")).toBe("Bearer example");
     expect(upstream.headers.get("cookie")).toBe("example=1");
     expect(await upstream.text()).toBe('{"example":true}');
-    expect(options.redirect).toBe("manual");
-    expect(options.cf.cacheTtl).toBe(0);
+    expect(options).toEqual({ redirect: "manual", cache: "no-store" });
     expect(response.headers.get("cache-control")).toBe("no-store");
     expect(response.headers.has("cdn-cache-control")).toBe(false);
     expect(store.size).toBe(0);

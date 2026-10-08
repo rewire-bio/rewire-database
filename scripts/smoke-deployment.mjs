@@ -16,7 +16,18 @@ export async function smokeDeployment(origin, { request = fetch, log = console.l
     log(`PASS ${url.pathname}`);
     return response;
   }
-  const html = async path => (await get(path, 'text/html')).text();
+  // A data-only publication keeps the Worker, which may serve the previous
+  // release's cached HTML until it observes the new origin identity. A per-run
+  // query nonce makes each HTML check a cache miss rendered by the live origin,
+  // like check-live-catalogue's ?verify probes. Paths and assertions are unchanged.
+  const nonce = independentFrontend ? `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}` : '';
+  const fresh = path => {
+    if (!nonce) return path;
+    const url = new URL(path, base);
+    url.searchParams.set('verify', nonce);
+    return url.pathname + url.search;
+  };
+  const html = async path => (await get(fresh(path), 'text/html')).text();
   const home = await html('/');
   assert.match(home, /id="catalogue-search"/, 'Home must render search');
   assert.match(home, /id="downloads"/, 'Home must expose downloads');
@@ -34,7 +45,11 @@ export async function smokeDeployment(origin, { request = fetch, log = console.l
     assertProducerReceipt(receipt, downloads.lock, release);
     assert.equal(receipt.manifest_sha256, createHash("sha256").update(rootManifestBytes).digest("hex"), "Frontend receipt must verify exact manifest bytes");
     assert.equal(release, downloads.lock.release_id, 'Frontend manifest must match checked producer release');
-    assert.ok(home.includes(downloads.urls.get(`/omics/releases/${release}/records.csv`)), 'Home must link the checked GitHub download');
+    // Pages link downloads by site path (lib/downloads.ts); the frontend redirects
+    // that path to the exact pinned gzip export, which fetchGithubDownload checks below.
+    const csv = `/omics/releases/${release}/records.csv`;
+    assert.ok(downloads.urls.has(csv), 'The checked producer manifest must list the release CSV');
+    assert.ok(home.includes(`href="${csv}"`), 'Home must link the pinned release CSV download');
   }
   for (const path of ['/models/', '/benchmarks/', '/use-cases/', '/evidence/']) {
     assert.match(await html(path), /<h1[ >]/, `${path}: missing page heading`);

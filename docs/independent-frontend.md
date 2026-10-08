@@ -29,6 +29,12 @@ Repository variables (no new infrastructure is created by this code):
 
 Secrets: `CLOUDFLARE_ACCOUNT_ID` and `CLOUDFLARE_API_TOKEN`, as before. The deploy service account also needs permission to push to the repository, deploy the service and act as the runtime account. `CLOUDFLARE_ASSET_LIMIT` is no longer used: the Worker uploads no assets.
 
+The Worker sets `"cache": { "enabled": false }` in `wrangler.jsonc`. Cloudflare's outer Worker cache would answer before the Worker runs, so it could serve another release's HTML, or a cached download redirect without `no-store`. The Worker's own cache (`cloudflare/page-cache.mjs`) is the only cache for public pages. Wrangler uploads this setting only when it is present, which is why it is explicit.
+
+The Worker fetches the origin with `cache: "no-store"` (`UPSTREAM_FETCH` in `cloudflare/worker.mjs`), so upstream CDN caches never answer its subrequests.
+
+The zone also needs a Cache Rule (dashboard, provisioned once per zone) matching only the database hostname, `(http.host eq "benchmarks.rewirebio.io")`, with cache eligibility "Bypass cache" and Browser TTL "Respect origin". Without it, the zone's standard CDN cache and its default 4-hour Browser TTL apply to the custom domain; the Browser TTL has overwritten `no-store` on download responses before. With the rule, public pages are cached only in the Worker's `caches.default`, keyed by frontend and release, and metadata, API, private and download responses stay `no-store`. If the hostname changes, update the match; do not widen it to other hostnames on the zone.
+
 Service shape (`scripts/deploy-cloud-run.mjs`): `rewire-database-web`, `europe-west2`, 1 vCPU, 2 GiB, concurrency 20, timeout 60 s, `--cpu-throttling` (request-based billing), `--cpu-boost`, min 0 instances, unauthenticated ingress. The Worker reaches the `run.app` URL directly; there is no Google load balancer.
 
 ## One-time bootstrap (operator, outside CI)

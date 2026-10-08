@@ -76,7 +76,10 @@ function independentFixture(corrupt = '') {
     if(url.pathname === path) return new Response(null, {status:302,headers:{location: corrupt === 'redirect' ? 'https://evil.example/data.gz' : raw}});
     if(url.hostname === 'raw.githubusercontent.com') return new Response(null, {headers:{'content-type':corrupt === 'download' ? 'text/html' : 'application/octet-stream','content-length':'100'}});
     const response = await legacy(input);
-    if(url.pathname === '/') return new Response((await response.text()).replace(`/omics/releases/${release}/manifest.json`, raw), {headers:{'content-type':'text/html'}});
+    // As production renders it: a site-path anchor the frontend redirects to the pinned export.
+    const anchor = { 'anchor-missing': '/omics/releases/other.txt', 'anchor-release': `/omics/releases/2026-01-01-bbbbbbbbbbbb/records.csv`,
+      'anchor-malformed': `${path}.gz`, 'anchor-direct': raw }[corrupt] ?? path;
+    if(url.pathname === '/') return new Response(`<p>Release ${release}</p>` + (await response.text()).replace(`/omics/releases/${release}/manifest.json`, anchor), {headers:{'content-type':'text/html'}});
     return response;
   });
   return { downloads, request };
@@ -93,6 +96,22 @@ describe('independent frontend smoke', () => {
   it.each(['release', 'producer', 'redirect', 'download'])('rejects %s drift', async (corrupt) => {
     const f = independentFixture(corrupt);
     await expect(smokeDeployment('https://example.test', { ...f, independentFrontend: true, log: vi.fn() })).rejects.toThrow();
+  });
+  it('accepts the production site-path CSV anchor and still follows it to the exact pinned export', async () => {
+    const f = independentFixture();
+    await smokeDeployment('https://example.test', { ...f, independentFrontend: true, log: vi.fn() });
+    const head = f.request.mock.calls.find(([url]) => new URL(String(url)).pathname === `/omics/releases/${release}/records.csv`);
+    expect(head).toBeDefined();
+    expect(f.request.mock.calls.some(([url]) => String(url) === f.downloads.urls.get(`/omics/releases/${release}/records.csv`))).toBe(true);
+  });
+  it.each([
+    ['anchor-missing', 'Home must link the pinned release CSV download'],
+    ['anchor-release', 'Home must link the pinned release CSV download'],
+    ['anchor-malformed', 'Home must link the pinned release CSV download'],
+    ['anchor-direct', 'Home must link the pinned release CSV download'],
+  ])('rejects a home page whose CSV link is %s', async (corrupt, message) => {
+    const f = independentFixture(corrupt);
+    await expect(smokeDeployment('https://example.test', { ...f, independentFrontend: true, log: vi.fn() })).rejects.toThrow(message);
   });
   it('requests every public HTML page with one per-run verification nonce, leaving other requests unchanged', async () => {
     const f = independentFixture();

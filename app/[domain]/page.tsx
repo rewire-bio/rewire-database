@@ -1,11 +1,8 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { DOMAINS, getDomain } from "@/lib/benchmark-catalog";
+import { getDomain } from "@/lib/benchmark-catalog";
 import LegacyCatalogueRedirect from "../LegacyCatalogueRedirect";
 type Props = { params: { domain: string } };
-export function generateStaticParams() {
-  return DOMAINS.map(({ id }) => ({ domain: id }));
-}
 export function generateMetadata({ params }: Props): Metadata {
   const domain = getDomain(params.domain);
   return {

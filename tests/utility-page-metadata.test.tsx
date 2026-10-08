@@ -57,7 +57,7 @@ const jsonLd = /<script type="application\/ld\+json">([\s\S]*?)<\/script>/g;
 
 function rendered(page: (typeof cases)[number]) {
   // Use a minimal head to isolate navigation. Full exported Next.js head tags
-  // and social metadata are checked by check:export after the production build.
+  // and social metadata are checked by check:build against the production server.
   return renderToStaticMarkup(
     <html>
       <head>

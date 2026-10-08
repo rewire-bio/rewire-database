@@ -143,13 +143,10 @@ describe("record search metadata", () => {
   it("covers every released record and uses exactly the same sitemap eligibility without unsupported timestamps", () => {
     // Tests run before exports are generated in a clean checkout. Give the
     // sitemap the same committed release used for the metadata assertions.
+    // The sitemap reads the same pinned release through the shared catalogue loader.
     const release = fs.readFileSync("public/omics/catalogue.json").toString("utf8");
     const catalogue = parseCatalogue(JSON.parse(release));
-    vi.mocked(readFileSync).mockReturnValueOnce(release);
     const entries = sitemap();
-    expect(readFileSync).toHaveBeenCalledWith(
-      "public/omics/catalogue.json", "utf8",
-    );
     const paths = new Set(entries.map((entry) => entry.url));
     for (const item of catalogue.records) {
       const metadata = recordSearchMetadata(item, catalogue.records);

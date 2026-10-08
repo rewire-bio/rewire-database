@@ -1,8 +1,10 @@
 import assert from 'node:assert/strict';
+import { createHash } from 'node:crypto';
 import { pathToFileURL } from 'node:url';
+import { pinnedDownloads, assertProducerReceipt, fetchGithubDownload } from './github-downloads.mjs';
 
 /** Read-only deployment checks. No credentials, submissions or mutations. */
-export async function smokeDeployment(origin, { request = fetch, log = console.log } = {}) {
+export async function smokeDeployment(origin, { request = fetch, log = console.log, independentFrontend = false, downloads: suppliedDownloads } = {}) {
   const base = new URL(origin);
   assert.ok(['http:', 'https:'].includes(base.protocol), 'Supply an HTTP(S) deployment URL');
   async function get(path, type) {
@@ -21,8 +23,19 @@ export async function smokeDeployment(origin, { request = fetch, log = console.l
   const asset = home.match(/(?:src|href)="([^"\s]*\/_next\/static\/[^"\s]+\.js)"/);
   assert.ok(asset, 'Home must include a JavaScript bundle');
   await get(asset[1].replaceAll('&amp;', '&'), 'javascript');
-  const release = home.match(/\/omics\/releases\/(\d{4}-\d{2}-\d{2}-[a-f0-9]{12})\//)?.[1];
-  assert.ok(release, 'Home must link a versioned release');
+  const downloads = independentFrontend ? suppliedDownloads || await pinnedDownloads() : undefined;
+  const rootManifestBytes = independentFrontend ? Buffer.from(await (await get('/release-manifest.json', 'json')).arrayBuffer()) : undefined;
+  const rootManifest = rootManifestBytes ? JSON.parse(rootManifestBytes.toString('utf8')) : undefined;
+  const release = independentFrontend ? rootManifest?.release_id : home.match(/\/omics\/releases\/(\d{4}-\d{2}-\d{2}-[a-f0-9]{12})\//)?.[1];
+  assert.match(release || '', /^\d{4}-\d{2}-\d{2}-[a-f0-9]{12}$/, 'Home must identify a versioned release');
+  if (independentFrontend) {
+    assert.ok(home.includes(release), 'Manifest and HTML release must match');
+    const receipt = await (await get('/deployment.json', 'json')).json();
+    assertProducerReceipt(receipt, downloads.lock, release);
+    assert.equal(receipt.manifest_sha256, createHash("sha256").update(rootManifestBytes).digest("hex"), "Frontend receipt must verify exact manifest bytes");
+    assert.equal(release, downloads.lock.release_id, 'Frontend manifest must match checked producer release');
+    assert.ok(home.includes(downloads.urls.get(`/omics/releases/${release}/records.csv`)), 'Home must link the checked GitHub download');
+  }
   for (const path of ['/models/', '/benchmarks/', '/use-cases/', '/evidence/']) {
     assert.match(await html(path), /<h1[ >]/, `${path}: missing page heading`);
   }
@@ -31,13 +44,17 @@ export async function smokeDeployment(origin, { request = fetch, log = console.l
     assert.ok(useCase.includes(`id="${id}"`), `Use case missing ${id}`);
   }
   assert.match(useCase, /<summary[ >]/, 'Use case must render evidence disclosures');
-  const manifest = await (await get(`/omics/releases/${release}/manifest.json`, 'json')).json();
+  const manifest = rootManifest || await (await get(`/omics/releases/${release}/manifest.json`, 'json')).json();
   assert.equal(manifest?.release_id, release, 'Manifest and HTML release must match');
   const downloadPath = `/omics/releases/${release}/records.csv`;
+  if (independentFrontend) {
+    await fetchGithubDownload(base, downloadPath, downloads, request, { head: true });
+  } else {
   const download = await request(new URL(downloadPath, base), { method: 'HEAD', signal: AbortSignal.timeout(30000) });
   assert.equal(download.status, 200, 'Database CSV download must resolve');
   assert.ok(!download.headers.get('content-type')?.includes('text/html'), 'Database download returned an HTML fallback');
   if (download.headers.has('content-length')) assert.ok(Number(download.headers.get('content-length')) > 0, 'Database download is empty');
+  }
   log(`PASS ${downloadPath}`);
   async function list(input) {
     const response = await get(`/api/trpc/catalogue.list?input=${encodeURIComponent(JSON.stringify({ release_id: release, limit: 5, ...input }))}`, 'json');
@@ -58,10 +75,18 @@ export async function smokeDeployment(origin, { request = fetch, log = console.l
   for (const record of [models.items[0], benchmarks.items[0]]) {
     assert.match(await html(`/database/${record.kind}/${encodeURIComponent(record.id)}/`), /<h1[ >]/, 'Detail page missing heading');
   }
+  // Result and evaluation pages render on request from prepared page documents.
+  for (const kind of ['result', 'evaluation']) {
+    const [record] = (await list({ kind, limit: 1 })).items;
+    assert.ok(record, `No ${kind} record to check`);
+    const page = await html(`/database/${kind}/${encodeURIComponent(record.id)}/`);
+    assert.match(page, /<h1[ >]/, `${kind} page missing heading`);
+    assert.ok(page.includes(release), `${kind} page must name its release`);
+  }
   log(`Deployment smoke passed for ${base.origin} (${release}).`);
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   if (!process.argv[2]) { console.error('Usage: node scripts/smoke-deployment.mjs https://deployment.example'); process.exitCode = 1; }
-  else await smokeDeployment(process.argv[2]);
+  else await smokeDeployment(process.argv[2], { independentFrontend: process.argv.includes("--independent-frontend") });
 }

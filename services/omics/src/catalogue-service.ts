@@ -14,6 +14,7 @@ import {
   useCasePublicationIdentity,
 } from "./use-case-import.js";
 import { readResearchChunks } from "./research-store.js";
+import { RECORD_PAGE_MANIFEST, materializeRecordPages, verifyStoredRecordPages } from "./record-page-store.js";
 
 // One bounded, promise-coalesced snapshot per immutable release per warm instance.
 // Published releases are never modified. The active pointer itself is read afresh.
@@ -97,10 +98,14 @@ export async function catalogueQuery(
   }
 }
 /** Publication and rollback use the same atomic pointer operation. */
-export async function activateRelease(db: Firestore, releaseId: string) {
+export async function activateRelease(
+  db: Firestore,
+  releaseId: string,
+  { expectedPreviousReleaseId }: { expectedPreviousReleaseId?: string } = {},
+) {
   const ref = db.collection("catalogueReleases").doc(releaseId);
   // Validate complete data before exposing it. No unreviewed source is imported here.
-  const meta = (await ref.get()).data();
+  let meta = (await ref.get()).data();
   if (meta?.state !== "ready")
     throw new Error("Only complete, ready releases can be published");
   if (meta.coverage?.audit_history && !meta.audit_manifest)
@@ -126,6 +131,14 @@ export async function activateRelease(db: Firestore, releaseId: string) {
   )
     throw new Error("Catalogue record integrity failure");
   await readStoredUseCases(db, releaseId, meta, snapshot);
+  // Server-rendered record pages read only these documents for this release.
+  // Publication prepares them first; a direct activation builds any missing
+  // pages from the records and use cases it has just validated.
+  if (!meta[RECORD_PAGE_MANIFEST]) {
+    await materializeRecordPages(db, releaseId, meta, snapshot);
+    meta = (await ref.get()).data()!;
+  }
+  const pages = await verifyStoredRecordPages(ref, meta);
   if (meta.query_chunks) {
     const chunks = await ref.collection("queryChunks").orderBy("index").get();
     if (chunks.size !== meta.query_chunks)
@@ -140,6 +153,11 @@ export async function activateRelease(db: Firestore, releaseId: string) {
     const current = await tx.get(db.doc("cataloguePublication/active"));
     const release = await tx.get(ref);
     if (
+      expectedPreviousReleaseId !== undefined &&
+      current.data()?.release_id !== expectedPreviousReleaseId
+    )
+      throw new Error("Catalogue publication pointer changed; refusing to overwrite another release");
+    if (
       release.data()?.state !== "ready" ||
       release.data()?.digest !== meta.digest
     )
@@ -147,6 +165,8 @@ export async function activateRelease(db: Firestore, releaseId: string) {
     const currentRelease = release.data()!;
     if (useCasePublicationIdentity(currentRelease) !== useCaseIdentity)
       throw new Error("Use-case release metadata changed during activation");
+    if (currentRelease[RECORD_PAGE_MANIFEST]?.digest !== pages.digest)
+      throw new Error("Record page manifest changed during activation");
     if (
       currentRelease.coverage?.audit_history &&
       !currentRelease.audit_manifest

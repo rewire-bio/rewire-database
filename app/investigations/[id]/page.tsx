@@ -6,14 +6,6 @@ import { getResearch } from "@/services/omics/src/research";
 import ResearchInvestigation, { investigationHref } from "@/components/catalogue/ResearchInvestigation";
 
 type Params = { id: string };
-export const dynamicParams = false;
-
-export function generateStaticParams(): Params[] {
-  const reports = getResearch(buildCatalogue().catalogue).investigations;
-  // Next 14 static export requires a non-empty list. This invalid record ID is
-  // rendered only as notFound(), never as a report, link or sitemap entry.
-  return reports.length ? reports.map((report) => ({ id: report.id })) : [{ id: "_no-reviewed-reports" }];
-}
 
 export function generateMetadata({ params }: { params: Params }): Metadata {
   const report = getResearch(buildCatalogue().catalogue).investigations.find((item) => item.id === params.id);

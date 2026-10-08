@@ -82,15 +82,14 @@ describe('release only a verified CI temporary data checkout', () => {
     const f = fixture(); f.prepare.mockImplementationOnce(async () => { f.git.mockImplementation((_cwd, args) => args[0] === 'status' ? '?? changed' : revision); return { release_id: 'fixture-release', hydratedCount: 0, reusedCount: 0, skippedCount: 0 }; });
     await expect(releasePreparedDataCheckout(f.options)).rejects.toThrow('changed during'); expect(fs.existsSync(f.source)).toBe(true);
   });
-  it('keeps full hydration and cache save ahead of removal and builds directly only after successful removal', () => {
+  it('does not perform historical hydration or checkout removal in frontend publication', () => {
     const workflow = fs.readFileSync('.github/workflows/firebase.yml', 'utf8');
-    const hydrate = workflow.indexOf('- name: Hydrate and verify the pinned release');
-    const cache = workflow.indexOf('- name: Cache authenticated compressed data before expansion');
-    const release = workflow.indexOf('- name: Release the temporary compressed producer checkout', cache);
-    expect(hydrate).toBeGreaterThan(0); expect(cache).toBeGreaterThan(0); expect(hydrate).toBeGreaterThan(cache); expect(release).toBeGreaterThan(hydrate);
-    const auth = workflow.indexOf('- name: Authenticate the compressed checkout before caching');
-    expect(auth).toBeGreaterThan(0); expect(auth).toBeLessThan(cache);
-    expect(workflow.slice(release)).toContain('steps.release-source.outcome');
-    expect(workflow.slice(release)).toContain('then node scripts/deployment-metrics.mjs run rendering -- node scripts/build-static.mjs');
+    expect(workflow).not.toContain('node scripts/release-prepared-data-checkout.mjs');
+    expect(workflow).not.toContain('node scripts/prepare-runner-space.mjs');
+    expect(workflow).not.toContain('firebase deploy --only hosting');
+    expect(workflow).toContain('node scripts/build-web.mjs');
+    expect(workflow).not.toContain('prepare:cloudflare');
+    expect(workflow).toContain('run publication_hydration -- npm run data:prepare -- --current-only');
+    expect(workflow).toContain('node scripts/deploy-independent-frontend.mjs');
   });
 });

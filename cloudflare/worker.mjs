@@ -1,8 +1,59 @@
 import firebase from "../firebase.json" with { type: "json" };
-import { FIREBASE_ORIGIN, isProxied } from "./routing.mjs";
+import { FUNCTIONS_ORIGIN, FUNCTIONS_PATH, AUTH_ORIGIN, backendUrl, isDownload, isProxied } from "./routing.mjs";
+import { IDENTITY_TTL_MS, browserResponse, cacheableRequest, cacheKey, edgeCopy, responseIdentity, storableResponse } from "./page-cache.mjs";
 
-export default {
-  async fetch(request, env) {
+// The Worker carries no data release. Pages, assets and download redirects
+// come from the frontend server on Cloud Run, whose revision fixes the data
+// pin; the cache identity is whatever that origin last reported.
+let observed = null;
+export function resetObservedIdentity() { observed = null; }
+
+function frontendOrigin(env) {
+  let origin;
+  try { origin = new URL(env.FRONTEND_ORIGIN); } catch { return null; }
+  if (!["https:", "http:"].includes(origin.protocol) || origin.username || origin.password || origin.pathname !== "/" || origin.search) return null;
+  return origin.origin;
+}
+
+async function frontend(request, env, ctx, url) {
+  const origin = frontendOrigin(env);
+  if (!origin) return new Response("Frontend origin is not configured", { status: 503, headers: { "Cache-Control": "no-store" } });
+  const cacheable = cacheableRequest(request);
+  if (cacheable && observed && observed.expires > Date.now()) {
+    const hit = await caches.default.match(cacheKey(request, observed.identity)).catch(() => undefined);
+    if (hit) return browserResponse(hit, url.pathname, "HIT");
+  }
+  const upstream = new URL(url.pathname + url.search, origin);
+  const forwarded = new Request(upstream, request);
+  forwarded.headers.delete("host");
+  // Download redirects need no credentials; never pass them along.
+  if (isDownload(url.pathname)) for (const name of ["cookie", "authorization"]) forwarded.headers.delete(name);
+  const response = await fetch(forwarded, { redirect: "manual", cf: { cacheTtl: 0, cacheEverything: false } });
+  const headers = new Headers(response.headers);
+  const location = headers.get("location");
+  if (location) {
+    const destination = new URL(location, upstream);
+    if (destination.origin === origin) {
+      destination.protocol = url.protocol;
+      destination.host = url.host;
+      headers.set("location", destination.href);
+    }
+  }
+  const result = new Response(response.body, { status: response.status, statusText: response.statusText, headers });
+  const identity = responseIdentity(result);
+  if (identity) observed = { identity, expires: Date.now() + IDENTITY_TTL_MS };
+  if (!cacheable || !identity || !storableResponse(result, identity)) {
+    result.headers.set("X-Rewire-Cache", "BYPASS");
+    return result;
+  }
+  // The cache only accelerates: a failed write must not fail a healthy response.
+  const stored = caches.default.put(cacheKey(request, identity), edgeCopy(result.clone())).catch(() => {});
+  if (ctx?.waitUntil) ctx.waitUntil(stored); else await stored;
+  return browserResponse(result, url.pathname, "MISS");
+}
+
+const worker = {
+  async fetch(request, env, ctx) {
     const url = new URL(request.url);
     const legacy = firebase.hosting.redirects.find(rule => {
       const source = rule.source.replace("{,/}", "");
@@ -10,63 +61,33 @@ export default {
     });
     if (legacy) {
       const destination = new URL(legacy.destination, url.origin);
-      // Append raw query bytes, including repeated keys, exactly as Firebase does.
       if (url.search) destination.search += (destination.search ? "&" : "?") + url.search.slice(1);
       return Response.redirect(destination.href, legacy.type);
     }
-    if (!isProxied(url.pathname)) {
-      const asset = await env.ASSETS.fetch(request);
-      // Firebase detail pages are published first. During rollout/rollback their
-      // content-addressed chunks may be newer than this Worker's asset version.
-      if (asset.status !== 404) return asset;
-      if (!url.pathname.startsWith("/_next/static/")) {
-        const missing = await env.ASSETS.fetch(new Request(new URL("/404", request.url), request));
-        return new Response(missing.body, { status: 404, headers: missing.headers });
-      }
-    }
-    const upstream = new URL(url.pathname + url.search, FIREBASE_ORIGIN);
-    // Cloudflare's production origin fetch can negotiate a compressed range
-    // despite identity being requested. Let Firebase serve public byte ranges
-    // directly until the origin guarantees uncompressed partial responses.
-    if ((url.pathname === "/omics" || url.pathname.startsWith("/omics/")) &&
-      ["GET", "HEAD"].includes(request.method) && request.headers.has("range")) {
-      return new Response(null, { status: 307, headers: {
-        Location: upstream.href, "Cache-Control": "no-store", "Referrer-Policy": "no-referrer",
-      } });
-    }
-    const privateRequest = url.pathname === "/api" || url.pathname.startsWith("/api/") ||
-      url.pathname === "/__/auth" || url.pathname.startsWith("/__/auth/") ||
-      request.headers.has("authorization") || request.headers.has("cookie");
+    // Downloads are redirects to exact GitHub exports; bodies are never forwarded.
+    if (isDownload(url.pathname) && !["GET", "HEAD"].includes(request.method)) return new Response("Not found", { status: 404 });
+    if (!isProxied(url.pathname)) return frontend(request, env, ctx, url);
+    const upstream = backendUrl(url);
     const forwarded = new Request(upstream, request);
     forwarded.headers.delete("host");
-    // Range offsets and immutable checksums refer to the original bytes.
-    forwarded.headers.set("accept-encoding", "identity");
-    // Never follow an upstream redirect carrying a user's credentials.
     const response = await fetch(forwarded, {
-      redirect: "manual",
-      cf: { cacheTtl: 0, cacheEverything: false },
+      redirect: "manual", cf: { cacheTtl: 0, cacheEverything: false },
     });
-    if (url.pathname.startsWith("/_next/static/") && response.ok &&
-      response.headers.get("content-type")?.includes("text/html")) {
-      return new Response("Not found", { status: 404 });
-    }
     const headers = new Headers(response.headers);
-    if (privateRequest || headers.has("set-cookie")) {
-      headers.set("Cache-Control", "no-store");
-      headers.delete("CDN-Cache-Control");
-      headers.delete("Cloudflare-CDN-Cache-Control");
-    }
+    headers.set("Cache-Control", "no-store");
+    headers.delete("CDN-Cache-Control");
+    headers.delete("Cloudflare-CDN-Cache-Control");
     const location = headers.get("location");
     if (location) {
       const destination = new URL(location, upstream);
-      if (destination.origin === FIREBASE_ORIGIN) {
+      if (destination.origin === AUTH_ORIGIN || (destination.origin === FUNCTIONS_ORIGIN && destination.pathname.startsWith(`${FUNCTIONS_PATH}/`))) {
+        if (destination.origin === FUNCTIONS_ORIGIN) destination.pathname = destination.pathname.slice(FUNCTIONS_PATH.length);
         destination.protocol = url.protocol;
         destination.host = url.host;
         headers.set("location", destination.href);
       }
     }
-    // Stream complete exports. Public ranges are redirected above. No parsing, compression,
-    // scientific-record transformation, or Cache API storage is performed here.
     return new Response(response.body, { status: response.status, statusText: response.statusText, headers });
   },
 };
+export default worker;

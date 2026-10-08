@@ -16,7 +16,6 @@ import {
   computeSmokeSelection,
   knownCataloguePaths,
   SMOKE_USE_CASE_SLUG,
-  isSmokeExport,
 } from "../lib/smoke-selection";
 
 const fixture = vi.hoisted(() => ({
@@ -165,46 +164,5 @@ describe("known catalogue paths (omitted vs. invalid links)", () => {
   it("does not include a path for an id that does not exist in the catalogue", () => {
     expect(paths.has("/database/result/this-id-does-not-exist-anywhere/")).toBe(false);
     expect(paths.has("/use-cases/this-slug-does-not-exist/")).toBe(false);
-  });
-});
-
-describe("isSmokeExport", () => {
-  it("reads OMICS_SMOKE_EXPORT literally, not any other env state", () => {
-    const env = (value?: string) => ({ OMICS_SMOKE_EXPORT: value }) as unknown as NodeJS.ProcessEnv;
-    expect(isSmokeExport(env(undefined))).toBe(false);
-    expect(isSmokeExport(env("false"))).toBe(false);
-    expect(isSmokeExport(env("1"))).toBe(false);
-    expect(isSmokeExport(env("true"))).toBe(true);
-  });
-});
-
-describe("filterIdsForSmoke / filterSlugsForSmoke", () => {
-  beforeEach(() => {
-    fixture.snapshot = snapshot;
-    fixture.query = query;
-  });
-  afterEach(() => {
-    delete process.env.OMICS_SMOKE_EXPORT;
-    vi.resetModules();
-  });
-
-  it("passes every id through unchanged when not a smoke export", async () => {
-    delete process.env.OMICS_SMOKE_EXPORT;
-    const { filterIdsForSmoke, filterSlugsForSmoke } = await import("../lib/smoke-selection");
-    const ids = snapshot.records.filter((r) => r.kind === "result").map((r) => r.id);
-    expect(filterIdsForSmoke("result", ids)).toEqual(ids);
-    expect(filterSlugsForSmoke(["a", "b"])).toEqual(["a", "b"]);
-  });
-
-  it("keeps only the selected ids when OMICS_SMOKE_EXPORT=true, and keeps only the fixed use-case slug", async () => {
-    process.env.OMICS_SMOKE_EXPORT = "true";
-    const { filterIdsForSmoke, filterSlugsForSmoke } = await import("../lib/smoke-selection");
-    const allResultIds = snapshot.records.filter((r) => r.kind === "result").map((r) => r.id);
-    const filtered = filterIdsForSmoke("result", allResultIds);
-    expect(filtered.length).toBeGreaterThan(0);
-    expect(filtered.length).toBeLessThan(allResultIds.length);
-    for (const id of filtered) expect(allResultIds).toContain(id);
-    const allSlugs = artifact.use_cases.map((entry) => entry.slug);
-    expect(filterSlugsForSmoke(allSlugs)).toEqual([SMOKE_USE_CASE_SLUG]);
   });
 });

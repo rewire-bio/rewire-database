@@ -46,6 +46,15 @@ try {
   }
   await importUseCaseFiles(db,snapshot.release_id,manifest,useCaseFiles);
   await activateRelease(db,snapshot.release_id);
+  // Server-rendered pages: one prepared document per route, read without the release.
+  for (const kind of ['result', 'evaluation']) {
+    const record = snapshot.records.find(item => item.kind === kind && item.status !== 'excluded');
+    const page = await query('page', {release_id:snapshot.release_id, kind, id:record.id});
+    assert.equal(page.detail.record.id, record.id, `catalogue.page must serve the stored ${kind} page`);
+    const absent = await fetch(`${origin}/api/trpc/catalogue.page?input=${encodeURIComponent(JSON.stringify({release_id:snapshot.release_id, kind, id:'no-such-record'}))}`);
+    assert.equal(absent.status, 200);
+    assert.equal((await absent.json()).result.data, null, 'An absent page is null, not an error');
+  }
   const artifact = useCaseFiles['use-cases.json'] ? JSON.parse(useCaseFiles['use-cases.json']) : undefined;
   const useCases = createUseCaseQuery(snapshot,artifact,manifest.coverage?.use_cases);
   const cases = await query('useCases',{release_id:snapshot.release_id,limit:1});

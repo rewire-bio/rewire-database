@@ -11,6 +11,8 @@ import { ResultDetail } from "../app/database/result/[id]/detail";
 import { DatasetDetail } from "../app/database/_entities/dataset";
 import { PredictiveEntityDetail } from "../app/database/_entities/predictive";
 import { EvaluationDesignEntityDetail } from "../app/database/_entities/evaluation-design";
+import { recordPageBuilder, type EvaluationRecordPage, type RecordPageKind, type ResultRecordPage } from "../services/omics/src/record-pages";
+import { buildUseCases } from "../lib/use-cases-build";
 
 const fixture = vi.hoisted(() => ({ snapshot: null as CatalogueSnapshot | null }));
 vi.mock("../lib/catalogue-build", () => ({ buildCatalogue: () => ({ catalogue: fixture.snapshot!, query: createCatalogueQuery(fixture.snapshot!) }) }));
@@ -20,12 +22,21 @@ vi.mock("next/navigation", () => ({ useSearchParams: () => new URLSearchParams()
 const record = (id: string, kind: CatalogueRecord["kind"], attributes: Record<string, unknown> = {}, links: CatalogueRecord["links"] = []): CatalogueRecord => ({
   id, kind, name: `Fixture ${id}`, description: "Synthetic scope description", status: "source_checked", facets: {}, source_ids: [], links, attributes,
 });
-const renderers: [CatalogueRecord["kind"], ComponentType<{ detail: RecordDetail }>][] = [
+// Result and evaluation pages render the prepared page the importer builds.
+type Renderer = ComponentType<{ detail: RecordDetail }> | typeof ResultDetail | typeof EvaluationDetail;
+const renderers: [CatalogueRecord["kind"], Renderer][] = [
   ["claim", ClaimDetail], ["source", SourceDetail], ["baseline", BaselineDetail], ["evaluation", EvaluationDetail],
   ["result", ResultDetail], ["dataset", DatasetDetail], ["dataset_subset", DatasetDetail], ["model", PredictiveEntityDetail],
   ["configuration", PredictiveEntityDetail], ["benchmark", EvaluationDesignEntityDetail], ["protocol", EvaluationDesignEntityDetail],
 ];
-function render(kind: CatalogueRecord["kind"], Component: ComponentType<{ detail: RecordDetail }>, history = false) {
+function element(Component: Renderer, query: ReturnType<typeof createCatalogueQuery>, id: string) {
+  const page = (kind: RecordPageKind) => recordPageBuilder(query, buildUseCases().query)(kind, id)!;
+  if (Component === ResultDetail) return <ResultDetail page={page("result") as ResultRecordPage} />;
+  if (Component === EvaluationDetail) return <EvaluationDetail page={page("evaluation") as EvaluationRecordPage} />;
+  const Detail = Component as ComponentType<{ detail: RecordDetail }>;
+  return <Detail detail={query.get({ id })!} />;
+}
+function render(kind: CatalogueRecord["kind"], Component: Renderer, history = false) {
   const subject = record("subject", kind, { missing_value: null, printed_value: "0.25", metric: "Fixture metric" });
   const records = [subject];
   if (history) {
@@ -44,7 +55,7 @@ function render(kind: CatalogueRecord["kind"], Component: ComponentType<{ detail
   }
   fixture.snapshot = { schema_version: "1.1", release_id: "fixture", released_at: "2026-10-01T00:00:00Z", coverage: history ? { audit_history: true } : {}, records };
   const query = createCatalogueQuery(fixture.snapshot);
-  return renderToStaticMarkup(<Component detail={query.get({ id: subject.id })!} />);
+  return renderToStaticMarkup(element(Component, query, subject.id));
 }
 
 describe("detail pages with incomplete and historical evidence", () => {

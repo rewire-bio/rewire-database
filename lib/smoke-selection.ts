@@ -1,7 +1,5 @@
 import { legacyKinds } from "../services/omics/src/entity-kinds";
 import type { UseCaseDetail } from "../services/omics/src/use-cases";
-import { buildCatalogue } from "./catalogue-build";
-import { accumulateUseCaseDetail, buildUseCases } from "./use-cases-build";
 import {
   omicsKinds,
   recordRouteKinds,
@@ -24,10 +22,6 @@ export const SMOKE_USE_CASE_SLUG = "brca1-brca2-germline-interpretation";
  * them, so every entity kind has at least one real, non-empty page in a PR
  * smoke build regardless of what the fixed use case happens to touch. */
 const PER_KIND_REPRESENTATIVES = 2;
-
-export function isSmokeExport(env: NodeJS.ProcessEnv = process.env): boolean {
-  return env.OMICS_SMOKE_EXPORT === "true";
-}
 
 export interface SmokeSelection {
   /** Ids to render under each URL segment (kind), including alias ids for the
@@ -164,8 +158,6 @@ function addAliasShapeRepresentatives(
   return picked;
 }
 
-let cached: { catalogue: OmicsCatalogue; value: SmokeSelection } | undefined;
-
 export function computeSmokeSelection(
   catalogue: OmicsCatalogue,
   useCaseDetail: UseCaseDetail | null,
@@ -185,42 +177,6 @@ export function computeSmokeSelection(
       aliasShapeRepresentatives,
     },
   };
-}
-
-/** Memoized per release, like `buildUseCases()`: every one of the 16 kind
- * pages and the use-case page call this once per build. Returns null outside
- * a smoke export, so callers can `?? ids` straight through unchanged. */
-export function getSmokeSelection(): SmokeSelection | null {
-  if (!isSmokeExport()) return null;
-  const { catalogue } = buildCatalogue();
-  if (!cached || cached.catalogue !== catalogue) {
-    const useCases = buildUseCases();
-    if (!useCases.entries.some((entry) => entry.slug === SMOKE_USE_CASE_SLUG))
-      throw new Error(
-        `OMICS_SMOKE_EXPORT is set but the fixed use case "${SMOKE_USE_CASE_SLUG}" is not published in this release. ` +
-          "Update SMOKE_USE_CASE_SLUG in lib/smoke-selection.ts to a currently published slug rather than silently building without use-case coverage.",
-      );
-    const detail = accumulateUseCaseDetail(useCases.query, SMOKE_USE_CASE_SLUG);
-    if (!detail) throw new Error(`Use case "${SMOKE_USE_CASE_SLUG}" is listed but failed to resolve`);
-    cached = { catalogue, value: computeSmokeSelection(catalogue, detail) };
-  }
-  return cached.value;
-}
-
-/** Drop-in filter for a kind page's `generateStaticParams`: returns `ids`
- * unchanged outside a smoke export, otherwise keeps only the selected ones. */
-export function filterIdsForSmoke(kind: OmicsKind, ids: string[]): string[] {
-  const selection = getSmokeSelection();
-  if (!selection) return ids;
-  const allowed = selection.idsByKind[kind];
-  return ids.filter((id) => allowed.has(id));
-}
-
-/** Drop-in filter for the use-case page's `generateStaticParams`. */
-export function filterSlugsForSmoke(slugs: string[]): string[] {
-  const selection = getSmokeSelection();
-  if (!selection) return slugs;
-  return slugs.filter((slug) => selection.useCaseSlugs.has(slug));
 }
 
 /** Every real canonical and alias `/database/<kind>/<id>/` path, plus every

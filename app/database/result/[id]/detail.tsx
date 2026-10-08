@@ -1,10 +1,10 @@
+import { downloadHref } from "@/lib/downloads";
 import Breadcrumbs from "@/components/catalogue/Breadcrumbs";
 import { recordBreadcrumbs } from "@/lib/catalogue-sharing";
 import { formatScore } from "@/lib/score-display";
 import { catalogueText } from "@/lib/catalogue-text";
 import Link from "next/link";
 import { Fragment } from "react";
-import { buildCatalogue } from "@/lib/catalogue-build";
 import UseCaseBacklinks from "@/components/catalogue/UseCaseBacklinks";
 import { recordHref, displayValue, originLabel, safeSourceUrl, type OmicsRecord } from "@/lib/omics";
 import { Evidence, EvidenceConcerns } from "@/components/catalogue/Profile";
@@ -15,7 +15,7 @@ import SectionNavigation, {
   BrowseReturn,
 } from "@/components/catalogue/SectionNavigation";
 import { singularKindLabels, predictiveKinds, groupEntities, testedEntities, evaluationEntities, datasetEntities } from "@/lib/omics-browse";
-import { loadUseCaseContext, verifiedAssociation, type RecordDetail } from "@/lib/entity-detail";
+import type { ResultRecordPage } from "@/lib/record-page";
 import styles from "../../database.module.css";
 
 function Links({ records }: { records: OmicsRecord[] }) {
@@ -55,36 +55,28 @@ function Fields({
 }
 
 /** A result record: a single measurement, its evaluation context and evidence.
- * No alias records currently route to the `result` legacy segment (see
- * workbench/entity-page-split-checkpoint.md), so this is canonical-only. */
-export function ResultDetail({ detail }: { detail: RecordDetail }) {
-  const { query, catalogue } = buildCatalogue();
+ * Renders only the prepared page, which the importer builds with the release's
+ * query engine; this component performs no catalogue reads of its own. */
+export function ResultDetail({ page }: { page: ResultRecordPage }) {
+  const { detail, first, evidence } = page;
   const { record } = detail;
-  const { useCaseLinks, useCaseConfigurations } = loadUseCaseContext(
-    query,
-    record,
-  );
-  const results = query.results({ id: record.id, limit: 25 });
-  const first = results.items[0];
-  const evidence = query.evidence({
-    id: record.id,
-    scope: "individual_claim",
-    limit: 10,
-  });
-  const evaluated = first?.evaluation;
+  const useCaseLinks = page.use_case_links;
+  const useCaseConfigurations = page.use_case_configurations;
+  const context = new Map(page.context.map((item) => [item.id, item]));
+  const evaluated = first?.evaluation ?? undefined;
   const finding = `${formatScore(record.attributes.printed_value)}${record.attributes.unit === "percent" && !/%/.test(String(record.attributes.printed_value)) ? "%" : ""} ${displayValue(record.attributes.metric)}`;
   const modelLinks = first ? testedEntities(first) : [];
   const modelFamilies = modelLinks.flatMap((model) =>
-    model.links
-      .filter(
-        (link) =>
-          ["family", "variant_of", "alias_of"].includes(link.relation) &&
-          verifiedAssociation(catalogue, model.id, link.relation, link.target_id),
-      )
-      .flatMap((link) => {
-        const target = query.get({ id: link.target_id });
-        return target ? [target.record] : [];
-      }),
+    model.links.flatMap((link) =>
+      page.verified_families
+        .filter(
+          (item) =>
+            item.subject_id === model.id &&
+            item.relation === link.relation &&
+            item.target.id === link.target_id,
+        )
+        .map((item) => item.target),
+    ),
   );
   const benchmarkLinks = first ? evaluationEntities(first) : [];
   const datasetLinks = first ? datasetEntities(first) : [];
@@ -93,13 +85,7 @@ export function ResultDetail({ detail }: { detail: RecordDetail }) {
     ...benchmarkLinks,
     ...datasetLinks,
   ]);
-  const identitySubjectId = (
-    record.attributes.source_identity as { subject_id?: unknown } | undefined
-  )?.subject_id;
-  const identitySubject =
-    typeof identitySubjectId === "string"
-      ? query.get({ id: identitySubjectId, include_comparisons: false })?.record
-      : undefined;
+  const identitySubject = page.identity_subject ?? undefined;
   const proposals = [...detail.direct, ...detail.reverse].filter(
     (item) => item.relation === "applicable_to",
   );
@@ -215,8 +201,8 @@ export function ResultDetail({ detail }: { detail: RecordDetail }) {
           </section>
           <Reproduction
             evaluation={evaluated}
-            records={catalogue.records}
-            recordById={query.record}
+            records={page.context}
+            recordById={(id) => context.get(id)}
             compact
           />
           {proposals.length > 0 && (
@@ -246,7 +232,7 @@ export function ResultDetail({ detail }: { detail: RecordDetail }) {
               not establish independent reproduction.
             </p>
             <EvidenceTable
-              key={`${catalogue.release_id}:${record.id}:evidence`}
+              key={`${page.release_id}:${record.id}:evidence`}
               id={record.id}
               initial={evidence}
               initialScope="individual_claim"
@@ -255,7 +241,7 @@ export function ResultDetail({ detail }: { detail: RecordDetail }) {
             />
             <section id="sources" className={styles.section}>
               <h2>Sources and history</h2>
-              {!!catalogue.coverage.audit_history && (
+              {page.audit_history && (
                 <p>
                   <Link
                     href={`/audits/?record=${encodeURIComponent(record.id)}`}
@@ -265,7 +251,7 @@ export function ResultDetail({ detail }: { detail: RecordDetail }) {
                 </p>
               )}
               <p className={styles.muted}>
-                Release {catalogue.release_id} · Record review:{" "}
+                Release {page.release_id} · Record review:{" "}
                 {record.status.replace(/_/g, " ")}
               </p>
               <details className={styles.profileDisclosure}>
@@ -316,10 +302,9 @@ export function ResultDetail({ detail }: { detail: RecordDetail }) {
                     </p>
                   ))}
                 <a
-                  href={`/omics/releases/${catalogue.release_id}/records.jsonl`}
-                  download
+                  href={downloadHref(`/omics/releases/${page.release_id}/records.jsonl`)}
                 >
-                  Download this release
+                  Download this release (gzip)
                 </a>
               </details>
             </section>

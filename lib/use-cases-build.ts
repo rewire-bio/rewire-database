@@ -2,6 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { createHash } from "node:crypto";
 import { buildCatalogue } from "./catalogue-build";
+import { dataPath } from "./data-pin";
 import { createUseCaseQuery, useCaseHash as hashUseCaseContent, validateUseCaseArtifact, type UseCaseDeclaration, type UseCaseDetail, type UseCaseQuery, type ResolvedMapping } from "../services/omics/src/use-cases";
 
 function loadUseCases(catalogue: ReturnType<typeof buildCatalogue>["catalogue"], catalogueQuery: ReturnType<typeof buildCatalogue>["query"]) {
@@ -10,7 +11,7 @@ function loadUseCases(catalogue: ReturnType<typeof buildCatalogue>["catalogue"],
     artifact: undefined,
     entries: [],
   };
-  const root = path.join("public/omics/releases", catalogue.release_id);
+  const root = dataPath("public/omics/releases", catalogue.release_id);
   const manifest = JSON.parse(fs.readFileSync(path.join(root, "manifest.json"), "utf8"));
   if (manifest.release_id !== catalogue.release_id) throw new Error("Use-case manifest belongs to another release");
   const declaration = manifest.coverage?.use_cases as UseCaseDeclaration | undefined;

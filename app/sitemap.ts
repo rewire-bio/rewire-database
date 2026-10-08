@@ -1,13 +1,15 @@
 import { recordIsIndexable } from "@/lib/catalogue-seo";
 import type { MetadataRoute } from "next";
-import { readFileSync } from "node:fs";
-import { parseCatalogue, recordHref } from "@/lib/omics";
+import { recordHref } from "@/lib/omics";
 import { catalogueIndexPaths } from "@/lib/catalogue-index";
+import { buildCatalogue } from "@/lib/catalogue-build";
 import { buildUseCases } from "@/lib/use-cases-build";
 import { getResearch } from "@/services/omics/src/research";
+// Generated from the running revision's pinned release, like every page.
+export const dynamic = "force-dynamic";
 export default function sitemap(): MetadataRoute.Sitemap {
   const base = "https://benchmarks.rewirebio.io";
-  const catalogue = parseCatalogue(JSON.parse(readFileSync("public/omics/catalogue.json", "utf8")));
+  const { catalogue } = buildCatalogue();
   const useCases = catalogue.coverage.use_cases ? buildUseCases().entries : [];
   return [
     { url: `${base}/` },

@@ -1,8 +1,10 @@
+import { downloadHref } from "@/lib/downloads";
 import { socialMetadata } from "@/lib/catalogue-sharing";
 import fs from "node:fs";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { buildCatalogue } from "@/lib/catalogue-build";
+import { dataPath } from "@/lib/data-pin";
 import { auditPage } from "@/services/omics/src/audit";
 import type { AuditIndexRow, AuditRun } from "@/services/omics/src/audit";
 import AuditExplorer from "./AuditExplorer";
@@ -22,7 +24,7 @@ export const metadata: Metadata = {
 };
 export default function Audits() {
   const { catalogue } = buildCatalogue();
-  const base = `public/omics/releases/${catalogue.release_id}`;
+  const base = dataPath(`public/omics/releases/${catalogue.release_id}`);
   const read = (name: string) =>
     fs.existsSync(`${base}/${name}`)
       ? JSON.parse(fs.readFileSync(`${base}/${name}`, "utf8"))
@@ -61,27 +63,27 @@ export default function Audits() {
             <>
               <p>
                 <a
-                  href={`/omics/releases/${catalogue.release_id}/audit-checks.csv`}
+                  href={downloadHref(`/omics/releases/${catalogue.release_id}/audit-checks.csv`)}
                 >
-                  Audit checks CSV
+                  Audit checks CSV (gzip)
                 </a>{" "}
                 ·{" "}
                 <a
-                  href={`/omics/releases/${catalogue.release_id}/audit-checks.jsonl`}
+                  href={downloadHref(`/omics/releases/${catalogue.release_id}/audit-checks.jsonl`)}
                 >
-                  Audit checks JSONL
+                  Audit checks JSONL (gzip)
                 </a>{" "}
                 ·{" "}
                 <a
-                  href={`/omics/releases/${catalogue.release_id}/audit-runs.json`}
+                  href={downloadHref(`/omics/releases/${catalogue.release_id}/audit-runs.json`)}
                 >
-                  Audit runs
+                  Audit runs (gzip)
                 </a>{" "}
                 ·{" "}
                 <a
-                  href={`/omics/releases/${catalogue.release_id}/audit-resolutions.json`}
+                  href={downloadHref(`/omics/releases/${catalogue.release_id}/audit-resolutions.json`)}
                 >
-                  Resolutions
+                  Resolutions (gzip)
                 </a>
               </p>
               <AuditExplorer

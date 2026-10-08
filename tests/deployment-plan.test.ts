@@ -4,15 +4,18 @@ import os from 'node:os';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
-import { assertPublishedBase, classify, fingerprints, inputGroups, liveAcceptanceProfile, publishedReceipt, validReceipt, writeReceipt } from '../scripts/deployment-plan.mjs';
+import { BACKEND_ONLY_SOURCES, COMPILED_TAXONOMY, assertPublishedBase, classify, fingerprints, inputGroups, liveAcceptanceProfile, publishedReceipt, validReceipt, writeReceipt } from '../scripts/deployment-plan.mjs';
 
 const roots: string[] = [];
-const hashes = { data: 'a'.repeat(64), backend: 'b'.repeat(64), hosting: 'c'.repeat(64) };
-const receipt = { schema: 1, commit: 'd'.repeat(40), fingerprints: hashes,
-  release_id: '2026-09-29-06401fd5b220', manifest_sha256: 'e'.repeat(64) };
+const hashes = { data: 'a'.repeat(64), backend: 'b'.repeat(64), hosting: 'c'.repeat(64), frontend: '9'.repeat(64) };
+const receipt = { schema: 3, producer_repository: 'rewire-bio/rewire-benchmark-data', producer_revision: '1'.repeat(40), commit: 'd'.repeat(40), fingerprints: hashes,
+  frontend_version: '8'.repeat(40), producer_manifest_sha256: '2'.repeat(64), release_id: '2026-09-29-06401fd5b220', manifest_sha256: 'e'.repeat(64) };
 function fixture() {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'deployment-plan-')); roots.push(root);
   execFileSync('git', ['init', '-q', root]);
+  // Hydrated by data:prepare and ignored by Git, like the real checkout.
+  fs.mkdirSync(path.join(root, 'lib'));
+  fs.writeFileSync(path.join(root, COMPILED_TAXONOMY), 'export const DOMAINS = [];');
   return root;
 }
 function file(root: string, name: string, contents: string, track = true) {
@@ -24,13 +27,72 @@ afterEach(() => { for (const root of roots.splice(0)) fs.rmSync(root, { recursiv
 
 describe('publication classification', () => {
   it('bootstraps and forces full work; only a valid live receipt permits skips', () => {
-    expect(classify(hashes, null)).toEqual({ mode: 'full', backend: true });
-    expect(classify(hashes, { ...receipt, schema: 999 })).toEqual({ mode: 'full', backend: true });
-    expect(classify(hashes, receipt)).toEqual({ mode: 'web', backend: false });
-    expect(classify(hashes, receipt, true)).toEqual({ mode: 'full', backend: true });
-    expect(classify({ ...hashes, data: 'f'.repeat(64) }, receipt)).toEqual({ mode: 'full', backend: false });
-    expect(classify({ ...hashes, backend: 'f'.repeat(64) }, receipt)).toEqual({ mode: 'web', backend: true });
-    expect(classify({ ...hashes, hosting: 'f'.repeat(64) }, receipt).mode).toBe('full');
+    const all = { mode: 'full', backend: true, frontend: true, edge: true };
+    expect(classify(hashes, null)).toEqual(all);
+    expect(classify(hashes, { ...receipt, schema: 2 })).toEqual(all);
+    expect(classify(hashes, receipt)).toEqual({ mode: 'web', backend: false, frontend: false, edge: false });
+    expect(classify(hashes, receipt, true)).toEqual(all);
+    expect(classify({ ...hashes, backend: 'f'.repeat(64) }, receipt)).toEqual({ mode: 'web', backend: true, frontend: false, edge: false });
+    expect(classify({ ...hashes, hosting: 'f'.repeat(64) }, receipt)).toEqual({ mode: 'web', backend: false, frontend: false, edge: true });
+  });
+  it('adopts a new data pin without an image build when only the lock changed', () => {
+    expect(classify({ ...hashes, data: 'f'.repeat(64) }, receipt)).toEqual({ mode: 'full', backend: false, frontend: false, edge: false });
+    expect(inputGroups('benchmark-data.lock.json')).toEqual({ data: true, backend: false, hosting: false, frontend: false });
+    expect(classify({ ...hashes, frontend: 'f'.repeat(64) }, receipt).frontend).toBe(true);
+  });
+  it.each(['app/page.tsx', 'lib/omics.ts', 'services/omics/src/record-pages.ts', 'package-lock.json', 'next.config.mjs', 'Dockerfile', 'scripts/server-entry.mjs'])(
+    'rebuilds the image for image input %s', name => expect(inputGroups(name).frontend).toBe(true),
+  );
+  it.each(['cloudflare/worker.mjs', 'wrangler.jsonc', 'firebase.json'])('redeploys the Worker for %s', name => expect(inputGroups(name).hosting).toBe(true));
+  it.each(['services/omics/src/catalogue-service.ts', 'services/omics/src/record-page-store.ts', 'services/omics/src/router.ts',
+    'services/omics/src/functions.ts', 'services/omics/src/http-handler.ts', 'services/omics/src/mail-worker.ts', 'services/omics/src/auth.ts',
+    'services/omics/src/import-cli.ts', 'services/omics/package.json', 'services/omics/firestore.rules', 'services/omics/test/emulator.test.ts'])(
+    'deploys backend-only change %s without building an image', name => {
+      expect(inputGroups(name).frontend).toBe(false);
+      expect(inputGroups(name).backend).toBe(name.startsWith('services/omics/test/') ? false : true);
+    });
+  it.each(['services/omics/src/catalogue-query.ts', 'services/omics/src/record-pages.ts', 'services/omics/src/use-cases.ts', 'services/omics/src/entity-kinds.ts'])(
+    'rebuilds both the API and the image for shared contract %s', name => expect(inputGroups(name)).toMatchObject({ backend: true, frontend: true }),
+  );
+  it('keeps frontend-only edits away from the backend deployment', () => {
+    for (const name of ['app/page.tsx', 'lib/record-page.ts', 'middleware.ts', 'scripts/server-entry.mjs']) expect(inputGroups(name).backend).toBe(false);
+  });
+  it('lists as backend-only no service module the website imports', () => {
+    // Follow static and dynamic relative/@ imports from the website's own sources.
+    const seen = new Set<string>();
+    const stack = ['middleware.ts', ...['app', 'lib', 'components'].flatMap(dir => fs.readdirSync(dir, { recursive: true })
+      .map(file => path.join(dir, String(file))).filter(file => /\.(ts|tsx|mjs)$/.test(file)))];
+    while (stack.length) {
+      const file = stack.pop()!;
+      if (seen.has(file)) continue;
+      seen.add(file);
+      for (const match of fs.readFileSync(file, 'utf8').matchAll(/(?:from\s*|import\(\s*)["']([^"']+)["']/g)) {
+        const spec = match[1];
+        if (!spec.startsWith('.') && !spec.startsWith('@/')) continue;
+        const base = (spec.startsWith('@/') ? spec.slice(2) : path.join(path.dirname(file), spec)).replace(/\.js$/, '');
+        const target = ['', '.ts', '.tsx', '.mjs'].map(ext => path.normalize(base + ext)).find(name => fs.existsSync(name) && fs.statSync(name).isFile());
+        if (target) stack.push(target);
+      }
+    }
+    expect([...BACKEND_ONLY_SOURCES].filter(name => seen.has(name))).toEqual([]);
+    expect(seen.has('services/omics/src/record-pages.ts')).toBe(true);
+  });
+  it('builds a new image when a lock change changes the compiled taxonomy, and only then', async () => {
+    const root = fixture(); file(root, 'benchmark-data.lock.json', 'one');
+    const first = await fingerprints(root, {});
+    file(root, 'benchmark-data.lock.json', 'two', false);
+    const lockOnly = await fingerprints(root, {});
+    expect(lockOnly.frontend).toBe(first.frontend);
+    expect(lockOnly.data).not.toBe(first.data);
+    fs.writeFileSync(path.join(root, COMPILED_TAXONOMY), 'export const DOMAINS = ["changed"];');
+    const taxonomy = await fingerprints(root, {});
+    expect(taxonomy.frontend).not.toBe(first.frontend);
+    expect(classify(taxonomy, { ...receipt, fingerprints: lockOnly }).frontend).toBe(true);
+    expect(classify(lockOnly, { ...receipt, fingerprints: first }).frontend).toBe(false);
+  });
+  it('refuses to plan before the compiled taxonomy is hydrated', async () => {
+    const root = fixture(); fs.unlinkSync(path.join(root, COMPILED_TAXONOMY));
+    await expect(fingerprints(root, {})).rejects.toThrow('data:prepare');
   });
   it.each(['data/new.json', 'scripts/omics/new-helper.ts', 'lib/new-helper.ts', 'services/omics/src/new.ts', 'package-lock.json', 'tsconfig.json'])(
     'does not invalidate pinned data for consumer dependency %s', name => expect(inputGroups(name).data).toBe(false),
@@ -43,7 +105,7 @@ describe('publication classification', () => {
     const first = await fingerprints(root, {});
     file(root, '.github/workflows/firebase.yml', 'second', false);
     expect(await fingerprints(root, {})).toEqual(first);
-    expect(inputGroups('.github/workflows/firebase.yml')).toEqual({ data: false, backend: false, hosting: false });
+    expect(inputGroups('.github/workflows/firebase.yml')).toEqual({ data: false, backend: false, hosting: false, frontend: false });
   });
   it('permits core acceptance only for a verified UI-only plan', () => {
     const plan = {mode: 'web', backend: false, fingerprints: hashes, previous: receipt};
@@ -56,7 +118,7 @@ describe('publication classification', () => {
     expect(inputGroups('benchmark-data.lock.json').data).toBe(true);
   });
   it('does not invalidate data for a UI-only change', () => {
-    expect(inputGroups('components/header.tsx')).toEqual({ data: false, backend: false, hosting: false });
+    expect(inputGroups('components/header.tsx')).toEqual({ data: false, backend: false, hosting: false, frontend: true });
   });
   it('hashes producer lock changes and deletion, ignoring local hydrated data', async () => {
     const root = fixture(); file(root, 'benchmark-data.lock.json', 'one');
@@ -102,7 +164,7 @@ describe('published metadata and output receipts', () => {
   it('requests the fixed origin without following redirects and excludes cached bytes', async () => {
     const fetchImpl = vi.fn(async () => new Response(JSON.stringify(receipt)));
     expect(await publishedReceipt({ fetchImpl })).toEqual(receipt);
-    expect(fetchImpl).toHaveBeenCalledWith(expect.stringMatching(/^https:\/\/rewire-it.web.app\/deployment.json\?verify=/), expect.objectContaining({ redirect: 'manual', headers: { 'Cache-Control': 'no-cache' } }));
+    expect(fetchImpl).toHaveBeenCalledWith(expect.stringMatching(/^https:\/\/benchmarks.rewirebio.io\/deployment.json\?verify=/), expect.objectContaining({ redirect: 'manual', headers: { 'Cache-Control': 'no-cache' } }));
   });
   it('rejects a changed receipt or manifest before publication', async () => {
     const bytes = Buffer.from('{"release_id":"test"}');
@@ -113,15 +175,22 @@ describe('published metadata and output receipts', () => {
     await expect(assertPublishedBase(plan, Buffer.from('different'), { fetchImpl })).rejects.toThrow('catalogue differs');
     await expect(assertPublishedBase(plan, bytes, { fetchImpl: vi.fn(async () => new Response(JSON.stringify({ ...prior, commit: 'f'.repeat(40) }))) })).rejects.toThrow('build changed');
   });
-  it('binds the receipt to generated bytes and refuses web mode on a changed release', async () => {
+  it('binds the receipt to the image, the data pin and generated bytes', async () => {
     const root = fixture();
+    file(root, 'benchmark-data.lock.json', JSON.stringify({repository: receipt.producer_repository, revision: receipt.producer_revision,
+      manifest_sha256: receipt.producer_manifest_sha256, release_id: receipt.release_id}));
     const bytes = JSON.stringify({ release_id: receipt.release_id });
     file(root, 'public/omics/manifest.json', bytes, false);
-    file(root, 'workbench/deployment-plan.json', JSON.stringify({ ...receipt, mode: 'full', previous: receipt }), false);
-    fs.mkdirSync(path.join(root, 'out'));
+    file(root, 'workbench/deployment-plan.json', JSON.stringify({ ...receipt, mode: 'full', frontend: true, previous: receipt }), false);
     const generated = await writeReceipt(root);
     expect(validReceipt(generated)).toBe(true);
+    expect(JSON.parse(fs.readFileSync(path.join(root, 'workbench/deployment-receipt.json'), 'utf8'))).toEqual(generated);
+    expect(generated.frontend_version).toBe(receipt.commit);
+    expect(generated.producer_manifest_sha256).toBe(receipt.producer_manifest_sha256);
     expect(generated.manifest_sha256).toBe(createHash('sha256').update(bytes).digest('hex'));
+    // A data-only adoption keeps serving the live image.
+    file(root, 'workbench/deployment-plan.json', JSON.stringify({ ...receipt, mode: 'full', frontend: false, previous: receipt }), false);
+    expect((await writeReceipt(root)).frontend_version).toBe(receipt.frontend_version);
     file(root, 'workbench/deployment-plan.json', JSON.stringify({ ...receipt, mode: 'web', previous: receipt }), false);
     await expect(writeReceipt(root)).rejects.toThrow('differs from the published release');
   });

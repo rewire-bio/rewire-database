@@ -49,6 +49,11 @@
       "fieldPath": "expiresAt",
       "ttl": true,
       "indexes": []
+    },
+    {
+      "collectionGroup": "recordPagesV1",
+      "fieldPath": "payload_gzip",
+      "indexes": []
     }
   ]
 }

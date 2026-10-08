@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it , vi } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
 import BaselineCoverage from "../components/catalogue/BaselineCoverage";
 import { buildBaselineAudit, candidateRule } from "../lib/baseline-coverage";

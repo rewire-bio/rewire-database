@@ -1,3 +1,4 @@
+import { optionalDownloadHref } from "./downloads";
 import { catalogueText } from "./catalogue-text";
 import { assertNoPrivateFields } from "../services/omics/src/private-fields";
 import { validateResearchData, type ResearchData } from "../services/omics/src/research";
@@ -7,6 +8,7 @@ import {
   benchmarkSubjectKinds,
   datasetSubjectKinds,
   isDatasetSubject,
+  recordRouteKinds as routeKinds,
 } from "../services/omics/src/entity-kinds";
 export { entityKindLabel } from "../services/omics/src/entity-kinds";
 export const omicsKinds = entityKinds;
@@ -72,23 +74,17 @@ export function parseCatalogue(value: unknown): OmicsCatalogue {
 export const recordHref = (record: Pick<OmicsRecord, "kind" | "id">) =>
   `/database/${record.kind}/${record.id}/`;
 /** Alias routes preserve published links; metadata always uses recordHref. */
-export function recordRouteKinds(
+export const recordRouteKinds: (
   record: Pick<OmicsRecord, "kind" | "attributes">,
-): OmicsKind[] {
-  const aliases = record.attributes.legacy_kinds;
-  return [
-    ...new Set([
-      record.kind,
-      ...(Array.isArray(aliases)
-        ? aliases.filter((kind): kind is OmicsKind => omicsKinds.includes(kind))
-        : []),
-    ]),
-  ];
-}
+) => OmicsKind[] = routeKinds;
 export function safeSourceUrl(value: unknown): string | undefined {
   if (typeof value !== "string") return;
+  const download = optionalDownloadHref(value);
+  if (download) return download;
+  if (value.startsWith("/omics/")) return;
   try {
     const url = new URL(value);
+    if (url.pathname.startsWith("/omics/") && ["benchmarks.rewire.it", "benchmarks.rewirebio.io", "rewire-omics.web.app", "rewire-omics.firebaseapp.com"].includes(url.hostname)) return;
     if (["https:", "http:"].includes(url.protocol)) return url.href;
   } catch {
     /* Not a URL. */

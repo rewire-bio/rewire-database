@@ -7,7 +7,7 @@ import { filterCatalogue, readCatalogueFilters } from "../lib/omics-browse";
 import ResearchReadiness from "../components/catalogue/ResearchReadiness";
 import Investigation, { InvestigationList } from "../components/catalogue/ResearchInvestigation";
 import InvestigationsPage from "../app/investigations/page";
-import InvestigationPage, { generateStaticParams, generateMetadata } from "../app/investigations/[id]/page";
+import InvestigationPage, { generateMetadata } from "../app/investigations/[id]/page";
 
 const fixture = vi.hoisted(() => ({ snapshot: null as CatalogueSnapshot | null }));
 vi.mock("../lib/catalogue-build", () => ({
@@ -185,7 +185,7 @@ describe("reviewed investigation routes", () => {
       expect(renderToStaticMarkup(<Investigation report={hidden} />)).toBe("");
       expect(() => InvestigationPage({ params: { id: hidden.id } })).toThrow("NOT_FOUND");
     }
-    expect(generateStaticParams()).toEqual([{ id: report.id }]);
+    expect(() => InvestigationPage({ params: { id: report.id } })).not.toThrow();
     const index = renderToStaticMarkup(<InvestigationsPage />);
     expect(index).not.toContain(pending.title);
     expect(generateMetadata({ params: { id: pending.id } }).robots).toEqual({ index: false, follow: false });
@@ -196,8 +196,7 @@ describe("reviewed investigation routes", () => {
     expect(html).toContain("No reviewed investigations are available");
     expect(html).toContain("0 reviewed reports");
     expect(html).not.toContain(report.title);
-    const [placeholder] = generateStaticParams();
-    expect(() => InvestigationPage({ params: placeholder })).toThrow("NOT_FOUND");
+    expect(() => InvestigationPage({ params: { id: "_no-reviewed-reports" } })).toThrow("NOT_FOUND");
   });
   it("links reviewed reports to exact dataset and protocol records", () => {
     const data = snapshot([report]);

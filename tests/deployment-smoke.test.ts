@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import { describe, expect, it, vi } from "vitest";
 import { smokeDeployment } from "../scripts/smoke-deployment.mjs";
 
@@ -21,7 +22,7 @@ describe("read-only deployment smoke", () => {
   it("checks route HTML, JavaScript, download, search/filter APIs and detail pages", async () => {
     const request = fixture();
     await smokeDeployment("https://example.test", { request, log: vi.fn() });
-    expect(request).toHaveBeenCalledTimes(13);
+    expect(request).toHaveBeenCalledTimes(17);
     const urls = request.mock.calls.map(([input]) => new URL(input instanceof Request ? input.url : input));
     expect(urls.every(url => url.origin === "https://example.test")).toBe(true);
     const api = urls.filter(url => url.pathname.startsWith("/api/"));
@@ -58,5 +59,38 @@ describe("read-only deployment smoke", () => {
       return response;
     };
     await expect(smokeDeployment('https://example.test', { request, log: vi.fn() })).rejects.toThrow(message);
+  });
+});
+
+function independentFixture(corrupt = '') {
+  const lock = { repository: 'rewire-bio/rewire-benchmark-data', revision: 'a'.repeat(40), release_id: release };
+  const path = `/omics/releases/${release}/records.csv`;
+  const raw = `https://raw.githubusercontent.com/${lock.repository}/${lock.revision}/data${path}.gz`;
+  const downloads = { lock, urls: new Map([[path, raw]]) };
+  const legacy = fixture();
+  const request = vi.fn(async (input: Parameters<typeof fetch>[0]) => {
+    const url = new URL(input instanceof Request ? input.url : input);
+    if(url.pathname === '/release-manifest.json') return Response.json({release_id: corrupt === 'release' ? 'wrong' : release});
+    if(url.pathname === '/deployment.json') return Response.json({schema:3,release_id:release,manifest_sha256:createHash("sha256").update(JSON.stringify({release_id:release})).digest("hex"),producer_repository:lock.repository,producer_revision: corrupt === 'producer' ? 'b'.repeat(40) : lock.revision});
+    if(url.pathname === path) return new Response(null, {status:302,headers:{location: corrupt === 'redirect' ? 'https://evil.example/data.gz' : raw}});
+    if(url.hostname === 'raw.githubusercontent.com') return new Response(null, {headers:{'content-type':corrupt === 'download' ? 'text/html' : 'application/octet-stream','content-length':'100'}});
+    const response = await legacy(input);
+    if(url.pathname === '/') return new Response((await response.text()).replace(`/omics/releases/${release}/manifest.json`, raw), {headers:{'content-type':'text/html'}});
+    return response;
+  });
+  return { downloads, request };
+}
+describe('independent frontend smoke', () => {
+  it('checks root release identity and exact pinned GitHub downloads across origins', async () => {
+    const f = independentFixture();
+    await smokeDeployment('https://example.test', { ...f, independentFrontend: true, log: vi.fn() });
+    const urls = f.request.mock.calls.map(([url]) => new URL(String(url)));
+    expect(urls.some(url => url.pathname === '/release-manifest.json')).toBe(true);
+    expect(urls.some(url => url.hostname === 'raw.githubusercontent.com')).toBe(true);
+    expect(urls.some(url => url.pathname.endsWith('/manifest.json') && url.pathname.startsWith('/omics/'))).toBe(false);
+  });
+  it.each(['release', 'producer', 'redirect', 'download'])('rejects %s drift', async (corrupt) => {
+    const f = independentFixture(corrupt);
+    await expect(smokeDeployment('https://example.test', { ...f, independentFrontend: true, log: vi.fn() })).rejects.toThrow();
   });
 });

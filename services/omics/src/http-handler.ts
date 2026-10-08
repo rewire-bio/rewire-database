@@ -13,6 +13,7 @@ const catalogueProcedures = new Set([
   "catalogue.release",
   "catalogue.list",
   "catalogue.get",
+  "catalogue.page",
   "catalogue.results",
   "catalogue.compare",
   "catalogue.comparison",

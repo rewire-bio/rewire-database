@@ -1,3 +1,4 @@
+import { downloadHref } from "@/lib/downloads";
 import Breadcrumbs from "./Breadcrumbs";
 import { catalogueText } from "@/lib/catalogue-text";
 import { recordHref, type OmicsCatalogue } from "@/lib/omics";
@@ -32,7 +33,7 @@ export default function StaticIndex({ catalogue, kind, page = 1 }: { catalogue: 
       <nav className={styles.shortcuts} aria-label="Catalogue indexes"><a href="/benchmarks/" aria-current={benchmarks ? "page" : undefined}>Benchmarks</a><a href="/models/" aria-current={!benchmarks ? (page === 1 ? "page" : "location") : undefined}>Models</a><a href={`/?kind=${kind}#browse`}>Search and filter {benchmarks ? "benchmarks" : "models"}</a></nav>
     </div></header>
     <section className={`block first ${styles.index}`} aria-label={benchmarks ? "Benchmark profiles" : "Model profiles"}><div className="wrap">
-      <p>{all.length} {benchmarks ? "benchmark" : "model"} records in release <a href={`/omics/releases/${catalogue.release_id}/manifest.json`}>{catalogue.release_id}</a>.{!benchmarks && ` Showing ${all.length ? start + 1 : 0}–${Math.min(start + records.length, all.length)}; page ${page} of ${pages}.`}</p>
+      <p>{all.length} {benchmarks ? "benchmark" : "model"} records in release <a href={downloadHref(`/omics/releases/${catalogue.release_id}/manifest.json`)}>{catalogue.release_id} (gzip)</a>.{!benchmarks && ` Showing ${all.length ? start + 1 : 0}–${Math.min(start + records.length, all.length)}; page ${page} of ${pages}.`}</p>
       <p className={styles.context}>{benchmarks ? <>Broad <a href="/?kind=task#browse">tasks</a>, specific <a href="/?kind=protocol#browse">protocols</a> and <a href="/?kind=evaluator#browse">evaluators</a> have their own records. Follow each benchmark to its procedures and results.</> : <>Evaluated <a href="/?kind=configuration#browse">configurations</a>, <a href="/?kind=method#browse">methods</a> and <a href="/?kind=pipeline#browse">pipelines</a> are listed separately. Names alone do not establish equivalent models or checkpoints.</>}</p>
       {pagination}
       <ul className={styles.records}>{records.map((record) => <li key={record.id}>

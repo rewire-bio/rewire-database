@@ -1,10 +1,11 @@
 import fs from "node:fs";
 import { createCatalogueQuery } from "../services/omics/src/catalogue-query";
 import { parseCatalogue } from "./omics";
+import { dataPath, dataPin } from "./data-pin";
 
-/** Static rendering uses the API's exact query engine against a reviewed snapshot.
- * Production browsers query the same contract over tRPC and pin this release.
- * Builds remain independent of live credentials and do not scan Firestore.
+/** Low-volume pages render with the API's exact query engine against the
+ * pinned release, read once per server instance from its verified local copy.
+ * Result and evaluation pages never call this; they read bounded page documents.
  */
 let cached:
   | {
@@ -14,10 +15,12 @@ let cached:
     }
   | undefined;
 export function buildCatalogue() {
-  const file = "public/omics/catalogue.json";
+  const file = dataPath("public/omics/catalogue.json");
   const mtime = fs.statSync(file).mtimeMs;
   if (!cached || cached.mtime !== mtime) {
     const catalogue = parseCatalogue(JSON.parse(fs.readFileSync(file, "utf8")));
+    if (catalogue.release_id !== dataPin().release_id)
+      throw new Error("Local catalogue differs from the pinned release");
     cached = { mtime, catalogue, query: createCatalogueQuery(catalogue) };
   }
   return cached;

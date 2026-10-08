@@ -41,7 +41,7 @@ describe("reviewed source-label identities", () => {
     expect(rows.filter((row) => testedSearchText(row).includes("deepdta"))).toHaveLength(1);
   });
 
-  it("renders identity notices on configuration and result pages and cited labels in tables", () => {
+  it("renders identity notices on configuration and result pages and cited labels in tables", async () => {
     fixture.snapshot = released;
     const configuration = renderToStaticMarkup(
       <ConfigurationPage params={{ id: "atom3d-method-karimi-et-al-2019" }} />);
@@ -50,7 +50,7 @@ describe("reviewed source-label identities", () => {
     expect(configuration).toContain("/database/model/identity-model-deepaffinity");
     expect(configuration).toContain("no human scientific review");
     const result = renderToStaticMarkup(
-      <ResultPage params={{ id: "hest-result-ciga-ccrcc-pearson-r" }} />);
+      await ResultPage({ params: { id: "hest-result-ciga-ccrcc-pearson-r" } }));
     expect(result).toContain("The source table prints the tested method as Ciga.");
     expect(result).toContain("/database/configuration/hest-method-ciga");
     const hest = renderToStaticMarkup(<ConfigurationPage params={{ id: "hest-method-ciga" }} />);
@@ -64,11 +64,13 @@ describe("reviewed source-label identities", () => {
 });
 
 describe("source-label identity guards", () => {
-  it("renders an unresolved identity on linked result pages", () => {
+  it("renders an unresolved identity on linked result pages", async () => {
     fixture.snapshot = JSON.parse(fs.readFileSync("tests/fixtures/unresolved-source-identity.json", "utf8"));
-    const html = renderToStaticMarkup(<ResultPage params={{ id: "result" }} />);
+    const html = renderToStaticMarkup(await ResultPage({ params: { id: "result" } }));
     expect(html).toContain("the method it refers to is unresolved");
     expect(html).toContain('data-source-identity="unresolved"');
     expect(html).toContain("/database/configuration/config");
   });
 });
+
+vi.mock("../lib/record-page", async (original) => (await import("./fixtures/record-pages")).localRecordPages(original));

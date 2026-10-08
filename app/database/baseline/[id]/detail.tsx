@@ -1,3 +1,4 @@
+import { downloadHref } from "@/lib/downloads";
 import Breadcrumbs from "@/components/catalogue/Breadcrumbs";
 import { recordBreadcrumbs } from "@/lib/catalogue-sharing";
 import { catalogueText } from "@/lib/catalogue-text";
@@ -204,10 +205,9 @@ export function BaselineDetail({ detail }: { detail: RecordDetail }) {
                     </p>
                   ))}
                 <a
-                  href={`/omics/releases/${catalogue.release_id}/records.jsonl`}
-                  download
+                  href={downloadHref(`/omics/releases/${catalogue.release_id}/records.jsonl`)}
                 >
-                  Download this release
+                  Download this release (gzip)
                 </a>
               </details>
             </section>

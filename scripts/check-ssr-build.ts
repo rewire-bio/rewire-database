@@ -147,12 +147,12 @@ async function checkContracts(release: string, firstOf: (kind: string) => OmicsR
   assert.equal((await get("/database/model/no-such-record-anywhere/")).status, 404);
   const urls = downloadUrls(downloadLocations(JSON.parse(fs.readFileSync("benchmark-data.lock.json", "utf8")),
     fs.readFileSync("workbench/benchmark-data/website/manifest.json")));
-  for (const download of [`/omics/releases/${release}/records.csv`, "/benchmark-literature/results.csv"]) {
+  for (const download of [`/omics/releases/${release}/records.jsonl`, "/benchmark-literature/results.csv"]) {
     const redirect = await get(download);
     assert.equal(redirect.status, 307, download);
     assert.equal(redirect.headers.get("location"), urls.get(download));
   }
-  assert.equal((await get("/omics/releases/invented/records.csv")).status, 404);
+  assert.equal((await get("/omics/releases/invented/records.jsonl")).status, 404);
   assert.deepEqual(Buffer.from(await (await get("/release-manifest.json")).arrayBuffer()), fs.readFileSync("public/omics/manifest.json"));
   assert.equal((await get("/deployment.json")).status, 404, "Unpublished builds carry no receipt");
   const contribute = await get("/contribute/");

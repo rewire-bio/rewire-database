@@ -42,12 +42,12 @@ describe("frontend origin identity, downloads and receipts", () => {
       expect(call(url).headers.get("x-rewire-edge-cache")).toBeNull();
   });
   it("redirects listed downloads to the exact pinned source and 404s anything else", () => {
-    const path = `/omics/releases/${pin.release_id}/records.csv`;
+    const path = `/omics/releases/${pin.release_id}/records.jsonl`;
     const found = downloadRedirect(path, new Request(`https://origin.test${path}?download=1`));
     expect(found.status).toBe(307);
-    expect(found.headers.get("location")).toBe(`https://raw.githubusercontent.com/${pin.repository}/${pin.revision}/data/omics/releases/${pin.release_id}/records.csv.gz?download=1`);
+    expect(found.headers.get("location")).toBe(`https://raw.githubusercontent.com/${pin.repository}/${pin.revision}/data/omics/releases/${pin.release_id}/records.jsonl.gz?download=1`);
     expect(found.headers.get("cache-control")).toBe("no-store");
-    for (const missing of [`${path}.gz`, "/omics/releases/invented/records.csv"])
+    for (const missing of [`${path}.gz`, "/omics/releases/invented/records.jsonl"])
       expect(downloadRedirect(missing, new Request(`https://origin.test${missing}`)).status).toBe(404);
   });
   it("serves its publication receipt uncached, and none without one", async () => {

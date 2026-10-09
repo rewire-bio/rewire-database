@@ -10,9 +10,8 @@ export default defineConfig({
   },
   test: {
     environment: "node",
-    // Archive fixtures are intentionally large; bound concurrent catalogue copies.
-    maxWorkers: 2,
-    minWorkers: 1,
+    // Workers default to the available cores. Archive fixtures are large, but peak memory
+    // with eight workers was under 5 GB, well within a CI runner's 16 GB.
     exclude: [
       ...configDefaults.exclude,
       "services/**",

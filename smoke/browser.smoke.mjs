@@ -88,27 +88,27 @@ test('deployed public database core journeys', async ({ page, baseURL }) => {
     await section.locator('a[href="#evidence"]').click();
     await expect(page).toHaveURL(/#evidence$/);
     await expect(section.locator('a[href="#evidence"]')).toHaveAttribute('aria-current', 'location');
-    const disclosure = page.locator('#evidence details').filter({ has: page.locator('summary', { hasText: /^Inspect results, conditions and reproduction/ }) }).first();
-    await disclosure.locator(':scope > summary').click();
-    await expect(disclosure).toHaveAttribute('open', '');
-    await expect(disclosure.getByRole('table')).toBeVisible();
-    const provenance = disclosure.locator('details').filter({ has: page.locator('summary', { hasText: /^Result provenance$/ }) }).first();
-    await provenance.locator(':scope > summary').click();
-    await expect(provenance.locator('a').first()).toBeVisible();
+    const comparison = page.locator('#evidence article').first();
+    await expect(comparison.getByRole('table')).toBeVisible();
+    await expect(comparison.getByRole('columnheader', { name: 'Tool' })).toBeVisible();
+    const caveats = comparison.locator('details').filter({ has: page.locator('summary', { hasText: /^Caveats and method$/ }) }).first();
+    await caveats.locator(':scope > summary').click();
+    await expect(caveats).toHaveAttribute('open', '');
+    await expect(caveats.locator('a').first()).toBeVisible();
   });
 
   await test.step('mobile table containment, section selector and menu navigation', async () => {
     await page.setViewportSize({ width: 390, height: 844 });
     await noOverflow(page);
-    const table = page.getByRole('region', { name: /^Results for/ }).first();
+    const table = page.locator('#evidence [role="region"]').first();
     await expect(table).toBeVisible();
     expect(await table.evaluate(node => {
       const box = node.getBoundingClientRect();
       return box.left >= -1 && box.right <= innerWidth + 1 && node.scrollWidth >= node.clientWidth;
     })).toBe(true);
-    await page.getByRole('combobox', { name: 'On this page' }).selectOption('sources');
-    await expect(page).toHaveURL(/#sources$/);
-    await expect(page.getByRole('combobox', { name: 'On this page' })).toHaveValue('sources');
+    await page.getByRole('combobox', { name: 'On this page' }).selectOption('details');
+    await expect(page).toHaveURL(/#details$/);
+    await expect(page.getByRole('combobox', { name: 'On this page' })).toHaveValue('details');
     await page.getByRole('button', { name: 'Open menu', exact: true }).click();
     await expect(page.getByRole('button', { name: 'Close menu', exact: true })).toHaveAttribute('aria-expanded', 'true');
     await page.locator('#mobile-primary-navigation').getByRole('link', { name: 'Models', exact: true }).click();

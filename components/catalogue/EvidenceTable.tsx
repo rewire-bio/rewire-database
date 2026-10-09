@@ -314,9 +314,6 @@ export default function EvidenceTable({
               Next evidence rows
             </button>
           )}
-          <a href={downloadHref(`${release}/evidence.csv`)}>
-            All evidence (CSV) (gzip)
-          </a>
           <a href={downloadHref(`${release}/evidence.jsonl`)}>
             All evidence (JSONL) (gzip)
           </a>

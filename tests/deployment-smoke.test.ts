@@ -14,7 +14,7 @@ function fixture(breakPath?: string) {
       return Response.json({ result: { data: { release_id: release, items: [{ kind: input.kind, name: input.kind === 'model' ? 'AlphaGenome' : 'Example benchmark', id: `${input.kind}-example` }] } } });
     }
     if (path.endsWith("manifest.json")) return Response.json({ release_id: release });
-    if (path.endsWith("records.csv")) return new Response(null, { headers: { "content-type": "text/csv", "content-length": "100" } });
+    if (path.endsWith("records.jsonl")) return new Response(null, { headers: { "content-type": "application/gzip", "content-length": "100" } });
     if (path.endsWith(".js")) return new Response("/* bundle */", { headers: { "content-type": "text/javascript" } });
     return new Response(`<h1>Database</h1><input id="catalogue-search"><div id="downloads"></div><script src="/_next/static/main.js"></script><a href="/omics/releases/${release}/manifest.json">Manifest</a><section id="question"></section><section id="evidence"></section><section id="gaps"></section><section id="sources"></section><details><summary>Results</summary></details>`, { headers: { "content-type": "text/html" } });
   });
@@ -49,7 +49,7 @@ describe("read-only deployment smoke", () => {
     const request = async (input: Parameters<typeof fetch>[0]) => {
       const url = new URL(input instanceof Request ? input.url : input);
       if (scenario === 'manifest' && url.pathname.endsWith('manifest.json')) return Response.json({ release_id: 'different-release' });
-      if (scenario === 'download' && url.pathname.endsWith('records.csv')) return new Response('', { headers: { 'content-type': 'text/html' } });
+      if (scenario === 'download' && url.pathname.endsWith('records.jsonl')) return new Response('', { headers: { 'content-type': 'text/html' } });
       const response = await normal(input);
       if (url.pathname.startsWith('/api/')) {
         const body = await response.json();
@@ -65,7 +65,7 @@ describe("read-only deployment smoke", () => {
 
 function independentFixture(corrupt = '') {
   const lock = { repository: 'rewire-bio/rewire-benchmark-data', revision: 'a'.repeat(40), release_id: release };
-  const path = `/omics/releases/${release}/records.csv`;
+  const path = `/omics/releases/${release}/records.jsonl`;
   const raw = `https://raw.githubusercontent.com/${lock.repository}/${lock.revision}/data${path}.gz`;
   const downloads = { lock, urls: new Map([[path, raw]]) };
   const legacy = fixture();
@@ -77,7 +77,7 @@ function independentFixture(corrupt = '') {
     if(url.hostname === 'raw.githubusercontent.com') return new Response(null, {headers:{'content-type':corrupt === 'download' ? 'text/html' : 'application/octet-stream','content-length':'100'}});
     const response = await legacy(input);
     // As production renders it: a site-path anchor the frontend redirects to the pinned export.
-    const anchor = { 'anchor-missing': '/omics/releases/other.txt', 'anchor-release': `/omics/releases/2026-01-01-bbbbbbbbbbbb/records.csv`,
+    const anchor = { 'anchor-missing': '/omics/releases/other.txt', 'anchor-release': `/omics/releases/2026-01-01-bbbbbbbbbbbb/records.jsonl`,
       'anchor-malformed': `${path}.gz`, 'anchor-direct': raw }[corrupt] ?? path;
     if(url.pathname === '/') return new Response(`<p>Release ${release}</p>` + (await response.text()).replace(`/omics/releases/${release}/manifest.json`, anchor), {headers:{'content-type':'text/html'}});
     return response;
@@ -100,15 +100,15 @@ describe('independent frontend smoke', () => {
   it('accepts the production site-path CSV anchor and still follows it to the exact pinned export', async () => {
     const f = independentFixture();
     await smokeDeployment('https://example.test', { ...f, independentFrontend: true, log: vi.fn() });
-    const head = f.request.mock.calls.find(([url]) => new URL(String(url)).pathname === `/omics/releases/${release}/records.csv`);
+    const head = f.request.mock.calls.find(([url]) => new URL(String(url)).pathname === `/omics/releases/${release}/records.jsonl`);
     expect(head).toBeDefined();
-    expect(f.request.mock.calls.some(([url]) => String(url) === f.downloads.urls.get(`/omics/releases/${release}/records.csv`))).toBe(true);
+    expect(f.request.mock.calls.some(([url]) => String(url) === f.downloads.urls.get(`/omics/releases/${release}/records.jsonl`))).toBe(true);
   });
   it.each([
-    ['anchor-missing', 'Home must link the pinned release CSV download'],
-    ['anchor-release', 'Home must link the pinned release CSV download'],
-    ['anchor-malformed', 'Home must link the pinned release CSV download'],
-    ['anchor-direct', 'Home must link the pinned release CSV download'],
+    ['anchor-missing', 'Home must link the pinned release records download'],
+    ['anchor-release', 'Home must link the pinned release records download'],
+    ['anchor-malformed', 'Home must link the pinned release records download'],
+    ['anchor-direct', 'Home must link the pinned release records download'],
   ])('rejects a home page whose CSV link is %s', async (corrupt, message) => {
     const f = independentFixture(corrupt);
     await expect(smokeDeployment('https://example.test', { ...f, independentFrontend: true, log: vi.fn() })).rejects.toThrow(message);

@@ -209,9 +209,6 @@ export default function EvidenceGuide() {
               count of independent findings.
             </p>
             <div className={styles.downloads}>
-              <a href={downloadHref(`${release}/evidence.csv`)}>
-                Evidence table (CSV) (gzip)
-              </a>
               <a href={downloadHref(`${release}/evidence.jsonl`)}>
                 Evidence table (JSONL) (gzip)
               </a>
@@ -230,8 +227,6 @@ export default function EvidenceGuide() {
               Use <code>field_path</code> to find its original field, and{" "}
               <code>source_id</code> to join the source record. The JSONL{" "}
               <code>value_json</code> preserves types, nulls and exact strings.
-              CSV cells that could be spreadsheet formulas are escaped with a
-              leading apostrophe; use JSONL for lossless machine processing.
             </p>
           </section>
         </div>

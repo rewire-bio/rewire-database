@@ -17,6 +17,8 @@ export function scoreInterval(
     return null;
   const uncertainty = raw as Record<string, unknown>;
   const type = String(uncertainty.type || uncertainty.kind || "");
+  // A spread around a different centre (a bootstrap summary) is not an interval on this value.
+  if (uncertainty.center !== undefined) return null;
   if (["standard_error", "standard_deviation"].includes(type)) {
     const amount = numericScore(uncertainty.value ?? uncertainty.printed_value);
     if (amount === null || amount < 0) return null;
@@ -27,8 +29,9 @@ export function scoreInterval(
     };
   }
   if (["confidence_interval", "credible_interval"].includes(type)) {
-    const low = numericScore(uncertainty.lower ?? uncertainty.low);
-    const high = numericScore(uncertainty.upper ?? uncertainty.high);
+    const half = numericScore(uncertainty.half_width);
+    const low = half !== null ? value - half : numericScore(uncertainty.lower ?? uncertainty.low);
+    const high = half !== null ? value + half : numericScore(uncertainty.upper ?? uncertainty.high);
     const level = uncertainty.level ?? uncertainty.confidence_level;
     if (
       low === null ||
@@ -38,7 +41,8 @@ export function scoreInterval(
       level == null
     )
       return null;
-    return { low, high, label: `${String(level)} ${type.replace(/_/g, " ")}` };
+    const levelText = typeof level === "number" && level < 1 ? `${Math.round(level * 1000) / 10}%` : String(level);
+    return { low, high, label: `${levelText} ${type.replace(/_/g, " ")}` };
   }
   return null;
 }

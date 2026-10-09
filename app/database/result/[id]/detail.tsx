@@ -6,7 +6,7 @@ import { catalogueText } from "@/lib/catalogue-text";
 import Link from "next/link";
 import { Fragment } from "react";
 import UseCaseBacklinks from "@/components/catalogue/UseCaseBacklinks";
-import { recordHref, displayValue, originLabel, safeSourceUrl, type OmicsRecord } from "@/lib/omics";
+import { recordHref, displayValue, originLabel, safeSourceUrl, uncertaintyText, type OmicsRecord } from "@/lib/omics";
 import { Evidence, EvidenceConcerns } from "@/components/catalogue/Profile";
 import EvidenceTable from "@/components/catalogue/EvidenceTable";
 import Reproduction from "@/components/catalogue/Reproduction";
@@ -178,7 +178,7 @@ export function ResultDetail({ page }: { page: ResultRecordPage }) {
                 )}
               </dd>
               <dt>Uncertainty</dt>
-              <dd>{displayValue(record.attributes.uncertainty)}</dd>
+              <dd>{uncertaintyText(record.attributes)}</dd>
               <dt>Evidence</dt>
               <dd>
                 {originLabel(evaluated?.attributes.origin)} ·{" "}

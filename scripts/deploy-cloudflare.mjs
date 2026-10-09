@@ -22,10 +22,30 @@ export function frontendOrigin(url) {
 }
 
 /**
- * @param {{ config: ReturnType<typeof edgeConfig>, frontend: string, deployWorker: boolean, acceptance: string,
- *   run?: typeof command, fetchImpl?: typeof fetch }} options
+ * A new Worker version reaches Cloudflare's edge gradually, and for a while some
+ * requests still run the previous one. Acceptance starts only after the public
+ * origin has answered the catalogue API from the frontend `required` times in a row.
  */
-export async function publishEdge({ config, frontend, deployWorker, acceptance, run = command, fetchImpl = fetch }) {
+export async function awaitWorkerRouting(origin, { fetchImpl = fetch, required = 10, timeoutMs = 180_000, intervalMs = 1_000, sleep = ms => new Promise(resolve => setTimeout(resolve, ms)) } = {}) {
+  const deadline = Date.now() + timeoutMs;
+  let consecutive = 0;
+  while (consecutive < required) {
+    if (Date.now() > deadline) throw new Error(`The new Worker did not route the catalogue API consistently within ${timeoutMs / 1000} s`);
+    let ok = false;
+    try {
+      const response = await fetchImpl(`${origin}/api/trpc/catalogue.release?input=%7B%7D&verify=${Date.now()}`, { redirect: "manual", headers: { "Cache-Control": "no-cache" } });
+      ok = response.status === 200 && !!response.headers.get("x-rewire-frontend");
+    } catch { ok = false; }
+    consecutive = ok ? consecutive + 1 : 0;
+    if (consecutive < required) await sleep(intervalMs);
+  }
+}
+
+/**
+ * @param {{ config: ReturnType<typeof edgeConfig>, frontend: string, deployWorker: boolean, acceptance: string,
+ *   run?: typeof command, fetchImpl?: typeof fetch, awaitRouting?: typeof awaitWorkerRouting }} options
+ */
+export async function publishEdge({ config, frontend, deployWorker, acceptance, run = command, fetchImpl = fetch, awaitRouting = awaitWorkerRouting }) {
   async function api(method = "GET", body) {
     const response = await fetchImpl(endpoint(config.account), {
       method, headers: { Authorization: `Bearer ${config.token}`, "Content-Type": "application/json" },
@@ -40,6 +60,7 @@ export async function publishEdge({ config, frontend, deployWorker, acceptance, 
   if (deployWorker && !previous?.versions?.length) throw new Error("Bootstrap and verify the Worker before enabling automated deployment");
   try {
     if (deployWorker) await measure("cloudflare.worker_deploy", () => run(["npx", "--no-install", "wrangler", "deploy", "--var", `FRONTEND_ORIGIN:${frontendOrigin(frontend)}`]));
+    if (deployWorker) await measure("cloudflare.worker_propagation", () => awaitRouting(config.origin));
     await measure("cloudflare.smoke_verification", () => run(["node", "scripts/smoke-deployment.mjs", config.origin, "--independent-frontend"]));
     await measure("cloudflare.download_verification", () => run(["node", "scripts/check-cloudflare-ranges.mjs", config.origin]));
     await measure("cloudflare.catalogue_verification", () => run(["node", "scripts/check-live-catalogue.mjs", config.origin, "--website", "--independent-frontend", `--acceptance=${acceptance}`]));

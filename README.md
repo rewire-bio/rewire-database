@@ -8,45 +8,43 @@ The benchmark frontend and public query/contribution API. Scientific records, so
 flowchart TD
     Browser["Browser"]
     Worker["Cloudflare Worker<br/>edge cache: anonymous public pages<br/>key: frontend + release + URL"]
-    SSR["Cloud Run: Next.js server"]
-    Functions["Firebase Functions<br/>catalogue API, contributions"]
+    SSR["Cloud Run: Next.js server<br/>pages and public catalogue API<br/>embedded prepared release (SQLite)"]
+    Functions["Firebase Functions<br/>submissions, curation, mail"]
     Auth["Firebase Auth handler"]
-    Firestore["Firestore<br/>public releases, prepared pages,<br/>private submissions"]
-    GitHub["GitHub: rewire-benchmark-data<br/>at the pinned revision"]
+    Firestore["Firestore<br/>private submissions only"]
+    GitHub["GitHub: rewire-benchmark-data<br/>release asset and downloads"]
 
     Browser --> Worker
-    Worker -->|"pages, assets, download redirects"| SSR
-    Worker -->|"/api"| Functions
+    Worker -->|"pages, assets, download redirects,<br/>/api/trpc/catalogue.*"| SSR
+    Worker -->|"other /api"| Functions
     Worker -->|"/__/auth"| Auth
-    SSR -->|"catalogue.page<br/>result and evaluation pages"| Functions
     Functions --> Firestore
-    SSR -.->|"manifest and data files, at startup"| GitHub
+    Functions -.->|"publication check: catalogue.get"| Worker
+    GitHub -.->|"prepared file, at image build"| SSR
     Browser -.->|"follows 307 to the gzip download"| GitHub
 ```
 
 | Component | Owns | Released by |
 | --- | --- | --- |
-| `benchmark-data.lock.json` | The reviewed data pin: producer revision, manifest SHA-256, release ID | A pull request changing only the lock |
-| Next.js server (`app/`, `lib/`, `components/`) | Rendering every page on request | A new image on Cloud Run |
-| Container entrypoint (`scripts/server-entry.mjs`) | Fetching and verifying the pinned release files at startup | Part of the image |
-| Firebase Functions (`services/omics`) | The public catalogue API, prepared page reads, contributions | `firebase deploy --only functions:omics,firestore` |
-| Firestore | Immutable releases, one prepared document per result/evaluation page, private submissions | Data import and activation |
+| `benchmark-data.lock.json` | The reviewed data pin: producer revision, manifest SHA-256, release ID, and the prepared file's release tag, name and SHA-256 | A pull request changing the lock |
+| Next.js server (`app/`, `lib/`, `components/`) | Rendering every page on request and the public catalogue API (`app/api/trpc/[trpc]/route.ts`) | A new image on Cloud Run |
+| Container entrypoint (`scripts/server-entry.mjs`) | Checking the embedded release before starting | Part of the image |
+| Firebase Functions (`services/omics`) | Submissions, curation and mail | `firebase deploy --only functions:omics,firestore` |
+| Firestore | Private submissions, revisions, outbox and rate limits | The Functions above |
 | Cloudflare Worker (`cloudflare/`) | Routing, legacy redirects, edge cache | `wrangler deploy`, only when Worker code changes |
-| GitHub (`rewire-benchmark-data`) | Download bytes | The data repository |
+| GitHub (`rewire-benchmark-data`) | The prepared release file (a release asset) and download bytes | The data repository |
 
-### One pin per revision
+### One release per image
 
-The image contains code only. Each Cloud Run revision sets `REWIRE_DATA_PIN` (the lock file's JSON). At startup the entrypoint downloads the pinned `website/manifest.json` from GitHub at that exact revision and checks it against the pin's SHA-256. It then downloads the files pages read, checks each file's size and SHA-256 against the manifest, and starts the unmodified Next standalone server. That release then identifies every page, client API call (`release_id`), download redirect and cache entry served by the revision.
+The producer publishes each release as one SQLite file (tag `serving/<release>`, see [its serving contract](https://github.com/rewire-bio/rewire-benchmark-data/blob/main/docs/serving-contract.md)). It holds the query engine's answers, computed once per release: record details, result and evidence rows, list search entries, summaries, use cases and audits. The lock pins it by SHA-256.
 
-- **Result and evaluation pages** (21,678 of 28,677 records) read one prepared document from `catalogue.page`. The importer builds these documents with the API's own query engine. The page never loads the catalogue.
-- **All other pages** (records of other kinds, indexes, use cases, audits, coverage) render on request from the verified local copy of the pinned catalogue. It is parsed once per warm instance, not per request.
+`npm run data:prepare` downloads and verifies the file into `serving/`. `scripts/build-web.mjs` copies it and the few small files pages render into `build/web/data/`, checks its digest against the lock and refuses any other release data in the image. At startup the entrypoint checks that the embedded lock, the producer manifest and the file's `meta` table name the same release, then starts the unmodified Next standalone server. It downloads nothing.
+
+- **Pages** read the file through `services/omics/src/prepared-catalogue.ts` (`lib/prepared.ts`). A request reads only the rows it needs; no page parses the whole catalogue or builds an index.
+- **The public catalogue API** (`/api/trpc/catalogue.*`) runs in the same server over the same reader, so pages and API cannot disagree. A request pinned to another release gets a 404 naming the current one.
 - **Downloads** are site paths (`/omics/...`, `/benchmark-literature/...`). The server redirects each to the exact gzip `source` the pinned manifest lists, and returns 404 for anything it does not list.
 
-Nothing is prerendered at build time. `scripts/build-web.mjs` builds against an empty data directory, so a build that tries to read release data fails.
-
-### Cold start and steady state
-
-These figures come from a fresh local hydration of the current release, not from Cloud Run: 45 files, about 114 MB decompressed, in 2.8 s, with a peak RSS of 302 MB (`workbench/ssr-migration/runtime-hydration.log`). The download includes the 89 MB catalogue. A cold instance therefore pays this before serving any page, including result and evaluation pages, which never parse the catalogue afterwards. The first curated page on an instance also parses the catalogue (about 0.8 s locally) and holds it in memory, which is why the service uses 2 GiB. Warm requests render from memory or from one Firestore document, and the edge cache serves repeats. Measure startup on Cloud Run before relying on these numbers.
+Nothing is prerendered at build time. Next builds against an empty data directory, so a build that tries to read release data fails.
 
 ### Edge cache
 
@@ -66,10 +64,10 @@ Requires Node.js 22 or newer (CI uses 24). The public data repository is fetched
 ```sh
 npm ci
 npm run data:fetch
-npm run dev            # next dev, with a local catalogue.page API built from the hydrated release
+npm run dev            # next dev over the prepared file in serving/
 ```
 
-`npm run data:prepare -- --current-only` verifies and hydrates the pinned current release into `data/` and `public/omics/` (ignored). Use `BENCHMARK_DATA_SOURCE=/path/to/rewire-benchmark-data` to consume an existing checkout at the pinned revision.
+`npm run data:prepare -- --current-only` verifies and hydrates the pinned current release into `data/` and `public/omics/`, and downloads the prepared file into `serving/` (all ignored). Use `BENCHMARK_DATA_SOURCE=/path/to/rewire-benchmark-data` to consume an existing checkout at the pinned revision.
 
 ```sh
 npm test
@@ -83,7 +81,7 @@ npm run check:build           # runs build/web as Cloud Run does, over HTTP
 npm start                     # local production preview on http://127.0.0.1:3000
 ```
 
-`npm run check:build` validates the release data directly (records, use cases and sources, research sidecars, evidence exports, archive checksums, baseline audits, page route inventory). It then starts the built server through its entrypoint with the local `catalogue.page` API, which injects failures. It checks identity and cache headers, RSC isolation, absent pages (404) against backend failures and pin mismatches (500), download redirects, receipts, private routes, the exact sitemap, and the search metadata of one page per record kind and alias route plus the index and utility pages. `npm run check:build:full` renders every record page as an optional audit.
+`npm run check:build` validates the release data directly (records, use cases and sources, research sidecars, evidence exports, archive checksums, baseline audits, page route inventory). It then starts the built server through its entrypoint. It checks identity and cache headers, RSC isolation, absent pages (404), download redirects, receipts, private routes, the exact sitemap, and the search metadata of one page per record kind and alias route plus the index and utility pages. `npm run check:build:full` renders every record page as an optional audit.
 
 ## Releases
 
@@ -91,20 +89,17 @@ Each kind of change has its own path. The publication workflow (`.github/workflo
 
 | Change | What runs | Image build |
 | --- | --- | --- |
-| Frontend code | Build image, deploy candidate revision with the current pin | Yes |
-| Data (lock only, same compiled taxonomy) | Import release and prepared pages, verify pages, activate the API pointer, deploy a revision of the **serving revision's image digest** with the new pin | No |
-| Data that changes the compiled taxonomy | As above, but with a new image | Yes |
-| Backend-only service modules (API router, Firestore stores, Functions, auth, mail, CLIs; `BACKEND_ONLY_SOURCES` in `scripts/deployment-plan.mjs`) | `firebase deploy --only functions:omics,firestore` | No |
-| Shared service modules (query engine, page builder, schemas, use cases) | Backend deploy and a new image | Yes |
+| Frontend code | Build image, deploy candidate revision | Yes |
+| Data (the lock) | Build an image embedding the new prepared file, deploy candidate revision | Yes |
+| Backend-only service modules (Functions, submission store, auth, mail, CLIs; `BACKEND_ONLY_SOURCES` in `scripts/deployment-plan.mjs`) | `firebase deploy --only functions:omics,firestore` | No |
+| Shared service modules (query engine, prepared reader, page builder, schemas, use cases) | Backend deploy and a new image | Yes |
 | Worker | `wrangler deploy --var FRONTEND_ORIGIN:<run.app URL>` | No |
 
 Frontend-only changes never deploy the backend. A test keeps `BACKEND_ONLY_SOURCES` free of any module the website imports.
 
-Every frontend or data publication deploys a candidate revision with `--no-traffic`. The candidate is verified through its own tag URL (receipt, image and release headers, result, evaluation, model and benchmark pages, exact download redirect) before it receives traffic. The workflow then verifies the public site through Cloudflare. A failure after the traffic shift moves traffic back to the previous revision, and the Worker restores its own previous version. The data transaction restores only the pointer it changed, and only if nobody else changed it since.
+Every image publication deploys a candidate revision with `--no-traffic`. The candidate is verified through its own tag URL (receipt, image and release headers, result, evaluation, model and benchmark pages, the catalogue API's release, the exact download redirect) before it receives traffic. The workflow then verifies the public site through Cloudflare. A failure after the traffic shift moves traffic back to the previous revision, and the Worker restores its own previous version. There is no data import or activation: rolling back the image rolls back the data.
 
-Before any traffic reaches a revision, publication makes the prepared pages ready. A newly imported release, or one without pages, is checked against every stored document: a current release imported before prepared pages existed is first backfilled from its own verified bytes (`import-cli --pages`). For the unchanged published release, the usual frontend-only case, an earlier publication has already verified every document. Publication then only checks that the release manifest still binds the same records and page contract, and reads representative result and evaluation pages through the public API. The candidate revision renders pages through the API again before it gets traffic.
-
-The image compiles one producer file, the candidate-model taxonomy in `lib/generated-benchmark-catalog.ts`. It is ignored by Git, so the planner adds its hash to the frontend fingerprint. A lock change that also changes the taxonomy therefore builds a new image automatically. The entrypoint independently refuses to start an image whose compiled taxonomy differs from the pinned release. A data-only release reuses the image of the revision serving traffic, read from that revision rather than from the service template, which after a rollback can name a failed candidate. All release data is read at runtime.
+A Worker- or backend-only change reuses the image of the revision serving traffic, read from that revision rather than from the service template, which after a rollback can name a failed candidate.
 
 ```sh
 npm run deploy    # scripts/deploy-independent-frontend.mjs: run only by the publication workflow

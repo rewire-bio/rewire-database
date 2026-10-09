@@ -5,8 +5,9 @@ import path from 'node:path';
 
 // The frontend is one Cloud Run service reached by the Cloudflare Worker via
 // its run.app URL: request-based billing (CPU only during requests), no
-// minimum instances, a bounded maximum and no Google load balancer. A
-// revision is image + data pin; a data-only release reuses the live image.
+// minimum instances, a bounded maximum and no Google load balancer. The image
+// embeds its data release and serves both the pages and the public catalogue
+// API; a Worker- or backend-only change reuses the live image.
 export const SERVICE = { region: 'europe-west2', name: 'rewire-database-web', memory: '2Gi', cpu: '1', concurrency: 20, timeout: 60 };
 
 /** @param {Record<string, string | undefined>} env */
@@ -28,9 +29,9 @@ export function cloudRunConfig(env = process.env) {
   return config;
 }
 
-/** Revision environment: the data pin and the receipt it must serve. */
-export function revisionEnvironment(pin, receipt) {
-  return { REWIRE_DATA_PIN: JSON.stringify(pin), REWIRE_DEPLOYMENT_RECEIPT: JSON.stringify(receipt) };
+/** Revision environment: the receipt it must serve. The data release is in the image. */
+export function revisionEnvironment(receipt) {
+  return { REWIRE_DEPLOYMENT_RECEIPT: JSON.stringify(receipt) };
 }
 
 export function deployArguments(config, { image, envFile, tag }) {
@@ -77,6 +78,9 @@ export async function verifyCandidate(url, { receipt, samples, fetchImpl = fetch
         response.headers.get('x-rewire-data-release') !== receipt.release_id || !html.includes(receipt.release_id))
       throw new Error(`Candidate revision failed ${pathname} (${response.status})`);
   }
+  const api = await get(`/api/trpc/catalogue.release?input=${encodeURIComponent(JSON.stringify({ release_id: receipt.release_id }))}`);
+  if (api.status !== 200 || (await api.json()).result?.data?.release_id !== receipt.release_id)
+    throw new Error(`Candidate revision does not serve the catalogue API for ${receipt.release_id} (${api.status})`);
   const download = await get(`/omics/releases/${receipt.release_id}/records.csv`);
   if (download.status !== 307 || !download.headers.get('location')?.startsWith(`https://raw.githubusercontent.com/${receipt.producer_repository}/${receipt.producer_revision}/`))
     throw new Error('Candidate revision does not redirect downloads to the pinned producer revision');
@@ -96,11 +100,11 @@ export function command(args, { capture = false } = {}) {
  * Builds or reuses the image, deploys a candidate without traffic, verifies
  * it, then moves all traffic. Returns a rollback to the previous revision.
  */
-export async function deployCloudRun({ config, plan, receipt, pin, samples, run = command, fetchImpl = fetch }) {
+export async function deployCloudRun({ config, plan, receipt, samples, run = command, fetchImpl = fetch }) {
   const gcloud = (args, capture = true) => run(['gcloud', ...args], { capture });
   const live = liveService(JSON.parse(await gcloud(['run', 'services', 'describe', SERVICE.name, '--project', config.project,
     '--region', SERVICE.region, '--format', 'json'])));
-  // A data-only release keeps the image that is serving now, exactly.
+  // A Worker- or backend-only deployment keeps the image that is serving now, exactly.
   let image = plan.frontend ? undefined : revisionImage(JSON.parse(await gcloud(['run', 'revisions', 'describe', live.revision,
     '--project', config.project, '--region', SERVICE.region, '--format', 'json'])), live.revision);
   if (plan.frontend) {
@@ -115,7 +119,7 @@ export async function deployCloudRun({ config, plan, receipt, pin, samples, run 
   const envFile = path.join(directory, 'env.json');
   let candidate;
   try {
-    await writeFile(envFile, JSON.stringify(revisionEnvironment(pin, receipt)), { mode: 0o600 });
+    await writeFile(envFile, JSON.stringify(revisionEnvironment(receipt)), { mode: 0o600 });
     const tag = `c-${receipt.commit.slice(0, 12)}`;
     const deployed = JSON.parse(await gcloud(deployArguments(config, { image, envFile, tag })));
     candidate = deployed.status?.latestCreatedRevisionName;

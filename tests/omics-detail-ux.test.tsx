@@ -1,8 +1,9 @@
 import fs from "node:fs";
+import { preparedFromSnapshot } from "./helpers/prepared";
+import type { PreparedCatalogue } from "../services/omics/src/prepared-catalogue";
 import { describe, expect, it, vi } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
 import {
-  createCatalogueQuery,
   type CatalogueSnapshot,
 } from "../services/omics/src/catalogue-query";
 import BenchmarkPage from "../app/database/benchmark/[id]/page";
@@ -17,7 +18,7 @@ const pageFor = {
 
 const fixture = vi.hoisted(() => ({
   snapshot: null as CatalogueSnapshot | null,
-  query: null as ReturnType<typeof createCatalogueQuery> | null,
+  query: null as PreparedCatalogue | null,
 }));
 vi.mock("../lib/catalogue-build", () => ({
   buildCatalogue: () => ({
@@ -28,7 +29,7 @@ vi.mock("../lib/catalogue-build", () => ({
 fixture.snapshot = JSON.parse(
   fs.readFileSync("public/omics/catalogue.json").toString(),
 );
-fixture.query = createCatalogueQuery(fixture.snapshot!);
+fixture.query = preparedFromSnapshot(fixture.snapshot!);
 vi.mock("../lib/record-page", async (original) => (await import("./fixtures/record-pages")).localRecordPages(original));
 // Server-rendered routes are async; static routes return elements directly.
 const render = async (id: string) => {

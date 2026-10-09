@@ -1,4 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
+import { preparedFromSnapshot } from "./helpers/prepared";
+import type { PreparedCatalogue } from "../services/omics/src/prepared-catalogue";
 import { renderToStaticMarkup } from "react-dom/server";
 import type { ComponentType } from "react";
 import { createCatalogueQuery, type CatalogueRecord, type CatalogueSnapshot } from "../services/omics/src/catalogue-query";
@@ -15,7 +17,7 @@ import { recordPageBuilder, type EvaluationRecordPage, type RecordPageKind, type
 import { buildUseCases } from "../lib/use-cases-build";
 
 const fixture = vi.hoisted(() => ({ snapshot: null as CatalogueSnapshot | null }));
-vi.mock("../lib/catalogue-build", () => ({ buildCatalogue: () => ({ catalogue: fixture.snapshot!, query: createCatalogueQuery(fixture.snapshot!) }) }));
+vi.mock("../lib/catalogue-build", () => ({ buildCatalogue: () => ({ catalogue: fixture.snapshot!, query: preparedFromSnapshot(fixture.snapshot!) }) }));
 vi.mock("../lib/use-cases-build", () => ({ buildUseCases: () => ({ query: { links: () => ({ release_id: "fixture", input_sha256: "a".repeat(64), items: [] }) } }) }));
 vi.mock("next/navigation", () => ({ useSearchParams: () => new URLSearchParams(), notFound: () => { throw Error("Not found"); } }));
 
@@ -29,7 +31,7 @@ const renderers: [CatalogueRecord["kind"], Renderer][] = [
   ["result", ResultDetail], ["dataset", DatasetDetail], ["dataset_subset", DatasetDetail], ["model", PredictiveEntityDetail],
   ["configuration", PredictiveEntityDetail], ["benchmark", EvaluationDesignEntityDetail], ["protocol", EvaluationDesignEntityDetail],
 ];
-function element(Component: Renderer, query: ReturnType<typeof createCatalogueQuery>, id: string) {
+function element(Component: Renderer, query: PreparedCatalogue, id: string) {
   const page = (kind: RecordPageKind) => recordPageBuilder(query, buildUseCases().query)(kind, id)!;
   if (Component === ResultDetail) return <ResultDetail page={page("result") as ResultRecordPage} />;
   if (Component === EvaluationDetail) return <EvaluationDetail page={page("evaluation") as EvaluationRecordPage} />;
@@ -54,7 +56,7 @@ function render(kind: CatalogueRecord["kind"], Component: Renderer, history = fa
     );
   }
   fixture.snapshot = { schema_version: "1.1", release_id: "fixture", released_at: "2026-10-01T00:00:00Z", coverage: history ? { audit_history: true } : {}, records };
-  const query = createCatalogueQuery(fixture.snapshot);
+  const query = preparedFromSnapshot(fixture.snapshot);
   return renderToStaticMarkup(element(Component, query, subject.id));
 }
 

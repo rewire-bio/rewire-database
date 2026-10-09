@@ -7,7 +7,7 @@ import {
   type ResultRow,
 } from "./catalogue-query.js";
 import { recordRouteKinds } from "./entity-kinds.js";
-import { getResearch, type ResearchManifest } from "./research.js";
+import { getResearch, type ResearchData, type ResearchManifest } from "./research.js";
 import { reproductionSchema } from "./run-recipe.js";
 import type { createUseCaseQuery } from "./use-cases.js";
 
@@ -98,14 +98,38 @@ export function recordPageRoutes(snapshot: CatalogueSnapshot) {
     );
 }
 
-export function recordPageBuilder(
-  query: Query,
-  useCases: { links(input: { id: string }): UseCaseLinks },
-) {
+/** What a page needs from a release: the prepared file's reader, or the live engine via liveRecordPageSource. */
+export interface RecordPageSource {
+  get: Query["get"];
+  record: Query["record"];
+  results: Query["results"];
+  evidence: Query["evidence"];
+  researchReadiness: Query["researchReadiness"];
+  investigations: Query["investigations"];
+  release(): { coverage: Record<string, unknown> };
+  verifiedAssociation(subject: string, relation: string, target: string): boolean;
+  research(): ResearchData;
+}
+
+/** Adapts the live query engine (tests and the legacy importer). */
+export function liveRecordPageSource(query: Query): RecordPageSource {
   const snapshot = query.snapshot();
   const verified = associationIndex(snapshot.records);
-  const research = getResearch(snapshot);
-  const audit_history = !!snapshot.coverage.audit_history;
+  return Object.assign(Object.create(null), {
+    get: query.get, record: query.record, results: query.results, evidence: query.evidence,
+    researchReadiness: query.researchReadiness, investigations: query.investigations,
+    release: query.release, verifiedAssociation: verified, research: () => getResearch(snapshot),
+  });
+}
+
+export function recordPageBuilder(
+  query: RecordPageSource,
+  useCases: { links(input: { id: string }): UseCaseLinks },
+) {
+  const verified = (subject: string, relation: string, target: string) =>
+    query.verifiedAssociation(subject, relation, target);
+  const research = query.research();
+  const audit_history = !!query.release().coverage.audit_history;
 
   function contextRecords(record: CatalogueRecord, evaluations: (CatalogueRecord | null)[]) {
     const ids = new Set<string>([

@@ -1,14 +1,15 @@
 import fs from "node:fs";
+import { preparedFromSnapshot } from "./helpers/prepared";
+import type { PreparedCatalogue } from "../services/omics/src/prepared-catalogue";
 import { describe, it, expect, vi } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
 import {
-  createCatalogueQuery,
   type CatalogueSnapshot,
 } from "../services/omics/src/catalogue-query";
 import RecordPage, { generateMetadata } from "../app/database/protocol/[id]/page";
 const fixture = vi.hoisted(() => ({
   snapshot: null as CatalogueSnapshot | null,
-  query: null as ReturnType<typeof createCatalogueQuery> | null,
+  query: null as PreparedCatalogue | null,
 }));
 vi.mock("../lib/catalogue-build", () => ({
   buildCatalogue: () => ({
@@ -19,7 +20,7 @@ vi.mock("../lib/catalogue-build", () => ({
 fixture.snapshot = JSON.parse(
   fs.readFileSync("public/omics/catalogue.json").toString(),
 );
-fixture.query = createCatalogueQuery(fixture.snapshot!);
+fixture.query = preparedFromSnapshot(fixture.snapshot!);
 const affected = fixture.snapshot!.records.filter(
   (r) => r.kind === "protocol" && r.name.includes('"reference_network"'),
 );

@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "npm run data:prepare -- --current-only && tsx scripts/local-page-api.ts -- next dev",
+    "dev": "npm run data:prepare -- --current-only && next dev",
     "build": "npm run data:prepare -- --current-only && node scripts/build-web.mjs",
-    "start": "tsx scripts/local-page-api.ts -- node build/web/runtime/scripts/server-entry.mjs",
+    "start": "node build/web/runtime/scripts/server-entry.mjs",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
@@ -27,6 +27,7 @@
   "dependencies": {
     "@noble/hashes": "2.4.0",
     "@trpc/client": "^11.18.0",
+    "@trpc/server": "^11.18.0",
     "firebase": "^12.19.0",
     "lucide-react": "^0.473.0",
     "next": "14.2.16",
@@ -37,7 +38,7 @@
   "devDependencies": {
     "@playwright/test": "^1.63.0",
     "@tailwindcss/typography": "^0.5.16",
-    "@types/node": "^20",
+    "@types/node": "24.3.0",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "@types/react-test-renderer": "18.3.1",

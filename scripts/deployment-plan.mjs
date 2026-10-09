@@ -5,9 +5,10 @@ import { execFileSync } from 'node:child_process';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 
-// Schema 3: the frontend image and its data pin are separate. A receipt names
-// the image commit (frontend_version) and the producer release it serves.
-export const RECEIPT_SCHEMA = 3;
+// Schema 4: the frontend image embeds its data release, so a new data pin is a
+// new image. A receipt names the image commit (frontend_version) and the
+// producer release it serves.
+export const RECEIPT_SCHEMA = 4;
 export const ORIGIN = 'https://benchmarks.rewirebio.io';
 export const FINGERPRINTS = ['data', 'backend', 'hosting', 'frontend'];
 const digest = value => createHash('sha256').update(value).digest('hex');
@@ -55,17 +56,16 @@ export async function publishedReceipt(options) {
  * tests/deployment-plan.test.ts rechecks this list against the website's imports.
  */
 export const BACKEND_ONLY_SOURCES = new Set([
-  'audit-import', 'audit-service', 'auth', 'catalogue-integrity', 'catalogue-service', 'catalogue', 'cli', 'firebase',
-  'functions', 'google-mail', 'grant-curator', 'http-handler', 'import-cli', 'mail-transport', 'mail-worker', 'outbox',
-  'private-backup', 'record-page-store', 'request-limits', 'research-store', 'router', 'sdk-proteingym-reference',
-  'sdk-sequence-reference', 'sdk-sequence', 'sdk-submission', 'server', 'store', 'use-case-import', 'use-case-service', 'validation',
+  'auth', 'cli', 'firebase', 'functions', 'google-mail', 'grant-curator', 'http-handler', 'mail-transport', 'mail-worker',
+  'outbox', 'private-backup', 'published-catalogue', 'request-limits', 'router', 'sdk-proteingym-reference',
+  'sdk-sequence-reference', 'sdk-sequence', 'sdk-submission', 'server', 'store', 'validation',
 ].map(name => `services/omics/src/${name}.ts`));
 /** The producer's compiled candidate-model taxonomy: ignored by Git, built into the image. */
 export const COMPILED_TAXONOMY = 'lib/generated-benchmark-catalog.ts';
 
 export function inputGroups(filename) {
   const shared = /^(scripts\/(configure-contribution-deployment|contribution-deployment)\.mjs)$/.test(filename);
-  // Not image inputs: documentation, tests, and hydrated producer data (pinned at runtime).
+  // Not image inputs: documentation, tests, and producer data fetched by the build (pinned by the lock).
   const documentation = /^(\.github\/|docs\/|tests\/|smoke\/|data\/|public\/omics\/|README\.md$|AGENTS\.md$)/.test(filename);
   // Within the service, only shared source modules are bundled into the website.
   const backendOnly = filename.startsWith('services/omics/') && (!filename.startsWith('services/omics/src/') || BACKEND_ONLY_SOURCES.has(filename));
@@ -76,8 +76,8 @@ export function inputGroups(filename) {
       /^(firebase\.json|firestore\..*)$/.test(filename),
     // The Cloudflare Worker: routing code and the legacy redirects it serves.
     hosting: filename === 'firebase.json' || filename === 'wrangler.jsonc' || filename.startsWith('cloudflare/'),
-    // Anything the image is built from. The data pin is applied at runtime.
-    frontend: filename !== 'benchmark-data.lock.json' && !documentation && !backendOnly,
+    // Anything the image is built from, including the data pin it embeds.
+    frontend: !documentation && !backendOnly,
   };
 }
 /** Hash names and bytes, including tracked deletions; never include generated/private files. */
@@ -97,8 +97,7 @@ export async function fingerprints(root = process.cwd(), env = process.env) {
     selected.forEach(hash => hash.update(`file:${stat.size}\0`));
     for await (const chunk of createReadStream(path.join(root, name))) selected.forEach(hash => hash.update(chunk));
   }
-  // The compiled taxonomy is untracked but part of the image: a lock change that
-  // changes it must build a new image rather than reuse one that would refuse to start.
+  // The compiled taxonomy is untracked but part of the image.
   let taxonomy;
   try { taxonomy = await readFile(path.join(root, COMPILED_TAXONOMY)); }
   catch (error) {
@@ -112,8 +111,9 @@ export async function fingerprints(root = process.cwd(), env = process.env) {
   return Object.fromEntries(Object.entries(hashes).map(([key, hash]) => [key, hash.digest('hex')]));
 }
 /**
- * mode: 'full' adopts a new data release (import, pages, activation); 'web' keeps it.
- * frontend: a new image is built; otherwise the live image is redeployed with the pin.
+ * mode: 'full' adopts a new data release; 'web' keeps it. A new release always
+ * changes the frontend fingerprint, so it always builds a new image.
+ * frontend: a new image is built; otherwise the live image is redeployed.
  * edge: the Cloudflare Worker changed. backend: Functions or Firestore config changed.
  */
 export function classify(current, previous, forceFull = false) {
@@ -137,13 +137,13 @@ export async function writeReceipt(root = process.cwd()) {
   const plan = JSON.parse(await readFile(path.join(root, 'workbench/deployment-plan.json'), 'utf8'));
   const bytes = await readFile(path.join(root, 'public/omics/manifest.json'));
   const pin = JSON.parse(await readFile(path.join(root, 'benchmark-data.lock.json'), 'utf8'));
-  // A data-only adoption keeps the live image, so its version is the live one.
+  // A Worker- or backend-only deployment keeps the live image, so its version is the live one.
   const frontend_version = plan.frontend === false ? plan.previous?.frontend_version : plan.commit;
   const receipt = { schema: RECEIPT_SCHEMA, commit: plan.commit, frontend_version, release_id: JSON.parse(bytes).release_id,
     producer_repository: pin.repository, producer_revision: pin.revision, producer_manifest_sha256: pin.manifest_sha256,
     fingerprints: plan.fingerprints, manifest_sha256: digest(bytes) };
   if (!validReceipt(receipt)) throw new Error('Invalid generated deployment receipt');
-  if (receipt.release_id !== pin.release_id) throw new Error('Hydrated release differs from the data pin');
+  if (receipt.release_id !== pin.release_id) throw new Error('Prepared release differs from the data pin');
   if (plan.mode === 'web' && (receipt.release_id !== plan.previous.release_id || receipt.manifest_sha256 !== plan.previous.manifest_sha256)) {
     throw new Error('Current catalogue differs from the published release; run a full build');
   }

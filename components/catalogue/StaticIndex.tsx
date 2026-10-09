@@ -1,16 +1,16 @@
 import { downloadHref } from "@/lib/downloads";
 import Breadcrumbs from "./Breadcrumbs";
 import { catalogueText } from "@/lib/catalogue-text";
-import { recordHref, type OmicsCatalogue } from "@/lib/omics";
+import { recordHref, type OmicsRecord } from "@/lib/omics";
 import { researchAreaLabel } from "@/lib/omics-browse";
 import { indexRecords, indexSummary, modelIndexHref, modelPageCount, MODEL_PAGE_SIZE, type IndexKind } from "@/lib/catalogue-index";
 import styles from "./StaticIndex.module.css";
 
 /** Server-rendered anchors keep discovery independent of API calls or JavaScript. */
-export default function StaticIndex({ catalogue, kind, page = 1 }: { catalogue: OmicsCatalogue; kind: IndexKind; page?: number }) {
-  const all = indexRecords(catalogue.records, kind);
+export default function StaticIndex({ records: kindRecords, releaseId, kind, page = 1 }: { records: OmicsRecord[]; releaseId: string; kind: IndexKind; page?: number }) {
+  const all = indexRecords(kindRecords, kind);
   const benchmarks = kind === "benchmark";
-  const pages = benchmarks ? 1 : modelPageCount(catalogue.records);
+  const pages = benchmarks ? 1 : modelPageCount(kindRecords);
   const start = benchmarks ? 0 : (page - 1) * MODEL_PAGE_SIZE;
   const records = benchmarks ? all : all.slice(start, start + MODEL_PAGE_SIZE);
   const duplicateNames = new Set(all.filter((record, i) => all.some((other, j) => i !== j && other.name === record.name)).map((record) => record.name));
@@ -33,7 +33,7 @@ export default function StaticIndex({ catalogue, kind, page = 1 }: { catalogue: 
       <nav className={styles.shortcuts} aria-label="Catalogue indexes"><a href="/benchmarks/" aria-current={benchmarks ? "page" : undefined}>Benchmarks</a><a href="/models/" aria-current={!benchmarks ? (page === 1 ? "page" : "location") : undefined}>Models</a><a href={`/?kind=${kind}#browse`}>Search and filter {benchmarks ? "benchmarks" : "models"}</a></nav>
     </div></header>
     <section className={`block first ${styles.index}`} aria-label={benchmarks ? "Benchmark profiles" : "Model profiles"}><div className="wrap">
-      <p>{all.length} {benchmarks ? "benchmark" : "model"} records in release <a href={downloadHref(`/omics/releases/${catalogue.release_id}/manifest.json`)}>{catalogue.release_id} (gzip)</a>.{!benchmarks && ` Showing ${all.length ? start + 1 : 0}–${Math.min(start + records.length, all.length)}; page ${page} of ${pages}.`}</p>
+      <p>{all.length} {benchmarks ? "benchmark" : "model"} records in release <a href={downloadHref(`/omics/releases/${releaseId}/manifest.json`)}>{releaseId} (gzip)</a>.{!benchmarks && ` Showing ${all.length ? start + 1 : 0}–${Math.min(start + records.length, all.length)}; page ${page} of ${pages}.`}</p>
       <p className={styles.context}>{benchmarks ? <>Broad <a href="/?kind=task#browse">tasks</a>, specific <a href="/?kind=protocol#browse">protocols</a> and <a href="/?kind=evaluator#browse">evaluators</a> have their own records. Follow each benchmark to its procedures and results.</> : <>Evaluated <a href="/?kind=configuration#browse">configurations</a>, <a href="/?kind=method#browse">methods</a> and <a href="/?kind=pipeline#browse">pipelines</a> are listed separately. Names alone do not establish equivalent models or checkpoints.</>}</p>
       {pagination}
       <ul className={styles.records}>{records.map((record) => <li key={record.id}>

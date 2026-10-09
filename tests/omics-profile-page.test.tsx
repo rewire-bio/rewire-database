@@ -1,8 +1,8 @@
 import fs from "node:fs";
+import { preparedFromSnapshot } from "./helpers/prepared";
 import { describe, expect, it, vi } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
 import {
-  createCatalogueQuery,
   type CatalogueSnapshot,
 } from "../services/omics/src/catalogue-query";
 import ModelPage from "../app/database/model/[id]/page";
@@ -16,7 +16,7 @@ const fixture = vi.hoisted(() => ({
 vi.mock("../lib/catalogue-build", () => ({
   buildCatalogue: () => ({
     catalogue: fixture.snapshot!,
-    query: createCatalogueQuery(fixture.snapshot!),
+    query: preparedFromSnapshot(fixture.snapshot!),
   }),
 }));
 

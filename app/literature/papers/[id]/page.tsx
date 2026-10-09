@@ -9,12 +9,8 @@ import { buildCatalogue } from "@/lib/catalogue-build";
 import LegacyCatalogueRedirect from "../../../LegacyCatalogueRedirect";
 
 function paperDestination(id: string) {
-  // Reuse the instance's validated snapshot rather than parsing it per request.
-  const { catalogue } = buildCatalogue();
-  const record = catalogue.records.find(
-    (item) => item.kind === "source" && item.id === id,
-  );
-  return record ? recordHref(record) : undefined;
+  const record = buildCatalogue().query.record(id);
+  return record?.kind === "source" ? recordHref(record) : undefined;
 }
 function exclusionReason(id: string) {
   const decisions = readFileSync(

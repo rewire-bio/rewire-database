@@ -1,7 +1,8 @@
 import fs from "node:fs";
+import { preparedFromSnapshot } from "./helpers/prepared";
+import type { PreparedCatalogue } from "../services/omics/src/prepared-catalogue";
 import { describe, expect, it, vi } from "vitest";
 import {
-  createCatalogueQuery,
   type CatalogueSnapshot,
 } from "../services/omics/src/catalogue-query";
 import { entityKinds } from "../services/omics/src/entity-kinds";
@@ -10,7 +11,7 @@ import { recordPageKinds, recordPageRoutes } from "../services/omics/src/record-
 
 const fixture = vi.hoisted(() => ({
   snapshot: null as CatalogueSnapshot | null,
-  query: null as ReturnType<typeof createCatalogueQuery> | null,
+  query: null as PreparedCatalogue | null,
 }));
 vi.mock("../lib/catalogue-build", () => ({
   buildCatalogue: () => ({
@@ -21,7 +22,7 @@ vi.mock("../lib/catalogue-build", () => ({
 fixture.snapshot = JSON.parse(
   fs.readFileSync("public/omics/catalogue.json", "utf8"),
 );
-fixture.query = createCatalogueQuery(fixture.snapshot!);
+fixture.query = preparedFromSnapshot(fixture.snapshot!);
 
 // Each of the 16 kinds owns a canonical page at app/database/<kind>/[id]/page.tsx.
 // There is no generic app/database/[kind]/[id]/page.tsx fallback.

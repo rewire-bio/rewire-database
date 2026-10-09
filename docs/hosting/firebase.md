@@ -1,5 +1,7 @@
 # Firebase deployment
 
+> Superseded in part (October 2026). The public catalogue API and all public release data moved to the Cloud Run frontend, which embeds each release as a prepared SQLite file; see the README and [independent-frontend.md](../independent-frontend.md). The Firebase function now serves only submissions, curation and mail, and Firestore holds only private collections. The release import, activation and Hosting steps below describe the earlier setup and are kept as history.
+
 The benchmark website and its catalogue API use Firebase project `rewire-it`. DNS stays on Google Cloud DNS. The blog and benchmark runners remain separate repositories. Publication of the reviewed catalogue and API was authorised on 16 September 2026; contribution submissions remain disabled.
 
 ## Application and credentials
@@ -38,14 +40,6 @@ Keep `OMICS_CONTRIBUTIONS_ENABLED` and `NEXT_PUBLIC_OMICS_CONTRIBUTIONS_ENABLED`
 ## Local and live checks
 
 Use Node 22 or 24 and Java 21+. Run `npm ci`, `npm test`, `npm run lint`, `npm run build`, `npm run typecheck`, and `npm run check:export`. Service checks run with `npm --prefix services/omics run test:emulator`.
-
-After building the API, run:
-
-```sh
-npx firebase emulators:exec --project demo-rewire-omics --only hosting,functions,auth,firestore 'node scripts/check-api-hosting.mjs'
-```
-
-This local-only check seeds and activates the generated release in a demo Firestore emulator, then tests actual Hosting rewrites, pagination, release pinning, cache headers, linked results and private-data gates. It refuses production projects and nonlocal seed destinations. `check-live-catalogue.mjs` instead performs only read-only queries and can safely verify the deployed service.
 
 Hosting keeps real 404 responses for unknown pages; there is no SPA fallback. Check historical MFASS routes, preserved downloads and hashes, canonical metadata and mobile browser behaviour as part of website acceptance. Keep API cache control in the Function handler rather than a blanket Hosting `no-store` rule, which would override public catalogue caching.
 

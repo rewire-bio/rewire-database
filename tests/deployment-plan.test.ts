@@ -8,7 +8,7 @@ import { BACKEND_ONLY_SOURCES, COMPILED_TAXONOMY, assertPublishedBase, classify,
 
 const roots: string[] = [];
 const hashes = { data: 'a'.repeat(64), backend: 'b'.repeat(64), hosting: 'c'.repeat(64), frontend: '9'.repeat(64) };
-const receipt = { schema: 3, producer_repository: 'rewire-bio/rewire-benchmark-data', producer_revision: '1'.repeat(40), commit: 'd'.repeat(40), fingerprints: hashes,
+const receipt = { schema: 4, producer_repository: 'rewire-bio/rewire-benchmark-data', producer_revision: '1'.repeat(40), commit: 'd'.repeat(40), fingerprints: hashes,
   frontend_version: '8'.repeat(40), producer_manifest_sha256: '2'.repeat(64), release_id: '2026-09-29-06401fd5b220', manifest_sha256: 'e'.repeat(64) };
 function fixture() {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'deployment-plan-')); roots.push(root);
@@ -35,18 +35,17 @@ describe('publication classification', () => {
     expect(classify({ ...hashes, backend: 'f'.repeat(64) }, receipt)).toEqual({ mode: 'web', backend: true, frontend: false, edge: false });
     expect(classify({ ...hashes, hosting: 'f'.repeat(64) }, receipt)).toEqual({ mode: 'web', backend: false, frontend: false, edge: true });
   });
-  it('adopts a new data pin without an image build when only the lock changed', () => {
-    expect(classify({ ...hashes, data: 'f'.repeat(64) }, receipt)).toEqual({ mode: 'full', backend: false, frontend: false, edge: false });
-    expect(inputGroups('benchmark-data.lock.json')).toEqual({ data: true, backend: false, hosting: false, frontend: false });
-    expect(classify({ ...hashes, frontend: 'f'.repeat(64) }, receipt).frontend).toBe(true);
+  it('builds a new image for a new data pin, because the image embeds the release', () => {
+    expect(inputGroups('benchmark-data.lock.json')).toEqual({ data: true, backend: false, hosting: false, frontend: true });
+    expect(classify({ ...hashes, data: 'f'.repeat(64), frontend: 'f'.repeat(64) }, receipt)).toEqual({ mode: 'full', backend: false, frontend: true, edge: false });
   });
   it.each(['app/page.tsx', 'lib/omics.ts', 'services/omics/src/record-pages.ts', 'package-lock.json', 'next.config.mjs', 'Dockerfile', 'scripts/server-entry.mjs'])(
     'rebuilds the image for image input %s', name => expect(inputGroups(name).frontend).toBe(true),
   );
   it.each(['cloudflare/worker.mjs', 'wrangler.jsonc', 'firebase.json'])('redeploys the Worker for %s', name => expect(inputGroups(name).hosting).toBe(true));
-  it.each(['services/omics/src/catalogue-service.ts', 'services/omics/src/record-page-store.ts', 'services/omics/src/router.ts',
+  it.each(['services/omics/src/store.ts', 'services/omics/src/published-catalogue.ts', 'services/omics/src/router.ts',
     'services/omics/src/functions.ts', 'services/omics/src/http-handler.ts', 'services/omics/src/mail-worker.ts', 'services/omics/src/auth.ts',
-    'services/omics/src/import-cli.ts', 'services/omics/package.json', 'services/omics/firestore.rules', 'services/omics/test/emulator.test.ts'])(
+    'services/omics/src/outbox.ts', 'services/omics/package.json', 'services/omics/firestore.rules', 'services/omics/test/emulator.test.ts'])(
     'deploys backend-only change %s without building an image', name => {
       expect(inputGroups(name).frontend).toBe(false);
       expect(inputGroups(name).backend).toBe(name.startsWith('services/omics/test/') ? false : true);
@@ -77,18 +76,17 @@ describe('publication classification', () => {
     expect([...BACKEND_ONLY_SOURCES].filter(name => seen.has(name))).toEqual([]);
     expect(seen.has('services/omics/src/record-pages.ts')).toBe(true);
   });
-  it('builds a new image when a lock change changes the compiled taxonomy, and only then', async () => {
+  it('builds a new image when the lock or the compiled taxonomy changes', async () => {
     const root = fixture(); file(root, 'benchmark-data.lock.json', 'one');
     const first = await fingerprints(root, {});
     file(root, 'benchmark-data.lock.json', 'two', false);
-    const lockOnly = await fingerprints(root, {});
-    expect(lockOnly.frontend).toBe(first.frontend);
-    expect(lockOnly.data).not.toBe(first.data);
+    const lock = await fingerprints(root, {});
+    expect(lock.frontend).not.toBe(first.frontend);
+    expect(lock.data).not.toBe(first.data);
     fs.writeFileSync(path.join(root, COMPILED_TAXONOMY), 'export const DOMAINS = ["changed"];');
     const taxonomy = await fingerprints(root, {});
-    expect(taxonomy.frontend).not.toBe(first.frontend);
-    expect(classify(taxonomy, { ...receipt, fingerprints: lockOnly }).frontend).toBe(true);
-    expect(classify(lockOnly, { ...receipt, fingerprints: first }).frontend).toBe(false);
+    expect(taxonomy.frontend).not.toBe(lock.frontend);
+    expect(taxonomy.data).toBe(lock.data);
   });
   it('refuses to plan before the compiled taxonomy is hydrated', async () => {
     const root = fixture(); fs.unlinkSync(path.join(root, COMPILED_TAXONOMY));

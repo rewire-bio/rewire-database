@@ -67,6 +67,14 @@ export const entityKindLabel = (kind: string): string =>
     source: "Source",
     claim: "Evidence claim",
   })[kind] || kind;
+/** Legacy links use model/benchmark as evaluation roles, not current entity kinds. */
+export function relationAcceptsKind(relation: string, kind: string): boolean {
+  if (relation === "model") return isModelSubject(kind);
+  if (relation === "benchmark") return isBenchmarkSubject(kind);
+  if (relation === "dataset") return isDatasetSubject(kind);
+  return relation === kind;
+}
+
 /** Alias routes preserve published links: the canonical kind plus any listed legacy kinds. */
 export function recordRouteKinds(record: {
   kind: EntityKind;
@@ -83,14 +91,6 @@ export function recordRouteKinds(record: {
         : []),
     ]),
   ];
-}
-
-/** Legacy links use model/benchmark as evaluation roles, not current entity kinds. */
-export function relationAcceptsKind(relation: string, kind: string): boolean {
-  if (relation === "model") return isModelSubject(kind);
-  if (relation === "benchmark") return isBenchmarkSubject(kind);
-  if (relation === "dataset") return isDatasetSubject(kind);
-  return relation === kind;
 }
 
 /** Shared publication vocabulary prevents website/API release validation drift. */

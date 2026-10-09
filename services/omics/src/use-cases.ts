@@ -414,7 +414,7 @@ export function validateUseCaseArtifact(snapshot: CatalogueSnapshot, value: unkn
 }
 
 export interface UseCaseListInput { q?: string; area?: string; context?: string; limit?: number; cursor?: string }
-export function createUseCaseQuery(snapshot: CatalogueSnapshot, value?: UseCaseArtifact, declaration?: UseCaseDeclaration, catalogue?: CatalogueQuery) {
+export function useCaseState(snapshot: CatalogueSnapshot, value?: UseCaseArtifact, declaration?: UseCaseDeclaration, catalogue?: CatalogueQuery): UseCaseState {
   if (!!value !== !!declaration) throw Error("Declared use-case artifact must be present");
   const artifact = value ? validateUseCaseArtifact(snapshot, value, declaration!) : undefined;
   const release_id = snapshot.release_id;
@@ -486,6 +486,40 @@ export function createUseCaseQuery(snapshot: CatalogueSnapshot, value?: UseCaseA
       use_case_id: entry.id, slug: entry.slug, title: entry.title, mapping_id: m.id, configuration_ids: [...configurations].sort(),
     }]);
   }
+  const state: UseCaseState = {
+    release_id,
+    input_sha256,
+    entries,
+    mappings: [...mappingsByCase],
+    backlinks: [...backlinks],
+    results: [...resultsByEvaluation],
+    sources: entries.map((entry) => [entry.id, sourceRecords(entry.citations)]),
+  };
+  return state;
+}
+
+/** Everything the use-case queries read, resolved once per release. Serialisable. */
+export interface UseCaseState {
+  release_id: string;
+  input_sha256: string | null;
+  entries: UseCaseArtifact["use_cases"];
+  mappings: [string, ResolvedMapping[]][];
+  backlinks: [string, { use_case_id: string; slug: string; title: string; mapping_id: string; configuration_ids: string[] }[]][];
+  results: [string, ResultRow[]][];
+  sources: [string, CatalogueRecord[]][];
+}
+
+export function createUseCaseQuery(snapshot: CatalogueSnapshot, value?: UseCaseArtifact, declaration?: UseCaseDeclaration, catalogue?: CatalogueQuery) {
+  return useCaseQueryFrom(useCaseState(snapshot, value, declaration, catalogue));
+}
+
+/** The use-case API over a prepared state. */
+export function useCaseQueryFrom(state: UseCaseState) {
+  const { release_id, input_sha256, entries } = state;
+  const mappingsByCase = new Map(state.mappings);
+  const backlinks = new Map(state.backlinks);
+  const resultsByEvaluation = new Map(state.results);
+  const sourcesByCase = new Map(state.sources);
   return {
     list(input: UseCaseListInput = {}) {
       const limit = input.limit ?? 10;
@@ -535,7 +569,7 @@ export function createUseCaseQuery(snapshot: CatalogueSnapshot, value?: UseCaseA
       const response = {
         release_id, input_sha256, use_case: entry,
         mappings: mappings.map((m) => ({ ...m, evaluations: byMapping.get(m.id) || [] })),
-        sources: sourceRecords(entry.citations),
+        sources: sourcesByCase.get(entry.id) || [],
         evaluations_total: flattened.length,
         evaluations_next_cursor: page.next_cursor,
       };
@@ -559,7 +593,7 @@ export function createUseCaseQuery(snapshot: CatalogueSnapshot, value?: UseCaseA
       return response;
     },
     links({ id }: { id: string }) { return { release_id, input_sha256, items: backlinks.get(id) || [] }; },
-  };
+    };
 }
 export type UseCaseQuery = ReturnType<typeof createUseCaseQuery>;
 export type UseCasePage = ReturnType<UseCaseQuery["list"]>;

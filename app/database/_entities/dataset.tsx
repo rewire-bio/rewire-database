@@ -17,7 +17,6 @@ import SectionNavigation, {
 } from "@/components/catalogue/SectionNavigation";
 import ResearchReadiness from "@/components/catalogue/ResearchReadiness";
 import { InvestigationList } from "@/components/catalogue/ResearchInvestigation";
-import { getResearch } from "@/services/omics/src/research";
 import { kindLabels, singularKindLabels, groupEntities, uniqueRecords } from "@/lib/omics-browse";
 import { loadUseCaseContext, verifiedAssociation, type RecordDetail } from "@/lib/entity-detail";
 import styles from "../database.module.css";
@@ -56,7 +55,7 @@ export function DatasetDetail({ detail }: { detail: RecordDetail }) {
   );
   const readiness = query.researchReadiness({ id: record.id, limit: 1 }).items[0];
   const manifests = readiness
-    ? getResearch(catalogue).manifests.filter((manifest) =>
+    ? query.research().manifests.filter((manifest) =>
         readiness.manifest_ids.includes(manifest.id),
       )
     : [];
@@ -72,7 +71,7 @@ export function DatasetDetail({ detail }: { detail: RecordDetail }) {
   const family = detail.direct.find(
     (item) =>
       ["family", "variant_of", "alias_of"].includes(item.relation) &&
-      verifiedAssociation(catalogue, record.id, item.relation, item.record.id),
+      verifiedAssociation(query, record.id, item.relation, item.record.id),
   );
   const localProfile = profileSchema.safeParse(record.attributes.profile);
   const shared =
@@ -95,14 +94,14 @@ export function DatasetDetail({ detail }: { detail: RecordDetail }) {
       .filter(
         (item) =>
           ["part_of", "evaluates_task"].includes(item.relation) &&
-          verifiedAssociation(catalogue, record.id, item.relation, item.record.id),
+          verifiedAssociation(query, record.id, item.relation, item.record.id),
       )
       .map((item) => item.record),
     ...detail.reverse
       .filter(
         (item) =>
           ["part_of", "evaluates_task"].includes(item.relation) &&
-          verifiedAssociation(catalogue, item.record.id, item.relation, record.id),
+          verifiedAssociation(query, item.record.id, item.relation, record.id),
       )
       .map((item) => item.record),
   ]);

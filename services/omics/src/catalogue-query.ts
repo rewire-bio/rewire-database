@@ -112,7 +112,7 @@ function compactPanel(panel: ResolvedComparison): ResolvedComparison {
     sources: panel.sources.map(recordReference),
   };
 }
-function canonical(value: unknown): string {
+export function canonical(value: unknown): string {
   if (Array.isArray(value)) return JSON.stringify(value.map(canonical));
   if (value && typeof value === "object")
     return JSON.stringify(
@@ -157,6 +157,420 @@ function known(v: unknown): boolean {
   if (typeof v === "object")
     return Object.keys(v).length > 0 && Object.values(v).every(known);
   return true;
+}
+type PageInput = { cursor?: string; limit?: number };
+/** Release-bound pagination, shared by the live query engine and prepared readers. */
+export function paginate<T>(
+  release_id: string,
+  items: T[],
+  input: PageInput,
+  key: string,
+  getId: (item: T) => string,
+) {
+    const limit = input.limit ?? 25;
+    if (!Number.isInteger(limit) || limit < 1 || limit > 100)
+      throw new Error("Page limit must be between 1 and 100");
+    let start = 0;
+    if (input.cursor) {
+      let cursor: { release: string; key: string; after: string };
+      try {
+        cursor = JSON.parse(decodeURIComponent(input.cursor));
+      } catch {
+        throw new Error("Invalid catalogue cursor");
+      }
+      if (cursor.release !== release_id || cursor.key !== key)
+        throw new Error("Cursor does not match release or filters");
+      const index = items.findIndex((item) => getId(item) === cursor.after);
+      if (index < 0) throw new Error("Cursor record is unavailable");
+      start = index + 1;
+    }
+    const selected = items.slice(start, start + limit);
+    return {
+      release_id,
+      items: selected,
+      total: items.length,
+      range_start: selected.length ? start + 1 : 0,
+      range_end: start + selected.length,
+      previous_cursor:
+        start === 0
+          ? null
+          : start <= limit
+            ? ""
+            : encodeURIComponent(
+                JSON.stringify({
+                  release: release_id,
+                  key,
+                  after: getId(items[start - limit - 1]),
+                }),
+              ),
+      next_cursor:
+        start + limit < items.length
+          ? encodeURIComponent(
+              JSON.stringify({
+                release: release_id,
+                key,
+                after: getId(selected[selected.length - 1]),
+              }),
+            )
+          : null,
+    };
+  }
+/** One record's result table: filters, release-bound page, evaluation count and facets. */
+export function resultPage(release_id: string, available: ResultRow[], input: ResultsInput) {
+  const { cursor, limit, ...filters } = input;
+  const selected = available.filter(
+    (row) =>
+      (!input.metric || row.result.attributes.metric === input.metric) &&
+      (!input.origin || row.origin === input.origin) &&
+      (!input.protocol_id ||
+        row.protocols.some((record) => record.id === input.protocol_id)) &&
+      (!input.dataset_id ||
+        [...row.datasets, ...row.dataset_subsets].some(
+          (record) => record.id === input.dataset_id,
+        )) &&
+      (!input.tested_entity_id ||
+        [
+          ...row.models,
+          ...row.methods,
+          ...row.configurations,
+          ...row.pipelines,
+          ...row.services,
+        ].some((record) => record.id === input.tested_entity_id)) &&
+      (!input.configuration_id ||
+        row.evaluation?.id === input.configuration_id ||
+        (row.evaluation &&
+          evaluationIdentity(row.evaluation) === input.configuration_id)),
+  );
+  const selectedPage = paginate(
+    release_id,
+    selected,
+    input,
+    canonical(filters),
+    (r) => r.result.id,
+  );
+  return {
+    ...selectedPage,
+    items: selectedPage.items.map(compactResult),
+    evaluation_count: new Set(
+      selected.flatMap((row) =>
+        row.evaluation ? [evaluationIdentity(row.evaluation)] : [],
+      ),
+    ).size,
+    facets: {
+      protocols: [
+        ...new Map(
+          available
+            .flatMap((row) => row.protocols)
+            .map((record) => [
+              record.id,
+              { id: record.id, name: record.name },
+            ]),
+        ).values(),
+      ],
+      datasets: [
+        ...new Map(
+          available
+            .flatMap((row) => [...row.datasets, ...row.dataset_subsets])
+            .map((record) => [
+              record.id,
+              { id: record.id, name: record.name },
+            ]),
+        ).values(),
+      ],
+      tested_entities: [
+        ...new Map(
+          available
+            .flatMap((row) => [
+              ...row.models,
+              ...row.methods,
+              ...row.configurations,
+              ...row.pipelines,
+              ...row.services,
+            ])
+            .map((record) => [
+              record.id,
+              { id: record.id, name: record.name },
+            ]),
+        ).values(),
+      ],
+      metrics: [
+        ...new Set(
+          available.map((row) => String(row.result.attributes.metric)),
+        ),
+      ].sort(),
+      origins: [...new Set(available.map((row) => row.origin))].sort(),
+      configurations: [
+        ...new Map(
+          available.flatMap((row) =>
+            row.evaluation
+              ? [
+                  [
+                    evaluationIdentity(row.evaluation),
+                    {
+                      id: evaluationIdentity(row.evaluation),
+                      name: String(
+                        row.evaluation.attributes.evaluation_group_name ||
+                          row.evaluation.name,
+                      ),
+                    },
+                  ] as const,
+                ]
+              : [],
+          ),
+        ).values(),
+      ],
+    },
+  };
+}
+export type EvidenceRow = ReturnType<ReturnType<typeof createEvidenceIndex>["forRecord"]>[number];
+export interface EvidenceInput { id: string; q?: string; scope?: string; cursor?: string; limit?: number }
+/** One record's evidence table: scope and text filter, release-bound page. */
+export function evidencePage(release_id: string, rows: EvidenceRow[], input: EvidenceInput) {
+  const { cursor, limit, ...filters } = input;
+  const q = input.q?.trim().toLowerCase();
+  const selected = rows.filter(
+      (row) =>
+        (!input.scope || row.evidence_scope === input.scope) &&
+        (!q ||
+          [
+            row.property,
+            row.value,
+            row.source_title,
+            row.source_locator,
+            row.review_status,
+          ]
+            .join(" ")
+            .toLowerCase()
+            .includes(q)),
+    );
+  return paginate(
+    release_id,
+    selected,
+    input,
+    `evidence:${canonical(filters)}`,
+    (row) => row.row_id,
+  );
+}
+/** Whether results can be compared, and why not. */
+export function compareResults(
+  release_id: string,
+  ids: string[],
+  rowFor: (id: string) => ResultRow | undefined,
+  inactiveAssessmentDatasetIds: ReadonlySet<string>,
+) {
+  const reasons = new Set<string>();
+  if (ids.length < 2) reasons.add("Choose at least two results.");
+  if (ids.length > 20) throw new Error("Compare at most 20 results");
+  if (new Set(ids).size !== ids.length)
+    reasons.add(
+      "The same result cannot supply independent evidence twice.",
+    );
+  const selected = ids.map((id) => rowFor(id));
+  if (selected.some((r) => !r))
+    reasons.add("A selected result is unavailable.");
+  const valid = selected.filter((r): r is ResultRow => !!r);
+  for (const row of valid) {
+    const numeric = row.result.attributes.numeric_value;
+    if (
+      typeof numeric !== "string" ||
+      !numeric.trim() ||
+      !Number.isFinite(Number(numeric))
+    )
+      reasons.add("A selected result has no finite numerical value.");
+    if (
+      row.sources.some(
+        (source) =>
+          Array.isArray(source.attributes.evidence_concerns) &&
+          source.attributes.evidence_concerns.length,
+      )
+    )
+      reasons.add(
+        "A source has unresolved evidence concerns; this result cannot support a comparison.",
+      );
+    if (!["source_checked", "reproduced"].includes(row.result.status))
+      reasons.add(
+        "Only current, source-checked or reproduced results can be compared.",
+      );
+    if (!row.evaluation) reasons.add("An evaluation record is missing.");
+    if (
+      row.evaluation?.links.some(
+        (link) =>
+          (
+            [
+              ...benchmarkSubjectKinds,
+              ...datasetSubjectKinds,
+            ] as readonly string[]
+          ).includes(link.relation) &&
+          inactiveAssessmentDatasetIds.has(link.target_id),
+      )
+    )
+      reasons.add(
+        "A linked assessment or dataset is disputed, superseded or excluded.",
+      );
+    if (
+      ["superseded", "disputed", "excluded"].includes(
+        row.evaluation?.status || "",
+      )
+    )
+      reasons.add("An evaluation is disputed, superseded or excluded.");
+    if (
+      row.origin === "paper_compilation" ||
+      row.evaluation?.links.some(
+        (l) => l.relation === "original_evaluation",
+      )
+    )
+      reasons.add(
+        "A quoted result is not independent evidence; consult its original evaluation.",
+      );
+  }
+  if (valid.some((r) => !r.datasets.length))
+    reasons.add("Dataset identity is not fully linked.");
+  else if (
+    new Set(valid.map((r) => canonical(r.datasets.map((d) => d.id).sort())))
+      .size > 1
+  )
+    reasons.add("Evaluations use different datasets.");
+  function check(field: string, values: unknown[]) {
+    if (values.some((v) => !known(v)))
+      reasons.add(`${field.replace(/_/g, " ")} is not fully reported.`);
+    else if (new Set(values.map(canonical)).size > 1)
+      reasons.add(
+        `${field.replace(/_/g, " ")} differs between evaluations.`,
+      );
+  }
+  for (const field of ["metric", "unit", "metric_direction"])
+    check(
+      field,
+      valid.map((r) => r.result.attributes[field]),
+    );
+  for (const field of [
+    "protocol_id",
+    "dataset_version",
+    "split",
+    "population",
+    "inputs",
+    "adaptation",
+    "metric_implementation",
+    "aggregation",
+    "budget",
+  ])
+    check(
+      field,
+      valid.map(
+        (r) =>
+          (
+            r.evaluation?.attributes.comparison as
+              Record<string, unknown> | undefined
+          )?.[field],
+      ),
+    );
+  const subsets = valid.map(
+    (row) =>
+      (
+        row.evaluation?.attributes.comparison as
+          Record<string, unknown> | undefined
+      )?.subset,
+  );
+  if (subsets.some((value) => value !== undefined && value !== null))
+    check("subset", subsets);
+  return {
+    release_id,
+    compatible: reasons.size === 0,
+    reasons: [...reasons],
+  };
+}
+export interface ReadinessInput { id?: string; capability?: ResearchCapability; ready?: boolean; cursor?: string; limit?: number }
+export function readinessPage(release_id: string, items: ResearchReadiness[], input: ReadinessInput = {}) {
+  const { cursor, limit, ...filters } = input;
+  if (input.ready !== undefined && !input.capability) throw new Error("Readiness state requires a capability");
+  const selected = items.filter(item => (!input.id || input.id === item.record_id) &&
+    (!input.capability || input.ready === undefined || item.capabilities[input.capability].ready === input.ready));
+  return paginate(release_id, selected, input, canonical({ researchReadiness: filters }), item => item.record_id);
+}
+export interface InvestigationsInput { id?: string; record_id?: string; cursor?: string; limit?: number }
+export function investigationsPage(release_id: string, research: ResearchData, input: InvestigationsInput = {}) {
+  const { cursor, limit, ...filters } = input;
+  const manifests = new Map(research.manifests.map(manifest => [manifest.id, manifest]));
+  const selected = research.investigations.filter(report => {
+    const manifest = manifests.get(report.manifest_id);
+    return (!input.id || report.id === input.id) && (!input.record_id || manifest?.dataset_id === input.record_id || manifest?.evaluation_ids.includes(input.record_id));
+  }).sort((a, b) => a.id.localeCompare(b.id));
+  return paginate(release_id, selected, input, canonical({ investigations: filters }), report => report.id);
+}
+/** What list() needs for each visible record, prepared once. */
+export interface ListEntry {
+  record: CatalogueRecord;
+  search_text: string;
+  ready: Partial<Record<ResearchCapability, boolean>>;
+  row_origins: string[];
+  evaluation_count: number;
+  result_count: number;
+}
+/** Catalogue search and filters. Facet counts exclude their own filter. */
+export function listPage(
+  release_id: string,
+  entries: ListEntry[],
+  input: ListInput,
+  readinessFor: (ids: Set<string>) => ResearchReadiness[],
+  materialise: (items: ListEntry[]) => CatalogueRecord[] = (items) => items.map((item) => item.record),
+) {
+  const { cursor, limit, ...filters } = input;
+  const q = input.q?.trim().toLowerCase();
+  const originMatches = (origin: unknown) =>
+    input.origin === "literature"
+      ? ["author_reported", "independent_paper", "paper_compilation"].includes(String(origin))
+      : input.origin === "rewire"
+        ? origin === "rewire_run"
+        : origin === input.origin;
+  // Facet options must be counted against the records that survive the OTHER
+  // active filters. Offering every value in the release regardless of the
+  // selected kind sent roughly half of all kind-and-facet pairs to an empty
+  // result, with no way for a reader to tell which choices led anywhere.
+  const matches = (entry: ListEntry, skip: "status" | "area" | null) => {
+    const r = entry.record;
+    return (
+      (!input.kind || r.kind === input.kind) &&
+      (!input.readiness || entry.ready[input.readiness] === true) &&
+      (skip === "status" || !input.status || r.status === input.status) &&
+      (skip === "area" ||
+        !input.area ||
+        Object.values(r.facets).some((values) => values.includes(input.area!))) &&
+      (!q || entry.search_text.includes(q)) &&
+      (!input.origin ||
+        !["result", "evaluation"].includes(r.kind) ||
+        originMatches(r.attributes.origin) ||
+        entry.row_origins.some((origin) => originMatches(origin)))
+    );
+  };
+  const tally = (skip: "status" | "area", pick: (r: CatalogueRecord) => string[]) => {
+    const counts: Record<string, number> = {};
+    for (const entry of entries)
+      if (matches(entry, skip))
+        for (const key of pick(entry.record)) counts[key] = (counts[key] || 0) + 1;
+    return counts;
+  };
+  const available = {
+    areas: tally("area", (r) => r.facets.areas || []),
+    statuses: tally("status", (r) => [r.status]),
+  };
+  const selected = entries.filter((entry) => matches(entry, null));
+  const selectedPage = paginate(release_id, selected, input, canonical(filters), (entry) => entry.record.id);
+  const items = materialise(selectedPage.items);
+  const selectedIds = new Set(items.map((item) => item.id));
+  return {
+    ...selectedPage,
+    items,
+    research_readiness: items.some((item) => ["dataset", "dataset_subset", "evaluation"].includes(item.kind))
+      ? readinessFor(selectedIds)
+      : [],
+    available,
+    evaluation_summaries: Object.fromEntries(
+      selectedPage.items.map((entry) => [
+        entry.record.id,
+        { evaluation_count: entry.evaluation_count, result_count: entry.result_count },
+      ]),
+    ),
+  };
 }
 export function createCatalogueQuery(snapshot: CatalogueSnapshot) {
   assertPublicCatalogue(snapshot);
@@ -391,59 +805,34 @@ export function createCatalogueQuery(snapshot: CatalogueSnapshot) {
     for (const member of component) rowIndex.set(member, shared);
   }
   const release_id = snapshot.release_id;
+  // Per-record list inputs, prepared once per engine.
+  let listEntries: ListEntry[] | undefined;
+  const entries = (): ListEntry[] =>
+    (listEntries ||= visibleRecords.map((record) => {
+      const linkedRows = rowIndex.get(record.id) || [];
+      const ready = readinessById().get(record.id);
+      return {
+        record,
+        search_text: recordSearchText(record),
+        ready: ready
+          ? Object.fromEntries(
+              Object.entries(ready.capabilities).map(([key, value]) => [key, value.ready === true]),
+            )
+          : {},
+        row_origins: [...new Set(linkedRows.map((row) => row.origin))],
+        evaluation_count: new Set(
+          linkedRows.flatMap((row) => (row.evaluation ? [evaluationIdentity(row.evaluation)] : [])),
+        ).size,
+        result_count: linkedRows.length,
+      };
+    }));
   function page<T>(
     items: T[],
-    input: { cursor?: string; limit?: number },
+    input: PageInput,
     key: string,
     getId: (item: T) => string,
   ) {
-    const limit = input.limit ?? 25;
-    if (!Number.isInteger(limit) || limit < 1 || limit > 100)
-      throw new Error("Page limit must be between 1 and 100");
-    let start = 0;
-    if (input.cursor) {
-      let cursor: { release: string; key: string; after: string };
-      try {
-        cursor = JSON.parse(decodeURIComponent(input.cursor));
-      } catch {
-        throw new Error("Invalid catalogue cursor");
-      }
-      if (cursor.release !== release_id || cursor.key !== key)
-        throw new Error("Cursor does not match release or filters");
-      const index = items.findIndex((item) => getId(item) === cursor.after);
-      if (index < 0) throw new Error("Cursor record is unavailable");
-      start = index + 1;
-    }
-    const selected = items.slice(start, start + limit);
-    return {
-      release_id,
-      items: selected,
-      total: items.length,
-      range_start: selected.length ? start + 1 : 0,
-      range_end: start + selected.length,
-      previous_cursor:
-        start === 0
-          ? null
-          : start <= limit
-            ? ""
-            : encodeURIComponent(
-                JSON.stringify({
-                  release: release_id,
-                  key,
-                  after: getId(items[start - limit - 1]),
-                }),
-              ),
-      next_cursor:
-        start + limit < items.length
-          ? encodeURIComponent(
-              JSON.stringify({
-                release: release_id,
-                key,
-                after: getId(selected[selected.length - 1]),
-              }),
-            )
-          : null,
-    };
+    return paginate(release_id, items, input, key, getId);
   }
   function comparisons(id: string): ResolvedComparison[] {
     const record = byId.get(id);
@@ -476,6 +865,10 @@ export function createCatalogueQuery(snapshot: CatalogueSnapshot) {
     /** Exact public record lookup, without comparison or relationship expansion. */
     snapshot: (): CatalogueSnapshot => snapshot,
     record: (id: string): CatalogueRecord | null => byId.get(id) || null,
+    /** Every result row, as results() pages build them before compaction. */
+    resultRows: (): readonly ResultRow[] => rows,
+    /** The per-record inputs list() filters, prepared once. */
+    listEntries: (): readonly ListEntry[] => entries(),
     /** Whether a link is backed by a reviewed association claim, as used for rollups. */
     association: (
       recordId: string,
@@ -511,145 +904,18 @@ export function createCatalogueQuery(snapshot: CatalogueSnapshot) {
       },
     }),
     list(input: ListInput = {}) {
-      const { cursor, limit, ...filters } = input;
-      const q = input.q?.trim().toLowerCase();
-      const originMatches = (origin: unknown) =>
-        input.origin === "literature"
-          ? [
-              "author_reported",
-              "independent_paper",
-              "paper_compilation",
-            ].includes(String(origin))
-          : input.origin === "rewire"
-            ? origin === "rewire_run"
-            : origin === input.origin;
-      // Facet options must be counted against the records that survive the OTHER
-      // active filters. Offering every value in the release regardless of the
-      // selected kind sent roughly half of all kind-and-facet pairs to an empty
-      // result, with no way for a reader to tell which choices led anywhere.
-      const matches = (
-        r: (typeof visibleRecords)[number],
-        skip: "status" | "area" | null,
-      ) =>
-        (!input.kind || r.kind === input.kind) &&
-        (!input.readiness || readinessById().get(r.id)?.capabilities[input.readiness].ready === true) &&
-        (skip === "status" || !input.status || r.status === input.status) &&
-        (skip === "area" ||
-          !input.area ||
-          Object.values(r.facets).some((values) =>
-            values.includes(input.area!),
-          )) &&
-        (!q || recordSearchText(r).includes(q)) &&
-        (!input.origin ||
-          !["result", "evaluation"].includes(r.kind) ||
-          originMatches(r.attributes.origin) ||
-          (rowIndex.get(r.id) || []).some((row) => originMatches(row.origin)));
-
-      const tally = (
-        skip: "status" | "area",
-        pick: (r: (typeof visibleRecords)[number]) => string[],
-      ) => {
-        const counts: Record<string, number> = {};
-        for (const r of visibleRecords)
-          if (matches(r, skip))
-            for (const key of pick(r)) counts[key] = (counts[key] || 0) + 1;
-        return counts;
-      };
-      const available = {
-        areas: tally("area", (r) => r.facets.areas || []),
-        statuses: tally("status", (r) => [r.status]),
-      };
-
-      const selected = visibleRecords.filter(
-        (r) =>
-          (!input.kind || r.kind === input.kind) &&
-          (!input.readiness || readinessById().get(r.id)?.capabilities[input.readiness].ready === true) &&
-          (!input.status || r.status === input.status) &&
-          (!input.area ||
-            Object.values(r.facets).some((values) =>
-              values.includes(input.area!),
-            )) &&
-          (!q || recordSearchText(r).includes(q)) &&
-          (!input.origin ||
-            !["result", "evaluation"].includes(r.kind) ||
-            originMatches(r.attributes.origin) ||
-            (rowIndex.get(r.id) || []).some((row) =>
-              originMatches(row.origin),
-            )),
+      return listPage(release_id, entries(), input, (ids) =>
+        readiness().filter((item) => ids.has(item.record_id)),
       );
-      const selectedPage = page(selected, input, canonical(filters), (r) => r.id);
-      const selectedIds = new Set(selectedPage.items.map(item => item.id));
-      return {
-        ...selectedPage,
-        research_readiness: selectedPage.items.some(item => ["dataset", "dataset_subset", "evaluation"].includes(item.kind)) ? readiness().filter(item => selectedIds.has(item.record_id)) : [],
-        available,
-        evaluation_summaries: Object.fromEntries(
-          selectedPage.items.map((record) => {
-            const linkedRows = rowIndex.get(record.id) || [];
-            return [
-              record.id,
-              {
-                evaluation_count: new Set(
-                  linkedRows.flatMap((row) =>
-                    row.evaluation ? [evaluationIdentity(row.evaluation)] : [],
-                  ),
-                ).size,
-                result_count: linkedRows.length,
-              },
-            ];
-          }),
-        ),
-      };
     },
-    researchReadiness(input: { id?: string; capability?: ResearchCapability; ready?: boolean; cursor?: string; limit?: number } = {}) {
-      const { cursor, limit, ...filters } = input;
-      if (input.ready !== undefined && !input.capability) throw new Error("Readiness state requires a capability");
-      const selected = readiness().filter(item => (!input.id || input.id === item.record_id) &&
-        (!input.capability || input.ready === undefined || item.capabilities[input.capability].ready === input.ready));
-      return page(selected, input, canonical({ researchReadiness: filters }), item => item.record_id);
+    researchReadiness(input: ReadinessInput = {}) {
+      return readinessPage(release_id, readiness(), input);
     },
-    investigations(input: { id?: string; record_id?: string; cursor?: string; limit?: number } = {}) {
-      const { cursor, limit, ...filters } = input;
-      const research = getResearch(snapshot);
-      const manifests = new Map(research.manifests.map(manifest => [manifest.id, manifest]));
-      const selected = research.investigations.filter(report => {
-        const manifest = manifests.get(report.manifest_id);
-        return (!input.id || report.id === input.id) && (!input.record_id || manifest?.dataset_id === input.record_id || manifest?.evaluation_ids.includes(input.record_id));
-      }).sort((a, b) => a.id.localeCompare(b.id));
-      return page(selected, input, canonical({ investigations: filters }), report => report.id);
+    investigations(input: InvestigationsInput = {}) {
+      return investigationsPage(release_id, getResearch(snapshot), input);
     },
-    evidence(input: {
-      id: string;
-      q?: string;
-      scope?: string;
-      cursor?: string;
-      limit?: number;
-    }) {
-      const { cursor, limit, ...filters } = input;
-      const q = input.q?.trim().toLowerCase();
-      const selected = (evidenceIndex ||= createEvidenceIndex(snapshot))
-        .forRecord(input.id)
-        .filter(
-          (row) =>
-            (!input.scope || row.evidence_scope === input.scope) &&
-            (!q ||
-              [
-                row.property,
-                row.value,
-                row.source_title,
-                row.source_locator,
-                row.review_status,
-              ]
-                .join(" ")
-                .toLowerCase()
-                .includes(q)),
-        );
-      return page(
-        selected,
-        input,
-        `evidence:${canonical(filters)}`,
-        (row) => row.row_id,
-      );
+    evidence(input: EvidenceInput) {
+      return evidencePage(release_id, (evidenceIndex ||= createEvidenceIndex(snapshot)).forRecord(input.id), input);
     },
     get({
       id,
@@ -709,234 +975,10 @@ export function createCatalogueQuery(snapshot: CatalogueSnapshot) {
       return { release_id, panel: panel ? compactPanel(panel) : null };
     },
     results(input: ResultsInput) {
-      const { cursor, limit, ...filters } = input;
-      const available = rowIndex.get(input.id) || [];
-      const selected = available.filter(
-        (row) =>
-          (!input.metric || row.result.attributes.metric === input.metric) &&
-          (!input.origin || row.origin === input.origin) &&
-          (!input.protocol_id ||
-            row.protocols.some((record) => record.id === input.protocol_id)) &&
-          (!input.dataset_id ||
-            [...row.datasets, ...row.dataset_subsets].some(
-              (record) => record.id === input.dataset_id,
-            )) &&
-          (!input.tested_entity_id ||
-            [
-              ...row.models,
-              ...row.methods,
-              ...row.configurations,
-              ...row.pipelines,
-              ...row.services,
-            ].some((record) => record.id === input.tested_entity_id)) &&
-          (!input.configuration_id ||
-            row.evaluation?.id === input.configuration_id ||
-            (row.evaluation &&
-              evaluationIdentity(row.evaluation) === input.configuration_id)),
-      );
-      const selectedPage = page(
-        selected,
-        input,
-        canonical(filters),
-        (r) => r.result.id,
-      );
-      return {
-        ...selectedPage,
-        items: selectedPage.items.map(compactResult),
-        evaluation_count: new Set(
-          selected.flatMap((row) =>
-            row.evaluation ? [evaluationIdentity(row.evaluation)] : [],
-          ),
-        ).size,
-        facets: {
-          protocols: [
-            ...new Map(
-              available
-                .flatMap((row) => row.protocols)
-                .map((record) => [
-                  record.id,
-                  { id: record.id, name: record.name },
-                ]),
-            ).values(),
-          ],
-          datasets: [
-            ...new Map(
-              available
-                .flatMap((row) => [...row.datasets, ...row.dataset_subsets])
-                .map((record) => [
-                  record.id,
-                  { id: record.id, name: record.name },
-                ]),
-            ).values(),
-          ],
-          tested_entities: [
-            ...new Map(
-              available
-                .flatMap((row) => [
-                  ...row.models,
-                  ...row.methods,
-                  ...row.configurations,
-                  ...row.pipelines,
-                  ...row.services,
-                ])
-                .map((record) => [
-                  record.id,
-                  { id: record.id, name: record.name },
-                ]),
-            ).values(),
-          ],
-          metrics: [
-            ...new Set(
-              available.map((row) => String(row.result.attributes.metric)),
-            ),
-          ].sort(),
-          origins: [...new Set(available.map((row) => row.origin))].sort(),
-          configurations: [
-            ...new Map(
-              available.flatMap((row) =>
-                row.evaluation
-                  ? [
-                      [
-                        evaluationIdentity(row.evaluation),
-                        {
-                          id: evaluationIdentity(row.evaluation),
-                          name: String(
-                            row.evaluation.attributes.evaluation_group_name ||
-                              row.evaluation.name,
-                          ),
-                        },
-                      ] as const,
-                    ]
-                  : [],
-              ),
-            ).values(),
-          ],
-        },
-      };
+      return resultPage(release_id, rowIndex.get(input.id) || [], input);
     },
     compare({ ids }: { ids: string[] }) {
-      const reasons = new Set<string>();
-      if (ids.length < 2) reasons.add("Choose at least two results.");
-      if (ids.length > 20) throw new Error("Compare at most 20 results");
-      if (new Set(ids).size !== ids.length)
-        reasons.add(
-          "The same result cannot supply independent evidence twice.",
-        );
-      const selected = ids.map((id) =>
-        rows.find((row) => row.result.id === id),
-      );
-      if (selected.some((r) => !r))
-        reasons.add("A selected result is unavailable.");
-      const valid = selected.filter((r): r is ResultRow => !!r);
-      for (const row of valid) {
-        const numeric = row.result.attributes.numeric_value;
-        if (
-          typeof numeric !== "string" ||
-          !numeric.trim() ||
-          !Number.isFinite(Number(numeric))
-        )
-          reasons.add("A selected result has no finite numerical value.");
-        if (
-          row.sources.some(
-            (source) =>
-              Array.isArray(source.attributes.evidence_concerns) &&
-              source.attributes.evidence_concerns.length,
-          )
-        )
-          reasons.add(
-            "A source has unresolved evidence concerns; this result cannot support a comparison.",
-          );
-        if (!["source_checked", "reproduced"].includes(row.result.status))
-          reasons.add(
-            "Only current, source-checked or reproduced results can be compared.",
-          );
-        if (!row.evaluation) reasons.add("An evaluation record is missing.");
-        if (
-          row.evaluation?.links.some(
-            (link) =>
-              (
-                [
-                  ...benchmarkSubjectKinds,
-                  ...datasetSubjectKinds,
-                ] as readonly string[]
-              ).includes(link.relation) &&
-              inactiveAssessmentDatasetIds.has(link.target_id),
-          )
-        )
-          reasons.add(
-            "A linked assessment or dataset is disputed, superseded or excluded.",
-          );
-        if (
-          ["superseded", "disputed", "excluded"].includes(
-            row.evaluation?.status || "",
-          )
-        )
-          reasons.add("An evaluation is disputed, superseded or excluded.");
-        if (
-          row.origin === "paper_compilation" ||
-          row.evaluation?.links.some(
-            (l) => l.relation === "original_evaluation",
-          )
-        )
-          reasons.add(
-            "A quoted result is not independent evidence; consult its original evaluation.",
-          );
-      }
-      if (valid.some((r) => !r.datasets.length))
-        reasons.add("Dataset identity is not fully linked.");
-      else if (
-        new Set(valid.map((r) => canonical(r.datasets.map((d) => d.id).sort())))
-          .size > 1
-      )
-        reasons.add("Evaluations use different datasets.");
-      function check(field: string, values: unknown[]) {
-        if (values.some((v) => !known(v)))
-          reasons.add(`${field.replace(/_/g, " ")} is not fully reported.`);
-        else if (new Set(values.map(canonical)).size > 1)
-          reasons.add(
-            `${field.replace(/_/g, " ")} differs between evaluations.`,
-          );
-      }
-      for (const field of ["metric", "unit", "metric_direction"])
-        check(
-          field,
-          valid.map((r) => r.result.attributes[field]),
-        );
-      for (const field of [
-        "protocol_id",
-        "dataset_version",
-        "split",
-        "population",
-        "inputs",
-        "adaptation",
-        "metric_implementation",
-        "aggregation",
-        "budget",
-      ])
-        check(
-          field,
-          valid.map(
-            (r) =>
-              (
-                r.evaluation?.attributes.comparison as
-                  Record<string, unknown> | undefined
-              )?.[field],
-          ),
-        );
-      const subsets = valid.map(
-        (row) =>
-          (
-            row.evaluation?.attributes.comparison as
-              Record<string, unknown> | undefined
-          )?.subset,
-      );
-      if (subsets.some((value) => value !== undefined && value !== null))
-        check("subset", subsets);
-      return {
-        release_id,
-        compatible: reasons.size === 0,
-        reasons: [...reasons],
-      };
+      return compareResults(release_id, ids, (id) => rowsById.get(id), inactiveAssessmentDatasetIds);
     },
   };
 }

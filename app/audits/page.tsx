@@ -1,12 +1,9 @@
 import { downloadHref } from "@/lib/downloads";
 import { socialMetadata } from "@/lib/catalogue-sharing";
-import fs from "node:fs";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { buildCatalogue } from "@/lib/catalogue-build";
-import { dataPath } from "@/lib/data-pin";
-import { auditPage } from "@/services/omics/src/audit";
-import type { AuditIndexRow, AuditRun } from "@/services/omics/src/audit";
+import type { AuditRun } from "@/services/omics/src/audit";
 import AuditExplorer from "./AuditExplorer";
 const pageMetadata = {
   title: "Catalogue audit history",
@@ -23,14 +20,16 @@ export const metadata: Metadata = {
   }),
 };
 export default function Audits() {
-  const { catalogue } = buildCatalogue();
-  const base = dataPath(`public/omics/releases/${catalogue.release_id}`);
-  const read = (name: string) =>
-    fs.existsSync(`${base}/${name}`)
-      ? JSON.parse(fs.readFileSync(`${base}/${name}`, "utf8"))
-      : [];
-  const index: AuditIndexRow[] = read("audit-index.json");
-  const runs: AuditRun[] = read("audit-runs.json");
+  const { catalogue, query } = buildCatalogue();
+  const release_id = catalogue.release_id;
+  const initial = query.auditRecords({ release_id, limit: 25 });
+  const runs: AuditRun[] = [];
+  for (let cursor: string | undefined; ; ) {
+    const page = query.auditRuns({ release_id, limit: 100, cursor });
+    runs.push(...page.items);
+    if (!page.next_cursor) break;
+    cursor = page.next_cursor;
+  }
   return (
     <>
       <header className="page-head">
@@ -59,7 +58,7 @@ export default function Audits() {
             Unresolved and inaccessible evidence stays visible. Historical
             review imports retain their original methods and dates.
           </p>
-          {index.length > 0 ? (
+          {initial.total > 0 ? (
             <>
               <p>
                 <a
@@ -89,11 +88,7 @@ export default function Audits() {
               <AuditExplorer
                 releaseId={catalogue.release_id}
                 runs={runs}
-                initial={auditPage(
-                  index.map(({ chunk_ids, ...r }) => r),
-                  { limit: 25 },
-                  { release_id: catalogue.release_id },
-                )}
+                initial={initial}
               />
             </>
           ) : (

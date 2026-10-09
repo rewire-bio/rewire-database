@@ -1,9 +1,9 @@
 import { notFound } from "next/navigation";
-import type { createCatalogueQuery } from "../services/omics/src/catalogue-query";
+import type { PreparedCatalogue } from "../services/omics/src/prepared-catalogue";
 import { buildUseCases } from "./use-cases-build";
-import { recordRouteKinds, type OmicsCatalogue, type OmicsKind, type OmicsRecord } from "./omics";
+import { recordRouteKinds, type OmicsKind, type OmicsRecord } from "./omics";
 
-type CatalogueQuery = ReturnType<typeof createCatalogueQuery>;
+type CatalogueQuery = PreparedCatalogue;
 export type RecordDetail = NonNullable<ReturnType<CatalogueQuery["get"]>>;
 
 /** 404 guard shared by every kind page: looks up the record and rejects a URL
@@ -39,33 +39,34 @@ export function loadUseCaseContext(
 /** A sourced claim of the form `links:<relation>:<target>` on `subject`,
  * reviewed enough to show as a verified relationship rather than a raw link. */
 export function verifiedAssociation(
-  catalogue: Pick<OmicsCatalogue, "records">,
+  query: Pick<CatalogueQuery, "verifiedAssociation">,
   subject: string,
   relation: string,
   target: string,
 ): boolean {
-  return catalogue.records.some(
-    (item) =>
-      item.kind === "claim" &&
-      item.attributes.field === `links:${relation}:${target}` &&
-      item.links.some(
-        (link) => link.relation === "subject" && link.target_id === subject,
-      ) &&
-      ["source_checked", "reproduced"].includes(item.status) &&
-      item.source_ids.length > 0 &&
-      !!item.attributes.source_locator,
-  );
+  return query.verifiedAssociation(subject, relation, target);
+}
+
+/** The record with the records its search metadata names: link targets and sources. */
+export function relatedRecords(query: Pick<CatalogueQuery, "record">, record: OmicsRecord): OmicsRecord[] {
+  const ids = new Set([...record.links.map((link) => link.target_id), ...record.source_ids]);
+  return [
+    record,
+    ...[...ids].sort().flatMap((id) => {
+      const found = query.record(id);
+      return found ? [found as OmicsRecord] : [];
+    }),
+  ];
 }
 
 /** Aliased records a legacy kind segment must keep serving: every record whose
- * current kind differs from `segment` but whose `legacy_kinds` still names it. */
+ * current kind differs from `segment` but whose `legacy_kinds` still names it.
+ * Whole-catalogue scan, for offline smoke selection only. */
 export function legacyAliasRecords(
-  catalogue: Pick<OmicsCatalogue, "records">,
+  catalogue: { records: OmicsRecord[] },
   segment: OmicsKind,
 ): OmicsRecord[] {
   return catalogue.records.filter(
-    (record) =>
-      record.kind !== segment &&
-      recordRouteKinds(record).includes(segment),
+    (record) => record.kind !== segment && recordRouteKinds(record).includes(segment),
   );
 }

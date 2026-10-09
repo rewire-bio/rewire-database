@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
+import { preparedFromSnapshot } from "./helpers/prepared";
 import { renderToStaticMarkup } from "react-dom/server";
 import { createCatalogueQuery, type CatalogueSnapshot } from "../services/omics/src/catalogue-query";
 import { deriveResearchReadiness, validateResearchData, type ResearchManifest, type ResearchInvestigation } from "../services/omics/src/research";
@@ -15,7 +16,7 @@ vi.mock("../lib/catalogue-build", () => ({
     catalogue: fixture.snapshot!,
     // Route privacy is exercised even if an upstream caller forgot to reject
     // a staged report. The record graph itself contains no staged content.
-    query: createCatalogueQuery({ ...fixture.snapshot!, research: undefined }),
+    query: preparedFromSnapshot({ ...fixture.snapshot!, research: undefined }, { research: fixture.snapshot!.research }),
   }),
 }));
 vi.mock("next/navigation", () => ({ notFound: () => { throw new Error("NOT_FOUND"); } }));

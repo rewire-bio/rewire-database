@@ -1,63 +1,40 @@
 import Link from "next/link";
-import type { buildCatalogue } from "@/lib/catalogue-build";
+import type { PreparedQuery } from "@/lib/catalogue-build";
 import { CompositionCharts, CoverageChart } from "./CatalogueCharts";
 import { researchAreaLabel } from "@/lib/omics-browse";
-import { benchmarkCoverage } from "@/scripts/omics/audit-benchmark-evidence";
 import styles from "@/app/database/database.module.css";
 
-type Catalogue = Pick<ReturnType<typeof buildCatalogue>["catalogue"], "records">;
-export type CatalogueEvidenceSummary = ReturnType<typeof computeSummary>;
+type SummarySource = Pick<PreparedQuery, "homeSummary" | "release">;
+export type CatalogueEvidenceSummary = ReturnType<typeof formatSummary>;
 
-// The benchmark coverage pass builds a complete query engine over the release
-// (seconds of CPU), so the summary is computed once per immutable catalogue and
-// reused by every later render. Keyed by the records array: a changed or new
-// catalogue is a new array and recomputes; an unused one is garbage-collected.
-const summaries = new WeakMap<Catalogue["records"], CatalogueEvidenceSummary>();
-export function catalogueEvidenceSummary(catalogue: Catalogue): CatalogueEvidenceSummary {
-  let summary = summaries.get(catalogue.records);
-  if (!summary) summaries.set(catalogue.records, (summary = computeSummary(catalogue)));
+// The producer computes the counts and benchmark coverage once per release;
+// this only formats labels. Cached per prepared release handle.
+const summaries = new WeakMap<SummarySource, CatalogueEvidenceSummary>();
+export function catalogueEvidenceSummary(source: SummarySource): CatalogueEvidenceSummary {
+  let summary = summaries.get(source);
+  if (!summary) summaries.set(source, (summary = formatSummary(source.homeSummary())));
   return summary;
 }
 
-function computeSummary(catalogue: Catalogue) {
-  const external = catalogue.records.filter(
-    (record) => record.kind === "result" && record.status === "source_checked",
-  ).length;
-  const own = catalogue.records.filter(
-    (record) => record.kind === "result" && record.status === "reproduced",
-  ).length;
-  const tally = (pick: (r: (typeof catalogue.records)[number]) => string[]) => {
-    const counts = new Map<string, number>();
-    for (const record of catalogue.records)
-      for (const key of pick(record))
-        counts.set(key, (counts.get(key) || 0) + 1);
-    return [...counts.entries()]
-      .sort((a, b) => b[1] - a[1])
-      .map(([label, value]) => ({ label, value }));
+function formatSummary(raw: ReturnType<SummarySource["homeSummary"]>) {
+  return {
+    records: raw.records,
+    external: raw.external,
+    own: raw.own,
+    kindRows: raw.kinds.map((row) => ({ ...row, label: row.label.replace(/_/g, " ") })),
+    areaRows: raw.areas.map((row) => ({ ...row, label: researchAreaLabel(row.label) })),
+    coverageRows: raw.coverage.map((entry) => ({
+      label: entry.name,
+      value: entry.evaluations,
+      muted: entry.evaluations === 0,
+    })),
+    covered: raw.covered,
+    benchmarks: raw.benchmarks,
   };
-  const kindRows = tally((record) => [record.kind]).map((row) => ({
-    ...row,
-    label: row.label.replace(/_/g, " "),
-  }));
-  const areaRows = tally((record) => record.facets.areas || [])
-    .slice(0, 10)
-    .map((row) => ({ ...row, label: researchAreaLabel(row.label) }));
-  const coverage = benchmarkCoverage(catalogue.records);
-  const coverageRows = coverage.map((entry) => ({
-    label: entry.name,
-    value: entry.evaluations,
-    muted: entry.evaluations === 0,
-  }));
-  const covered = coverage.filter((entry) => entry.evaluations > 0).length;
-  return { records: catalogue.records.length, external, own, kindRows, areaRows, coverageRows, covered, benchmarks: coverage.length };
 }
 
-export function CatalogueEvidence({
-  catalogue,
-}: {
-  catalogue: ReturnType<typeof buildCatalogue>["catalogue"];
-}) {
-  const { records, external, own, kindRows, areaRows, coverageRows, covered, benchmarks } = catalogueEvidenceSummary(catalogue);
+export function CatalogueEvidence({ query }: { query: SummarySource }) {
+  const { records, external, own, kindRows, areaRows, coverageRows, covered, benchmarks } = catalogueEvidenceSummary(query);
 
   return (
     <section id="evidence" className={styles.information}>
@@ -123,7 +100,7 @@ export function CatalogueEvidence({
           experiments.
         </p>
         <pre className={styles.pre}>
-          {JSON.stringify(catalogue.coverage, null, 2)}
+          {JSON.stringify(query.release().coverage, null, 2)}
         </pre>
       </details>
     </section>

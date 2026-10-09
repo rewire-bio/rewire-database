@@ -3,6 +3,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { prepareBenchmarkData } from './prepare-benchmark-data.mjs';
 import { downloadLocations } from './download-locations.mjs';
+import { fetchServingData } from './fetch-serving-data.mjs';
 
 export { downloadLocations };
 
@@ -17,7 +18,10 @@ export function generateDownloadLocations(root = process.cwd(), source) {
 }
 if (process.argv[1] && fileURLToPath(import.meta.url) === path.resolve(process.argv[1])) {
   try {
-    if (process.argv.includes('--prepare')) await prepareBenchmarkData();
+    if (process.argv.includes('--prepare')) {
+      await prepareBenchmarkData();
+      await fetchServingData();
+    }
     generateDownloadLocations();
     console.log('Generated pinned GitHub download locations.');
   } catch (error) { console.error(error.message); process.exitCode = 1; }

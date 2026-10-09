@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import fs from "node:fs";
 import ts from "typescript";
 import worker, { UPSTREAM_FETCH, resetObservedIdentity } from "../cloudflare/worker.mjs";
-import { isProxied } from "../cloudflare/routing.mjs";
+import { isCatalogueApi, isProxied } from "../cloudflare/routing.mjs";
 import { cacheableRequest, storableResponse } from "../cloudflare/page-cache.mjs";
 
 const ORIGIN = "https://rewire-database-web-abc123-nw.a.run.app";
@@ -197,6 +197,21 @@ describe("independent Cloudflare frontend", () => {
   });
   it("keeps result and evaluation pages on the frontend, not the API", () => {
     for (const route of ["/database/result/example/", "/database/evaluation/example/", "/api-copy/private"]) expect(isProxied(route)).toBe(false);
+  });
+  it("serves public catalogue procedures from the frontend, anonymously and uncached", async () => {
+    const fetcher = vi.fn(async () => new Response("{}", { headers: { "content-type": "application/json", "x-rewire-frontend": "a".repeat(40), "x-rewire-data-release": "2026-10-07-061436ccd3b9" } }));
+    vi.stubGlobal("fetch", fetcher);
+    const response = await worker.fetch(new Request("https://benchmarks.rewirebio.io/api/trpc/catalogue.list?input=%7B%7D", { headers: { cookie: "a=1", authorization: "Bearer x" } }), env);
+    const [upstream] = fetcher.mock.calls[0] as any;
+    expect(upstream.url).toBe(`${ORIGIN}/api/trpc/catalogue.list?input=%7B%7D`);
+    expect(upstream.headers.get("cookie")).toBeNull();
+    expect(upstream.headers.get("authorization")).toBeNull();
+    expect(response.headers.get("cache-control")).toBe("no-store");
+    expect(store.size).toBe(0);
+    expect(isCatalogueApi("/api/trpc/catalogue.get,catalogue.results")).toBe(true);
+    for (const route of ["/api/trpc/submission.create", "/api/trpc/catalogue.list,submission.list", "/api/trpc/curator.list", "/api/trpc/catalogue.", "/api/catalogue.list"])
+      expect(isCatalogueApi(route)).toBe(false);
+    expect(isProxied("/api/trpc/catalogue.list,submission.list")).toBe(true);
   });
   it("preserves authenticated POST and query bytes through direct Functions requests", async () => {
     const fetcher = vi.fn(async () => new Response("{}", { headers: { "cache-control": "public,max-age=600", "cdn-cache-control": "max-age=600" } }));

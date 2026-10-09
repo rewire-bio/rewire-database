@@ -3,7 +3,7 @@ import { spawn } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
 import { setTimeout as sleep } from "node:timers/promises";
-import { buildCatalogue } from "../lib/catalogue-build";
+import type { CatalogueSnapshot } from "../services/omics/src/catalogue-query";
 import { buildUseCases } from "../lib/use-cases-build";
 import { getLiterature } from "../lib/benchmark-literature";
 import { DOMAINS } from "../lib/benchmark-catalog";
@@ -15,7 +15,6 @@ import { recordPageMetadata } from "../lib/record-page";
 import { localRecordPage } from "../lib/record-page-local";
 import { getResearch } from "../services/omics/src/research";
 import { downloadLocations, downloadUrls } from "./download-locations.mjs";
-import { localPageResponse, startLocalPageApi } from "./local-page-api";
 import { checkPageMetadata, checkSitemap, checkSocialImage } from "./seo/check-page-metadata";
 import { utilityPageMetadataContracts } from "./seo/utility-page-metadata";
 import { verifyContributionExport } from "./omics/contribution-export";
@@ -24,9 +23,9 @@ import { cacheableRequest, storableResponse } from "../cloudflare/page-cache.mjs
 
 /**
  * Production check of the assembled frontend, run the way Cloud Run runs it:
- * the container entrypoint, a runtime data pin and the catalogue.page
- * contract (served locally from the importer's builder, with injected
- * failures). By default it renders a bounded representative sample: one page
+ * the container entrypoint reading the prepared release file. Expected
+ * metadata comes from the release's catalogue.json, independently of the
+ * prepared file the server reads. By default it renders a bounded representative sample: one page
  * per kind and alias segment, index, utility, private, download, failure and
  * SEO cases, plus the release data checks. --full renders every record page
  * as an optional audit; it is not part of publication.
@@ -34,30 +33,22 @@ import { cacheableRequest, storableResponse } from "../cloudflare/page-cache.mjs
 const full = process.argv.includes("--full");
 // scripts/build-web.mjs OUTPUT and ENTRYPOINT (that module has top-level await).
 const OUTPUT = "build/web", ENTRYPOINT = "runtime/scripts/server-entry.mjs";
-const API_PORT = 8791, PORT = 8793;
+const PORT = 8793;
 const ORIGIN = "https://benchmarks.rewirebio.io";
 const origin = `http://127.0.0.1:${PORT}`;
 const FRONTEND = "0".repeat(40);
-const FAILURE = "ssr-check-backend-failure", OTHER_RELEASE = "ssr-check-other-release";
 const get = (pathname: string, headers: Record<string, string> = {}) =>
   fetch(new URL(pathname, origin), { headers, redirect: "manual", signal: AbortSignal.timeout(60_000) });
 
 async function main() {
   console.log(JSON.stringify({ release_data: checkReleaseData() }));
-  const { catalogue } = buildCatalogue();
+  const catalogue = JSON.parse(fs.readFileSync("public/omics/catalogue.json", "utf8")) as CatalogueSnapshot;
   const live = catalogue.records.filter((record) => record.status !== "excluded");
   const firstOf = (kind: string) => live.find((record) => record.kind === kind)!;
-  const api = await startLocalPageApi(API_PORT, (url) => {
-    const input = JSON.parse(url.searchParams.get("input") || "{}");
-    if (input.id === FAILURE) return { status: 503, body: { error: { message: "Injected backend failure" } } };
-    if (input.id === OTHER_RELEASE)
-      return { status: 200, body: { result: { data: { ...localRecordPage("result", firstOf("result").id), release_id: "2000-01-01-000000000000" } } } };
-    return localPageResponse(url);
-  });
   const server = spawn(process.execPath, [path.join(OUTPUT, ENTRYPOINT)], {
     stdio: ["ignore", "inherit", "inherit"], detached: process.platform !== "win32",
-    env: { ...process.env, NODE_ENV: "production", PORT: String(PORT), HOSTNAME: "127.0.0.1", REWIRE_DATA_ROOT: process.cwd(),
-      REWIRE_FRONTEND_VERSION: FRONTEND, REWIRE_CATALOGUE_API: `http://127.0.0.1:${API_PORT}` },
+    env: { ...process.env, NODE_ENV: "production", PORT: String(PORT), HOSTNAME: "127.0.0.1", REWIRE_DATA_ROOT: "",
+      REWIRE_FRONTEND_VERSION: FRONTEND },
   });
   try {
     const deadline = Date.now() + 120_000;
@@ -121,7 +112,6 @@ async function main() {
     assert.deepEqual(failures, [], "Rendered pages must meet their search and evidence contracts");
     console.log(`SSR checks passed: ${rendered} pages rendered (${full ? "full corpus" : "representative sample"}).`);
   } finally {
-    api.close();
     try { process.kill(-server.pid!, "SIGTERM"); } catch (error) { if ((error as NodeJS.ErrnoException).code !== "ESRCH") throw error; }
   }
 }
@@ -154,8 +144,6 @@ async function checkContracts(release: string, firstOf: (kind: string) => OmicsR
   }
   assert.equal((await get("/database/result/no-such-record-anywhere/")).status, 404);
   assert.equal((await get(`/database/evaluation/${firstOf("result").id}/`)).status, 404, "Wrong kind is a 404");
-  assert.equal((await get(`/database/result/${FAILURE}/`)).status, 500, "Backend failure is an error, not a 404");
-  assert.equal((await get(`/database/result/${OTHER_RELEASE}/`)).status, 500, "A page from another release is refused");
   assert.equal((await get("/database/model/no-such-record-anywhere/")).status, 404);
   const urls = downloadUrls(downloadLocations(JSON.parse(fs.readFileSync("benchmark-data.lock.json", "utf8")),
     fs.readFileSync("workbench/benchmark-data/website/manifest.json")));
@@ -178,7 +166,7 @@ async function checkContracts(release: string, firstOf: (kind: string) => OmicsR
 }
 
 /** The sitemap lists exactly the indexable canonical pages of the pinned release. */
-function checkSitemapInventory(catalogue: ReturnType<typeof buildCatalogue>["catalogue"], urls: Set<string>) {
+function checkSitemapInventory(catalogue: CatalogueSnapshot, urls: Set<string>) {
   const expected = new Set([
     "/", "/runs/mfass-v2/", "/evidence/", "/audits/", "/coverage/", "/use-cases/", "/investigations/",
     ...getResearch(catalogue).investigations.map((report) => `/investigations/${report.id}/`),

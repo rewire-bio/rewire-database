@@ -4,7 +4,6 @@ import { socialMetadata } from "@/lib/catalogue-sharing";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { buildCatalogue } from "@/lib/catalogue-build";
-import { createEvidenceIndex } from "@/services/omics/src/evidence-table";
 import styles from "@/app/database/database.module.css";
 
 const pageMetadata = {
@@ -22,8 +21,10 @@ export const metadata: Metadata = {
   }),
 };
 export default function EvidenceGuide() {
-  const { catalogue } = buildCatalogue();
-  const rows = createEvidenceIndex(catalogue).all();
+  const { catalogue, query } = buildCatalogue();
+  // Counts prepared once per release by the producer.
+  const evidence = query.evidenceSummary();
+  const kindCount = (kind: string) => query.homeSummary().kinds.find((row) => row.label === kind)?.value || 0;
   const release = `/omics/releases/${catalogue.release_id}`;
   const scopes = [
     [
@@ -47,12 +48,6 @@ export default function EvidenceGuide() {
       "Rewire’s identifiers, classifications, review history and preserved migration fields. These are editorial or administrative records, not experimental observations.",
     ],
   ];
-  const facts = rows.filter((row) =>
-    /\.profile\.facts\.\d+\.value$/.test(row.field_path),
-  );
-  const uniqueFacts = new Map(
-    facts.map((row) => [`${row.record_id}:${row.field_path}`, row]),
-  );
   return (
     <>
       <header className="page-head">
@@ -110,9 +105,7 @@ export default function EvidenceGuide() {
                     <tr key={key}>
                       <th scope="row">{label}</th>
                       <td>
-                        {rows
-                          .filter((row) => row.evidence_scope === key)
-                          .length.toLocaleString("en-GB")}
+                        {(evidence.by_scope[key] || 0).toLocaleString("en-GB")}
                       </td>
                       <td>{explanation}</td>
                     </tr>
@@ -161,24 +154,15 @@ export default function EvidenceGuide() {
             <h2>Coverage and remaining gaps</h2>
             <p>
               This release contains{" "}
-              {
-                catalogue.records.filter((record) => record.kind === "model")
-                  .length
-              }{" "}
+              {kindCount("model")}{" "}
               model records and{" "}
-              {
-                catalogue.records.filter(
-                  (record) => record.kind === "benchmark",
-                ).length
-              }{" "}
+              {kindCount("benchmark")}{" "}
               top-level benchmarks, with methods, configurations, tasks,
               protocols and datasets listed separately. The catalogue’s
               explanatory profiles contain{" "}
-              {uniqueFacts.size.toLocaleString("en-GB")} structured facts,
+              {evidence.facts.toLocaleString("en-GB")} structured facts,
               including{" "}
-              {Array.from(uniqueFacts.values())
-                .filter((row) => row.review_status === "source_checked")
-                .length.toLocaleString("en-GB")}{" "}
+              {(evidence.facts_by_status.source_checked || 0).toLocaleString("en-GB")}{" "}
               source-checked facts. Missingness and applicability are counted
               separately:
             </p>
@@ -187,11 +171,7 @@ export default function EvidenceGuide() {
                 (status) => (
                   <li key={status}>
                     {status.replace(/_/g, " ")}:{" "}
-                    {
-                      Array.from(uniqueFacts.values()).filter(
-                        (row) => row.review_status === status,
-                      ).length
-                    }
+                    {evidence.facts_by_status[status] || 0}
                   </li>
                 ),
               )}
@@ -223,8 +203,8 @@ export default function EvidenceGuide() {
             <p>
               Release {catalogue.release_id}, published{" "}
               {catalogue.released_at.slice(0, 10)}. The table contains{" "}
-              {rows.length.toLocaleString("en-GB")} rows across{" "}
-              {catalogue.records.length.toLocaleString("en-GB")} records. A
+              {evidence.rows.toLocaleString("en-GB")} rows across{" "}
+              {query.homeSummary().records.toLocaleString("en-GB")} records. A
               statement citing two sources occupies two rows; this is not a
               count of independent findings.
             </p>

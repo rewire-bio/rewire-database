@@ -82,7 +82,7 @@ export function PredictiveEntityDetail({ detail }: { detail: RecordDetail }) {
   const family = detail.direct.find(
     (item) =>
       ["family", "variant_of", "alias_of"].includes(item.relation) &&
-      verifiedAssociation(catalogue, record.id, item.relation, item.record.id),
+      verifiedAssociation(query, record.id, item.relation, item.record.id),
   );
   const familyResults = family
     ? query.results({ id: family.record.id, limit: 1 })
@@ -108,12 +108,12 @@ export function PredictiveEntityDetail({ detail }: { detail: RecordDetail }) {
   const usesModels = detail.direct.filter(
     (item) =>
       item.relation === "uses_model" &&
-      verifiedAssociation(catalogue, record.id, item.relation, item.record.id),
+      verifiedAssociation(query, record.id, item.relation, item.record.id),
   );
   const downstream = detail.reverse.filter(
     (item) =>
       item.relation === "uses_model" &&
-      verifiedAssociation(catalogue, item.record.id, item.relation, record.id),
+      verifiedAssociation(query, item.record.id, item.relation, record.id),
   );
   const evaluatedDownstream = downstream
     .map((item) => ({ ...item, counts: query.results({ id: item.record.id, limit: 1 }) }))
@@ -121,21 +121,21 @@ export function PredictiveEntityDetail({ detail }: { detail: RecordDetail }) {
   const memberLinks = detail.reverse.filter(
     (item) =>
       ["family", "variant_of", "alias_of"].includes(item.relation) &&
-      verifiedAssociation(catalogue, item.record.id, item.relation, record.id),
+      verifiedAssociation(query, item.record.id, item.relation, record.id),
   );
   const protocolLinks = uniqueRecords([
     ...detail.direct
       .filter(
         (item) =>
           ["part_of", "evaluates_task"].includes(item.relation) &&
-          verifiedAssociation(catalogue, record.id, item.relation, item.record.id),
+          verifiedAssociation(query, record.id, item.relation, item.record.id),
       )
       .map((item) => item.record),
     ...detail.reverse
       .filter(
         (item) =>
           ["part_of", "evaluates_task"].includes(item.relation) &&
-          verifiedAssociation(catalogue, item.record.id, item.relation, record.id),
+          verifiedAssociation(query, item.record.id, item.relation, record.id),
       )
       .map((item) => item.record),
   ]);

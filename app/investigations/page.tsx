@@ -2,7 +2,6 @@ import { downloadHref } from "@/lib/downloads";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { buildCatalogue } from "@/lib/catalogue-build";
-import { getResearch } from "@/services/omics/src/research";
 import { InvestigationList } from "@/components/catalogue/ResearchInvestigation";
 import styles from "@/components/catalogue/Research.module.css";
 
@@ -13,8 +12,8 @@ export const metadata: Metadata = {
 };
 
 export default function InvestigationsPage() {
-  const { catalogue } = buildCatalogue();
-  const research = getResearch(catalogue);
+  const { catalogue, query } = buildCatalogue();
+  const research = query.research();
   return <>
     <header className="page-head"><div className="wrap">
       <span className="kick">Evidence and investigation</span>
@@ -35,7 +34,7 @@ export default function InvestigationsPage() {
         <h3>Start with the evidence</h3>
         <p>Dataset and evaluation pages assess four separate capabilities: replay metrics, investigate discrepancies, run locally and validate independently. Missing evidence is listed explicitly. Complete evidence does not imply that the necessary files are installed on your computer.</p>
         <p><Link href="/?kind=dataset#browse">Explore datasets and evidence gaps</Link></p>
-        {catalogue.research && <p><a href={downloadHref(`/omics/releases/${catalogue.release_id}/research-readiness.json`)}>Download readiness assessments (gzip)</a> · <a href={downloadHref(`/omics/releases/${catalogue.release_id}/research-manifests.json`)}>Artifact manifests (gzip)</a> · <a href={downloadHref(`/omics/releases/${catalogue.release_id}/research-investigations.json`)}>Reviewed reports (gzip)</a></p>}
+        {catalogue.coverage.research_schema_version !== undefined && <p><a href={downloadHref(`/omics/releases/${catalogue.release_id}/research-readiness.json`)}>Download readiness assessments (gzip)</a> · <a href={downloadHref(`/omics/releases/${catalogue.release_id}/research-manifests.json`)}>Artifact manifests (gzip)</a> · <a href={downloadHref(`/omics/releases/${catalogue.release_id}/research-investigations.json`)}>Reviewed reports (gzip)</a></p>}
       </section>
     </div></section>
   </>;

@@ -1,11 +1,10 @@
 import test, { beforeEach, after } from "node:test";
 import assert from "node:assert/strict";
-import { randomUUID, createHash } from "node:crypto";
+import { randomUUID } from "node:crypto";
 import { appRouter } from "../src/router.js";
 import { firebase } from "../src/firebase.js";
 import { context } from "../src/auth.js";
-import { importRelease } from "../src/catalogue.js";
-import { activateRelease } from "../src/catalogue-service.js";
+import { ReleaseNotServed, setPublishedCatalogue } from "../src/published-catalogue.js";
 import { drainOutbox, MailDeliveryError } from "../src/outbox.js";
 import { fixture, proposalInput } from "./fixtures.js";
 import { createAppServer } from "../src/server.js";
@@ -56,6 +55,19 @@ async function signIn(email = `${randomUUID()}@example.org`) {
 }
 const emulatorTest = (name: string, run: () => Promise<void>) =>
   test(name, { skip: !enabled }, run);
+/** The live public catalogue serving one release, as publication checks see it. */
+function servePublished(snapshot: { release_id: string; records: { id: string; kind: string; status: string }[] }) {
+  setPublishedCatalogue({
+    async records(releaseId, ids) {
+      if (releaseId !== snapshot.release_id) throw new ReleaseNotServed(releaseId);
+      return ids.map((id) => {
+        const record = snapshot.records.find((item) => item.id === id && item.status !== "excluded");
+        return record ? { kind: record.kind, status: record.status } : null;
+      });
+    },
+  });
+}
+after(() => setPublishedCatalogue());
 emulatorTest(
   "Hosting API paths retain authenticated JSON queries and mutations",
   async () => {
@@ -247,13 +259,8 @@ emulatorTest(
         }),
       /requires released/,
     );
-    const snapshot = Buffer.from(JSON.stringify(fixture()));
-    const manifest = {
-      release_id: "test-release",
-      schema_version: "1.0",
-      catalogue_sha256: createHash("sha256").update(snapshot).digest("hex"),
-    };
-    await importRelease(firebase().db, snapshot, manifest);
+    const snapshot = { ...fixture(), release_id: "test-release" };
+    servePublished({ ...snapshot, release_id: "other-release" });
     await assert.rejects(
       () =>
         curator.curator.transition({
@@ -265,7 +272,7 @@ emulatorTest(
         }),
       /not published/,
     );
-    await activateRelease(firebase().db, "test-release");
+    servePublished(snapshot);
     await assert.rejects(
       () =>
         curator.curator.transition({
@@ -296,44 +303,6 @@ emulatorTest(
     assert.ok(
       (await author.submission.get({ id: created.id })).review_notes.length >=
         4,
-    );
-  },
-);
-emulatorTest(
-  "release imports validate checksums, are immutable and idempotent",
-  async () => {
-    const snapshot = Buffer.from(JSON.stringify(fixture()));
-    const manifest = {
-      release_id: "test-release",
-      schema_version: "1.0",
-      catalogue_sha256: createHash("sha256").update(snapshot).digest("hex"),
-    };
-    await assert.rejects(
-      () =>
-        importRelease(firebase().db, snapshot, {
-          ...manifest,
-          catalogue_sha256: "wrong",
-        }),
-      /hash/,
-    );
-    assert.equal(
-      (await importRelease(firebase().db, snapshot, manifest)).imported,
-      true,
-    );
-    assert.equal(
-      (await importRelease(firebase().db, snapshot, manifest)).imported,
-      false,
-    );
-    const changed = Buffer.from(
-      JSON.stringify({ ...fixture(), coverage: { changed: true } }),
-    );
-    await assert.rejects(
-      () =>
-        importRelease(firebase().db, changed, {
-          ...manifest,
-          catalogue_sha256: createHash("sha256").update(changed).digest("hex"),
-        }),
-      /immutable/,
     );
   },
 );
@@ -615,13 +584,7 @@ emulatorTest(
     const snapshot = fixture();
     snapshot.release_id = "unchecked-release";
     snapshot.records[5].status = "needs_review";
-    const bytes = Buffer.from(JSON.stringify(snapshot));
-    await importRelease(firebase().db, bytes, {
-      release_id: snapshot.release_id,
-      schema_version: "1.0",
-      catalogue_sha256: createHash("sha256").update(bytes).digest("hex"),
-    });
-    await activateRelease(firebase().db, snapshot.release_id);
+    servePublished(snapshot);
     await assert.rejects(
       () =>
         curator.curator.transition({
@@ -810,160 +773,6 @@ emulatorTest(
     await assert.rejects(
       () => author.submission.list({ cursor: queue.next_cursor! }),
       /Cursor/,
-    );
-  },
-);
-
-emulatorTest(
-  "published catalogue HTTP queries remain public with contributions disabled and roll back atomically",
-  async () => {
-    const { activateRelease } = await import("../src/catalogue-service.js");
-    const { deployedContributionHttpHandler } =
-      await import("../src/http-handler.js");
-    const snapshot = fixture();
-    snapshot.release_id = "catalogue-public-one";
-    const bytes = Buffer.from(JSON.stringify(snapshot));
-    await importRelease(firebase().db, bytes, {
-      release_id: snapshot.release_id,
-      schema_version: snapshot.schema_version,
-      catalogue_sha256: createHash("sha256").update(bytes).digest("hex"),
-    });
-    const anonymous = appRouter.createCaller({ user: null });
-    await assert.rejects(
-      () => anonymous.catalogue.release({ release_id: snapshot.release_id }),
-      /not found/,
-    );
-    await activateRelease(firebase().db, snapshot.release_id);
-    assert.equal(
-      (await anonymous.catalogue.release()).release_id,
-      snapshot.release_id,
-    );
-    const server = createServer(deployedContributionHttpHandler);
-    await new Promise<void>((resolve) =>
-      server.listen(0, "127.0.0.1", resolve),
-    );
-    const base = `http://127.0.0.1:${(server.address() as { port: number }).port}/api/trpc`;
-    const previous = process.env.OMICS_CONTRIBUTIONS_ENABLED;
-    delete process.env.OMICS_CONTRIBUTIONS_ENABLED;
-    try {
-      const publicClient = createTRPCClient<AppRouter>({
-        links: [httpBatchLink({ url: base })],
-      });
-      const [detail, results] = await Promise.all([
-        publicClient.catalogue.get.query({
-          release_id: snapshot.release_id,
-          id: "model-one",
-        }),
-        publicClient.catalogue.results.query({
-          release_id: snapshot.release_id,
-          id: "model-one",
-        }),
-      ]);
-      assert.equal(detail?.record.id, "model-one");
-      assert.equal(results.items[0].sources[0].id, "source-one");
-      const chart = await publicClient.catalogue.comparison.query({
-        release_id: snapshot.release_id,
-        id: "model-one",
-        panel_id: "unknown",
-      });
-      assert.equal(chart.release_id, snapshot.release_id);
-      assert.equal(chart.panel, null);
-      const response = await fetch(
-        `${base}/catalogue.release?input=${encodeURIComponent(JSON.stringify({ release_id: snapshot.release_id }))}`,
-      );
-      assert.equal(response.status, 200);
-      assert.match(response.headers.get("cache-control") || "", /^public/);
-      const privateResponse = await fetch(`${base}/submission.list`);
-      assert.equal(privateResponse.status, 503);
-      assert.equal(privateResponse.headers.get("cache-control"), "no-store");
-      const mixed = await fetch(
-        `${base}/catalogue.release,submission.list?batch=1&input=${encodeURIComponent(JSON.stringify({ 0: {}, 1: {} }))}`,
-      );
-      assert.equal(mixed.status, 503);
-      assert.equal(mixed.headers.get("cache-control"), "no-store");
-      snapshot.release_id = "catalogue-public-two";
-      const next = Buffer.from(JSON.stringify(snapshot));
-      await importRelease(firebase().db, next, {
-        release_id: snapshot.release_id,
-        schema_version: snapshot.schema_version,
-        catalogue_sha256: createHash("sha256").update(next).digest("hex"),
-      });
-      await activateRelease(firebase().db, snapshot.release_id);
-      assert.equal(
-        (await anonymous.catalogue.release()).release_id,
-        "catalogue-public-two",
-      );
-      assert.equal(
-        (
-          await anonymous.catalogue.release({
-            release_id: "catalogue-public-one",
-          })
-        ).release_id,
-        "catalogue-public-one",
-      );
-      await activateRelease(firebase().db, "catalogue-public-one");
-      assert.equal(
-        (await anonymous.catalogue.release()).release_id,
-        "catalogue-public-one",
-      );
-      await firebase()
-        .db.doc("catalogueReleases/incomplete-release")
-        .set({ state: "staging", record_count: 1 });
-      await assert.rejects(
-        () => activateRelease(firebase().db, "incomplete-release"),
-        /complete/,
-      );
-    } finally {
-      if (previous === undefined)
-        delete process.env.OMICS_CONTRIBUTIONS_ENABLED;
-      else process.env.OMICS_CONTRIBUTIONS_ENABLED = previous;
-      server.closeAllConnections();
-      await new Promise<void>((resolve, reject) =>
-        server.close((err) => (err ? reject(err) : resolve())),
-      );
-    }
-  },
-);
-
-emulatorTest(
-  "release publication refuses damaged records or incomplete serving snapshots",
-  async () => {
-    const { activateRelease } = await import("../src/catalogue-service.js");
-    const snapshot = fixture();
-    snapshot.release_id = "catalogue-damaged-release";
-    const bytes = Buffer.from(JSON.stringify(snapshot));
-    await importRelease(firebase().db, bytes, {
-      release_id: snapshot.release_id,
-      schema_version: snapshot.schema_version,
-      catalogue_sha256: createHash("sha256").update(bytes).digest("hex"),
-    });
-    const ref = firebase()
-      .db.collection("catalogueReleases")
-      .doc(snapshot.release_id);
-    await ref
-      .collection("records")
-      .doc("model-one")
-      .update({ name: "Unexpected change" });
-    await assert.rejects(
-      () => activateRelease(firebase().db, snapshot.release_id),
-      /integrity/,
-    );
-    assert.equal(
-      (await firebase().db.doc("cataloguePublication/active").get()).exists,
-      false,
-    );
-    await ref
-      .collection("records")
-      .doc("model-one")
-      .update({ name: "model-one" });
-    await ref.collection("queryChunks").doc("000000").delete();
-    await assert.rejects(
-      () => activateRelease(firebase().db, snapshot.release_id),
-      /Incomplete/,
-    );
-    assert.equal(
-      (await firebase().db.doc("cataloguePublication/active").get()).exists,
-      false,
     );
   },
 );
@@ -1235,10 +1044,6 @@ emulatorTest("disabled intake and private recovery preserve API ownership, revie
     const created = await own.submission.create.mutate(payload);
     await curator.curator.transition.mutate({ id: created.id, status: "in_review", note: "Synthetic recovery review only; no publication." });
     const before = await own.submission.get.query({ id: created.id });
-    const snapshot = fixture();
-    const bytes = Buffer.from(JSON.stringify(snapshot));
-    await importRelease(firebase().db, bytes, { release_id: snapshot.release_id, schema_version: snapshot.schema_version, catalogue_sha256: createHash("sha256").update(bytes).digest("hex") });
-    await activateRelease(firebase().db, snapshot.release_id);
     process.env.OMICS_CONTRIBUTIONS_ENABLED = "false";
     for (const name of ["submission.list", "curator.list"]) {
       const response = await fetch(`${endpoint}/${name}?input=%7B%7D`, { headers: { authorization: `Bearer ${owner.token}` } });
@@ -1246,7 +1051,6 @@ emulatorTest("disabled intake and private recovery preserve API ownership, revie
     }
     const denied = await fetch(`${endpoint}/submission.create`, { method: "POST", headers: { "content-type": "application/json", authorization: `Bearer ${owner.token}` }, body: JSON.stringify(payload) });
     assert.equal(denied.status, 503);
-    assert.equal((await fetch(`${endpoint}/catalogue.release?input=%7B%7D`)).status, 200);
     const saved = await backupPrivate(firebase().db, project, file);
     assert.equal((await stat(dir)).mode & 0o777, 0o700);
     const content = await readFile(file, "utf8");
@@ -1255,7 +1059,6 @@ emulatorTest("disabled intake and private recovery preserve API ownership, revie
     for (const collection of privateCollections) await firebase().db.recursiveDelete(firebase().db.collection(collection));
     const restored = await restorePrivate(firebase().db, project, file);
     assert.equal(restored.documents, saved.documents);
-    assert.equal((await fetch(`${endpoint}/catalogue.release?input=%7B%7D`)).status, 200);
     process.env.OMICS_CONTRIBUTIONS_ENABLED = "true";
     const recovered = await own.submission.get.query({ id: created.id });
     assert.deepEqual(recovered, before);
@@ -1269,7 +1072,6 @@ emulatorTest("disabled intake and private recovery preserve API ownership, revie
     assert.equal((await firebase().db.collection("privateOutbox").get()).size, outboxBefore.size);
     assert.ok(outboxBefore.docs.every(d => d.data().state === "pending" && d.data().attempts === 0));
     await assert.rejects(own.submission.create.mutate({ ...payload, contribution: { ...payload.contribution, title: "Changed payload" } }), /idempotency/);
-    assert.equal((await firebase().db.collection("catalogueReleases").doc(snapshot.release_id).collection("records").get()).docs.some(d => JSON.stringify(d.data()).includes(created.id)), false);
     assert.equal(process.env.OMICS_MAIL_ENABLED, "false");
   } finally {
     if (previousIntake === undefined) delete process.env.OMICS_CONTRIBUTIONS_ENABLED; else process.env.OMICS_CONTRIBUTIONS_ENABLED = previousIntake;

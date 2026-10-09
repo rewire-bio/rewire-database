@@ -236,15 +236,6 @@ export function ResultDetail({ page }: { page: ResultRecordPage }) {
             />
             <section id="sources" className={styles.section}>
               <h2>Sources and history</h2>
-              {page.audit_history && (
-                <p>
-                  <Link
-                    href={`/audits/?record=${encodeURIComponent(record.id)}`}
-                  >
-                    View linked audit checks and correction history
-                  </Link>
-                </p>
-              )}
               <p className={styles.muted}>
                 Release {page.release_id} · Record review:{" "}
                 {record.status.replace(/_/g, " ")}

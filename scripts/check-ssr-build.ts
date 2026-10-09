@@ -47,7 +47,7 @@ async function main() {
   const firstOf = (kind: string) => live.find((record) => record.kind === kind)!;
   const server = spawn(process.execPath, [path.join(OUTPUT, ENTRYPOINT)], {
     stdio: ["ignore", "inherit", "inherit"], detached: process.platform !== "win32",
-    env: { ...process.env, NODE_ENV: "production", PORT: String(PORT), HOSTNAME: "127.0.0.1", REWIRE_DATA_ROOT: process.cwd(),
+    env: { ...process.env, NODE_ENV: "production", PORT: String(PORT), HOSTNAME: "127.0.0.1", REWIRE_DATA_ROOT: "",
       REWIRE_FRONTEND_VERSION: FRONTEND },
   });
   try {

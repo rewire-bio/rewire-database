@@ -9,6 +9,7 @@ import type {
   DocumentSnapshot,
 } from "firebase-admin/firestore";
 import { contribution, type Contribution } from "./validation.js";
+import { publishedCatalogue, ReleaseNotServed, type PublishedRecord } from "./published-catalogue.js";
 
 export const statuses = [
   "submitted",
@@ -352,6 +353,16 @@ export async function transition(
   releaseId?: string,
 ) {
   const ref = submissions(db).doc(id);
+  // Published records are checked against the live public catalogue before
+  // the transaction; the release is immutable, so the answer cannot change.
+  let records: (PublishedRecord | null)[] | undefined;
+  if (status === "published" && releaseId && publishedIds.length) {
+    try {
+      records = await publishedCatalogue().records(releaseId, publishedIds);
+    } catch (error) {
+      if (!(error instanceof ReleaseNotServed)) throw error;
+    }
+  }
   return db.runTransaction(async (tx) => {
     const doc = await tx.get(ref);
     if (!doc.exists) fail("NOT_FOUND", "Submission not found");
@@ -361,25 +372,12 @@ export async function transition(
     if (status === "published") {
       if (!releaseId || !publishedIds.length)
         fail("CONFLICT", "Publication requires released record IDs.");
-      const release = db.collection("catalogueReleases").doc(releaseId);
-      const releaseDoc = await tx.get(release);
-      if (
-        releaseDoc.data()?.state !== "ready" ||
-        !releaseDoc.data()?.published_at
-      )
-        fail("CONFLICT", "The release is not published.");
-      const records = await Promise.all(
-        publishedIds.map((recordId) =>
-          tx.get(release.collection("records").doc(recordId)),
-        ),
-      );
+      if (!records) fail("CONFLICT", "The release is not published.");
       if (
         records.some(
           (record) =>
-            !record.exists ||
-            ["excluded", "disputed", "superseded"].includes(
-              record.data()?.status,
-            ),
+            !record ||
+            ["excluded", "disputed", "superseded"].includes(record.status),
         )
       )
         fail(
@@ -393,7 +391,7 @@ export async function transition(
             "Publication must include the corrected target record.",
           );
       } else if (
-        !records.some((record) => record.data()?.kind === existing.type)
+        !records.some((record) => record?.kind === existing.type)
       ) {
         fail("CONFLICT", "Publication must include the submitted record kind.");
       }
@@ -401,8 +399,8 @@ export async function transition(
         existing.type === "result" &&
         !records.some(
           (record) =>
-            record.data()?.kind === "result" &&
-            ["source_checked", "reproduced"].includes(record.data()?.status),
+            record?.kind === "result" &&
+            ["source_checked", "reproduced"].includes(record.status),
         )
       )
         fail(

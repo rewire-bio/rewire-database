@@ -1,7 +1,8 @@
 # Frontend image for Cloud Run. Build context is the checked standalone build:
 #   npm run build && docker build -f Dockerfile --build-arg REWIRE_FRONTEND_VERSION=<commit> build/web
-# The image holds code only. The revision's REWIRE_DATA_PIN selects the data
-# release, which the entrypoint fetches and verifies at startup.
+# The image embeds its data release under data/: the prepared SQLite file the
+# pages and public catalogue API read, verified against the lock at build time
+# and checked by the entrypoint at startup. A data release is a new image.
 FROM node:24-bookworm-slim
 ARG REWIRE_FRONTEND_VERSION
 ENV NODE_ENV=production \

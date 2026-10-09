@@ -1,10 +1,11 @@
 import firebase from "../firebase.json" with { type: "json" };
-import { FUNCTIONS_ORIGIN, FUNCTIONS_PATH, AUTH_ORIGIN, backendUrl, isDownload, isProxied } from "./routing.mjs";
+import { FUNCTIONS_ORIGIN, FUNCTIONS_PATH, AUTH_ORIGIN, backendUrl, isCatalogueApi, isDownload, isProxied } from "./routing.mjs";
 import { IDENTITY_TTL_MS, browserResponse, cacheableRequest, cacheKey, edgeCopy, privatePath, responseIdentity, storableResponse } from "./page-cache.mjs";
 
-// The Worker carries no data release. Pages, assets and download redirects
-// come from the frontend server on Cloud Run, whose revision fixes the data
-// pin; the cache identity is whatever that origin last reported.
+// The Worker carries no data release. Pages, assets, download redirects and
+// the public catalogue API come from the frontend server on Cloud Run, whose
+// image fixes the data release; the cache identity is whatever that origin
+// last reported.
 let observed = null;
 export function resetObservedIdentity() { observed = null; }
 
@@ -37,8 +38,8 @@ async function frontend(request, env, ctx, url) {
   const upstream = new URL(url.pathname + url.search, origin);
   const forwarded = new Request(upstream, request);
   forwarded.headers.delete("host");
-  // Download redirects need no credentials; never pass them along.
-  if (isDownload(url.pathname)) for (const name of ["cookie", "authorization"]) forwarded.headers.delete(name);
+  // Download redirects and the public catalogue API need no credentials; never pass them along.
+  if (isDownload(url.pathname) || isCatalogueApi(url.pathname)) for (const name of ["cookie", "authorization"]) forwarded.headers.delete(name);
   const response = await fetch(forwarded, UPSTREAM_FETCH);
   const headers = new Headers(response.headers);
   if (privatePath(url.pathname)) noStore(headers);

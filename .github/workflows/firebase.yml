@@ -13,8 +13,8 @@ permissions:
   contents: read
 jobs:
   # Pull requests: tests and lint, the production build plus its bounded SSR
-  # check, and the API. The build holds no data, so PRs build exactly what
-  # publication builds; only publication touches production.
+  # check, and the API. The build embeds the pinned release, so PRs build
+  # exactly what publication builds; only publication touches production.
   pr-tests:
     concurrency:
       group: database-pr-tests-${{ github.ref }}
@@ -243,10 +243,9 @@ jobs:
           java-version: '21'
       - name: Install and build the API
         run: npm ci --prefix services/omics && npm --prefix services/omics run build && npm --prefix services/omics run check:functions:load
-      - name: Verify API, pages and submission integration in local emulators
-        run: npx firebase emulators:exec --project demo-rewire-omics --only functions,auth,firestore 'npm --prefix services/omics test && node scripts/check-api-hosting.mjs http://127.0.0.1:5001/demo-rewire-omics/europe-west2/contributions'
+      - name: Verify submissions and curation in local emulators
+        run: npx firebase emulators:exec --project demo-rewire-omics --only functions,auth,firestore 'npm --prefix services/omics test'
         env:
-          # The HTTP probe explicitly verifies the disabled-intake contract.
           OMICS_CONTRIBUTIONS_ENABLED: 'false'
           OMICS_MAIL_ENABLED: 'false'
       - name: Package the checked frontend and release identity
@@ -328,13 +327,13 @@ jobs:
       - name: Select SHA-verified current payloads
         if: steps.preflight.outputs.publish == 'true' && steps.current-data-cache.outputs.cache-hit != 'true'
         run: node scripts/select-current-data.mjs
-      - name: Hydrate only current API artifacts
+      - name: Hydrate the current release and its prepared file
         if: steps.preflight.outputs.publish == 'true'
         run: node scripts/deployment-metrics.mjs run publication_hydration -- npm run data:prepare -- --current-only
       - name: Restore the checked frontend and release identity
         if: steps.preflight.outputs.publish == 'true'
         run: node scripts/deployment-metrics.mjs run artifact_restore -- node scripts/publication-artifact.mjs restore workbench/checked-publication
-      - name: Inspect current API release without Google credentials
+      - name: Inspect whether the backend changed
         id: api-plan
         if: steps.preflight.outputs.publish == 'true'
         run: node scripts/deploy-independent-frontend.mjs --inspect
@@ -345,7 +344,7 @@ jobs:
         id: final-preflight
         if: steps.preflight.outputs.publish == 'true'
         run: node scripts/publication-preflight.mjs --refresh-ui-base
-      # Cloud Run publication and page readiness both need Google credentials.
+      # Cloud Run publication needs Google credentials.
       - name: Authenticate to Google
         if: steps.final-preflight.outputs.publish == 'true'
         uses: google-github-actions/auth@v2
@@ -360,7 +359,7 @@ jobs:
         run: gcloud auth configure-docker europe-west2-docker.pkg.dev --quiet
       - name: Check independent backend deployment state
         id: backend
-        if: steps.final-preflight.outputs.publish == 'true' && (steps.api-plan.outputs.data_required == 'true' || steps.api-plan.outputs.backend_required == 'true')
+        if: steps.final-preflight.outputs.publish == 'true' && steps.api-plan.outputs.backend_required == 'true'
         run: node scripts/backend-deployment.mjs
         env:
           GCLOUD_PROJECT: ${{ vars.FIREBASE_PROJECT_ID }}
@@ -375,7 +374,7 @@ jobs:
         env:
           GCLOUD_PROJECT: ${{ vars.FIREBASE_PROJECT_ID }}
           NODE_ENV: production
-      - name: Publish data, prepared pages and the Cloud Run frontend with rollback
+      - name: Publish the Cloud Run frontend and its embedded release with rollback
         if: steps.final-preflight.outputs.publish == 'true'
         run: node scripts/deployment-metrics.mjs run independent_publication -- node scripts/deploy-independent-frontend.mjs
         env:

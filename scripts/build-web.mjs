@@ -4,19 +4,34 @@ import os from 'node:os';
 import path from 'node:path';
 import { spawn, spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
+import { verifyServing } from './fetch-serving-data.mjs';
 
-// The production frontend: Next's standalone server, its static assets and the
-// public files it serves, assembled for the container image. Release data and
-// downloads are excluded; they are served by the API and GitHub.
+// The production image: Next's standalone server, its static assets and public
+// files, plus the pinned release under data/: the prepared SQLite file that
+// pages and the public API read, and the few small files pages render.
+// Downloads stay on GitHub. A data release is a new image.
 export const OUTPUT = 'build/web';
+export const DATA = 'data';
 const EXCLUDED_PUBLIC = new Set(['omics', 'benchmark-literature']);
-export const RUNTIME_FILES = ['scripts/server-entry.mjs', 'scripts/runtime-data.mjs', 'scripts/prepare-benchmark-data.mjs',
-  'scripts/download-locations.mjs'];
+export const RUNTIME_FILES = ['scripts/server-entry.mjs', 'scripts/prepare-benchmark-data.mjs',
+  'scripts/download-locations.mjs', 'scripts/fetch-serving-data.mjs'];
 export const ENTRYPOINT = 'runtime/scripts/server-entry.mjs';
 const MAX_FILE_BYTES = 50 * 1024 ** 2;
 
-// Producer files compiled into the image; the entrypoint refuses a pin that changes them.
-export const COMPILED_DATA = ['lib/generated-benchmark-catalog.ts'];
+/** Checkout files the pages read, by destination. The prepared file holds everything else. */
+export function renderFiles(lock, root) {
+  const serving = verifyServing(lock);
+  const releases = path.join(root, 'data/omics/releases');
+  return [
+    'benchmark-data.lock.json', 'website/manifest.json', `serving/${serving.file}`,
+    'public/omics/manifest.json', 'public/omics/refresh.json', `public/omics/coverage/${lock.release_id}.json`,
+    'data/benchmark-literature/papers.json', 'data/benchmark-literature/results.csv', 'data/omics/scope-audit.jsonl',
+    'data/benchmark-runs/mfass-v2.json',
+    // Release receipts listed by the updates page and feed.
+    ...(fs.existsSync(releases) ? fs.readdirSync(releases).filter(name => /^[^/]+\.json$/.test(name)).map(name => `data/omics/releases/${name}`) : []),
+  ];
+}
+const checkoutSource = { 'website/manifest.json': 'workbench/benchmark-data/website/manifest.json' };
 // Modules the server cannot start without; the image must contain them itself.
 const RUNTIME_MODULES = ['next', 'react', 'react-dom', 'styled-jsx', '@swc/helpers'];
 
@@ -48,23 +63,39 @@ export function assembleStandalone(root = process.cwd()) {
     fs.mkdirSync(path.dirname(path.join(output, 'runtime', file)), { recursive: true });
     fs.copyFileSync(path.join(root, file), path.join(output, 'runtime', file));
   }
-  fs.writeFileSync(path.join(output, 'runtime/compiled-data.json'), JSON.stringify(Object.fromEntries(COMPILED_DATA.map(file =>
-    [file, crypto.createHash('sha256').update(fs.readFileSync(path.join(root, file))).digest('hex')]))) + '\n');
-  return verifyStandalone(output);
+  const lock = JSON.parse(fs.readFileSync(path.join(root, 'benchmark-data.lock.json'), 'utf8'));
+  for (const destination of renderFiles(lock, root)) {
+    const source = path.join(root, checkoutSource[destination] || destination);
+    if (!fs.existsSync(source)) throw new Error(`Release file missing from the checkout: ${destination}; run npm run data:prepare`);
+    fs.mkdirSync(path.dirname(path.join(output, DATA, destination)), { recursive: true });
+    fs.copyFileSync(source, path.join(output, DATA, destination));
+  }
+  return verifyStandalone(output, lock);
 }
 
-/** The server must never be able to read the release from its own image. */
-export function verifyStandalone(output) {
+/** Release data ships only as the pinned files under data/, and the prepared file matches the lock. */
+export function verifyStandalone(output, lock) {
   const files = walk(output);
+  const expected = new Set(renderFiles(lock, path.join(output, DATA)).map(name => `${DATA}/${name}`));
+  const serving = `${DATA}/serving/${verifyServing(lock).file}`;
   let bytes = 0;
   for (const name of files) {
     const size = fs.statSync(path.join(output, name)).size;
     bytes += size;
-    if (/(^|\/)(public\/omics|data\/omics|workbench)\//.test(name) || /(^|\/)(catalogue|benchmark-data\.lock)\.json$/.test(name))
-      throw new Error(`Release data must not ship in the frontend image: ${name}`);
+    if (name.startsWith(`${DATA}/`)) {
+      if (!expected.has(name)) throw new Error(`Unexpected release file in the image: ${name}`);
+      continue;
+    }
+    if (/(^|\/)(public\/omics|data\/omics|workbench|serving)\//.test(name) || /(^|\/)(catalogue|benchmark-data\.lock)\.json$/.test(name) || name.endsWith('.sqlite'))
+      throw new Error(`Release data must ship only under ${DATA}/: ${name}`);
     if (size > MAX_FILE_BYTES) throw new Error(`Unexpectedly large frontend file: ${name} (${size} bytes)`);
   }
-  if (!files.includes('server.js') || !files.includes(ENTRYPOINT) || !files.includes('runtime/compiled-data.json') ||
+  for (const name of expected) if (!files.includes(name)) throw new Error(`Release file missing from the image: ${name}`);
+  const embedded = JSON.parse(fs.readFileSync(path.join(output, DATA, 'benchmark-data.lock.json'), 'utf8'));
+  if (JSON.stringify(embedded) !== JSON.stringify(lock)) throw new Error('Embedded lock differs from the checkout lock');
+  const digest = crypto.createHash('sha256').update(fs.readFileSync(path.join(output, serving))).digest('hex');
+  if (digest !== lock.serving.sha256) throw new Error(`Prepared release file ${digest} differs from the lock`);
+  if (!files.includes('server.js') || !files.includes(ENTRYPOINT) ||
       !files.some(name => name.startsWith('.next/static/'))) throw new Error('Incomplete standalone frontend');
   for (const module of RUNTIME_MODULES)
     if (!files.includes(`node_modules/${module}/package.json`)) throw new Error(`Runtime dependency missing from the image: ${module}`);
@@ -77,8 +108,8 @@ export function verifyStandalone(output) {
   return { files: files.length, bytes };
 }
 
-/** The image holds code only. Building against an empty data root makes any
- * build-time read of a release fail, so the image cannot embed one. */
+/** Pages render on request. Building against an empty data root makes any
+ * build-time read of a release fail, so no page is prerendered with data. */
 function nextBuild(root) {
   const empty = fs.mkdtempSync(path.join(os.tmpdir(), 'rewire-build-without-data-'));
   return new Promise((resolve, reject) => {

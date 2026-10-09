@@ -10,7 +10,7 @@ const commit = 'a'.repeat(40);
 const release_id = '2026-10-07-aaaaaaaaaaaa';
 const fingerprints = {data: 'b'.repeat(64), backend: 'c'.repeat(64), hosting: 'd'.repeat(64), frontend: 'e'.repeat(64)};
 const manifest = JSON.stringify({release_id});
-const receipt = {schema: 3, producer_repository: 'rewire-bio/rewire-benchmark-data', producer_revision: '1'.repeat(40), producer_manifest_sha256: '2'.repeat(64),
+const receipt = {schema: 4, producer_repository: 'rewire-bio/rewire-benchmark-data', producer_revision: '1'.repeat(40), producer_manifest_sha256: '2'.repeat(64),
   commit, frontend_version: commit, release_id, fingerprints, manifest_sha256: createHash('sha256').update(manifest).digest('hex')};
 async function file(root: string, name: string, content: string) {
   await mkdir(path.dirname(path.join(root, name)), {recursive: true});

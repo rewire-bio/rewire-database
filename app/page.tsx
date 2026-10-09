@@ -77,7 +77,7 @@ export default function BenchmarksPage() {
           compact
           data={readRefresh(undefined, catalogue.release_id)}
         />
-        <CatalogueEvidence catalogue={catalogue} />
+        <CatalogueEvidence query={query} />
         <CatalogueDownloads
           releaseId={catalogue.release_id}
           releasedAt={catalogue.released_at}

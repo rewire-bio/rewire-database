@@ -102,3 +102,4 @@ gha-creds-*.json
 
 # Verified producer download inventory
 /lib/generated-download-locations.json
+/serving/

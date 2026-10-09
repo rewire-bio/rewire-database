@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
+import { preparedFromSnapshot } from "./helpers/prepared";
 import { renderToStaticMarkup } from "react-dom/server";
 import {
   createCatalogueQuery,
@@ -34,7 +35,7 @@ const fixture = vi.hoisted(() => ({
 vi.mock("../lib/catalogue-build", () => ({
   buildCatalogue: () => ({
     catalogue: fixture.snapshot!,
-    query: createCatalogueQuery(fixture.snapshot!),
+    query: preparedFromSnapshot(fixture.snapshot!),
   }),
 }));
 

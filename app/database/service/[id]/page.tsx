@@ -3,17 +3,17 @@ import { recordSearchMetadata } from "@/lib/catalogue-seo";
 import type { Metadata } from "next";
 import { buildCatalogue } from "@/lib/catalogue-build";
 import { recordRouteKinds } from "@/lib/omics";
-import { getDetailOr404 } from "@/lib/entity-detail";
+import { getDetailOr404, relatedRecords } from "@/lib/entity-detail";
 import { PredictiveEntityDetail } from "@/app/database/_entities/predictive";
 
 type Params = { id: string };
 const KIND = "service" as const;
 
 export function generateMetadata({ params }: { params: Params }): Metadata {
-  const { catalogue, query } = buildCatalogue();
+  const { query } = buildCatalogue();
   const record = query.record(params.id);
   if (!record || !recordRouteKinds(record).includes(KIND)) return {};
-  const metadata = recordSearchMetadata(record, catalogue.records);
+  const metadata = recordSearchMetadata(record, relatedRecords(query, record));
   return {
     ...metadata,
     ...socialMetadata({

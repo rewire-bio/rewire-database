@@ -1,4 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { preparedFromSnapshot } from "./helpers/prepared";
 import { act, create, type ReactTestRenderer } from "react-test-renderer";
 import { renderToStaticMarkup } from "react-dom/server";
 import { CatalogueDownloads } from "../components/catalogue/CatalogueDownloads";
@@ -47,7 +48,7 @@ describe("catalogue information panels", () => {
     const reproduced = { ...record("reproduced", "result"), status: "reproduced" as const };
     const records = [benchmark, covered, evaluation, published, reproduced, source].map((item) => ({ ...item, facets: { areas: ["dna-genomes"] } }));
     const catalogue: CatalogueSnapshot = { schema_version: "1.1", release_id: "fixture", released_at: "2026-10-01T00:00:00Z", coverage: { note: "Dated collection" }, records };
-    const html = renderToStaticMarkup(<CatalogueEvidence catalogue={catalogue} />);
+    const html = renderToStaticMarkup(<CatalogueEvidence query={preparedFromSnapshot(catalogue)} />);
     expect(html).toContain("1 source-checked published results");
     expect(html).toContain("1 results from existing rewire runs");
     expect(html).toContain("Source checked does not mean independently reproduced");

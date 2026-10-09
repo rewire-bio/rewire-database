@@ -11,15 +11,11 @@ import { utilityPageMetadataContracts } from "../scripts/seo/utility-page-metada
 
 // The real pages and Breadcrumbs render normally; catalogue rows are irrelevant
 // to their navigation, and the fixture release has no audit files on disk.
-vi.mock("../lib/catalogue-build", () => ({
-  buildCatalogue: () => ({
-    catalogue: {
-      release_id: "utility-metadata-test",
-      released_at: "2026-09-25T00:00:00Z",
-      records: [],
-    },
-  }),
-}));
+vi.mock("../lib/catalogue-build", async () => {
+  const { preparedFromSnapshot } = await import("./helpers/prepared");
+  const catalogue = { schema_version: "1.1", release_id: "utility-metadata-test", released_at: "2026-09-25T00:00:00Z", coverage: {}, records: [] };
+  return { buildCatalogue: () => ({ catalogue, query: preparedFromSnapshot(catalogue) }) };
+});
 
 const origin = "https://benchmarks.rewirebio.io";
 const cases = [

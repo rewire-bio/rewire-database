@@ -10,7 +10,7 @@ import Header from "../components/header";
 
 describe("static catalogue indexes", () => {
   it("links every current benchmark exactly once through canonical anchors without tasks or protocols", () => {
-    const html = renderToStaticMarkup(<StaticIndex catalogue={catalogue} kind="benchmark" />);
+    const html = renderToStaticMarkup(<StaticIndex records={catalogue.records.filter((record) => record.kind === "benchmark")} releaseId={catalogue.release_id} kind="benchmark" />);
     const hrefs = [...html.matchAll(/href="(\/database\/[^"]+)"/g)].map((match) => match[1]);
     expect(hrefs).toEqual(indexRecords(catalogue.records, "benchmark").map(recordHref));
     expect(hrefs.every((href) => !href.includes("?"))).toBe(true);
@@ -21,7 +21,7 @@ describe("static catalogue indexes", () => {
     const hrefs: string[] = [];
     const count = modelPageCount(catalogue.records);
     for (let page = 1; page <= count; page++) {
-      const html = renderToStaticMarkup(<StaticIndex catalogue={catalogue} kind="model" page={page} />);
+      const html = renderToStaticMarkup(<StaticIndex records={catalogue.records.filter((record) => record.kind === "model")} releaseId={catalogue.release_id} kind="model" page={page} />);
       const current = [...html.matchAll(/href="(\/database\/[^"]+)"/g)].map((match) => match[1]);
       expect(current.length).toBeLessThanOrEqual(MODEL_PAGE_SIZE);
       hrefs.push(...current);
@@ -47,7 +47,7 @@ describe("static catalogue indexes", () => {
     const before = JSON.stringify(catalogue);
     const records = [...catalogue.records, { ...indexRecords(catalogue.records, "model")[0], id: "excluded-model", status: "excluded" }];
     expect(indexRecords(records, "model").some((record) => record.id === "excluded-model")).toBe(false);
-    renderToStaticMarkup(<StaticIndex catalogue={catalogue} kind="model" />);
+    renderToStaticMarkup(<StaticIndex records={catalogue.records.filter((record) => record.kind === "model")} releaseId={catalogue.release_id} kind="model" />);
     expect(JSON.stringify(catalogue)).toBe(before);
   });
   it("links both indexes from primary navigation in initial HTML", () => {

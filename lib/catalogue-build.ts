@@ -1,27 +1,18 @@
-import fs from "node:fs";
-import { createCatalogueQuery } from "../services/omics/src/catalogue-query";
-import { parseCatalogue } from "./omics";
-import { dataPath, dataPin } from "./data-pin";
+import { preparedCatalogue } from "./prepared";
 
-/** Low-volume pages render with the API's exact query engine against the
- * pinned release, read once per server instance from its verified local copy.
- * Result and evaluation pages never call this; they read bounded page documents.
- */
-let cached:
-  | {
-      mtime: number;
-      catalogue: ReturnType<typeof parseCatalogue>;
-      query: ReturnType<typeof createCatalogueQuery>;
-    }
-  | undefined;
+/** Pages read the pinned release's prepared file: bounded lookups per request,
+ * no catalogue-wide parsing or index building. */
 export function buildCatalogue() {
-  const file = dataPath("public/omics/catalogue.json");
-  const mtime = fs.statSync(file).mtimeMs;
-  if (!cached || cached.mtime !== mtime) {
-    const catalogue = parseCatalogue(JSON.parse(fs.readFileSync(file, "utf8")));
-    if (catalogue.release_id !== dataPin().release_id)
-      throw new Error("Local catalogue differs from the pinned release");
-    cached = { mtime, catalogue, query: createCatalogueQuery(catalogue) };
-  }
-  return cached;
+  const query = preparedCatalogue();
+  const release = query.release();
+  return {
+    catalogue: {
+      release_id: release.release_id,
+      released_at: release.released_at,
+      schema_version: release.schema_version,
+      coverage: release.coverage,
+    },
+    query,
+  };
 }
+export type PreparedQuery = ReturnType<typeof buildCatalogue>["query"];

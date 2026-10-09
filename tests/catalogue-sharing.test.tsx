@@ -1,7 +1,8 @@
 import fs from "node:fs";
+import { preparedFromSnapshot } from "./helpers/prepared";
 import { describe, expect, it, vi } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
-import { createCatalogueQuery, type CatalogueSnapshot } from "../services/omics/src/catalogue-query";
+import { type CatalogueSnapshot } from "../services/omics/src/catalogue-query";
 import { omicsKinds, recordHref, type OmicsRecord } from "../lib/omics";
 import { recordBreadcrumbs, safeJsonLd, SOCIAL_IMAGE } from "../lib/catalogue-sharing";
 import Breadcrumbs from "../components/catalogue/Breadcrumbs";
@@ -41,7 +42,7 @@ const metadataFor = {
 } as const;
 
 const fixture = vi.hoisted(() => ({ snapshot: null as CatalogueSnapshot | null }));
-vi.mock("../lib/catalogue-build", () => ({ buildCatalogue: () => ({ catalogue: fixture.snapshot!, query: createCatalogueQuery(fixture.snapshot!) }) }));
+vi.mock("../lib/catalogue-build", () => ({ buildCatalogue: () => ({ catalogue: fixture.snapshot!, query: preparedFromSnapshot(fixture.snapshot!) }) }));
 const records: OmicsRecord[] = omicsKinds.map((kind) => ({
   id: `test-${kind.replace(/_/g, "-")}`, kind, name: `Example ${kind}`,
   description: `Available evidence for example ${kind}.`, status: "source_checked",
@@ -82,7 +83,7 @@ describe("truthful catalogue sharing", () => {
     }
   });
   it("describes paginated model indexes with the visible page number", () => {
-    const html = renderToStaticMarkup(<StaticIndex catalogue={fixture.snapshot!} kind="model" page={2} />);
+    const html = renderToStaticMarkup(<StaticIndex records={fixture.snapshot!.records.filter((record) => record.kind === "model")} releaseId={fixture.snapshot!.release_id} kind="model" page={2} />);
     expect(jsonLd(html).itemListElement.map((item: { name: string }) => item.name)).toEqual(["Database", "Models", "Page 2"]);
     expect(html).toContain('href="/models/"');
     expect(html).toContain('aria-current="page">Page 2');

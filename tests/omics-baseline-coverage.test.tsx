@@ -1,4 +1,5 @@
 import { describe, expect, it , vi } from "vitest";
+import { preparedFromSnapshot } from "./helpers/prepared";
 import { renderToStaticMarkup } from "react-dom/server";
 import BaselineCoverage from "../components/catalogue/BaselineCoverage";
 import { buildBaselineAudit, candidateRule } from "../lib/baseline-coverage";
@@ -74,7 +75,7 @@ describe("baseline coverage and model evaluation audit", () => {
     const html = renderToStaticMarkup(
       <BaselineCoverage
         record={fixture.protocol}
-        catalogue={fixture.snapshot}
+        query={preparedFromSnapshot(fixture.snapshot)}
       />,
     );
     expect(html).toContain("1 of 2 active baseline roles");
@@ -96,14 +97,14 @@ describe("baseline coverage and model evaluation audit", () => {
     expect(audit.counts.measured_roles).toBe(1);
     expect(audit.protocols[0].recipe_ids).toEqual(["example-recipe"]);
     expect(audit.protocols[0].published_evaluations_by_origin.author_reported).toEqual(["author-eval"]);
-    const html = renderToStaticMarkup(<BaselineCoverage record={fixture.protocol} catalogue={fixture.snapshot} />);
+    const html = renderToStaticMarkup(<BaselineCoverage record={fixture.protocol} query={preparedFromSnapshot(fixture.snapshot)} />);
     expect(html).toContain("Author-reported evaluations");
     expect(html).toContain("Published Rewire evaluations");
     expect(html).toContain("Recipe availability does not establish a completed evaluation");
   });
   it("renders an explicit empty suite instead of implying suite-wide baseline coverage", () => {
     const suite = record("empty-suite", "benchmark");
-    const html = renderToStaticMarkup(<BaselineCoverage record={suite} catalogue={catalogue([suite])} />);
+    const html = renderToStaticMarkup(<BaselineCoverage record={suite} query={preparedFromSnapshot(catalogue([suite]))} />);
     expect(html).toContain("No concrete protocols are explicitly linked");
     expect(html).not.toContain("roles have published");
   });

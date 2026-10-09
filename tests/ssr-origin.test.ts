@@ -10,8 +10,6 @@ import { middleware } from "../middleware";
 import { downloadRedirect } from "../lib/download-map";
 import { GET as receiptRoute } from "../app/deployment.json/route";
 import { hydrateRuntimeData, renderEntries } from "../scripts/runtime-data.mjs";
-import { fetchRecordPage, RecordPageUnavailable } from "../lib/record-page";
-import { localRecordPage } from "../lib/record-page-local";
 import lock from "../benchmark-data.lock.json";
 
 const sha = (bytes: Buffer | string) => crypto.createHash("sha256").update(bytes).digest("hex");
@@ -129,39 +127,5 @@ describe("runtime data hydration", () => {
     expect(selected).toContain("public/omics/catalogue.json");
     expect(selected).toContain(`public/omics/releases/${lock.release_id}/use-cases.json`);
     expect(selected.some((name: string) => name.endsWith(".csv") && name.startsWith("public/omics/releases/"))).toBe(false);
-  });
-});
-
-describe("prepared page loader", () => {
-  const ok = (data: unknown) => vi.fn(async () => new Response(JSON.stringify({ result: { data } }), { status: 200 }));
-  const route = (() => {
-    const catalogue = JSON.parse(fs.readFileSync("public/omics/catalogue.json", "utf8"));
-    return catalogue.records.find((record: { kind: string; status: string }) => record.kind === "result" && record.status !== "excluded").id as string;
-  })();
-  it("requests the pinned release and returns a matching page", async () => {
-    const page = localRecordPage("result", route)!;
-    const fetchImpl = ok(page);
-    expect(await fetchRecordPage("result", route, { api: "https://api.test", fetchImpl })).toEqual(page);
-    const [url] = fetchImpl.mock.calls[0] as unknown as [string];
-    expect(JSON.parse(decodeURIComponent(new URL(url).searchParams.get("input")!))).toEqual({ release_id: lock.release_id, kind: "result", id: route });
-  });
-  it("treats a null page as absent and an invalid ID as absent without calling the API", async () => {
-    expect(await fetchRecordPage("result", route, { api: "https://api.test", fetchImpl: ok(null) })).toBeNull();
-    const fetchImpl = vi.fn();
-    expect(await fetchRecordPage("result", "../secret", { api: "https://api.test", fetchImpl })).toBeNull();
-    expect(fetchImpl).not.toHaveBeenCalled();
-  });
-  it("turns API errors, timeouts and network failures into backend failures, never 404s", async () => {
-    for (const status of [404, 412, 500, 503]) {
-      await expect(fetchRecordPage("result", route, { api: "https://api.test", fetchImpl: vi.fn(async () => new Response("{}", { status })) })).rejects.toBeInstanceOf(RecordPageUnavailable);
-    }
-    await expect(fetchRecordPage("result", route, { api: "https://api.test", fetchImpl: vi.fn(async () => { throw new TypeError("fetch failed"); }) })).rejects.toBeInstanceOf(RecordPageUnavailable);
-  });
-  it("rejects a page from another release, route or kind", async () => {
-    const page = localRecordPage("result", route)!;
-    for (const data of [{ ...page, release_id: "2026-01-01-aaaaaaaaaaaa" }, { ...page, route_kind: "evaluation" }]) {
-      await expect(fetchRecordPage("result", route, { api: "https://api.test", fetchImpl: ok(data) })).rejects.toThrow("another release or route");
-    }
-    await expect(fetchRecordPage("result", "other-id", { api: "https://api.test", fetchImpl: ok(page) })).rejects.toThrow("another release or route");
   });
 });

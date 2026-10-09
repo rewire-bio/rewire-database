@@ -9,6 +9,7 @@ vi.mock("../scripts/omics/audit-benchmark-evidence", async (original) => {
 });
 import { CatalogueEvidence, catalogueEvidenceSummary } from "../components/catalogue/CatalogueEvidence";
 import { benchmarkCoverage } from "../scripts/omics/audit-benchmark-evidence";
+import { preparedFromSnapshot } from "./helpers/prepared";
 
 const record = (id: string, kind: CatalogueRecord["kind"], extra: Partial<CatalogueRecord> = {}): CatalogueRecord => ({
   id, kind, name: id, description: "Synthetic evidence", status: "source_checked", source_ids: [], links: [], facets: { areas: ["dna-genomes"] }, attributes: {}, ...extra,
@@ -24,29 +25,29 @@ function catalogue(extra: CatalogueRecord[] = []): CatalogueSnapshot {
 }
 
 describe("catalogue evidence summary", () => {
-  it("computes the benchmark coverage once per catalogue and renders identically on every request", () => {
-    const pinned = catalogue();
+  it("reads the stored summary once per release handle and renders identically on every request", () => {
+    const pinned = preparedFromSnapshot(catalogue());
     coverage.calls = 0;
-    const first = renderToStaticMarkup(<CatalogueEvidence catalogue={pinned} />);
-    const repeated = Array.from({ length: 3 }, () => renderToStaticMarkup(<CatalogueEvidence catalogue={pinned} />));
+    const first = renderToStaticMarkup(<CatalogueEvidence query={pinned} />);
+    const repeated = Array.from({ length: 3 }, () => renderToStaticMarkup(<CatalogueEvidence query={pinned} />));
     expect(coverage.calls).toBe(1);
     expect(repeated).toEqual([first, first, first]);
     expect(catalogueEvidenceSummary(pinned)).toBe(catalogueEvidenceSummary(pinned));
   });
   it("matches a direct computation over the same records", () => {
-    const pinned = catalogue();
-    const expected = benchmarkCoverage(pinned.records);
-    const summary = catalogueEvidenceSummary(pinned);
+    const snapshot = catalogue();
+    const expected = benchmarkCoverage(snapshot.records);
+    const summary = catalogueEvidenceSummary(preparedFromSnapshot(snapshot));
     expect(summary.coverageRows).toEqual(expected.map((entry) => ({ label: entry.name, value: entry.evaluations, muted: entry.evaluations === 0 })));
     expect(summary.covered).toBe(expected.filter((entry) => entry.evaluations > 0).length);
     expect(summary).toMatchObject({ records: 5, external: 1, own: 1, benchmarks: 2 });
   });
-  it("recomputes for a changed catalogue rather than serving an earlier release's summary", () => {
-    const before = catalogue();
-    const after = catalogue([record("new-benchmark", "benchmark"), record("new-result", "result")]);
+  it("uses each release's own summary rather than serving an earlier release's", () => {
+    const before = preparedFromSnapshot(catalogue());
+    const after = preparedFromSnapshot(catalogue([record("new-benchmark", "benchmark"), record("new-result", "result")]));
     coverage.calls = 0;
-    const old = renderToStaticMarkup(<CatalogueEvidence catalogue={before} />);
-    const changed = renderToStaticMarkup(<CatalogueEvidence catalogue={after} />);
+    const old = renderToStaticMarkup(<CatalogueEvidence query={before} />);
+    const changed = renderToStaticMarkup(<CatalogueEvidence query={after} />);
     expect(coverage.calls).toBe(2);
     expect(old).toContain("5 records across");
     expect(changed).toContain("7 records across");

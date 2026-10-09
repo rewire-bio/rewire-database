@@ -1,7 +1,8 @@
 import fs from "node:fs";
+import { preparedFromSnapshot } from "./helpers/prepared";
+import type { PreparedCatalogue } from "../services/omics/src/prepared-catalogue";
 import { describe, expect, it, vi } from "vitest";
 import {
-  createCatalogueQuery,
   type CatalogueSnapshot,
 } from "../services/omics/src/catalogue-query";
 import { entityKinds, type EntityKind } from "../services/omics/src/entity-kinds";
@@ -10,7 +11,7 @@ import { recordPageKinds } from "../services/omics/src/record-pages";
 
 const fixture = vi.hoisted(() => ({
   snapshot: null as CatalogueSnapshot | null,
-  query: null as ReturnType<typeof createCatalogueQuery> | null,
+  query: null as PreparedCatalogue | null,
 }));
 vi.mock("../lib/catalogue-build", () => ({
   buildCatalogue: () => ({
@@ -29,7 +30,7 @@ vi.mock("../lib/record-page", async (original) => (await import("./fixtures/reco
 fixture.snapshot = JSON.parse(
   fs.readFileSync("public/omics/catalogue.json", "utf8"),
 );
-fixture.query = createCatalogueQuery(fixture.snapshot!);
+fixture.query = preparedFromSnapshot(fixture.snapshot!);
 
 import ModelPage, { generateMetadata as modelMetadata } from "../app/database/model/[id]/page";
 import MethodPage, { generateMetadata as methodMetadata } from "../app/database/method/[id]/page";

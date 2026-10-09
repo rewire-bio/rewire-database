@@ -15,6 +15,7 @@ import {
   MAX_RECORD_PAGE_BYTES,
   RECORD_PAGE_SCHEMA,
   recordPageBuilder,
+  liveRecordPageSource,
   recordPageDocumentId,
   recordPageRoutes,
   recordPagesDigest,
@@ -97,7 +98,7 @@ export function decodeRecordPage(
 /** Every page of a validated release, built one at a time. */
 function* releasePages(snapshot: CatalogueSnapshot, useCases: Parameters<typeof recordPageBuilder>[1]) {
   const query = createCatalogueQuery(snapshot);
-  const build = recordPageBuilder(query, useCases);
+  const build = recordPageBuilder(liveRecordPageSource(query), useCases);
   for (const { kind, record } of recordPageRoutes(snapshot)) {
     const page = build(kind, record.id);
     if (!page) throw new Error(`Record page ${kind}/${record.id} could not be built`);

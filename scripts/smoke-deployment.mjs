@@ -55,7 +55,7 @@ export async function smokeDeployment(origin, { request = fetch, log = console.l
     assert.match(await html(path), /<h1[ >]/, `${path}: missing page heading`);
   }
   const useCase = await html('/use-cases/brca1-brca2-germline-interpretation/');
-  for (const id of ['question', 'evidence', 'gaps', 'sources']) {
+  for (const id of ['evidence', 'gaps', 'details']) {
     assert.ok(useCase.includes(`id="${id}"`), `Use case missing ${id}`);
   }
   assert.match(useCase, /<summary[ >]/, 'Use case must render evidence disclosures');

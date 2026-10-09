@@ -123,6 +123,22 @@ function canonical(value: unknown): string {
     );
   return JSON.stringify(value);
 }
+/** Order-independent equality key. Sorts keys structurally and serialises once;
+ * canonical() re-encodes nested strings at every level, which grows with depth. */
+function stableKey(value: unknown): string {
+  const sorted = (v: unknown): unknown =>
+    Array.isArray(v)
+      ? v.map(sorted)
+      : v && typeof v === "object"
+        ? Object.fromEntries(
+            Object.entries(v)
+              .filter(([, item]) => item !== undefined)
+              .sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0))
+              .map(([key, item]) => [key, sorted(item)]),
+          )
+        : v;
+  return JSON.stringify(sorted(value));
+}
 function known(v: unknown): boolean {
   if (v === null || v === undefined) return false;
   if (typeof v === "string")
@@ -450,7 +466,7 @@ export function createCatalogueQuery(snapshot: CatalogueSnapshot) {
     const unique = new Map<string, ResolvedComparison>();
     for (const panel of [...resolveComparisons(record, byId, rowsById), ...childPanels]) {
       const existing = unique.get(panel.id);
-      if (existing && canonical(existing) !== canonical(panel))
+      if (existing && existing !== panel && stableKey(existing) !== stableKey(panel))
         throw new Error(`Conflicting inherited comparison: ${panel.id}`);
       unique.set(panel.id, panel);
     }

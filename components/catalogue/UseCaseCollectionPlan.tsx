@@ -1,4 +1,4 @@
-import type { UseCase } from "@/services/omics/src/use-cases";
+import type { UseCase } from "@/shared/omics/use-cases";
 import { evidenceCollectedLabel, type EvidenceSummary } from "@/lib/use-case-summary";
 import styles from "./UseCases.module.css";
 

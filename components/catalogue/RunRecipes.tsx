@@ -14,7 +14,7 @@ import Link from "next/link";
 import {
   runRecipeSchema,
   type RunRecipe,
-} from "@/services/omics/src/run-recipe";
+} from "@/shared/omics/run-recipe";
 import { recordHref, type OmicsRecord } from "@/lib/omics";
 import { Evidence } from "./Profile";
 import styles from "@/app/database/database.module.css";

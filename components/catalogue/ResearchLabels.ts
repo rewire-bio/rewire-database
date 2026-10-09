@@ -1,4 +1,4 @@
-import type { ResearchReadiness } from "@/services/omics/src/research";
+import type { ResearchReadiness } from "@/shared/omics/research";
 
 export const researchCapabilityLabels: Record<keyof ResearchReadiness["capabilities"], string> = {
   replay: "Replay metrics",

@@ -1,4 +1,4 @@
-import { openPreparedCatalogue, type PreparedCatalogue } from "../services/omics/src/prepared-catalogue";
+import { openPreparedCatalogue, type PreparedCatalogue } from "../shared/omics/prepared-catalogue";
 import { dataPath, dataPin } from "./data-pin";
 
 /** The pinned release's prepared file: in the image under data/serving, or in a checkout under serving/. */

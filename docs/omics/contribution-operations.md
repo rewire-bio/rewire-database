@@ -1,6 +1,6 @@
 # Private contribution operations
 
-Contributions are private review items. Acceptance does not publish a scientific result: the curator must prepare a reviewed release and associate the released record IDs with the submission before marking it published. Contributions must never be included in catalogue downloads, release fixtures, Git commits, CI artifacts or analytics.
+Contributions are private review items. Acceptance does not publish a scientific result: the curator must prepare a reviewed release and associate the released record IDs with the submission before marking it published. The function checks those IDs against the release the public website serves. Contributions must never be included in catalogue downloads, release fixtures, Git commits, CI artifacts or analytics.
 
 Current status: intake enabled, contribution notifications paused. The [23 September recovery receipt](submission-recovery-2026-09-23.md) distinguishes live read-only checks from synthetic emulator recovery.
 
@@ -15,7 +15,7 @@ Current status: intake enabled, contribution notifications paused. The [23 Septe
 
 ## Portable private backup
 
-The CLI takes an explicit project and copies only the private allowlist, including submission revisions whose parent document is missing. Public catalogue collections are excluded. Firestore timestamps retain nanosecond precision. New backups reject document-reference fields because the Firestore SDK can discard their origin database during decoding. Current private submission data uses JSON and timestamps, not references. Legacy snapshot references decode as destination-local paths and require a separate provenance review before restoration. Checksums detect accidental modification; they are not signatures or encryption.
+The CLI takes an explicit project and copies only the private allowlist, including submission revisions whose parent document is missing. Firestore holds no public catalogue data; the website serves releases from its image. Firestore timestamps retain nanosecond precision. New backups reject document-reference fields because the Firestore SDK can discard their origin database during decoding. Current private submission data uses JSON and timestamps, not references. Legacy snapshot references decode as destination-local paths and require a separate provenance review before restoration. Checksums detect accidental modification; they are not signatures or encryption.
 
 Use an administrator workstation and an encrypted local volume outside every Git checkout. Require restricted OS access and a private encrypted off-device copy. The CLI requires a private `0700` directory, creates the snapshot and checksum with mode `0600`, refuses existing output files and refuses paths inside Git. Restore also checks the resolved input locations and file permissions. It does **not** configure encryption or a backup destination. Do not use ordinary CI artifacts, a shared Downloads directory or a public bucket.
 

@@ -5,14 +5,14 @@
  * (rewire-benchmark-data scripts/serving/sqlite.ts). The real file's answers
  * are checked against the live engine in the producer's parity suite.
  */
-import { createCatalogueQuery, type CatalogueSnapshot } from "../../services/omics/src/catalogue-query";
-import { createEvidenceIndex } from "../../services/omics/src/evidence-table";
-import { getResearch } from "../../services/omics/src/research";
-import { createUseCaseQuery, type UseCaseArtifact, type UseCaseDeclaration } from "../../services/omics/src/use-cases";
-import { auditChecksPage, auditRecordsPage, auditRunsPage, type AuditTable } from "../../services/omics/src/audit-query";
+import { createCatalogueQuery, type CatalogueSnapshot } from "../../shared/omics/catalogue-query";
+import { createEvidenceIndex } from "../../shared/omics/evidence-table";
+import { getResearch } from "../../shared/omics/research";
+import { createUseCaseQuery, type UseCaseArtifact, type UseCaseDeclaration } from "../../shared/omics/use-cases";
+import { auditChecksPage, auditRecordsPage, auditRunsPage, type AuditTable } from "../../shared/omics/audit-query";
 import { benchmarkCoverage } from "../../scripts/omics/audit-benchmark-evidence";
 import { buildBaselineAudit } from "../../lib/baseline-coverage";
-import type { PreparedCatalogue } from "../../services/omics/src/prepared-catalogue";
+import type { PreparedCatalogue } from "../../shared/omics/prepared-catalogue";
 
 export function preparedFromSnapshot(
   snapshot: CatalogueSnapshot,

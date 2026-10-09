@@ -1,7 +1,7 @@
 import { optionalDownloadHref } from "./downloads";
 import { catalogueText } from "./catalogue-text";
-import { assertNoPrivateFields } from "../services/omics/src/private-fields";
-import { validateResearchData, type ResearchData } from "../services/omics/src/research";
+import { assertNoPrivateFields } from "../shared/omics/private-fields";
+import { validateResearchData, type ResearchData } from "../shared/omics/research";
 import {
   entityKinds,
   legacyKinds,
@@ -9,8 +9,8 @@ import {
   datasetSubjectKinds,
   isDatasetSubject,
   recordRouteKinds as routeKinds,
-} from "../services/omics/src/entity-kinds";
-export { entityKindLabel } from "../services/omics/src/entity-kinds";
+} from "../shared/omics/entity-kinds";
+export { entityKindLabel } from "../shared/omics/entity-kinds";
 export const omicsKinds = entityKinds;
 export type OmicsKind = (typeof omicsKinds)[number];
 export interface OmicsRecord {

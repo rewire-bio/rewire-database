@@ -7,7 +7,7 @@ import {
   validateAudit,
   type AuditCheck,
   type AuditBundle,
-} from "../services/omics/src/audit";
+} from "../shared/omics/audit";
 const record = {
   id: "model-a",
   attributes: { score: "0.3", note: "unchanged" },

@@ -7,7 +7,7 @@ import type {
   AuditIndexRow,
   AuditRun,
   AuditResolution,
-} from "@/services/omics/src/audit";
+} from "@/shared/omics/audit";
 import styles from "@/app/database/database.module.css";
 type Page<T> = {
   items: T[];

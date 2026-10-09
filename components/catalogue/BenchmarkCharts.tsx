@@ -3,7 +3,7 @@ import { formatScore } from "@/lib/score-display";
 import { catalogueText } from "@/lib/catalogue-text";
 import { useId, useState, useEffect, useMemo } from "react";
 import Link from "next/link";
-import type { ResolvedComparison } from "@/services/omics/src/published-comparisons";
+import type { ResolvedComparison } from "@/shared/omics/published-comparisons";
 import {
   unpackComparisons,
   type PackedComparisons,
@@ -13,7 +13,7 @@ import { displayValue, originLabel, recordHref } from "@/lib/omics";
 import { testedEntities, singularKindLabels } from "@/lib/omics-browse";
 import { Evidence } from "./Profile";
 import { CitedAs } from "./SourceIdentity";
-import { sourceLabel } from "@/services/omics/src/source-identity";
+import { sourceLabel } from "@/shared/omics/source-identity";
 import Results from "./Results";
 import { useResultsLocation } from "./useResultsLocation";
 import {

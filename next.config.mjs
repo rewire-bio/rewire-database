@@ -14,8 +14,8 @@ const nextConfig = {
   poweredByHeader: false,
   experimental: {
     cpus: 2,
-    // The server reads the release from its verified runtime copy only.
-    // Excluding checkout data keeps the image small and pin-independent.
+    // The server reads the release only from the image's data/ directory
+    // (scripts/build-web.mjs); checkout data must not be traced into the bundle.
     outputFileTracingExcludes: {
       // Patterns also match inside node_modules, so name only this checkout's data paths.
       "*": ["benchmark-data.lock.json", "public/omics/**", "public/benchmark-literature/**", "data/omics/**", "data/benchmark-literature/**",
@@ -39,7 +39,7 @@ const nextConfig = {
     return { beforeFiles: [{ source: "/_analytics/", destination: "/_analytics/index.html" }] };
   },
   webpack(config) {
-    // Shared Firebase modules use NodeNext .js specifiers; resolve their TS
+    // shared/omics modules use NodeNext .js specifiers; resolve their TS
     // sources when bundling the website, while retaining real JS imports.
     config.resolve.extensionAlias = {
       ...config.resolve.extensionAlias,

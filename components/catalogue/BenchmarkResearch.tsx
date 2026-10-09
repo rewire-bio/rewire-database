@@ -2,7 +2,7 @@ import { catalogueText } from "@/lib/catalogue-text";
 import Link from "next/link";
 import { recordHref, safeSourceUrl, type OmicsRecord } from "@/lib/omics";
 import styles from "@/app/database/database.module.css";
-import type { BenchmarkResearchData } from "@/services/omics/src/benchmark-research";
+import type { BenchmarkResearchData } from "@/shared/omics/benchmark-research";
 export type { BenchmarkResearchData };
 export default function BenchmarkResearch({
   research,

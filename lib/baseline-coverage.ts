@@ -1,4 +1,4 @@
-import { isModelSubject } from "../services/omics/src/entity-kinds";
+import { isModelSubject } from "../shared/omics/entity-kinds";
 import type { OmicsCatalogue, OmicsRecord } from "./omics";
 
 export type BaselineRole = "null" | "conventional";

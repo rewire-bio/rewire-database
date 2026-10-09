@@ -1,4 +1,4 @@
-> Ownership update: data inputs and generator commands described below now belong to [rewire-benchmark-data](https://github.com/rewire-bio/rewire-benchmark-data). For website builds, use the [pinned dependency workflow](../hosting/benchmark-data-separation.md). The sections below retain historical architecture context.
+> Historical. Data inputs and generator commands now belong to [rewire-benchmark-data](https://github.com/rewire-bio/rewire-benchmark-data). Releases are no longer imported into Firestore or exported as static pages: the website serves each release from a prepared SQLite file built into its image. See the repository README and [independent-frontend.md](../independent-frontend.md) for the current architecture. The sections below record the earlier design.
 
 # Omics evidence database
 
@@ -63,7 +63,7 @@ These commands are prepared but no recurring automation, paid service or product
 
 The API-backed catalogue is deployed from `main` to Firebase at `benchmarks.rewire.it`. Production contribution submission and email remain disabled. The earlier extraction branches preserve the migration history. For local emulator use, explicitly set `NEXT_PUBLIC_OMICS_CONTRIBUTIONS_ENABLED=true` alongside the documented Firebase emulator configuration. The original release bytes remain unchanged; do not run migration scripts to alter historical URLs merely for presentation.
 
-Profile inputs contain claim-level citations, summary evidence and explicit field statuses. `evidence-sources.jsonl` pins additional artifacts; `metadata-corrections.jsonl` records reviewed descriptive corrections without changing scientific result values. `evidence-concerns.jsonl` adds visible source warnings and blocks affected comparisons. Review receipts under `data/omics/reviews/` bind the profile text to inspected source hashes. See [the completeness review](catalogue-evidence-review-2026-09-16.md) for coverage and unresolved fields.
+Profile inputs contain claim-level citations, summary evidence and explicit field statuses. `evidence-sources.jsonl` pins additional artifacts; `metadata-corrections.jsonl` records reviewed descriptive corrections without changing scientific result values. `evidence-concerns.jsonl` adds visible source warnings and blocks affected comparisons. Review receipts under `data/omics/reviews/` bind the profile text to inspected source hashes. See [the completeness review](https://github.com/rewire-bio/rewire-benchmark-data/blob/main/docs/reviews/2026-09-16-catalogue-evidence.md) for coverage and unresolved fields.
 
 `unreported` means the specific field was not established in the inspected sources, not that no source anywhere reports it. `unavailable` records an access limitation; `unextracted` is unfinished review; `inapplicable` means the field does not fit that entity. These distinctions never turn a source-checked result into an independently reproduced one. Hosted services have their own entity type and terms.
 

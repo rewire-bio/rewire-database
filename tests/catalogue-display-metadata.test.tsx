@@ -1,11 +1,11 @@
 import fs from "node:fs";
 import { preparedFromSnapshot } from "./helpers/prepared";
-import type { PreparedCatalogue } from "../services/omics/src/prepared-catalogue";
+import type { PreparedCatalogue } from "../shared/omics/prepared-catalogue";
 import { describe, it, expect, vi } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
 import {
   type CatalogueSnapshot,
-} from "../services/omics/src/catalogue-query";
+} from "../shared/omics/catalogue-query";
 import RecordPage, { generateMetadata } from "../app/database/protocol/[id]/page";
 const fixture = vi.hoisted(() => ({
   snapshot: null as CatalogueSnapshot | null,

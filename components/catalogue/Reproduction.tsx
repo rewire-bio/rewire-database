@@ -1,7 +1,7 @@
 import { catalogueText } from "@/lib/catalogue-text";
 import { Fragment } from "react";
 import Link from "next/link";
-import { reproductionSchema } from "@/services/omics/src/run-recipe";
+import { reproductionSchema } from "@/shared/omics/run-recipe";
 import { displayValue, recordHref, type OmicsRecord } from "@/lib/omics";
 import { Evidence } from "./Profile";
 import styles from "@/app/database/database.module.css";

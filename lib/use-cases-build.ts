@@ -1,5 +1,5 @@
 import { buildCatalogue } from "./catalogue-build";
-import type { UseCaseDetail, UseCaseQuery, ResolvedMapping } from "../services/omics/src/use-cases";
+import type { UseCaseDetail, UseCaseQuery, ResolvedMapping } from "../shared/omics/use-cases";
 
 let cached: { query: ReturnType<typeof buildCatalogue>["query"]; value: { query: UseCaseQuery; entries: ReturnType<UseCaseQuery["list"]>["items"] } } | undefined;
 

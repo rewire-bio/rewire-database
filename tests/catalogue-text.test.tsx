@@ -3,7 +3,7 @@ import { describe, it, expect } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
 import { catalogueText } from "../lib/catalogue-text";
 import { displayValue } from "../lib/omics";
-import { createCatalogueQuery } from "../services/omics/src/catalogue-query";
+import { createCatalogueQuery } from "../shared/omics/catalogue-query";
 import BenchmarkCharts from "../components/catalogue/BenchmarkCharts";
 import Profile from "../components/catalogue/Profile";
 import Results from "../components/catalogue/Results";

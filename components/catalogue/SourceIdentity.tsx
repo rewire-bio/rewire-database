@@ -5,7 +5,7 @@ import {
   sourceLabel,
   subjectIdentitySchema,
   linkedIdentitySchema,
-} from "@/services/omics/src/source-identity";
+} from "@/shared/omics/source-identity";
 import { Evidence } from "./Profile";
 import styles from "@/app/database/database.module.css";
 

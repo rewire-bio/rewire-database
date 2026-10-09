@@ -1,11 +1,11 @@
-import { validateRunRecipes } from "../../services/omics/src/run-recipe";
-import { validateRunGuide } from "../../services/omics/src/run-guide";
-import { assertNoPrivateFields } from "../../services/omics/src/private-fields";
+import { validateRunRecipes } from "../../shared/omics/run-recipe";
+import { validateRunGuide } from "../../shared/omics/run-guide";
+import { assertNoPrivateFields } from "../../shared/omics/private-fields";
 import { z } from "zod";
 import { extensionsSchema } from "./extensions";
 import { profileSchema, validateProfileSources } from "../../lib/omics-profile";
-import { createCatalogueQuery } from "../../services/omics/src/catalogue-query";
-import { validateBenchmarkResearch } from "../../services/omics/src/benchmark-research";
+import { createCatalogueQuery } from "../../shared/omics/catalogue-query";
+import { validateBenchmarkResearch } from "../../shared/omics/benchmark-research";
 import {
   entityKinds,
   catalogueRelations,
@@ -14,7 +14,7 @@ import {
   benchmarkSubjectKinds,
   datasetSubjectKinds,
   relationAcceptsKind,
-} from "../../services/omics/src/entity-kinds";
+} from "../../shared/omics/entity-kinds";
 export const kinds = entityKinds;
 export const statuses = [
   "discovered",

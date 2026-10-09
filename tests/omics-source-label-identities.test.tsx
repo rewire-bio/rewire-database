@@ -5,8 +5,8 @@ import { renderToStaticMarkup } from "react-dom/server";
 import {
   createCatalogueQuery,
   type CatalogueSnapshot,
-} from "../services/omics/src/catalogue-query";
-import { validateSnapshot } from "../services/omics/src/validation";
+} from "../shared/omics/catalogue-query";
+import { validateSnapshot } from "../shared/omics/validation";
 import { filterCatalogue } from "../lib/omics-browse";
 import { testedSearchText } from "../components/catalogue/BenchmarkCharts";
 import ConfigurationPage from "../app/database/configuration/[id]/page";

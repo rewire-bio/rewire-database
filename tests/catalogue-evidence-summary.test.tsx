@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
-import type { CatalogueRecord, CatalogueSnapshot } from "../services/omics/src/catalogue-query";
+import type { CatalogueRecord, CatalogueSnapshot } from "../shared/omics/catalogue-query";
 
 const coverage = vi.hoisted(() => ({ calls: 0 }));
 vi.mock("../scripts/omics/audit-benchmark-evidence", async (original) => {

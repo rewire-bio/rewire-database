@@ -4,8 +4,8 @@ import { buildCatalogue } from "../lib/catalogue-build";
 import { buildUseCases } from "../lib/use-cases-build";
 import { recordSearchMetadata } from "../lib/catalogue-seo";
 import { recordPageMetadata } from "../lib/record-page";
-import { recordPageBuilder, recordPageRoutes } from "../services/omics/src/record-pages";
-import type { CatalogueSnapshot } from "../services/omics/src/catalogue-query";
+import { recordPageBuilder, recordPageRoutes } from "../lib/record-pages";
+import type { CatalogueSnapshot } from "../shared/omics/catalogue-query";
 
 // Pages built from the prepared release file carry only a bounded context.
 // Their search metadata must equal metadata built from the complete release

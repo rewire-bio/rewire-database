@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
 import RunGuide from "../components/catalogue/RunGuide";
-import { validateRunGuide } from "../services/omics/src/run-guide";
+import { validateRunGuide } from "../shared/omics/run-guide";
 import type { OmicsRecord } from "../lib/omics";
 
 function record(

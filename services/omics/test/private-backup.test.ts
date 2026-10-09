@@ -188,7 +188,7 @@ function largePermittedContribution() {
 }
 
 test("restore plans respect byte and document limits for permitted large contributions", async () => {
-  const { contribution } = await import("../src/validation.js");
+  const { contribution } = await import("../src/contribution.js");
   const data = contribution.parse(largePermittedContribution());
   const documents = Array.from({ length: 300 }, (_, i) => ({ path: `privateSubmissions/item-${i}`, data }));
   assert.ok(Buffer.byteLength(JSON.stringify(documents)) > 10 * 1024 * 1024);

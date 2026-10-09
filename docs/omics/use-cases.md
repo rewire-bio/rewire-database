@@ -1,15 +1,15 @@
 # Research and clinical use cases
 
 Use-case pages define important user decisions and the evidence needed to answer
-them. The collection has 17 questions. The [30 September coverage audit](use-case-coverage-2026-09-30.md)
+them. The collection has 17 questions. The [30 September coverage audit](https://github.com/rewire-bio/rewire-benchmark-data/blob/main/docs/reviews/use-cases/coverage-audit-2026-09-30.md)
 adds primary-source protocols, measurements, baselines and exact configurations,
 with explicit remaining gaps for every question. The original 28 September collection
 had seven questions with scoped mappings and ten with collection plans.
 Questions can be published before comparative evidence
 is available. They do not add measurements, expand numeric comparison groups or
 recommend clinical care. The initial splicing and protein-stability mappings and
-the [five-question expansion](use-case-expansion-2026-09-28.md) are preserved.
-The [priority publication brief](use-case-priorities-2026-09-28.md) describes the
+the [five-question expansion](https://github.com/rewire-bio/rewire-benchmark-data/blob/main/docs/reviews/use-cases/expansion-2026-09-28.md) are preserved.
+The [priority publication brief](https://github.com/rewire-bio/rewire-benchmark-data/blob/main/docs/reviews/use-cases/priorities-2026-09-28.md) describes the
 ten new definitions and how they lead evidence acquisition.
 
 ## Content and evidence ownership
@@ -78,7 +78,7 @@ The declaration includes schema version 1.0, input SHA-256, use-case count and
 mapping count. Its logical digest is included before the release ID is derived;
 the exported artifact then embeds that release ID and has a separate byte hash.
 Old releases with no declaration remain valid and return an empty collection.
-Declared-but-missing or inconsistent artifacts fail release/import validation.
+Declared-but-missing or inconsistent artifacts fail release validation.
 
 `coverage.use_case_sources` declares each `use-case-source-<sha256>.md` file and
 its digest. Those bytes are archived alongside the sidecar. Archive restoration
@@ -86,7 +86,7 @@ reconstructs their stable public aliases and refuses unsafe filenames, changed
 bytes or alias collisions. The content-addressed URL avoids a circular
 dependency between source records and the containing release ID.
 
-The same resolver serves static pages and the release-pinned API. The sidecar
+The same resolver, stored in the prepared release file, serves pages and the release-pinned API. The sidecar
 does not introduce entity kinds or graph edges. Only explicitly listed, reviewed
 evaluations support an active mapping. Model backlinks identify the tested
 configurations and require reviewed relationships; they do not imply that every

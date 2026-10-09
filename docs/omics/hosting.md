@@ -1,5 +1,7 @@
 # Hosting decision: Firestore and a small TypeScript service
 
+> Superseded (October 2026). The website and public catalogue API now run on Cloud Run behind a Cloudflare Worker, reading one prepared SQLite file per release built into the image; Firestore holds only private submissions. See the README and [independent-frontend.md](../independent-frontend.md). This page records the September decision.
+
 Pricing checked 16 September 2026 against [Firebase pricing](https://firebase.google.com/pricing) and [Firestore quotas](https://firebase.google.com/docs/firestore/quotas).
 
 Host the benchmark website, application API, Firebase Auth and Firestore in one Firebase project. Firebase Hosting serves static profile HTML and forwards `/api/**` to the `contributions` Function in europe-west2. That existing function now serves both public catalogue queries and private contribution operations. Keep Google Cloud DNS; the blog remains a separate Cloudflare deployment. Browser search, filtering and result-table requests use release-pinned tRPC queries backed by published Firestore releases. Builds use the same query engine against the reviewed Git snapshot without live credentials. CSV/JSONL downloads remain static.

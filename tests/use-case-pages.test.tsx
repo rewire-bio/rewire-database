@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
-import type { CatalogueRecord } from "../services/omics/src/catalogue-query";
-import type { ResolvedMapping, UseCase } from "../services/omics/src/use-cases";
+import type { CatalogueRecord } from "../shared/omics/catalogue-query";
+import type { ResolvedMapping, UseCase } from "../shared/omics/use-cases";
 import { evidenceSummaryParts, summariseUseCaseEvidence } from "../lib/use-case-summary";
 
 vi.mock("next/navigation", () => ({ useSearchParams: () => new URLSearchParams(""), notFound: () => { throw new Error("not found"); } }));

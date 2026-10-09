@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Fragment } from "react";
-import type { ResearchInvestigation as Investigation } from "@/services/omics/src/research";
-import { isReviewedInvestigation } from "@/services/omics/src/research";
+import type { ResearchInvestigation as Investigation } from "@/shared/omics/research";
+import { isReviewedInvestigation } from "@/shared/omics/research";
 import { recordHref, safeSourceUrl, type OmicsRecord } from "@/lib/omics";
 import { researchDate, researchOutcomeLabel } from "./ResearchLabels";
 import styles from "./Research.module.css";

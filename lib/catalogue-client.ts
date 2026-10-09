@@ -1,6 +1,6 @@
 "use client";
 import { createTRPCUntypedClient, httpLink } from "@trpc/client";
-import type { createCatalogueQuery } from "../services/omics/src/catalogue-query";
+import type { createCatalogueQuery } from "../shared/omics/catalogue-query";
 
 type Query = ReturnType<typeof createCatalogueQuery>;
 export type CatalogueRelease = ReturnType<Query["release"]>;

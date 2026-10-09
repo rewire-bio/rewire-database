@@ -2,7 +2,7 @@ import { initTRPC, TRPCError } from "@trpc/server";
 import { z } from "zod";
 import type { Context } from "./auth.js";
 import { firebase } from "./firebase.js";
-import { contribution, patch, id } from "./validation.js";
+import { contribution, patch, id } from "./contribution.js";
 import * as store from "./store.js";
 // Submissions and curation. The public catalogue API is served by the
 // website from the release its image embeds (lib/catalogue-api.ts there).

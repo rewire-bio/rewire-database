@@ -1,4 +1,4 @@
-import type { ResultRow } from "@/services/omics/src/catalogue-query";
+import type { ResultRow } from "@/shared/omics/catalogue-query";
 
 export function numericScore(value: unknown): number | null {
   if (typeof value !== "number" && typeof value !== "string") return null;

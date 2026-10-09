@@ -1,6 +1,6 @@
 import { z } from "zod";
-import type { CatalogueSnapshot } from "../../services/omics/src/catalogue-query";
-import { validateResearchData, deriveResearchReadiness } from "../../services/omics/src/research";
+import type { CatalogueSnapshot } from "../../shared/omics/catalogue-query";
+import { validateResearchData, deriveResearchReadiness } from "../../shared/omics/research";
 const hash = z.string().regex(/^[a-f0-9]{64}$/);
 const sourceFileSchema = z.object({
   file: z.string().regex(/^use-case-source-[a-f0-9]{64}\.md$/),

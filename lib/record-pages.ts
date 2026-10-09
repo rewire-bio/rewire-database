@@ -5,11 +5,11 @@ import {
   type CatalogueRecord,
   type CatalogueSnapshot,
   type ResultRow,
-} from "./catalogue-query.js";
-import { recordRouteKinds } from "./entity-kinds.js";
-import { getResearch, type ResearchData, type ResearchManifest } from "./research.js";
-import { reproductionSchema } from "./run-recipe.js";
-import type { createUseCaseQuery } from "./use-cases.js";
+} from "../shared/omics/catalogue-query";
+import { recordRouteKinds } from "../shared/omics/entity-kinds";
+import { getResearch, type ResearchData, type ResearchManifest } from "../shared/omics/research";
+import { reproductionSchema } from "../shared/omics/run-recipe";
+import type { createUseCaseQuery } from "../shared/omics/use-cases";
 
 /**
  * Server-rendered record pages read one immutable document per route instead

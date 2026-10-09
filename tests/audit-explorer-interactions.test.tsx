@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { act, create, type ReactTestRenderer } from "react-test-renderer";
 import AuditExplorer from "../app/audits/AuditExplorer";
-import type { AuditCheck, AuditRun } from "../services/omics/src/audit";
+import type { AuditCheck, AuditRun } from "../shared/omics/audit";
 vi.mock("next/link", () => ({ default: ({ children, ...props }: React.ComponentProps<"a">) => <a {...props}>{children}</a> }));
 const row = { record_id: "model-a", record_name: "Model A", record_kind: "model", run_ids: ["run-a"], outcomes: ["supported"], categories: ["metadata"], checks_filter: [], check_count: 2, latest_check_at: "2026-10-01" };
 const initial = { items: [row], total: 2, next_cursor: "records-next" };

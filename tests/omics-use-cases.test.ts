@@ -1,10 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { createCatalogueQuery, type CatalogueRecord, type CatalogueSnapshot } from "../services/omics/src/catalogue-query";
+import { createCatalogueQuery, type CatalogueRecord, type CatalogueSnapshot } from "../shared/omics/catalogue-query";
 import {
   buildUseCaseArtifact, createUseCaseQuery, mappingEvidenceHash, parseUseCaseInputs,
   useCaseDeclaration, useCaseHash, validateUseCaseArtifact,
   type Mapping, type UseCase, type UseCaseInputs,
-} from "../services/omics/src/use-cases";
+} from "../shared/omics/use-cases";
 import { accumulateUseCaseDetail } from "../lib/use-cases-build";
 import { summariseUseCaseEvidence } from "../lib/use-case-summary";
 

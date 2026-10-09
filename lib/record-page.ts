@@ -7,7 +7,7 @@ import {
   type RecordPage,
   type RecordPageKind,
   type ResultRecordPage,
-} from "../services/omics/src/record-pages";
+} from "../lib/record-pages";
 import { recordSearchMetadata } from "./catalogue-seo";
 import { socialMetadata } from "./catalogue-sharing";
 

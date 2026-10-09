@@ -1,6 +1,6 @@
 import { buildCatalogue } from "./catalogue-build";
 import { buildUseCases } from "./use-cases-build";
-import { recordPageBuilder, type RecordPageKind } from "../services/omics/src/record-pages";
+import { recordPageBuilder, type RecordPageKind } from "../lib/record-pages";
 
 let cached: { query: ReturnType<typeof buildCatalogue>["query"]; build: ReturnType<typeof recordPageBuilder> } | undefined;
 

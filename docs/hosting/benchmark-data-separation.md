@@ -1,24 +1,24 @@
 # Independent benchmark data
 
-The canonical data and release pipeline live in [rewire-benchmark-data](https://github.com/rewire-bio/rewire-benchmark-data). This extends [PR #78](https://github.com/rewire-bio/rewire-database/pull/78): frontend updates reuse a prepared catalogue rather than regenerating it in the website build.
+The canonical data and release pipeline live in [rewire-benchmark-data](https://github.com/rewire-bio/rewire-benchmark-data). The website never regenerates the catalogue: it consumes the pinned release and the prepared SQLite file the data repository publishes for it.
 
 ## Local development
 
 ```sh
 npm ci
 npm run data:fetch
-npm run build:web
+npm run build
 ```
 
-`benchmark-data.lock.json` pins the repository, exact Git revision, prepared manifest SHA-256 and scientific release ID. `data:fetch` checks out that revision in ignored `workbench/benchmark-data`. `data:prepare` authenticates the pin and every output, then restores generated frontend inputs. It never invokes the data generator. Use `npm run build` to include all historical downloads for a full deployment; `build:web` includes the current release and relies on existing server-side archive preservation.
+`benchmark-data.lock.json` pins the repository, exact Git revision, prepared manifest SHA-256, scientific release ID and the prepared SQLite file (release tag, file name and SHA-256). `data:fetch` checks out that revision in ignored `workbench/benchmark-data`. `data:prepare` authenticates the pin and every output, restores generated frontend inputs and downloads the prepared file into `serving/`. It never invokes the data generator. `npm run build` builds the image directory with the current release embedded; downloads are redirects to the pinned GitHub files.
 
-`data/`, `public/omics/`, literature downloads and `lib/generated-benchmark-catalog.ts` are generated dependencies. Make scientific edits in the data repository. The website retains rendering, public query contracts, Firebase API/contribution services, and deployment configuration.
+`data/`, `public/omics/`, literature downloads and `lib/generated-benchmark-catalog.ts` are generated dependencies. Make scientific edits in the data repository. The website retains rendering, the public catalogue API, the contribution service and deployment configuration. `shared/omics/` is a copy of the data repository's shared code as of the pinned release (`npm run shared:sync`).
 
 ## CI and release adoption
 
-CI reads the lock and checks out the public data repository using the standard checkout action. No cross-repository personal token or deploy key is required. CI verifies all hydrated files before tests or rendering. The data fingerprint is the lock file; frontend and dependency edits do not change catalogue identity.
+CI reads the lock and checks out the public data repository using the standard checkout action. No cross-repository personal token or deploy key is required. CI verifies all hydrated files and the prepared file before tests or rendering. The data fingerprint is the lock file; frontend and dependency edits do not change catalogue identity.
 
-A data update is a reviewed pull request changing the lock. Full deployment still checks every historic release and refuses to discard published archives. A matching UI-only update still checks the current live receipt and manifest and uses Firebase version cloning. Backend fingerprints, concurrency checks and rollback are retained.
+A data update is a reviewed pull request changing the lock (and syncing `shared/omics/` to the producer revision that built the release). Because the image embeds the release, every data update builds and deploys a new image; rolling back the image rolls back the data. Backend fingerprints, concurrency checks and rollback are retained.
 
 Initial extraction source: `e13852aa4d190fb52fad29f38b0d6a5257aadb3b`. Scientific release: `2026-09-29-06401fd5b220`. Original source file hashes are retained in the data repository's `docs/data-extraction.json`. No scientific IDs, values or source evidence were changed by the split.
 

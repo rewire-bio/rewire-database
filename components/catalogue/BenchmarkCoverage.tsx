@@ -1,5 +1,5 @@
 import Link from "next/link";
-import type { BenchmarkResearchData } from "@/services/omics/src/benchmark-research";
+import type { BenchmarkResearchData } from "@/shared/omics/benchmark-research";
 import styles from "@/app/database/database.module.css";
 
 /** An empty catalogue is a collection gap, never evidence of no experiments. */

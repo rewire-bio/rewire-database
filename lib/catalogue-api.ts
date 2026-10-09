@@ -1,10 +1,10 @@
 import { initTRPC, TRPCError } from "@trpc/server";
 import { z } from "zod";
-import { auditCategories, auditOutcomes } from "../services/omics/src/audit";
-import { entityKinds } from "../services/omics/src/entity-kinds";
-import { recordPageKinds } from "../services/omics/src/record-pages";
-import { researchCapabilities } from "../services/omics/src/research";
-import type { PreparedCatalogue } from "../services/omics/src/prepared-catalogue";
+import { auditCategories, auditOutcomes } from "../shared/omics/audit";
+import { entityKinds } from "../shared/omics/entity-kinds";
+import { recordPageKinds } from "../lib/record-pages";
+import { researchCapabilities } from "../shared/omics/research";
+import type { PreparedCatalogue } from "../shared/omics/prepared-catalogue";
 import { preparedCatalogue } from "./prepared";
 import { localRecordPage } from "./record-page-local";
 

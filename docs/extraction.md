@@ -22,4 +22,4 @@ Wrangler local checks returned HTTP 200 for the overview, literature query route
 
 ## Hosting revision
 
-After extraction, the owner chose Firebase for the database website and API together, retaining Google DNS. The original Wrangler checks above are historical evidence. Current configuration and checks use Firebase Hosting; see [deployment instructions](hosting/firebase.md). Source and release hashes are unchanged.
+After extraction, the owner chose Firebase for the database website and API together, retaining Google DNS. The original Wrangler checks above are historical evidence. The website now runs on Cloud Run behind a Cloudflare Worker; see the README and [independent-frontend.md](independent-frontend.md). Source and release hashes are unchanged.

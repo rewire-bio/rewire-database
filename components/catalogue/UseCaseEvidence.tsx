@@ -1,6 +1,6 @@
 import { downloadHref } from "@/lib/downloads";
-import type { Citation, ResolvedMapping, Review } from "@/services/omics/src/use-cases";
-import type { CatalogueRecord } from "@/services/omics/src/catalogue-query";
+import type { Citation, ResolvedMapping, Review } from "@/shared/omics/use-cases";
+import type { CatalogueRecord } from "@/shared/omics/catalogue-query";
 import { catalogueText } from "@/lib/catalogue-text";
 import { displayValue, originLabel, recordHref, safeSourceUrl } from "@/lib/omics";
 import { statusLabel, explorerPrintedScore } from "@/lib/omics-browse";

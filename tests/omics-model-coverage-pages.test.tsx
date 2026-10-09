@@ -5,7 +5,7 @@ import { describe, expect, it, vi } from "vitest";
 import {
   createCatalogueQuery,
   type CatalogueSnapshot,
-} from "../services/omics/src/catalogue-query";
+} from "../shared/omics/catalogue-query";
 import RecordPage from "../app/database/model/[id]/page";
 
 const fixture = vi.hoisted(() => ({

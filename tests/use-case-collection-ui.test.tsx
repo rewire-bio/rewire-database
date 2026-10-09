@@ -6,8 +6,8 @@ import UseCasePage from "../app/use-cases/[slug]/page";
 import UseCaseExplorer from "../components/catalogue/UseCaseExplorer";
 import UseCaseCollectionPlan from "../components/catalogue/UseCaseCollectionPlan";
 import type { UseCaseDetail, UseCasePage as QuestionPage } from "../lib/use-cases-client";
-import type { CatalogueRecord } from "../services/omics/src/catalogue-query";
-import type { ResolvedMapping, UseCase } from "../services/omics/src/use-cases";
+import type { CatalogueRecord } from "../shared/omics/catalogue-query";
+import type { ResolvedMapping, UseCase } from "../shared/omics/use-cases";
 import { summariseUseCaseEvidence } from "../lib/use-case-summary";
 
 const state = vi.hoisted(() => ({ search: "", get: vi.fn(), initial: vi.fn(), list: vi.fn() }));

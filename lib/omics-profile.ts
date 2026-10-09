@@ -4,11 +4,11 @@ import type { OmicsRecord } from "./omics";
 import {
   profileSchema,
   type OmicsProfile,
-} from "../services/omics/src/profile-schema";
+} from "../shared/omics/profile-schema";
 export {
   profileSchema,
   type OmicsProfile,
-} from "../services/omics/src/profile-schema";
+} from "../shared/omics/profile-schema";
 
 export function validateProfileSources(
   profile: OmicsProfile,

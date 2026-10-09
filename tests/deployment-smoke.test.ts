@@ -16,7 +16,7 @@ function fixture(breakPath?: string) {
     if (path.endsWith("manifest.json")) return Response.json({ release_id: release });
     if (path.endsWith("records.jsonl")) return new Response(null, { headers: { "content-type": "application/gzip", "content-length": "100" } });
     if (path.endsWith(".js")) return new Response("/* bundle */", { headers: { "content-type": "text/javascript" } });
-    return new Response(`<h1>Database</h1><input id="catalogue-search"><div id="downloads"></div><script src="/_next/static/main.js"></script><a href="/omics/releases/${release}/manifest.json">Manifest</a><section id="question"></section><section id="evidence"></section><section id="gaps"></section><section id="sources"></section><details><summary>Results</summary></details>`, { headers: { "content-type": "text/html" } });
+    return new Response(`<h1>Database</h1><input id="catalogue-search"><div id="downloads"></div><script src="/_next/static/main.js"></script><a href="/omics/releases/${release}/manifest.json">Manifest</a><section id="evidence"></section><section id="gaps"></section><section id="details"></section><details><summary>Results</summary></details>`, { headers: { "content-type": "text/html" } });
   });
 }
 describe("read-only deployment smoke", () => {

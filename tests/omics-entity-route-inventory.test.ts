@@ -24,7 +24,7 @@ fixture.snapshot = JSON.parse(
 );
 fixture.query = preparedFromSnapshot(fixture.snapshot!);
 
-// Each of the 16 kinds owns a canonical page at app/database/<kind>/[id]/page.tsx.
+// Each of the 17 kinds owns a canonical page at app/database/<kind>/[id]/page.tsx.
 // There is no generic app/database/[kind]/[id]/page.tsx fallback.
 const pageModules = {
   model: () => import("../app/database/model/[id]/page"),
@@ -43,6 +43,7 @@ const pageModules = {
   result: () => import("../app/database/result/[id]/page"),
   source: () => import("../app/database/source/[id]/page"),
   claim: () => import("../app/database/claim/[id]/page"),
+  use_case: () => import("../app/database/use_case/[id]/page"),
 } as const;
 
 describe("entity detail route inventory", () => {

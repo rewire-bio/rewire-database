@@ -40,6 +40,7 @@ export const relationRules = {
   evaluates_task: { from: assessments, to: assessments, meaning: "Benchmark or protocol to the task it evaluates" },
   applicable_to: { from: [...systems, "baseline"], to: [...assessments, "evaluator"], meaning: "Candidate applicability; not evidence of performance" },
   same_data_as: { from: data, to: data, meaning: "Informational data reuse; never merges results" },
+  assessed_by: { from: ["use_case"], to: ["protocol"], meaning: "Use case to a protocol whose evaluations a reviewed relevance judgement claim rates as evidence for it" },
   supersedes: { from: any, to: any, meaning: "A newer record replacing an older one" },
   subject: { from: ["claim"], to: any, meaning: "Claim to the record it is about" },
   source: { from: any, to: ["source"], meaning: "Record to a source it is derived from" },

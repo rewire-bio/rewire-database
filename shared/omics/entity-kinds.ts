@@ -26,6 +26,7 @@ export const entityKinds = [
   "result",
   "source",
   "claim",
+  "use_case",
 ] as const;
 export type EntityKind = (typeof entityKinds)[number];
 export const modelSubjectKinds = [
@@ -66,6 +67,7 @@ export const entityKindLabel = (kind: string): string =>
     result: "Result",
     source: "Source",
     claim: "Evidence claim",
+    use_case: "Use case",
   })[kind] || kind;
 
 /** Alias routes preserve published links: the canonical kind plus any listed legacy kinds. */

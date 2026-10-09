@@ -6,7 +6,7 @@ import UseCasePage from "../app/use-cases/[slug]/page";
 import UseCaseExplorer from "../components/catalogue/UseCaseExplorer";
 import UseCaseCollectionPlan from "../components/catalogue/UseCaseCollectionPlan";
 import type { UseCaseDetail, UseCasePage as QuestionPage } from "../lib/use-cases-client";
-import type { CatalogueRecord } from "../shared/omics/catalogue-query";
+import type { CatalogueRecord, ResultRow } from "../shared/omics/catalogue-query";
 import type { ResolvedMapping, UseCase } from "../shared/omics/use-cases";
 import { summariseUseCaseEvidence } from "../lib/use-case-summary";
 
@@ -59,7 +59,13 @@ function mapping(): ResolvedMapping {
     endpoint: "Existing scoped endpoint", relevance: "proxy", rationale: "The stated assay has limited transfer.",
     constraints: ["Keep the original assay scope"], limitations: ["Clinical performance is untested"],
     citations: [], review, evidence_sha256: "b".repeat(64),
-    protocol: record("protocol", "protocol"), task: null, evaluations: [], sources: [],
+    protocol: record("protocol", "protocol"), task: null, sources: [],
+    evaluations: [{
+      evaluation: { ...record("evaluation", "evaluation"), attributes: { origin: "independent_paper" } },
+      configurations: [record("configuration", "configuration")],
+      results: [{ result: { ...record("result", "result"), attributes: { metric: "recall", printed_value: "0.75", numeric_value: "0.75", metric_direction: "higher" } } } as unknown as ResultRow],
+      results_total: 1, results_next_cursor: null,
+    }],
   };
 }
 function detail(entry: UseCase, mappings: ResolvedMapping[] = []): UseCaseDetail {
@@ -157,9 +163,9 @@ describe("use-case evidence collection plans", () => {
   it("preserves existing evidence rendering with or without an explicit collection plan", () => {
     for (const entry of [question, plannedQuestion("collecting")]) {
       const markup = detailMarkup(entry, [mapping()]);
-      expect(markup).toContain('id="mapping-existing-mapping"');
+      expect(markup).toContain('id="comparison-existing-mapping"');
       expect(markup).toContain("Existing scoped endpoint");
-      expect(markup).toContain("Current source-reviewed mapping");
+      expect(markup).toContain("0.75");
       expect(markup).toContain("Proxy evidence");
       expect(markup).toContain("Clinical performance is untested");
       expect(markup).not.toContain("No model comparison has been collected for this question yet");

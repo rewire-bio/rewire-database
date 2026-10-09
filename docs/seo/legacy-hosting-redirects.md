@@ -1,6 +1,8 @@
 # Permanent legacy redirects
 
-Firebase Hosting issues 301 redirects for 105 explicit paths, with or without a trailing slash:
+> The redirects are now served by the Cloudflare Worker, which reads the same `hosting.redirects` list from `firebase.json`; Firebase Hosting no longer serves the site. The validation below was measured on Firebase Hosting before the move.
+
+Firebase Hosting issued 301 redirects for 105 explicit paths, with or without a trailing slash:
 
 - `/database/` → `/`.
 - `/literature/` → `/?kind=result&origin=literature`.

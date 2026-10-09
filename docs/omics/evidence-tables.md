@@ -31,7 +31,7 @@ The MFASS v2 source digest identifies the local imported `data/benchmark-runs/mf
 
 Every record includes a searchable, paginated evidence table. Models, benchmarks and results initially show individual claims; other record types start with their applicable context or source metadata. All scopes remain accessible. The `/evidence/` guide explains the distinctions and links to whole-catalogue downloads.
 
-The existing Firebase/tRPC service provides `catalogue.evidence` with required `release_id` and `id`, optional `q` and `scope`, and the existing `cursor` / `limit` contract (1–100 rows). Cursors are bound to the release, record and filters. The static page and live endpoint use the same evidence compiler. Public evidence reads cannot enable contribution routes or expose private submission fields.
+The public catalogue API provides `catalogue.evidence` with required `release_id` and `id`, optional `q` and `scope`, and the existing `cursor` / `limit` contract (1–100 rows). Cursors are bound to the release, record and filters. Pages and the API read the same evidence rows from the prepared release file. Public evidence reads cannot enable contribution routes or expose private submission fields.
 
 ## Research boundary
 

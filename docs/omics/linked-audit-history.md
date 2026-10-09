@@ -8,7 +8,7 @@ Audits are append-only observations about exact catalogue versions. They are not
 
 Runs pin their baseline release, target inventory hash, reviewer type, verifier revision and scope. Checks link the run, stable catalogue record, field paths, exact content hash, source IDs, source fingerprints, evidence locations and review receipts. Outcomes are supported, contradicted, insufficient evidence, inaccessible or not applicable. A supported source-access check does not verify a model architecture or numerical result.
 
-Audits publish with the catalogue release, before its active pointer changes. The existing Firebase importer stores bounded check/index chunks; public queries read compact indexes and load only a requested record's check chunks. No contributor data or submission credentials enter the audit.
+Audits publish with the catalogue release. The prepared release file stores the audit index, runs, resolutions and each audited record's checks; public queries read the index and load only a requested record's checks. No contributor data or submission credentials enter the audit.
 
 - `catalogue.auditRuns`: release-pinned, paginated run history.
 - `catalogue.auditRecords`: release-pinned filters by record type/name, run, outcome, check category and dates.
@@ -24,7 +24,7 @@ All API queries use stable cursors bound to their filters and release. Existing 
 3. Generate a new run with `scripts/omics/audit/generate.ts`. The run identity includes the baseline release, inventory, receipt hashes and verifier revision. An existing audit file cannot be overwritten with different bytes.
 4. Audit historical versions separately and explicitly link any reused exact-content checks. Do not apply current findings automatically to superseded values or sources.
 5. Resolve confirmed errors through a reviewed record change and linked follow-up check. Do not erase contradictory findings or change old release bytes.
-6. Generate and validate the release, import its audit tables, then publish through the existing rollback-capable deployment.
+6. Generate and validate the release (its prepared file includes the audit tables), then adopt it in the website through a lock pull request.
 
 Source collection on 19 September adds nine bounded benchmark comparisons. PEtab timing artifacts remain quarantined because their units and experimental scope are unresolved. FLIP2 detailed/summary conflicts, provisional VCC scores, anonymized challenge submissions and source-specific input conditions remain explicit.
 

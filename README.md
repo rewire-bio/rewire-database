@@ -115,7 +115,12 @@ Make data edits in the data repository. New releases reach the site automaticall
 
 Adoption refuses a release that withholds use-case mappings the site serves now: a mapping is withheld automatically when the evidence it depends on changed since its review. Re-review those mappings in the data repository first; the "Adopt the newest data release" workflow's `allow_withheld_mappings` input overrides this deliberately. Run "Adopt the newest data release" by hand with a release ID to adopt a specific release; it never moves to an older one.
 
-After each accepted publication, the deployment deletes every Cloud Run revision and tag except the serving revision and the one it replaced. Old images are removed by the Artifact Registry cleanup policy on `rewire-web` (keep the five newest).
+After each accepted publication, the deployment deletes every Cloud Run revision and tag except the serving revision and the one it replaced. Old images are removed by the Artifact Registry cleanup policy on `rewire-web` in `infra/artifact-registry-cleanup.json` (keep the five newest, delete the rest after a day). Apply or change it once, outside CI:
+
+```sh
+gcloud artifacts repositories set-cleanup-policies rewire-web --project rewire-it --location europe-west2 \
+  --policy=infra/artifact-registry-cleanup.json --no-dry-run
+```
 
 ## Code layout
 

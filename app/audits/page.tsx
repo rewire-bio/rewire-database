@@ -62,12 +62,6 @@ export default function Audits() {
             <>
               <p>
                 <a
-                  href={downloadHref(`/omics/releases/${catalogue.release_id}/audit-checks.csv`)}
-                >
-                  Audit checks CSV (gzip)
-                </a>{" "}
-                ·{" "}
-                <a
                   href={downloadHref(`/omics/releases/${catalogue.release_id}/audit-checks.jsonl`)}
                 >
                   Audit checks JSONL (gzip)

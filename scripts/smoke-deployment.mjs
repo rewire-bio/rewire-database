@@ -47,9 +47,9 @@ export async function smokeDeployment(origin, { request = fetch, log = console.l
     assert.equal(release, downloads.lock.release_id, 'Frontend manifest must match checked producer release');
     // Pages link downloads by site path (lib/downloads.ts); the frontend redirects
     // that path to the exact pinned gzip export, which fetchGithubDownload checks below.
-    const csv = `/omics/releases/${release}/records.csv`;
-    assert.ok(downloads.urls.has(csv), 'The checked producer manifest must list the release CSV');
-    assert.ok(home.includes(`href="${csv}"`), 'Home must link the pinned release CSV download');
+    const download = `/omics/releases/${release}/records.jsonl`;
+    assert.ok(downloads.urls.has(download), 'The checked producer manifest must list the release records export');
+    assert.ok(home.includes(`href="${download}"`), 'Home must link the pinned release records download');
   }
   for (const path of ['/models/', '/benchmarks/', '/use-cases/', '/evidence/']) {
     assert.match(await html(path), /<h1[ >]/, `${path}: missing page heading`);
@@ -61,12 +61,12 @@ export async function smokeDeployment(origin, { request = fetch, log = console.l
   assert.match(useCase, /<summary[ >]/, 'Use case must render evidence disclosures');
   const manifest = rootManifest || await (await get(`/omics/releases/${release}/manifest.json`, 'json')).json();
   assert.equal(manifest?.release_id, release, 'Manifest and HTML release must match');
-  const downloadPath = `/omics/releases/${release}/records.csv`;
+  const downloadPath = `/omics/releases/${release}/records.jsonl`;
   if (independentFrontend) {
     await fetchGithubDownload(base, downloadPath, downloads, request, { head: true });
   } else {
   const download = await request(new URL(downloadPath, base), { method: 'HEAD', signal: AbortSignal.timeout(30000) });
-  assert.equal(download.status, 200, 'Database CSV download must resolve');
+  assert.equal(download.status, 200, 'Database records download must resolve');
   assert.ok(!download.headers.get('content-type')?.includes('text/html'), 'Database download returned an HTML fallback');
   if (download.headers.has('content-length')) assert.ok(Number(download.headers.get('content-length')) > 0, 'Database download is empty');
   }

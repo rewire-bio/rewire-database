@@ -36,7 +36,7 @@ function assessment(ready = false): Assessment {
 describe("catalogue information panels", () => {
   it("links downloads to the selected immutable release and distinguishes archived literature", () => {
     const html = renderToStaticMarkup(<CatalogueDownloads releaseId="fixture" releasedAt="2026-10-01T12:34:56Z" />);
-    for (const file of ["records.jsonl", "records.csv", "evidence.csv", "evidence.jsonl", "manifest.json"]) expect(html).toContain(`/omics/releases/fixture/${file}`);
+    for (const file of ["records.jsonl", "evidence.jsonl", "manifest.json"]) expect(html).toContain(`/omics/releases/fixture/${file}`);
     expect(html).toContain("2026-10-01");
     expect(html).toContain("six result rows excluded");
   });

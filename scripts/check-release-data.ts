@@ -42,8 +42,10 @@ export function checkReleaseData(root = "public") {
     if (!fs.existsSync(path.join(root, release, name)) || read(path.join(release, name)).toString("utf8") !== expected)
       failures.push(`Research sidecar differs from catalogue: ${name}`);
   const evidence = createEvidenceIndex(catalogue, { cache: false });
+  // Releases from 2026-10-10 publish JSONL only; earlier ones also carry evidence.csv.
+  const evidenceCsv = path.join(root, release, "evidence.csv");
   if (fileSha256(path.join(root, release, "evidence.jsonl")) !== chunksSha256(evidenceJsonlLines(evidence.iterate())) ||
-      fileSha256(path.join(root, release, "evidence.csv")) !== chunksSha256(evidenceCsvLines(evidence.iterate())))
+      (fs.existsSync(evidenceCsv) && fileSha256(evidenceCsv) !== chunksSha256(evidenceCsvLines(evidence.iterate()))))
     failures.push("Evidence exports do not match their release records");
   // The manifest's generator and exporter hashes identify the producer's source
   // files, which this repository mirrors under its own paths; every data file and

@@ -9,13 +9,13 @@ import lock from '../benchmark-data.lock.json';
 describe('GitHub downloads', () => {
   it('redirects site paths to the exact producer sources of the pinned revision', () => {
     const urls = downloadUrls(downloadLocations(lock, fs.readFileSync('workbench/benchmark-data/website/manifest.json')));
-    expect(urls.get(`/omics/releases/${lock.release_id}/records.csv`)).toBe(`https://raw.githubusercontent.com/${lock.repository}/${lock.revision}/data/omics/releases/${lock.release_id}/records.csv.gz`);
+    expect(urls.get(`/omics/releases/${lock.release_id}/records.jsonl`)).toBe(`https://raw.githubusercontent.com/${lock.repository}/${lock.revision}/data/omics/releases/${lock.release_id}/records.jsonl.gz`);
     expect(urls.get(`/omics/releases/${lock.release_id}/manifest.json`)).toContain(`/website/files/public/omics/releases/${lock.release_id}/manifest.json.gz`);
     expect(urls.get('/benchmark-literature/results.csv')).toContain('/website/files/public/benchmark-literature/results.csv.gz');
     expect(urls.has('/omics/releases/invented/records.csv')).toBe(false);
   });
   it('links our own download URLs as site paths, the same in server and browser renders', () => {
-    expect(downloadHref(`/omics/releases/${lock.release_id}/records.csv`)).toBe(`/omics/releases/${lock.release_id}/records.csv`);
+    expect(downloadHref(`/omics/releases/${lock.release_id}/records.jsonl`)).toBe(`/omics/releases/${lock.release_id}/records.jsonl`);
     expect(() => downloadHref('/database/model/x/')).toThrow('Not a published download');
     expect(() => downloadHref('/omics/../secret')).toThrow();
     expect(optionalDownloadHref('https://evil.example/omics/catalogue.json')).toBeUndefined();

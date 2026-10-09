@@ -14,12 +14,6 @@ const pages: Omit<PageMetadataContract, "canonical">[] = [
     ],
   },
   {
-    path: "/audits/",
-    indexable: true,
-    inSitemap: true,
-    social: true,
-  },
-  {
     path: "/runs/mfass-v1/",
     indexable: false,
     inSitemap: false,

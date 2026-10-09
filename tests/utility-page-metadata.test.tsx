@@ -2,7 +2,6 @@ import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it, vi } from "vitest";
 import EvidencePage from "../app/evidence/page";
-import AuditsPage from "../app/audits/page";
 import MfassV1Page from "../app/runs/mfass-v1/page";
 import MfassV2Page from "../app/runs/mfass-v2/page";
 import ContributePage from "../app/contribute/page";
@@ -26,7 +25,6 @@ const cases = [
       ["Evidence and sources", "/evidence/"],
     ],
   },
-  { path: "/audits/", Page: AuditsPage, indexable: true, hierarchy: [] },
   {
     path: "/runs/mfass-v1/", Page: MfassV1Page, indexable: false,
     hierarchy: [
@@ -121,11 +119,4 @@ describe("utility-page export contracts", () => {
       .toContain(`${page.path}: visible breadcrumb links disagree with JSON-LD`);
   });
 
-  it("continues to reject structured data on the audit page", () => {
-    const page = cases.find((page) => page.path === "/audits/")!;
-    const extra = [...rendered(cases[0]).matchAll(jsonLd)][0][0];
-    const html = rendered(page).replace("</body>", `${extra}</body>`);
-    expect(checkPageMetadata(html, { ...contractFor(page.path), social: false }, sitemap))
-      .toContain(`${page.path}: unexpected structured data context/type`);
-  });
 });

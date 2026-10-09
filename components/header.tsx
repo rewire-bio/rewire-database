@@ -16,7 +16,7 @@ export function primaryNavigationHref(pathname: string) {
   const path = `${pathname.replace(/\/+$/, "")}/`;
   if (path.startsWith("/database/model/")) return "/models/";
   if (path.startsWith("/database/benchmark/")) return "/benchmarks/";
-  if (["/literature/", "/audits/", "/investigations/"].some((prefix) => path.startsWith(prefix))) return "/evidence/";
+  if (["/literature/", "/investigations/"].some((prefix) => path.startsWith(prefix))) return "/evidence/";
   return NAV.find(({ href }) => href !== "/" && path.startsWith(href))?.href
     || (path === "/" || path.startsWith("/database/") ? "/" : undefined);
 }

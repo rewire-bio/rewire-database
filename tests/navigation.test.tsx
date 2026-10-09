@@ -13,7 +13,7 @@ describe("primary navigation", () => {
     ["/", "/"], ["/database", "/"], ["/database/result/x/", "/"],
     ["/models", "/models/"], ["/models/page/2/", "/models/"],
     ["/database/model/x/", "/models/"], ["/database/benchmark/x/", "/benchmarks/"],
-    ["/use-cases/example/", "/use-cases/"], ["/audits/", "/evidence/"],
+    ["/use-cases/example/", "/use-cases/"], ["/literature/papers/example/", "/evidence/"],
     ["/investigations/x/", "/evidence/"], ["/literature/papers/x/", "/evidence/"],
     ["/contribute", "/contribute/"], ["/unknown", undefined],
   ])("places %s in its parent section", (path, expected) => {

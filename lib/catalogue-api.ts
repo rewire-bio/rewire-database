@@ -1,6 +1,5 @@
 import { initTRPC, TRPCError } from "@trpc/server";
 import { z } from "zod";
-import { auditCategories, auditOutcomes } from "../shared/omics/audit";
 import { entityKinds } from "../shared/omics/entity-kinds";
 import { recordPageKinds } from "../lib/record-pages";
 import { researchCapabilities } from "../shared/omics/research";
@@ -109,30 +108,6 @@ export function catalogueRouter(open: () => PreparedCatalogue = preparedCatalogu
       investigations: t.procedure
         .input(z.object({ ...pinned, ...pagination, id: id.optional(), record_id: id.optional() }).strict())
         .query(({ input }) => read(input.release_id, (q) => q.investigations(omit(input)))),
-      auditRuns: t.procedure
-        .input(z.object({ ...pinned, ...pagination }).strict())
-        .query(({ input }) => read(input.release_id, (q) => q.auditRuns(input))),
-      auditRecords: t.procedure
-        .input(z.object({
-          ...pinned, ...pagination,
-          run_id: id.optional(),
-          kind: z.string().max(100).optional(),
-          date_from: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
-          date_to: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
-          q: z.string().max(300).optional(),
-          outcome: z.enum(auditOutcomes).optional(),
-          category: z.enum(auditCategories).optional(),
-        }).strict())
-        .query(({ input }) => read(input.release_id, (q) => q.auditRecords(input))),
-      auditChecks: t.procedure
-        .input(z.object({
-          ...pinned, ...pagination,
-          record_id: id,
-          run_id: id.optional(),
-          outcome: z.enum(auditOutcomes).optional(),
-          category: z.enum(auditCategories).optional(),
-        }).strict())
-        .query(({ input }) => read(input.release_id, (q) => q.auditChecks(input))),
       compare: t.procedure
         .input(z.object({ ...pinned, ids: z.array(id).min(2).max(20) }).strict())
         .query(({ input }) => read(input.release_id, (q) => q.compare(input))),

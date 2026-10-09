@@ -14,7 +14,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${base}/` },
     { url: `${base}/runs/mfass-v2/` },
     { url: `${base}/evidence/` },
-    { url: `${base}/audits/` },
     { url: `${base}/coverage/` },
     { url: `${base}/use-cases/` },
     ...useCases.map((entry) => ({ url: `${base}/use-cases/${entry.slug}/` })),

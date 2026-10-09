@@ -89,7 +89,7 @@ describe("detail pages with incomplete and historical evidence", () => {
     expect(html).toContain("Proposed association");
     expect(html).toContain('href="https://example.org/source"');
     expect(html).not.toContain('href="javascript:');
-    expect(html).toMatch(/href="\/audits\/?\?record=subject"/);
+    expect(html).not.toContain("/audits/");
     if (kind === "source") expect(html).toContain("Read original source");
   });
 });

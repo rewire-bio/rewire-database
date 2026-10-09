@@ -88,7 +88,7 @@ describe("consented public analytics", () => {
   it("counts returning to a page and cannot switch measurement IDs mid-session", () => {
     const frame = analyticsFrame();
     frame.post("/"); frame.post("/evidence/"); frame.post("/");
-    frame.post("/audits/", { data: { type: "rewire-public-page", measurementId: "G-OTHER", clientId: "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa", page: { location: ANALYTICS_ORIGIN + "/audits/", title: "Audits" } } });
+    frame.post("/evidence/", { data: { type: "rewire-public-page", measurementId: "G-OTHER", clientId: "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa", page: { location: ANALYTICS_ORIGIN + "/evidence/", title: "Evidence" } } });
     expect(frame.commands().filter(row => row[0] === "event")).toHaveLength(3);
   });
   it("uses a blank referrer after a contribution visit", () => {

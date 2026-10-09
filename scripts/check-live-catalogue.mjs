@@ -127,59 +127,6 @@ assert.ok(
       item.review_status === "source_checked",
   ),
 );
-if (!core && manifest.coverage.audit_history) {
-  const runs = await query("auditRuns", { ...pinned, limit: 2 });
-  assert.equal(runs.total, manifest.coverage.audit_history.runs);
-  const audit = await query("auditRecords", { ...pinned, limit: 2 });
-  assert.equal(audit.total, manifest.coverage.audit_history.records);
-  assert.ok(audit.next_cursor, "Audit pagination must remain available");
-  const next = await query("auditRecords", {
-    ...pinned,
-    limit: 2,
-    cursor: audit.next_cursor,
-  });
-  assert.notEqual(next.items[0].record_id, audit.items[0].record_id);
-  const corrected = await query("auditChecks", {
-    ...pinned,
-    record_id: "rewire-result-baseline-kmer-position-v2-average-precision",
-    limit: 1,
-  });
-  assert.ok(corrected.total > 1);
-  assert.ok(
-    corrected.resolutions.length > 0,
-    "Exact-source correction must have linked resolution",
-  );
-  const publishedResolutions = JSON.parse(await read(new URL(
-    `../public/omics/releases/${manifest.release_id}/audit-resolutions.json`,
-    import.meta.url,
-  ), "utf8"));
-  verifyResolutionPublications(corrected.resolutions, publishedResolutions);
-  assert.ok(corrected.record_url);
-  for (const name of [
-    "beeline",
-    "cafa",
-    "cami",
-    "capri",
-    "casp",
-    "flip2",
-    "plinder",
-    "scib",
-    "virtual-cell-challenge-2026",
-  ]) {
-    const profile = await query("get", {
-      ...pinned,
-      id: `discovery-benchmark-${name}`,
-    });
-    assert.ok(
-      profile.comparison_options.length > 0,
-      `${name} must expose reviewed charts`,
-    );
-    assert.ok(
-      profile.published_comparisons[0]?.rows.length > 0,
-      `${name} must return an initial chart`,
-    );
-  }
-}
 
 if (useCases && core) {
   const entry = useCases.use_cases.find(item => item.slug === "brca1-brca2-germline-interpretation");
@@ -285,11 +232,6 @@ if (args.includes("--website")) {
     const receiptResponse = await fetchImpl(`${origin}/deployment.json?verify=${probe}`, { redirect: "manual" });
     assert.equal(receiptResponse.status, 200, "Frontend producer receipt must be available");
     assertProducerReceipt(await receiptResponse.json(), downloads.lock, manifest.release_id);
-  }
-  if (!core && manifest.coverage.audit_history) {
-    const auditPage = await fetchImpl(`${origin}/audits/?verify=${probe}`);
-    assert.equal(auditPage.status, 200);
-    assert.ok((await auditPage.text()).includes("Catalogue audit history"));
   }
   if (useCases) {
     const index = await fetchImpl(`${origin}/use-cases/?verify=${probe}`);

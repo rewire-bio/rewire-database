@@ -102,7 +102,7 @@ async function main() {
     failures.push(...checkPageMetadata(home, { path: "/", canonical: `${ORIGIN}/`, indexable: true, inSitemap: true, social: true, website: true }, sitemap.urls));
     assert.ok(home.includes('id="mfass-v1"') && home.includes('href="/use-cases/"'), "Home navigation");
     const useCase = buildUseCases().entries[0];
-    for (const pathname of ["/models/", "/models/page/2/", "/benchmarks/", "/evidence/", "/audits/", "/coverage/", "/use-cases/",
+    for (const pathname of ["/models/", "/models/page/2/", "/benchmarks/", "/evidence/", "/coverage/", "/use-cases/",
       "/investigations/", "/literature/", "/runs/mfass-v2/", "/updates/", `/${DOMAINS[0].id}/`,
       ...(useCase ? [`/use-cases/${useCase.slug}/`] : []), `/literature/papers/${getLiterature().papers[0].id}/`,
       ...getResearch(catalogue).investigations.slice(0, 1).map((report) => `/investigations/${report.id}/`)])
@@ -168,7 +168,7 @@ async function checkContracts(release: string, firstOf: (kind: string) => OmicsR
 /** The sitemap lists exactly the indexable canonical pages of the pinned release. */
 function checkSitemapInventory(catalogue: CatalogueSnapshot, urls: Set<string>) {
   const expected = new Set([
-    "/", "/runs/mfass-v2/", "/evidence/", "/audits/", "/coverage/", "/use-cases/", "/investigations/",
+    "/", "/runs/mfass-v2/", "/evidence/", "/coverage/", "/use-cases/", "/investigations/",
     ...getResearch(catalogue).investigations.map((report) => `/investigations/${report.id}/`),
     ...(catalogue.coverage.use_cases ? buildUseCases().entries.map((entry) => `/use-cases/${entry.slug}/`) : []),
     ...catalogueIndexPaths(catalogue.records),

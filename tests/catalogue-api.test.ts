@@ -19,8 +19,7 @@ describe("public catalogue API", () => {
     const id = query.list({ kind: "benchmark", limit: 1 }).items[0].id;
     expect(await data(await call("results", { release_id: lock.release_id, id, limit: 3 })))
       .toEqual(JSON.parse(JSON.stringify(query.results({ id, limit: 3 }))));
-    const audit = await data(await call("auditRuns", { release_id: lock.release_id, limit: 2 }));
-    expect(audit.release_id).toBe(lock.release_id);
+    expect((await call("auditRuns", { release_id: lock.release_id, limit: 2 })).status).toBe(404);
   });
   it("refuses another release instead of answering from this one", async () => {
     const response = await call("list", { release_id: "2000-01-01-000000000000" });

@@ -40,8 +40,6 @@ interface RecordPageBase {
   schema_version: typeof RECORD_PAGE_SCHEMA;
   release_id: string;
   route_kind: RecordPageKind;
-  /** The release publishes audit history, so pages link to it. */
-  audit_history: boolean;
   detail: RecordPageDetail;
   use_case_links: UseCaseLinks;
   use_case_configurations: Record<string, RecordLink>;
@@ -130,7 +128,6 @@ export function recordPageBuilder(
   const verified = (subject: string, relation: string, target: string) =>
     query.verifiedAssociation(subject, relation, target);
   const research = query.research();
-  const audit_history = !!query.release().coverage.audit_history;
 
   function contextRecords(record: CatalogueRecord, evaluations: (CatalogueRecord | null)[]) {
     const ids = new Set<string>([
@@ -175,7 +172,6 @@ export function recordPageBuilder(
     return {
       schema_version: RECORD_PAGE_SCHEMA,
       release_id,
-      audit_history,
       detail: { release_id, record, direct, reverse, sources },
       use_case_links,
       use_case_configurations,

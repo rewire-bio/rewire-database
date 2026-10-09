@@ -1,3 +1,4 @@
+import { currentRecords } from "./current.js";
 import {
   type EntityKind,
   isModelSubject,
@@ -395,12 +396,7 @@ export function compareResults(
     if (
       row.evaluation?.links.some(
         (link) =>
-          (
-            [
-              ...benchmarkSubjectKinds,
-              ...datasetSubjectKinds,
-            ] as readonly string[]
-          ).includes(link.relation) &&
+          (link.relation === "assessment" || link.relation === "data") &&
           inactiveAssessmentDatasetIds.has(link.target_id),
       )
     )
@@ -443,6 +439,12 @@ export function compareResults(
       field,
       valid.map((r) => r.result.attributes[field]),
     );
+  // A qualifier (per-class, zero-shot, median over targets) is part of what was measured;
+  // results without one share the qualifier "none".
+  check(
+    "metric_qualifier",
+    valid.map((r) => r.result.attributes.metric_qualifier ?? "none"),
+  );
   for (const field of [
     "protocol_id",
     "dataset_version",
@@ -579,7 +581,8 @@ export function createCatalogueQuery(snapshot: CatalogueSnapshot) {
   let researchReadinessById: Map<string, ResearchReadiness> | undefined;
   const readiness = () => researchReadiness ||= deriveResearchReadiness(snapshot);
   const readinessById = () => researchReadinessById ||= new Map(readiness().map(item => [item.record_id, item]));
-  const records = snapshot.records
+  // Releases written before single-meaning relations are read under the current names.
+  const records = currentRecords(snapshot.records)
     .filter((r) => r.status !== "excluded")
     .sort((a, b) => a.id.localeCompare(b.id));
   const byId = new Map(records.map((r) => [r.id, r]));
@@ -638,27 +641,9 @@ export function createCatalogueQuery(snapshot: CatalogueSnapshot) {
     .filter((r) => r.kind === "result")
     .map((result) => {
       const evaluation = linked(result, "evaluation")[0] || null;
-      const subjects = [
-        ...new Map(
-          modelSubjectKinds
-            .flatMap((kind) => linked(evaluation, kind))
-            .map((r) => [r.id, r]),
-        ).values(),
-      ];
-      const assessments = [
-        ...new Map(
-          benchmarkSubjectKinds
-            .flatMap((kind) => linked(evaluation, kind))
-            .map((r) => [r.id, r]),
-        ).values(),
-      ];
-      const datasets = [
-        ...new Map(
-          datasetSubjectKinds
-            .flatMap((kind) => linked(evaluation, kind))
-            .map((r) => [r.id, r]),
-        ).values(),
-      ];
+      const subjects = linked(evaluation, "system");
+      const assessments = linked(evaluation, "assessment");
+      const datasets = linked(evaluation, "data");
       return {
         result,
         evaluation,
@@ -709,7 +694,7 @@ export function createCatalogueQuery(snapshot: CatalogueSnapshot) {
       return false;
     if (link.relation === "alias_of")
       return isModelSubject(record.kind) && record.kind === target.kind;
-    if (["family", "variant_of"].includes(link.relation))
+    if (["family", "variant_of", "configuration_of"].includes(link.relation))
       return isModelSubject(record.kind) && isModelSubject(target.kind);
     if (["part_of", "evaluates_task"].includes(link.relation))
       return (

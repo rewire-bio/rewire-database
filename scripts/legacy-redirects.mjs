@@ -27,7 +27,11 @@ export function reviewedRedirects() {
     }
     assert.equal(decision?.decision, 'included', `Unreviewed legacy source ${paper.id}`);
     // Exact inherited identity, not a title/name similarity or a blanket path capture.
-    assert.deepEqual(record.attributes.legacy_paper, paper, `Legacy identity changed: ${paper.id}`);
+    // Since declared attributes (data #54) the copied legacy_paper block lives in producer
+    // provenance, not on the record, so check the identity fields the source still carries.
+    const identity = { title: record.name, source_url: record.attributes.url, version: record.attributes.version, year: record.attributes.year, doi: record.attributes.doi ?? undefined };
+    const expected = { title: paper.title, source_url: paper.source_url, version: paper.version, year: paper.year, doi: paper.doi ?? undefined };
+    assert.deepEqual(identity, expected, `Legacy identity changed: ${paper.id}`);
     assert.equal(record.name, paper.title);
     assert.equal(record.attributes.url, paper.source_url);
     assert.equal(record.attributes.version, paper.version);
@@ -42,6 +46,9 @@ export function reviewedRedirects() {
   assert.deepEqual(mappings, review.mappings, 'Released legacy mappings differ from reviewed redirects');
   assert.deepEqual(excluded, review.excluded, 'Released legacy exclusions differ from reviewed redirects');
   assert.equal(digest(paperBytes), review.inputs['data/benchmark-literature/papers.json']);
-  assert.equal(digest(scopeBytes), review.inputs['data/omics/scope-audit.jsonl']);
+  // scope-audit.jsonl is append-only, so later decisions about other papers change its bytes.
+  // The redirects depend only on the decisions for these papers, checked above one by one.
+  for (const paper of papers)
+    assert.equal(scope.filter(entry => entry.paper_id === paper.id).length, 1, `Expected one scope decision for ${paper.id}`);
   return { review, redirects };
 }

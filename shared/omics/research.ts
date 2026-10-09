@@ -1,3 +1,4 @@
+import { currentRecords } from "./current.js";
 import { z } from "zod";
 import type { CatalogueSnapshot, CatalogueRecord } from "./catalogue-query.js";
 import { assertNoPrivateFields } from "./private-fields.js";
@@ -221,7 +222,7 @@ export function validateResearchManifest(input: unknown, snapshot?: CatalogueSna
   if (manifest.semantics.join_key === manifest.semantics.outcome)
     throw new Error("Research outcome cannot be the join identifier");
   if (snapshot) {
-    const records = new Map(snapshot.records.map(record => [record.id, record]));
+    const records = new Map(currentRecords(snapshot.records).map(record => [record.id, record]));
     if (!["dataset", "dataset_subset"].includes(records.get(manifest.dataset_id)?.kind || ""))
       throw new Error("Research dataset reference is unavailable");
     const protocol = records.get(manifest.protocol_id);
@@ -232,11 +233,11 @@ export function validateResearchManifest(input: unknown, snapshot?: CatalogueSna
     for (const id of manifest.evaluation_ids) {
       const evaluation = records.get(id);
       if (evaluation?.kind !== "evaluation" || !evaluation.links.some(link =>
-        ["dataset", "dataset_subset"].includes(link.relation) && link.target_id === manifest.dataset_id))
+        link.relation === "data" && link.target_id === manifest.dataset_id))
         throw new Error("Research evaluation does not reference the exact dataset");
       const comparison = evaluation.attributes.comparison as Record<string, unknown> | undefined;
       if (comparison?.protocol_id !== manifest.protocol_id && !evaluation.links.some(link =>
-        ["protocol", "benchmark", "task", "evaluator"].includes(link.relation) &&
+        link.relation === "assessment" &&
         link.target_id === manifest.protocol_id))
         throw new Error("Research evaluation protocol differs from manifest");
     }

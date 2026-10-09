@@ -90,6 +90,27 @@ export function safeSourceUrl(value: unknown): string | undefined {
     /* Not a URL. */
   }
 }
+/** A result's coverage in words: "8324/8324 variants scored", or the run counts for generated
+ * evaluations. Older releases without a coverage object fall back to scored_count/eligible_count. */
+export function coverageText(attributes: Record<string, unknown>): string {
+  const raw = attributes.coverage;
+  if (typeof raw === "string" && raw.trim()) return raw; // older releases printed coverage as text
+  const c = raw as
+    | { scored?: number; eligible?: number; unit?: string; generated_per_run?: number; repeats?: number; note?: string }
+    | undefined;
+  if (!c || typeof c !== "object")
+    return `${displayValue(attributes.scored_count)} scored / ${displayValue(attributes.eligible_count)} eligible`;
+  const unit = c.unit ? ` ${c.unit}` : "";
+  const parts: string[] = [];
+  if (c.scored !== undefined && c.eligible !== undefined) parts.push(`${c.scored}/${c.eligible}${unit} scored`);
+  else if (c.scored !== undefined) parts.push(`${c.scored}${unit} scored`);
+  else if (c.eligible !== undefined) parts.push(`${c.eligible}${unit} eligible`);
+  if (c.generated_per_run !== undefined) parts.push(`${c.generated_per_run} generated per run`);
+  if (c.repeats !== undefined) parts.push(`${c.repeats} repeats`);
+  const text = parts.join(", ") || "Not reported";
+  return c.note ? `${text} (${c.note})` : text;
+}
+
 export function displayValue(value: unknown, verbatim = false): string {
   if (value === null || value === undefined || value === "")
     return "Not reported";

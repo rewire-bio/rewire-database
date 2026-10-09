@@ -68,7 +68,7 @@ const fixture = () => {
       source_locator: "Methods",
     },
   });
-  evaluation.links = [{ relation: "protocol", target_id: owner.id }];
+  evaluation.links = [{ relation: "assessment", target_id: owner.id }];
   return {
     source,
     owner,
@@ -161,7 +161,7 @@ describe("reviewed local execution recipes", () => {
     source.attributes.artifact_sha256 = "a".repeat(64);
     evaluation.links = [];
     expect(() => validateRunRecipes(evaluation, byId)).toThrow("exact design");
-    evaluation.links = [{ relation: "protocol", target_id: owner.id }];
+    evaluation.links = [{ relation: "assessment", target_id: owner.id }];
     (
       evaluation.attributes.reproduction as Record<string, unknown>
     ).applicability = "generate_and_evaluate";

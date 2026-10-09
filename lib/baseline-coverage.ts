@@ -1,3 +1,4 @@
+import { currentRecords } from "../shared/omics/current";
 import { isModelSubject } from "../shared/omics/entity-kinds";
 import type { OmicsCatalogue, OmicsRecord } from "./omics";
 
@@ -197,6 +198,8 @@ export function candidateRule(
 
 /** Derived audit only: never modifies scientific records or promotes metadata review. */
 export function buildBaselineAudit(catalogue: OmicsCatalogue): BaselineAudit {
+  // Releases written before single-meaning relations are read under the current names.
+  catalogue = { ...catalogue, records: currentRecords(catalogue.records) };
   const records = [...catalogue.records]
     .filter((r) => r.status !== "excluded")
     .sort((a, b) => a.id.localeCompare(b.id));
@@ -274,7 +277,7 @@ export function buildBaselineAudit(catalogue: OmicsCatalogue): BaselineAudit {
           .filter((ev): ev is OmicsRecord => Boolean(ev));
         for (const ev of matched) {
           if (ev.kind !== "evaluation" || ev.attributes.origin !== "rewire_run" || !accepted(ev) ||
-              !ev.links.some((link) => ["assessment", "benchmark", "protocol"].includes(link.relation) && link.target_id === protocol.id) ||
+              !ev.links.some((link) => link.relation === "assessment" && link.target_id === protocol.id) ||
               !resultsByEvaluation.get(ev.id)?.length || !ev.source_ids.length)
             throw new Error(`Invalid baseline evidence: ${protocol.id}/${role}`);
         }
@@ -285,7 +288,7 @@ export function buildBaselineAudit(catalogue: OmicsCatalogue): BaselineAudit {
             evaluation.kind !== "evaluation" ||
             evaluation.attributes.origin !== "rewire_run" ||
             !accepted(evaluation) ||
-            !evaluation.links.some((link) => ["assessment", "benchmark", "protocol"].includes(link.relation) && link.target_id === protocol.id) ||
+            !evaluation.links.some((link) => link.relation === "assessment" && link.target_id === protocol.id) ||
             !results.length ||
             !evaluation.source_ids.length)
         )
@@ -369,7 +372,7 @@ export function buildBaselineAudit(catalogue: OmicsCatalogue): BaselineAudit {
       );
       const associations = record.links
         .filter((l) =>
-          ["family", "variant_of", "alias_of", "uses_model"].includes(
+          ["family", "variant_of", "configuration_of", "alias_of", "uses_model"].includes(
             l.relation,
           ),
         )

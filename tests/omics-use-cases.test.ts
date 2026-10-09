@@ -90,7 +90,8 @@ describe("scoped use-case evidence", () => {
     const detail = query.get({ slug: "splice-follow-up" })!;
     expect(detail.mappings[0].evaluations[0].configurations[0].id).toBe("config");
     expect(detail.mappings[0].evaluations[0].results[0].result.attributes.numeric_value).toBe("0.75");
-    expect(detail.mappings[0].evaluations[0].results[0].result.attributes.uncertainty).toBeNull();
+    // Declared attributes (#54): an unreported uncertainty is absent, with a reason in missing_metadata.
+    expect(detail.mappings[0].evaluations[0].results[0].result.attributes.uncertainty ?? null).toBeNull();
     expect(detail.mappings[0].task?.status).toBe("discovered");
     expect(detail.sources[0].id).toBe("source");
     expect(detail.use_case.review.method).toBe("automated_source_review");

@@ -8,13 +8,40 @@ import { createCatalogueQuery } from "../../shared/omics/catalogue-query";
 import { validateBenchmarkResearch } from "../../shared/omics/benchmark-research";
 import {
   entityKinds,
-  catalogueRelations,
   validateDatasetReuseLink,
   modelSubjectKinds,
   benchmarkSubjectKinds,
   datasetSubjectKinds,
-  relationAcceptsKind,
 } from "../../shared/omics/entity-kinds";
+
+// Releases before 2026-10-09 named an evaluation's roles model/benchmark/dataset (or by target
+// kind); later releases use system/assessment/data and give baselines, subsets and
+// configurations their own relations. Accept both until every pinned release uses the new ones.
+const roleNames = {
+  system: ["system", "model", ...modelSubjectKinds],
+  assessment: ["assessment", "benchmark", ...benchmarkSubjectKinds],
+  data: ["data", ...datasetSubjectKinds],
+} as const;
+const roleKinds: Record<keyof typeof roleNames, readonly string[]> = {
+  system: modelSubjectKinds,
+  assessment: benchmarkSubjectKinds,
+  data: datasetSubjectKinds,
+};
+const catalogueRelations = [
+  ...new Set([
+    ...Object.values(roleNames).flat(),
+    "evaluation", "baseline", "family", "parent", "supersedes", "original_evaluation", "subject",
+    "source", "applicable_to", "uses_model", "variant_of", "alias_of", "part_of", "evaluates_task",
+    "same_data_as", "implemented_by", "measured_in", "uses_data", "used_in", "configuration_of",
+  ]),
+];
+/** A link named after a kind must point at that kind; a role name at a kind within its role. */
+function relationAcceptsKind(relation: string, kind: string): boolean {
+  if (["model", "system"].includes(relation)) return roleKinds.system.includes(kind);
+  if (["benchmark", "assessment"].includes(relation)) return roleKinds.assessment.includes(kind);
+  if (["dataset", "data"].includes(relation)) return roleKinds.data.includes(kind);
+  return relation === kind;
+}
 export const kinds = entityKinds;
 export const statuses = [
   "discovered",
@@ -119,24 +146,14 @@ export function validateRecords(input: unknown[]): RecordEntry[] {
         throw new Error(`External result mislabelled reproduced ${r.id}`);
     }
     if (r.kind === "evaluation")
-      for (const relation of ["model", "benchmark", "dataset"]) {
-        const roles: readonly string[] =
-          relation === "model"
-            ? modelSubjectKinds
-            : relation === "benchmark"
-              ? benchmarkSubjectKinds
-              : relation === "dataset"
-                ? datasetSubjectKinds
-                : [relation];
-        const links = r.links.filter((l) => roles.includes(l.relation));
+      for (const role of ["system", "assessment", "data"] as const) {
+        const names: readonly string[] = roleNames[role];
+        const links = r.links.filter((l) => names.includes(l.relation));
         if (
           links.length !== 1 ||
-          !relationAcceptsKind(
-            relation,
-            byId.get(links[0].target_id)?.kind || "",
-          )
+          !roleKinds[role].includes(byId.get(links[0].target_id)?.kind || "")
         )
-          throw new Error(`Invalid evaluation ${relation} ${r.id}`);
+          throw new Error(`Invalid evaluation ${role} ${r.id}`);
       }
     if (r.kind === "claim" && !r.links.some((l) => l.relation === "subject"))
       throw new Error(`Claim has no subject ${r.id}`);

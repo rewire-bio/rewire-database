@@ -81,7 +81,7 @@ export function PredictiveEntityDetail({ detail }: { detail: RecordDetail }) {
   });
   const family = detail.direct.find(
     (item) =>
-      ["family", "variant_of", "alias_of"].includes(item.relation) &&
+      ["family", "variant_of", "configuration_of", "alias_of"].includes(item.relation) &&
       verifiedAssociation(query, record.id, item.relation, item.record.id),
   );
   const familyResults = family
@@ -120,7 +120,7 @@ export function PredictiveEntityDetail({ detail }: { detail: RecordDetail }) {
     .filter((item) => item.counts.total > 0);
   const memberLinks = detail.reverse.filter(
     (item) =>
-      ["family", "variant_of", "alias_of"].includes(item.relation) &&
+      ["family", "variant_of", "configuration_of", "alias_of"].includes(item.relation) &&
       verifiedAssociation(query, item.record.id, item.relation, record.id),
   );
   const protocolLinks = uniqueRecords([

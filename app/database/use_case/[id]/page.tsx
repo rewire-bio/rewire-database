@@ -26,7 +26,12 @@ export default function Page({ params }: { params: Params }) {
   return <>
     <PageHeader breadcrumbs={[{ name: "Database", path: "/" }, { name: record.name, path: `/database/use_case/${record.id}/` }]} eyebrow={["Use case"]} title={record.name} intro={record.description} />
     <div className="wrap"><div className="content">
-      {slug && <p><Link href={`/use-cases/${slug}/`}>Open the use case and its evidence</Link></p>}
+      <section id="evidence">
+        <h2>Evidence</h2>
+        {slug
+          ? <p>The comparisons for this use case, and the reviewed judgements behind them, are on its <Link href={`/use-cases/${slug}/`}>use-case page</Link>.</p>
+          : <p>No use-case page is recorded for this record.</p>}
+      </section>
       <p>Record <code>{record.id}</code></p>
     </div></div>
   </>;

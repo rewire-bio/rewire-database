@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { RECEIPT_SCHEMA } from './deployment-plan.mjs';
 import { readFile } from 'node:fs/promises';
 import { gunzipSync } from 'node:zlib';
 
@@ -20,7 +21,7 @@ export async function pinnedDownloads(read = readFile) {
   return { lock, urls };
 }
 export function assertProducerReceipt(receipt, lock, release) {
-  assert.equal(receipt.schema, 3, 'Independent frontend receipt must identify its producer');
+  assert.equal(receipt.schema, RECEIPT_SCHEMA, 'Independent frontend receipt must identify its producer');
   assert.equal(receipt.release_id, release, 'Frontend receipt release must match');
   assert.equal(receipt.producer_repository, lock.repository, 'Frontend producer must match checked pin');
   assert.equal(receipt.producer_revision, lock.revision, 'Frontend data revision must match checked pin');

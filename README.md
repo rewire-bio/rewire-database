@@ -112,7 +112,7 @@ Make data edits in the data repository and adopt a reviewed release with a pull 
 ## Code layout
 
 - `app/`, `components/`, `lib/`: the Next.js website and public catalogue API.
-- `shared/omics/`: a copy of rewire-benchmark-data's `shared/omics` (record validation, query engine, prepared-file reader) as of the release the lock pins. Change it there; when a pull request adopts a new release, also run `npm run shared:sync -- /path/to/rewire-benchmark-data` with that checkout at the new lock's revision. Its tests live in that repository.
+- `shared/omics/`: a copy of rewire-benchmark-data's `services/omics/src` (record validation, query engine, prepared-file reader) as of the release the lock pins. Change it there; when a pull request adopts a new release, also run `npm run shared:sync -- /path/to/rewire-benchmark-data` with that checkout at the new lock's revision. Its tests live in that repository.
 - `services/omics/`: the self-contained Firebase function for submissions, curation and mail, with its own dependencies and emulator tests.
 - `cloudflare/`: the Worker. `scripts/`: build, data, deployment and audit tools.
 

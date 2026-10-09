@@ -443,12 +443,6 @@ export function compareResults(
       field,
       valid.map((r) => r.result.attributes[field]),
     );
-  // A qualifier (per-class, zero-shot, median over targets) is part of what was measured;
-  // results without one share the qualifier "none".
-  check(
-    "metric_qualifier",
-    valid.map((r) => r.result.attributes.metric_qualifier ?? "none"),
-  );
   for (const field of [
     "protocol_id",
     "dataset_version",

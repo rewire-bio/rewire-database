@@ -9,8 +9,6 @@ export interface PublishedComparison {
   protocol_id: string;
   dataset_id: string;
   metric: string;
-  /** Distinguishes panels that share a metric concept (for example a per-class F1). */
-  metric_qualifier?: string;
   unit: string;
   direction: "higher" | "lower";
   result_ids: string[];
@@ -165,7 +163,6 @@ export function resolveComparisons(
         return fail("non-numerical result");
       if (
         a.metric !== panel.metric ||
-        (a.metric_qualifier ?? "") !== (panel.metric_qualifier ?? "") ||
         a.unit !== panel.unit ||
         a.metric_direction !== panel.direction
       )

@@ -129,5 +129,23 @@ export async function deployCloudRun({ config, plan, receipt, samples, run = com
   } finally { await rm(directory, { recursive: true, force: true }); }
   await gcloud(trafficArguments(config, candidate));
   return { previous: live.revision, revision: candidate, url: live.url, image,
-    rollback: () => gcloud(trafficArguments(config, live.revision)) };
+    rollback: () => gcloud(trafficArguments(config, live.revision)),
+    prune: () => pruneRevisions(config, [candidate, live.revision], { run }) };
+}
+
+/**
+ * After a publication is accepted, keep only the serving revision and the one
+ * it replaced (the rollback target): remove every other traffic tag, then
+ * delete every other revision. Images are pruned by the Artifact Registry
+ * cleanup policy. A failure here never affects the publication.
+ */
+export async function pruneRevisions(config, keep, { run = command } = {}) {
+  const gcloud = args => run(['gcloud', ...args, '--project', config.project, '--region', SERVICE.region, '--quiet'], { capture: true });
+  const service = JSON.parse(await gcloud(['run', 'services', 'describe', SERVICE.name, '--format', 'json']));
+  const tags = (service.status?.traffic || []).filter(entry => entry.tag && !keep.includes(entry.revisionName)).map(entry => entry.tag);
+  if (tags.length) await gcloud(['run', 'services', 'update-traffic', SERVICE.name, '--remove-tags', tags.join(',')]);
+  const revisions = JSON.parse(await gcloud(['run', 'revisions', 'list', '--service', SERVICE.name, '--format', 'json']))
+    .map(revision => revision.metadata?.name).filter(name => name && !keep.includes(name));
+  for (const name of revisions) await gcloud(['run', 'revisions', 'delete', name, '--async']);
+  return { tags, revisions };
 }

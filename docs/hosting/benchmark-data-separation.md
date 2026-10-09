@@ -18,7 +18,7 @@ npm run build
 
 CI reads the lock and checks out the public data repository using the standard checkout action. No cross-repository personal token or deploy key is required. CI verifies all hydrated files and the prepared file before tests or rendering. The data fingerprint is the lock file; frontend and dependency edits do not change catalogue identity.
 
-A data update is a reviewed pull request changing the lock (and syncing `shared/omics/` to the producer revision that built the release). Because the image embeds the release, every data update builds and deploys a new image; rolling back the image rolls back the data. Backend fingerprints, concurrency checks and rollback are retained.
+A data update changes the lock and syncs `shared/omics/` to the producer revision that published the release. `.github/workflows/adopt-data-release.yml` does this automatically when a newer prepared release is published (see the README). Because the image embeds the release, every data update builds and deploys a new image; rolling back the image rolls back the data. Backend fingerprints, concurrency checks and rollback are retained.
 
 Initial extraction source: `e13852aa4d190fb52fad29f38b0d6a5257aadb3b`. Scientific release: `2026-09-29-06401fd5b220`. Original source file hashes are retained in the data repository's `docs/data-extraction.json`. No scientific IDs, values or source evidence were changed by the split.
 

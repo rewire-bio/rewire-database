@@ -25,4 +25,13 @@ describe('frontend publication rollback order', () => {
       .toEqual(['/database/result/r1/', '/database/evaluation/e1/', '/database/model/m1/', '/database/benchmark/b1/']);
     expect(() => candidateSamples({ records: [record('m1', 'model')] })).toThrow('no result');
   });
+  it("prunes old revisions only after acceptance, and never fails the publication over it", async () => {
+    const prune = vi.fn(async () => { throw Error("permission denied"); });
+    const revision = { previous: 'rev-old', revision: 'rev-new', url: 'https://x.a.run.app', rollback: vi.fn(), prune };
+    await expect(publishFrontend({ deployRevision: async () => revision, publishEdge: async () => {} })).resolves.toBe(revision);
+    expect(prune).toHaveBeenCalledOnce();
+    const failing = { ...revision, prune: vi.fn() };
+    await expect(publishFrontend({ deployRevision: async () => failing, publishEdge: async () => { throw Error('acceptance'); } })).rejects.toThrow();
+    expect(failing.prune).not.toHaveBeenCalled();
+  });
 });

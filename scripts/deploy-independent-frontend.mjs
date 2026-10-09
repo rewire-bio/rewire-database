@@ -21,6 +21,13 @@ export async function publishFrontend({ deployRevision, publishEdge }) {
     catch (error) { throw new AggregateError([cause, error], 'Frontend publication failed and Cloud Run rollback needs operator attention'); }
     throw new Error(`Frontend publication failed; traffic restored to ${revision.previous}.`, { cause });
   }
+  // Housekeeping only: an accepted publication stays published if pruning fails.
+  if (revision.prune) {
+    try {
+      const pruned = await revision.prune();
+      console.log(`Pruned ${pruned.revisions.length} old revisions and ${pruned.tags.length} tags; kept ${revision.revision} and ${revision.previous}.`);
+    } catch (error) { console.warn(`Revision pruning failed: ${error.message}`); }
+  }
   return revision;
 }
 

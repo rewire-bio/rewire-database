@@ -120,6 +120,7 @@ export default function UseCasePage({ params }: { params: Params }) {
             <UseCaseReview review={entry.review} />
             <UseCaseCitations citations={entry.citations} sources={detail.sources} useCasePath={path} />
             <p>Release <code>{detail.release_id}</code> · question <code>{entry.id}</code></p>
+            <p>Use-case input digest <code>{detail.input_sha256}</code></p>
             <p><a href={downloadHref(`/omics/releases/${detail.release_id}/use-cases.json`)}>Download questions and review metadata (JSON) (gzip)</a> · <a href={downloadHref(`/omics/releases/${detail.release_id}/manifest.json`)}>Verify release checksums (gzip)</a></p>
           </details>
         </section>

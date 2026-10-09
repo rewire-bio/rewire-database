@@ -103,6 +103,12 @@ describe("use-case detail template", () => {
     expect(breadcrumb).toContain('<a href="/use-cases/">Use cases</a>');
     expect(html).not.toContain("Back to use cases");
   });
+
+  it("prints the release and use-case input digest that the live deployment check verifies", async () => {
+    const html = await detail(base);
+    expect(html).toContain("fixture");
+    expect(html).toContain("b".repeat(64));
+  });
 });
 
 describe("use-case index", () => {

@@ -1,12 +1,10 @@
 name: Adopt the newest data release
-# Hourly, on demand, or when rewire-benchmark-data dispatches `data-release`:
-# if a newer prepared release is published, point the lock at it, copy its
+# Started by rewire-benchmark-data when it publishes a release (repository
+# dispatch `data-release`), or by hand. If a newer prepared release is published, point the lock at it, copy its
 # shared code, run every website check including the production build, commit
 # to main and start the deployment workflow. The deployment verifies a
 # candidate revision before traffic and rolls back on failure, as for any change.
 on:
-  schedule:
-    - cron: "17 * * * *"
   repository_dispatch:
     types: [data-release]
   workflow_dispatch:

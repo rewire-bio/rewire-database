@@ -109,8 +109,8 @@ The Cloud Run service is `rewire-database-web` in `europe-west2`. It uses reques
 
 Make data edits in the data repository. New releases reach the site automatically:
 
-1. rewire-benchmark-data's release workflow cuts a release from reviewed changes on its main branch (weekly or on demand) and publishes its prepared file as `serving/<release>`.
-2. `.github/workflows/adopt-data-release.yml` here runs hourly (or on dispatch). If a newer prepared release is published, it points the lock at the commit that published it, runs `npm run shared:sync` from that commit, runs lint, typecheck, tests, `check:data`, the production build and `check:build`, commits `Adopt data release <id>` to main and starts the deployment workflow.
+1. When reviewed changes land on rewire-benchmark-data's main branch, its release workflow cuts a release, publishes its prepared file as `serving/<release>` and dispatches `data-release` to this repository.
+2. That dispatch starts `.github/workflows/adopt-data-release.yml`. If a newer prepared release is published, it points the lock at the commit that published it, runs `npm run shared:sync` from that commit, runs lint, typecheck, tests, `check:data`, the production build and `check:build`, commits `Adopt data release <id>` to main and starts the deployment workflow.
 3. The deployment verifies a candidate revision before traffic and rolls back on failure, as for any change. Run "Adopt the newest data release" by hand with a release ID to adopt a specific release; it never moves to an older one.
 
 After each accepted publication, the deployment deletes every Cloud Run revision and tag except the serving revision and the one it replaced. Old images are removed by the Artifact Registry cleanup policy on `rewire-web` (keep the five newest).

@@ -9,7 +9,7 @@ import {
   type PackedComparisons,
 } from "@/lib/comparison-transport";
 import { catalogueClient, type ResultsPage } from "@/lib/catalogue-client";
-import { displayValue, originLabel, recordHref, uncertaintyText } from "@/lib/omics";
+import { originLabel, recordHref, uncertaintyText } from "@/lib/omics";
 import { testedEntities, singularKindLabels } from "@/lib/omics-browse";
 import { Evidence } from "./Profile";
 import { CitedAs } from "./SourceIdentity";

@@ -72,7 +72,7 @@ function independentFixture(corrupt = '') {
   const request = vi.fn(async (input: Parameters<typeof fetch>[0]) => {
     const url = new URL(input instanceof Request ? input.url : input);
     if(url.pathname === '/release-manifest.json') return Response.json({release_id: corrupt === 'release' ? 'wrong' : release});
-    if(url.pathname === '/deployment.json') return Response.json({schema:3,release_id:release,manifest_sha256:createHash("sha256").update(JSON.stringify({release_id:release})).digest("hex"),producer_repository:lock.repository,producer_revision: corrupt === 'producer' ? 'b'.repeat(40) : lock.revision});
+    if(url.pathname === '/deployment.json') return Response.json({schema:4,release_id:release,manifest_sha256:createHash("sha256").update(JSON.stringify({release_id:release})).digest("hex"),producer_repository:lock.repository,producer_revision: corrupt === 'producer' ? 'b'.repeat(40) : lock.revision});
     if(url.pathname === path) return new Response(null, {status:302,headers:{location: corrupt === 'redirect' ? 'https://evil.example/data.gz' : raw}});
     if(url.hostname === 'raw.githubusercontent.com') return new Response(null, {headers:{'content-type':corrupt === 'download' ? 'text/html' : 'application/octet-stream','content-length':'100'}});
     const response = await legacy(input);

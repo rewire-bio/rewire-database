@@ -41,7 +41,7 @@ function fixture(profile = "core", corrupt = "", independent = false) {
       }
       return new Response(JSON.stringify({result:{data:{release_id:corrupt==="release" ? "wrong" : release_id,...data}}}),{headers:{"content-type":"application/json"}});
     }
-    if (independent && parsed.pathname === "/deployment.json") return Response.json({schema:3,release_id,producer_repository:lock.repository,producer_revision:corrupt==="producer" ? "wrong" : lock.revision});
+    if (independent && parsed.pathname === "/deployment.json") return Response.json({schema:4,release_id,producer_repository:lock.repository,producer_revision:corrupt==="producer" ? "wrong" : lock.revision});
     if (independent && parsed.hostname === "raw.githubusercontent.com") return new Response(gzipSync(corrupt === "artifact" ? Buffer.from("altered") : parsed.pathname.endsWith(".md.gz") ? source : artifact));
     if (independent && parsed.pathname.startsWith("/omics/")) return new Response(null, {status:302,headers:{location:corrupt==="redirect" ? "https://evil.example/export.gz" : rawBase + (parsed.pathname.includes("/sources/") ? "website/files/public" + parsed.pathname + ".gz" : "data" + parsed.pathname + ".gz")}});
     if(parsed.pathname==="/release-manifest.json" || parsed.pathname==="/omics/manifest.json") return new Response(corrupt==="manifest" ? JSON.stringify({...manifest,counts:{model:3}}) : bytes);

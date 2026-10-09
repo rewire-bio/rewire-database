@@ -1,0 +1,83 @@
+name: Adopt the newest data release
+# Started by rewire-benchmark-data when it publishes a release (repository
+# dispatch `data-release`), or by hand. If a newer prepared release is published, point the lock at it, copy its
+# shared code, run every website check including the production build, commit
+# to main and start the deployment workflow. The deployment verifies a
+# candidate revision before traffic and rolls back on failure, as for any change.
+on:
+  repository_dispatch:
+    types: [data-release]
+  workflow_dispatch:
+    inputs:
+      release_id:
+        description: Adopt this published release instead of the newest (never an older one)
+        required: false
+permissions:
+  contents: write
+  actions: write
+concurrency:
+  group: data-adoption
+  cancel-in-progress: false
+jobs:
+  adopt:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      NODE_OPTIONS: --max-old-space-size=8192
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - name: Point the lock at the newest published release
+        id: adopt
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_ID: ${{ inputs.release_id }}
+        run: node scripts/adopt-data-release.mjs ${RELEASE_ID:+--release "$RELEASE_ID"}
+      - if: steps.adopt.outputs.adopted == 'true'
+        run: npm ci --no-audit --no-fund
+      - name: Read the new data pin
+        if: steps.adopt.outputs.adopted == 'true'
+        id: data-pin
+        run: node -e 'const p=require("./benchmark-data.lock.json"); require("fs").appendFileSync(process.env.GITHUB_OUTPUT, "revision="+p.revision+"\n")'
+      - name: Check out only the new release's website files
+        if: steps.adopt.outputs.adopted == 'true'
+        uses: actions/checkout@v4
+        with:
+          repository: rewire-bio/rewire-benchmark-data
+          ref: ${{ steps.data-pin.outputs.revision }}
+          persist-credentials: false
+          path: workbench/benchmark-data
+          sparse-checkout-cone-mode: false
+          sparse-checkout: /website/manifest.json
+      - name: Prepare the release and run every check
+        if: steps.adopt.outputs.adopted == 'true'
+        run: |
+          node scripts/select-current-data.mjs
+          npm run data:prepare -- --current-only
+          npm run lint
+          npm run typecheck
+          npm test
+          npm run check:data
+          npm run build
+          npm run check:build
+      - name: Commit the adoption to main
+        if: steps.adopt.outputs.adopted == 'true'
+        env:
+          RELEASE: ${{ steps.adopt.outputs.release_id }}
+        run: |
+          git config user.name "rewire-release-bot"
+          git config user.email "rewire-release-bot@users.noreply.github.com"
+          git add benchmark-data.lock.json shared/omics
+          git commit -m "Adopt data release $RELEASE"
+          git push origin HEAD:main
+      - name: Deploy it
+        if: steps.adopt.outputs.adopted == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        # Pushes made with this token do not start workflows; a dispatch does.
+        run: gh workflow run firebase.yml --ref main

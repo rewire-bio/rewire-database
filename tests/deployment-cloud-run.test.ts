@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { cloudRunConfig, deployArguments, deployCloudRun, liveService, revisionEnvironment, verifyCandidate } from "../scripts/deploy-cloud-run.mjs";
+import { cloudRunConfig, deployArguments, deployCloudRun, liveService, pruneRevisions, revisionEnvironment, verifyCandidate } from "../scripts/deploy-cloud-run.mjs";
 
 const env = {
   GCLOUD_PROJECT: "rewire-it",
@@ -107,5 +107,20 @@ describe("Cloud Run frontend deployment", () => {
   it("rejects a candidate serving another receipt", async () => {
     const fetchImpl = vi.fn(async () => new Response(JSON.stringify({ ...receipt, release_id: "other" })));
     await expect(verifyCandidate("https://c.a.run.app", { receipt, samples: [], fetchImpl: fetchImpl as never })).rejects.toThrow("receipt");
+  });
+  it("prunes every tag and revision except the serving revision and its rollback target", async () => {
+    const calls: string[][] = [];
+    const run = vi.fn(async (args: string[]) => {
+      calls.push(args);
+      if (args.includes("describe")) return JSON.stringify({ status: { traffic: [
+        { revisionName: "rev-new", percent: 100, tag: "c-new" }, { revisionName: "rev-old", tag: "c-old" }, { revisionName: "rev-probe", tag: "probe" }] } });
+      if (args.includes("list")) return JSON.stringify(["rev-new", "rev-old", "rev-probe", "rev-ancient"].map(name => ({ metadata: { name } })));
+      return "{}";
+    });
+    const pruned = await pruneRevisions(cloudRunConfig(env), ["rev-new", "rev-old"], { run: run as never });
+    expect(pruned).toEqual({ tags: ["probe"], revisions: ["rev-probe", "rev-ancient"] });
+    expect(calls.find(args => args.includes("update-traffic"))).toEqual(expect.arrayContaining(["--remove-tags", "probe"]));
+    const deleted = calls.filter(args => args.includes("delete")).map(args => args[args.indexOf("delete") + 1]);
+    expect(deleted).toEqual(["rev-probe", "rev-ancient"]);
   });
 });

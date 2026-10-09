@@ -75,7 +75,9 @@ export async function verifyContributionGate(origin, { mode, releaseId, probe = 
   const mixed = await request(`catalogue.release,submission.list?batch=1&input=${input}`, enabled ? 207 : 503);
   if (enabled) {
     assert.equal(mixed.length, 2);
-    assert.equal(mixed[0]?.result?.data?.release_id, releaseId, "Mixed batches must retain working public reads");
+    // The Worker sends a batch to the frontend only if every member is a catalogue
+    // procedure; a mixed batch reaches Firebase, which serves no catalogue reads.
+    assert.equal(mixed[0]?.error?.data?.code, "NOT_FOUND", "Mixed batches must not serve catalogue reads from Firebase");
     assert.equal(mixed[1]?.error?.data?.code, "UNAUTHORIZED", "A public procedure cannot authorize a private batch member");
   } else assert.deepEqual(mixed, { error: "Contributions are not enabled." });
 }

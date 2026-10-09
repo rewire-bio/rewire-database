@@ -74,11 +74,11 @@ describe("read-only contribution probes", () => {
       expect.stringContaining("catalogue.release,submission.list?batch=1"),
     ]);
   });
-  it("verifies enabled authentication and mixed-batch isolation without a token or writes", async () => {
+  it("verifies enabled authentication and that mixed batches never reach catalogue reads, without a token or writes", async () => {
     const fetchImpl = vi.fn()
       .mockResolvedValueOnce(response(unauthorized, 401))
       .mockResolvedValueOnce(response(unauthorized, 401))
-      .mockResolvedValueOnce(response([{ result: { data: { release_id: "release-1" } } }, unauthorized], 207));
+      .mockResolvedValueOnce(response([{ error: { data: { code: "NOT_FOUND" } } }, unauthorized], 207));
     await verifyContributionGate("https://example.test", { mode: "enabled", releaseId: "release-1", fetchImpl });
     for (const [, options] of fetchImpl.mock.calls) {
       expect(options.method).toBeUndefined();
@@ -94,7 +94,7 @@ describe("read-only contribution probes", () => {
     const fetchImpl = vi.fn()
       .mockResolvedValueOnce(response(unauthorized, 401))
       .mockResolvedValueOnce(response(unauthorized, 401))
-      .mockResolvedValueOnce(response([{ result: { data: { release_id: "release-1" } } }, { result: { data: [] } }], 207));
+      .mockResolvedValueOnce(response([{ error: { data: { code: "NOT_FOUND" } } }, { result: { data: [] } }], 207));
     await expect(verifyContributionGate("https://example.test", { mode: "enabled", releaseId: "release-1", fetchImpl })).rejects.toThrow("cannot authorize");
   });
   it("does not mistake an authentication or routing failure for a disabled service", async () => {

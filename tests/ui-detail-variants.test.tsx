@@ -1,9 +1,9 @@
 import { describe, expect, it, vi } from "vitest";
 import { preparedFromSnapshot } from "./helpers/prepared";
-import type { PreparedCatalogue } from "../services/omics/src/prepared-catalogue";
+import type { PreparedCatalogue } from "../shared/omics/prepared-catalogue";
 import { renderToStaticMarkup } from "react-dom/server";
 import type { ComponentType } from "react";
-import { createCatalogueQuery, type CatalogueRecord, type CatalogueSnapshot } from "../services/omics/src/catalogue-query";
+import { createCatalogueQuery, type CatalogueRecord, type CatalogueSnapshot } from "../shared/omics/catalogue-query";
 import type { RecordDetail } from "../lib/entity-detail";
 import { ClaimDetail } from "../app/database/claim/[id]/detail";
 import { SourceDetail } from "../app/database/source/[id]/detail";
@@ -13,7 +13,7 @@ import { ResultDetail } from "../app/database/result/[id]/detail";
 import { DatasetDetail } from "../app/database/_entities/dataset";
 import { PredictiveEntityDetail } from "../app/database/_entities/predictive";
 import { EvaluationDesignEntityDetail } from "../app/database/_entities/evaluation-design";
-import { recordPageBuilder, type EvaluationRecordPage, type RecordPageKind, type ResultRecordPage } from "../services/omics/src/record-pages";
+import { recordPageBuilder, type EvaluationRecordPage, type RecordPageKind, type ResultRecordPage } from "../lib/record-pages";
 import { buildUseCases } from "../lib/use-cases-build";
 
 const fixture = vi.hoisted(() => ({ snapshot: null as CatalogueSnapshot | null }));

@@ -1,7 +1,7 @@
 import { formatScore } from "./score-display";
 import { omicsKinds, type OmicsKind, type OmicsRecord } from "./omics";
-import { recordSearchText } from "../services/omics/src/source-identity";
-import type { ResearchReadiness } from "../services/omics/src/research";
+import { recordSearchText } from "../shared/omics/source-identity";
+import type { ResearchReadiness } from "../shared/omics/research";
 export type CatalogueFilters = {
   kind: OmicsKind;
   q: string;

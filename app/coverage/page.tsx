@@ -4,7 +4,7 @@ import { readFileSync } from "node:fs";
 import Link from "next/link";
 import { buildCatalogue } from "@/lib/catalogue-build";
 import { dataPath } from "@/lib/data-pin";
-import type { BenchmarkCoverageAudit } from "@/services/omics/src/benchmark-coverage";
+import type { BenchmarkCoverageAudit } from "@/shared/omics/benchmark-coverage";
 import { kindLabels } from "@/lib/omics-browse";
 import styles from "@/app/database/database.module.css";
 export const metadata: Metadata = {

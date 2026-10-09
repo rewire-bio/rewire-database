@@ -2,7 +2,7 @@ import fs from "node:fs";
 import { expect, it } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
 import { EvidenceConcerns } from "../components/catalogue/Profile";
-import { createCatalogueQuery } from "../services/omics/src/catalogue-query";
+import { createCatalogueQuery } from "../shared/omics/catalogue-query";
 
 it("surfaces the precise primary-source concern and excludes its result from comparisons", () => {
   const snapshot = JSON.parse(fs.readFileSync("public/omics/catalogue.json", "utf8"));

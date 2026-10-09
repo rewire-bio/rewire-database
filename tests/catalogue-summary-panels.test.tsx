@@ -7,9 +7,9 @@ import { CatalogueEvidence } from "../components/catalogue/CatalogueEvidence";
 import ResearchReadiness, { ResearchReadinessSummary } from "../components/catalogue/ResearchReadiness";
 import RunGuide from "../components/catalogue/RunGuide";
 import RunRecipes from "../components/catalogue/RunRecipes";
-import type { CatalogueRecord, CatalogueSnapshot } from "../services/omics/src/catalogue-query";
-import type { ResearchManifest, ResearchReadiness as Assessment } from "../services/omics/src/research";
-import type { RunRecipe } from "../services/omics/src/run-recipe";
+import type { CatalogueRecord, CatalogueSnapshot } from "../shared/omics/catalogue-query";
+import type { ResearchManifest, ResearchReadiness as Assessment } from "../shared/omics/research";
+import type { RunRecipe } from "../shared/omics/run-recipe";
 
 let tree: ReactTestRenderer | undefined;
 afterEach(() => { if (tree) act(() => tree!.unmount()); tree = undefined; vi.unstubAllGlobals(); });

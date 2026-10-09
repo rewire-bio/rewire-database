@@ -1,7 +1,7 @@
 import { Fragment } from "react";
 import Link from "next/link";
 import { displayValue, recordHref, safeSourceUrl, type OmicsRecord } from "@/lib/omics";
-import type { ResearchManifest, ResearchReadiness as Readiness } from "@/services/omics/src/research";
+import type { ResearchManifest, ResearchReadiness as Readiness } from "@/shared/omics/research";
 import { researchCapabilityLabels, researchCapabilityDescriptions, researchDate } from "./ResearchLabels";
 import styles from "./Research.module.css";
 

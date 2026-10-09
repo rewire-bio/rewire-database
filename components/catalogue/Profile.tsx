@@ -2,7 +2,7 @@ import { catalogueText } from "@/lib/catalogue-text";
 import {
   isModelSubject,
   entityKindLabel,
-} from "@/services/omics/src/entity-kinds";
+} from "@/shared/omics/entity-kinds";
 import Link from "next/link";
 import { profileSchema } from "@/lib/omics-profile";
 import ProfileDiagram from "./ProfileDiagram";

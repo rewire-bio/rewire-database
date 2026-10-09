@@ -1,7 +1,7 @@
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import BenchmarkResearch from "../components/catalogue/BenchmarkResearch";
-import { benchmarkResearchSchema } from "../services/omics/src/benchmark-research";
+import { benchmarkResearchSchema } from "../shared/omics/benchmark-research";
 import fs from "node:fs";
 import { it, expect } from "vitest";
 const visible = JSON.parse(fs.readFileSync("public/omics/catalogue.json", "utf8")).records;

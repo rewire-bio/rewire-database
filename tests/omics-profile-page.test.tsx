@@ -4,7 +4,7 @@ import { describe, expect, it, vi } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
 import {
   type CatalogueSnapshot,
-} from "../services/omics/src/catalogue-query";
+} from "../shared/omics/catalogue-query";
 import ModelPage from "../app/database/model/[id]/page";
 import ConfigurationPage from "../app/database/configuration/[id]/page";
 

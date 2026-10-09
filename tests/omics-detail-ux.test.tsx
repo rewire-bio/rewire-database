@@ -1,11 +1,11 @@
 import fs from "node:fs";
 import { preparedFromSnapshot } from "./helpers/prepared";
-import type { PreparedCatalogue } from "../services/omics/src/prepared-catalogue";
+import type { PreparedCatalogue } from "../shared/omics/prepared-catalogue";
 import { describe, expect, it, vi } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
 import {
   type CatalogueSnapshot,
-} from "../services/omics/src/catalogue-query";
+} from "../shared/omics/catalogue-query";
 import BenchmarkPage from "../app/database/benchmark/[id]/page";
 import ResultPage from "../app/database/result/[id]/page";
 import EvaluationPage from "../app/database/evaluation/[id]/page";

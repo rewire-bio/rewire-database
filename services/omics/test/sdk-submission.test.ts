@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { contribution } from "../src/validation.js";
+import { contribution } from "../src/contribution.js";
 import { sdkSubmissionSchema } from "../src/sdk-submission.js";
 import { sdkBundle as bundle } from "./fixtures.js";
 test("SDK bundle preserves self-reported provenance while rejecting private extras and upgraded review", () => {

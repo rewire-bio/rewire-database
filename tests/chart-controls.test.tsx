@@ -1,8 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { act, create, type ReactTestRenderer } from "react-test-renderer";
 import BenchmarkCharts from "../components/catalogue/BenchmarkCharts";
-import type { ResolvedComparison } from "../services/omics/src/published-comparisons";
-import type { CatalogueRecord, ResultRow } from "../services/omics/src/catalogue-query";
+import type { ResolvedComparison } from "../shared/omics/published-comparisons";
+import type { CatalogueRecord, ResultRow } from "../shared/omics/catalogue-query";
 const api = vi.hoisted(() => ({ comparison: vi.fn(), results: vi.fn() }));
 vi.mock("../lib/catalogue-client", () => ({ catalogueClient: () => api }));
 vi.mock("next/link", () => ({ default: ({ children, ...props }: React.ComponentProps<"a">) => <a {...props}>{children}</a> }));

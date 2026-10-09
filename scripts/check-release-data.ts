@@ -5,9 +5,9 @@ import { validateRecords } from "./omics/schema";
 import { fileSha256, chunksSha256 } from "./omics/stream-files";
 import { parseUseCaseSourceDeclaration, researchFiles } from "./omics/released-contracts";
 import { baselineAuditFiles } from "./omics/baseline-coverage";
-import { validateUseCaseArtifact } from "../services/omics/src/use-cases";
-import { createEvidenceIndex, evidenceCsvLines, evidenceJsonlLines } from "../services/omics/src/evidence-table";
-import { recordPageRoutes } from "../services/omics/src/record-pages";
+import { validateUseCaseArtifact } from "../shared/omics/use-cases";
+import { createEvidenceIndex, evidenceCsvLines, evidenceJsonlLines } from "../shared/omics/evidence-table";
+import { recordPageRoutes } from "../lib/record-pages";
 import { recordRouteKinds } from "../lib/omics";
 
 /**
@@ -45,9 +45,17 @@ export function checkReleaseData(root = "public") {
   if (fileSha256(path.join(root, release, "evidence.jsonl")) !== chunksSha256(evidenceJsonlLines(evidence.iterate())) ||
       fileSha256(path.join(root, release, "evidence.csv")) !== chunksSha256(evidenceCsvLines(evidence.iterate())))
     failures.push("Evidence exports do not match their release records");
+  // The manifest's generator and exporter hashes identify the producer's source
+  // files, which this repository mirrors under its own paths; every data file and
+  // every other manifest field must match exactly.
+  const comparable = (name: string, text: string) => {
+    if (name !== "manifest.json") return text;
+    const { generator_sha256: _generator, exporter_sha256: _exporter, ...rest } = JSON.parse(text);
+    return JSON.stringify(rest);
+  };
   for (const [name, expected] of Object.entries(baselineAuditFiles(catalogueBytes, "published_release").files)) {
     const file = path.join(root, "omics/baseline-coverage", catalogue.release_id, name);
-    if (!fs.existsSync(file) || fs.readFileSync(file, "utf8") !== expected) failures.push(`Baseline audit export mismatch: ${name}`);
+    if (!fs.existsSync(file) || comparable(name, fs.readFileSync(file, "utf8")) !== comparable(name, expected)) failures.push(`Baseline audit export mismatch: ${name}`);
   }
   // Every canonical and alias result/evaluation route has exactly one prepared page.
   const routes = recordPageRoutes(catalogue);

@@ -4,7 +4,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
-import { BACKEND_ONLY_SOURCES, COMPILED_TAXONOMY, assertPublishedBase, classify, fingerprints, inputGroups, liveAcceptanceProfile, publishedReceipt, validReceipt, writeReceipt } from '../scripts/deployment-plan.mjs';
+import { COMPILED_TAXONOMY, assertPublishedBase, classify, fingerprints, inputGroups, liveAcceptanceProfile, publishedReceipt, validReceipt, writeReceipt } from '../scripts/deployment-plan.mjs';
 
 const roots: string[] = [];
 const hashes = { data: 'a'.repeat(64), backend: 'b'.repeat(64), hosting: 'c'.repeat(64), frontend: '9'.repeat(64) };
@@ -39,7 +39,7 @@ describe('publication classification', () => {
     expect(inputGroups('benchmark-data.lock.json')).toEqual({ data: true, backend: false, hosting: false, frontend: true });
     expect(classify({ ...hashes, data: 'f'.repeat(64), frontend: 'f'.repeat(64) }, receipt)).toEqual({ mode: 'full', backend: false, frontend: true, edge: false });
   });
-  it.each(['app/page.tsx', 'lib/omics.ts', 'services/omics/src/record-pages.ts', 'package-lock.json', 'next.config.mjs', 'Dockerfile', 'scripts/server-entry.mjs'])(
+  it.each(['app/page.tsx', 'lib/omics.ts', 'lib/record-pages.ts', 'package-lock.json', 'next.config.mjs', 'Dockerfile', 'scripts/server-entry.mjs'])(
     'rebuilds the image for image input %s', name => expect(inputGroups(name).frontend).toBe(true),
   );
   it.each(['cloudflare/worker.mjs', 'wrangler.jsonc', 'firebase.json'])('redeploys the Worker for %s', name => expect(inputGroups(name).hosting).toBe(true));
@@ -50,13 +50,13 @@ describe('publication classification', () => {
       expect(inputGroups(name).frontend).toBe(false);
       expect(inputGroups(name).backend).toBe(name.startsWith('services/omics/test/') ? false : true);
     });
-  it.each(['services/omics/src/catalogue-query.ts', 'services/omics/src/record-pages.ts', 'services/omics/src/use-cases.ts', 'services/omics/src/entity-kinds.ts'])(
-    'rebuilds both the API and the image for shared contract %s', name => expect(inputGroups(name)).toMatchObject({ backend: true, frontend: true }),
+  it.each(['shared/omics/catalogue-query.ts', 'lib/record-pages.ts', 'shared/omics/use-cases.ts', 'shared/omics/entity-kinds.ts'])(
+    'rebuilds only the image for shared code %s', name => expect(inputGroups(name)).toMatchObject({ backend: false, frontend: true }),
   );
   it('keeps frontend-only edits away from the backend deployment', () => {
     for (const name of ['app/page.tsx', 'lib/record-page.ts', 'middleware.ts', 'scripts/server-entry.mjs']) expect(inputGroups(name).backend).toBe(false);
   });
-  it('lists as backend-only no service module the website imports', () => {
+  it('keeps the website independent of the submission function', () => {
     // Follow static and dynamic relative/@ imports from the website's own sources.
     const seen = new Set<string>();
     const stack = ['middleware.ts', ...['app', 'lib', 'components'].flatMap(dir => fs.readdirSync(dir, { recursive: true })
@@ -73,8 +73,8 @@ describe('publication classification', () => {
         if (target) stack.push(target);
       }
     }
-    expect([...BACKEND_ONLY_SOURCES].filter(name => seen.has(name))).toEqual([]);
-    expect(seen.has('services/omics/src/record-pages.ts')).toBe(true);
+    expect([...seen].filter(name => name.startsWith('services/'))).toEqual([]);
+    expect(seen.has('lib/record-pages.ts')).toBe(true);
   });
   it('builds a new image when the lock or the compiled taxonomy changes', async () => {
     const root = fixture(); file(root, 'benchmark-data.lock.json', 'one');

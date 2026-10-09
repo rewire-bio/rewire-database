@@ -1,13 +1,13 @@
 import fs from "node:fs";
 import { preparedFromSnapshot } from "./helpers/prepared";
-import type { PreparedCatalogue } from "../services/omics/src/prepared-catalogue";
+import type { PreparedCatalogue } from "../shared/omics/prepared-catalogue";
 import { describe, expect, it, vi } from "vitest";
 import {
   type CatalogueSnapshot,
-} from "../services/omics/src/catalogue-query";
-import { entityKinds, type EntityKind } from "../services/omics/src/entity-kinds";
+} from "../shared/omics/catalogue-query";
+import { entityKinds, type EntityKind } from "../shared/omics/entity-kinds";
 import { recordRouteKinds } from "../lib/omics";
-import { recordPageKinds } from "../services/omics/src/record-pages";
+import { recordPageKinds } from "../lib/record-pages";
 
 const fixture = vi.hoisted(() => ({
   snapshot: null as CatalogueSnapshot | null,

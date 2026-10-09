@@ -5,7 +5,7 @@ import {
   createCatalogueQuery,
   type CatalogueSnapshot,
   type CatalogueRecord,
-} from "../services/omics/src/catalogue-query";
+} from "../shared/omics/catalogue-query";
 import {
   defaultFilters,
   filterCatalogue,

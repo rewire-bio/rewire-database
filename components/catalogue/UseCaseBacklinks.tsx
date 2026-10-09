@@ -1,5 +1,5 @@
 import type { UseCaseLinks } from "@/lib/use-cases-client";
-import type { CatalogueRecord } from "@/services/omics/src/catalogue-query";
+import type { CatalogueRecord } from "@/shared/omics/catalogue-query";
 import { catalogueText } from "@/lib/catalogue-text";
 import { recordHref } from "@/lib/omics";
 import styles from "./UseCases.module.css";

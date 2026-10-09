@@ -14,7 +14,7 @@ import { recordHref } from "@/lib/omics";
 import { researchAreaLabel } from "@/lib/omics-browse";
 import { socialMetadata } from "@/lib/catalogue-sharing";
 import { evidenceSummaryParts, summariseUseCaseEvidence } from "@/lib/use-case-summary";
-import { reproductionSchema } from "@/services/omics/src/run-recipe";
+import { reproductionSchema } from "@/shared/omics/run-recipe";
 import styles from "@/components/catalogue/UseCases.module.css";
 
 type Params = { slug: string };

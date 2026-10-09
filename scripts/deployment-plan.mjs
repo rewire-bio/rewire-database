@@ -49,17 +49,6 @@ export async function publishedReceipt(options) {
   } catch { return null; } // First deployment, unavailable origin, or unknown schema: rebuild everything.
 }
 
-/**
- * Service modules the website never imports. Changing only these redeploys
- * the backend without building a frontend image. Every other service module
- * (the query engine, page builder, schemas) is shared and changes both.
- * tests/deployment-plan.test.ts rechecks this list against the website's imports.
- */
-export const BACKEND_ONLY_SOURCES = new Set([
-  'auth', 'cli', 'firebase', 'functions', 'google-mail', 'grant-curator', 'http-handler', 'mail-transport', 'mail-worker',
-  'outbox', 'private-backup', 'published-catalogue', 'request-limits', 'router', 'sdk-proteingym-reference',
-  'sdk-sequence-reference', 'sdk-sequence', 'sdk-submission', 'server', 'store', 'validation',
-].map(name => `services/omics/src/${name}.ts`));
 /** The producer's compiled candidate-model taxonomy: ignored by Git, built into the image. */
 export const COMPILED_TAXONOMY = 'lib/generated-benchmark-catalog.ts';
 
@@ -67,8 +56,8 @@ export function inputGroups(filename) {
   const shared = /^(scripts\/(configure-contribution-deployment|contribution-deployment)\.mjs)$/.test(filename);
   // Not image inputs: documentation, tests, and producer data fetched by the build (pinned by the lock).
   const documentation = /^(\.github\/|docs\/|tests\/|smoke\/|data\/|public\/omics\/|README\.md$|AGENTS\.md$)/.test(filename);
-  // Within the service, only shared source modules are bundled into the website.
-  const backendOnly = filename.startsWith('services/omics/') && (!filename.startsWith('services/omics/src/') || BACKEND_ONLY_SOURCES.has(filename));
+  // The submission function is self-contained; the website imports nothing from it.
+  const backendOnly = filename.startsWith('services/omics/');
   return {
     // Published artifact identity is independent of frontend source changes.
     data: filename === 'benchmark-data.lock.json',

@@ -1,7 +1,7 @@
 "use client";
 
 import { createTRPCUntypedClient, httpLink } from "@trpc/client";
-import type { createUseCaseQuery } from "../services/omics/src/use-cases";
+import type { createUseCaseQuery } from "../shared/omics/use-cases";
 
 type Query = ReturnType<typeof createUseCaseQuery>;
 export type UseCasePage = ReturnType<Query["list"]>;

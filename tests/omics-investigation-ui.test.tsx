@@ -1,9 +1,9 @@
 import { describe, expect, it, vi } from "vitest";
 import { preparedFromSnapshot } from "./helpers/prepared";
 import { renderToStaticMarkup } from "react-dom/server";
-import { createCatalogueQuery, type CatalogueSnapshot } from "../services/omics/src/catalogue-query";
-import { deriveResearchReadiness, validateResearchData, type ResearchManifest, type ResearchInvestigation } from "../services/omics/src/research";
-import { researchHash } from "../services/omics/src/research-integrity";
+import { createCatalogueQuery, type CatalogueSnapshot } from "../shared/omics/catalogue-query";
+import { deriveResearchReadiness, validateResearchData, type ResearchManifest, type ResearchInvestigation } from "../shared/omics/research";
+import { researchHash } from "../shared/omics/research-integrity";
 import { filterCatalogue, readCatalogueFilters } from "../lib/omics-browse";
 import ResearchReadiness from "../components/catalogue/ResearchReadiness";
 import Investigation, { InvestigationList } from "../components/catalogue/ResearchInvestigation";

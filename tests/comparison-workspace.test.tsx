@@ -5,7 +5,7 @@ import {
   type CatalogueRecord,
   type CatalogueSnapshot,
   type ResultRow,
-} from "../services/omics/src/catalogue-query";
+} from "../shared/omics/catalogue-query";
 import {
   comparisonRange,
   numericScore,

@@ -10,8 +10,8 @@ import {
   type CatalogueRecord,
   type CatalogueSnapshot,
   type ResultRow,
-} from "../services/omics/src/catalogue-query";
-import type { ResolvedComparison } from "../services/omics/src/published-comparisons";
+} from "../shared/omics/catalogue-query";
+import type { ResolvedComparison } from "../shared/omics/published-comparisons";
 
 const record = (
   id: string,

@@ -1,4 +1,4 @@
-import type { ResolvedMapping } from "../services/omics/src/use-cases";
+import type { ResolvedMapping } from "../shared/omics/use-cases";
 
 export type EvidenceSummary = {
   /** Current, source-reviewed mappings that present direct or proxy evidence. */

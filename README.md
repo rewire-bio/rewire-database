@@ -40,7 +40,7 @@ The producer publishes each release as one SQLite file (tag `serving/<release>`,
 
 `npm run data:prepare` downloads and verifies the file into `serving/`. `scripts/build-web.mjs` copies it and the few small files pages render into `build/web/data/`, checks its digest against the lock and refuses any other release data in the image. At startup the entrypoint checks that the embedded lock, the producer manifest and the file's `meta` table name the same release, then starts the unmodified Next standalone server. It downloads nothing.
 
-- **Pages** read the file through `services/omics/src/prepared-catalogue.ts` (`lib/prepared.ts`). A request reads only the rows it needs; no page parses the whole catalogue or builds an index.
+- **Pages** read the file through `shared/omics/prepared-catalogue.ts` (`lib/prepared.ts`). A request reads only the rows it needs; no page parses the whole catalogue or builds an index.
 - **The public catalogue API** (`/api/trpc/catalogue.*`) runs in the same server over the same reader, so pages and API cannot disagree. A request pinned to another release gets a 404 naming the current one.
 - **Downloads** are site paths (`/omics/...`, `/benchmark-literature/...`). The server redirects each to the exact gzip `source` the pinned manifest lists, and returns 404 for anything it does not list.
 
@@ -91,11 +91,11 @@ Each kind of change has its own path. The publication workflow (`.github/workflo
 | --- | --- | --- |
 | Frontend code | Build image, deploy candidate revision | Yes |
 | Data (the lock) | Build an image embedding the new prepared file, deploy candidate revision | Yes |
-| Backend-only service modules (Functions, submission store, auth, mail, CLIs; `BACKEND_ONLY_SOURCES` in `scripts/deployment-plan.mjs`) | `firebase deploy --only functions:omics,firestore` | No |
-| Shared service modules (query engine, prepared reader, page builder, schemas, use cases) | Backend deploy and a new image | Yes |
+| The submission function (`services/omics/`) | `firebase deploy --only functions:omics,firestore` | No |
+| Shared code (`shared/omics/`: query engine, prepared reader, schemas, use cases) | A new image | Yes |
 | Worker | `wrangler deploy --var FRONTEND_ORIGIN:<run.app URL>` | No |
 
-Frontend-only changes never deploy the backend. A test keeps `BACKEND_ONLY_SOURCES` free of any module the website imports.
+Website changes never deploy the function. A test checks that the website imports nothing from `services/`.
 
 Every image publication deploys a candidate revision with `--no-traffic`. The candidate is verified through its own tag URL (receipt, image and release headers, result, evaluation, model and benchmark pages, the catalogue API's release, the exact download redirect) before it receives traffic. The workflow then verifies the public site through Cloudflare. A failure after the traffic shift moves traffic back to the previous revision, and the Worker restores its own previous version. There is no data import or activation: rolling back the image rolls back the data.
 
@@ -107,4 +107,13 @@ npm run deploy    # scripts/deploy-independent-frontend.mjs: run only by the pub
 
 The Cloud Run service is `rewire-database-web` in `europe-west2`. It uses request-based billing (`--cpu-throttling`), min 0 and max `CLOUD_RUN_MAX_INSTANCES` (default 3, at most 10) instances, unauthenticated ingress for the Worker, and no Google load balancer. See [docs/independent-frontend.md](docs/independent-frontend.md) for the one-time bootstrap and required configuration.
 
-Make data edits in the data repository and adopt a reviewed release with a pull request updating the lock. The contribution service lives in `services/omics`, with its own dependencies and emulator tests. Keep private contributor data out of every public artifact.
+Make data edits in the data repository and adopt a reviewed release with a pull request updating the lock.
+
+## Code layout
+
+- `app/`, `components/`, `lib/`: the Next.js website and public catalogue API.
+- `shared/omics/`: a copy of rewire-benchmark-data's `shared/omics` (record validation, query engine, prepared-file reader) as of the release the lock pins. Change it there; when a pull request adopts a new release, also run `npm run shared:sync -- /path/to/rewire-benchmark-data` with that checkout at the new lock's revision. Its tests live in that repository.
+- `services/omics/`: the self-contained Firebase function for submissions, curation and mail, with its own dependencies and emulator tests.
+- `cloudflare/`: the Worker. `scripts/`: build, data, deployment and audit tools.
+
+Keep private contributor data out of every public artifact.

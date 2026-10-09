@@ -5,7 +5,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import {
   createCatalogueQuery,
   type CatalogueSnapshot,
-} from "../services/omics/src/catalogue-query";
+} from "../shared/omics/catalogue-query";
 import { profileSchema } from "../lib/omics-profile";
 import Profile from "../components/catalogue/Profile";
 import RecordPage from "../app/database/model/[id]/page";

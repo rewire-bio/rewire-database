@@ -3,7 +3,7 @@ import { useState } from "react";
 import {
   runGuideSchema,
   runDocumentationSchema,
-} from "@/services/omics/src/run-guide";
+} from "@/shared/omics/run-guide";
 import type { OmicsRecord } from "@/lib/omics";
 import { Evidence } from "./Profile";
 import styles from "@/app/database/database.module.css";

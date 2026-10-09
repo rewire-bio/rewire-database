@@ -8,7 +8,7 @@ import type {
   Transaction,
   DocumentSnapshot,
 } from "firebase-admin/firestore";
-import { contribution, type Contribution } from "./validation.js";
+import { contribution, type Contribution } from "./contribution.js";
 import { publishedCatalogue, ReleaseNotServed, type PublishedRecord } from "./published-catalogue.js";
 
 export const statuses = [

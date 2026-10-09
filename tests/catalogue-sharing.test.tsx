@@ -2,7 +2,7 @@ import fs from "node:fs";
 import { preparedFromSnapshot } from "./helpers/prepared";
 import { describe, expect, it, vi } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
-import { type CatalogueSnapshot } from "../services/omics/src/catalogue-query";
+import { type CatalogueSnapshot } from "../shared/omics/catalogue-query";
 import { omicsKinds, recordHref, type OmicsRecord } from "../lib/omics";
 import { recordBreadcrumbs, safeJsonLd, SOCIAL_IMAGE } from "../lib/catalogue-sharing";
 import Breadcrumbs from "../components/catalogue/Breadcrumbs";

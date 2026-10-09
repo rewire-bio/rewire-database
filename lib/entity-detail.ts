@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import type { PreparedCatalogue } from "../services/omics/src/prepared-catalogue";
+import type { PreparedCatalogue } from "../shared/omics/prepared-catalogue";
 import { buildUseCases } from "./use-cases-build";
 import { recordRouteKinds, type OmicsKind, type OmicsRecord } from "./omics";
 
@@ -57,16 +57,4 @@ export function relatedRecords(query: Pick<CatalogueQuery, "record">, record: Om
       return found ? [found as OmicsRecord] : [];
     }),
   ];
-}
-
-/** Aliased records a legacy kind segment must keep serving: every record whose
- * current kind differs from `segment` but whose `legacy_kinds` still names it.
- * Whole-catalogue scan, for offline smoke selection only. */
-export function legacyAliasRecords(
-  catalogue: { records: OmicsRecord[] },
-  segment: OmicsKind,
-): OmicsRecord[] {
-  return catalogue.records.filter(
-    (record) => record.kind !== segment && recordRouteKinds(record).includes(segment),
-  );
 }

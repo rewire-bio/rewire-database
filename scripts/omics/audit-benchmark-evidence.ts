@@ -1,6 +1,6 @@
 /** Coverage uses the same sourced relationships and chart gates as the API. */
 import fs from "node:fs";
-import { createCatalogueQuery, type CatalogueRecord } from "../../services/omics/src/catalogue-query";
+import { createCatalogueQuery, type CatalogueRecord } from "../../shared/omics/catalogue-query";
 export type CoverageInput = CatalogueRecord;
 export type BenchmarkCoverage = {
   id: string; name: string; status: string; evaluations: number; results: number; charts: number;

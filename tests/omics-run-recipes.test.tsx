@@ -5,7 +5,7 @@ import Reproduction from "../components/catalogue/Reproduction";
 import {
   validateRunRecipes,
   runRecipeSchema,
-} from "../services/omics/src/run-recipe";
+} from "../shared/omics/run-recipe";
 import type { OmicsRecord } from "../lib/omics";
 const record = (
   id: string,

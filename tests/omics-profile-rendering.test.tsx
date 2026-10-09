@@ -3,9 +3,9 @@ import { renderToStaticMarkup } from "react-dom/server";
 import fs from "node:fs";
 import Profile from "../components/catalogue/Profile";
 import Results from "../components/catalogue/Results";
-import { createCatalogueQuery } from "../services/omics/src/catalogue-query";
+import { createCatalogueQuery } from "../shared/omics/catalogue-query";
 const snapshot = JSON.parse(fs.readFileSync("public/omics/catalogue.json", "utf8"));
-const records = snapshot.records as import("../services/omics/src/catalogue-query").CatalogueRecord[];
+const records = snapshot.records as import("../shared/omics/catalogue-query").CatalogueRecord[];
 const query = createCatalogueQuery(snapshot);
 describe("scientific profile rendering", () => {
   it("renders BarcodeBERT's exact result with direct model, task, dataset and source links", () => {

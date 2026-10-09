@@ -1,6 +1,6 @@
 import fs from "node:fs";
 import { describe, expect, it } from "vitest";
-import { createCatalogueQuery } from "../services/omics/src/catalogue-query";
+import { createCatalogueQuery } from "../shared/omics/catalogue-query";
 const snapshot = JSON.parse(fs.readFileSync("public/omics/catalogue.json").toString());
 const query = createCatalogueQuery(snapshot);
 const bytes = (value: unknown) => Buffer.byteLength(JSON.stringify(value));

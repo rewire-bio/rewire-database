@@ -3,7 +3,7 @@ import { socialMetadata } from "@/lib/catalogue-sharing";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { buildCatalogue } from "@/lib/catalogue-build";
-import type { AuditRun } from "@/services/omics/src/audit";
+import type { AuditRun } from "@/shared/omics/audit";
 import AuditExplorer from "./AuditExplorer";
 const pageMetadata = {
   title: "Catalogue audit history",

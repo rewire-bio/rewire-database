@@ -81,7 +81,7 @@ export async function verifyCandidate(url, { receipt, samples, fetchImpl = fetch
   const api = await get(`/api/trpc/catalogue.release?input=${encodeURIComponent(JSON.stringify({ release_id: receipt.release_id }))}`);
   if (api.status !== 200 || (await api.json()).result?.data?.release_id !== receipt.release_id)
     throw new Error(`Candidate revision does not serve the catalogue API for ${receipt.release_id} (${api.status})`);
-  const download = await get(`/omics/releases/${receipt.release_id}/records.csv`);
+  const download = await get(`/omics/releases/${receipt.release_id}/records.jsonl`);
   if (download.status !== 307 || !download.headers.get('location')?.startsWith(`https://raw.githubusercontent.com/${receipt.producer_repository}/${receipt.producer_revision}/`))
     throw new Error('Candidate revision does not redirect downloads to the pinned producer revision');
 }

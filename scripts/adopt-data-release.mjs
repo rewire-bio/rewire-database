@@ -1,6 +1,7 @@
 import crypto from 'node:crypto';
 import fs from 'node:fs';
 import os from 'node:os';
+import zlib from 'node:zlib';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
@@ -11,7 +12,9 @@ import { syncShared } from './sync-shared.mjs';
 // the producer commit its prepared file was published from, and copy that
 // commit's shared code into shared/omics. Used by .github/workflows/adopt-data-release.yml;
 // it never adopts an older release than the one pinned.
-//   node scripts/adopt-data-release.mjs [--release <release-id>]
+// It refuses a release that withholds use-case mappings the pinned release
+// serves, unless told otherwise.
+//   node scripts/adopt-data-release.mjs [--release <release-id>] [--allow-withheld-mappings]
 const REPOSITORY = 'rewire-bio/rewire-benchmark-data';
 const RELEASE_ID = /^\d{4}-\d{2}-\d{2}-[a-f0-9]{12}$/;
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -51,6 +54,25 @@ export function lockFor(previous, { releaseId, revision, manifest, receipt }) {
   return lock;
 }
 
+/**
+ * Use-case mappings that were live in the pinned release but that the new
+ * release withholds automatically because their referenced evidence changed.
+ * Adopting such a release silently removes reviewed evidence from the site;
+ * the mappings need re-review in the data repository first.
+ */
+export function withheldMappings(previous, next) {
+  if (!previous || !next) return [];
+  const live = new Set(previous.mappings.filter(mapping => mapping.lifecycle === 'active').map(mapping => mapping.id));
+  return next.mappings.filter(mapping => live.has(mapping.id) && mapping.lifecycle !== 'active' && mapping.stale_from).map(mapping => mapping.id);
+}
+
+function useCasesAt(producer, revision, releaseId) {
+  try {
+    const bytes = execFileSync('git', ['-C', producer, 'show', `${revision}:data/omics/releases/${releaseId}/use-cases.json.gz`], { maxBuffer: 256 * 1024 ** 2 });
+    return JSON.parse(zlib.gunzipSync(bytes).toString('utf8'));
+  } catch { return null; }
+}
+
 function tagCommit(tag) {
   const lines = run('git', ['ls-remote', `https://github.com/${REPOSITORY}.git`, `refs/tags/${tag}`, `refs/tags/${tag}^{}`]).trim().split('\n').filter(Boolean);
   const peeled = lines.find(line => line.endsWith('^{}')) || lines[0];
@@ -59,7 +81,7 @@ function tagCommit(tag) {
   return commit;
 }
 
-export function adopt({ requested } = {}) {
+export function adopt({ requested, allowWithheld = false } = {}) {
   const lockFile = path.join(root, 'benchmark-data.lock.json');
   const previous = JSON.parse(fs.readFileSync(lockFile, 'utf8'));
   const releases = servingReleases(JSON.parse(gh('release', 'list', '--repo', REPOSITORY, '--limit', '200', '--json', 'tagName,createdAt,isDraft')));
@@ -78,6 +100,10 @@ export function adopt({ requested } = {}) {
     run('git', ['-C', producer, 'checkout', '--quiet', revision]);
     const manifest = fs.readFileSync(path.join(producer, 'website/manifest.json'));
     const lock = lockFor(previous, { releaseId, revision, manifest, receipt });
+    run('git', ['-C', producer, 'fetch', '--quiet', '--filter=blob:none', 'origin', previous.revision]);
+    const withheld = withheldMappings(useCasesAt(producer, previous.revision, previous.release_id), useCasesAt(producer, revision, releaseId));
+    if (withheld.length && !allowWithheld)
+      throw new Error(`${releaseId} withholds ${withheld.length} use-case mappings that ${previous.release_id} serves (evidence changed since review: ${withheld.slice(0, 5).join(', ')}${withheld.length > 5 ? ', ...' : ''}). Re-review them in rewire-benchmark-data, or adopt with --allow-withheld-mappings.`);
     fs.writeFileSync(lockFile, JSON.stringify(lock, null, 2) + '\n');
     const files = syncShared(producer);
     return { adopted: true, release_id: releaseId, previous_release_id: previous.release_id, revision, shared_files: files.length };
@@ -86,7 +112,7 @@ export function adopt({ requested } = {}) {
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const index = process.argv.indexOf('--release');
-  const result = adopt({ requested: index > 0 ? process.argv[index + 1] : undefined });
+  const result = adopt({ requested: index > 0 ? process.argv[index + 1] : undefined, allowWithheld: process.argv.includes('--allow-withheld-mappings') });
   console.log(JSON.stringify(result));
   if (process.env.GITHUB_OUTPUT)
     fs.appendFileSync(process.env.GITHUB_OUTPUT, `adopted=${result.adopted}\nrelease_id=${result.release_id}\n`);

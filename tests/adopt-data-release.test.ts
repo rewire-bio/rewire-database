@@ -1,6 +1,6 @@
 import crypto from "node:crypto";
 import { describe, expect, it } from "vitest";
-import { chooseRelease, lockFor, servingReleases } from "../scripts/adopt-data-release.mjs";
+import { chooseRelease, lockFor, servingReleases, withheldMappings } from "../scripts/adopt-data-release.mjs";
 import lock from "../benchmark-data.lock.json";
 
 const release = (id: string, createdAt: string, extra = {}) => ({ tagName: `serving/${id}`, createdAt, isDraft: false, ...extra });
@@ -37,5 +37,15 @@ describe("data release adoption", () => {
     });
     expect(() => lockFor(lock, { releaseId, revision, manifest: Buffer.from('{"release_id":"2026-10-07-aaaaaaaaaaaa"}'), receipt })).toThrow("manifest");
     expect(() => lockFor(lock, { releaseId, revision, manifest, receipt: { ...receipt, release_id: "2026-10-07-aaaaaaaaaaaa" } })).toThrow("receipt");
+  });
+  it("names live mappings the new release withholds, but not deliberate review changes", () => {
+    const previous = { mappings: [{ id: "a", lifecycle: "active" }, { id: "b", lifecycle: "active" }, { id: "c", lifecycle: "needs_review" }] };
+    const next = { mappings: [
+      { id: "a", lifecycle: "needs_review", stale_from: { lifecycle: "active" } },
+      { id: "b", lifecycle: "withdrawn" },
+      { id: "c", lifecycle: "needs_review", stale_from: { lifecycle: "active" } },
+    ] };
+    expect(withheldMappings(previous, next)).toEqual(["a"]);
+    expect(withheldMappings(null, next)).toEqual([]);
   });
 });

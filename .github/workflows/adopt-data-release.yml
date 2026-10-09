@@ -12,6 +12,10 @@ on:
       release_id:
         description: Adopt this published release instead of the newest (never an older one)
         required: false
+      allow_withheld_mappings:
+        description: Adopt even if the release withholds use-case mappings the site serves now
+        type: boolean
+        default: false
 permissions:
   contents: write
   actions: write
@@ -37,7 +41,8 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           RELEASE_ID: ${{ inputs.release_id }}
-        run: node scripts/adopt-data-release.mjs ${RELEASE_ID:+--release "$RELEASE_ID"}
+          ALLOW_WITHHELD: ${{ inputs.allow_withheld_mappings && '--allow-withheld-mappings' || '' }}
+        run: node scripts/adopt-data-release.mjs ${RELEASE_ID:+--release "$RELEASE_ID"} ${ALLOW_WITHHELD:+"$ALLOW_WITHHELD"}
       - if: steps.adopt.outputs.adopted == 'true'
         run: npm ci --no-audit --no-fund
       - name: Read the new data pin

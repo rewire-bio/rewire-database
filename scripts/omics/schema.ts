@@ -33,6 +33,7 @@ const catalogueRelations = [
     "evaluation", "baseline", "family", "parent", "supersedes", "original_evaluation", "subject",
     "source", "applicable_to", "uses_model", "variant_of", "alias_of", "part_of", "evaluates_task",
     "same_data_as", "implemented_by", "measured_in", "uses_data", "used_in", "configuration_of",
+    "assessed_by",
   ]),
 ];
 /** A link named after a kind must point at that kind; a role name at a kind within its role. */

@@ -48,6 +48,7 @@ import EvaluationPage, { generateMetadata as evaluationMetadata } from "../app/d
 import ResultPage, { generateMetadata as resultMetadata } from "../app/database/result/[id]/page";
 import SourcePage, { generateMetadata as sourceMetadata } from "../app/database/source/[id]/page";
 import ClaimPage, { generateMetadata as claimMetadata } from "../app/database/claim/[id]/page";
+import UseCasePage, { generateMetadata as useCaseMetadata } from "../app/database/use_case/[id]/page";
 
 type Page = (props: { params: { id: string } }) => unknown;
 type GenerateMetadata = (props: { params: { id: string } }) => unknown;
@@ -69,6 +70,7 @@ const pagesByKind: Record<EntityKind, { Page: Page; generateMetadata: GenerateMe
   result: { Page: ResultPage, generateMetadata: resultMetadata },
   source: { Page: SourcePage, generateMetadata: sourceMetadata },
   claim: { Page: ClaimPage, generateMetadata: claimMetadata },
+  use_case: { Page: UseCasePage, generateMetadata: useCaseMetadata },
 };
 
 // A representative, real id for every kind, taken from the pinned release
@@ -111,7 +113,7 @@ async function settle(run: () => unknown) {
 const absentMetadata = (kind: EntityKind) =>
   (recordPageKinds as readonly string[]).includes(kind) ? "NOT_FOUND" : {};
 
-describe("entity detail route guards (404 and metadata) across all 16 kinds", () => {
+describe("entity detail route guards (404 and metadata) across all 17 kinds", () => {
   it("has a real sample record for every kind in the pinned release", () => {
     for (const kind of entityKinds) expect(sampleIdByKind[kind], kind).toBeDefined();
   });

@@ -124,7 +124,7 @@ describe("use-case evidence rendering", () => {
     }
   });
   it("keeps unassessed/outside-scope evidence distinct from zero scores", () => {
-    for (const relevance of ["not_assessed", "outside_scope"] as const) {
+    for (const relevance of ["outside_scope"] as const) {
       const value = mapping(); value.relevance = relevance;
       const markup = html(value);
       expect(markup).not.toContain("0.75");

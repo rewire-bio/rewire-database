@@ -273,7 +273,7 @@ describe("scoped use-case evidence", () => {
     expect(query.links({ id: "protocol" }).items).toEqual([]);
     expect(query.get({ slug: f.entry.slug })!.mappings[0].evaluations).toEqual([]);
   });
-  it.each(["outside_scope", "not_assessed"] as const)("represents %s without a zero score or implied failure", (relevance) => {
+  it.each(["outside_scope"] as const)("represents %s without a zero score or implied failure", (relevance) => {
     const f = fixture(); f.mapping.relevance = relevance; f.mapping.evaluation_ids = []; freeze(f);
     const { query } = build(f);
     expect(query.get({ slug: f.entry.slug })!.mappings[0].evaluations).toEqual([]);

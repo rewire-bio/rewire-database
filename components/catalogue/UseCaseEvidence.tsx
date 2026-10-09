@@ -135,7 +135,7 @@ export default function UseCaseEvidence({ mapping, useCasePath, executionLinks }
       })}
       {mapping.protocol && <p><UseCaseRecordLink href={`${recordHref(mapping.protocol)}#results`} useCasePath={useCasePath}>Open the protocol&apos;s results and comparison checks →</UseCaseRecordLink></p>}
       {protocolInstructions && <p><a href={protocolInstructions}>Original execution documentation ↗</a></p>}
-    </> : active && <p>{mapping.relevance === "not_assessed" ? "Applicability has not been assessed." : mapping.relevance === "outside_scope" ? "No applicable results are presented for this scope." : "No relevant evaluation is recorded for this mapping."} Absence of evidence is not a zero score or proof that a method is unsuitable.</p>}
+    </> : active && <p>{mapping.relevance === "outside_scope" ? "No applicable results are presented for this scope." : "No relevant evaluation is recorded for this mapping."} Absence of evidence is not a zero score or proof that a method is unsuitable.</p>}
     <details><summary>Mapping sources and review metadata</summary>
       {mapping.citations.length > 0 && <UseCaseCitations citations={mapping.citations} sources={mapping.sources} useCasePath={useCasePath} />}
       {!active && mapping.review && <UseCaseReview review={mapping.review} />}

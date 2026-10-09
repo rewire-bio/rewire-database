@@ -24,6 +24,7 @@ import EvaluationPage, { generateMetadata as evaluationMetadata } from "../app/d
 import ResultPage, { generateMetadata as resultMetadata } from "../app/database/result/[id]/page";
 import SourcePage, { generateMetadata as sourceMetadata } from "../app/database/source/[id]/page";
 import ClaimPage, { generateMetadata as claimMetadata } from "../app/database/claim/[id]/page";
+import { generateMetadata as useCaseMetadata } from "../app/database/use_case/[id]/page";
 import { metadata as homeMetadata } from "../app/page";
 
 const pageFor = {
@@ -39,6 +40,7 @@ const metadataFor = {
   task: taskMetadata, protocol: protocolMetadata, evaluator: evaluatorMetadata,
   dataset: datasetMetadata, dataset_subset: datasetSubsetMetadata, baseline: baselineMetadata,
   evaluation: evaluationMetadata, result: resultMetadata, source: sourceMetadata, claim: claimMetadata,
+  use_case: useCaseMetadata,
 } as const;
 
 const fixture = vi.hoisted(() => ({ snapshot: null as CatalogueSnapshot | null }));

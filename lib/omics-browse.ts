@@ -56,6 +56,7 @@ export const kindLabels: Record<OmicsKind, string> = {
   source: "Sources",
   evaluation: "Evaluations",
   claim: "Evidence claims",
+  use_case: "Use cases",
 };
 export const kindDescriptions: Record<OmicsKind, string> = {
   model:
@@ -88,6 +89,8 @@ export const kindDescriptions: Record<OmicsKind, string> = {
   evaluation:
     "The model configuration, data and conditions used to produce a result.",
   claim: "Individual assertions linked to the evidence that supports them.",
+  use_case:
+    "Research and clinical-research decision questions, each linked to the protocols whose evaluations bear on it."
 };
 export function readCatalogueFilters(search: string): CatalogueFilters {
   const params = new URLSearchParams(search);
@@ -199,6 +202,7 @@ export const singularKindLabels: Record<OmicsKind, string> = {
   result: "Result",
   source: "Source",
   claim: "Evidence claim",
+  use_case: "Use case",
 };
 /** Older releases used model/benchmark links for several entity types. Read
  * the target's actual kind; never infer a scientific identity from its name. */

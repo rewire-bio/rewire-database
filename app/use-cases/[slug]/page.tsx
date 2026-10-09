@@ -2,19 +2,18 @@ import { downloadHref } from "@/lib/downloads";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import PageHeader from "@/components/PageHeader";
-import UseCaseEvidence, { UseCaseCitations, UseCaseReview, type ExecutionLink } from "@/components/catalogue/UseCaseEvidence";
+import { UseCaseCitations, UseCaseReview } from "@/components/catalogue/UseCaseEvidence";
+import UseCaseComparison from "@/components/catalogue/UseCaseComparison";
 import UseCaseCollectionPlan from "@/components/catalogue/UseCaseCollectionPlan";
 import UseCaseArticles from "@/components/catalogue/UseCaseArticles";
 import { relatedUseCaseArticles } from "@/lib/use-case-articles";
 import { UseCaseReturn } from "@/components/catalogue/UseCaseNavigation";
 import SectionNavigation from "@/components/catalogue/SectionNavigation";
 import { fullUseCaseDetail } from "@/lib/use-cases-build";
-import { buildCatalogue } from "@/lib/catalogue-build";
-import { recordHref } from "@/lib/omics";
 import { researchAreaLabel } from "@/lib/omics-browse";
 import { socialMetadata } from "@/lib/catalogue-sharing";
-import { evidenceSummaryParts, summariseUseCaseEvidence } from "@/lib/use-case-summary";
-import { reproductionSchema } from "@/shared/omics/run-recipe";
+import { summariseUseCaseEvidence } from "@/lib/use-case-summary";
+import { buildComparisons, heldJudgements, methodTypeLabel, toolsCompared } from "@/lib/use-case-comparisons";
 import styles from "@/components/catalogue/UseCases.module.css";
 
 type Params = { slug: string };
@@ -32,30 +31,22 @@ export default function UseCasePage({ params }: { params: Params }) {
   if (!detail) notFound();
   const entry = detail.use_case;
   const path = `/use-cases/${entry.slug}/`;
-  const executionLinks: Record<string, ExecutionLink> = {};
-  const { query } = buildCatalogue();
-  for (const mapping of detail.mappings) for (const { evaluation } of mapping.evaluations) {
-    const parsed = reproductionSchema.safeParse(evaluation.attributes.reproduction);
-    if (!parsed.success) continue;
-    const owner = query.get({ id: parsed.data.recipe_owner_id, include_comparisons: false })?.record;
-    if (owner) executionLinks[evaluation.id] = {
-      href: `${recordHref(owner)}?recipe=${encodeURIComponent(parsed.data.recipe_id)}#run-recipes`,
-      label: parsed.data.applicability === "rescore_predictions" ? "Recipe: recompute metrics from existing predictions" : "Recipe: generate and evaluate predictions",
-      explanation: parsed.data.explanation,
-    };
-  }
   const clinical = entry.contexts.includes("clinical_research");
   const summary = summariseUseCaseEvidence(detail.mappings, entry.evidence_gaps.length);
-  // Navigation labels are the section headings, so the two cannot drift apart.
+  const comparisons = buildComparisons(detail.mappings);
+  const held = heldJudgements(detail.mappings);
+  const tools = toolsCompared(comparisons);
+  // A plain-language summary of the evidence, reviewed like any other claim (older releases have none).
+  const evidenceSummary = (entry as typeof entry & { summary?: { text: string; status: "reviewed" | "draft" } }).summary;
   const sections = [
-    { id: "question", label: "Question and applicability" },
-    { id: "inputs", label: "Inputs and expected output" },
-    ...(clinical ? [{ id: "clinical-scope", label: "Clinical research scope" }] : []),
-    { id: "evidence", label: "Evaluated evidence" },
-    { id: "gaps", label: "Limitations and missing evidence" },
-    ...(entry.collection_plan ? [{ id: "collection-plan", label: "Evidence collection plan" }] : []),
-    ...(relatedUseCaseArticles(entry.slug).length ? [{ id: "related-articles", label: "Related articles" }] : []),
-    { id: "sources", label: "Sources and review" },
+    ...(evidenceSummary ? [{ id: "summary", label: "What the evidence shows" }] : []),
+    ...(tools.length ? [{ id: "tools", label: "Tools compared" }] : []),
+    { id: "evidence", label: "Comparisons" },
+    ...(held.length ? [{ id: "held", label: "Held for review" }] : []),
+    { id: "gaps", label: "Not covered yet" },
+    // With no comparison yet, the collection plan is the main content, so it gets its own section.
+    ...(entry.collection_plan && !comparisons.length ? [{ id: "collection-plan", label: "Evidence collection plan" }] : []),
+    { id: "details", label: "Question, sources and review" },
   ];
   const heading = (id: string) => sections.find((section) => section.id === id)!.label;
   return <>
@@ -66,58 +57,70 @@ export default function UseCasePage({ params }: { params: Params }) {
       title={entry.title}
       intro={entry.question}
     >
-      <p className={styles.summary}><span className={styles.summaryLabel}>In this release</span> {evidenceSummaryParts(summary).join(" · ")}</p>
+      <dl className={styles.cardsRow}>
+        <div><dt>You bring</dt><dd>{entry.inputs.join("; ")}</dd></div>
+        <div><dt>You want</dt><dd>{entry.output}</dd></div>
+        <div><dt>Evidence in this release</dt><dd>
+          {comparisons.length} comparison{comparisons.length === 1 ? "" : "s"} shown
+          {held.length > 0 && <> · {held.length} held for review</>}
+          {tools.length > 0 && <> · {tools.length} tool{tools.length === 1 ? "" : "s"}</>}
+        </dd></div>
+      </dl>
     </PageHeader>
     <div className="wrap">
       <SectionNavigation sections={sections} />
       <div className={`content ${styles.detail}`}>
-        <section id="question" className={styles.section}>
-          <h2>{heading("question")}</h2>
-          <p className={styles.lead}>{entry.decision}</p>
-          <dl className={styles.facts}>
-            <div><dt>Who this is for</dt><dd><ul>{entry.intended_users.map((user) => <li key={user}>{user}</li>)}</ul></dd></div>
-            <div id={clinical ? undefined : "clinical-scope"}><dt>Research setting</dt><dd>
-              {clinical ? <p>Research and clinical research. See <a href="#clinical-scope">{heading("clinical-scope")}</a> for what the evidence does not establish.</p>
-                : <><p>Research</p><p className={styles.muted}>{entry.clinical_scope}</p></>}
-            </dd></div>
-            <div className={styles.wide}><dt>Biological setting</dt><dd>{entry.setting}</dd></div>
-          </dl>
-          {entry.exclusions.length > 0 && <><h3>Outside this use case</h3><ul>{entry.exclusions.map((exclusion) => <li key={exclusion}>{exclusion}</li>)}</ul></>}
-        </section>
-        <section id="inputs" className={styles.section}>
-          <h2>{heading("inputs")}</h2>
-          <h3>Inputs you need</h3>
-          <ul>{entry.inputs.map((input) => <li key={input}>{input}</li>)}</ul>
-          <h3>Expected output</h3>
-          <p>{entry.output}</p>
-        </section>
-        {clinical && <section id="clinical-scope" className={styles.section}>
-          <h2>{heading("clinical-scope")}</h2>
-          <div className={styles.notice}><p>{entry.clinical_scope}</p></div>
+        {evidenceSummary && <section id="summary" className={styles.section}>
+          <h2>{heading("summary")} {evidenceSummary.status === "draft" && <span className={styles.draftBadge}>Draft summary, pending review</span>}</h2>
+          <div className={styles.summaryBox}><p>{evidenceSummary.text}</p></div>
+        </section>}
+        {tools.length > 0 && <section id="tools" className={styles.section}>
+          <h2>{heading("tools")}</h2>
+          <ul className={styles.toolList}>
+            {tools.map((tool) => <li key={tool.id}>{tool.name}{tool.methodTypes.length > 0 && <span className={styles.toolMeta}>{tool.methodTypes.map(methodTypeLabel).join(", ")}</span>}</li>)}
+          </ul>
         </section>}
         <section id="evidence" className={styles.section}>
           <h2>{heading("evidence")}</h2>
-          <p>Evidence is grouped by its protocol. Relevance refers to the stated endpoint and context; it is separate from clinical validation and from the review method. Limits specific to each evaluation are listed with it.</p>
-          {detail.mappings.length ? detail.mappings.map((mapping) => <UseCaseEvidence key={mapping.id} mapping={mapping} useCasePath={path} executionLinks={executionLinks} />) : <div className={styles.notice}><p>No model comparison has been collected for this question yet.</p><p>Relevant methods and studies may exist outside this collection.</p>{entry.collection_plan && <p><a href="#collection-plan">View the evidence plan and next collection task</a></p>}</div>}
+          <p>Each table is one study or protocol with its own truth set and scoring. Compare tools within a table, not across tables.</p>
+          {comparisons.length
+            ? comparisons.map((comparison) => <UseCaseComparison key={comparison.id} comparison={comparison} useCasePath={path} />)
+            : <div className={styles.notice}><p>No model comparison has been collected for this question yet.</p><p>Relevant methods and studies may exist outside this collection.</p></div>}
         </section>
+        {held.length > 0 && <section id="held" className={styles.section}>
+          <h2>{heading("held")}</h2>
+          <p>Recorded but not shown as evidence until the reason below is resolved.</p>
+          <div className={styles.heldGrid}>
+            {held.map((h) => <article key={h.id}><h3>{h.title}</h3><p className={styles.muted}>{h.reason}</p></article>)}
+          </div>
+        </section>}
         <section id="gaps" className={styles.section}>
           <h2>{heading("gaps")}</h2>
-          <p>These gaps apply to the question as a whole. Absence of evidence is not a zero score.</p>
-          {entry.evidence_gaps.length ? <ul>{entry.evidence_gaps.map((gap) => <li key={gap}>{gap}</li>)}</ul> : <p>No additional gaps are recorded. This does not establish complete validation.</p>}
-          {entry.planned_work.length > 0 && <><h3>Planned work</h3><p>These plans do not contribute measured results or evaluated winners above.</p>
-            {entry.planned_work.map((work) => <article key={work.url} className={styles.mapping}><h4><a href={work.url}>{work.title} ↗</a></h4><p><strong>{work.status === "blocked" ? "Execution blocked" : "Planned"}</strong> · {work.reason}</p></article>)}
-          </>}
+          {entry.evidence_gaps.length ? <ul>{entry.evidence_gaps.map((gap) => <li key={gap}>{gap}</li>)}</ul> : <p>No gaps are recorded. This does not establish complete validation.</p>}
+          {entry.planned_work.length > 0 && <ul>{entry.planned_work.map((work) => <li key={work.url}><a href={work.url}>{work.title} ↗</a> ({work.status === "blocked" ? "blocked" : "planned"})</li>)}</ul>}
           <p><a href="/contribute/">Contribute evidence or propose a correction</a></p>
         </section>
-        {entry.collection_plan && <UseCaseCollectionPlan plan={entry.collection_plan} summary={summary} />}
-        <UseCaseArticles slug={entry.slug} />
-        <section id="sources" className={styles.section}>
-          <h2>{heading("sources")}</h2><UseCaseReview review={entry.review} />
-          <UseCaseCitations citations={entry.citations} sources={detail.sources} useCasePath={path} />
-          <details><summary>Release provenance and downloads</summary>
-            <p>Release <code>{detail.release_id}</code></p><p>Use-case input digest <code>{detail.input_sha256}</code></p>
-            <p><a href={downloadHref(`/omics/releases/${detail.release_id}/use-cases.json`)}>Download questions, collection plans and review metadata (JSON) (gzip)</a> · <a href={downloadHref(`/omics/releases/${detail.release_id}/manifest.json`)}>Verify release checksums (gzip)</a></p>
-            <p>Question <code>{entry.id}</code>. Any numerical results on this page come from this release&apos;s existing evaluation records.</p>
+        {entry.collection_plan && !comparisons.length && <UseCaseCollectionPlan plan={entry.collection_plan} summary={summary} />}
+        <section id="details" className={styles.section}>
+          <h2>{heading("details")}</h2>
+          <details>
+            <summary>Who this is for, setting and exclusions</summary>
+            <p className={styles.lead}>{entry.decision}</p>
+            <dl className={styles.facts}>
+              <div><dt>Who this is for</dt><dd><ul>{entry.intended_users.map((user) => <li key={user}>{user}</li>)}</ul></dd></div>
+              <div><dt>Biological setting</dt><dd>{entry.setting}</dd></div>
+              <div id="clinical-scope" className={styles.wide}><dt>{clinical ? "Clinical research scope" : "Research setting"}</dt><dd>{entry.clinical_scope}</dd></div>
+            </dl>
+            {entry.exclusions.length > 0 && <><h3>Outside this use case</h3><ul>{entry.exclusions.map((exclusion) => <li key={exclusion}>{exclusion}</li>)}</ul></>}
+          </details>
+          {entry.collection_plan && comparisons.length > 0 && <details><summary>Evidence collection plan</summary><UseCaseCollectionPlan plan={entry.collection_plan} summary={summary} /></details>}
+          {relatedUseCaseArticles(entry.slug).length > 0 && <details><summary>Related articles</summary><UseCaseArticles slug={entry.slug} /></details>}
+          <details>
+            <summary>Sources, review and downloads</summary>
+            <UseCaseReview review={entry.review} />
+            <UseCaseCitations citations={entry.citations} sources={detail.sources} useCasePath={path} />
+            <p>Release <code>{detail.release_id}</code> · question <code>{entry.id}</code></p>
+            <p><a href={downloadHref(`/omics/releases/${detail.release_id}/use-cases.json`)}>Download questions and review metadata (JSON) (gzip)</a> · <a href={downloadHref(`/omics/releases/${detail.release_id}/manifest.json`)}>Verify release checksums (gzip)</a></p>
           </details>
         </section>
       </div>

@@ -57,9 +57,8 @@ describe("use-case evidence summary", () => {
 });
 
 describe("use-case detail template", () => {
-  it("links relevant reading from the page navigation without adding it to evaluated evidence", async () => {
+  it("keeps relevant reading under the page details without adding it to evaluated evidence", async () => {
     const html = await detail({ ...base, slug: "splicing-follow-up" });
-    expect(html).toContain('href="#related-articles"');
     expect(html).toContain('<section id="related-articles"');
     expect(html).toContain('href="https://rewirebio.io/blog/mfass-v1/"');
     expect(html).not.toContain('href="https://rewirebio.io/blog/an-rna-sequence-is-not-a-molecular-state/"');
@@ -80,7 +79,7 @@ describe("use-case detail template", () => {
     const links = [...nav.slice(0, nav.indexOf("</nav>")).matchAll(/<a href="#([^"]+)"[^>]*>([^<]+)<\/a>/g)].map(([, id, label]) => [id, label]);
     const headings = [...html.matchAll(/<section id="([^"]+)"[^>]*><h2>([^<]+)<\/h2>/g)].map(([, id, label]) => [id, label]);
     expect(links).toEqual(headings);
-    expect(links.map(([id]) => id)).toEqual(["question", "inputs", "evidence", "gaps", "sources"]);
+    expect(links.map(([id]) => id)).toEqual(["tools", "evidence", "gaps", "details"]);
     const levels = [...html.matchAll(/<h([1-6])\b/g)].map(([, level]) => Number(level));
     levels.forEach((level, index) => { if (index) expect(level - levels[index - 1]).toBeLessThanOrEqual(1); });
   });
@@ -93,14 +92,13 @@ describe("use-case detail template", () => {
   });
   it("adds a clinical research scope section only when the use case has that context", async () => {
     const html = await detail({ ...base, contexts: ["research", "clinical_research"], clinical_scope: "Clinical pathogenicity is not established." });
-    expect(html).toContain('<section id="clinical-scope"');
-    expect(html).toContain("<h2>Clinical research scope</h2>");
-    expect(html).toContain('href="#clinical-scope"');
+    expect(html).toContain('id="clinical-scope"');
+    expect(html).toContain("<dt>Clinical research scope</dt>");
     expect(text(html)).toContain("Clinical pathogenicity is not established.");
   });
   it("summarises evidence coverage in the header and links the breadcrumb back to the index", async () => {
     const html = await detail(base);
-    expect(text(html)).toContain("1 evaluated endpoint · 2 tested configurations · Proxy evidence only · 1 recorded evidence gap");
+    expect(text(html)).toContain("1 comparison shown · 2 tools");
     const breadcrumb = html.slice(html.indexOf('aria-label="Breadcrumb"'), html.indexOf("</nav>", html.indexOf('aria-label="Breadcrumb"')));
     expect(breadcrumb).toContain('<a href="/use-cases/">Use cases</a>');
     expect(html).not.toContain("Back to use cases");

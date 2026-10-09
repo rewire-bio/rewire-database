@@ -2,16 +2,11 @@ import { validateRunRecipes } from "./run-recipe.js";
 import { validateRunGuide } from "./run-guide.js";
 import {
   entityKinds,
-  catalogueRelations,
   validateDatasetReuseLink,
   legacyKinds,
-  modelSubjectKinds,
-  benchmarkSubjectKinds,
-  datasetSubjectKinds,
-  isModelSubject,
-  isBenchmarkSubject,
-  relationAcceptsKind,
 } from "./entity-kinds.js";
+import { relationAllows, relations, type Relation } from "./relations.js";
+import { currentRecords } from "./current.js";
 import { profileSchema } from "./profile-schema.js";
 import { validateSourceIdentity } from "./source-identity.js";
 import { z } from "zod";
@@ -49,7 +44,7 @@ export const sourceUrl = z
   });
 const link = z
   .object({
-    relation: z.enum(catalogueRelations),
+    relation: z.enum(relations as [Relation, ...Relation[]]),
     target_id: id,
   })
   .strict();
@@ -157,9 +152,20 @@ export const snapshotSchema = z
   })
   .strict();
 export type CatalogueRecord = z.infer<typeof recordSchema>;
+/** Releases written before single-meaning relations and declared attributes are validated in
+ * the current shapes. */
+function withCurrentRecords(input: unknown): unknown {
+  const records = (input as { records?: unknown } | null)?.records;
+  if (!Array.isArray(records)) return input;
+  try {
+    return { ...(input as object), records: currentRecords(records as never[]) };
+  } catch {
+    return input; // malformed records: let the schema report them
+  }
+}
 export function validateSnapshot(input: unknown) {
   assertPublicCatalogue(input);
-  const snapshot = snapshotSchema.parse(input);
+  const snapshot = snapshotSchema.parse(withCurrentRecords(input));
   if (snapshot.research) validateResearchData(snapshot.research, snapshot);
   const records = new Map(
     snapshot.records.map((record) => [record.id, record]),
@@ -180,25 +186,10 @@ export function validateSnapshot(input: unknown) {
       !["suite", "challenge"].includes(String(record.attributes.entity_level))
     )
       throw new Error("Benchmarks must be top-level suites or challenges");
-    if (record.kind === "evaluation") {
-      for (const [role, kinds] of [
-        ["model", modelSubjectKinds],
-        ["benchmark", benchmarkSubjectKinds],
-        ["dataset", datasetSubjectKinds],
-      ] as const) {
-        const links = record.links.filter((link) =>
-          (kinds as readonly string[]).includes(link.relation),
-        );
-        if (
-          links.length !== 1 ||
-          !relationAcceptsKind(
-            role,
-            records.get(links[0].target_id)?.kind || "",
-          )
-        )
+    if (record.kind === "evaluation")
+      for (const role of ["system", "assessment", "data"])
+        if (record.links.filter((link) => link.relation === role).length !== 1)
           throw new Error(`Invalid evaluation ${role} ${record.id}`);
-      }
-    }
     const aliases = record.attributes.legacy_kinds;
     if (
       aliases !== undefined &&
@@ -235,28 +226,10 @@ export function validateSnapshot(input: unknown) {
       const target = records.get(link.target_id);
       if (!target) throw new Error(`Unresolved link ${link.target_id}`);
       validateDatasetReuseLink(record, link, target);
-      if (
-        ["family", "variant_of", "alias_of"].includes(link.relation) &&
-        (!isModelSubject(record.kind) || !isModelSubject(target.kind))
-      )
-        throw new Error(`Invalid model identity relationship on ${record.id}`);
-      if (
-        link.relation === "uses_model" &&
-        (!(isModelSubject(record.kind) || record.kind === "evaluation") ||
-          !isModelSubject(target.kind))
-      )
-        throw new Error(`Invalid pipeline model relationship on ${record.id}`);
-      if (
-        ["part_of", "evaluates_task"].includes(link.relation) &&
-        (!(isBenchmarkSubject(record.kind) || record.kind === "evaluation") ||
-          !isBenchmarkSubject(target.kind))
-      )
-        throw new Error(`Invalid benchmark membership on ${record.id}`);
-      if (
-        (entityKinds as readonly string[]).includes(link.relation) &&
-        !relationAcceptsKind(link.relation, target.kind)
-      )
-        throw new Error(`Incorrect relationship type on ${record.id}`);
+      if (!relationAllows(link.relation, record.kind, target.kind))
+        throw new Error(
+          `Relationship ${link.relation} cannot link ${record.kind} ${record.id} to ${target.kind} ${target.id}`,
+        );
     }
   }
   if (snapshot.records.some((record) => record.attributes.comparison_panels)) {

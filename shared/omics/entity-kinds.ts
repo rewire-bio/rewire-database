@@ -67,13 +67,6 @@ export const entityKindLabel = (kind: string): string =>
     source: "Source",
     claim: "Evidence claim",
   })[kind] || kind;
-/** Legacy links use model/benchmark as evaluation roles, not current entity kinds. */
-export function relationAcceptsKind(relation: string, kind: string): boolean {
-  if (relation === "model") return isModelSubject(kind);
-  if (relation === "benchmark") return isBenchmarkSubject(kind);
-  if (relation === "dataset") return isDatasetSubject(kind);
-  return relation === kind;
-}
 
 /** Alias routes preserve published links: the canonical kind plus any listed legacy kinds. */
 export function recordRouteKinds(record: {
@@ -93,14 +86,7 @@ export function recordRouteKinds(record: {
   ];
 }
 
-/** Shared publication vocabulary prevents website/API release validation drift. */
-export const catalogueRelations = [
-  "method", "configuration", "pipeline", "service", "task", "protocol",
-  "evaluator", "dataset_subset", "model", "benchmark", "dataset", "evaluation",
-  "baseline", "family", "parent", "supersedes", "original_evaluation", "subject",
-  "source", "applicable_to", "uses_model", "variant_of", "alias_of", "part_of",
-  "evaluates_task", "same_data_as",
-] as const;
+/** Relationship names and their rules live in relations.ts. */
 
 /** Informational data reuse only: never merges methods, results or comparison groups. */
 export function validateDatasetReuseLink(

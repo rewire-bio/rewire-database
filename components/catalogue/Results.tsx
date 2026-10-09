@@ -6,6 +6,7 @@ import Link from "next/link";
 import { CitedAs } from "./SourceIdentity";
 import { catalogueClient, type ResultsPage } from "@/lib/catalogue-client";
 import {
+  coverageText,
   displayValue,
   uncertaintyText,
   originLabel,
@@ -35,9 +36,7 @@ const defaults = {
   cursor: "",
 };
 function coverage(row: ResultsPage["items"][number]) {
-  const attributes = row.result.attributes;
-  if (attributes.coverage) return displayValue(attributes.coverage);
-  return `${displayValue(attributes.scored_count)} scored / ${displayValue(attributes.eligible_count)} eligible`;
+  return coverageText(row.result.attributes);
 }
 function RecordLinks({ records }: { records: OmicsRecord[] }) {
   return (

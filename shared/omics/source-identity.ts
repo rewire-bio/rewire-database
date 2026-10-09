@@ -140,7 +140,7 @@ export function validateSourceIdentity(
   const testsSubject = (evaluation: Pick<IdentityRecord, "links">) =>
     evaluation.links.some(
       (link) =>
-        (link.relation === "model" || (modelSubjectKinds as readonly string[]).includes(link.relation)) &&
+        link.relation === "system" &&
         link.target_id === linked.subject_id,
     );
   if (record.kind === "evaluation") {

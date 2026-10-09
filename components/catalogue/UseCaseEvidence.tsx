@@ -2,7 +2,7 @@ import { downloadHref } from "@/lib/downloads";
 import type { Citation, ResolvedMapping, Review } from "@/shared/omics/use-cases";
 import type { CatalogueRecord } from "@/shared/omics/catalogue-query";
 import { catalogueText } from "@/lib/catalogue-text";
-import { displayValue, missingText, originLabel, recordHref, safeSourceUrl, uncertaintyText } from "@/lib/omics";
+import { coverageText, displayValue, missingText, originLabel, recordHref, safeSourceUrl, uncertaintyText } from "@/lib/omics";
 import { statusLabel, explorerPrintedScore } from "@/lib/omics-browse";
 import { formatScore } from "@/lib/score-display";
 import { UseCaseRecordLink } from "./UseCaseNavigation";
@@ -122,7 +122,7 @@ export default function UseCaseEvidence({ mapping, useCasePath, executionLinks }
                 <tbody>{results.map((row) => <tr key={row.result.id}>
                   <th scope="row"><UseCaseRecordLink href={recordHref(row.result)} useCasePath={useCasePath}>{displayValue(row.result.attributes.metric)}</UseCaseRecordLink></th>
                   <td><span className={styles.score}>{explorerPrintedScore(row.result.attributes.printed_value, row.result.attributes.unit)}</span><p className={styles.muted}>{displayValue(row.result.attributes.unit)} · {displayValue(row.result.attributes.metric_direction)}</p></td>
-                  <td>{row.result.attributes.coverage ? displayValue(row.result.attributes.coverage) : `${displayValue(row.result.attributes.scored_count)} scored / ${displayValue(row.result.attributes.eligible_count)} eligible`}</td>
+                  <td>{coverageText(row.result.attributes)}</td>
                   <td><p>{uncertaintyText(row.result.attributes)}</p><details><summary>Result provenance</summary><UseCaseCitations citations={row.result.source_ids.map((source_id) => ({ source_id, locator: String(row.result.attributes.source_locator || "See the source record for the evidence location") }))} sources={row.sources} useCasePath={useCasePath} /></details></td>
                 </tr>)}</tbody>
               </table>

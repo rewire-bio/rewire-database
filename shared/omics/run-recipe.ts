@@ -145,9 +145,7 @@ export function validateRunRecipes(
     if (!recipe || recipe.purpose !== reference.applicability)
       throw new Error("Unknown or incompatible evaluation recipe");
     const benchmarkIds = record.links
-      .filter((l) =>
-        ["benchmark", "protocol", "task", "evaluator"].includes(l.relation),
-      )
+      .filter((l) => l.relation === "assessment")
       .map((l) => l.target_id);
     if (!benchmarkIds.includes(reference.recipe_owner_id))
       throw new Error(

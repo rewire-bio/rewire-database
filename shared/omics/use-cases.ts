@@ -1,3 +1,4 @@
+import { currentRecords } from "./current.js";
 import { createHash } from "node:crypto";
 import { z } from "zod";
 import { assertNoPrivateFields } from "./private-fields.js";
@@ -236,7 +237,9 @@ export function useCaseDeclaration(value: UseCaseInputs): UseCaseDeclaration {
   return { schema_version: "1.0", input_sha256: useCaseHash(inputs), use_cases: inputs.use_cases.length, mappings: inputs.mappings.length };
 }
 
-function index(snapshot: CatalogueSnapshot) {
+function index(input: CatalogueSnapshot) {
+  // Archived catalogues written before single-meaning relations are read under current names.
+  const snapshot = { ...input, records: currentRecords(input.records) };
   const records = new Map(snapshot.records.map((r) => [r.id, r]));
   const results = new Map<string, CatalogueRecord[]>();
   const claims = new Map<string, CatalogueRecord[]>();
@@ -263,12 +266,11 @@ function index(snapshot: CatalogueSnapshot) {
 }
 type Index = ReturnType<typeof index>;
 
-/** Legacy catalogue roles retain their exact reviewed target identities. A
- * benchmark/task or model family is never promoted to a protocol/configuration. */
+/** An evaluation's protocol (its assessment) or configuration (its system), by exact
+ * target kind. A benchmark/task or model family is never promoted to a protocol/configuration. */
 function evaluationLinks(ix: Index, evaluation: CatalogueRecord, kind: "protocol" | "configuration") {
-  const legacy = kind === "protocol" ? "benchmark" : "model";
-  return evaluation.links.filter((link) => link.relation === kind ||
-    (link.relation === legacy && ix.records.get(link.target_id)?.kind === kind));
+  const role = kind === "protocol" ? "assessment" : "system";
+  return evaluation.links.filter((link) => link.relation === role && ix.records.get(link.target_id)?.kind === kind);
 }
 
 /** Exact evidence closure: no suite-to-task or sibling-protocol inference. */
@@ -296,12 +298,12 @@ function dependencies(ix: Index, entry: UseCase, mapping: Mapping) {
     if (!evaluation) continue;
     const configurations = evaluationLinks(ix, evaluation, "configuration");
     for (const l of [
-      ...evaluation.links.filter((link) => ["dataset", "dataset_subset"].includes(link.relation)),
+      ...evaluation.links.filter((link) => link.relation === "data"),
       ...evaluationLinks(ix, evaluation, "protocol"), ...configurations,
     ]) add(l.target_id);
     for (const l of configurations) {
       const config = ix.records.get(l.target_id);
-      for (const parent of config?.links || []) if (["family", "variant_of", "alias_of"].includes(parent.relation)) {
+      for (const parent of config?.links || []) if (["family", "variant_of", "configuration_of", "alias_of"].includes(parent.relation)) {
         add(parent.target_id);
         for (const claim of ix.associationClaims(config!, parent.relation, parent.target_id)) add(claim.id);
       }
@@ -351,7 +353,7 @@ function validateMapping(ix: Index, entry: UseCase, m: Mapping, activeChecks: bo
     if (activeChecks && configs.some((c) => c.source_ids.some((id) => !cleanSource(ix.records.get(id)))))
       throw Error("Configuration evidence is disputed or unchecked");
     if (activeChecks) {
-      for (const l of e.links.filter((l) => ["dataset", "dataset_subset"].includes(l.relation))) {
+      for (const l of e.links.filter((l) => l.relation === "data")) {
         const dataset = ix.records.get(l.target_id);
         if (!dataset || !["dataset", "dataset_subset"].includes(dataset.kind) || inactive(dataset)) throw Error("Evaluation dataset is unavailable");
         if (dataset.source_ids.some((id) => !cleanSource(ix.records.get(id)))) throw Error("Dataset evidence is disputed or unchecked");
@@ -472,7 +474,7 @@ export function useCaseState(snapshot: CatalogueSnapshot, value?: UseCaseArtifac
     for (const evaluation of evaluations) support(evaluation.evaluation.id, evaluation.configurations.map((c) => c.id));
     for (const c of evaluations.flatMap((e) => e.configurations)) {
       support(c.id, [c.id]);
-      for (const link of c.links) if (["family", "variant_of", "alias_of"].includes(link.relation) && ix.reviewedAssociation(c, link.relation, link.target_id)) {
+      for (const link of c.links) if (["family", "variant_of", "configuration_of", "alias_of"].includes(link.relation) && ix.reviewedAssociation(c, link.relation, link.target_id)) {
         const parent = ix.records.get(link.target_id);
         if (parent && ["model", "method", "configuration", "pipeline", "service"].includes(parent.kind) && !inactive(parent)) support(parent.id, [c.id]);
       }

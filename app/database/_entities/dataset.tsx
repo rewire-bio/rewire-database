@@ -70,7 +70,7 @@ export function DatasetDetail({ detail }: { detail: RecordDetail }) {
   });
   const family = detail.direct.find(
     (item) =>
-      ["family", "variant_of", "alias_of"].includes(item.relation) &&
+      ["family", "variant_of", "configuration_of", "alias_of"].includes(item.relation) &&
       verifiedAssociation(query, record.id, item.relation, item.record.id),
   );
   const localProfile = profileSchema.safeParse(record.attributes.profile);

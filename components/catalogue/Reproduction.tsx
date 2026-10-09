@@ -51,7 +51,7 @@ export default function Reproduction({
     unknown
   >;
   const designs = context.filter((r) =>
-    ["benchmark", "task", "protocol", "evaluator"].includes(r.role),
+    ["assessment", "benchmark", "task", "protocol", "evaluator"].includes(r.role),
   );
   return (
     <section

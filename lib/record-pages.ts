@@ -66,7 +66,8 @@ export interface EvaluationRecordPage extends RecordPageBase {
 }
 export type RecordPage = ResultRecordPage | EvaluationRecordPage;
 
-const familyRelations = ["family", "variant_of", "alias_of"];
+// configuration_of replaces a configuration's variant_of from data releases after 2026-10-09.
+const familyRelations = ["family", "variant_of", "configuration_of", "alias_of"];
 
 /** Same criteria as the website's verifiedAssociation, indexed once per release. */
 function associationIndex(records: readonly CatalogueRecord[]) {

@@ -90,7 +90,7 @@ export function EvaluationDetail({ page }: { page: EvaluationRecordPage }) {
   const datasetLinks = first
     ? datasetEntities(first)
     : detail.direct
-        .filter((item) => ["dataset", "dataset_subset"].includes(item.relation))
+        .filter((item) => ["data", "dataset", "dataset_subset"].includes(item.relation))
         .map((item) => item.record);
   const contextGroups = groupEntities([
     ...modelLinks,

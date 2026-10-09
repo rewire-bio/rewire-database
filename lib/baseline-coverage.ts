@@ -274,7 +274,7 @@ export function buildBaselineAudit(catalogue: OmicsCatalogue): BaselineAudit {
           .filter((ev): ev is OmicsRecord => Boolean(ev));
         for (const ev of matched) {
           if (ev.kind !== "evaluation" || ev.attributes.origin !== "rewire_run" || !accepted(ev) ||
-              !ev.links.some((link) => ["benchmark", "protocol"].includes(link.relation) && link.target_id === protocol.id) ||
+              !ev.links.some((link) => ["assessment", "benchmark", "protocol"].includes(link.relation) && link.target_id === protocol.id) ||
               !resultsByEvaluation.get(ev.id)?.length || !ev.source_ids.length)
             throw new Error(`Invalid baseline evidence: ${protocol.id}/${role}`);
         }
@@ -285,7 +285,7 @@ export function buildBaselineAudit(catalogue: OmicsCatalogue): BaselineAudit {
             evaluation.kind !== "evaluation" ||
             evaluation.attributes.origin !== "rewire_run" ||
             !accepted(evaluation) ||
-            !evaluation.links.some((link) => ["benchmark", "protocol"].includes(link.relation) && link.target_id === protocol.id) ||
+            !evaluation.links.some((link) => ["assessment", "benchmark", "protocol"].includes(link.relation) && link.target_id === protocol.id) ||
             !results.length ||
             !evaluation.source_ids.length)
         )

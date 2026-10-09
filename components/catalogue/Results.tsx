@@ -7,6 +7,7 @@ import { CitedAs } from "./SourceIdentity";
 import { catalogueClient, type ResultsPage } from "@/lib/catalogue-client";
 import {
   displayValue,
+  uncertaintyText,
   originLabel,
   recordHref,
   type OmicsRecord,
@@ -299,7 +300,7 @@ export default function Results({
                     </div>
                     <p>
                       Uncertainty:{" "}
-                      {displayValue(row.result.attributes.uncertainty)}
+                      {uncertaintyText(row.result.attributes)}
                     </p>
                     <p>Coverage: {coverage(row)}</p>
                   </td>

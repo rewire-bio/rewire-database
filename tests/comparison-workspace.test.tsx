@@ -11,6 +11,7 @@ import {
   numericScore,
   scoreInterval,
 } from "../components/catalogue/comparison-utils";
+import { uncertaintyText } from "../lib/omics";
 import {
   ComparisonWorkspace,
   comparisonChoices,
@@ -123,6 +124,21 @@ describe("comparison workspace scientific values", () => {
         }),
       ),
     ).toEqual({ low: 0.4, high: 0.6, label: "95% confidence interval" });
+  });
+  it("plots declared half-width intervals and not spreads around another centre", () => {
+    const half = scoreInterval(row(0.5, { type: "confidence_interval", level: 0.95, half_width: "0.1" }))!;
+    expect(half.label).toBe("95% confidence interval");
+    expect(half.low).toBeCloseTo(0.4);
+    expect(half.high).toBeCloseTo(0.6);
+    expect(scoreInterval(row(0.5, { type: "standard_deviation", method: "bootstrap", value: "0.1", center: "0.4" }))).toBeNull();
+    expect(scoreInterval(row(0.5, { type: "unresolved_spread", value: "0.1" }))).toBeNull();
+  });
+  it("describes declared and older uncertainty and missing reasons", () => {
+    expect(uncertaintyText({ uncertainty: { type: "confidence_interval", level: 0.95, lower: "1", upper: "2" } })).toBe("95% CI 1 to 2");
+    expect(uncertaintyText({ uncertainty: { type: "unresolved_spread", value: "0.1" } })).toBe("± 0.1 (type not stated)");
+    expect(uncertaintyText({ missing_metadata: { uncertainty: { reason: "unreported", note: "not printed" } } })).toBe("Not reported by the source: not printed");
+    expect(uncertaintyText({ uncertainty: null, missing_metadata: { uncertainty: "unreported" } })).toBe("Not reported by the source");
+    expect(uncertaintyText({ uncertainty: { kind: "standard_error", printed_value: "0.1" } })).toContain("0.1");
   });
   it("recognises explicit bounded units and known unitless metrics without guessing unknown scores", () => {
     expect(

@@ -108,6 +108,40 @@ export function displayValue(value: unknown, verbatim = false): string {
       : "None recorded";
   return verbatim ? String(value) : catalogueText(String(value));
 }
+const missingLabels: Record<string, string> = {
+  unreported: "Not reported by the source",
+  unextracted: "Not yet extracted",
+  unavailable: "Source unavailable",
+  inapplicable: "Not applicable",
+  conflicting: "Sources conflict",
+};
+/** A missing-value marker, either the current {reason, note?} or an older free-text string. */
+export function missingText(entry: unknown): string | null {
+  if (typeof entry === "string") return missingLabels[entry] ?? catalogueText(entry);
+  if (!entry || typeof entry !== "object") return null;
+  const { reason, note } = entry as { reason?: string; note?: string };
+  const label = reason ? (missingLabels[reason] ?? reason) : null;
+  return [label, note ? catalogueText(note) : null].filter(Boolean).join(": ") || null;
+}
+/** A result's uncertainty in words, from the declared shape or an older release's value. */
+export function uncertaintyText(attributes: Record<string, unknown>): string {
+  const u = attributes.uncertainty;
+  if (u && typeof u === "object" && !Array.isArray(u)) {
+    const x = u as Record<string, unknown>;
+    const level = typeof x.level === "number" ? `${Math.round(x.level * 1000) / 10}% ` : "";
+    const range = x.lower !== undefined ? `${x.lower} to ${x.upper}` : x.half_width !== undefined ? `± ${x.half_width}` : null;
+    const text =
+      x.type === "standard_deviation" ? `SD ${x.value}` :
+      x.type === "standard_error" ? `SE ${x.value}` :
+      x.type === "confidence_interval" && range ? `${level}CI ${range}` :
+      x.type === "credible_interval" && range ? `${level}credible interval ${range}` :
+      x.type === "unresolved_spread" ? `± ${x.value} (type not stated)` : null;
+    if (text) return [text, typeof x.note === "string" ? catalogueText(x.note) : null].filter(Boolean).join(". ");
+  }
+  if (u !== null && u !== undefined) return displayValue(u);
+  const missing = (attributes.missing_metadata as Record<string, unknown> | undefined)?.uncertainty;
+  return missingText(missing) ?? "Not reported";
+}
 export function originLabel(origin: unknown): string {
   return (
     (

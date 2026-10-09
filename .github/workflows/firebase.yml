@@ -16,10 +16,17 @@ jobs:
   # check, and the API. The build embeds the pinned release, so PRs build
   # exactly what publication builds; only publication touches production.
   pr-tests:
+    # The tests run in three parallel shards without coverage, so pull requests stay fast.
+    # The 90% coverage gate runs on main (main-tests), before anything is published.
+    name: pr-tests (${{ matrix.shard }}/3)
     concurrency:
-      group: database-pr-tests-${{ github.ref }}
+      group: database-pr-tests-${{ github.ref }}-${{ matrix.shard }}
       cancel-in-progress: true
     if: github.event_name == 'pull_request'
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3]
     runs-on: ubuntu-latest
     timeout-minutes: 10
     env:
@@ -61,7 +68,7 @@ jobs:
         with:
           path: workbench/benchmark-data
           key: benchmark-data-current-v2-${{ steps.data-pin.outputs.revision }}-${{ hashFiles('benchmark-data.lock.json') }}
-      - run: npm run test:ui:coverage
+      - run: npm test -- --shard=${{ matrix.shard }}/3
 
   pr-quality:
     # Lint and type checks run beside the tests and the build.

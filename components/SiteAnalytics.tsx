@@ -120,11 +120,11 @@ export default function SiteAnalytics() {
   if (!ready || !publicPath) return null;
   return (
     <>
-      <div className={styles.preferences}>
+      <span className={styles.preferences}>
         <button type="button" onClick={() => setPreferences(!preferences)} aria-expanded={preferences || (!choice && !blocked)} aria-controls="analytics-preferences">
           Analytics preferences
         </button>
-      </div>
+      </span>
       {(preferences || (!choice && !blocked)) && (
         <section id="analytics-preferences" className={styles.notice} aria-label="Analytics preferences">
           <p>With your permission, Google Analytics counts visits to public pages. Search terms, URL parameters and contribution pages are excluded. <a href="https://policies.google.com/privacy" target="_blank" rel="noreferrer">Google privacy policy</a></p>

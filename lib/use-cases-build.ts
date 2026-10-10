@@ -1,4 +1,5 @@
 import { buildCatalogue } from "./catalogue-build";
+import { preparedUseCases } from "./prepared";
 import type { UseCaseDetail, UseCaseQuery, ResolvedMapping } from "../shared/omics/use-cases";
 
 let cached: { query: ReturnType<typeof buildCatalogue>["query"]; value: { query: UseCaseQuery; entries: ReturnType<UseCaseQuery["list"]>["items"] } } | undefined;
@@ -7,7 +8,7 @@ let cached: { query: ReturnType<typeof buildCatalogue>["query"]; value: { query:
 export function buildUseCases() {
   const { query: catalogue } = buildCatalogue();
   if (cached?.query !== catalogue) {
-    const query = catalogue.useCases();
+    const query = preparedUseCases(catalogue);
     const entries: ReturnType<UseCaseQuery["list"]>["items"] = [];
     let cursor: string | undefined;
     do {

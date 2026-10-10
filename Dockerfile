@@ -16,4 +16,7 @@ WORKDIR /app
 COPY --chown=node:node . .
 USER node
 EXPOSE 8080
-CMD ["node", "runtime/scripts/server-entry.mjs"]
+# A 2Gi instance serves up to 20 requests. Node's default heap limit lets garbage
+# from large page renders grow past the instance memory before it is collected,
+# and Cloud Run then kills the instance (503). The live heap stays well under this cap.
+CMD ["node", "--max-old-space-size=768", "runtime/scripts/server-entry.mjs"]

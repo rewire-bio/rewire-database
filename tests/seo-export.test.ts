@@ -5,6 +5,7 @@ import { afterEach, describe, expect, it } from "vitest";
 import {
   checkPageMetadata,
   checkSitemap,
+  checkSitemapIndex,
   checkSocialImage,
   type PageMetadataContract,
 } from "../scripts/seo/check-page-metadata";
@@ -262,6 +263,14 @@ describe("exported sitemap and social asset", () => {
     expect(checkSitemap("<urlset>").failures).toContain(
       "Sitemap is not valid XML",
     );
+  });
+  it("follows a sitemap index only through consecutive sitemap files on the public origin", () => {
+    const index = (locs: string[]) =>
+      `<?xml version="1.0"?><sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${locs.map((loc) => `<sitemap><loc>${loc}</loc></sitemap>`).join("")}</sitemapindex>`;
+    expect(checkSitemapIndex(index([`${origin}/sitemap/0.xml`, `${origin}/sitemap/1.xml`]))).toEqual({ files: ["/sitemap/0.xml", "/sitemap/1.xml"], failures: [] });
+    expect(checkSitemapIndex(index([`${origin}/sitemap/1.xml`])).failures).toHaveLength(1);
+    expect(checkSitemapIndex(index(["https://example.org/sitemap/0.xml"])).failures).toHaveLength(1);
+    expect(checkSitemapIndex(sitemap(`<url><loc>${origin}/</loc></url>`)).failures).toEqual(["Sitemap index has no sitemaps"]);
   });
   it("verifies the actual exported PNG exists and agrees with declared dimensions", () => {
     const dir = fs.mkdtempSync(path.join(os.tmpdir(), "seo-export-"));

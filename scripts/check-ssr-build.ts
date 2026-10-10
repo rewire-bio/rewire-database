@@ -4,7 +4,6 @@ import fs from "node:fs";
 import path from "node:path";
 import { setTimeout as sleep } from "node:timers/promises";
 import { createCatalogueQuery, type CatalogueSnapshot } from "../shared/omics/catalogue-query";
-import { buildUseCases } from "../lib/use-cases-build";
 import { getLiterature } from "../lib/benchmark-literature";
 import { DOMAINS } from "../lib/benchmark-catalog";
 import { recordHref, recordRouteKinds, type OmicsRecord } from "../lib/omics";
@@ -17,7 +16,7 @@ import { resultPageTitle } from "../lib/result-labels";
 import type { ResultRecordPage } from "../lib/record-pages";
 import { getResearch } from "../shared/omics/research";
 import { downloadLocations, downloadUrls } from "./download-locations.mjs";
-import { checkPageMetadata, checkSitemap, checkSocialImage } from "./seo/check-page-metadata";
+import { checkPageMetadata, checkSitemap, checkSitemapIndex, checkSocialImage } from "./seo/check-page-metadata";
 import { utilityPageMetadataContracts } from "./seo/utility-page-metadata";
 import { verifyContributionExport } from "./omics/contribution-export";
 import { checkReleaseData } from "./check-release-data";
@@ -35,6 +34,7 @@ import { cacheableRequest, storableResponse } from "../cloudflare/page-cache.mjs
 const full = process.argv.includes("--full");
 // scripts/build-web.mjs OUTPUT and ENTRYPOINT (that module has top-level await).
 const OUTPUT = "build/web", ENTRYPOINT = "runtime/scripts/server-entry.mjs";
+const SERVER_NODE_FLAGS = ["--max-old-space-size=768"];
 const PORT = 8793;
 const ORIGIN = "https://benchmarks.rewirebio.io";
 const origin = `http://127.0.0.1:${PORT}`;
@@ -47,11 +47,13 @@ async function main() {
   const catalogue = JSON.parse(fs.readFileSync("public/omics/catalogue.json", "utf8")) as CatalogueSnapshot;
   const live = catalogue.records.filter((record) => record.status !== "excluded");
   const firstOf = (kind: string) => live.find((record) => record.kind === kind)!;
-  const server = spawn(process.execPath, [path.join(OUTPUT, ENTRYPOINT)], {
+  // The Dockerfile's heap cap, so the check renders under production memory limits.
+  const server = spawn(process.execPath, [...SERVER_NODE_FLAGS, path.join(OUTPUT, ENTRYPOINT)], {
     stdio: ["ignore", "inherit", "inherit"], detached: process.platform !== "win32",
     // The checks run long synchronous steps (the sitemap inventory) between requests. Keep idle
     // connections open past them, so the next request does not race the server closing its socket.
-    env: { ...process.env, NODE_ENV: "production", PORT: String(PORT), HOSTNAME: "127.0.0.1", REWIRE_DATA_ROOT: "",
+    // NODE_OPTIONS is cleared so the runner's large heap does not override the cap above.
+    env: { ...process.env, NODE_OPTIONS: "", NODE_ENV: "production", PORT: String(PORT), HOSTNAME: "127.0.0.1", REWIRE_DATA_ROOT: "",
       REWIRE_FRONTEND_VERSION: FRONTEND, KEEP_ALIVE_TIMEOUT: "120000" },
   });
   try {
@@ -63,8 +65,7 @@ async function main() {
       await sleep(250);
     }
     await checkContracts(catalogue.release_id, firstOf);
-    const sitemap = checkSitemap(await (await get("/sitemap.xml")).text());
-    assert.deepEqual(sitemap.failures, []);
+    const sitemap = await readSitemap();
     checkSitemapInventory(catalogue, sitemap.urls);
     assert.deepEqual(checkSocialImage("public"), []);
     const failures: string[] = [];
@@ -106,10 +107,10 @@ async function main() {
     const home = await html("/");
     failures.push(...checkPageMetadata(home, { path: "/", canonical: `${ORIGIN}/`, indexable: true, inSitemap: true, social: true, website: true }, sitemap.urls));
     assert.ok(home.includes('id="mfass-v1"') && home.includes('href="/use-cases/"'), "Home navigation");
-    const useCase = buildUseCases().entries[0];
+    const useCase = useCaseSlugs(catalogue)[0];
     for (const pathname of ["/models/", "/models/page/2/", "/benchmarks/", "/evidence/", "/coverage/", "/use-cases/",
       "/investigations/", "/literature/", "/runs/mfass-v2/", "/updates/", `/${DOMAINS[0].id}/`,
-      ...(useCase ? [`/use-cases/${useCase.slug}/`] : []), `/literature/papers/${getLiterature().papers[0].id}/`,
+      ...(useCase ? [`/use-cases/${useCase}/`] : []), `/literature/papers/${getLiterature().papers[0].id}/`,
       ...getResearch(catalogue).investigations.slice(0, 1).map((report) => `/investigations/${report.id}/`)])
       assert.match(await html(pathname), /<link rel="canonical" href="https:\/\/benchmarks\.rewirebio\.io\//, pathname);
     assert.match(await (await get("/updates/feed.xml")).text(), /<feed/);
@@ -170,12 +171,38 @@ async function checkContracts(release: string, firstOf: (kind: string) => OmicsR
   assert.match(await analytics.text(), /noindex,nofollow/);
 }
 
+/** Follows the index at /sitemap.xml and gathers every file's URLs; no URL may appear twice. */
+async function readSitemap() {
+  const index = checkSitemapIndex(await (await get("/sitemap.xml")).text());
+  assert.deepEqual(index.failures, []);
+  const urls = new Set<string>();
+  for (const file of index.files) {
+    const response = await get(file);
+    assert.equal(response.status, 200, file);
+    const part = checkSitemap(await response.text());
+    assert.deepEqual(part.failures, [], file);
+    for (const url of part.urls) {
+      assert.ok(!urls.has(url), `Sitemap lists ${url} twice`);
+      urls.add(url);
+    }
+  }
+  assert.equal((await get(`/sitemap/${index.files.length}.xml`)).status, 404, "Sitemap files past the index");
+  return { urls };
+}
+
+/** Use-case slugs from the release's published use-case file, independent of the prepared file the server reads. */
+function useCaseSlugs(catalogue: CatalogueSnapshot): string[] {
+  if (!catalogue.coverage.use_cases) return [];
+  const file = JSON.parse(fs.readFileSync(`public/omics/releases/${catalogue.release_id}/use-cases.json`, "utf8")) as { use_cases: { slug: string }[] };
+  return file.use_cases.map((entry) => entry.slug).sort();
+}
+
 /** The sitemap lists exactly the indexable canonical pages of the pinned release. */
 function checkSitemapInventory(catalogue: CatalogueSnapshot, urls: Set<string>) {
   const expected = new Set([
     "/", "/runs/mfass-v2/", "/evidence/", "/coverage/", "/use-cases/", "/investigations/",
     ...getResearch(catalogue).investigations.map((report) => `/investigations/${report.id}/`),
-    ...(catalogue.coverage.use_cases ? buildUseCases().entries.map((entry) => `/use-cases/${entry.slug}/`) : []),
+    ...useCaseSlugs(catalogue).map((slug) => `/use-cases/${slug}/`),
     ...catalogueIndexPaths(withoutVerifiedAliases(catalogue.records, createCatalogueQuery(catalogue).association)),
     ...catalogue.records.filter(recordIsIndexable).map(recordHref),
   ].map((pathname) => ORIGIN + pathname));

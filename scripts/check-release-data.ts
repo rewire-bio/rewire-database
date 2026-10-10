@@ -17,6 +17,12 @@ import { recordRouteKinds } from "../lib/omics";
  * checksums, baseline audits and the result/evaluation route inventory.
  */
 export function checkReleaseData(root = "public") {
+  return verifyReleaseData(root).summary;
+}
+
+/** As checkReleaseData, also returning the parsed catalogue.json, so a caller does
+ * not parse the release's largest file a second time. The checks do not modify it. */
+export function verifyReleaseData(root = "public") {
   const failures: string[] = [];
   const read = (file: string) => fs.readFileSync(path.join(root, file));
   const lock = JSON.parse(fs.readFileSync("benchmark-data.lock.json", "utf8"));
@@ -67,7 +73,7 @@ export function checkReleaseData(root = "public") {
   if (new Set(materialized).size !== materialized.length || materialized.sort().join("\n") !== expected.sort().join("\n"))
     failures.push("Prepared page routes differ from canonical and alias record routes");
   if (failures.length) throw new Error(failures.join("\n"));
-  return { release_id: catalogue.release_id, records: records.length, page_routes: routes.length };
+  return { summary: { release_id: catalogue.release_id, records: records.length, page_routes: routes.length }, catalogue };
 }
 
 // tsx runs this checkout's scripts as CommonJS; this holds for any checkout path.

@@ -19,7 +19,7 @@ import { downloadLocations, downloadUrls } from "./download-locations.mjs";
 import { checkPageMetadata, checkSitemap, checkSitemapIndex, checkSocialImage } from "./seo/check-page-metadata";
 import { utilityPageMetadataContracts } from "./seo/utility-page-metadata";
 import { verifyContributionExport } from "./omics/contribution-export";
-import { checkReleaseData } from "./check-release-data";
+import { verifyReleaseData } from "./check-release-data";
 import { cacheableRequest, storableResponse } from "../cloudflare/page-cache.mjs";
 
 /**
@@ -43,8 +43,9 @@ const get = (pathname: string, headers: Record<string, string> = {}) =>
   fetch(new URL(pathname, origin), { headers, redirect: "manual", signal: AbortSignal.timeout(60_000) });
 
 async function main() {
-  console.log(JSON.stringify({ release_data: checkReleaseData() }));
-  const catalogue = JSON.parse(fs.readFileSync("public/omics/catalogue.json", "utf8")) as CatalogueSnapshot;
+  const release = verifyReleaseData();
+  console.log(JSON.stringify({ release_data: release.summary }));
+  const catalogue = release.catalogue as CatalogueSnapshot;
   const live = catalogue.records.filter((record) => record.status !== "excluded");
   const firstOf = (kind: string) => live.find((record) => record.kind === kind)!;
   // The Dockerfile's heap cap, so the check renders under production memory limits.

@@ -19,6 +19,7 @@ vi.mock("@/lib/use-cases-build", () => ({
   buildUseCases: () => ({ entries: [], query: { get: state.get, list: state.initial } }),
   fullUseCaseDetail: (slug: string) => state.get({ slug }),
   accumulateUseCaseDetail: (_query: unknown, slug: string) => state.get({ slug }),
+  useCaseSummaries: () => ({}),
 }));
 vi.mock("@/lib/catalogue-build", () => ({ buildCatalogue: () => ({ query: { get: () => null } }) }));
 vi.mock("@/lib/use-cases-client", async (original) => ({ ...(await original<object>()), createUseCasesClient: () => ({ list: state.list }) }));

@@ -2,10 +2,10 @@ import { downloadHref } from "@/lib/downloads";
 import type { Metadata } from "next";
 import PageHeader from "@/components/PageHeader";
 import UseCaseExplorer from "@/components/catalogue/UseCaseExplorer";
-import { buildUseCases, accumulateUseCaseDetail } from "@/lib/use-cases-build";
+import { buildUseCases, useCaseSummaries } from "@/lib/use-cases-build";
 import { socialMetadata } from "@/lib/catalogue-sharing";
 import { researchAreaLabel } from "@/lib/omics-browse";
-import { evidenceSummaryParts, summariseUseCaseEvidence, type EvidenceSummary } from "@/lib/use-case-summary";
+import { evidenceSummaryParts } from "@/lib/use-case-summary";
 import styles from "@/components/catalogue/UseCases.module.css";
 
 const title = "Biological research use cases | rewirebio.io";
@@ -21,16 +21,9 @@ const EXAMPLE_SLUG = "genetic-perturbation-response";
 export default function UseCasesPage() {
   const { query, entries } = buildUseCases();
   const initial = query.list({ limit: 10 });
-  const summaries: Record<string, EvidenceSummary> = {};
   const areaCounts: Record<string, number> = {};
-  for (const entry of entries) {
-    // A bare query.get() only resolves the first evaluation page; the index
-    // summary needs every evaluation's configurations counted, so it
-    // accumulates all pages the same way the use-case detail page does.
-    const detail = accumulateUseCaseDetail(query, entry.slug);
-    if (detail) summaries[entry.slug] = summariseUseCaseEvidence(detail.mappings, entry.evidence_gaps.length);
-    areaCounts[entry.area] = (areaCounts[entry.area] || 0) + 1;
-  }
+  const summaries = useCaseSummaries();
+  for (const entry of entries) areaCounts[entry.area] = (areaCounts[entry.area] || 0) + 1;
   const example = entries.find((entry) => entry.slug === EXAMPLE_SLUG) || entries[0];
   return <>
     <PageHeader

@@ -22,7 +22,9 @@ function mapping(id: string, relevance: ResolvedMapping["relevance"], configurat
 
 const state = vi.hoisted(() => ({ entry: undefined as unknown as UseCase, mappings: [] as ResolvedMapping[] }));
 vi.mock("../lib/catalogue-build", () => ({ buildCatalogue: () => ({ query: { get: () => undefined, record: () => null } }) }));
-vi.mock("../lib/use-cases-build", () => ({
+vi.mock("../lib/use-cases-build", async () => {
+  const { summariseUseCaseEvidence } = await import("../lib/use-case-summary");
+  return {
   buildUseCases: () => ({
     entries: [state.entry],
     query: {
@@ -32,7 +34,9 @@ vi.mock("../lib/use-cases-build", () => ({
   }),
   fullUseCaseDetail: () => ({ use_case: state.entry, mappings: state.mappings, sources: [], release_id: "fixture", input_sha256: "b".repeat(64) }),
   accumulateUseCaseDetail: (query: { get: (input: { slug: string }) => unknown }, slug: string) => query.get({ slug }),
-}));
+  useCaseSummaries: () => ({ [state.entry.slug]: summariseUseCaseEvidence(state.mappings, state.entry.evidence_gaps.length) }),
+  };
+});
 
 async function detail(entry: UseCase, mappings: ResolvedMapping[] = [mapping("m1", "proxy", ["c1", "c2"])]) {
   state.entry = entry; state.mappings = mappings;

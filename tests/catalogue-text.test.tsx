@@ -46,63 +46,57 @@ describe("catalogue condition presentation", () => {
     ])
       expect(catalogueText(text)).toBe(text);
   });
-  it("renders all 44 affected BEELINE comparisons, descriptions and result links without altering released records", () => {
-    const catalogue = JSON.parse(
-      fs.readFileSync("public/omics/catalogue.json").toString(),
-    );
+  it("renders legacy embedded and empty BEELINE conditions readably without altering records", () => {
+    // Releases before 2026-10-10-cbb3da59bc08 printed BEELINE conditions as JSON in
+    // protocol names. Two released protocols are given those legacy forms in a copy,
+    // so the display rule stays covered whatever the current release holds.
+    const release = JSON.parse(fs.readFileSync("public/omics/catalogue.json").toString());
+    const protocols = release.records.filter((r: { kind: string; name: string }) => r.kind === "protocol" && r.name.startsWith("BEELINE"));
+    const [embedded, empty] = protocols.length >= 2 ? protocols : release.records.filter((r: { kind: string }) => r.kind === "protocol");
+    const legacy = new Map([
+      [embedded.id, { ...embedded, name: `BEELINE 2020 Figure 5 · mESC · ${conditions}` }],
+      [empty.id, { ...empty, name: "BEELINE 2020 Figure 2 · LI · {}" }],
+    ]);
+    const catalogue = { ...release, records: release.records.map((r: { id: string }) => legacy.get(r.id) ?? r) };
+    const before = JSON.stringify([...legacy.values()]);
     const query = createCatalogueQuery(catalogue);
-    const affected = catalogue.records.filter(
-      (r: { kind: string; name: string }) =>
-        r.kind === "protocol" && r.name.includes('"reference_network"'),
-    );
-    expect(affected).toHaveLength(44);
-    const before = JSON.stringify(affected);
-    for (const record of affected) {
+    const render = (record: { id: string; name: string }) => {
       const detail = query.get({ id: record.id })!;
-      const markup = renderToStaticMarkup(
+      return renderToStaticMarkup(
+        <>
+          <BenchmarkCharts panels={detail.published_comparisons} />
+          <Profile record={record as never} sources={detail.sources} part="overview" />
+          <Results id={record.id} initial={query.results({ id: record.id, limit: 25 })} />
+        </>,
+      );
+    };
+    const markup = render(legacy.get(embedded.id)!);
+    expect(markup).not.toContain("reference_network");
+    expect(markup).not.toContain("gene_selection");
+    expect(markup).toContain(readable);
+    expect(markup).toContain(`/database/protocol/${embedded.id}`);
+    const emptyMarkup = render(legacy.get(empty.id)!);
+    expect(emptyMarkup).not.toContain("· {}");
+    expect(emptyMarkup).toContain("BEELINE 2020 Figure 2 · LI");
+    expect(JSON.stringify([...legacy.values()])).toBe(before);
+  });
+  it("renders every released BEELINE protocol without condition JSON or empty placeholders", () => {
+    const catalogue = JSON.parse(fs.readFileSync("public/omics/catalogue.json").toString());
+    const query = createCatalogueQuery(catalogue);
+    const records = catalogue.records.filter((r: { kind: string; name: string; status: string }) =>
+      r.kind === "protocol" && r.status !== "excluded" && r.name.startsWith("BEELINE"));
+    for (const record of records) {
+      const detail = query.get({ id: record.id })!;
+      const html = renderToStaticMarkup(
         <>
           <BenchmarkCharts panels={detail.published_comparisons} />
           <Profile record={record} sources={detail.sources} part="overview" />
-          <Results
-            id={record.id}
-            initial={query.results({ id: record.id, limit: 25 })}
-          />
         </>,
       );
-      expect(markup).not.toContain("reference_network");
-      expect(markup).not.toContain("gene_selection");
-      expect(markup).toContain("Reference network:");
-      expect(markup).toContain("Gene selection:");
-      const parsed = JSON.parse(record.name.match(/\{.*\}/)![0]);
-      expect(markup).toContain(parsed.reference_network);
-      expect(markup).toContain(parsed.gene_selection);
-      expect(markup).toContain(`/database/protocol/${record.id}`);
+      expect(html, record.id).not.toMatch(/\{&quot;|\{"|reference_network|gene_selection|· \{\}/);
+      expect(html, record.id).toContain(`/database/protocol/${record.id}`);
     }
-    expect(JSON.stringify(affected)).toBe(before);
   });
-});
-
-it("renders all ten empty BEELINE condition groups without JSON placeholders", () => {
-  const catalogue = JSON.parse(
-    fs.readFileSync("public/omics/catalogue.json").toString(),
-  );
-  const query = createCatalogueQuery(catalogue);
-  const records = catalogue.records.filter(
-    (r: { name: string; kind: string }) =>
-      r.kind === "protocol" && r.name.includes(" · {}"),
-  );
-  expect(records).toHaveLength(10);
-  for (const record of records) {
-    const detail = query.get({ id: record.id })!;
-    const html = renderToStaticMarkup(
-      <>
-        <BenchmarkCharts panels={detail.published_comparisons} />
-        <Profile record={record} sources={detail.sources} part="overview" />
-      </>,
-    );
-    expect(html).not.toContain("{}");
-    expect(html).toContain("No additional input conditions recorded.");
-  }
 });
 
 describe("typed evidence values", () => {

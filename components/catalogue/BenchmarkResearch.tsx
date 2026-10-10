@@ -86,13 +86,13 @@ export default function BenchmarkResearch({
       <details>
         <summary>Search and extraction details</summary>
         <p>{research.status.replace(/_/g, " ")}</p>
-        <h4>Searches</h4>
+        <h3>Searches</h3>
         <ul>
           {research.searched_queries.map((query, i) => (
             <li key={i}>{query}</li>
           ))}
         </ul>
-        <h4>Evidence locations</h4>
+        <h3>Evidence locations</h3>
         <ul>
           {research.inspected_locators.map((locator, i) => (
             <li key={i}>{locator}</li>

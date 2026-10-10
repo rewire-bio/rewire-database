@@ -13,7 +13,8 @@ import SourceIdentityNotice from "@/components/catalogue/SourceIdentity";
 import SectionNavigation, {
   BrowseReturn,
 } from "@/components/catalogue/SectionNavigation";
-import { singularKindLabels } from "@/lib/omics-browse";
+import { countLabel, singularKindLabels } from "@/lib/omics-browse";
+import { claimFieldLabel } from "@/lib/evidence-labels";
 import { loadUseCaseContext, type RecordDetail } from "@/lib/entity-detail";
 import styles from "../../database.module.css";
 
@@ -62,6 +63,19 @@ export function ClaimDetail({ detail }: { detail: RecordDetail }) {
   const proposals = [...detail.direct, ...detail.reverse].filter(
     (item) => item.relation === "applicable_to",
   );
+  const subject = detail.direct.find((item) => item.relation === "subject")?.record;
+  const field = typeof record.attributes.field === "string" ? record.attributes.field : "";
+  const link = /^links:([a-z_]+):(.+)$/.exec(field);
+  const target = link ? query.record(link[2]) : null;
+  const value = record.attributes.value;
+  const reviewed = Array.isArray(record.attributes.reviewed_evaluations)
+    ? record.attributes.reviewed_evaluations.flatMap((id) => {
+        const evaluation = typeof id === "string" ? query.record(id) : null;
+        return evaluation ? [evaluation] : [];
+      })
+    : [];
+  const text = (key: string) =>
+    typeof record.attributes[key] === "string" ? (record.attributes[key] as string) : "";
   return (
     <>
       <header className="page-head" id="finding">
@@ -75,7 +89,37 @@ export function ClaimDetail({ detail }: { detail: RecordDetail }) {
               <span className="kick">{singularKindLabels[record.kind]}</span>
               <h1>{catalogueText(record.name)}</h1>
               <EvidenceConcerns sources={detail.sources} />
+              {link ? (
+                <dl className={styles.details}>
+                  <dt>{subject?.kind === "use_case" ? "Use case" : "Subject"}</dt>
+                  <dd>{subject ? <Link href={recordHref(subject)}>{catalogueText(subject.name)}</Link> : "Not linked"}</dd>
+                  <dt>{link[1] === "assessed_by" ? "Assessed by" : claimFieldLabel(link[1])}</dt>
+                  <dd>{target ? <Link href={recordHref(target)}>{catalogueText(target.name)}</Link> : link[2]}</dd>
+                  {text("relevance") && (<><dt>Relevance</dt><dd>{text("relevance") === "direct" ? "Direct evidence" : text("relevance") === "proxy" ? "Proxy evidence" : text("relevance")}</dd></>)}
+                  {text("endpoint") && (<><dt>Endpoint</dt><dd>{catalogueText(text("endpoint"))}</dd></>)}
+                </dl>
+              ) : field && value !== undefined ? (
+                <>
+                  <p className={styles.muted}>
+                    {claimFieldLabel(field)}
+                    {subject && <> of <Link href={recordHref(subject)}>{catalogueText(subject.name)}</Link></>}
+                  </p>
+                  <blockquote className={styles.claimStatement}>{displayValue(value)}</blockquote>
+                </>
+              ) : null}
               <p className="intro">{summary}</p>
+              {reviewed.length > 0 && (
+                <details className={styles.profileDisclosure} open={reviewed.length <= 6}>
+                  <summary>{countLabel(reviewed.length, "reviewed evaluation")}</summary>
+                  <ul className={styles.list}>
+                    {reviewed.map((evaluation) => (
+                      <li key={evaluation.id}>
+                        <Link href={recordHref(evaluation)}>{catalogueText(evaluation.name)}</Link>
+                      </li>
+                    ))}
+                  </ul>
+                </details>
+              )}
               <SourceIdentityNotice
                 record={record}
                 sources={detail.sources}
@@ -90,7 +134,7 @@ export function ClaimDetail({ detail }: { detail: RecordDetail }) {
           <UseCaseBacklinks links={useCaseLinks} configurations={useCaseConfigurations} />
           <SectionNavigation
             sections={[
-              { id: "finding", label: "Finding" },
+              { id: "finding", label: "Claim" },
               { id: "evidence", label: "Evidence" },
             ]}
           />
@@ -142,7 +186,9 @@ export function ClaimDetail({ detail }: { detail: RecordDetail }) {
               </p>
               <details className={styles.profileDisclosure}>
                 <summary>
-                  {detail.sources.length} source records and release history
+                  {detail.sources.length
+                    ? `${countLabel(detail.sources.length, "source record")} and release history`
+                    : "Release history"}
                 </summary>
                 {detail.sources.length ? (
                   <ul className={styles.list}>

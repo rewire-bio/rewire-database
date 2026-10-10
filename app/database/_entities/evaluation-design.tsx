@@ -20,6 +20,8 @@ import BaselineCoverage from "@/components/catalogue/BaselineCoverage";
 import RunGuide from "@/components/catalogue/RunGuide";
 import SourceIdentityNotice from "@/components/catalogue/SourceIdentity";
 import { ComparisonWorkspace } from "@/components/catalogue/BenchmarkCharts";
+import ResultMatrix from "@/components/catalogue/ResultMatrix";
+import LinkedResults, { linkedCount } from "@/components/catalogue/LinkedResults";
 import SectionNavigation, {
   BrowseReturn,
 } from "@/components/catalogue/SectionNavigation";
@@ -27,7 +29,13 @@ import BenchmarkResearch, {
   type BenchmarkResearchData,
 } from "@/components/catalogue/BenchmarkResearch";
 import { kindLabels, singularKindLabels, countLabel, uniqueRecords, groupEntities } from "@/lib/omics-browse";
-import { loadUseCaseContext, verifiedAssociation, type RecordDetail } from "@/lib/entity-detail";
+import {
+  linkedResultRecords,
+  loadResultMatrix,
+  loadUseCaseContext,
+  verifiedAssociation,
+  type RecordDetail,
+} from "@/lib/entity-detail";
 import styles from "../database.module.css";
 
 function Links({ records }: { records: OmicsRecord[] }) {
@@ -75,11 +83,15 @@ function Fields({
 export function EvaluationDesignEntityDetail({ detail }: { detail: RecordDetail }) {
   const { query, catalogue } = buildCatalogue();
   const { record } = detail;
+  const results = query.results({ id: record.id, limit: 25 });
+  const linked = results.total === 0 ? linkedResultRecords(query, detail) : null;
+  const hasLinked = !!linked?.items.length;
+  const matrix = record.kind === "protocol" ? loadResultMatrix(query, record.id, results.total) : null;
   const { useCaseLinks, useCaseConfigurations } = loadUseCaseContext(
     query,
     record,
+    linked?.items.map((item) => item.record),
   );
-  const results = query.results({ id: record.id, limit: 25 });
   const evidence = query.evidence({
     id: record.id,
     scope: "individual_claim",
@@ -121,9 +133,6 @@ export function EvaluationDesignEntityDetail({ detail }: { detail: RecordDetail 
       item.relation === "uses_model" &&
       verifiedAssociation(query, item.record.id, item.relation, record.id),
   );
-  const evaluatedDownstream = downstream
-    .map((item) => ({ ...item, counts: query.results({ id: item.record.id, limit: 1 }) }))
-    .filter((item) => item.counts.total > 0);
   const memberLinks = detail.reverse.filter(
     (item) =>
       ["family", "variant_of", "configuration_of", "alias_of"].includes(item.relation) &&
@@ -164,6 +173,7 @@ export function EvaluationDesignEntityDetail({ detail }: { detail: RecordDetail 
   const proposals = [...detail.direct, ...detail.reverse].filter(
     (item) => item.relation === "applicable_to",
   );
+  const showWorkspace = results.total > 0 || detail.comparison_options.length > 0;
   return (
     <>
       <header className="page-head" id="finding">
@@ -192,32 +202,26 @@ export function EvaluationDesignEntityDetail({ detail }: { detail: RecordDetail 
               )}
               {results.total === 0 && (
                 <p className={styles.muted}>
-                  {evaluatedDownstream.length
-                    ? "Results are available for configurations using this model. Their fitted heads, extra inputs and evaluation settings are kept separate below."
+                  {hasLinked
+                    ? "Results are recorded on the linked protocols, tasks or configurations listed below. Their settings and evaluations are kept separate."
                     : broaderFamilyOnly
                       ? "The broader model family has published results, but their attribution to this exact checkpoint has not been verified."
-                      : "No reviewed evaluations are linked here in this release. See the sources and separately identified configurations below."}
+                      : "No reviewed evaluations are linked here in this release. See the sources below."}
                 </p>
               )}
               <p className={styles.heroActions}>
-                {(results.total > 0 || (!evaluatedDownstream.length && !broaderFamilyOnly)) && (
+                {results.total > 0 && (
                   <a href="#results" className={styles.resultCount}>
                     {countLabel(results.evaluation_count, "evaluation")} ·{" "}
                     {countLabel(results.total, "result")}
                   </a>
                 )}
-                {evaluatedDownstream.length > 0 && (
-                  <>
-                    <a href="#configurations" className={styles.resultCount}>
-                      {evaluatedDownstream.length} evaluated{" "}
-                      {evaluatedDownstream.length === 1
-                        ? "configuration"
-                        : "configurations"}{" "}
-                      using this model
-                    </a>
-                  </>
+                {hasLinked && (
+                  <a href="#results" className={styles.resultCount}>
+                    {linkedCount(linked!)} with results
+                  </a>
                 )}
-                {broaderFamilyOnly && !evaluatedDownstream.length && family && (
+                {broaderFamilyOnly && !hasLinked && family && (
                   <Link href={`${recordHref(family.record)}#results`} className={styles.resultCount}>
                     View {countLabel(familyResults!.total, "result")} for the broader family
                   </Link>
@@ -233,7 +237,7 @@ export function EvaluationDesignEntityDetail({ detail }: { detail: RecordDetail 
           <SectionNavigation
             sections={[
               { id: "overview", label: "Overview" },
-              { id: "results", label: "Results" },
+              ...(showWorkspace || hasLinked ? [{ id: "results", label: "Results" }] : []),
               { id: "execution", label: "How to run" },
               { id: "evidence", label: "Evidence" },
             ]}
@@ -245,26 +249,33 @@ export function EvaluationDesignEntityDetail({ detail }: { detail: RecordDetail 
               its correction links before using these results.
             </aside>
           )}
-          <BenchmarkCoverage
-            results={results.total}
-            evaluations={results.evaluation_count}
-            charts={detail.comparison_options.length}
-          />
-          <ComparisonWorkspace
-            key={`${catalogue.release_id}:${record.id}`}
-            initialResults={
-              detail.published_comparisons.length ? undefined : results
-            }
-            resultSummary={{
-              total: results.total,
-              evaluation_count: results.evaluation_count,
-            }}
-            panels={packComparisons(detail.published_comparisons)}
-            options={detail.comparison_options}
-            recordId={record.id}
-            releaseId={catalogue.release_id}
-          />
-          {downstream.length > 0 && (
+          {hasLinked ? (
+            <LinkedResults record={record} linked={linked!} />
+          ) : (
+            <BenchmarkCoverage
+              results={results.total}
+              evaluations={results.evaluation_count}
+              charts={detail.comparison_options.length}
+            />
+          )}
+          {showWorkspace && (
+            <ComparisonWorkspace
+              key={`${catalogue.release_id}:${record.id}`}
+              initialResults={
+                detail.published_comparisons.length ? undefined : results
+              }
+              resultSummary={{
+                total: results.total,
+                evaluation_count: results.evaluation_count,
+              }}
+              panels={packComparisons(detail.published_comparisons)}
+              options={detail.comparison_options}
+              recordId={record.id}
+              releaseId={catalogue.release_id}
+              matrix={matrix && <ResultMatrix matrix={matrix} label={`Results for ${catalogueText(record.name)}`} />}
+            />
+          )}
+          {downstream.length > 0 && !hasLinked && (
             <section id="configurations" className={styles.section}>
               <h2>Related configurations, pipelines and services</h2>
               <p>
@@ -472,7 +483,9 @@ export function EvaluationDesignEntityDetail({ detail }: { detail: RecordDetail 
               </p>
               <details className={styles.profileDisclosure}>
                 <summary>
-                  {detail.sources.length} source records and release history
+                  {detail.sources.length
+                    ? `${countLabel(detail.sources.length, "source record")} and release history`
+                    : "Release history"}
                 </summary>
                 {detail.sources.length ? (
                   <ul className={styles.list}>

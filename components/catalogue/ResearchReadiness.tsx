@@ -17,6 +17,29 @@ export function ResearchReadinessSummary({ assessment, href }: { assessment: Rea
   );
 }
 
+/** Plain names for the verification checks behind each capability (shared/omics/research.ts). */
+const checkLabels: Record<string, string> = {
+  "artifact hashes": "File checksums match the recorded files",
+  "join integrity": "Predictions are matched to the right samples",
+  "score semantics": "Score meaning and direction are confirmed",
+  "metric replay": "Metrics are recomputed from the saved predictions",
+  annotations: "Sample annotations are recorded",
+  dependence: "Dependence between samples is assessed",
+  "recipe pinned": "A pinned run recipe exists",
+  "resource estimate": "Compute requirements are estimated",
+  "independent validation": "Independent validation data exist",
+  "overlap checked": "Overlap with training data is checked",
+};
+
+/** "artifact hashes: verification is missing" reads as "File checksums match the recorded files: not yet verified". */
+export function blockerText(blocker: string): string {
+  const [name, ...rest] = blocker.split(": ");
+  const label = checkLabels[name];
+  if (!label || !rest.length) return blocker;
+  const detail = rest.join(": ");
+  return `${label}: ${detail === "verification is missing" ? "not yet verified" : detail}`;
+}
+
 function Fields({ values }: { values: Record<string, unknown> }) {
   return <dl className={styles.details}>{Object.entries(values).map(([key, value]) => (
     <Fragment key={key}><dt>{key}</dt><dd>{displayValue(value)}</dd></Fragment>
@@ -29,10 +52,16 @@ export default function ResearchReadiness({ assessment, manifests, records = [] 
   records?: OmicsRecord[];
 }) {
   const byId = new Map(records.map((record) => [record.id, record]));
+  const capabilities = Object.keys(researchCapabilityLabels) as (keyof Readiness["capabilities"])[];
+  const met = capabilities.filter((key) => assessment.capabilities[key].ready).length;
   return (
     <section id="research-readiness" className={styles.section} aria-labelledby="readiness-title">
       <h2 id="readiness-title">Research readiness</h2>
-      <p>These checks assess whether the evidence supports a reproducible investigation. A source-checked score alone does not meet these requirements.</p>
+      <p>
+        {met} of {capabilities.length} readiness checks met. These checks assess whether the evidence supports a reproducible investigation; a source-checked score alone does not meet them.
+      </p>
+      <details className={styles.disclosure}>
+      <summary>Readiness checks, gaps and artifacts</summary>
       <p className={styles.muted}>Release {assessment.release_id} · Evidence verified: {researchDate(assessment.verified_at)}</p>
       <div className={styles.grid}>
         {Object.entries(researchCapabilityLabels).map(([key, label]) => {
@@ -42,7 +71,7 @@ export default function ResearchReadiness({ assessment, manifests, records = [] 
               <span className={`${styles.status} ${capability.ready ? styles.ready : ""}`}>{capability.ready ? "Evidence complete" : "Evidence incomplete"}</span>
               <h3>{label}</h3>
               <p>{researchCapabilityDescriptions[key as keyof Readiness["capabilities"]]}</p>
-              {capability.blockers.length > 0 && <><p><strong>Missing or unresolved evidence</strong></p><ul className={styles.list}>{capability.blockers.map((blocker) => <li key={blocker}>{blocker}</li>)}</ul></>}
+              {capability.blockers.length > 0 && <><p><strong>Missing or unresolved evidence</strong></p><ul className={styles.list}>{capability.blockers.map((blocker) => <li key={blocker}>{blockerText(blocker)}</li>)}</ul></>}
               {capability.evidence.length > 0 && <details className={styles.disclosure}><summary>Supporting evidence</summary><ul className={styles.list}>{capability.evidence.map((item) => <li key={item}>{item}</li>)}</ul></details>}
               <p className={styles.muted}>Verified: {researchDate(capability.verified_at)}</p>
             </article>
@@ -87,7 +116,7 @@ export default function ResearchReadiness({ assessment, manifests, records = [] 
           </details>
         </details>
       ))}
-      <p><Link href="/investigations/">Read reviewed discrepancy investigations</Link></p>
+      </details>
     </section>
   );
 }

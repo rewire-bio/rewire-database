@@ -55,21 +55,22 @@ describe("model coverage profile rendering", () => {
     expect(query.results({ id }).total).toBe(0);
     expect(query.results({ id: pipeline }).total).toBe(rows);
     const html = render(id);
-    const configurations = html.indexOf('id="configurations"');
+    const configurations = html.indexOf('id="results"');
     const methods = html.indexOf('id="use-model"');
     const pipelineLink = html.indexOf(
       `href="/database/pipeline/${pipeline}#results"`,
     );
 
-    expect(html).toContain('href="#configurations"');
-    expect(html).toContain("1 evaluated configuration using this model");
+    expect(html).toContain('href="#results"');
+    expect(html).toContain("1 pipeline with results");
     expect(configurations).toBeGreaterThanOrEqual(0);
     expect(methods).toBeGreaterThan(configurations);
     expect(pipelineLink).toBeGreaterThan(configurations);
     expect(pipelineLink).toBeLessThan(methods);
     expect(closedDisclosuresAt(html, pipelineLink)).toBe(0);
     const visibleConfigurations = html.slice(configurations, methods);
-    expect(visibleConfigurations).toContain(`Pipeline · ${rows} results`);
+    expect(visibleConfigurations).toContain(`Pipeline · uses this model · `);
+    expect(visibleConfigurations).toContain(` · ${rows} results`);
     expect(visibleConfigurations).toContain(
       "not assigned to the underlying model",
     );

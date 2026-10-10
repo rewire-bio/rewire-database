@@ -1,9 +1,9 @@
-import { catalogueText } from "@/lib/catalogue-text";
 import {
   isModelSubject,
   entityKindLabel,
 } from "@/shared/omics/entity-kinds";
 import Link from "next/link";
+import type { ReactNode } from "react";
 import { profileSchema } from "@/lib/omics-profile";
 import ProfileDiagram from "./ProfileDiagram";
 import { recordHref, safeSourceUrl, type OmicsRecord } from "@/lib/omics";
@@ -79,20 +79,22 @@ export default function Profile({
   record,
   sources,
   part,
+  about,
 }: {
   record: OmicsRecord;
   sources: OmicsRecord[];
   part: "overview" | "mechanism" | "limitations" | "visual" | "specifications";
+  /** Without a profile, the overview shows this instead of repeating the header's description. */
+  about?: ReactNode;
 }) {
   const parsed = profileSchema.safeParse(record.attributes.profile);
   if (!parsed.success)
     return part !== "overview" ? null : (
       <section id="overview" className={styles.section}>
         <h2>Overview</h2>
-        <p>
-          {catalogueText(record.description) ||
-            "An explanatory profile has not yet been reviewed for this record."}
-        </p>
+        {about || (
+          <p>An explanatory profile has not yet been reviewed for this record.</p>
+        )}
         <p className={styles.muted}>
           Consult the linked sources for architecture or protocol details.
           Missing evidence is not evidence of a missing capability.

@@ -1,3 +1,4 @@
+import { metricLabel } from "../lib/result-labels";
 import fs from "node:fs";
 import { preparedFromSnapshot } from "./helpers/prepared";
 import type { PreparedCatalogue } from "../shared/omics/prepared-catalogue";
@@ -48,13 +49,15 @@ describe("catalogue detail UX on the published release", () => {
     expect(benchmarks).toHaveLength(30);
     for (const record of benchmarks) {
       const html = await render(record.id);
-      const positions = ["overview", "results", "execution", "evidence"].map(
-        (id) => html.indexOf(`id="${id}"`),
-      );
+      // A benchmark without results, linked results or charts has no results section or tab.
+      const positions = ["overview", "results", "execution", "evidence"]
+        .map((id) => html.indexOf(`id="${id}"`))
+        .filter((position, index) => index !== 1 || position >= 0);
       expect(
         positions.every((position) => position >= 0),
         record.id,
       ).toBe(true);
+      expect(html.includes('id="results"'), record.id).toBe(html.includes('href="#results"'));
       expect(positions, record.id).toEqual(
         [...positions].sort((a, b) => a - b),
       );
@@ -90,7 +93,7 @@ describe("catalogue detail UX on the published release", () => {
     const escaped = renderToStaticMarkup(
       <>{row!.attributes.printed_value as string}</>,
     );
-    expect(html).toContain(`${escaped} ${row!.attributes.metric}`);
+    expect(html).toContain(`${escaped}</strong> ${metricLabel(String(row!.attributes.metric))}`);
     expect(html).not.toContain(`${escaped}%`);
   });
   it("keeps execution before evidence and methods before reproduction on evaluations", async () => {

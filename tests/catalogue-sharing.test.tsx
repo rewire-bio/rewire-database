@@ -1,3 +1,4 @@
+import { kindLabels } from "../lib/omics-browse";
 import fs from "node:fs";
 import { preparedFromSnapshot } from "./helpers/prepared";
 import { describe, expect, it, vi } from "vitest";
@@ -80,7 +81,7 @@ describe("truthful catalogue sharing", () => {
       const html = renderToStaticMarkup(<RecordPage params={{ id: record.id }} />);
       expect(jsonLd(html).itemListElement.at(-1).item).toBe(`https://benchmarks.rewirebio.io${recordHref(record)}`);
       expect(html).toContain('aria-current="page"');
-      expect(html).toContain("Back to results");
+      expect(html).toContain(`Browse all ${kindLabels[kind].toLowerCase()}`);
       expect(html).not.toContain('"@type":"Dataset"');
     }
   });

@@ -31,11 +31,11 @@ export function socialMetadata({ title, description, path }: { title: string; de
 }
 
 export interface BreadcrumbItem { name: string; path: string }
-export function recordBreadcrumbs(record: OmicsRecord): BreadcrumbItem[] {
+export function recordBreadcrumbs(record: OmicsRecord, name = catalogueText(record.name)): BreadcrumbItem[] {
   const items = [{ name: "Database", path: "/" }];
   if (record.kind === "model") items.push({ name: "Models", path: "/models/" });
   if (record.kind === "benchmark") items.push({ name: "Benchmarks", path: "/benchmarks/" });
-  items.push({ name: catalogueText(record.name), path: recordHref(record) });
+  items.push({ name, path: recordHref(record) });
   return items;
 }
 

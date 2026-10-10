@@ -91,7 +91,12 @@ describe("research readiness presentation", () => {
     expect(html).toContain("Replay metrics");
     expect(html).toContain("Evidence complete");
     expect(html).toContain("Evidence incomplete");
-    expect(html).toContain("dependence: verification is missing");
+    expect(html).toContain("Dependence between samples is assessed: not yet verified");
+    expect(html).not.toContain("dependence: verification is missing");
+    // One status line leads; the checks sit in a disclosure.
+    expect(html).toMatch(/\d of 4 readiness checks met/);
+    expect(html.indexOf("readiness checks met")).toBeLessThan(html.indexOf("<details"));
+    expect(html).not.toContain("Read reviewed discrepancy investigations");
     expect(html).toContain("not untouched validation");
     expect(html).toContain("Within-gene dependence has not been resolved");
     expect(html).toContain("Availability on your computer is checked separately");

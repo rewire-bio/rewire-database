@@ -1,7 +1,7 @@
 "use client";
 import { formatScore } from "@/lib/score-display";
 import { catalogueText } from "@/lib/catalogue-text";
-import { useEffect, useId, useMemo, useState } from "react";
+import { useEffect, useId, useMemo, useState, type ReactNode } from "react";
 import Link from "next/link";
 import { CitedAs } from "./SourceIdentity";
 import { catalogueClient, type ResultsPage } from "@/lib/catalogue-client";
@@ -23,6 +23,7 @@ import {
   statusLabel,
 } from "@/lib/omics-browse";
 import { useResultsLocation } from "./useResultsLocation";
+import { metricLabel } from "@/lib/result-labels";
 import styles from "@/app/database/database.module.css";
 import ux from "./comparison.module.css";
 
@@ -63,11 +64,14 @@ export default function Results({
   initial,
   title = "Benchmarks and results",
   embedded = false,
+  summary,
 }: {
   id: string;
   initial: ResultsPage;
   title?: string;
   embedded?: boolean;
+  /** Shown above the row table, which then sits in a disclosure (for example a per-metric matrix). */
+  summary?: ReactNode;
 }) {
   const headingId = useId();
   const client = useMemo(
@@ -151,7 +155,7 @@ export default function Results({
     {
       key: "metric" as const,
       label: "Metric",
-      options: initial.facets.metrics.map((name) => ({ id: name, name })),
+      options: initial.facets.metrics.map((name) => ({ id: name, name: metricLabel(name) })),
     },
     {
       key: "origin" as const,
@@ -172,20 +176,8 @@ export default function Results({
           : [],
       )
       .join(" · ") || "All linked evaluations";
-  return (
-    <section
-      id={embedded ? undefined : "results"}
-      className={embedded ? undefined : styles.section}
-      aria-labelledby={headingId}
-    >
-      <h2 id={headingId} className={embedded ? ux.tableHeading : undefined}>
-        {title}
-      </h2>
-      <p className={styles.muted}>
-        {countLabel(data.evaluation_count, "evaluation")} ·{" "}
-        {countLabel(data.total, "result")}. Different protocols are not a
-        single leaderboard.
-      </p>
+  const rows = (
+    <>
       {initial.total > 0 && (
         <details
           className={ux.filtersPanel}
@@ -231,7 +223,9 @@ export default function Results({
           </p>
         )}
       </div>
-      <p className={styles.muted}>Applied filters: {appliedText}</p>
+      {initial.total > 0 && (
+        <p className={styles.muted}>Applied filters: {appliedText}</p>
+      )}
       {!data.total ? (
         <p>
           {initial.total
@@ -291,7 +285,12 @@ export default function Results({
                           ? "%"
                           : ""}
                       </strong>{" "}
-                      {displayValue(row.result.attributes.metric)}
+                      {metricLabel(
+                        String(row.result.attributes.metric ?? ""),
+                        typeof row.result.attributes.metric_qualifier === "string"
+                          ? row.result.attributes.metric_qualifier
+                          : null,
+                      )}
                     </Link>
                     <div className={styles.muted}>
                       {displayValue(row.result.attributes.unit)} ·{" "}
@@ -338,26 +337,56 @@ export default function Results({
           </table>
         </div>
       )}
-      <nav className={ux.pagination} aria-label="Result pages">
-        <button
-          className={styles.button}
-          disabled={loading || !!error || data.previous_cursor == null}
-          onClick={() => update({ cursor: data.previous_cursor || "" })}
-        >
-          Previous
-        </button>
-        <span>
-          {data.range_start ?? (data.total ? 1 : 0)}–
-          {data.range_end ?? data.items.length} of {data.total} rows
-        </span>
-        <button
-          className={styles.button}
-          disabled={loading || !!error || !data.next_cursor}
-          onClick={() => update({ cursor: data.next_cursor || "" })}
-        >
-          Next
-        </button>
-      </nav>
+      {(data.previous_cursor != null || !!data.next_cursor) && (
+        <nav className={ux.pagination} aria-label="Result pages">
+          <button
+            className={styles.button}
+            disabled={loading || !!error || data.previous_cursor == null}
+            onClick={() => update({ cursor: data.previous_cursor || "" })}
+          >
+            Previous
+          </button>
+          <span>
+            {data.range_start ?? (data.total ? 1 : 0)}–
+            {data.range_end ?? data.items.length} of {data.total} rows
+          </span>
+          <button
+            className={styles.button}
+            disabled={loading || !!error || !data.next_cursor}
+            onClick={() => update({ cursor: data.next_cursor || "" })}
+          >
+            Next
+          </button>
+        </nav>
+      )}
+    </>
+  );
+  return (
+    <section
+      id={embedded ? undefined : "results"}
+      className={embedded ? undefined : styles.section}
+      aria-labelledby={headingId}
+    >
+      <h2 id={headingId} className={embedded ? ux.tableHeading : undefined}>
+        {title}
+      </h2>
+      <p className={styles.muted}>
+        {countLabel(data.evaluation_count, "evaluation")} ·{" "}
+        {countLabel(data.total, "result")}. Different protocols are not a
+        single leaderboard.
+      </p>
+      {summary}
+      {summary ? (
+        <details className={styles.profileDisclosure}>
+          <summary>
+            All {countLabel(initial.total, "result row")} with coverage,
+            uncertainty and sources
+          </summary>
+          {rows}
+        </details>
+      ) : (
+        rows
+      )}
       <p className={styles.muted}>
         Source checking is not independent reproduction. Release{" "}
         {initial.release_id}.

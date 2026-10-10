@@ -13,7 +13,7 @@ import SourceIdentityNotice from "@/components/catalogue/SourceIdentity";
 import SectionNavigation, {
   BrowseReturn,
 } from "@/components/catalogue/SectionNavigation";
-import { singularKindLabels } from "@/lib/omics-browse";
+import { countLabel, singularKindLabels } from "@/lib/omics-browse";
 import { loadUseCaseContext, type RecordDetail } from "@/lib/entity-detail";
 import styles from "../../database.module.css";
 
@@ -51,7 +51,26 @@ export function SourceDetail({ detail }: { detail: RecordDetail }) {
     scope: "source_metadata",
     limit: 10,
   });
-  const summary = catalogueText(record.description);
+  const attribute = (key: string) =>
+    typeof record.attributes[key] === "string" || typeof record.attributes[key] === "number"
+      ? String(record.attributes[key]).trim()
+      : "";
+  const doi = attribute("doi").replace(/^https?:\/\/(dx\.)?doi\.org\//i, "");
+  const doiUrl = doi ? safeSourceUrl(`https://doi.org/${doi}`) : undefined;
+  const url = safeSourceUrl(record.attributes.url);
+  const statusLabels: Record<string, string> = {
+    peer_reviewed: "Peer-reviewed",
+    preprint: "Preprint",
+    official_project_source: "Project source",
+  };
+  const citation = [
+    attribute("venue"),
+    attribute("year"),
+    attribute("version"),
+    statusLabels[attribute("publication_status")] || "",
+  ].filter((part, index, parts) => part && parts.indexOf(part) === index);
+  // The description records how the source was handled; its scope, where recorded, says what it covers.
+  const scope = attribute("scope_note");
   const identitySubjectId = (
     record.attributes.source_identity as { subject_id?: unknown } | undefined
   )?.subject_id;
@@ -75,7 +94,20 @@ export function SourceDetail({ detail }: { detail: RecordDetail }) {
               <span className="kick">{singularKindLabels[record.kind]}</span>
               <h1>{catalogueText(record.name)}</h1>
               <EvidenceConcerns sources={[record]} />
-              <p className="intro">{summary}</p>
+              {citation.length > 0 && <p className="intro">{citation.join(" · ")}</p>}
+              <p className={styles.heroActions}>
+                {doiUrl && (
+                  <a href={doiUrl} className={styles.resultCount}>
+                    DOI: {doi}
+                  </a>
+                )}
+                {url && url !== doiUrl && (
+                  <a href={url} className={styles.resultCount}>
+                    Original source
+                  </a>
+                )}
+              </p>
+              {scope && <p>{catalogueText(scope)}</p>}
               <SourceIdentityNotice
                 record={record}
                 sources={detail.sources}
@@ -90,7 +122,7 @@ export function SourceDetail({ detail }: { detail: RecordDetail }) {
           <UseCaseBacklinks links={useCaseLinks} configurations={useCaseConfigurations} />
           <SectionNavigation
             sections={[
-              { id: "finding", label: "Finding" },
+              { id: "finding", label: "Citation" },
               { id: "evidence", label: "Evidence" },
             ]}
           />
@@ -140,9 +172,12 @@ export function SourceDetail({ detail }: { detail: RecordDetail }) {
                 Release {catalogue.release_id} · Record review:{" "}
                 {record.status.replace(/_/g, " ")}
               </p>
+              {record.description && <p>{catalogueText(record.description)}</p>}
               <details className={styles.profileDisclosure}>
                 <summary>
-                  {detail.sources.length} source records and release history
+                  {detail.sources.length
+                    ? `${countLabel(detail.sources.length, "source record")} and release history`
+                    : "Release history"}
                 </summary>
                 {detail.sources.length ? (
                   <ul className={styles.list}>

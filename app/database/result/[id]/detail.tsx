@@ -14,7 +14,8 @@ import SourceIdentityNotice from "@/components/catalogue/SourceIdentity";
 import SectionNavigation, {
   BrowseReturn,
 } from "@/components/catalogue/SectionNavigation";
-import { singularKindLabels, predictiveKinds, groupEntities, testedEntities, evaluationEntities, datasetEntities } from "@/lib/omics-browse";
+import { countLabel, singularKindLabels, predictiveKinds, groupEntities, testedEntities, evaluationEntities, datasetEntities } from "@/lib/omics-browse";
+import { metricLabel, procedureReference, resultTitle } from "@/lib/result-labels";
 import type { ResultRecordPage } from "@/lib/record-page";
 import styles from "../../database.module.css";
 
@@ -64,7 +65,11 @@ export function ResultDetail({ page }: { page: ResultRecordPage }) {
   const useCaseConfigurations = page.use_case_configurations;
   const context = new Map(page.context.map((item) => [item.id, item]));
   const evaluated = first?.evaluation ?? undefined;
-  const finding = `${formatScore(record.attributes.printed_value)}${record.attributes.unit === "percent" && !/%/.test(String(record.attributes.printed_value)) ? "%" : ""} ${displayValue(record.attributes.metric)}`;
+  const metric = metricLabel(
+    String(record.attributes.metric ?? ""),
+    typeof record.attributes.metric_qualifier === "string" ? record.attributes.metric_qualifier : null,
+  );
+  const value = `${formatScore(record.attributes.printed_value)}${record.attributes.unit === "percent" && !/%/.test(String(record.attributes.printed_value)) ? "%" : ""}`;
   const modelLinks = first ? testedEntities(first) : [];
   const modelFamilies = modelLinks.flatMap((model) =>
     model.links.flatMap((link) =>
@@ -85,6 +90,8 @@ export function ResultDetail({ page }: { page: ResultRecordPage }) {
     ...benchmarkLinks,
     ...datasetLinks,
   ]);
+  const title = resultTitle(record, modelLinks, datasetLinks);
+  const procedure = procedureReference(evaluated?.attributes.protocol, (id) => context.get(id));
   const identitySubject = page.identity_subject ?? undefined;
   const proposals = [...detail.direct, ...detail.reverse].filter(
     (item) => item.relation === "applicable_to",
@@ -93,16 +100,19 @@ export function ResultDetail({ page }: { page: ResultRecordPage }) {
     <>
       <header className="page-head" id="finding">
         <div className="wrap">
-          <Breadcrumbs items={recordBreadcrumbs(record)} />
+          <Breadcrumbs items={recordBreadcrumbs(record, title)} />
           <div className={styles.nav}>
             <BrowseReturn fallback={`/?kind=${record.kind}#browse`} />
           </div>
           <div>
             <div>
               <span className="kick">{singularKindLabels[record.kind]}</span>
-              <h1>{finding}</h1>
+              <h1>{title}</h1>
+              <p className={styles.findingValue}>
+                <strong title={`Printed value: ${displayValue(record.attributes.printed_value)}`}>{value}</strong>{" "}
+                {metric}
+              </p>
               <EvidenceConcerns sources={detail.sources} />
-              <p className="intro">{catalogueText(record.name)}</p>
               <SourceIdentityNotice
                 record={record}
                 sources={detail.sources}
@@ -117,7 +127,7 @@ export function ResultDetail({ page }: { page: ResultRecordPage }) {
           <UseCaseBacklinks links={useCaseLinks} configurations={useCaseConfigurations} />
           <SectionNavigation
             sections={[
-              { id: "finding", label: "Finding" },
+              { id: "finding", label: "Result" },
               { id: "methods", label: "Methods" },
               ...(evaluated ? [{ id: "reproduction", label: "Reproduction" }] : []),
               { id: "evidence", label: "Evidence" },
@@ -135,6 +145,7 @@ export function ResultDetail({ page }: { page: ResultRecordPage }) {
             aria-label="Finding and evaluation context"
           >
             <span id="results" />
+            <h2>Methods</h2>
             <dl className={styles.details}>
               {contextGroups.map((group) => (
                 <Fragment key={group.kind}>
@@ -156,8 +167,18 @@ export function ResultDetail({ page }: { page: ResultRecordPage }) {
                   </dd>
                 </>
               )}
-              <dt>Procedure</dt>
-              <dd>{displayValue(evaluated?.attributes.protocol)}</dd>
+              {procedure && (
+                <>
+                  <dt>Procedure</dt>
+                  <dd>
+                    {"record" in procedure ? (
+                      <Link href={recordHref(procedure.record)}>{catalogueText(procedure.record.name)}</Link>
+                    ) : (
+                      catalogueText(procedure.text)
+                    )}
+                  </dd>
+                </>
+              )}
               <dt>Evaluation</dt>
               <dd>
                 {evaluated ? (
@@ -242,7 +263,9 @@ export function ResultDetail({ page }: { page: ResultRecordPage }) {
               </p>
               <details className={styles.profileDisclosure}>
                 <summary>
-                  {detail.sources.length} source records and release history
+                  {detail.sources.length
+                    ? `${countLabel(detail.sources.length, "source record")} and release history`
+                    : "Release history"}
                 </summary>
                 {detail.sources.length ? (
                   <ul className={styles.list}>

@@ -40,3 +40,19 @@ describe("reactive return to browsing context", () => {
     }
   });
 });
+
+describe("return link label", () => {
+  it("names its destination", () => {
+    for (const [search, label] of [
+      [new URLSearchParams({ return_to: "/use-cases/pathogen-detection/#comparison-a" }).toString(), "Back to the use case"],
+      [new URLSearchParams({ return_to: "/use-cases/" }).toString(), "Back to use cases"],
+      [new URLSearchParams({ return_to: "/?kind=model&q=ESM#browse" }).toString(), "Back to search"],
+      ["", "Browse all results"],
+    ]) {
+      state.search = search;
+      const html = renderToStaticMarkup(<BrowseReturn fallback="/?kind=result#browse" />);
+      expect(html).toContain(label);
+      expect(html).not.toContain("Back to results");
+    }
+  });
+});

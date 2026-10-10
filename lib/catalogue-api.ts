@@ -4,7 +4,7 @@ import { entityKinds } from "../shared/omics/entity-kinds";
 import { recordPageKinds } from "../lib/record-pages";
 import { researchCapabilities } from "../shared/omics/research";
 import type { PreparedCatalogue } from "../shared/omics/prepared-catalogue";
-import { preparedCatalogue } from "./prepared";
+import { preparedCatalogue, preparedUseCases } from "./prepared";
 import { localRecordPage } from "./record-page-local";
 
 // The public catalogue API, served by the frontend from the release its image
@@ -66,17 +66,17 @@ export function catalogueRouter(open: () => PreparedCatalogue = preparedCatalogu
           area: z.string().max(100).optional(),
           context: z.enum(["research", "clinical_research"]).optional(),
         }).strict())
-        .query(({ input }) => read(input.release_id, (q) => q.useCases().list(omit(input)))),
+        .query(({ input }) => read(input.release_id, (q) => preparedUseCases(q).list(omit(input)))),
       useCase: t.procedure
         .input(z.object({ ...pinned, slug: id, ...pagination }).strict())
         .query(({ input }) => read(input.release_id, (q) =>
-          q.useCases().get({ slug: input.slug, cursor: input.cursor, limit: input.limit }))),
+          preparedUseCases(q).get({ slug: input.slug, cursor: input.cursor, limit: input.limit }))),
       useCaseEvaluationResults: t.procedure
         .input(z.object({ ...pinned, mapping_id: id, evaluation_id: id, ...pagination }).strict())
-        .query(({ input }) => read(input.release_id, (q) => q.useCases().evaluationResults(omit(input)))),
+        .query(({ input }) => read(input.release_id, (q) => preparedUseCases(q).evaluationResults(omit(input)))),
       useCaseLinks: t.procedure
         .input(z.object({ ...pinned, id }).strict())
-        .query(({ input }) => read(input.release_id, (q) => q.useCases().links({ id: input.id }))),
+        .query(({ input }) => read(input.release_id, (q) => preparedUseCases(q).links({ id: input.id }))),
       comparison: t.procedure
         .input(z.object({ ...pinned, id, panel_id: id }).strict())
         .query(({ input }) => read(input.release_id, (q) => q.comparison(input))),

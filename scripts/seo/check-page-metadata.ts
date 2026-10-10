@@ -80,6 +80,30 @@ export function checkSitemap(xml: string): {
   return { urls, failures };
 }
 
+/** The index at /sitemap.xml: one entry per sitemap file, /sitemap/0.xml upward. */
+export function checkSitemapIndex(xml: string): {
+  files: string[];
+  failures: string[];
+} {
+  if (XMLValidator.validate(xml) !== true)
+    return { files: [], failures: ["Sitemap index is not valid XML"] };
+  const value = new XMLParser({
+    isArray: (name) => name === "sitemap",
+    parseTagValue: false,
+  }).parse(xml);
+  const entries = value.sitemapindex?.sitemap;
+  if (!Array.isArray(entries) || !entries.length)
+    return { files: [], failures: ["Sitemap index has no sitemaps"] };
+  const files: string[] = [];
+  const failures: string[] = [];
+  entries.forEach((entry: { loc?: unknown }, index: number) => {
+    if (entry.loc !== `${ORIGIN}/sitemap/${index}.xml`)
+      failures.push(`Sitemap index entry ${index} is not ${ORIGIN}/sitemap/${index}.xml`);
+    else files.push(`/sitemap/${index}.xml`);
+  });
+  return { files, failures };
+}
+
 /** Read the shared image once, outside the record loop. */
 export function checkSocialImage(exportRoot: string): string[] {
   const url = new URL(SOCIAL_IMAGE.url);

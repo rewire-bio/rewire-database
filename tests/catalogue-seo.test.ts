@@ -2,7 +2,7 @@ import fs, { readFileSync } from "node:fs";
 import { describe, expect, it, vi } from "vitest";
 import { recordSearchMetadata, recordIsIndexable } from "../lib/catalogue-seo";
 import { parseCatalogue, recordHref, type OmicsRecord } from "../lib/omics";
-import sitemap from "../app/sitemap";
+import { sitemapEntries } from "../lib/sitemap";
 import robots from "../app/robots";
 
 vi.mock("node:fs", async (importOriginal) => {
@@ -139,6 +139,7 @@ describe("record search metadata", () => {
       "https://benchmarks.rewirebio.io/database/claim/claim/",
     );
     expect(robots().rules).toEqual({ userAgent: "*", allow: "/" });
+    expect(robots().sitemap).toBe("https://benchmarks.rewirebio.io/sitemap.xml");
   });
   it("covers every released record and uses exactly the same sitemap eligibility without unsupported timestamps", () => {
     // Tests run before exports are generated in a clean checkout. Give the
@@ -146,8 +147,8 @@ describe("record search metadata", () => {
     // The sitemap reads the same pinned release through the shared catalogue loader.
     const release = fs.readFileSync("public/omics/catalogue.json").toString("utf8");
     const catalogue = parseCatalogue(JSON.parse(release));
-    const entries = sitemap();
-    const paths = new Set(entries.map((entry) => entry.url));
+    const entries = sitemapEntries();
+    const paths = new Set(entries.map((entry) => `https://benchmarks.rewirebio.io${entry.path}`));
     for (const item of catalogue.records) {
       const metadata = recordSearchMetadata(item, catalogue.records);
       expect(metadata.description.trim(), item.id).not.toBe("");

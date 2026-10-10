@@ -12,11 +12,14 @@ import { EvaluationDetail } from "../app/database/evaluation/[id]/detail";
 import { ResultDetail } from "../app/database/result/[id]/detail";
 import { readRecordPage, type EvaluationRecordPage, type ResultRecordPage } from "../lib/record-page";
 import { resultMatrix } from "../lib/result-matrix";
-import { metricLabel, procedureReference, resultTitle } from "../lib/result-labels";
+import { metricName, procedureReference, resultTitle } from "../lib/result-labels";
 import { claimFieldLabel, evidencePropertyLabel } from "../lib/evidence-labels";
 import { provenanceOnly } from "../lib/entity-detail";
 import { blockerText } from "../components/catalogue/ResearchReadiness";
 import type { ResultRow } from "../shared/omics/catalogue-query";
+import Results from "../components/catalogue/Results";
+import { resultsPayload } from "../lib/results-payload";
+import { buildCatalogue } from "../lib/catalogue-build";
 
 // Pages from the pinned release, for the record pages named in the QA audit issues.
 const page = (Page: (props: { params: { id: string } }) => JSX.Element, id: string) =>
@@ -138,8 +141,8 @@ describe("result pages have a readable title (#145)", () => {
     expect(html).not.toContain("<dd>somatic-20261009-protocol-wang2020-colo829-snv</dd>");
   });
   it("uses metric display names and falls back to the record name without context", () => {
-    expect(metricLabel("f1-score")).toBe("F1");
-    expect(metricLabel("proportion", "benign reference variants assigned bp4")).toBe("Proportion (benign reference variants assigned BP4)");
+    expect(metricName("f1-score")).toBe("F1");
+    expect(metricName("proportion", "benign reference variants assigned bp4")).toBe("Proportion (benign reference variants assigned BP4)");
     expect(resultTitle({ name: "raw-name", attributes: { metric: "auroc" } }, [], [])).toBe("raw-name");
     expect(procedureReference("unlinked-protocol-id", () => undefined)).toBeNull();
     expect(procedureReference("Ten-fold cross validation.", () => undefined)).toEqual({ text: "Ten-fold cross validation." });
@@ -175,5 +178,17 @@ describe("record page labels and empty states (#156, #157, #162, #165, rewire-be
     const html = page(BenchmarkPage, "discovery-benchmark-perturbench");
     expect(html).toContain("<h3>Searches</h3>");
     expect(html).not.toContain("<h4>Searches</h4>");
+  });
+});
+
+describe("results payload in the page HTML (#166)", () => {
+  it("renders the same results table from the trimmed first page and is smaller", () => {
+    const { query } = buildCatalogue();
+    for (const id of ["segmentnt-supplement-2025-dataset-human-genome-promoter-tissue-invariant-test-chromosomes-20-and-21", "somatic-20261009-protocol-wang2020-mb-snv"]) {
+      const full = query.results({ id, limit: 25 });
+      const trimmed = resultsPayload(full);
+      expect(renderToStaticMarkup(<Results id={id} initial={trimmed} />)).toBe(renderToStaticMarkup(<Results id={id} initial={full} />));
+      expect(JSON.stringify(trimmed).length).toBeLessThan(JSON.stringify(full).length * 0.6);
+    }
   });
 });

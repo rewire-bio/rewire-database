@@ -10,6 +10,7 @@ import { recordHref, displayValue, safeSourceUrl } from "@/lib/omics";
 import { EvidenceConcerns } from "@/components/catalogue/Profile";
 import EvidenceTable from "@/components/catalogue/EvidenceTable";
 import Results from "@/components/catalogue/Results";
+import { resultsPayload } from "@/lib/results-payload";
 import LinkedResults, { linkedCount } from "@/components/catalogue/LinkedResults";
 import SourceIdentityNotice from "@/components/catalogue/SourceIdentity";
 import SectionNavigation, {
@@ -125,7 +126,7 @@ export function BaselineDetail({ detail }: { detail: RecordDetail }) {
             <Results
               key={`${catalogue.release_id}:${record.id}`}
               id={record.id}
-              initial={results}
+              initial={resultsPayload(results)}
               title="Evaluation results"
             />
           )}

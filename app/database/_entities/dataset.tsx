@@ -11,6 +11,7 @@ import { profileSchema } from "@/lib/omics-profile";
 import { EvidenceConcerns, ProfileEvidence } from "@/components/catalogue/Profile";
 import EvidenceTable from "@/components/catalogue/EvidenceTable";
 import Results from "@/components/catalogue/Results";
+import { resultsPayload } from "@/lib/results-payload";
 import SourceIdentityNotice from "@/components/catalogue/SourceIdentity";
 import SectionNavigation, {
   BrowseReturn,
@@ -166,7 +167,7 @@ export function DatasetDetail({ detail }: { detail: RecordDetail }) {
             <Results
               key={`${catalogue.release_id}:${record.id}`}
               id={record.id}
-              initial={results}
+              initial={resultsPayload(results)}
               title="Evaluation results"
             />
           ) : (

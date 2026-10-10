@@ -14,6 +14,7 @@ import Profile, {
 } from "@/components/catalogue/Profile";
 import EvidenceTable from "@/components/catalogue/EvidenceTable";
 import Results from "@/components/catalogue/Results";
+import { resultsPayload } from "@/lib/results-payload";
 import ResultMatrix from "@/components/catalogue/ResultMatrix";
 import LinkedResults, { linkedCount } from "@/components/catalogue/LinkedResults";
 import SourceIdentityNotice from "@/components/catalogue/SourceIdentity";
@@ -270,7 +271,7 @@ export function PredictiveEntityDetail({ detail }: { detail: RecordDetail }) {
             <Results
               key={`${catalogue.release_id}:${record.id}`}
               id={record.id}
-              initial={results}
+              initial={resultsPayload(results)}
               title="Evaluations and results"
               summary={matrix && <ResultMatrix matrix={matrix} label={`Results for ${catalogueText(record.name)}`} />}
             />

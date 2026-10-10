@@ -20,6 +20,7 @@ import BaselineCoverage from "@/components/catalogue/BaselineCoverage";
 import RunGuide from "@/components/catalogue/RunGuide";
 import SourceIdentityNotice from "@/components/catalogue/SourceIdentity";
 import { ComparisonWorkspace } from "@/components/catalogue/BenchmarkCharts";
+import { resultsPayload } from "@/lib/results-payload";
 import ResultMatrix from "@/components/catalogue/ResultMatrix";
 import LinkedResults, { linkedCount } from "@/components/catalogue/LinkedResults";
 import SectionNavigation, {
@@ -262,7 +263,7 @@ export function EvaluationDesignEntityDetail({ detail }: { detail: RecordDetail 
             <ComparisonWorkspace
               key={`${catalogue.release_id}:${record.id}`}
               initialResults={
-                detail.published_comparisons.length ? undefined : results
+                detail.published_comparisons.length ? undefined : resultsPayload(results)
               }
               resultSummary={{
                 total: results.total,

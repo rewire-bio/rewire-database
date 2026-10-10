@@ -10,6 +10,7 @@ import { EvidenceConcerns } from "@/components/catalogue/Profile";
 import EvidenceTable from "@/components/catalogue/EvidenceTable";
 import Reproduction from "@/components/catalogue/Reproduction";
 import Results from "@/components/catalogue/Results";
+import { resultsPayload } from "@/lib/results-payload";
 import ResultMatrix from "@/components/catalogue/ResultMatrix";
 import { resultMatrix } from "@/lib/result-matrix";
 import { procedureReference } from "@/lib/result-labels";
@@ -151,7 +152,7 @@ export function EvaluationDetail({ page }: { page: EvaluationRecordPage }) {
           <Results
             key={`${page.release_id}:${record.id}`}
             id={record.id}
-            initial={results}
+            initial={resultsPayload(results)}
             title="Evaluation results"
             summary={matrix && <ResultMatrix matrix={matrix} label={`Results for ${catalogueText(record.name)}`} />}
           />

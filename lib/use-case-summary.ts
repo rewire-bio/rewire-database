@@ -62,3 +62,20 @@ export function evidenceSummaryParts(summary: EvidenceSummary): string[] {
 export function evidenceCollectedLabel(summary: EvidenceSummary): string {
   return summary.endpoints > 0 ? `Already on record: ${evidenceCountParts(summary).join(" · ")}` : "No evaluated endpoints are recorded yet";
 }
+
+// A period after one of these, or after a single capital (an initial), does not end a sentence.
+const ABBREVIATION = /(?:\b(?:et al|e\.g|i\.e|vs|cf|Fig|Figs|Tab|No|approx|Suppl|Ref|ca)|\b[A-Z])\.$/;
+
+/** Splits a reviewed summary into its first sentence and short paragraphs of the rest. Layout only:
+ * the sentences are kept in order and unchanged, so joining the parts gives the text back. */
+export function summaryParagraphs(text: string, perParagraph = 3): string[] {
+  const sentences: string[] = [];
+  for (const part of text.trim().split(/(?<=[.!?])\s+(?=[A-Z(“"])/)) {
+    if (sentences.length && ABBREVIATION.test(sentences[sentences.length - 1])) sentences[sentences.length - 1] += ` ${part}`;
+    else sentences.push(part);
+  }
+  const [lead, ...rest] = sentences;
+  const paragraphs = lead ? [lead] : [];
+  for (let i = 0; i < rest.length; i += perParagraph) paragraphs.push(rest.slice(i, i + perParagraph).join(" "));
+  return paragraphs;
+}

@@ -88,9 +88,10 @@ test('deployed public database core journeys', async ({ page, baseURL }) => {
     await section.locator('a[href="#evidence"]').click();
     await expect(page).toHaveURL(/#evidence$/);
     await expect(section.locator('a[href="#evidence"]')).toHaveAttribute('aria-current', 'location');
-    const comparison = page.locator('#evidence article').first();
+    // Single reported results render as a metric list, so check the first comparison that is a table.
+    const comparison = page.locator('#evidence article').filter({ has: page.getByRole('table') }).first();
     await expect(comparison.getByRole('table')).toBeVisible();
-    await expect(comparison.getByRole('columnheader', { name: 'Tool' })).toBeVisible();
+    await expect(comparison.getByRole('columnheader', { name: 'Tool', exact: true })).toBeVisible();
     const caveats = comparison.locator('details').filter({ has: page.locator('summary', { hasText: /^Caveats and method$/ }) }).first();
     await caveats.locator(':scope > summary').click();
     await expect(caveats).toHaveAttribute('open', '');

@@ -6,6 +6,7 @@ import { ANALYTICS_FRAME_ORIGIN, ANALYTICS_ORIGIN, CLIENT_KEY, CONSENT_KEY } fro
 const navigation = vi.hoisted(() => ({ path: "/" }));
 vi.mock("next/navigation", () => ({ usePathname: () => navigation.path }));
 let SiteAnalytics: typeof import("../components/SiteAnalytics").default;
+let Footer: typeof import("../components/Footer").default;
 let rendered: ReactTestRenderer | undefined;
 let listeners: Map<string, Set<(event: any) => void>>;
 let storage: Map<string, string>;
@@ -38,6 +39,7 @@ beforeAll(async () => {
   vi.stubEnv("NODE_ENV", "production");
   vi.stubEnv("NEXT_PUBLIC_GA_ID", "G-P0CLMZMKF8");
   SiteAnalytics = (await import("../components/SiteAnalytics")).default;
+  Footer = (await import("../components/Footer")).default;
   vi.stubEnv("NODE_ENV", "test");
 });
 afterAll(() => { vi.unstubAllEnvs(); });
@@ -65,6 +67,14 @@ afterEach(() => {
 });
 
 describe("analytics consent and React navigation", () => {
+  it("places the preferences control in the footer's legal row", () => {
+    act(() => { rendered = create(createElement(Footer)); });
+    const button = rendered!.root.findAllByType("button").find(button => button.props.children === "Analytics preferences")!;
+    const ancestors: string[] = [];
+    for (let node = button.parent; node; node = node.parent) if (typeof node.type === "string") ancestors.push(`${node.type}.${node.props.className || ""}`);
+    expect(ancestors).toContain("div.legal");
+    expect(ancestors.at(-1)).toBe("footer.foot");
+  });
   it("makes no frame or client ID before consent, then passes only public page data", () => {
     mount();
     expect(iframe()).toHaveLength(0); expect(storage.has(CLIENT_KEY)).toBe(false);

@@ -1,3 +1,5 @@
+import SiteAnalytics from "@/components/SiteAnalytics";
+
 export default function Footer() {
   return (
     <footer className="foot">
@@ -26,6 +28,7 @@ export default function Footer() {
         </div>
         <div className="legal">
           <span>© {new Date().getFullYear()} rewirebio.io</span>
+          <SiteAnalytics />
           <span>Genomics · Proteins · Molecular Design</span>
         </div>
       </div>

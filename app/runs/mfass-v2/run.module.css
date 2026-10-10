@@ -2,9 +2,27 @@
 .back a:hover { text-decoration: underline; }
 .notice { max-width: 900px; margin: 0 0 28px; padding: 15px 19px; border-left: 3px solid var(--accent); background: var(--accent-soft); color: var(--ink-2); line-height: 1.55; }
 .notice strong { color: var(--ink); }
-.tableScroll { overflow-x: auto; margin: 16px 0 23px; }
-.tableScroll table { min-width: 760px; }
+/* Edge shadows show that more columns are off screen; the covers (scrolling with the content) hide them at each end. */
+.tableScroll {
+  --breakout: min(calc(var(--maxw) - 64px), calc(100vw - 96px));
+  overflow-x: auto; margin: 16px 0 23px;
+  background:
+    linear-gradient(to right, var(--bg) 30%, transparent) left / 40px 100% no-repeat local,
+    linear-gradient(to left, var(--bg) 30%, transparent) right / 40px 100% no-repeat local,
+    radial-gradient(farthest-side at 0 50%, #0f172a33, transparent) left / 14px 100% no-repeat scroll,
+    radial-gradient(farthest-side at 100% 50%, #0f172a33, transparent) right / 14px 100% no-repeat scroll;
+}
+.tableScroll:focus-visible { outline: 2px solid var(--accent-ink); outline-offset: 3px; }
+/* div. outranks the global .prose-brief table rule. */
+div.tableScroll table { display: table; min-width: 760px; margin: 0; font-size: 14px; }
 .back { margin-top: 22px; }
+/* The tables are wider than the reading column, so on wide screens they use the full content width. */
+@media (min-width: 800px) {
+  .tableScroll { width: var(--breakout); margin-left: calc(50% - var(--breakout) / 2); }
+}
+@media (max-width: 799px) {
+  .tableScroll::before { content: "Scroll sideways for all columns"; position: sticky; left: 0; display: block; font-family: var(--sans); font-size: 13px; color: var(--ink-3); }
+}
 @media (pointer: coarse) {
   .tableScroll td a, .back a { display: inline-block; padding-block: 8px; }
 }

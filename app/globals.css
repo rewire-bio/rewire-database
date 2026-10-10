@@ -73,6 +73,8 @@ img { max-width: 100%; display: block; }
 main [id] { scroll-margin-top: var(--section-scroll-offset); }
 @media (max-width: 720px) { :root { --section-nav-height: 66px; } }
 a:focus-visible, summary:focus-visible, button:focus-visible, select:focus-visible { outline: 2px solid var(--accent-ink); outline-offset: 3px; }
+/* Record pages place this link outside their styled sections. */
+a[href^="/contribute/?type=correction"] { color: var(--accent-ink); text-decoration: underline; text-underline-offset: 3px; }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 
 h1, h2, h3, h4 { margin: 0; font-weight: 600; letter-spacing: -0.02em; line-height: 1.2; overflow-wrap: break-word; }

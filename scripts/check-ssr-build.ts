@@ -3,14 +3,14 @@ import { spawn } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
 import { setTimeout as sleep } from "node:timers/promises";
-import type { CatalogueSnapshot } from "../shared/omics/catalogue-query";
+import { createCatalogueQuery, type CatalogueSnapshot } from "../shared/omics/catalogue-query";
 import { buildUseCases } from "../lib/use-cases-build";
 import { getLiterature } from "../lib/benchmark-literature";
 import { DOMAINS } from "../lib/benchmark-catalog";
 import { recordHref, recordRouteKinds, type OmicsRecord } from "../lib/omics";
 import { recordIsIndexable, recordSearchMetadata } from "../lib/catalogue-seo";
 import { recordBreadcrumbs } from "../lib/catalogue-sharing";
-import { catalogueIndexPaths } from "../lib/catalogue-index";
+import { catalogueIndexPaths, withoutVerifiedAliases } from "../lib/catalogue-index";
 import { recordPageMetadata } from "../lib/record-page";
 import { localRecordPage } from "../lib/record-page-local";
 import { getResearch } from "../shared/omics/research";
@@ -171,7 +171,7 @@ function checkSitemapInventory(catalogue: CatalogueSnapshot, urls: Set<string>) 
     "/", "/runs/mfass-v2/", "/evidence/", "/coverage/", "/use-cases/", "/investigations/",
     ...getResearch(catalogue).investigations.map((report) => `/investigations/${report.id}/`),
     ...(catalogue.coverage.use_cases ? buildUseCases().entries.map((entry) => `/use-cases/${entry.slug}/`) : []),
-    ...catalogueIndexPaths(catalogue.records),
+    ...catalogueIndexPaths(withoutVerifiedAliases(catalogue.records, createCatalogueQuery(catalogue).association)),
     ...catalogue.records.filter(recordIsIndexable).map(recordHref),
   ].map((pathname) => ORIGIN + pathname));
   assert.deepEqual([...urls].filter((url) => !expected.has(url)), [], "Unexpected sitemap URLs");

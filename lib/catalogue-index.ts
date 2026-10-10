@@ -7,6 +7,24 @@ export type IndexKind = "model" | "benchmark";
 export const MODEL_PAGE_SIZE = 24;
 export const CATALOGUE_ORIGIN = "https://benchmarks.rewirebio.io";
 
+/** The records an index lists: the set the database search lists and counts.
+ * A verified alias is the same entity under a historical ID; its page stays
+ * reachable, but listing it would show the entity twice. */
+export function withoutVerifiedAliases<T extends Pick<OmicsRecord, "id" | "kind" | "links">>(
+  records: T[],
+  verified: (subject: string, relation: string, target: string) => boolean,
+): T[] {
+  const kinds = new Map(records.map((record) => [record.id, record.kind]));
+  return records.filter((record) => !record.links.some((link) =>
+    link.relation === "alias_of" && kinds.get(link.target_id) === record.kind && verified(record.id, "alias_of", link.target_id)));
+}
+export function indexSource(
+  query: { recordsOfKind(kind: string): unknown[]; verifiedAssociation(subject: string, relation: string, target: string): boolean },
+  kind: IndexKind,
+) {
+  return withoutVerifiedAliases(query.recordsOfKind(kind) as OmicsRecord[], query.verifiedAssociation);
+}
+
 /** Exact entity kinds only: configurations, tasks and protocols remain separate. */
 export function indexRecords(records: OmicsRecord[], kind: IndexKind) {
   return records.filter((record) => record.kind === kind && record.status !== "excluded")

@@ -2,7 +2,8 @@ import fs from "node:fs";
 import { describe, expect, it, vi } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
 import { parseCatalogue, recordHref } from "../lib/omics";
-import { catalogueIndexPaths, indexRecords, indexMetadata, MODEL_PAGE_SIZE, modelPageCount, modelIndexHref, validModelPage } from "../lib/catalogue-index";
+import { catalogueIndexPaths, indexRecords, indexMetadata, MODEL_PAGE_SIZE, modelPageCount, modelIndexHref, validModelPage, withoutVerifiedAliases } from "../lib/catalogue-index";
+import { createCatalogueQuery } from "../shared/omics/catalogue-query";
 import StaticIndex from "../components/catalogue/StaticIndex";
 const catalogue = parseCatalogue(JSON.parse(fs.readFileSync("public/omics/catalogue.json").toString()));
 vi.mock("next/navigation", () => ({ usePathname: () => "/models/" }));
@@ -49,6 +50,18 @@ describe("static catalogue indexes", () => {
     expect(indexRecords(records, "model").some((record) => record.id === "excluded-model")).toBe(false);
     renderToStaticMarkup(<StaticIndex records={catalogue.records.filter((record) => record.kind === "model")} releaseId={catalogue.release_id} kind="model" />);
     expect(JSON.stringify(catalogue)).toBe(before);
+  });
+  it("lists and counts the same records as the database search, leaving verified aliases out", () => {
+    const query = createCatalogueQuery(catalogue);
+    const counts = query.release().facets.counts;
+    for (const kind of ["model", "benchmark"] as const) {
+      const listed = indexRecords(withoutVerifiedAliases(catalogue.records, query.association), kind);
+      expect(listed.length).toBe(counts[kind]);
+    }
+    const alias = catalogue.records.find((record) => record.kind === "model" && record.links.some((link) => link.relation === "alias_of" && query.association(record.id, "alias_of", link.target_id)));
+    if (alias) expect(withoutVerifiedAliases(catalogue.records, query.association)).not.toContain(alias);
+    const unverified = { ...indexRecords(catalogue.records, "model")[0], id: "unverified-alias", links: [{ relation: "alias_of", target_id: indexRecords(catalogue.records, "model")[1].id }] };
+    expect(withoutVerifiedAliases([...catalogue.records, unverified], query.association)).toContain(unverified);
   });
   it("links both indexes from primary navigation in initial HTML", () => {
     const html = renderToStaticMarkup(<Header />);

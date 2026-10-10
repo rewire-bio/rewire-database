@@ -8,6 +8,7 @@
 .records { list-style: none; padding: 0; margin: 24px 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 40px; }
 .records li { padding: 24px 0; border-top: 1px solid var(--line); min-width: 0; overflow-wrap: anywhere; }
 .records h2 { font-size: 22px; }
+.records h2 a { color: var(--accent-ink); text-decoration: underline; }
 .records p { line-height: 1.6; margin: 12px 0 0; }
 .records .areas { font-size: 13px; color: var(--accent-ink); }
 .records .identity { font-size: 12px; color: var(--ink-3); }

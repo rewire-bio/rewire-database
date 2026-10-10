@@ -915,6 +915,20 @@
 .journeys a:hover {
   border-color: var(--accent);
 }
+/* Use cases are the main route for choosing a method. */
+.journeys a.primaryJourney {
+  background: var(--accent-ink);
+  border-color: var(--accent-ink);
+  color: #fff;
+  margin-right: 6px;
+}
+.journeys a.primaryJourney strong {
+  color: #fff;
+}
+.journeys a.primaryJourney:hover {
+  background: var(--ink);
+  border-color: var(--ink);
+}
 @media (max-width: 560px) {
   .journeys a {
     min-height: 36px;

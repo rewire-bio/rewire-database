@@ -46,14 +46,14 @@ export default function MfassV2Page() {
       <div className={styles.notice}><strong>Corrected result.</strong> {run.correction}</div>
       <p>MFASS tests exon recognition in a minigene assay. Of {run.cohort_variants.toLocaleString()} variants, {run.test_variants.toLocaleString()} were held out in {run.independent_test_groups} exon/gene groups; {run.test_positives} were splice-disrupting. The review capacity is {run.review_capacity} variants. <a href={run.assay_source_url} target="_blank" rel="noreferrer">Read the assay paper &rarr;</a></p>
       <h2 className="sec-head">Held-out results</h2>
-      <div className={styles.tableScroll}><table><thead><tr><th>Method</th><th>P@100</th><th>AP</th><th>AUROC</th><th>Coverage</th></tr></thead><tbody>
+      <div className={styles.tableScroll} tabIndex={0} role="region" aria-label="Held-out results"><table><thead><tr><th>Method</th><th>P@100</th><th>AP</th><th>AUROC</th><th>Coverage</th></tr></thead><tbody>
         {run.methods.map((method) => <tr key={method.id}><td><a href={`${run.benchmark_repo_url}/blob/${run.source_revision}/${method.result_file}`}><strong>{method.name}</strong></a></td><td>{fixed(method.precision_at_100)}</td><td>{fixed(method.average_precision)}</td><td>{fixed(method.auroc)}</td><td>{method.coverage}</td></tr>)}
       </tbody></table></div>
       <p>P@100 is the fraction of confirmed disruptions among the first 100 variants; AP is average precision across the ranking; AUROC is the area under the receiver operating characteristic curve.</p>
       <p>The corrected baseline found 61 confirmed disruptions in its first 100. This frozen DNABERT-2 pair-embedding and fixed head found 3; both scored every held-out variant. The unchanged SpliceAI and Pangolin specialist runs use genomic context and have incomplete coverage, so their point metrics are on their scored subsets.</p>
       <h2 className="sec-head">Paired difference</h2>
       <p>Each candidate minus the corrected baseline, on variants both scored. Intervals are 95% group-bootstrap intervals from {run.dnabert_minus_baseline.group_bootstrap_draws.toLocaleString()} draws over whole exon/gene groups.</p>
-      <div className={styles.tableScroll}><table><thead><tr><th>Candidate</th><th>Common variants</th><th>P@100 [95% interval]</th><th>AP [95% interval]</th><th>AUROC [95% interval]</th></tr></thead><tbody>
+      <div className={styles.tableScroll} tabIndex={0} role="region" aria-label="Paired differences"><table><thead><tr><th>Candidate</th><th>Common variants</th><th>P@100 [95% interval]</th><th>AP [95% interval]</th><th>AUROC [95% interval]</th></tr></thead><tbody>
         {run.specialist_comparisons.map((comparison) => <tr key={comparison.name}><td>{comparison.name}</td><td>{comparison.common_variants.toLocaleString()}</td><td>{interval(comparison.precision_at_100)}</td><td>{interval(comparison.average_precision)}</td><td>{interval(comparison.auroc)}</td></tr>)}
         <tr><td>DNABERT-2 minus baseline</td><td>{run.dnabert_minus_baseline.common_variants.toLocaleString()}</td><td>{interval(run.dnabert_minus_baseline.precision_at_100)}</td><td>{interval(run.dnabert_minus_baseline.average_precision)}</td><td>{interval(run.dnabert_minus_baseline.auroc)}</td></tr>
       </tbody></table></div>

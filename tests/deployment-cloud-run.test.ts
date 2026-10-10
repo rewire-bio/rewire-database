@@ -40,7 +40,7 @@ function gcloud(deployed = { status: { latestCreatedRevisionName: "rev-new", tra
 
 describe("Cloud Run frontend deployment", () => {
   it("requires an explicit project, image repository, runtime identity and bounded maximum", () => {
-    expect(cloudRunConfig(env).maxInstances).toBe(3);
+    expect(cloudRunConfig(env).maxInstances).toBe(6);
     for (const change of [{ GCLOUD_PROJECT: "other" }, { CLOUD_RUN_IMAGE_REPOSITORY: "docker.io/x" }, { CLOUD_RUN_SERVICE_ACCOUNT: "x@other.iam.gserviceaccount.com" },
       { CLOUD_RUN_MAX_INSTANCES: "0" }, { CLOUD_RUN_MAX_INSTANCES: "50" }])
       expect(() => cloudRunConfig({ ...env, ...change })).toThrow();
@@ -51,7 +51,7 @@ describe("Cloud Run frontend deployment", () => {
     expect(args).toContain("--no-traffic");
     expect(args).toContain("--cpu-throttling");
     expect(value("--min-instances")).toBe("0");
-    expect(value("--max-instances")).toBe("3");
+    expect(value("--max-instances")).toBe("6");
     expect(value("--region")).toBe("europe-west2");
     expect(args.join(" ")).not.toMatch(/load-balanc|--min-instances [1-9]/);
   });

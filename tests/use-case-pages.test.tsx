@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
 import type { CatalogueRecord } from "../shared/omics/catalogue-query";
 import type { ResolvedMapping, UseCase } from "../shared/omics/use-cases";
-import { evidenceSummaryParts, summariseUseCaseEvidence } from "../lib/use-case-summary";
+import { evidenceCountParts, evidenceSummaryParts, summariseUseCaseEvidence } from "../lib/use-case-summary";
 
 vi.mock("next/navigation", () => ({ useSearchParams: () => new URLSearchParams(""), notFound: () => { throw new Error("not found"); } }));
 
@@ -49,10 +49,24 @@ describe("use-case evidence summary", () => {
       mapping("c", "proxy", ["c9"], "needs_review"),
       mapping("d", "outside_scope", ["c8"]),
     ], 2);
-    expect(summary).toEqual({ endpoints: 2, configurations: 3, relevance: "mixed", gaps: 2 });
-    expect(evidenceSummaryParts(summary)).toEqual(["2 evaluated endpoints", "3 tested configurations", "Direct and proxy evidence", "2 recorded evidence gaps"]);
+    expect(summary).toEqual({ endpoints: 2, configurations: 3, relevance: "mixed", gaps: 2, comparisons: 3, held: 1, tools: 4 });
+    expect(evidenceSummaryParts(summary)).toEqual(["3 comparisons shown", "1 held for review", "4 tools", "Direct and proxy evidence", "2 recorded evidence gaps"]);
     expect(summariseUseCaseEvidence([], 0).relevance).toBe("none");
-    expect(evidenceSummaryParts(summariseUseCaseEvidence([mapping("a", "proxy", ["c1"])], 1))).toEqual(["1 evaluated endpoint", "1 tested configuration", "Proxy evidence only", "1 recorded evidence gap"]);
+    expect(evidenceSummaryParts(summariseUseCaseEvidence([mapping("a", "proxy", ["c1"])], 1))).toEqual(["1 comparison shown", "1 tool", "Proxy evidence only", "1 recorded evidence gap"]);
+  });
+});
+
+describe("use-case counts", () => {
+  it("gives index cards the same counts, in the same units, as the use-case page header", async () => {
+    const mappings = [
+      mapping("a", "proxy", ["c1", "c2"]),
+      mapping("b", "direct", ["c2", "c3"]),
+      mapping("c", "proxy", ["c9"], "needs_review"),
+    ];
+    const html = await detail(base, mappings);
+    const header = text(html.match(/<dt>Evidence in this release<\/dt><dd>([\s\S]*?)<\/dd>/)![1]);
+    expect(header).toBe(evidenceCountParts(summariseUseCaseEvidence(mappings, base.evidence_gaps.length)).join(" · "));
+    expect(header).toBe("2 comparisons shown · 1 held for review · 3 tools");
   });
 });
 
@@ -125,7 +139,7 @@ describe("use-case index", () => {
     expect(html.indexOf("Use cases, benchmarks or models?")).toBeLessThan(explorer);
     expect(html).toContain('aria-pressed="true"');
     expect(text(html)).toContain("Cells and tissues 1");
-    expect(text(html)).toContain("Opens with 1 evaluated endpoint · 1 tested configuration · Proxy evidence only");
+    expect(text(html)).toContain("Opens with 1 comparison shown · 1 tool · Proxy evidence only");
     expect(html).toContain('aria-describedby="use-case-context-hint"');
   });
 });

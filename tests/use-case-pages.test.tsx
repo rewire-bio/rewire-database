@@ -21,7 +21,7 @@ function mapping(id: string, relevance: ResolvedMapping["relevance"], configurat
 }
 
 const state = vi.hoisted(() => ({ entry: undefined as unknown as UseCase, mappings: [] as ResolvedMapping[] }));
-vi.mock("../lib/catalogue-build", () => ({ buildCatalogue: () => ({ query: { get: () => undefined } }) }));
+vi.mock("../lib/catalogue-build", () => ({ buildCatalogue: () => ({ query: { get: () => undefined, record: () => null } }) }));
 vi.mock("../lib/use-cases-build", () => ({
   buildUseCases: () => ({
     entries: [state.entry],
@@ -39,6 +39,8 @@ async function detail(entry: UseCase, mappings: ResolvedMapping[] = [mapping("m1
   const { default: Page } = await import("../app/use-cases/[slug]/page");
   return renderToStaticMarkup(<Page params={{ slug: entry.slug }} />);
 }
+/** Markup with CSS-module class names reduced to their local names ("_summaryLead_1a2b3" to "summaryLead"). */
+const plain = (html: string) => html.replace(/class="([^"]*)"/g, (_, names: string) => `class="${names.split(" ").map((n) => n.replace(/^_(.+)_[a-z0-9]+$/i, "$1")).join(" ")}"`);
 const text = (html: string) => html.replace(/<[^>]+>/g, "").replace(/&#x27;/g, "'").trim();
 
 describe("use-case evidence summary", () => {
@@ -126,20 +128,59 @@ describe("use-case detail template", () => {
 });
 
 describe("use-case index", () => {
-  it("explains use cases with a concrete example before the explorer and offers area browsing", async () => {
+  it("puts the explorer before the explanation and offers area browsing", async () => {
     state.entry = { ...base, slug: "genetic-perturbation-response" }; state.mappings = [mapping("m1", "proxy", ["c1"])];
     const { default: Page } = await import("../app/use-cases/page");
     const html = renderToStaticMarkup(<Page />);
     expect(html).toContain('href="https://rewirebio.io/blog/genomic-foundation-models-in-2026/"');
     expect(html).toContain('href="/use-cases/genetic-perturbation-response/#related-articles"');
     expect(html.match(/<h1\b/g)).toHaveLength(1);
+    // The list and its filters come first; the explainer follows for readers who need it.
     const explorer = html.indexOf('role="search"');
-    expect(html.indexOf("What a use case shows")).toBeLessThan(explorer);
-    expect(html.indexOf("Example")).toBeLessThan(explorer);
-    expect(html.indexOf("Use cases, benchmarks or models?")).toBeLessThan(explorer);
+    expect(explorer).toBeGreaterThan(0);
+    expect(html.indexOf("What a use case shows")).toBeGreaterThan(explorer);
+    expect(html.indexOf("Use cases, benchmarks or models?")).toBeGreaterThan(explorer);
     expect(html).toContain('aria-pressed="true"');
     expect(text(html)).toContain("Cells and tissues 1");
     expect(text(html)).toContain("Opens with 1 comparison shown · 1 tool · Proxy evidence only");
     expect(html).toContain('aria-describedby="use-case-context-hint"');
+  });
+});
+
+describe("use-case decision view", () => {
+  const result = (metric: string, value: string, printed = value) => ({ result: { ...record(`r-${metric}-${value}`, "result"), attributes: { metric, printed_value: printed, numeric_value: value, metric_direction: "higher" } } });
+  function scored(id: string, rows: [string, string][]): ResolvedMapping {
+    const m = mapping(id, "direct", []);
+    return { ...m, evaluations: rows.map(([config, value]) => ({ evaluation: record(`e-${config}`, "evaluation"), configurations: [record(config, "configuration")], results: [result("recall", value)], results_total: 1, results_next_cursor: null })) } as unknown as ResolvedMapping;
+  }
+
+  it("leads with the summary's first sentence, then the inputs as a list, without changing the reviewed text", async () => {
+    const summary = { status: "reviewed", text: "Tool A recovered most variants. Smith et al. 2024 scored three tools. Values differ by cohort." };
+    const html = plain(await detail({ ...base, inputs: ["Aligned reads", "The size range"], summary } as UseCase));
+    expect(html).toContain('<p class="summaryLead">Tool A recovered most variants.</p><p>Smith et al. 2024 scored three tools. Values differ by cohort.</p>');
+    expect(html.indexOf('id="summary"')).toBeLessThan(html.indexOf("You bring"));
+    expect(html).toContain('<ul class="bringList"><li>Aligned reads</li><li>The size range</li></ul>');
+  });
+
+  it("links each tool chip, separates its type for screen readers and says when the type is not recorded", async () => {
+    const html = plain(await detail(base));
+    expect(html).toContain('<li><a href="/database/configuration/c1/?return_to=%2Fuse-cases%2Fresearch-question%2F">Fixture c1</a><span class="srOnly">, </span><span class="toolMeta">type not recorded</span></li>');
+  });
+
+  it("shows a single result as a metric list, without promising a highlight", async () => {
+    const html = plain(await detail(base, [scored("one", [["c1", "0.9"]])]));
+    expect(text(html)).toContain("Single reported result.");
+    expect(html).toContain('class="metricList"');
+    expect(html).not.toContain("<table");
+    expect(text(html)).not.toContain("The best value in each column is highlighted.");
+  });
+
+  it("highlights only when a value is marked, and folds long tables behind a disclosure", async () => {
+    const rows = Array.from({ length: 20 }, (_, i): [string, string] => [`c${String(i).padStart(2, "0")}`, String(0.5 + i / 100)]);
+    const html = plain(await detail(base, [scored("sweep", rows)]));
+    expect(text(html)).toContain("Showing the top 10 of 20 rows. The best value in each column is highlighted.");
+    expect(html).toContain('<tbody class="extraRows">');
+    expect(text(html)).toContain("Show all 20 rows");
+    expect(html.match(/<tr>/g)).toHaveLength(21);
   });
 });

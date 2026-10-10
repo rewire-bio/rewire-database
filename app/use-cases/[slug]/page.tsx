@@ -12,7 +12,8 @@ import SectionNavigation from "@/components/catalogue/SectionNavigation";
 import { fullUseCaseDetail } from "@/lib/use-cases-build";
 import { researchAreaLabel } from "@/lib/omics-browse";
 import { socialMetadata } from "@/lib/catalogue-sharing";
-import { summariseUseCaseEvidence } from "@/lib/use-case-summary";
+import { summariseUseCaseEvidence, summaryParagraphs } from "@/lib/use-case-summary";
+import { buildCatalogue } from "@/lib/catalogue-build";
 import { buildComparisons, heldJudgements, methodTypeLabel, toolsCompared } from "@/lib/use-case-comparisons";
 import styles from "@/components/catalogue/UseCases.module.css";
 
@@ -35,7 +36,9 @@ export default function UseCasePage({ params }: { params: Params }) {
   const summary = summariseUseCaseEvidence(detail.mappings, entry.evidence_gaps.length);
   const comparisons = buildComparisons(detail.mappings);
   const held = heldJudgements(detail.mappings);
-  const tools = toolsCompared(comparisons);
+  const { query } = buildCatalogue();
+  const tools = toolsCompared(comparisons, (id) => query.record?.(id) ?? null);
+  const configurations = new Set(comparisons.flatMap((c) => c.rows.map((r) => r.id))).size;
   // A plain-language summary of the evidence, reviewed like any other claim (older releases have none).
   const evidenceSummary = (entry as typeof entry & { summary?: { text: string; status: "reviewed" | "draft" } }).summary;
   const sections = [
@@ -48,6 +51,17 @@ export default function UseCasePage({ params }: { params: Params }) {
     ...(entry.collection_plan && !comparisons.length ? [{ id: "collection-plan", label: "Evidence collection plan" }] : []),
     { id: "details", label: "Question, sources and review" },
   ];
+  // After the summary, so the answer comes first on a phone; the index shows the same inputs as a list.
+  const cards = <dl className={styles.cardsRow}>
+    <div><dt>You bring</dt><dd><ul className={styles.bringList}>{entry.inputs.map((input) => <li key={input}>{input}</li>)}</ul></dd></div>
+    <div><dt>You want</dt><dd>{entry.output}</dd></div>
+    <div><dt>Evidence in this release</dt><dd>
+      {comparisons.length} comparison{comparisons.length === 1 ? "" : "s"} shown
+      {held.length > 0 && <> · {held.length} held for review</>}
+      {tools.length > 0 && <> · {tools.length} tool{tools.length === 1 ? "" : "s"}</>}
+      {configurations > tools.length && <> · {configurations} configurations</>}
+    </dd></div>
+  </dl>;
   const heading = (id: string) => sections.find((section) => section.id === id)!.label;
   return <>
     <PageHeader
@@ -56,28 +70,26 @@ export default function UseCasePage({ params }: { params: Params }) {
       eyebrow={["Use case", researchAreaLabel(entry.area), clinical ? "Research and clinical research" : "Research only"]}
       title={entry.title}
       intro={entry.question}
-    >
-      <dl className={styles.cardsRow}>
-        <div><dt>You bring</dt><dd>{entry.inputs.join("; ")}</dd></div>
-        <div><dt>You want</dt><dd>{entry.output}</dd></div>
-        <div><dt>Evidence in this release</dt><dd>
-          {comparisons.length} comparison{comparisons.length === 1 ? "" : "s"} shown
-          {held.length > 0 && <> · {held.length} held for review</>}
-          {tools.length > 0 && <> · {tools.length} tool{tools.length === 1 ? "" : "s"}</>}
-        </dd></div>
-      </dl>
-    </PageHeader>
+    />
     <div className="wrap">
       <SectionNavigation sections={sections} />
       <div className={`content ${styles.detail}`}>
         {evidenceSummary && <section id="summary" className={styles.section}>
           <h2>{heading("summary")} {evidenceSummary.status === "draft" && <span className={styles.draftBadge}>Draft summary, pending review</span>}</h2>
-          <div className={styles.summaryBox}><p>{evidenceSummary.text}</p></div>
+          <div className={styles.summaryBox}>{summaryParagraphs(evidenceSummary.text).map((paragraph, i) => <p key={i} className={i === 0 ? styles.summaryLead : undefined}>{paragraph}</p>)}</div>
         </section>}
+        {cards}
         {tools.length > 0 && <section id="tools" className={styles.section}>
           <h2>{heading("tools")}</h2>
           <ul className={styles.toolList}>
-            {tools.map((tool) => <li key={tool.id}>{tool.name}{tool.methodTypes.length > 0 && <span className={styles.toolMeta}>{tool.methodTypes.map(methodTypeLabel).join(", ")}</span>}</li>)}
+            {tools.map((tool) => <li key={tool.id}>
+              <a href={`${tool.href}?return_to=${encodeURIComponent(path)}`}>{tool.name}</a>
+              <span className={styles.srOnly}>, </span>
+              <span className={styles.toolMeta}>
+                {tool.methodTypes.length ? tool.methodTypes.map(methodTypeLabel).join(", ") : "type not recorded"}
+                {tool.configurations > 1 && `, ${tool.configurations} configurations`}
+              </span>
+            </li>)}
           </ul>
         </section>}
         <section id="evidence" className={styles.section}>

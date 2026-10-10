@@ -38,10 +38,12 @@ export default function UseCasesPage() {
       eyebrow={["Use cases", `${entries.length} ${entries.length === 1 ? "question" : "questions"} in this release`]}
       title="Start from a biological question"
       intro="A use case starts with a research question and your data, then explains the evidence we plan to gather, any model comparisons already collected and what they can establish for your decision."
-    >
-      <a className={styles.jump} href="#browse-heading">Browse all {entries.length} use cases</a>
-    </PageHeader>
+    />
     <div className="wrap content">
+      <section className={styles.section} aria-labelledby="browse-heading">
+        <h2 id="browse-heading">Browse use cases</h2>
+        <UseCaseExplorer initial={initial} summaries={summaries} areaCounts={areaCounts} />
+      </section>
       <section id="how-it-works" className={styles.section} aria-labelledby="how-it-works-heading">
         <h2 id="how-it-works-heading">What a use case shows</h2>
         <div className={styles.explainer}>
@@ -70,10 +72,6 @@ export default function UseCasesPage() {
         </dl>
         <h3>Research relevance and clinical evidence</h3>
         <p className={styles.muted}>Each question states its setting, endpoint and transfer limitations. A relevant assay result does not by itself establish clinical performance. Clinical research pages explain which patient or workflow questions the available evidence leaves unanswered.</p>
-      </section>
-      <section className={styles.section} aria-labelledby="browse-heading">
-        <h2 id="browse-heading">Browse use cases</h2>
-        <UseCaseExplorer initial={initial} summaries={summaries} areaCounts={areaCounts} />
       </section>
       <section className={styles.section} aria-labelledby="about-heading">
         <h2 id="about-heading">About this collection</h2>

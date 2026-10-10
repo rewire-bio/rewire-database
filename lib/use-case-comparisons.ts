@@ -108,10 +108,12 @@ function measurements(evaluation: ResolvedMapping["evaluations"][number]): Measu
 }
 
 /** Metrics printed as a percentage anywhere on the page; their fractions are shown as percentages too. */
+// Metrics that differ only in a threshold ("sensitivity at 95% / 98% specificity") share one scale.
+const scaleKey = (metric: string) => metric.replace(/-at-\d+(?:-\d+)?-percent-/, "-at-n-percent-");
 function percentMetrics(mappings: ResolvedMapping[]) {
   const metrics = new Set<string>();
   for (const m of mappings) for (const e of m.evaluations) for (const r of measurements(e))
-    if (r.unit === "percent" && r.numeric !== null) metrics.add(r.metric);
+    if (r.unit === "percent" && r.numeric !== null) metrics.add(scaleKey(r.metric));
   return metrics;
 }
 
@@ -119,12 +121,29 @@ type Draft = ComparisonCell & { reading: Reading | null };
 const NOT_REPORTED: ShownValue = { text: "Not reported", missing: true };
 const emptyCell = (): Draft => ({ printed: null, numeric: null, best: false, shown: NOT_REPORTED, qualifier: null, secondary: [], reading: null });
 
-/** Segments ("; "-separated) of each qualifier that the others do not share. */
+/** What each qualifier adds over the others: first the "; "-separated segments they do not share,
+ * then the words between their shared opening and closing words ("25 genes" from "candidate gene
+ * set of 25 genes including the causative gene"). A lone differing word keeps one neighbour, so a
+ * number keeps its noun ("25 genes") and an identifier its label ("sample SRR11012403"). */
 function distinguishing(qualifiers: string[]) {
   const parts = qualifiers.map((q) => q.split(/;\s*/));
-  return parts.map((p, i) => {
-    const own = p.filter((segment) => !parts.every((other) => other.includes(segment))).join("; ");
-    return own || qualifiers[i];
+  const segments = parts.map((p, i) => p.filter((segment) => !parts.every((other) => other.includes(segment))).join("; ") || qualifiers[i]);
+  if (new Set(segments).size < 2) return segments;
+  const words = segments.map((s) => s.split(" "));
+  const shortest = Math.min(...words.map((w) => w.length));
+  let head = 0, tail = 0;
+  while (head < shortest && words.every((w) => w[head] === words[0][head])) head++;
+  while (tail < shortest - head && words.every((w) => w[w.length - 1 - tail] === words[0][words[0].length - 1 - tail])) tail++;
+  if (!head && !tail) return segments;
+  return words.map((w, i) => {
+    let start = head, end = w.length - tail;
+    if (end - start < 1) return segments[i];
+    if (end - start === 1) {
+      if (/^\d/.test(w[start]) && end < w.length) end++;
+      else if (start > 0) start--;
+    }
+    // "(reads >0)" is shown inside the label's own brackets, so drop its outer pair.
+    return w.slice(start, end).join(" ").replace(/^\(([^()]*)\)$/, "$1");
   });
 }
 
@@ -137,7 +156,7 @@ function secondaryValues(measured: Measured[], percent: Set<string>): Draft["sec
   return measured.map((r) => {
     const name = SHORT[r.metric] ?? metricLabel(r.metric);
     const qualifier = repeated(r.metric) && r.qualifier ? own.get(r.metric)!.shift()! : GENERIC.has(r.metric) ? r.qualifier : null;
-    const shown = formatReading(readValue(r, percent.has(r.metric)));
+    const shown = formatReading(readValue(r, percent.has(scaleKey(r.metric))));
     const title = [r.qualifier && r.qualifier !== qualifier ? r.qualifier : "", shown.title].filter(Boolean).join(". ") || undefined;
     return { label: qualifier ? `${name} (${acronymCase(qualifier)})` : name, text: shown.text, missing: shown.missing, ...(title ? { title } : {}) };
   });
@@ -253,7 +272,7 @@ export function buildComparisons(mappings: ResolvedMapping[]): Comparison[] {
           const row = rows.get(configuration.id) ?? { ...rowBase(configuration, e.evaluation), cells: columns.map(emptyCell) };
           const cell: Draft = {
             ...emptyCell(), printed: lead?.printed ?? null, numeric: lead?.numeric ?? null,
-            reading: lead ? readValue(lead, percent.has(lead.metric)) : null,
+            reading: lead ? readValue(lead, percent.has(scaleKey(lead.metric))) : null,
             qualifier: leads.length > 1 && lead.qualifier ? acronymCase(distinguishing(leads.map((r) => r.qualifier ?? ""))[0]) : null,
             secondary: secondaryValues(measured.filter((r) => r !== lead), percent),
           };
@@ -277,7 +296,7 @@ export function buildComparisons(mappings: ResolvedMapping[]): Comparison[] {
         const row = rows.get(configuration.id) ?? { ...rowBase(configuration, e.evaluation), cells: columns.map(emptyCell) };
         columns.forEach((column, i) => {
           const r = measured.find((x) => x.metric === column.metric && x.qualifier === column.qualifier);
-          if (r) row.cells[i] = { ...emptyCell(), printed: r.printed, numeric: r.numeric, reading: readValue(r, percent.has(r.metric)) } as Draft;
+          if (r) row.cells[i] = { ...emptyCell(), printed: r.printed, numeric: r.numeric, reading: readValue(r, percent.has(scaleKey(r.metric))) } as Draft;
         });
         rows.set(configuration.id, row);
       }

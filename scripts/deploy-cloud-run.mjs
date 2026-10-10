@@ -16,7 +16,7 @@ export function cloudRunConfig(env = process.env) {
     project: env.GCLOUD_PROJECT,
     repository: env.CLOUD_RUN_IMAGE_REPOSITORY,
     serviceAccount: env.CLOUD_RUN_SERVICE_ACCOUNT,
-    maxInstances: Number(env.CLOUD_RUN_MAX_INSTANCES || 3),
+    maxInstances: Number(env.CLOUD_RUN_MAX_INSTANCES || 6),
   };
   if (config.project !== 'rewire-it') throw new Error('Frontend deployment requires the explicit production project');
   if (!/^europe-west2-docker\.pkg\.dev\/rewire-it\/[a-z0-9-]+\/[a-z0-9-]+$/.test(config.repository || ''))

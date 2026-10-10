@@ -105,7 +105,7 @@ A Worker- or backend-only change reuses the image of the revision serving traffi
 npm run deploy    # scripts/deploy-independent-frontend.mjs: run only by the publication workflow
 ```
 
-The Cloud Run service is `rewire-database-web` in `europe-west2`. It uses request-based billing (`--cpu-throttling`), min 0 and max `CLOUD_RUN_MAX_INSTANCES` (default 3, at most 10) instances, unauthenticated ingress for the Worker, and no Google load balancer. See [docs/independent-frontend.md](docs/independent-frontend.md) for the one-time bootstrap and required configuration.
+The Cloud Run service is `rewire-database-web` in `europe-west2`. It uses request-based billing (`--cpu-throttling`), min 0 and max `CLOUD_RUN_MAX_INSTANCES` (default 6, at most 10) instances, unauthenticated ingress for the Worker, and no Google load balancer. See [docs/independent-frontend.md](docs/independent-frontend.md) for the one-time bootstrap and required configuration.
 
 Make data edits in the data repository. New releases reach the site automatically:
 

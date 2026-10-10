@@ -22,7 +22,7 @@ Repository variables (no new infrastructure is created by this code):
 | --- | --- |
 | `CLOUD_RUN_IMAGE_REPOSITORY` | Existing Artifact Registry path, `europe-west2-docker.pkg.dev/rewire-it/<repo>/rewire-database-web` |
 | `CLOUD_RUN_SERVICE_ACCOUNT` | Frontend runtime identity in `rewire-it`, with no project roles (the frontend only calls public endpoints) |
-| `CLOUD_RUN_MAX_INSTANCES` | Upper bound, default 3, at most 10 |
+| `CLOUD_RUN_MAX_INSTANCES` | Upper bound, default 6, at most 10. Idle instances cost nothing; a low cap returns 503 when a burst arrives during a cold start |
 | `CLOUDFLARE_PUBLIC_ORIGIN`, `CLOUDFLARE_DEPLOY_ENABLED`, `FIREBASE_BACKEND_DEPLOY_ENABLED` | As before |
 
 Secrets: `CLOUDFLARE_ACCOUNT_ID` and `CLOUDFLARE_API_TOKEN`, as before. The deploy service account also needs permission to push to the repository, deploy the service and act as the runtime account. `CLOUDFLARE_ASSET_LIMIT` is no longer used: the Worker uploads no assets.

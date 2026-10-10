@@ -13,6 +13,8 @@ import { recordBreadcrumbs } from "../lib/catalogue-sharing";
 import { catalogueIndexPaths, withoutVerifiedAliases } from "../lib/catalogue-index";
 import { recordPageMetadata } from "../lib/record-page";
 import { localRecordPage } from "../lib/record-page-local";
+import { resultPageTitle } from "../lib/result-labels";
+import type { ResultRecordPage } from "../lib/record-pages";
 import { getResearch } from "../shared/omics/research";
 import { downloadLocations, downloadUrls } from "./download-locations.mjs";
 import { checkPageMetadata, checkSitemap, checkSocialImage } from "./seo/check-page-metadata";
@@ -87,13 +89,14 @@ async function main() {
         const [key, record] = item;
         const kind = key.split(":")[0];
         const pathname = kind === record.kind ? recordHref(record) : `/database/${kind}/${record.id}/`;
-        const metadata = kind === "result" || kind === "evaluation"
-          ? recordPageMetadata(localRecordPage(kind, record.id)!)
-          : recordSearchMetadata(byId.get(record.id)!, live);
+        const prepared = kind === "result" || kind === "evaluation" ? localRecordPage(kind, record.id)! : null;
+        const metadata = prepared ? recordPageMetadata(prepared) : recordSearchMetadata(byId.get(record.id)!, live);
+        // Result pages name the measurement (metric, tool, dataset) rather than the record's slug.
+        const crumb = prepared?.route_kind === "result" ? resultPageTitle(prepared as ResultRecordPage) : undefined;
         const page = await html(pathname);
         failures.push(...checkPageMetadata(page, {
           path: pathname, canonical: String(metadata.alternates!.canonical), title: String(metadata.title), description: String(metadata.description),
-          indexable: recordIsIndexable(record), inSitemap: kind === record.kind && recordIsIndexable(record), social: true, breadcrumbs: recordBreadcrumbs(record),
+          indexable: recordIsIndexable(record), inSitemap: kind === record.kind && recordIsIndexable(record), social: true, breadcrumbs: recordBreadcrumbs(record, crumb),
         }, sitemap.urls));
         if (!page.includes('id="evidence"')) failures.push(`Missing evidence table: ${pathname}`);
       }

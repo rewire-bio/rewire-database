@@ -15,7 +15,7 @@ import SectionNavigation, {
   BrowseReturn,
 } from "@/components/catalogue/SectionNavigation";
 import { countLabel, singularKindLabels, predictiveKinds, groupEntities, testedEntities, evaluationEntities, datasetEntities } from "@/lib/omics-browse";
-import { metricName, procedureReference, resultTitle } from "@/lib/result-labels";
+import { metricName, procedureReference, resultPageTitle } from "@/lib/result-labels";
 import type { ResultRecordPage } from "@/lib/record-page";
 import styles from "../../database.module.css";
 
@@ -90,7 +90,7 @@ export function ResultDetail({ page }: { page: ResultRecordPage }) {
     ...benchmarkLinks,
     ...datasetLinks,
   ]);
-  const title = resultTitle(record, modelLinks, datasetLinks);
+  const title = resultPageTitle(page);
   const procedure = procedureReference(evaluated?.attributes.protocol, (id) => context.get(id));
   const identitySubject = page.identity_subject ?? undefined;
   const proposals = [...detail.direct, ...detail.reverse].filter(

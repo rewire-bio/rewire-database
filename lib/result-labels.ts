@@ -1,5 +1,7 @@
 import { catalogueText } from "./catalogue-text";
 import { acronymCase, metricLabel } from "./metric-labels";
+import { datasetEntities, testedEntities } from "./omics-browse";
+import type { ResultRecordPage } from "./record-pages";
 import type { CatalogueRecord } from "../shared/omics/catalogue-query";
 
 /** A metric's display name with its recorded qualifier, e.g. "F1 (SNV only)". */
@@ -35,4 +37,10 @@ export function procedureReference<T extends Pick<CatalogueRecord, "id" | "kind"
   const record = resolve(procedure);
   if (record) return { record };
   return /^[a-z0-9]+(?:[-_.][a-z0-9]+)+$/i.test(procedure) && !/\s/.test(procedure) ? null : { text: procedure };
+}
+
+/** The heading and breadcrumb of a result page, from its first result row. */
+export function resultPageTitle(page: Pick<ResultRecordPage, "detail" | "first">): string {
+  const row = page.first;
+  return resultTitle(page.detail.record, row ? testedEntities(row) : [], row ? datasetEntities(row) : []);
 }

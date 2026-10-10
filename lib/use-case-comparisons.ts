@@ -1,22 +1,33 @@
 import type { ResolvedMapping } from "@/shared/omics/use-cases";
 import type { CatalogueRecord } from "@/shared/omics/catalogue-query";
+import { recordHref } from "@/lib/omics";
+import { acronymCase, metricLabel } from "@/lib/metric-labels";
+import { columnDecimals, formatReading, readValue, type Reading } from "@/lib/use-case-values";
 
 /** How a judgement asks the page to show its protocol (optional; older releases have none). */
 type Presentation = { group: string; title: string; stratum_label?: string; stratum_order?: number; headline_metric?: string };
 const presentationOf = (m: ResolvedMapping) => (m as ResolvedMapping & { presentation?: Presentation }).presentation;
 
+/** A value as the page shows it, with the printed value (and any source note) in `title` when they differ. */
+export type ShownValue = { text: string; title?: string; missing: boolean };
 export type ComparisonCell = {
   /** Printed value of the headline metric, exactly as recorded, or null when none was recorded. */
   printed: string | null;
   numeric: number | null;
   best: boolean;
-  /** Other metrics of the same evaluation, for strata tables ("R 0.873 · P 0.986"). */
-  secondary: { label: string; printed: string }[];
+  /** The value formatted for its column (see use-case-values). */
+  shown: ShownValue;
+  /** What the value applies to, when the evaluation reports the headline metric more than once ("sample A"). */
+  qualifier: string | null;
+  /** Other metrics of the same evaluation, for strata tables ("R 0.873", "Count (sample A) 12"). */
+  secondary: (ShownValue & { label: string })[];
 };
 export type ComparisonRow = {
   id: string;
   /** The tool as the source printed it (reported_name), else the configuration's name. */
   name: string;
+  /** What tells this row apart from others with the same name in its table (from the configuration's name). */
+  detail: string | null;
   /** The model, method or pipeline this configuration belongs to, for grouping tools across studies. */
   parentId: string | null;
   methodTypes: string[];
@@ -27,8 +38,10 @@ export type ComparisonColumn = { label: string; metric: string; qualifier: strin
 export type Comparison = {
   id: string;
   title: string;
-  /** What the protocol measures, from the judgement. */
+  /** What the protocol measures, from the judgement; empty when the columns have different endpoints. */
   endpoint: string;
+  /** Each column's own endpoint, when the columns come from judgements with different endpoints. */
+  columnEndpoints: { label: string; endpoint: string }[];
   /** Direct when every judgement in the group is direct, else proxy. */
   relevance: "direct" | "proxy";
   layout: "strata" | "metrics";
@@ -39,14 +52,21 @@ export type Comparison = {
   limitations: string[];
   protocols: CatalogueRecord[];
   mappingIds: string[];
+  /** One-line explanations of the abbreviations and uncertainty notation used in the table. */
+  legend: string[];
 };
 
-const METRIC_LABELS: Record<string, string> = {
-  "f1-score": "F1", recall: "Recall", precision: "Precision", sensitivity: "Sensitivity", specificity: "Specificity",
-  auroc: "AUROC", auprc: "AUPRC", accuracy: "Accuracy", "spearman-correlation": "Spearman", "pearson-correlation": "Pearson",
-};
 const SHORT: Record<string, string> = { recall: "R", precision: "P", "f1-score": "F1", sensitivity: "Se", specificity: "Sp" };
-export const metricLabel = (metric: string) => METRIC_LABELS[metric] ?? metric.replace(/-/g, " ");
+const SHORT_MEANING: Record<string, string> = { R: "recall", P: "precision", Se: "sensitivity", Sp: "specificity" };
+/** Metrics that mean nothing without their qualifier ("count of what?"). */
+const GENERIC = new Set(["count", "proportion"]);
+const UNCERTAINTY: Record<string, string> = {
+  standard_deviation: "± is a standard deviation.",
+  standard_error: "The value after ± or in brackets is a standard error.",
+  confidence_interval: "Ranges in brackets are confidence intervals.",
+  credible_interval: "Ranges in brackets are credible intervals.",
+  unresolved_spread: "The source does not say whether ± is a standard deviation, a standard error or a range.",
+};
 const ORIGIN_LABELS: Record<string, string> = {
   author_reported: "Author-reported", independent_paper: "Independent study", rewire_run: "Rewire run",
   paper_compilation: "Compiled from papers", unreported: "Origin not reported",
@@ -66,15 +86,87 @@ const numberOf = (value: unknown) => {
 const direction = (value: unknown): ComparisonColumn["direction"] =>
   value === "higher" || value === "lower" ? value : "unknown";
 
-type Measured = { metric: string; qualifier: string | null; printed: string; numeric: number | null; direction: ComparisonColumn["direction"] };
+type Measured = {
+  metric: string; qualifier: string | null; printed: string; numeric: number | null; direction: ComparisonColumn["direction"];
+  unit: string | null; uncertainty: string | null; anomaly: string | null; undefinedReason: string | null;
+};
 function measurements(evaluation: ResolvedMapping["evaluations"][number]): Measured[] {
-  return evaluation.results.map(({ result }) => ({
-    metric: text(result.attributes.metric),
-    qualifier: text(result.attributes.metric_qualifier) || null,
-    printed: text(result.attributes.printed_value),
-    numeric: numberOf(result.attributes.numeric_value),
-    direction: direction(result.attributes.metric_direction),
-  }));
+  return evaluation.results.map(({ result }) => {
+    const a = result.attributes;
+    return {
+      metric: text(a.metric),
+      qualifier: text(a.metric_qualifier) || null,
+      printed: text(a.printed_value),
+      numeric: numberOf(a.numeric_value),
+      direction: direction(a.metric_direction),
+      unit: text(a.unit) || null,
+      uncertainty: text((a.uncertainty as { type?: unknown } | undefined)?.type) || null,
+      anomaly: text(a.source_anomaly) || null,
+      undefinedReason: text(a.undefined_reason) || null,
+    };
+  });
+}
+
+/** Metrics printed as a percentage anywhere on the page; their fractions are shown as percentages too. */
+function percentMetrics(mappings: ResolvedMapping[]) {
+  const metrics = new Set<string>();
+  for (const m of mappings) for (const e of m.evaluations) for (const r of measurements(e))
+    if (r.unit === "percent" && r.numeric !== null) metrics.add(r.metric);
+  return metrics;
+}
+
+type Draft = ComparisonCell & { reading: Reading | null };
+const NOT_REPORTED: ShownValue = { text: "Not reported", missing: true };
+const emptyCell = (): Draft => ({ printed: null, numeric: null, best: false, shown: NOT_REPORTED, qualifier: null, secondary: [], reading: null });
+
+/** Segments ("; "-separated) of each qualifier that the others do not share. */
+function distinguishing(qualifiers: string[]) {
+  const parts = qualifiers.map((q) => q.split(/;\s*/));
+  return parts.map((p, i) => {
+    const own = p.filter((segment) => !parts.every((other) => other.includes(segment))).join("; ");
+    return own || qualifiers[i];
+  });
+}
+
+/** The other metrics of one evaluation, each labelled with what tells it apart and with its unit. */
+function secondaryValues(measured: Measured[], percent: Set<string>): Draft["secondary"] {
+  const repeated = (metric: string) => measured.filter((r) => r.metric === metric).length > 1;
+  const byMetric = new Map<string, string[]>();
+  for (const r of measured) if (r.qualifier && repeated(r.metric)) byMetric.set(r.metric, [...(byMetric.get(r.metric) || []), r.qualifier]);
+  const own = new Map([...byMetric].map(([metric, qualifiers]) => [metric, distinguishing(qualifiers)]));
+  return measured.map((r) => {
+    const name = SHORT[r.metric] ?? metricLabel(r.metric);
+    const qualifier = repeated(r.metric) && r.qualifier ? own.get(r.metric)!.shift()! : GENERIC.has(r.metric) ? r.qualifier : null;
+    const shown = formatReading(readValue(r, percent.has(r.metric)));
+    const title = [r.qualifier && r.qualifier !== qualifier ? r.qualifier : "", shown.title].filter(Boolean).join(". ") || undefined;
+    return { label: qualifier ? `${name} (${acronymCase(qualifier)})` : name, text: shown.text, missing: shown.missing, ...(title ? { title } : {}) };
+  });
+}
+
+/** The abbreviations and uncertainty notation a table uses, explained once below it. */
+function legendFor(rows: ComparisonRow[], measured: Measured[]) {
+  const used = new Set(rows.flatMap((r) => r.cells.flatMap((c) => c.secondary.map((s) => s.label.split(" (")[0]))));
+  const short = Object.entries(SHORT_MEANING).filter(([abbr]) => used.has(abbr)).map(([abbr, meaning]) => `${abbr} ${meaning}`);
+  const lines = short.length ? [`${short.join(", ")}.`] : [];
+  // Only uncertainty the table prints next to a value needs explaining.
+  const printedSpread = (r: Measured) => /±|\(\s*[-−+]?\d/.test(r.printed);
+  const types = new Set(measured.filter(printedSpread).map((r) => r.uncertainty).filter((t): t is string => !!t));
+  for (const type of types) if (UNCERTAINTY[type]) lines.push(UNCERTAINTY[type]);
+  if (measured.some((r) => !r.uncertainty && r.printed.includes("±"))) lines.push(UNCERTAINTY.unresolved_spread);
+  return [...new Set(lines)];
+}
+
+const CITATION = /\s*\((?:[^()]*\bet al\b[^()]*|[^()]*\b(?:19|20)\d{2}[a-z]?)\)$/;
+/** For rows that share a printed name, what their configuration names add (database, threshold, backbone). */
+function distinguishRows(rows: ComparisonRow[], configurationNames: Map<string, string>) {
+  const counts = new Map<string, number>();
+  for (const r of rows) counts.set(r.name, (counts.get(r.name) || 0) + 1);
+  for (const r of rows) {
+    if ((counts.get(r.name) || 0) < 2) continue;
+    let detail = (configurationNames.get(r.id) ?? "").replace(CITATION, "");
+    if (detail.startsWith(r.name)) detail = detail.slice(r.name.length).replace(/^[\s,;:]+/, "");
+    r.detail = detail && detail !== r.name ? detail : null;
+  }
 }
 
 /** The metric a comparison leads with: the judgement's choice, else the commonest one. */
@@ -86,14 +178,28 @@ function headlineMetric(mappings: ResolvedMapping[]): string {
   return [...counts].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))[0]?.[0] ?? "";
 }
 
-/** Mark the best numeric value in each column, comparing only within that column. */
+const valueOf = (cell: ComparisonCell | undefined) => (cell as Draft | undefined)?.reading?.value ?? null;
+
+/** Mark the best numeric value in each column, comparing only within that column, on the display scale. */
 function markBest(rows: ComparisonRow[], columns: ComparisonColumn[]) {
   columns.forEach((column, i) => {
     if (column.direction === "unknown") return;
-    const values = rows.map((row) => row.cells[i]?.numeric).filter((v): v is number => v !== null && v !== undefined);
+    const values = rows.map((row) => valueOf(row.cells[i])).filter((v): v is number => v !== null);
     if (values.length < 2) return;
     const best = column.direction === "higher" ? Math.max(...values) : Math.min(...values);
-    for (const row of rows) if (row.cells[i] && row.cells[i].numeric === best) row.cells[i].best = true;
+    for (const row of rows) if (valueOf(row.cells[i]) === best) row.cells[i].best = true;
+  });
+}
+
+/** Format each column to one number of decimals, then drop the working readings. */
+function finishCells(rows: ComparisonRow[], columns: ComparisonColumn[]) {
+  columns.forEach((_, i) => {
+    const cells = rows.map((row) => row.cells[i] as Draft);
+    const decimals = columnDecimals(cells.map((c) => c.reading));
+    for (const cell of cells) {
+      if (cell.reading) cell.shown = formatReading(cell.reading, decimals);
+      delete (cell as Partial<Draft>).reading;
+    }
   });
 }
 
@@ -102,6 +208,7 @@ function rowBase(configuration: CatalogueRecord, evaluation: CatalogueRecord): O
   return {
     id: configuration.id,
     name: text(configuration.attributes.reported_name) || configuration.name,
+    detail: null,
     parentId: parent?.target_id ?? null,
     methodTypes: configuration.facets?.method_types ?? [],
     origin: text(evaluation.attributes.origin) || null,
@@ -112,6 +219,7 @@ function rowBase(configuration: CatalogueRecord, evaluation: CatalogueRecord): O
  * Values are never compared across groups: each group has its own truth set and scoring. */
 export function buildComparisons(mappings: ResolvedMapping[]): Comparison[] {
   const live = mappings.filter((m) => m.lifecycle === "active" && m.evaluations.length);
+  const percent = percentMetrics(live);
   const groups = new Map<string, ResolvedMapping[]>();
   for (const m of live) {
     const key = presentationOf(m)?.group ?? m.id;
@@ -126,6 +234,8 @@ export function buildComparisons(mappings: ResolvedMapping[]): Comparison[] {
     const headline = headlineMetric(ordered);
     const strata = ordered.length > 1 || ordered.some((m) => presentationOf(m)?.stratum_label);
     const rows = new Map<string, ComparisonRow>();
+    const configurationNames = new Map<string, string>();
+    const shownMeasures: Measured[] = [];
     let columns: ComparisonColumn[];
     let headlineDirection: ComparisonColumn["direction"] = "unknown";
     if (strata) {
@@ -135,13 +245,19 @@ export function buildComparisons(mappings: ResolvedMapping[]): Comparison[] {
       ordered.forEach((m, i) => {
         for (const e of m.evaluations) for (const configuration of e.configurations) {
           const measured = measurements(e);
-          const lead = measured.find((r) => r.metric === headline);
+          shownMeasures.push(...measured);
+          configurationNames.set(configuration.id, configuration.name);
+          const leads = measured.filter((r) => r.metric === headline);
+          const lead = leads[0];
           if (lead && lead.direction !== "unknown") { columns[i].direction = lead.direction; headlineDirection = lead.direction; }
-          const row = rows.get(configuration.id) ?? { ...rowBase(configuration, e.evaluation), cells: columns.map(() => ({ printed: null, numeric: null, best: false, secondary: [] })) };
-          row.cells[i] = {
-            printed: lead?.printed ?? null, numeric: lead?.numeric ?? null, best: false,
-            secondary: measured.filter((r) => r.metric !== headline).map((r) => ({ label: SHORT[r.metric] ?? metricLabel(r.metric), printed: r.printed })),
+          const row = rows.get(configuration.id) ?? { ...rowBase(configuration, e.evaluation), cells: columns.map(emptyCell) };
+          const cell: Draft = {
+            ...emptyCell(), printed: lead?.printed ?? null, numeric: lead?.numeric ?? null,
+            reading: lead ? readValue(lead, percent.has(lead.metric)) : null,
+            qualifier: leads.length > 1 && lead.qualifier ? acronymCase(distinguishing(leads.map((r) => r.qualifier ?? ""))[0]) : null,
+            secondary: secondaryValues(measured.filter((r) => r !== lead), percent),
           };
+          row.cells[i] = cell;
           rows.set(configuration.id, row);
         }
       });
@@ -150,16 +266,18 @@ export function buildComparisons(mappings: ResolvedMapping[]): Comparison[] {
       const keys = new Map<string, ComparisonColumn>();
       for (const e of m.evaluations) for (const r of measurements(e)) {
         const key = `${r.metric}|${r.qualifier ?? ""}`;
-        if (!keys.has(key)) keys.set(key, { label: metricLabel(r.metric) + (r.qualifier ? ` (${r.qualifier})` : ""), metric: r.metric, qualifier: r.qualifier, direction: r.direction });
+        if (!keys.has(key)) keys.set(key, { label: metricLabel(r.metric) + (r.qualifier ? ` (${acronymCase(r.qualifier)})` : ""), metric: r.metric, qualifier: r.qualifier, direction: r.direction });
       }
       columns = [...keys.values()].sort((a, b) => Number(b.metric === headline) - Number(a.metric === headline) || a.label.localeCompare(b.label));
       headlineDirection = columns[0]?.direction ?? "unknown";
       for (const e of m.evaluations) for (const configuration of e.configurations) {
         const measured = measurements(e);
-        const row = rows.get(configuration.id) ?? { ...rowBase(configuration, e.evaluation), cells: columns.map(() => ({ printed: null, numeric: null, best: false, secondary: [] })) };
+        shownMeasures.push(...measured);
+        configurationNames.set(configuration.id, configuration.name);
+        const row = rows.get(configuration.id) ?? { ...rowBase(configuration, e.evaluation), cells: columns.map(emptyCell) };
         columns.forEach((column, i) => {
           const r = measured.find((x) => x.metric === column.metric && x.qualifier === column.qualifier);
-          if (r) row.cells[i] = { printed: r.printed, numeric: r.numeric, best: false, secondary: [] };
+          if (r) row.cells[i] = { ...emptyCell(), printed: r.printed, numeric: r.numeric, reading: readValue(r, percent.has(r.metric)) } as Draft;
         });
         rows.set(configuration.id, row);
       }
@@ -168,15 +286,21 @@ export function buildComparisons(mappings: ResolvedMapping[]): Comparison[] {
     // Sort by the headline column (strata: the first stratum), best first; rows without a value last.
     const sign = headlineDirection === "lower" ? 1 : -1;
     list.sort((a, b) => {
-      const x = a.cells[0]?.numeric, y = b.cells[0]?.numeric;
-      if (x === null || x === undefined) return y === null || y === undefined ? a.name.localeCompare(b.name) : 1;
-      if (y === null || y === undefined) return -1;
+      const x = valueOf(a.cells[0]), y = valueOf(b.cells[0]);
+      if (x === null) return y === null ? a.name.localeCompare(b.name) : 1;
+      if (y === null) return -1;
       return sign * (x - y) || a.name.localeCompare(b.name);
     });
     markBest(list, columns);
+    finishCells(list, columns);
+    distinguishRows(list, configurationNames);
+    // Strata come from separate judgements; one stratum's endpoint must not caption the whole table.
+    const endpoints = ordered.map((m) => m.endpoint ?? "");
+    const shared = endpoints.every((e) => e === endpoints[0]);
     comparisons.push({
       id, title, layout: strata ? "strata" : "metrics",
-      endpoint: ordered[0].endpoint ?? "",
+      endpoint: shared ? endpoints[0] : "",
+      columnEndpoints: shared ? [] : columns.map((column, i) => ({ label: column.label, endpoint: endpoints[i] })).filter((c) => c.endpoint),
       relevance: ordered.every((m) => m.relevance === "direct") ? "direct" : "proxy",
       headline: { metric: headline, label: metricLabel(headline), direction: headlineDirection },
       columns, rows: list,
@@ -184,6 +308,7 @@ export function buildComparisons(mappings: ResolvedMapping[]): Comparison[] {
       limitations: [...new Set(ordered.flatMap((m) => m.limitations))],
       protocols: ordered.map((m) => m.protocol).filter((p): p is CatalogueRecord => !!p),
       mappingIds: ordered.map((m) => m.id),
+      legend: legendFor(list, shownMeasures),
     });
   }
   return comparisons;
@@ -196,12 +321,25 @@ export function heldJudgements(mappings: ResolvedMapping[]) {
     .map((m) => ({ id: m.id, title: presentationOf(m)?.title ?? m.protocol?.name ?? m.id, lifecycle: m.lifecycle, reason: m.reason, endpoint: m.endpoint ?? "" }));
 }
 
-/** Every tool in the shown comparisons, once, with its method types. */
-export function toolsCompared(comparisons: Comparison[]) {
-  const tools = new Map<string, { id: string; name: string; methodTypes: string[] }>();
+export type ComparedTool = { id: string; name: string; href: string; methodTypes: string[]; configurations: number };
+
+/** Every tool in the rendered rows, once: the model or method a row's configuration belongs to
+ * (named and linked from `lookup`), else the configuration itself. */
+export function toolsCompared(comparisons: Comparison[], lookup: (id: string) => CatalogueRecord | null = () => null): ComparedTool[] {
+  const tools = new Map<string, { tool: ComparedTool; types: Set<string>; configurations: Set<string>; parent: CatalogueRecord | null }>();
   for (const c of comparisons) for (const r of c.rows) {
     const key = r.parentId ?? r.id;
-    if (!tools.has(key)) tools.set(key, { id: key, name: r.name, methodTypes: r.methodTypes });
+    let entry = tools.get(key);
+    if (!entry) {
+      const parent = r.parentId ? lookup(r.parentId) : null;
+      const href = parent ? recordHref(parent) : `/database/configuration/${encodeURIComponent(r.id)}/`;
+      entry = { tool: { id: key, name: parent?.name ?? r.name, href, methodTypes: [], configurations: 0 }, types: new Set(), configurations: new Set(), parent };
+      tools.set(key, entry);
+    }
+    r.methodTypes.forEach((t) => entry!.types.add(t));
+    entry.configurations.add(r.id);
   }
-  return [...tools.values()].sort((a, b) => a.name.localeCompare(b.name));
+  return [...tools.values()].map(({ tool, types, configurations, parent }) => ({
+    ...tool, methodTypes: types.size ? [...types] : parent?.facets?.method_types ?? [], configurations: configurations.size,
+  })).sort((a, b) => a.name.localeCompare(b.name));
 }

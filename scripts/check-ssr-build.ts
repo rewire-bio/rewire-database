@@ -47,8 +47,10 @@ async function main() {
   const firstOf = (kind: string) => live.find((record) => record.kind === kind)!;
   const server = spawn(process.execPath, [path.join(OUTPUT, ENTRYPOINT)], {
     stdio: ["ignore", "inherit", "inherit"], detached: process.platform !== "win32",
+    // The checks run long synchronous steps (the sitemap inventory) between requests. Keep idle
+    // connections open past them, so the next request does not race the server closing its socket.
     env: { ...process.env, NODE_ENV: "production", PORT: String(PORT), HOSTNAME: "127.0.0.1", REWIRE_DATA_ROOT: "",
-      REWIRE_FRONTEND_VERSION: FRONTEND },
+      REWIRE_FRONTEND_VERSION: FRONTEND, KEEP_ALIVE_TIMEOUT: "120000" },
   });
   try {
     const deadline = Date.now() + 120_000;

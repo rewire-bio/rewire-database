@@ -2,14 +2,13 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it, vi } from "vitest";
 import MfassV2Page from "../app/runs/mfass-v2/page";
 
-const useCases = vi.hoisted(() => ({ entries: [{ slug: "a" }, { slug: "b" }] }));
 vi.mock("@/lib/catalogue-build", () => ({
   buildCatalogue: () => ({
-    catalogue: { release_id: "fixture", released_at: "2026-10-10T00:00:00Z", coverage: { use_cases: { total: 2 } } },
+    catalogue: { release_id: "fixture", released_at: "2026-10-10T00:00:00Z", coverage: { use_cases: { schema_version: "1.0", use_cases: 2, mappings: 5 } } },
     query: { list: () => ({ items: [], total: 0 }), release: () => ({}) },
   }),
 }));
-vi.mock("@/lib/use-cases-build", () => ({ buildUseCases: () => useCases }));
+vi.mock("@/lib/use-cases-build", () => ({ buildUseCases: () => { throw new Error("The home page must not load use-case evidence"); } }));
 vi.mock("@/app/database/Explorer", () => ({ default: () => <div>Search the database</div> }));
 vi.mock("@/components/catalogue/CatalogueEvidence", () => ({ CatalogueEvidence: () => null }));
 vi.mock("@/components/catalogue/CatalogueDownloads", () => ({ CatalogueDownloads: () => null }));

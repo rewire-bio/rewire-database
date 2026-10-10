@@ -131,6 +131,34 @@ describe("use-case comparisons", () => {
     expect(comparison.legend).toEqual(["P precision.", "± is a standard deviation."]);
   });
 
+  it("trims repeated qualifiers to the words that differ, keeping a number's noun", () => {
+    const set = (n: number) => ({ unit: "fraction", metric_qualifier: `candidate gene set of ${n} genes including the causative gene` });
+    const [comparison] = buildComparisons([mapping("m", [
+      evaluation("gpt4", [
+        result("top-1-accuracy", "60", "60.00", { unit: "percent" }),
+        result("auprc", "0.559", "0.559", set(100)),
+        result("auprc", "0.756", "0.756", set(25)),
+        result("count", "17", "17", { metric_qualifier: "PCR target taxa with assigned reads (reads >0)" }),
+        result("count", "9", "9", { metric_qualifier: "PCR target taxa with assigned reads (reads >10)" }),
+      ]),
+    ], { group: "g", title: "Kafkas", stratum_label: "GPCards", headline_metric: "top-1-accuracy" })]);
+    const cell = comparison.rows[0].cells[0];
+    expect(cell.secondary.map((s) => s.label)).toEqual(["AUPRC (100 genes)", "AUPRC (25 genes)", "Count (reads >0)", "Count (reads >10)"]);
+    expect(cell.secondary[1].title).toBe("candidate gene set of 25 genes including the causative gene");
+  });
+
+  it("puts metrics that differ only in a threshold on one scale", () => {
+    const [comparison] = buildComparisons([mapping("m", [
+      evaluation("delfi", [
+        result("auroc", "0.98"),
+        result("sensitivity-at-95-percent-specificity", "0.796", "0.796", { unit: "fraction" }),
+        result("sensitivity-at-98-percent-specificity", "73", "73%", { unit: "percent" }),
+        result("sensitivity-at-99-percent-specificity", "0.561", "0.561", { unit: "fraction" }),
+      ]),
+    ], { group: "g", title: "Hou", stratum_label: "DELFI", headline_metric: "auroc" })]);
+    expect(comparison.rows[0].cells[0].secondary.map((s) => s.text)).toEqual(["79.6%", "73%", "56.1%"]);
+  });
+
   it("tells apart rows that share a printed name, from their configuration names", () => {
     const [comparison] = buildComparisons([mapping("m", [
       evaluation("kaiju-excl", [result("recall", "0.9")], "author_reported", "Kaiju"),

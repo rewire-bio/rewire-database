@@ -24,12 +24,13 @@ export function preparedCatalogue(): PreparedCatalogue {
 const { DatabaseSync } = process.getBuiltinModule("node:sqlite");
 let useCases: { catalogue: PreparedCatalogue; query: ReturnType<typeof createUseCaseStore> } | undefined;
 
-/** Use-case answers for `catalogue`. For the pinned release file they come from a
+/** Use-case answers for `catalogue`. For a 2.x pinned release file they come from a
  * store that parses one use case at a time (lib/use-case-store.ts), instead of the
- * file reader's full parse of every use case's evidence. Other readers, such as
- * test fixtures, answer themselves. */
+ * file reader's full parse of every use case's evidence. 3.x files, and other
+ * readers such as test fixtures, answer themselves. */
 export function preparedUseCases(catalogue: PreparedCatalogue): ReturnType<PreparedCatalogue["useCases"]> {
-  if (cached?.catalogue !== catalogue) return catalogue.useCases();
+  // 3.x files store use cases as rows, which the file reader already reads one at a time.
+  if (cached?.catalogue !== catalogue || catalogue.meta("serving_contract_version")?.split(".")[0] !== "2") return catalogue.useCases();
   if (useCases?.catalogue !== catalogue) {
     const db = new DatabaseSync(cached.file, { readOnly: true });
     try {

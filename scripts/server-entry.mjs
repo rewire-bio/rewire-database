@@ -11,7 +11,8 @@ import { verifyServing } from './fetch-serving-data.mjs';
 // release manifest disagree. A data release is a new image.
 const here = path.dirname(fileURLToPath(import.meta.url));
 const sha = bytes => crypto.createHash('sha256').update(bytes).digest('hex');
-export const PREPARED_CONTRACT_MAJOR = '2';
+// 3.x stores each record once and use cases as rows; 2.x files stay readable while releases switch.
+export const PREPARED_CONTRACT_MAJORS = ['2', '3'];
 
 export function loadPin(root) {
   const pin = JSON.parse(fs.readFileSync(path.join(root, 'benchmark-data.lock.json'), 'utf8'));
@@ -26,7 +27,7 @@ export function checkPrepared(file, pin) {
   try {
     const meta = Object.fromEntries(db.prepare('SELECT key, value FROM meta').all().map(row => [row.key, row.value]));
     if (meta.release_id !== pin.release_id) throw new Error(`Prepared file holds release ${meta.release_id}, not the pinned ${pin.release_id}`);
-    if (String(meta.serving_contract_version).split('.')[0] !== PREPARED_CONTRACT_MAJOR)
+    if (!PREPARED_CONTRACT_MAJORS.includes(String(meta.serving_contract_version).split('.')[0]))
       throw new Error(`Unsupported prepared contract ${meta.serving_contract_version}`);
     return meta;
   } finally { db.close(); }

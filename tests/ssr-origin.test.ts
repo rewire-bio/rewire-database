@@ -76,6 +76,21 @@ describe("embedded prepared release", () => {
     expect(checkPrepared(file, lock).release_id).toBe(lock.release_id);
     expect(() => checkPrepared(file, { ...lock, release_id: "2000-01-01-000000000000" })).toThrow("not the pinned");
   });
+  it("accepts contract majors 2 and 3 and refuses any other", () => {
+    const { DatabaseSync } = process.getBuiltinModule("node:sqlite");
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), "rewire-contract-"));
+    try {
+      for (const [version, accepted] of [["2.0", true], ["3.0", true], ["3.1", true], ["1.0", false], ["4.0", false]] as const) {
+        const file = path.join(root, `${version}.sqlite`);
+        const db = new DatabaseSync(file);
+        db.exec("CREATE TABLE meta (key TEXT PRIMARY KEY, value TEXT)");
+        db.prepare("INSERT INTO meta VALUES (?, ?), (?, ?)").run("release_id", lock.release_id, "serving_contract_version", version);
+        db.close();
+        if (accepted) expect(checkPrepared(file, lock).serving_contract_version).toBe(version);
+        else expect(() => checkPrepared(file, lock)).toThrow("Unsupported prepared contract");
+      }
+    } finally { fs.rmSync(root, { recursive: true, force: true }); }
+  });
   it("refuses a lock without a serving pin for its own release", () => {
     expect(() => verifyServing({ ...lock, serving: undefined })).toThrow("serving");
     expect(() => verifyServing({ ...lock, serving: { ...serving, tag: "serving/2000-01-01-000000000000" } })).toThrow("serving");

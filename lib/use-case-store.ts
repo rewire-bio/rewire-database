@@ -12,6 +12,7 @@ import { useCaseQueryFrom as queryFrom, type UseCaseState } from "../shared/omic
 
 type Section = "mappings" | "results" | "sources";
 type Packed = Map<string, Buffer>;
+const RECENT_ENTRIES = 4;
 
 const QUOTE = 0x22, BACKSLASH = 0x5c, OPEN = [0x5b, 0x7b], CLOSE = [0x5d, 0x7d], COMMA = 0x2c, COLON = 0x3a;
 
@@ -92,9 +93,20 @@ function unpack(gz: Uint8Array) {
 
 export function createUseCaseStore(gz: Uint8Array) {
   const { base, backlinks, sections } = unpack(gz);
+  // A use-case page reads its mappings once per evaluation page, so the last few
+  // parsed entries are kept. Callers already treat answers as shared, as the full
+  // query's are.
+  const recent = new Map<string, unknown>();
   const entry = <T>(section: Section, key: string): [string, T][] => {
     const packed = sections[section].get(key);
-    return packed ? [JSON.parse(inflateRawSync(packed).toString("utf8")) as [string, T]] : [];
+    if (!packed) return [];
+    const id = `${section}\u0000${key}`;
+    let value = recent.get(id) as [string, T] | undefined;
+    if (value) recent.delete(id);
+    else value = JSON.parse(inflateRawSync(packed).toString("utf8")) as [string, T];
+    recent.set(id, value);
+    if (recent.size > RECENT_ENTRIES) recent.delete(recent.keys().next().value!);
+    return [value];
   };
   const over = (state: Partial<UseCaseState>) =>
     queryFrom({ ...base, mappings: [], backlinks: [], results: [], sources: [], ...state });

@@ -42,8 +42,25 @@ describe("use-case store", () => {
     expect(store).not.toBe(full);
     const listed = full.list({ limit: 100 });
     expect(store.list({ limit: 100 })).toEqual(listed);
-    for (const { slug } of listed.items) expect(store.get({ slug, limit: 100 }), slug).toEqual(full.get({ slug, limit: 100 }));
+    for (const { slug } of listed.items) {
+      expect(store.get({ slug, limit: 100 }), slug).toEqual(full.get({ slug, limit: 100 }));
+      // A repeat comes from the recently parsed entries and must not differ.
+      expect(store.get({ slug, limit: 100 }), slug).toEqual(full.get({ slug, limit: 100 }));
+    }
     const id = full.get({ slug: listed.items[0].slug })!.mappings[0]?.evaluations[0]?.configurations[0]?.id;
     if (id) expect(store.links({ id })).toEqual(full.links({ id }));
+  });
+});
+
+describe("use-case index summaries", () => {
+  it("count the same as summaries built from the complete evidence, without reading result pages", async () => {
+    const { buildUseCases, accumulateUseCaseDetail, useCaseSummaries } = await import("../lib/use-cases-build");
+    const { summariseUseCaseEvidence } = await import("../lib/use-case-summary");
+    const { query, entries } = buildUseCases();
+    const summaries = useCaseSummaries();
+    expect(Object.keys(summaries).sort()).toEqual(entries.map((entry) => entry.slug).sort());
+    for (const entry of entries)
+      expect(summaries[entry.slug], entry.slug).toEqual(summariseUseCaseEvidence(accumulateUseCaseDetail(query, entry.slug)!.mappings, entry.evidence_gaps.length));
+    expect(useCaseSummaries()).toBe(summaries);
   });
 });

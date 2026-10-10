@@ -64,6 +64,7 @@ async function main() {
       if (Date.now() > deadline) throw new Error("Frontend server did not start");
       await sleep(250);
     }
+    await checkUseCaseIndexTime();
     await checkContracts(catalogue.release_id, firstOf);
     const sitemap = await readSitemap();
     checkSitemapInventory(catalogue, sitemap.urls);
@@ -169,6 +170,22 @@ async function checkContracts(release: string, firstOf: (kind: string) => OmicsR
   assert.equal(analytics.status, 200);
   assert.match(analytics.headers.get("content-security-policy") || "", /frame-ancestors/);
   assert.match(await analytics.text(), /noindex,nofollow/);
+}
+
+/** /use-cases/ summarises every use case. A cold server builds that once; every later
+ * request must reuse it. Measured first, before other pages warm the use-case data.
+ * The bounds leave room for a slower CI runner; locally the two requests take about
+ * 1.3 s and 0.02 s. */
+async function checkUseCaseIndexTime() {
+  for (const [label, limit] of [["cold", 20_000], ["warm", 2_000]] as const) {
+    const started = Date.now();
+    const response = await get("/use-cases/");
+    assert.equal(response.status, 200, `/use-cases/ (${label})`);
+    await response.arrayBuffer();
+    const elapsed = Date.now() - started;
+    console.log(JSON.stringify({ use_case_index_ms: { [label]: elapsed } }));
+    assert.ok(elapsed <= limit, `/use-cases/ (${label}) took ${elapsed} ms; the limit is ${limit} ms`);
+  }
 }
 
 /** Follows the index at /sitemap.xml and gathers every file's URLs; no URL may appear twice. */

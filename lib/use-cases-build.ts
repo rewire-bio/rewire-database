@@ -1,6 +1,7 @@
 import { buildCatalogue } from "./catalogue-build";
 import { preparedUseCases } from "./prepared";
 import type { UseCaseDetail, UseCaseQuery, ResolvedMapping } from "../shared/omics/use-cases";
+import { summariseUseCaseEvidence, type EvidenceSummary } from "./use-case-summary";
 
 let cached: { query: ReturnType<typeof buildCatalogue>["query"]; value: { query: UseCaseQuery; entries: ReturnType<UseCaseQuery["list"]>["items"] } } | undefined;
 
@@ -30,7 +31,7 @@ export function buildUseCases() {
  * place would both corrupt the bounded preview for any later caller and, since
  * buildUseCases() memoizes `query` for the process, grow without bound across
  * repeated calls to this function for the same slug. */
-export function accumulateUseCaseDetail(query: UseCaseQuery, slug: string): UseCaseDetail | null {
+export function accumulateUseCaseDetail(query: UseCaseQuery, slug: string, { results = true } = {}): UseCaseDetail | null {
   const clone = (e: ResolvedMapping["evaluations"][number]) => ({ ...e, results: [...e.results] });
   const first = query.get({ slug, limit: 100 });
   if (!first) return null;
@@ -43,7 +44,7 @@ export function accumulateUseCaseDetail(query: UseCaseQuery, slug: string): UseC
     for (const m of page.mappings) if (m.evaluations.length) mappings.get(m.id)!.evaluations.push(...m.evaluations.map(clone));
     cursor = page.evaluations_next_cursor;
   }
-  for (const mapping of mappings.values()) for (const evaluation of mapping.evaluations) {
+  if (results) for (const mapping of mappings.values()) for (const evaluation of mapping.evaluations) {
     let resultsCursor = evaluation.results_next_cursor;
     while (resultsCursor) {
       const page = query.evaluationResults({ mapping_id: mapping.id, evaluation_id: evaluation.evaluation.id, cursor: resultsCursor, limit: 100 });
@@ -61,4 +62,22 @@ export function accumulateUseCaseDetail(query: UseCaseQuery, slug: string): UseC
 export function fullUseCaseDetail(slug: string): UseCaseDetail | null {
   const { query } = buildUseCases();
   return accumulateUseCaseDetail(query, slug);
+}
+
+let summaries: { value: ReturnType<typeof buildUseCases>; summaries: Record<string, EvidenceSummary> } | undefined;
+
+/** Index-card evidence summaries, keyed by slug, computed once per release and
+ * process. The counts depend on each evaluation's configurations, not on its
+ * result rows, so result pages are not read. */
+export function useCaseSummaries(): Record<string, EvidenceSummary> {
+  const value = buildUseCases();
+  if (summaries?.value !== value) {
+    const computed: Record<string, EvidenceSummary> = {};
+    for (const entry of value.entries) {
+      const detail = accumulateUseCaseDetail(value.query, entry.slug, { results: false });
+      if (detail) computed[entry.slug] = summariseUseCaseEvidence(detail.mappings, entry.evidence_gaps.length);
+    }
+    summaries = { value, summaries: computed };
+  }
+  return summaries.summaries;
 }

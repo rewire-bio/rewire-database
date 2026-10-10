@@ -1,5 +1,6 @@
+import fs from "node:fs";
 import { describe, expect, it, vi } from "vitest";
-import { cloudRunConfig, deployArguments, deployCloudRun, liveService, pruneRevisions, revisionEnvironment, verifyCandidate } from "../scripts/deploy-cloud-run.mjs";
+import { cloudRunConfig, deployArguments, deployCloudRun, liveService, pruneRevisions, revisionEnvironment, SERVICE, verifyCandidate } from "../scripts/deploy-cloud-run.mjs";
 
 const env = {
   GCLOUD_PROJECT: "rewire-it",
@@ -122,5 +123,16 @@ describe("Cloud Run frontend deployment", () => {
     expect(calls.find(args => args.includes("update-traffic"))).toEqual(expect.arrayContaining(["--remove-tags", "probe"]));
     const deleted = calls.filter(args => args.includes("delete")).map(args => args[args.indexOf("delete") + 1]);
     expect(deleted).toEqual(["rev-probe", "rev-ancient"]);
+  });
+});
+
+describe("frontend server heap", () => {
+  it("caps the heap well under the instance memory, and the build check renders under the same cap", () => {
+    const flag = /--max-old-space-size=(\d+)/;
+    const image = fs.readFileSync("Dockerfile", "utf8").match(new RegExp(`^CMD \\[.*"${flag.source}"`, "m"));
+    const check = fs.readFileSync("scripts/check-ssr-build.ts", "utf8").match(new RegExp(`SERVER_NODE_FLAGS = \\["${flag.source}"\\]`));
+    expect(Number(image?.[1])).toBeGreaterThan(0);
+    expect(Number(image?.[1]) * 2).toBeLessThanOrEqual(Number.parseInt(SERVICE.memory) * 1024);
+    expect(check?.[1]).toBe(image?.[1]);
   });
 });

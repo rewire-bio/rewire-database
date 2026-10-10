@@ -34,6 +34,7 @@ import { cacheableRequest, storableResponse } from "../cloudflare/page-cache.mjs
 const full = process.argv.includes("--full");
 // scripts/build-web.mjs OUTPUT and ENTRYPOINT (that module has top-level await).
 const OUTPUT = "build/web", ENTRYPOINT = "runtime/scripts/server-entry.mjs";
+const SERVER_NODE_FLAGS = ["--max-old-space-size=768"];
 const PORT = 8793;
 const ORIGIN = "https://benchmarks.rewirebio.io";
 const origin = `http://127.0.0.1:${PORT}`;
@@ -46,11 +47,13 @@ async function main() {
   const catalogue = JSON.parse(fs.readFileSync("public/omics/catalogue.json", "utf8")) as CatalogueSnapshot;
   const live = catalogue.records.filter((record) => record.status !== "excluded");
   const firstOf = (kind: string) => live.find((record) => record.kind === kind)!;
-  const server = spawn(process.execPath, [path.join(OUTPUT, ENTRYPOINT)], {
+  // The Dockerfile's heap cap, so the check renders under production memory limits.
+  const server = spawn(process.execPath, [...SERVER_NODE_FLAGS, path.join(OUTPUT, ENTRYPOINT)], {
     stdio: ["ignore", "inherit", "inherit"], detached: process.platform !== "win32",
     // The checks run long synchronous steps (the sitemap inventory) between requests. Keep idle
     // connections open past them, so the next request does not race the server closing its socket.
-    env: { ...process.env, NODE_ENV: "production", PORT: String(PORT), HOSTNAME: "127.0.0.1", REWIRE_DATA_ROOT: "",
+    // NODE_OPTIONS is cleared so the runner's large heap does not override the cap above.
+    env: { ...process.env, NODE_OPTIONS: "", NODE_ENV: "production", PORT: String(PORT), HOSTNAME: "127.0.0.1", REWIRE_DATA_ROOT: "",
       REWIRE_FRONTEND_VERSION: FRONTEND, KEEP_ALIVE_TIMEOUT: "120000" },
   });
   try {

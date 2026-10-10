@@ -23,7 +23,7 @@ import {
   statusLabel,
 } from "@/lib/omics-browse";
 import { useResultsLocation } from "./useResultsLocation";
-import { metricLabel } from "@/lib/result-labels";
+import { metricName } from "@/lib/result-labels";
 import styles from "@/app/database/database.module.css";
 import ux from "./comparison.module.css";
 
@@ -155,7 +155,7 @@ export default function Results({
     {
       key: "metric" as const,
       label: "Metric",
-      options: initial.facets.metrics.map((name) => ({ id: name, name: metricLabel(name) })),
+      options: initial.facets.metrics.map((name) => ({ id: name, name: metricName(name) })),
     },
     {
       key: "origin" as const,
@@ -285,7 +285,7 @@ export default function Results({
                           ? "%"
                           : ""}
                       </strong>{" "}
-                      {metricLabel(
+                      {metricName(
                         String(row.result.attributes.metric ?? ""),
                         typeof row.result.attributes.metric_qualifier === "string"
                           ? row.result.attributes.metric_qualifier

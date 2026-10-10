@@ -1,4 +1,4 @@
-import { metricLabel } from "../lib/result-labels";
+import { metricName } from "../lib/result-labels";
 import fs from "node:fs";
 import { preparedFromSnapshot } from "./helpers/prepared";
 import type { PreparedCatalogue } from "../shared/omics/prepared-catalogue";
@@ -93,7 +93,7 @@ describe("catalogue detail UX on the published release", () => {
     const escaped = renderToStaticMarkup(
       <>{row!.attributes.printed_value as string}</>,
     );
-    expect(html).toContain(`${escaped}</strong> ${metricLabel(String(row!.attributes.metric))}`);
+    expect(html).toContain(`${escaped}</strong> ${metricName(String(row!.attributes.metric))}`);
     expect(html).not.toContain(`${escaped}%`);
   });
   it("keeps execution before evidence and methods before reproduction on evaluations", async () => {

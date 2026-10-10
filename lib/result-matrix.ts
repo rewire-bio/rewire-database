@@ -1,7 +1,7 @@
 import type { ResultRow } from "../shared/omics/catalogue-query";
 import { numericScore } from "../components/catalogue/comparison-utils";
 import { datasetEntities, evaluationEntities, testedEntities } from "./omics-browse";
-import { metricLabel } from "./result-labels";
+import { metricName } from "./result-labels";
 import type { OmicsRecord } from "./omics";
 
 type Reference = Pick<OmicsRecord, "id" | "kind" | "name">;
@@ -40,7 +40,7 @@ export function resultMatrix(rows: ResultRow[]): ResultMatrix | null {
     const direction: Direction = attributes.metric_direction === "higher" || attributes.metric_direction === "lower" ? attributes.metric_direction : "unknown";
     const existing = columns.get(column);
     if (existing) existing.count++;
-    else columns.set(column, { key: column, label: metricLabel(metric, qualifier || null), direction, count: 1 });
+    else columns.set(column, { key: column, label: metricName(metric, qualifier || null), direction, count: 1 });
     const tested = testedEntities(row).map(reference);
     const context = [...evaluationEntities(row), ...datasetEntities(row)].map(reference);
     const key = row.evaluation?.id || `${ids(tested)}|${ids(context)}`;

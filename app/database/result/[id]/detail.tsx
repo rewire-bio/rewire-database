@@ -15,7 +15,7 @@ import SectionNavigation, {
   BrowseReturn,
 } from "@/components/catalogue/SectionNavigation";
 import { countLabel, singularKindLabels, predictiveKinds, groupEntities, testedEntities, evaluationEntities, datasetEntities } from "@/lib/omics-browse";
-import { metricLabel, procedureReference, resultTitle } from "@/lib/result-labels";
+import { metricName, procedureReference, resultTitle } from "@/lib/result-labels";
 import type { ResultRecordPage } from "@/lib/record-page";
 import styles from "../../database.module.css";
 
@@ -65,7 +65,7 @@ export function ResultDetail({ page }: { page: ResultRecordPage }) {
   const useCaseConfigurations = page.use_case_configurations;
   const context = new Map(page.context.map((item) => [item.id, item]));
   const evaluated = first?.evaluation ?? undefined;
-  const metric = metricLabel(
+  const metric = metricName(
     String(record.attributes.metric ?? ""),
     typeof record.attributes.metric_qualifier === "string" ? record.attributes.metric_qualifier : null,
   );

@@ -18,9 +18,10 @@ function wrap(text: string, capacity: number): string[] {
   for (const word of text.split(/\s+/)) {
     // Long identifiers must fit too; no scientific text is shortened or omitted.
     const pieces = word.match(new RegExp(`.{1,${capacity}}`, "gu")) || [word];
-    for (const piece of pieces) {
+    for (const [index, piece] of pieces.entries()) {
       if (line && `${line} ${piece}`.length > capacity) {
-        lines.push(line);
+        // A line that ends between words keeps its space, so copied and spoken text stays readable.
+        lines.push(index ? line : `${line} `);
         line = "";
       }
       line = line ? `${line} ${piece}` : piece;

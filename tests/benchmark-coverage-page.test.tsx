@@ -28,6 +28,13 @@ describe("release-pinned coverage presentation", () => {
     expect(html).toContain("Source table awaits review.");
     expect(html).toContain("A metric row is not an independent experiment.");
   });
+  it("formats legacy embedded scope objects in page names as readable text", () => {
+    const name = 'BEELINE 2020 Figure 5 · hESC · {"reference_network":"Cell-type specific ChIP-Seq","gene_selection":"TFs+1000"}';
+    fixture.read.mockReturnValue(JSON.stringify({ ...audit, pages: [{ ...audit.pages[0], name }] }));
+    const html = renderToStaticMarkup(<CoveragePage />);
+    expect(html).not.toContain("{&quot;reference_network");
+    expect(html).toContain("Reference network: Cell-type specific ChIP-Seq; Gene selection: TFs+1000");
+  });
   it("rejects an audit for a different release", () => {
     fixture.read.mockReturnValue(JSON.stringify({ ...audit, release_id: "other-release" }));
     expect(() => CoveragePage()).toThrow("does not match the pinned catalogue release");

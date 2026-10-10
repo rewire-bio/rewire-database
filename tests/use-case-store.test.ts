@@ -39,7 +39,9 @@ describe("use-case store", () => {
   it("matches the file reader's own use-case answers for the pinned release", () => {
     const catalogue = preparedCatalogue();
     const store = preparedUseCases(catalogue), full = catalogue.useCases();
-    expect(store).not.toBe(full);
+    // 2.x files go through the per-use-case store; 3.x files already store use cases as rows.
+    if (catalogue.meta("serving_contract_version")?.split(".")[0] === "2") expect(store).not.toBe(full);
+    else expect(store).toBe(full);
     const listed = full.list({ limit: 100 });
     expect(store.list({ limit: 100 })).toEqual(listed);
     for (const { slug } of listed.items) {

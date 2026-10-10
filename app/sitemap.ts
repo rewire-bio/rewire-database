@@ -1,7 +1,7 @@
 import { recordIsIndexable } from "@/lib/catalogue-seo";
 import type { MetadataRoute } from "next";
-import { recordHref, type OmicsRecord } from "@/lib/omics";
-import { catalogueIndexPaths } from "@/lib/catalogue-index";
+import { recordHref } from "@/lib/omics";
+import { catalogueIndexPaths, indexSource } from "@/lib/catalogue-index";
 import { buildCatalogue } from "@/lib/catalogue-build";
 import { buildUseCases } from "@/lib/use-cases-build";
 // Generated from the running revision's pinned release, like every page.
@@ -17,7 +17,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${base}/coverage/` },
     { url: `${base}/use-cases/` },
     ...useCases.map((entry) => ({ url: `${base}/use-cases/${entry.slug}/` })),
-    ...catalogueIndexPaths(query.recordsOfKind("model") as OmicsRecord[]).map((path) => ({
+    ...catalogueIndexPaths(indexSource(query, "model")).map((path) => ({
       url: base + path,
     })),
     ...query.recordIds().filter(recordIsIndexable).map((record) => ({

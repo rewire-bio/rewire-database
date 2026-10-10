@@ -179,11 +179,19 @@ describe("use-case evidence rendering", () => {
   it("renders empty backlinks as nothing and retains missing configuration identifiers", () => {
     const links = { release_id: "fixture", input_sha256: "a".repeat(64), items: [] };
     expect(renderToStaticMarkup(<UseCaseBacklinks links={links} configurations={{}} />)).toBe("");
-    const entries = [[], ["missing", "configuration"]].map((configuration_ids, index) => ({ use_case_id: "question", slug: "splicing-follow-up", title: "Splicing follow-up", mapping_id: `mapping-${index}`, configuration_ids }));
+    const entries = [[], ["missing", "configuration"]].map((configuration_ids, index) => ({ use_case_id: `question-${index}`, slug: `splicing-follow-up-${index}`, title: "Splicing follow-up", mapping_id: `mapping-${index}`, configuration_ids }));
     const markup = renderToStaticMarkup(<UseCaseBacklinks links={{ ...links, items: entries }} configurations={{ configuration: record("configuration", "configuration") }} />);
     expect(markup).toContain("No evaluated configuration is linked");
     expect(markup).toContain("missing");
     expect(markup).toContain("Fixture configuration");
+  });
+  it("lists each use case once with the number of comparisons that cite the record", () => {
+    const items = ["a", "b", "c"].map((suffix) => ({ use_case_id: "question", slug: "pathogen-detection", title: "Pathogen detection", mapping_id: `mapping-${suffix}`, configuration_ids: ["configuration"] }));
+    const markup = renderToStaticMarkup(<UseCaseBacklinks links={{ release_id: "fixture", input_sha256: "a".repeat(64), items }} configurations={{ configuration: record("configuration", "configuration") }} />);
+    expect(markup.match(/Pathogen detection/g)).toHaveLength(1);
+    expect(markup.match(/Fixture configuration/g)).toHaveLength(1);
+    expect(markup).toContain("Used in 3 comparisons");
+    expect(markup).toContain('href="/use-cases/pathogen-detection/"');
   });
   it("identifies exact configurations behind a model or suite backlink", () => {
     const markup = renderToStaticMarkup(<UseCaseBacklinks links={{ release_id: "fixture", input_sha256: "a".repeat(64), items: [{ use_case_id: "question", slug: "splicing-follow-up", title: "Splicing follow-up", mapping_id: "mapping", configuration_ids: ["configuration"] }] }} configurations={{ configuration: record("configuration", "configuration") }} />);

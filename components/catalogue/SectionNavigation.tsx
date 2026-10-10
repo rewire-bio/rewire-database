@@ -2,7 +2,7 @@
 
 import { Suspense, useEffect, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { safeBrowseReturnTo } from "@/lib/omics-browse";
+import { kindLabels, safeBrowseReturnTo } from "@/lib/omics-browse";
 import styles from "./SectionNavigation.module.css";
 
 export interface PageSection {
@@ -40,23 +40,35 @@ export function revealFragment(hash: string) {
   requestAnimationFrame(() => target.scrollIntoView({ block: "start" }));
 }
 
-function BrowseReturnLink({ href }: { href: string }) {
+/** Names where the link goes: the use case or search the reader came from,
+ * or, without one, the list of records of this kind. */
+export function browseReturnLabel(href: string, returned: boolean): string {
+  const path = href.split(/[?#]/, 1)[0];
+  if (/^\/use-cases\/[^/]+\/$/.test(path)) return "Back to the use case";
+  if (path === "/use-cases/") return "Back to use cases";
+  if (returned) return "Back to search";
+  const kind = new URLSearchParams(href.split("?")[1]?.split("#")[0] || "").get("kind");
+  const label = kind && kindLabels[kind as keyof typeof kindLabels];
+  return label ? `Browse all ${label.toLowerCase()}` : "Browse the database";
+}
+
+function BrowseReturnLink({ href, returned }: { href: string; returned: boolean }) {
   return (
     <a className={styles.back} href={href}>
-      ← Back to results
+      ← {browseReturnLabel(href, returned)}
     </a>
   );
 }
 
 function ReactiveBrowseReturn({ fallback }: { fallback: string }) {
   const search = useSearchParams();
-  const href = safeBrowseReturnTo(search.get("return_to")) || fallback;
-  return <BrowseReturnLink href={href} />;
+  const returned = safeBrowseReturnTo(search.get("return_to"));
+  return <BrowseReturnLink href={returned || fallback} returned={!!returned} />;
 }
 
 export function BrowseReturn({ fallback }: { fallback: string }) {
   return (
-    <Suspense fallback={<BrowseReturnLink href={fallback} />}>
+    <Suspense fallback={<BrowseReturnLink href={fallback} returned={false} />}>
       <ReactiveBrowseReturn fallback={fallback} />
     </Suspense>
   );

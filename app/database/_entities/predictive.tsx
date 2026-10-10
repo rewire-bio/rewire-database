@@ -14,12 +14,22 @@ import Profile, {
 } from "@/components/catalogue/Profile";
 import EvidenceTable from "@/components/catalogue/EvidenceTable";
 import Results from "@/components/catalogue/Results";
+import { resultsPayload } from "@/lib/results-payload";
+import ResultMatrix from "@/components/catalogue/ResultMatrix";
+import LinkedResults, { linkedCount } from "@/components/catalogue/LinkedResults";
 import SourceIdentityNotice from "@/components/catalogue/SourceIdentity";
 import SectionNavigation, {
   BrowseReturn,
 } from "@/components/catalogue/SectionNavigation";
 import { kindLabels, singularKindLabels, countLabel, uniqueRecords, groupEntities } from "@/lib/omics-browse";
-import { loadUseCaseContext, verifiedAssociation, type RecordDetail } from "@/lib/entity-detail";
+import {
+  linkedResultRecords,
+  loadResultMatrix,
+  loadUseCaseContext,
+  provenanceOnly,
+  verifiedAssociation,
+  type RecordDetail,
+} from "@/lib/entity-detail";
 import styles from "../database.module.css";
 
 function Links({ records }: { records: OmicsRecord[] }) {
@@ -69,11 +79,15 @@ function Fields({
 export function PredictiveEntityDetail({ detail }: { detail: RecordDetail }) {
   const { query, catalogue } = buildCatalogue();
   const { record } = detail;
+  const results = query.results({ id: record.id, limit: 25 });
+  const linked = results.total === 0 ? linkedResultRecords(query, detail) : null;
+  const hasLinked = !!linked?.items.length;
+  const matrix = loadResultMatrix(query, record.id, results.total);
   const { useCaseLinks, useCaseConfigurations } = loadUseCaseContext(
     query,
     record,
+    linked?.items.map((item) => item.record),
   );
-  const results = query.results({ id: record.id, limit: 25 });
   const evidence = query.evidence({
     id: record.id,
     scope: "individual_claim",
@@ -115,9 +129,6 @@ export function PredictiveEntityDetail({ detail }: { detail: RecordDetail }) {
       item.relation === "uses_model" &&
       verifiedAssociation(query, item.record.id, item.relation, record.id),
   );
-  const evaluatedDownstream = downstream
-    .map((item) => ({ ...item, counts: query.results({ id: item.record.id, limit: 1 }) }))
-    .filter((item) => item.counts.total > 0);
   const memberLinks = detail.reverse.filter(
     (item) =>
       ["family", "variant_of", "configuration_of", "alias_of"].includes(item.relation) &&
@@ -149,6 +160,17 @@ export function PredictiveEntityDetail({ detail }: { detail: RecordDetail }) {
   const proposals = [...detail.direct, ...detail.reverse].filter(
     (item) => item.relation === "applicable_to",
   );
+  // A configuration described only by where it was run borrows the parent's description.
+  const parent = provenanceOnly(record.description) && !localProfile.success
+    ? detail.direct.find(
+        (item) =>
+          ["configuration_of", "variant_of", "family", "uses_model"].includes(item.relation) &&
+          !!item.record.description &&
+          !provenanceOnly(item.record.description),
+      )?.record
+    : undefined;
+  const hasResults = results.total > 0 || hasLinked || broaderFamilyOnly;
+  const kindLabel = singularKindLabels[record.kind].toLowerCase();
   return (
     <>
       <header className="page-head" id="finding">
@@ -183,32 +205,26 @@ export function PredictiveEntityDetail({ detail }: { detail: RecordDetail }) {
               )}
               {results.total === 0 && (
                 <p className={styles.muted}>
-                  {evaluatedDownstream.length
-                    ? "Results are available for configurations using this model. Their fitted heads, extra inputs and evaluation settings are kept separate below."
+                  {hasLinked
+                    ? `Results are recorded on linked configurations and versions of this ${kindLabel}. Their settings and evaluations are kept separate below.`
                     : broaderFamilyOnly
                       ? "The broader model family has published results, but their attribution to this exact checkpoint has not been verified."
-                      : "No reviewed evaluations are linked here in this release. See the sources and separately identified configurations below."}
+                      : "No reviewed evaluations are linked here in this release. See the sources below."}
                 </p>
               )}
               <p className={styles.heroActions}>
-                {(results.total > 0 || (!evaluatedDownstream.length && !broaderFamilyOnly)) && (
+                {results.total > 0 && (
                   <a href="#results" className={styles.resultCount}>
                     {countLabel(results.evaluation_count, "evaluation")} ·{" "}
                     {countLabel(results.total, "result")}
                   </a>
                 )}
-                {evaluatedDownstream.length > 0 && (
-                  <>
-                    <a href="#configurations" className={styles.resultCount}>
-                      {evaluatedDownstream.length} evaluated{" "}
-                      {evaluatedDownstream.length === 1
-                        ? "configuration"
-                        : "configurations"}{" "}
-                      using this model
-                    </a>
-                  </>
+                {hasLinked && (
+                  <a href="#results" className={styles.resultCount}>
+                    {linkedCount(linked!)} with results
+                  </a>
                 )}
-                {broaderFamilyOnly && !evaluatedDownstream.length && family && (
+                {broaderFamilyOnly && !hasLinked && family && (
                   <Link href={`${recordHref(family.record)}#results`} className={styles.resultCount}>
                     View {countLabel(familyResults!.total, "result")} for the broader family
                   </Link>
@@ -224,32 +240,44 @@ export function PredictiveEntityDetail({ detail }: { detail: RecordDetail }) {
           <UseCaseBacklinks links={useCaseLinks} configurations={useCaseConfigurations} />
           <SectionNavigation
             sections={[
+              ...(hasLinked ? [{ id: "results", label: "Results" }] : []),
               { id: "overview", label: "Overview" },
-              { id: "results", label: "Results" },
-              { id: "use-model", label: "Use this model" },
+              ...(hasResults && !hasLinked ? [{ id: "results", label: "Results" }] : []),
+              { id: "use-model", label: `Use this ${kindLabel}` },
               { id: "evidence", label: "Evidence" },
             ]}
           />
-          <Profile record={profileOwner.record} sources={profileOwner.sources} part="overview" />
+          {hasLinked && <LinkedResults record={record} linked={linked!} />}
+          <Profile
+            record={profileOwner.record}
+            sources={profileOwner.sources}
+            part="overview"
+            about={
+              parent && (
+                <p>
+                  <Link href={recordHref(parent)}>{catalogueText(parent.name)}</Link>:{" "}
+                  {catalogueText(parent.description)}
+                </p>
+              )
+            }
+          />
           {record.status === "superseded" && (
             <aside className={styles.notice}>
               This record is superseded and retained for its history. Consult
               its correction links before using these results.
             </aside>
           )}
-          {(results.total > 0 || (!evaluatedDownstream.length && !broaderFamilyOnly)) && (
+          {results.total > 0 && (
             <Results
               key={`${catalogue.release_id}:${record.id}`}
               id={record.id}
-              initial={results}
+              initial={resultsPayload(results)}
               title="Evaluations and results"
+              summary={matrix && <ResultMatrix matrix={matrix} label={`Results for ${catalogueText(record.name)}`} />}
             />
           )}
-          {results.total === 0 && (evaluatedDownstream.length > 0 || broaderFamilyOnly) && (
-            <span id="results" />
-          )}
-          {broaderFamilyOnly && !evaluatedDownstream.length && family && (
-            <section className={styles.section}>
+          {broaderFamilyOnly && !hasLinked && family && (
+            <section id="results" className={styles.section}>
               <h2>Results for the broader model family</h2>
               <p>
                 Published evaluations are available for{" "}
@@ -262,7 +290,7 @@ export function PredictiveEntityDetail({ detail }: { detail: RecordDetail }) {
               </Link>
             </section>
           )}
-          {downstream.length > 0 && (
+          {downstream.length > 0 && !hasLinked && (
             <section id="configurations" className={styles.section}>
               <h2>Related configurations, pipelines and services</h2>
               <p>
@@ -289,7 +317,7 @@ export function PredictiveEntityDetail({ detail }: { detail: RecordDetail }) {
             </section>
           )}
           <section id="use-model" className={styles.section}>
-            <h2>Use this model</h2>
+            <h2>Use this {kindLabel}</h2>
             <details className={styles.profileDisclosure}>
               <summary>How it works, versions and access</summary>
               {family && (
@@ -425,7 +453,9 @@ export function PredictiveEntityDetail({ detail }: { detail: RecordDetail }) {
               </p>
               <details className={styles.profileDisclosure}>
                 <summary>
-                  {detail.sources.length} source records and release history
+                  {detail.sources.length
+                    ? `${countLabel(detail.sources.length, "source record")} and release history`
+                    : "Release history"}
                 </summary>
                 {detail.sources.length ? (
                   <ul className={styles.list}>

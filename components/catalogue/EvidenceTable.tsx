@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { catalogueClient, type EvidencePage } from "@/lib/catalogue-client";
 import { safeSourceUrl } from "@/lib/omics";
+import { evidencePropertyLabel } from "@/lib/evidence-labels";
 import styles from "@/app/database/database.module.css";
 
 const scopes = {
@@ -171,7 +172,7 @@ export default function EvidenceTable({
               {data.items.map((row) => (
                 <tr key={row.row_id}>
                   <th scope="row">
-                    <strong>{row.property}</strong>
+                    <strong>{evidencePropertyLabel(row.property)}</strong>
                     <div className={styles.evidenceValue}>
                       <EvidenceValue
                         valueJson={row.value_json}

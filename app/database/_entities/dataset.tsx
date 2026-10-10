@@ -11,13 +11,14 @@ import { profileSchema } from "@/lib/omics-profile";
 import { EvidenceConcerns, ProfileEvidence } from "@/components/catalogue/Profile";
 import EvidenceTable from "@/components/catalogue/EvidenceTable";
 import Results from "@/components/catalogue/Results";
+import { resultsPayload } from "@/lib/results-payload";
 import SourceIdentityNotice from "@/components/catalogue/SourceIdentity";
 import SectionNavigation, {
   BrowseReturn,
 } from "@/components/catalogue/SectionNavigation";
 import ResearchReadiness from "@/components/catalogue/ResearchReadiness";
 import { InvestigationList } from "@/components/catalogue/ResearchInvestigation";
-import { kindLabels, singularKindLabels, groupEntities, uniqueRecords } from "@/lib/omics-browse";
+import { countLabel, kindLabels, singularKindLabels, groupEntities, uniqueRecords } from "@/lib/omics-browse";
 import { loadUseCaseContext, verifiedAssociation, type RecordDetail } from "@/lib/entity-detail";
 import styles from "../database.module.css";
 
@@ -150,7 +151,9 @@ export function DatasetDetail({ detail }: { detail: RecordDetail }) {
           <UseCaseBacklinks links={useCaseLinks} configurations={useCaseConfigurations} />
           <SectionNavigation
             sections={[
-              { id: "finding", label: "Finding" },
+              { id: "finding", label: "Overview" },
+              ...(results.total > 0 ? [{ id: "results", label: "Results" }] : []),
+              ...(readiness ? [{ id: "research-readiness", label: "Readiness" }] : []),
               { id: "evidence", label: "Evidence" },
             ]}
           />
@@ -159,6 +162,16 @@ export function DatasetDetail({ detail }: { detail: RecordDetail }) {
               This record is superseded and retained for its history. Consult
               its correction links before using these results.
             </aside>
+          )}
+          {results.total > 0 ? (
+            <Results
+              key={`${catalogue.release_id}:${record.id}`}
+              id={record.id}
+              initial={resultsPayload(results)}
+              title="Evaluation results"
+            />
+          ) : (
+            <p className={styles.muted}>No reviewed evaluations of this {singularKindLabels[record.kind].toLowerCase()} are linked in this release.</p>
           )}
           {readiness && (
             <ResearchReadiness
@@ -184,12 +197,6 @@ export function DatasetDetail({ detail }: { detail: RecordDetail }) {
               )}
             </section>
           )}
-          <Results
-            key={`${catalogue.release_id}:${record.id}`}
-            id={record.id}
-            initial={results}
-            title="Evaluation results"
-          />
           <section className={styles.section} aria-label="Dataset context">
             <h2>
               {record.kind === "dataset_subset"
@@ -262,7 +269,9 @@ export function DatasetDetail({ detail }: { detail: RecordDetail }) {
               </p>
               <details className={styles.profileDisclosure}>
                 <summary>
-                  {detail.sources.length} source records and release history
+                  {detail.sources.length
+                    ? `${countLabel(detail.sources.length, "source record")} and release history`
+                    : "Release history"}
                 </summary>
                 {detail.sources.length ? (
                   <ul className={styles.list}>

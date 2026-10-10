@@ -27,9 +27,9 @@ const escaped = (value: string) => renderToStaticMarkup(<>{value}</>);
 describe("model profile information hierarchy", () => {
   it("leads with a sourced image and key facts, then results before detailed methods and evidence", () => {
     const html = render("discovery-model-alphafold-3");
+    // This model has no results of its own or on linked records, so it has no results section.
     const sections = [
       "overview",
-      "results",
       "how-it-works",
       "strengths-limitations",
       "specifications",
@@ -41,13 +41,16 @@ describe("model profile information hierarchy", () => {
     expect([...positions].sort((a, b) => a - b)).toEqual(positions);
     expect(html.indexOf('role="img"')).toBeLessThan(positions[0]);
     expect(html).not.toContain("Read the diagram as text");
-    expect(html).toContain("No evaluations linked in this release");
+    expect(html).toContain("No reviewed evaluations are linked here in this release");
+    expect(html).not.toContain('id="results"');
+    expect(html).not.toContain('href="#results"');
     expect(html).not.toContain('aria-label="Evaluation setup"');
     expect(html).toContain(
       "/database/service/catalog-model-alphafold-3-server",
     );
     expect(html).toContain("Their results, where available, are not assigned");
     expect(html.slice(positions[0], positions[1])).not.toContain("<table");
+    expect(html).not.toContain("0 evaluations · 0 results");
   });
   it("retains every original fact, methodological section, limitation and source locator behind disclosures", () => {
     const detail = query.get({ id: "discovery-model-alphafold-3" })!;

@@ -62,7 +62,7 @@ test('deployed public database core journeys', async ({ page, baseURL }) => {
     await link.click();
     await expect(page).toHaveURL(/\/database\/model\//);
     await expect(page.getByRole('heading', { level: 1 })).toContainText(/AlphaGenome/i);
-    await page.getByRole('link', { name: '← Back to results', exact: true }).click();
+    await page.getByRole('link', { name: '← Back to search', exact: true }).click();
     await expect(page.getByRole('searchbox', { name: 'Search the database' })).toHaveValue('AlphaGenome');
     await expect(page.getByRole('group', { name: 'Record type' }).getByRole('button', { name: /^Models/ })).toHaveAttribute('aria-pressed', 'true');
   });

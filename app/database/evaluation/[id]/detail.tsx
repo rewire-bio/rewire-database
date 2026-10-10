@@ -10,13 +10,17 @@ import { EvidenceConcerns } from "@/components/catalogue/Profile";
 import EvidenceTable from "@/components/catalogue/EvidenceTable";
 import Reproduction from "@/components/catalogue/Reproduction";
 import Results from "@/components/catalogue/Results";
+import { resultsPayload } from "@/lib/results-payload";
+import ResultMatrix from "@/components/catalogue/ResultMatrix";
+import { resultMatrix } from "@/lib/result-matrix";
+import { procedureReference } from "@/lib/result-labels";
 import SourceIdentityNotice from "@/components/catalogue/SourceIdentity";
 import SectionNavigation, {
   BrowseReturn,
 } from "@/components/catalogue/SectionNavigation";
 import ResearchReadiness from "@/components/catalogue/ResearchReadiness";
 import { InvestigationList } from "@/components/catalogue/ResearchInvestigation";
-import { singularKindLabels, groupEntities, testedEntities, evaluationEntities, datasetEntities } from "@/lib/omics-browse";
+import { countLabel, singularKindLabels, groupEntities, testedEntities, evaluationEntities, datasetEntities } from "@/lib/omics-browse";
 import type { EvaluationRecordPage } from "@/lib/record-page";
 import styles from "../../database.module.css";
 
@@ -101,6 +105,9 @@ export function EvaluationDetail({ page }: { page: EvaluationRecordPage }) {
   const proposals = [...detail.direct, ...detail.reverse].filter(
     (item) => item.relation === "applicable_to",
   );
+  // The prepared page holds the first rows; pivot only when they are all of them.
+  const matrix = results.total <= results.items.length ? resultMatrix(results.items) : null;
+  const procedure = procedureReference(record.attributes.protocol, (id) => context.get(id));
   return (
     <>
       <header className="page-head" id="finding">
@@ -129,8 +136,9 @@ export function EvaluationDetail({ page }: { page: EvaluationRecordPage }) {
           <UseCaseBacklinks links={useCaseLinks} configurations={useCaseConfigurations} />
           <SectionNavigation
             sections={[
-              { id: "finding", label: "Finding" },
+              { id: "results", label: "Results" },
               { id: "methods", label: "Methods" },
+              ...(readiness ? [{ id: "research-readiness", label: "Readiness" }] : []),
               { id: "reproduction", label: "Reproduction" },
               { id: "evidence", label: "Evidence" },
             ]}
@@ -141,6 +149,13 @@ export function EvaluationDetail({ page }: { page: EvaluationRecordPage }) {
               its correction links before using these results.
             </aside>
           )}
+          <Results
+            key={`${page.release_id}:${record.id}`}
+            id={record.id}
+            initial={resultsPayload(results)}
+            title="Evaluation results"
+            summary={matrix && <ResultMatrix matrix={matrix} label={`Results for ${catalogueText(record.name)}`} />}
+          />
           {readiness && (
             <ResearchReadiness
               assessment={readiness}
@@ -159,16 +174,18 @@ export function EvaluationDetail({ page }: { page: EvaluationRecordPage }) {
               )}
             </section>
           )}
-          <Results
-            key={`${page.release_id}:${record.id}`}
-            id={record.id}
-            initial={results}
-            title="Evaluation results"
-          />
           <section id="methods" className={styles.section}>
             <span id="protocol" />
             <h2>Evaluation procedure</h2>
-            <p>{displayValue(record.attributes.protocol)}</p>
+            {procedure && (
+              <p>
+                {"record" in procedure ? (
+                  <Link href={recordHref(procedure.record)}>{catalogueText(procedure.record.name)}</Link>
+                ) : (
+                  catalogueText(procedure.text)
+                )}
+              </p>
+            )}
             <dl className={styles.details}>
               {contextGroups.map((group) => (
                 <Fragment key={group.kind}>
@@ -240,7 +257,9 @@ export function EvaluationDetail({ page }: { page: EvaluationRecordPage }) {
               </p>
               <details className={styles.profileDisclosure}>
                 <summary>
-                  {detail.sources.length} source records and release history
+                  {detail.sources.length
+                    ? `${countLabel(detail.sources.length, "source record")} and release history`
+                    : "Release history"}
                 </summary>
                 {detail.sources.length ? (
                   <ul className={styles.list}>

@@ -10,12 +10,14 @@ import { recordHref, displayValue, safeSourceUrl } from "@/lib/omics";
 import { EvidenceConcerns } from "@/components/catalogue/Profile";
 import EvidenceTable from "@/components/catalogue/EvidenceTable";
 import Results from "@/components/catalogue/Results";
+import { resultsPayload } from "@/lib/results-payload";
+import LinkedResults, { linkedCount } from "@/components/catalogue/LinkedResults";
 import SourceIdentityNotice from "@/components/catalogue/SourceIdentity";
 import SectionNavigation, {
   BrowseReturn,
 } from "@/components/catalogue/SectionNavigation";
-import { singularKindLabels } from "@/lib/omics-browse";
-import { loadUseCaseContext, type RecordDetail } from "@/lib/entity-detail";
+import { countLabel, singularKindLabels } from "@/lib/omics-browse";
+import { linkedResultRecords, loadUseCaseContext, type RecordDetail } from "@/lib/entity-detail";
 import styles from "../../database.module.css";
 
 function Fields({
@@ -43,11 +45,14 @@ function Fields({
 export function BaselineDetail({ detail }: { detail: RecordDetail }) {
   const { query, catalogue } = buildCatalogue();
   const { record } = detail;
+  const results = query.results({ id: record.id, limit: 25 });
+  const linked = results.total === 0 ? linkedResultRecords(query, detail) : null;
+  const hasLinked = !!linked?.items.length;
   const { useCaseLinks, useCaseConfigurations } = loadUseCaseContext(
     query,
     record,
+    linked?.items.map((item) => item.record),
   );
-  const results = query.results({ id: record.id, limit: 25 });
   const evidence = query.evidence({
     id: record.id,
     scope: "record_context",
@@ -83,6 +88,20 @@ export function BaselineDetail({ detail }: { detail: RecordDetail }) {
                 sources={detail.sources}
                 subject={identitySubject}
               />
+              {results.total === 0 && !hasLinked && (
+                <p className={styles.muted}>
+                  No reviewed evaluations are linked here in this release.
+                </p>
+              )}
+              {(results.total > 0 || hasLinked) && (
+                <p className={styles.heroActions}>
+                  <a href="#results" className={styles.resultCount}>
+                    {results.total > 0
+                      ? `${countLabel(results.evaluation_count, "evaluation")} · ${countLabel(results.total, "result")}`
+                      : `${linkedCount(linked!)} with results`}
+                  </a>
+                </p>
+              )}
             </div>
           </div>
         </div>
@@ -92,7 +111,8 @@ export function BaselineDetail({ detail }: { detail: RecordDetail }) {
           <UseCaseBacklinks links={useCaseLinks} configurations={useCaseConfigurations} />
           <SectionNavigation
             sections={[
-              { id: "finding", label: "Finding" },
+              { id: "finding", label: "Overview" },
+              ...(results.total > 0 || hasLinked ? [{ id: "results", label: "Results" }] : []),
               { id: "evidence", label: "Evidence" },
             ]}
           />
@@ -102,12 +122,15 @@ export function BaselineDetail({ detail }: { detail: RecordDetail }) {
               its correction links before using these results.
             </aside>
           )}
-          <Results
-            key={`${catalogue.release_id}:${record.id}`}
-            id={record.id}
-            initial={results}
-            title="Evaluation results"
-          />
+          {results.total > 0 && (
+            <Results
+              key={`${catalogue.release_id}:${record.id}`}
+              id={record.id}
+              initial={resultsPayload(results)}
+              title="Evaluation results"
+            />
+          )}
+          {hasLinked && <LinkedResults record={record} linked={linked!} />}
           {proposals.length > 0 && (
             <details className={styles.profileDisclosure}>
               <summary>Applicable tests and references</summary>
@@ -150,7 +173,9 @@ export function BaselineDetail({ detail }: { detail: RecordDetail }) {
               </p>
               <details className={styles.profileDisclosure}>
                 <summary>
-                  {detail.sources.length} source records and release history
+                  {detail.sources.length
+                    ? `${countLabel(detail.sources.length, "source record")} and release history`
+                    : "Release history"}
                 </summary>
                 {detail.sources.length ? (
                   <ul className={styles.list}>

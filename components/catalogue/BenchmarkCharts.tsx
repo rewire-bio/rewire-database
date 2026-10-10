@@ -1,7 +1,7 @@
 "use client";
 import { formatScore } from "@/lib/score-display";
 import { catalogueText } from "@/lib/catalogue-text";
-import { useId, useState, useEffect, useMemo } from "react";
+import { useId, useState, useEffect, useMemo, type ReactNode } from "react";
 import Link from "next/link";
 import type { ResolvedComparison } from "@/shared/omics/published-comparisons";
 import {
@@ -49,6 +49,8 @@ type Props = {
   options?: Option[];
   initialResults?: ResultsPage;
   resultSummary?: Pick<ResultsPage, "total" | "evaluation_count">;
+  /** Server-built per-metric table shown above the full result rows. */
+  matrix?: ReactNode;
 };
 // Only known, generic display guidance is collapsed. New or source-specific
 // caveats remain prominent until reviewed; their array order is not a risk rank.
@@ -166,6 +168,7 @@ export function ComparisonWorkspace({
   options,
   initialResults,
   resultSummary,
+  matrix,
 }: Props) {
   const panels = useMemo(
     () =>
@@ -301,6 +304,7 @@ export function ComparisonWorkspace({
               initial={allResults}
               title="All evaluations"
               embedded
+              summary={matrix}
             />
           ) : resultsError ? (
             <p role="alert">

@@ -112,7 +112,9 @@
 .fields dd p:last-child { margin-bottom: 0; }
 .mapping summary, .section summary { cursor: pointer; padding: 10px 0; }
 .mapping code, .section code { overflow-wrap: anywhere; font-size: 12px; }
-.tableWrap { max-width: 100%; overflow-x: auto; margin: 16px 0; border: 1px solid var(--line); border-radius: var(--radius-sm); }
+/* position: relative keeps absolutely positioned descendants (the srOnly "best in column" labels) inside the
+   scroll area; without it they widen the page on narrow screens. */
+.tableWrap { position: relative; max-width: 100%; overflow-x: auto; margin: 16px 0; border: 1px solid var(--line); border-radius: var(--radius-sm); }
 .table { width: 100%; border-collapse: collapse; font-size: 14px; text-align: left; }
 .table th, .table td { vertical-align: top; padding: 14px 16px; border-bottom: 1px solid var(--line); line-height: 1.55; }
 .table thead th { background: var(--bg-subtle); font-weight: 500; color: var(--ink-2); }

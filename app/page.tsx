@@ -13,6 +13,7 @@ import { CatalogueDownloads } from "@/components/catalogue/CatalogueDownloads";
 import { BROWSE_PAGE_SIZE } from "@/lib/omics-browse";
 import RefreshStatus from "@/components/RefreshStatus";
 import { readRefresh } from "@/lib/refresh-build";
+import { buildUseCases } from "@/lib/use-cases-build";
 
 const pageMetadata = {
   title: "Biological model benchmark database",
@@ -31,6 +32,7 @@ export const metadata: Metadata = {
 
 export default function BenchmarksPage() {
   const { catalogue, query } = buildCatalogue();
+  const useCases = catalogue.coverage.use_cases ? buildUseCases().entries.length : 0;
 
   return (
     <>
@@ -46,11 +48,14 @@ export default function BenchmarksPage() {
         title="Biological model benchmark database"
         intro="Find biological models, see how they were tested and inspect the evidence behind each result."
       >
-        <nav className={styles.journeys} aria-label="Other ways to start">
-          <span>Or start from</span>
-          <a href="/use-cases/">
-            <strong>A biological question</strong> <span>Use cases</span>
-          </a>
+        <nav className={styles.journeys} aria-label="Ways to start">
+          {useCases > 0 && (
+            <a className={styles.primaryJourney} href="/use-cases/">
+              <strong>Start from a biological question</strong>{" "}
+              <span>{useCases} {useCases === 1 ? "use case" : "use cases"}</span>
+            </a>
+          )}
+          <span>{useCases > 0 ? "or from" : "Or start from"}</span>
           <a href="/models/">
             <strong>A model you know</strong> <span>Models</span>
           </a>

@@ -10,6 +10,7 @@ import { recordHref, displayValue, safeSourceUrl } from "@/lib/omics";
 import { EvidenceConcerns } from "@/components/catalogue/Profile";
 import EvidenceTable from "@/components/catalogue/EvidenceTable";
 import SourceIdentityNotice from "@/components/catalogue/SourceIdentity";
+import SourceContributions, { type SourcePageParams } from "@/components/catalogue/SourceContributions";
 import SectionNavigation, {
   BrowseReturn,
 } from "@/components/catalogue/SectionNavigation";
@@ -39,7 +40,7 @@ function Fields({
 /** A source record: a paper, repository or artifact, and the evidence that
  * cites it. No alias records currently route to the `source` legacy segment
  * (see workbench/entity-page-split-checkpoint.md). */
-export function SourceDetail({ detail }: { detail: RecordDetail }) {
+export function SourceDetail({ detail, params = {} }: { detail: RecordDetail; params?: SourcePageParams }) {
   const { query, catalogue } = buildCatalogue();
   const { record } = detail;
   const { useCaseLinks, useCaseConfigurations } = loadUseCaseContext(
@@ -78,6 +79,7 @@ export function SourceDetail({ detail }: { detail: RecordDetail }) {
     typeof identitySubjectId === "string"
       ? query.get({ id: identitySubjectId, include_comparisons: false })?.record
       : undefined;
+  const contributions = query.sourceRecords({ id: record.id, limit: 1 });
   const proposals = [...detail.direct, ...detail.reverse].filter(
     (item) => item.relation === "applicable_to",
   );
@@ -123,6 +125,8 @@ export function SourceDetail({ detail }: { detail: RecordDetail }) {
           <SectionNavigation
             sections={[
               { id: "finding", label: "Citation" },
+              ...(contributions.total ? [{ id: "source-contributions", label: "Contributions" }] : []),
+              ...(contributions.counts.result ? [{ id: "source-results", label: "Results" }] : []),
               { id: "evidence", label: "Evidence" },
             ]}
           />
@@ -152,6 +156,7 @@ export function SourceDetail({ detail }: { detail: RecordDetail }) {
               </ul>
             </details>
           )}
+          <SourceContributions query={query} id={record.id} params={params} />
           <section id="evidence" className={styles.section}>
             <h2>Evidence</h2>
             <p className={styles.muted}>

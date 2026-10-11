@@ -507,6 +507,7 @@ export const attributeRegistry = {
     dataset_version: "text",
     denominator: "integer",
     denominator_note: "text",
+    derivation: "derivation",
     derived_normalized_value: "decimal",
     derived_normalized_value_note: "text",
     eligible_count: "integer",

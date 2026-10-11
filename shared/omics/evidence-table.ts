@@ -227,7 +227,8 @@ export function createEvidenceIndex(
       if (record!.kind === "result" && field === "attributes.printed_value") {
         add({
           field,
-          label: "Reported result",
+          // A derived value is not printed by the source; say who computed it.
+          label: record!.attributes.derivation ? "Computed by Rewire from source data" : "Reported result",
           value,
           ids: record!.source_ids,
           locator: text(record!.attributes.source_locator),

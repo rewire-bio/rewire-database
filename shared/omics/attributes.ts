@@ -95,6 +95,35 @@ export const reviewSchema = z
   })
   .strict();
 
+const repoPath = z.string().regex(/^(?!\/)(?!.*\.\.)[\w./-]+$/, "Expected a repository-relative path");
+
+/** A value the source does not print, computed by Rewire from the source's own supplementary
+ * data with an aggregation the source states. The aggregation is quoted from the source, and the
+ * script and every input are pinned by hash so a reviewer can rerun the computation. That the
+ * inputs and the script match their hashes is checked by scripts/omics/derivations.ts. */
+export const derivationInputSchema = z
+  .object({
+    source_id: recordId,
+    artifact_sha256: z.string().regex(/^[a-f0-9]{64}$/),
+    locator: text,
+    row_filter: text,
+    row_count: integer.positive(),
+  })
+  .strict();
+export const derivationSchema = z
+  .object({
+    method: text,
+    inputs: z.array(derivationInputSchema).min(1),
+    aggregation: text,
+    aggregation_source_id: recordId,
+    aggregation_locator: text,
+    script: repoPath,
+    script_sha256: z.string().regex(/^[a-f0-9]{64}$/),
+    precision: text,
+    note: text.optional(),
+  })
+  .strict();
+
 export const reportedPopulationSchema = z
   .object({
     count: integer.nonnegative().optional(),
@@ -133,6 +162,7 @@ export const attributeTypes = {
   coverage: coverageSchema,
   review: reviewSchema,
   "reported-population": reportedPopulationSchema,
+  derivation: derivationSchema,
 } as const;
 export type AttributeType = keyof typeof attributeTypes | `concept:${string}` | `concepts:${string}`;
 

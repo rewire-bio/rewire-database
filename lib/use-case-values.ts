@@ -1,3 +1,4 @@
+import { DERIVED_LABEL } from "./derivation";
 import { unitSuffix } from "./metric-labels";
 
 // Presentation only. Sorting and the best-value marker use `value`, never the formatted text,
@@ -20,11 +21,15 @@ export type Reading = {
   verbatim: string | null;
   missing: boolean;
   note: string | null;
+  /** Computed by Rewire from the source's data, not printed by it. */
+  derived?: boolean;
 };
 
 export type ReadingInput = {
   printed: string | null; numeric: number | null; unit: string | null;
   anomaly?: string | null; undefinedReason?: string | null;
+  /** Computed by Rewire from the source's data; "printed" then holds the computed value. */
+  derived?: boolean;
 };
 
 const NUMBER = /^([<>≤≥~≈]?\s*)([+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:e[+-]?\d+)?)(\s*%)?(.*)$/i;
@@ -41,7 +46,7 @@ const percentOf = (token: string) => {
 /** Reads a printed value. `asPercent` shows a fraction as a percentage, for pages that print the metric both ways. */
 export function readValue(input: ReadingInput, asPercent = false): Reading {
   const printed = (input.printed ?? "").trim();
-  const base = { printed, value: null, decimals: 0, long: false, prefix: "", suffix: "", rest: "", missing: false, note: null };
+  const base = { printed, value: null, decimals: 0, long: false, prefix: "", suffix: "", rest: "", missing: false, note: null, derived: !!input.derived };
   if (input.numeric === null) {
     if (!printed) return { ...base, verbatim: "Not reported", missing: true };
     if (input.anomaly) return { ...base, verbatim: "Unreadable in source", missing: true, note: input.anomaly };
@@ -93,10 +98,11 @@ function formatNumber(r: Reading, decimals: number) {
 }
 
 /** The text a reading shows, at the column's decimals when given, and a title with the printed value when they differ. */
-export function formatReading(r: Reading, decimals?: number): { text: string; title?: string; missing: boolean } {
+export function formatReading(r: Reading, decimals?: number): { text: string; title?: string; missing: boolean; derived?: boolean } {
   const text = r.verbatim ?? `${r.prefix}${formatNumber(r, decimals ?? ownDecimals(r))}${r.suffix}${r.rest.replace(/\d+\.\d{5,}/g, (t) => String(Number(Number(t).toPrecision(3))))}`;
   // Adding the unit alone ("27.05" shown as "27.05 min") does not change what was printed.
-  const printed = r.printed && text !== r.printed && text !== r.printed + r.suffix ? `Printed ${r.printed}` : "";
+  const differs = r.printed && text !== r.printed && text !== r.printed + r.suffix;
+  const printed = r.derived ? `${DERIVED_LABEL}${differs ? `: ${r.printed}` : ""}` : differs ? `Printed ${r.printed}` : "";
   const title = [printed, r.note].filter(Boolean).join(". ") || undefined;
-  return { text, ...(title ? { title } : {}), missing: r.missing };
+  return { text, ...(title ? { title } : {}), missing: r.missing, ...(r.derived ? { derived: true } : {}) };
 }

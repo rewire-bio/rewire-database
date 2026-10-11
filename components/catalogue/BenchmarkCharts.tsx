@@ -3,6 +3,7 @@ import { formatScore } from "@/lib/score-display";
 import { catalogueText } from "@/lib/catalogue-text";
 import { useId, useState, useEffect, useMemo, type ReactNode } from "react";
 import Link from "next/link";
+import DerivedMark from "./DerivedMark";
 import type { ResolvedComparison } from "@/shared/omics/published-comparisons";
 import {
   unpackComparisons,
@@ -578,6 +579,7 @@ export function ComparisonWorkspace({
                             >
                               {formatScore(row.result.attributes.printed_value)}
                             </Link>
+                            <DerivedMark attributes={row.result.attributes} />
                           </td>
                           <td>
                             {uncertaintyText(row.result.attributes)}
@@ -680,6 +682,7 @@ export function ComparisonWorkspace({
                               >
                                 {formatScore(row.result.attributes.printed_value)}
                               </Link>
+                              <DerivedMark attributes={row.result.attributes} />
                             </li>
                           );
                         })}

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { recordHref } from "@/lib/omics";
 import { methodTypeLabel, originLabel, type Comparison, type ComparisonCell, type ComparisonRow, type ShownValue } from "@/lib/use-case-comparisons";
+import DerivedMark from "./DerivedMark";
 import styles from "./UseCases.module.css";
 
 const directionText = { higher: "higher is better", lower: "lower is better", unknown: "direction not stated" } as const;
@@ -9,7 +10,7 @@ const LONG_TABLE = 15;
 const SHOWN_ROWS = 10;
 
 const Value = ({ value }: { value: ShownValue }) =>
-  <span className={value.missing ? styles.missing : styles.value} title={value.title}>{value.text}</span>;
+  <><span className={value.missing ? styles.missing : styles.value} title={value.title}>{value.text}</span><DerivedMark derived={!!value.derived} /></>;
 
 /** Cells with more secondary values than this show the first few and fold the rest. */
 const SECONDARY_SHOWN = 4;

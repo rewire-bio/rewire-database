@@ -1,4 +1,5 @@
 import type { ResultRow } from "../shared/omics/catalogue-query";
+import { resultDerivation } from "./derivation";
 import { numericScore } from "../components/catalogue/comparison-utils";
 import { datasetEntities, evaluationEntities, testedEntities } from "./omics-browse";
 import { metricName } from "./result-labels";
@@ -9,6 +10,8 @@ type Direction = "higher" | "lower" | "unknown";
 export interface MatrixCell {
   result: Reference;
   printed: string;
+  /** Computed by Rewire from the source's data rather than printed (lib/derivation.ts). */
+  derived: boolean;
   unit: string;
   numeric: number | null;
   best: boolean;
@@ -52,6 +55,7 @@ export function resultMatrix(rows: ResultRow[]): ResultMatrix | null {
       printed: printed + (attributes.unit === "percent" && printed && !printed.includes("%") ? "%" : ""),
       unit: text(attributes.unit),
       numeric: numericScore(attributes.numeric_value),
+      derived: !!resultDerivation(attributes),
       best: false,
     });
     byRow.set(key, entry);

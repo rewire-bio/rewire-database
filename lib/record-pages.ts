@@ -1,3 +1,4 @@
+import { resultDerivation } from "./derivation";
 import { createHash } from "node:crypto";
 import {
   recordReference,
@@ -130,9 +131,13 @@ export function recordPageBuilder(
   const research = query.research();
 
   function contextRecords(record: CatalogueRecord, evaluations: (CatalogueRecord | null)[]) {
+    const derivation = resultDerivation(record.attributes);
     const ids = new Set<string>([
       ...record.links.map((link) => link.target_id),
       ...record.source_ids,
+      // A computed value's data files and the source of its stated aggregation.
+      ...(derivation?.inputs.map((input) => input.source_id) ?? []),
+      ...(derivation?.aggregation_source_id ? [derivation.aggregation_source_id] : []),
     ]);
     for (const evaluation of evaluations) {
       if (!evaluation) continue;

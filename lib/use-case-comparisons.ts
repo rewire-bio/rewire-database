@@ -1,3 +1,4 @@
+import { resultDerivation } from "./derivation";
 import type { ResolvedMapping } from "@/shared/omics/use-cases";
 import type { CatalogueRecord } from "@/shared/omics/catalogue-query";
 import { recordHref } from "@/lib/omics";
@@ -9,7 +10,7 @@ type Presentation = { group: string; title: string; stratum_label?: string; stra
 const presentationOf = (m: ResolvedMapping) => (m as ResolvedMapping & { presentation?: Presentation }).presentation;
 
 /** A value as the page shows it, with the printed value (and any source note) in `title` when they differ. */
-export type ShownValue = { text: string; title?: string; missing: boolean };
+export type ShownValue = { text: string; title?: string; missing: boolean; derived?: boolean };
 export type ComparisonCell = {
   /** Printed value of the headline metric, exactly as recorded, or null when none was recorded. */
   printed: string | null;
@@ -89,6 +90,7 @@ const direction = (value: unknown): ComparisonColumn["direction"] =>
 type Measured = {
   metric: string; qualifier: string | null; printed: string; numeric: number | null; direction: ComparisonColumn["direction"];
   unit: string | null; uncertainty: string | null; anomaly: string | null; undefinedReason: string | null;
+  derived: boolean;
 };
 function measurements(evaluation: ResolvedMapping["evaluations"][number]): Measured[] {
   return evaluation.results.map(({ result }) => {
@@ -103,6 +105,7 @@ function measurements(evaluation: ResolvedMapping["evaluations"][number]): Measu
       uncertainty: text((a.uncertainty as { type?: unknown } | undefined)?.type) || null,
       anomaly: text(a.source_anomaly) || null,
       undefinedReason: text(a.undefined_reason) || null,
+      derived: !!resultDerivation(a),
     };
   });
 }

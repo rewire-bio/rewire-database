@@ -24,6 +24,7 @@ import {
 } from "@/lib/omics-browse";
 import { useResultsLocation } from "./useResultsLocation";
 import { metricName } from "@/lib/result-labels";
+import DerivedMark from "./DerivedMark";
 import styles from "@/app/database/database.module.css";
 import ux from "./comparison.module.css";
 
@@ -292,6 +293,7 @@ export default function Results({
                           : null,
                       )}
                     </Link>
+                    <DerivedMark attributes={row.result.attributes} />
                     <div className={styles.muted}>
                       {displayValue(row.result.attributes.unit)} ·{" "}
                       {displayValue(row.result.attributes.metric_direction)}

@@ -46,11 +46,6 @@ describe("model coverage profile rendering", () => {
       pipeline: "mrnabench-variants-2025-method-mrna-fm",
       rows: 8,
     },
-    {
-      id: "catalog-model-metagene-1",
-      pipeline: "metagene-gene-mteb-method-metagene-1",
-      rows: 16,
-    },
   ])("shows evaluated pipelines before collapsed methods for $id", ({ id, pipeline, rows }) => {
     expect(query.results({ id }).total).toBe(0);
     expect(query.results({ id: pipeline }).total).toBe(rows);

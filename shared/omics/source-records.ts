@@ -31,6 +31,8 @@ export interface SourceResultItem {
   unit: string | null;
   metric_direction: string | null;
   origin: string;
+  /** Computed by Rewire from printed values (attributes.derivation), not printed in the source. */
+  derived: boolean;
   evaluation: Named | null;
   /** Models, methods, configurations, pipelines or services tested. */
   tested: Named[];
@@ -153,6 +155,7 @@ export function sourceResultItem(row: ResultRow): SourceResultItem {
     unit: text(result.attributes.unit),
     metric_direction: text(result.attributes.metric_direction),
     origin: row.origin,
+    derived: !!result.attributes.derivation,
     evaluation: row.evaluation ? named(row.evaluation) : null,
     tested: row.models.map(named),
     benchmarks: row.benchmarks.map(named),

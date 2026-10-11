@@ -194,18 +194,20 @@ export default function EvidenceGuide() {
           </section>
 
           <section className={styles.section}>
-            <h2>Download the source-origin tables</h2>
+            <h2>Source-origin evidence</h2>
             <p>
               Release {catalogue.release_id}, published{" "}
-              {catalogue.released_at.slice(0, 10)}. The table contains{" "}
-              {evidence.rows.toLocaleString("en-GB")} rows across{" "}
+              {catalogue.released_at.slice(0, 10)}, has{" "}
+              {evidence.rows.toLocaleString("en-GB")} evidence rows across{" "}
               {query.homeSummary().records.toLocaleString("en-GB")} records. A
               statement citing two sources occupies two rows; this is not a
-              count of independent findings.
+              count of independent findings. Each record&apos;s rows are shown
+              on its page under Evidence. They are derived from the records
+              download, so no separate evidence table is published.
             </p>
             <div className={styles.downloads}>
-              <a href={downloadHref(`${release}/evidence.jsonl`)}>
-                Evidence table (JSONL) (gzip)
+              <a href={downloadHref(`${release}/records.jsonl`)}>
+                Records (JSONL) (gzip)
               </a>
               <a href={downloadHref(`${release}/manifest.json`)}>Release checksums (gzip)</a>
             </div>

@@ -47,12 +47,16 @@ export function verifyReleaseData(root = "public") {
   for (const [name, expected] of Object.entries(researchFiles(catalogue)))
     if (!fs.existsSync(path.join(root, release, name)) || read(path.join(release, name)).toString("utf8") !== expected)
       failures.push(`Research sidecar differs from catalogue: ${name}`);
-  const evidence = createEvidenceIndex(catalogue, { cache: false });
-  // Releases from 2026-10-10 publish JSONL only; earlier ones also carry evidence.csv.
-  const evidenceCsv = path.join(root, release, "evidence.csv");
-  if (fileSha256(path.join(root, release, "evidence.jsonl")) !== chunksSha256(evidenceJsonlLines(evidence.iterate())) ||
-      (fs.existsSync(evidenceCsv) && fileSha256(evidenceCsv) !== chunksSha256(evidenceCsvLines(evidence.iterate()))))
-    failures.push("Evidence exports do not match their release records");
+  // Releases from 2026-10-11 no longer publish the bulk evidence table; record pages
+  // derive their evidence rows from the catalogue. Check it only where a release has it.
+  if (releaseManifest.files["evidence.jsonl"]) {
+    const evidence = createEvidenceIndex(catalogue, { cache: false });
+    // Releases from 2026-10-10 publish JSONL only; earlier ones also carry evidence.csv.
+    const evidenceCsv = path.join(root, release, "evidence.csv");
+    if (fileSha256(path.join(root, release, "evidence.jsonl")) !== chunksSha256(evidenceJsonlLines(evidence.iterate())) ||
+        (fs.existsSync(evidenceCsv) && fileSha256(evidenceCsv) !== chunksSha256(evidenceCsvLines(evidence.iterate()))))
+      failures.push("Evidence exports do not match their release records");
+  }
   // The manifest's generator and exporter hashes identify the producer's source
   // files, which this repository mirrors under its own paths; every data file and
   // every other manifest field must match exactly.

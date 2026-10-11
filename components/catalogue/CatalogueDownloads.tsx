@@ -20,9 +20,6 @@ export function CatalogueDownloads({
         <a href={downloadHref(`${release}/records.jsonl`)}>
           JSONL (gzip)
         </a>
-        <a href={downloadHref(`${release}/evidence.jsonl`)}>
-          Evidence table (JSONL) (gzip)
-        </a>
         <a href="/evidence/">Evidence and review methods</a>
         <a href={downloadHref(`${release}/manifest.json`)}>Checksums and release manifest (gzip)</a>
       </div>

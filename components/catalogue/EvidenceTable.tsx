@@ -1,5 +1,4 @@
 "use client";
-import { downloadHref } from "@/lib/downloads";
 import EvidenceValue from "./EvidenceValue";
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
@@ -75,7 +74,6 @@ export default function EvidenceTable({
       active = false;
     };
   }, [client, id, q, scope, cursor, retry, initial, initialScope]);
-  const release = `/omics/releases/${initial.release_id}`;
   return (
     <section
       id={sectionId}
@@ -315,9 +313,6 @@ export default function EvidenceTable({
               Next evidence rows
             </button>
           )}
-          <a href={downloadHref(`${release}/evidence.jsonl`)}>
-            All evidence (JSONL) (gzip)
-          </a>
           <Link href="/evidence/">How to read the evidence</Link>
         </div>
       </details>

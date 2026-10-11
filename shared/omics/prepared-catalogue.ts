@@ -19,6 +19,7 @@ import {
 } from "./catalogue-query.js";
 import { useCaseQueryFrom, type UseCaseState } from "./use-cases.js";
 import { decodeRecords, unpackEvidence, type PackedEvidence } from "./serving-codec.js";
+import { sourceRecordsPage, sourceResultsPage, type SourceRecordsInput, type SourceResultsInput } from "./source-records.js";
 import type { ResearchData, ResearchReadiness } from "./research.js";
 import type { AuditCheck } from "./audit.js";
 import {
@@ -34,9 +35,11 @@ const { DatabaseSync } = process.getBuiltinModule("node:sqlite");
 
 /** Serving contract of the prepared release file (tables and their meaning).
  * 3.x stores each record once and refers to it from details, result rows and
- * use cases (serving-codec.ts), and stores use cases as rows. The reader also
- * opens 2.x files, so a website can switch between releases of either form. */
-export const PREPARED_CONTRACT_VERSION = "3.0";
+ * use cases (serving-codec.ts), and stores use cases as rows. 3.1 adds the
+ * source_records table; on older files source pages read as having no records.
+ * The reader also opens 2.x files, so a website can switch between releases of
+ * either form. */
+export const PREPARED_CONTRACT_VERSION = "3.1";
 const READABLE_CONTRACT_MAJORS = ["2", "3"];
 
 /**
@@ -151,6 +154,22 @@ export function openPreparedCatalogue(file: string) {
     } satisfies Pick<Query, "list" | "links" | "get" | "evaluationResults">;
   };
   const indexStatement = db.prepare("SELECT result_id FROM result_index WHERE record_id = ? ORDER BY pos");
+  // Source pages (3.1). Older files have no table, so every source has no records.
+  const hasSourceRecords = !!db.prepare("SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = 'source_records'").get();
+  const sourceCountsStatement = hasSourceRecords
+    ? db.prepare("SELECT kind, count FROM source_records WHERE source_id = ? ORDER BY pos")
+    : null;
+  const sourceIdsStatement = hasSourceRecords
+    ? db.prepare("SELECT gz FROM source_records WHERE source_id = ? AND kind = ?")
+    : null;
+  const sourceCounts = (id: string): Record<string, number> =>
+    Object.fromEntries(
+      ((sourceCountsStatement?.all(id) || []) as { kind: string; count: number }[]).map((row) => [row.kind, Number(row.count)]),
+    );
+  const sourceIds = (id: string, kind: string): string[] => {
+    const row = sourceIdsStatement?.get(id, kind) as { gz: Uint8Array } | undefined;
+    return row ? (unzip(row.gz) as string[]) : [];
+  };
   const evidenceStatement = db.prepare("SELECT gz FROM evidence WHERE record_id = ?");
 
   return {
@@ -202,6 +221,17 @@ export function openPreparedCatalogue(file: string) {
     compare({ ids }: { ids: string[] }) {
       const lookup = sharedLookup();
       return compareResults(release_id, ids, (id) => resultRow(id, lookup), inactive());
+    },
+    /** What the catalogue took from one source: counts by kind and a page of
+     * record IDs per kind, or of `kind` alone. Reads only that source's rows. */
+    sourceRecords: (input: SourceRecordsInput) =>
+      sourceRecordsPage(release_id, sourceCounts(input.id), (kind) => sourceIds(input.id, kind), input),
+    /** One page of a source's results as table rows (value, metric, qualifier,
+     * tested entity, benchmark, dataset). Reads only the rows on the page and
+     * the records they name. */
+    sourceResults(input: SourceResultsInput) {
+      const lookup = sharedLookup();
+      return sourceResultsPage(release_id, sourceIds(input.id, "result"), (id) => resultRow(id, lookup), input);
     },
     researchReadiness: (input: ReadinessInput = {}) => readinessPage(release_id, readiness(), input),
     investigations: (input: InvestigationsInput = {}) => investigationsPage(release_id, research(), input),

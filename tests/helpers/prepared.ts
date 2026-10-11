@@ -49,6 +49,8 @@ export function preparedFromSnapshot(
     comparison: live.comparison,
     results: live.results,
     evidence: live.evidence,
+    sourceRecords: live.sourceRecords,
+    sourceResults: live.sourceResults,
     list: live.list,
     compare: live.compare,
     researchReadiness: live.researchReadiness,

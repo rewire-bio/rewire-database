@@ -1,3 +1,4 @@
+import DerivedMark from "@/components/catalogue/DerivedMark";
 import Link from "next/link";
 import { catalogueText } from "@/lib/catalogue-text";
 import { recordHref, displayValue } from "@/lib/omics";
@@ -52,7 +53,8 @@ export function ExplorerRows({
                     record.attributes.printed_value,
                     record.attributes.unit,
                   )}
-                </strong>{" "}
+                </strong>
+                <DerivedMark attributes={record.attributes} />{" "}
                 · {displayValue(record.attributes.metric)}
               </p>
               <label className={styles.check}>

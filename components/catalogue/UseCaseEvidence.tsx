@@ -1,3 +1,4 @@
+import DerivedMark from "./DerivedMark";
 import { downloadHref } from "@/lib/downloads";
 import type { Citation, ResolvedMapping, Review } from "@/shared/omics/use-cases";
 import type { CatalogueRecord } from "@/shared/omics/catalogue-query";
@@ -121,7 +122,7 @@ export default function UseCaseEvidence({ mapping, useCasePath, executionLinks }
                 <thead><tr><th scope="col">Metric</th><th scope="col">Value</th><th scope="col">Coverage</th><th scope="col">Uncertainty and source</th></tr></thead>
                 <tbody>{results.map((row) => <tr key={row.result.id}>
                   <th scope="row"><UseCaseRecordLink href={recordHref(row.result)} useCasePath={useCasePath}>{displayValue(row.result.attributes.metric)}</UseCaseRecordLink></th>
-                  <td><span className={styles.score}>{explorerPrintedScore(row.result.attributes.printed_value, row.result.attributes.unit)}</span><p className={styles.muted}>{displayValue(row.result.attributes.unit)} · {displayValue(row.result.attributes.metric_direction)}</p></td>
+                  <td><span className={styles.score}>{explorerPrintedScore(row.result.attributes.printed_value, row.result.attributes.unit)}</span><DerivedMark attributes={row.result.attributes} /><p className={styles.muted}>{displayValue(row.result.attributes.unit)} · {displayValue(row.result.attributes.metric_direction)}</p></td>
                   <td>{coverageText(row.result.attributes)}</td>
                   <td><p>{uncertaintyText(row.result.attributes)}</p><details><summary>Result provenance</summary><UseCaseCitations citations={row.result.source_ids.map((source_id) => ({ source_id, locator: String(row.result.attributes.source_locator || "See the source record for the evidence location") }))} sources={row.sources} useCasePath={useCasePath} /></details></td>
                 </tr>)}</tbody>

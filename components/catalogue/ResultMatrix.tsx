@@ -1,4 +1,5 @@
 import Link from "next/link";
+import DerivedMark from "./DerivedMark";
 import { catalogueText } from "@/lib/catalogue-text";
 import { recordHref } from "@/lib/omics";
 import { formatScore } from "@/lib/score-display";
@@ -61,9 +62,12 @@ export default function ResultMatrix({ matrix, label }: { matrix: Matrix; label:
                 {row.cells.map((cell, i) => (
                   <td key={matrix.columns[i].key} className={cell?.best ? styles.best : undefined}>
                     {cell ? (
-                      <Link href={recordHref(cell.result)} title={`Printed value: ${cell.printed}`}>
-                        <span className={cell.numeric === null ? styles.missing : styles.value}>{/^[+-]?\d+%?$/.test(cell.printed) ? cell.printed : formatScore(cell.printed)}</span>
-                      </Link>
+                      <>
+                        <Link href={recordHref(cell.result)} title={`${cell.derived ? "Computed value" : "Printed value"}: ${cell.printed}`}>
+                          <span className={cell.numeric === null ? styles.missing : styles.value}>{/^[+-]?\d+%?$/.test(cell.printed) ? cell.printed : formatScore(cell.printed)}</span>
+                        </Link>
+                        <DerivedMark derived={cell.derived} />
+                      </>
                     ) : (
                       <span className={styles.missing}>Not reported</span>
                     )}

@@ -960,3 +960,18 @@
     display: none;
   }
 }
+/* A value Rewire computed from a source's data, not printed in the source. */
+.derived {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 0 6px;
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius-sm);
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.6;
+  color: var(--ink-2);
+  white-space: nowrap;
+  vertical-align: middle;
+}

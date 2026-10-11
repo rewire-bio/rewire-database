@@ -17,7 +17,73 @@ import SectionNavigation, {
 import { countLabel, singularKindLabels, predictiveKinds, groupEntities, testedEntities, evaluationEntities, datasetEntities } from "@/lib/omics-browse";
 import { metricName, procedureReference, resultPageTitle } from "@/lib/result-labels";
 import type { ResultRecordPage } from "@/lib/record-page";
+import { DERIVED_LABEL, derivationScriptUrl, resultDerivation, type Derivation } from "@/lib/derivation";
+import { dataPin } from "@/lib/data-pin";
+import DerivedMark from "@/components/catalogue/DerivedMark";
 import styles from "../../database.module.css";
+
+/** How Rewire computed a value that its source does not print: the data files and
+ * rows used, the source's own description of the aggregation, and the script. */
+function DerivationSection({ derivation, recordById }: { derivation: Derivation; recordById: (id: string) => OmicsRecord | undefined }) {
+  const source = (id: string) => {
+    const record = recordById(id);
+    const file = record ? safeSourceUrl(record.attributes.url) : undefined;
+    return record ? (
+      <>
+        <Link href={recordHref(record)}>{catalogueText(record.name)}</Link>
+        {file && <> · <a href={file}>Data file</a></>}
+      </>
+    ) : id;
+  };
+  const script = derivation.script ? derivationScriptUrl(derivation.script, dataPin().revision) : undefined;
+  return (
+    <section id="derivation" className={styles.section}>
+      <h2>How this value was computed</h2>
+      <p className={styles.notice}>
+        {DERIVED_LABEL}. This value is not printed in the source; Rewire computed it with the script below from the data files listed.
+      </p>
+      <dl className={styles.details}>
+        <dt>Inputs</dt>
+        <dd>
+          {derivation.inputs.length ? (
+            <ul className={styles.list}>
+              {derivation.inputs.map((input, i) => (
+                <li key={i}>
+                  {source(input.source_id)}
+                  {input.locator && <>, {input.locator}</>}
+                  {input.row_filter && <>; rows where <code>{input.row_filter}</code></>}
+                  {input.row_count !== undefined && <> ({input.row_count.toLocaleString()} rows)</>}
+                  {input.artifact_sha256 && <> · <span title={`SHA-256 ${input.artifact_sha256}`}>file checksum {input.artifact_sha256.slice(0, 12)}</span></>}
+                </li>
+              ))}
+            </ul>
+          ) : "Not recorded"}
+        </dd>
+        {derivation.aggregation && (
+          <>
+            <dt>Aggregation, as the source describes it</dt>
+            <dd>
+              <q>{derivation.aggregation}</q>
+              {derivation.aggregation_source_id && <> · {source(derivation.aggregation_source_id)}</>}
+              {derivation.aggregation_locator && <>, {derivation.aggregation_locator}</>}
+            </dd>
+          </>
+        )}
+        {derivation.script && (
+          <>
+            <dt>Script</dt>
+            <dd>
+              {script ? <a href={script}>{derivation.script}</a> : <code>{derivation.script}</code>}
+              {derivation.script_sha256 && <> · <span title={`SHA-256 ${derivation.script_sha256}`}>checksum {derivation.script_sha256.slice(0, 12)}</span></>}
+            </dd>
+          </>
+        )}
+        {derivation.precision && (<><dt>Precision</dt><dd>{derivation.precision}</dd></>)}
+        {derivation.note && (<><dt>Note</dt><dd>{derivation.note}</dd></>)}
+      </dl>
+    </section>
+  );
+}
 
 function Links({ records }: { records: OmicsRecord[] }) {
   return (
@@ -69,6 +135,7 @@ export function ResultDetail({ page }: { page: ResultRecordPage }) {
     String(record.attributes.metric ?? ""),
     typeof record.attributes.metric_qualifier === "string" ? record.attributes.metric_qualifier : null,
   );
+  const derivation = resultDerivation(record.attributes);
   const value = `${formatScore(record.attributes.printed_value)}${record.attributes.unit === "percent" && !/%/.test(String(record.attributes.printed_value)) ? "%" : ""}`;
   const modelLinks = first ? testedEntities(first) : [];
   const modelFamilies = modelLinks.flatMap((model) =>
@@ -109,8 +176,9 @@ export function ResultDetail({ page }: { page: ResultRecordPage }) {
               <span className="kick">{singularKindLabels[record.kind]}</span>
               <h1>{title}</h1>
               <p className={styles.findingValue}>
-                <strong title={`Printed value: ${displayValue(record.attributes.printed_value)}`}>{value}</strong>{" "}
+                <strong title={`${derivation ? "Computed value" : "Printed value"}: ${displayValue(record.attributes.printed_value)}`}>{value}</strong>{" "}
                 {metric}
+                {derivation && <> <a href="#derivation"><DerivedMark derived /></a></>}
               </p>
               <EvidenceConcerns sources={detail.sources} />
               <SourceIdentityNotice
@@ -128,6 +196,7 @@ export function ResultDetail({ page }: { page: ResultRecordPage }) {
           <SectionNavigation
             sections={[
               { id: "finding", label: "Result" },
+              ...(derivation ? [{ id: "derivation", label: "Computation" }] : []),
               { id: "methods", label: "Methods" },
               ...(evaluated ? [{ id: "reproduction", label: "Reproduction" }] : []),
               { id: "evidence", label: "Evidence" },
@@ -139,6 +208,7 @@ export function ResultDetail({ page }: { page: ResultRecordPage }) {
               its correction links before using these results.
             </aside>
           )}
+          {derivation && <DerivationSection derivation={derivation} recordById={(id) => context.get(id) as OmicsRecord | undefined} />}
           <section
             id="methods"
             className={styles.finding}
@@ -209,8 +279,10 @@ export function ResultDetail({ page }: { page: ResultRecordPage }) {
               </dd>
             </dl>
             <p className={styles.notice}>
-              A source-checked result verifies the numerical transcription,
-              not every model or protocol detail. Evaluation metadata:{" "}
+              {derivation
+                ? "Review of a computed result checks its inputs and script against the source's data, not every model or protocol detail."
+                : "A source-checked result verifies the numerical transcription, not every model or protocol detail."}{" "}
+              Evaluation metadata:{" "}
               {evaluated?.status.replace(/_/g, " ") || "not reported"}. Source
               checked does not mean independently reproduced.
             </p>

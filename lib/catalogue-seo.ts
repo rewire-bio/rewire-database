@@ -1,3 +1,4 @@
+import { DERIVED_LABEL, resultDerivation } from "./derivation";
 import { catalogueText } from "./catalogue-text";
 import { formatScore } from "./score-display";
 import { singularKindLabels } from "./omics-browse";
@@ -118,6 +119,7 @@ export function recordSearchMetadata(
     const comparison = object(evaluation?.attributes.comparison);
     description = [
       sentence(measurement || name),
+      resultDerivation(record.attributes) ? sentence(DERIVED_LABEL) : "",
       sentence(
         evaluation
           ? context(evaluation) || `Evaluation: ${text(evaluation.name)}`

@@ -14,6 +14,7 @@ import { createEvidenceIndex } from "./evidence-table.js";
 import { resolveComparisons } from "./published-comparisons.js";
 import type { ResolvedComparison } from "./published-comparisons.js";
 import { deriveResearchReadiness, getResearch, validateResearchData, type ResearchData, type ResearchReadiness, type ResearchCapability } from "./research.js";
+import { sourceRecordIndex, sourceRecordsPage, sourceResultsPage, type SourceRecordsInput, type SourceResultsInput } from "./source-records.js";
 /** The public catalogue contract shared by Firestore and static-release adapters. */
 export interface CatalogueRecord {
   id: string;
@@ -596,6 +597,7 @@ export function createCatalogueQuery(snapshot: CatalogueSnapshot) {
       )
       .map((record) => record.id),
   );
+  let sourceIndex: ReturnType<typeof sourceRecordIndex> | undefined;
   // Most public requests do not need the evidence table. Build it only on demand.
   let evidenceIndex: ReturnType<typeof createEvidenceIndex> | undefined;
   if (byId.size !== records.length) throw new Error("Duplicate catalogue IDs");
@@ -964,6 +966,19 @@ export function createCatalogueQuery(snapshot: CatalogueSnapshot) {
     },
     compare({ ids }: { ids: string[] }) {
       return compareResults(release_id, ids, (id) => rowsById.get(id), inactiveAssessmentDatasetIds);
+    },
+    /** Every source's citing record IDs by kind (source-records.ts), built on first use. */
+    sourceIndex: () => (sourceIndex ||= sourceRecordIndex(records, rows)),
+    /** What the catalogue took from one source: counts by kind and a page of IDs per kind. */
+    sourceRecords(input: SourceRecordsInput) {
+      const lists = (sourceIndex ||= sourceRecordIndex(records, rows)).get(input.id);
+      const counts = Object.fromEntries([...(lists || [])].map(([kind, ids]) => [kind, ids.length]));
+      return sourceRecordsPage(release_id, counts, (kind) => lists?.get(kind) || [], input);
+    },
+    /** One page of the results taken from a source, as table rows. */
+    sourceResults(input: SourceResultsInput) {
+      const ids = (sourceIndex ||= sourceRecordIndex(records, rows)).get(input.id)?.get("result") || [];
+      return sourceResultsPage(release_id, ids, (id) => rowsById.get(id), input);
     },
   };
 }

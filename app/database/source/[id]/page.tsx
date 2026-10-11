@@ -5,6 +5,7 @@ import { buildCatalogue } from "@/lib/catalogue-build";
 import { recordRouteKinds } from "@/lib/omics";
 import { getDetailOr404, relatedRecords } from "@/lib/entity-detail";
 import { SourceDetail } from "./detail";
+import type { SourcePageParams } from "@/components/catalogue/SourceContributions";
 
 type Params = { id: string };
 const KIND = "source" as const;
@@ -24,8 +25,8 @@ export function generateMetadata({ params }: { params: Params }): Metadata {
   };
 }
 
-export default function Page({ params }: { params: Params }) {
+export default function Page({ params, searchParams = {} }: { params: Params; searchParams?: SourcePageParams }) {
   const { query } = buildCatalogue();
   const detail = getDetailOr404(query, KIND, params.id);
-  return <SourceDetail detail={detail} />;
+  return <SourceDetail detail={detail} params={searchParams} />;
 }

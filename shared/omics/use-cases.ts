@@ -490,7 +490,9 @@ export function claimPins(records: Map<string, CatalogueRecord>, claim: Catalogu
   if (!useCaseId || typeof field !== "string") return undefined;
   if (field.startsWith("links:assessed_by:"))
     return judgementPins(records, { useCaseId, protocolId: field.slice("links:assessed_by:".length), sourceIds: claim.source_ids, evaluationIds: reviewedEvaluations(claim) });
-  if (field === "baseline") return judgementPins(records, { useCaseId, sourceIds: claim.source_ids });
+  // Descriptive claims on protocols also use the field "baseline"; only a use case's baseline is pinned.
+  if (field === "baseline")
+    return records.get(useCaseId)?.kind === "use_case" ? judgementPins(records, { useCaseId, sourceIds: claim.source_ids }) : undefined;
   if (field !== "summary") return undefined;
   const evaluationIds = [...records.values()].filter((c) => c.kind === "claim" && checked(c)
     && typeof c.attributes.field === "string" && c.attributes.field.startsWith("links:assessed_by:")

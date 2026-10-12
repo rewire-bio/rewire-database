@@ -53,6 +53,8 @@ export const attributeRegistry = {
     field: "text",
     headline_metric: "concept:metric",
     limitations: "texts",
+    // A use case's baseline claim (field "baseline") names the methods it treats as the baseline.
+    method_ids: "record-ids",
     pins: "json",
     previous_value: "text",
     rationale: "text",

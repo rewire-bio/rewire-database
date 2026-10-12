@@ -365,3 +365,15 @@ export function toolsCompared(comparisons: Comparison[], lookup: (id: string) =>
     ...tool, methodTypes: types.size ? [...types] : parent?.facets?.method_types ?? [], configurations: configurations.size,
   })).sort((a, b) => a.name.localeCompare(b.name));
 }
+
+const ML_TYPES = new Set(["foundation_model", "supervised_machine_learning"]);
+export const isBaselineRow = (row: ComparisonRow, methodIds: Set<string>) =>
+  methodIds.has(row.id) || (row.parentId !== null && methodIds.has(row.parentId));
+
+/** The comparisons that score a baseline method and a machine-learning method on the same protocol:
+ * the only tables that say whether machine learning beats the baseline. */
+export function baselineComparisons(comparisons: Comparison[], methodIds: string[]): Comparison[] {
+  const ids = new Set(methodIds);
+  return comparisons.filter((c) => c.rows.some((r) => isBaselineRow(r, ids))
+    && c.rows.some((r) => !isBaselineRow(r, ids) && r.methodTypes.some((t) => ML_TYPES.has(t))));
+}

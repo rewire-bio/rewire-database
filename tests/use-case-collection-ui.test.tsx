@@ -109,6 +109,27 @@ describe("use-case evidence collection plans", () => {
     expect(cards[2]).not.toContain("#collection-plan");
   });
 
+  it("names the baseline, marks its rows and says whether machine learning was compared with it on the same data", () => {
+    const evaluation = (id: string, configuration: CatalogueRecord, value: string) => ({
+      evaluation: { ...record(`evaluation-${id}`, "evaluation"), attributes: { origin: "independent_paper" } },
+      configurations: [configuration],
+      results: [{ result: { ...record(`result-${id}`, "result"), attributes: { metric: "recall", printed_value: value, numeric_value: value, metric_direction: "higher" } } } as unknown as ResultRow],
+      results_total: 1, results_next_cursor: null,
+    });
+    const conventional = { ...record("config-mutect2", "configuration"), name: "Mutect2 4.6", facets: { method_types: ["conventional_pipeline"] }, links: [{ relation: "configuration_of", target_id: "method-mutect2" }] };
+    const learned = { ...record("config-deepsomatic", "configuration"), name: "DeepSomatic 1.10", facets: { method_types: ["supervised_machine_learning"] } };
+    const both = { ...mapping(), evaluations: [evaluation("a", conventional, "0.80"), evaluation("b", learned, "0.85")] };
+    const entry = { ...question, baseline: { name: "Mutect2", method_ids: ["method-mutect2"], rationale: "The established statistical tumour-normal caller.", source_ids: ["source"] } };
+    const markup = detailMarkup(entry, [both]);
+    expect(markup).toContain('id="baseline"');
+    expect(markup).toContain("<strong>Mutect2</strong>. The established statistical tumour-normal caller.");
+    expect(markup).toContain("compared with the baseline on the same data in one table");
+    expect(markup.match(/Baseline<\/span>/g)?.length).toBeGreaterThanOrEqual(1);
+    const baselineOnly = { ...mapping(), evaluations: [evaluation("a", conventional, "0.80")] };
+    expect(detailMarkup(entry, [baselineOnly])).toContain("No linked comparison scores a machine-learning method against the baseline on the same data yet");
+    expect(detailMarkup(question, [both])).not.toContain('id="baseline"');
+  });
+
   it("shows when each use case's evidence was last checked and when the monthly check is due", () => {
     const checked = { ...question, id: "checked", slug: "checked", title: "Checked fixture",
       evidence_checked: { date: "2026-10-11", cutoff_date: "2026-10-11", next_due: "2026-11-11", records: ["docs/reviews/x.md"] } };

@@ -10,6 +10,7 @@ const NAV = [
   { href: "/benchmarks/", label: "Benchmarks" },
   { href: "/models/", label: "Models" },
   { href: "/evidence/", label: "Evidence and sources" },
+  { href: "/agents/", label: "Connect your agent" },
   { href: "/contribute/", label: "Contribute" },
 ];
 export function primaryNavigationHref(pathname: string) {

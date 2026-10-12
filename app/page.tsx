@@ -12,6 +12,7 @@ import { CatalogueEvidence } from "@/components/catalogue/CatalogueEvidence";
 import { CatalogueDownloads } from "@/components/catalogue/CatalogueDownloads";
 import { BROWSE_PAGE_SIZE } from "@/lib/omics-browse";
 import RefreshStatus from "@/components/RefreshStatus";
+import AgentConnect from "@/components/AgentConnect";
 import { readRefresh } from "@/lib/refresh-build";
 
 const pageMetadata = {
@@ -82,6 +83,7 @@ export default function BenchmarksPage() {
           compact
           data={readRefresh(undefined, catalogue.release_id)}
         />
+        <AgentConnect />
         <CatalogueEvidence query={query} />
         <CatalogueDownloads
           releaseId={catalogue.release_id}

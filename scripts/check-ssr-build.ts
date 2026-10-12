@@ -163,6 +163,16 @@ async function checkContracts(release: string, firstOf: (kind: string) => OmicsR
   assert.equal((await get("/omics/releases/invented/records.jsonl")).status, 404);
   assert.deepEqual(Buffer.from(await (await get("/release-manifest.json")).arrayBuffer()), fs.readFileSync("public/omics/manifest.json"));
   assert.equal((await get("/deployment.json")).status, 404, "Unpublished builds carry no receipt");
+  // Agent entry points: the setup page, the plain-text guides and the knowledge-graph alias.
+  assert.equal((await get("/agents/")).status, 200, "Agent setup page");
+  for (const guide of ["/llms.txt", "/agents.md"]) {
+    const response = await get(guide);
+    assert.equal(response.status, 200, guide);
+    assert.match(await response.text(), /plugin install bio-model-benchmarks/, guide);
+  }
+  const kg = await get("/agents/kg.tar.gz");
+  assert.equal(kg.status, 302, "Knowledge-graph alias redirects");
+  assert.match(kg.headers.get("location") || "", /\/releases\/download\/kg\/\d{4}-\d{2}-\d{2}-[a-f0-9]{12}\/kg-\d{4}-\d{2}-\d{2}-[a-f0-9]{12}\.tar\.gz$/);
   const contribute = await get("/contribute/");
   assert.match(contribute.headers.get("cache-control") || "", /no-store/);
   assert.equal(contribute.headers.get("x-robots-tag"), "noindex, nofollow");
@@ -218,7 +228,7 @@ function useCaseSlugs(catalogue: CatalogueSnapshot): string[] {
 /** The sitemap lists exactly the indexable canonical pages of the pinned release. */
 function checkSitemapInventory(catalogue: CatalogueSnapshot, urls: Set<string>) {
   const expected = new Set([
-    "/", "/runs/mfass-v2/", "/evidence/", "/coverage/", "/use-cases/", "/investigations/",
+    "/", "/runs/mfass-v2/", "/evidence/", "/agents/", "/coverage/", "/use-cases/", "/investigations/",
     ...getResearch(catalogue).investigations.map((report) => `/investigations/${report.id}/`),
     ...useCaseSlugs(catalogue).map((slug) => `/use-cases/${slug}/`),
     ...catalogueIndexPaths(withoutVerifiedAliases(catalogue.records, createCatalogueQuery(catalogue).association)),

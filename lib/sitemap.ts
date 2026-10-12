@@ -21,6 +21,7 @@ export function sitemapEntries(): SitemapEntry[] {
     { path: "/" },
     { path: "/runs/mfass-v2/" },
     { path: "/evidence/" },
+    { path: "/agents/" },
     { path: "/coverage/" },
     { path: "/use-cases/" },
     ...useCases.map((slug) => ({ path: `/use-cases/${slug}/` })),

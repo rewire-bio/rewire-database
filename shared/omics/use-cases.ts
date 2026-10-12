@@ -11,7 +11,8 @@ const id = z.string().min(1).max(200).regex(/^[a-z0-9][a-z0-9._-]*$/);
 const text = z.string().trim().min(1).max(10000);
 const texts = z.array(text).max(100);
 const digest = z.string().regex(/^[a-f0-9]{64}$/);
-const isoDate = z.string().regex(/^\d{4}-\d{2}-\d{2}$/);
+const isoDate = z.string().regex(/^\d{4}-\d{2}-\d{2}$/)
+  .refine((v) => { const d = new Date(`${v}T00:00:00Z`); return !Number.isNaN(d.getTime()) && d.toISOString().slice(0, 10) === v; }, "Not a calendar date");
 const releaseId = z.string().regex(/^\d{4}-\d{2}-\d{2}-[a-f0-9]{12}$/);
 /** A curated supplement is bounded independently of the full catalogue. */
 export const MAX_USE_CASE_BYTES = 16_000_000;

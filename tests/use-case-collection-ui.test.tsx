@@ -190,9 +190,14 @@ describe("use-case evidence collection plans", () => {
     expect(cards[0]).toContain("Collecting evidence");
     expect(cards[0]).not.toContain("Already on record");
     expect(cards[0]).toContain("Opens with 0 comparisons shown · No current evaluated evidence");
-    expect(cards[1]).toContain("Collecting evidence");
-    expect(cards[1]).toContain("Already on record: 1 comparison shown");
+    // Reviewed comparisons replace the plan's status on the card, and the card links to the evidence.
+    expect(cards[1]).toContain("Evidence reviewed");
+    expect(cards[1]).toContain("1 comparison shown");
+    expect(cards[1]).not.toContain("Collecting evidence");
+    expect(cards[1]).not.toContain("#collection-plan");
+    expect(cards[1]).toContain("Inspect evidence and limitations");
     expect(cards[1]).toContain("Opens with 1 comparison shown");
+    expect(cards[2]).toContain("Evidence reviewed");
     expect(cards[2]).not.toContain("Collection planned");
     expect(cards[2]).not.toContain("Collecting evidence");
     expect(cards[2]).not.toContain("Already on record");

@@ -6,7 +6,7 @@ import {
   createUseCasesClient, USE_CASE_PAGE_SIZE, type UseCasePage, type UseCaseFilters,
 } from "@/lib/use-cases-client";
 import { researchAreaLabel } from "@/lib/omics-browse";
-import { evidenceCountParts, evidenceSummaryParts, type EvidenceSummary } from "@/lib/use-case-summary";
+import { evidenceCheckedLabel, evidenceCountParts, evidenceSummaryParts, type EvidenceSummary } from "@/lib/use-case-summary";
 import { UseCaseCollectionStatus } from "./UseCaseCollectionPlan";
 import { relatedUseCaseArticles, articleHref } from "@/lib/use-case-articles";
 import styles from "./UseCases.module.css";
@@ -26,6 +26,7 @@ function Cards({ data, search, summaries }: { data: UseCasePage; search: string;
           <span className={styles.collectionStatus}>Evidence reviewed</span>
           <span className={styles.muted}> · {evidenceCountParts(summary!).join(" · ")}</span>
         </p> : entry.collection_plan && <p><UseCaseCollectionStatus status={entry.collection_plan.status} /></p>}
+        <p className={styles.muted}>{evidenceCheckedLabel(entry.evidence_checked)}</p>
         <p className={styles.question}>{entry.question}</p>
         <h4 className={styles.cardLabel}>You bring</h4>
         <ul className={styles.inputs}>{entry.inputs.map((input) => <li key={input}>{input}</li>)}</ul>

@@ -12,7 +12,7 @@ import SectionNavigation from "@/components/catalogue/SectionNavigation";
 import { fullUseCaseDetail } from "@/lib/use-cases-build";
 import { researchAreaLabel } from "@/lib/omics-browse";
 import { socialMetadata } from "@/lib/catalogue-sharing";
-import { evidenceCountParts, summariseUseCaseEvidence, summaryParagraphs } from "@/lib/use-case-summary";
+import { evidenceCheckedLabel, evidenceCountParts, summariseUseCaseEvidence, summaryParagraphs } from "@/lib/use-case-summary";
 import { buildCatalogue } from "@/lib/catalogue-build";
 import { buildComparisons, heldJudgements, methodTypeLabel, toolsCompared } from "@/lib/use-case-comparisons";
 import styles from "@/components/catalogue/UseCases.module.css";
@@ -59,6 +59,7 @@ export default function UseCasePage({ params }: { params: Params }) {
       {/* The same counts as the index cards, plus configurations when tools have several. */}
       {[...evidenceCountParts(summary), ...(configurations > tools.length ? [`${configurations} configurations`] : [])].join(" · ")}
     </dd></div>
+    <div><dt>Kept up to date</dt><dd>{evidenceCheckedLabel(entry.evidence_checked)}</dd></div>
   </dl>;
   const heading = (id: string) => sections.find((section) => section.id === id)!.label;
   return <>

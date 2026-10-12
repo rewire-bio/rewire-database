@@ -654,6 +654,7 @@ export const attributeRegistry = {
     clinical_scope: "text",
     collection_plan: "json",
     decision: "text",
+    evidence_checked: "json",
     evidence_gaps: "texts",
     exclusions: "texts",
     inputs: "texts",

@@ -30,7 +30,7 @@ export default function UseCasesPage() {
       breadcrumbs={[{ name: "Database", path: "/" }, { name: "Use cases", path: "/use-cases/" }]}
       eyebrow={["Use cases", `${entries.length} ${entries.length === 1 ? "question" : "questions"} in this release`]}
       title="Start from a biological question"
-      intro="A use case starts with a research question and your data, then explains the evidence we plan to gather, any model comparisons already collected and what they can establish for your decision."
+      intro="A use case starts with a research question and your data, then explains the evidence we plan to gather, any model comparisons already collected and what they can establish for your decision. We re-check each use case against new publications every month, and each card shows when it was last checked."
     />
     <div className="wrap content">
       <section className={styles.section} aria-labelledby="browse-heading">

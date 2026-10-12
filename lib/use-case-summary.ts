@@ -79,3 +79,15 @@ export function summaryParagraphs(text: string, perParagraph = 3): string[] {
   for (let i = 0; i < rest.length; i += perParagraph) paragraphs.push(rest.slice(i, i + perParagraph).join(" "));
   return paragraphs;
 }
+
+const dayFormat = new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
+/** "11 October 2026" from a YYYY-MM-DD date. */
+export const formatDay = (date: string) => dayFormat.format(new Date(`${date}T00:00:00Z`));
+
+/** When the use case's evidence was last checked against new publications, and when the monthly check
+ * is next due. The dates come from the release, so the text is the same at build time and in the browser. */
+export function evidenceCheckedLabel(checked: { date: string; next_due: string } | undefined): string {
+  return checked
+    ? `Evidence last checked ${formatDay(checked.date)} · re-checked monthly, next due ${formatDay(checked.next_due)}`
+    : "Evidence check not yet recorded · re-checked monthly";
+}

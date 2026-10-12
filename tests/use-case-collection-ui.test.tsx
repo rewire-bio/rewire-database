@@ -109,6 +109,17 @@ describe("use-case evidence collection plans", () => {
     expect(cards[2]).not.toContain("#collection-plan");
   });
 
+  it("shows when each use case's evidence was last checked and when the monthly check is due", () => {
+    const checked = { ...question, id: "checked", slug: "checked", title: "Checked fixture",
+      evidence_checked: { date: "2026-10-11", cutoff_date: "2026-10-11", next_due: "2026-11-11", records: ["docs/reviews/x.md"] } };
+    const unchecked = { ...question, id: "unchecked", slug: "unchecked", title: "Unchecked fixture" };
+    const markup = renderToStaticMarkup(<UseCaseExplorer initial={page([checked, unchecked])} />);
+    const cards = [...markup.matchAll(/<article\b[^>]*>[\s\S]*?<\/article>/g)].map(([card]) => card);
+    expect(cards[0]).toContain("Evidence last checked 11 October 2026 · re-checked monthly, next due 11 November 2026");
+    expect(cards[1]).toContain("Evidence check not yet recorded · re-checked monthly");
+    expect(detailMarkup(checked)).toContain("Evidence last checked 11 October 2026");
+  });
+
   it("puts applicability and existing evidence before the plan while preserving its complete content", () => {
     const entry = plannedQuestion();
     const markup = detailMarkup(entry);

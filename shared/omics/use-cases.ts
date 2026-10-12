@@ -11,6 +11,8 @@ const id = z.string().min(1).max(200).regex(/^[a-z0-9][a-z0-9._-]*$/);
 const text = z.string().trim().min(1).max(10000);
 const texts = z.array(text).max(100);
 const digest = z.string().regex(/^[a-f0-9]{64}$/);
+const isoDate = z.string().regex(/^\d{4}-\d{2}-\d{2}$/)
+  .refine((v) => { const d = new Date(`${v}T00:00:00Z`); return !Number.isNaN(d.getTime()) && d.toISOString().slice(0, 10) === v; }, "Not a calendar date");
 const releaseId = z.string().regex(/^\d{4}-\d{2}-\d{2}-[a-f0-9]{12}$/);
 /** A curated supplement is bounded independently of the full catalogue. */
 export const MAX_USE_CASE_BYTES = 16_000_000;
@@ -34,6 +36,11 @@ const useCaseSchema = z.object({
     comparison_question: text,
     baselines: texts.min(1), outcomes: texts.min(1),
     validation_requirements: texts.min(1), next_step: text,
+  }).strict().optional(),
+  // When the literature for this question was last searched, and when the monthly check is next due
+  // (one calendar month later). `records` names the search ledger and dated review of that pass.
+  evidence_checked: z.object({
+    date: isoDate, cutoff_date: isoDate.optional(), next_due: isoDate, records: texts.min(1),
   }).strict().optional(),
   // A reviewed or draft plain-language summary of what the evidence shows (a claim on the use case).
   summary: z.object({ text, status: z.enum(["reviewed", "draft"]) }).strict().optional(),
@@ -106,6 +113,21 @@ function canonical(value: unknown): unknown {
       .sort(([a], [b]) => a.localeCompare(b)).map(([k, v]) => [k, canonical(v)]),
   );
   return value;
+}
+/** The monthly literature check is due one calendar month after the last one, clamped to the
+ * month's last day (31 January is due on 28 or 29 February). */
+export function nextMonthlyCheck(date: string): string {
+  const [y, m, d] = date.split("-").map(Number);
+  const last = new Date(Date.UTC(y, m + 1, 0)).getUTCDate();
+  return new Date(Date.UTC(y, m, Math.min(d, last))).toISOString().slice(0, 10);
+}
+function evidenceChecked(value: unknown): NonNullable<UseCase["evidence_checked"]> {
+  const v = value as { date?: unknown; cutoff_date?: unknown; records?: unknown };
+  if (typeof v?.date !== "string") throw Error("evidence_checked needs a date");
+  return {
+    date: v.date, ...(typeof v.cutoff_date === "string" ? { cutoff_date: v.cutoff_date } : {}),
+    next_due: nextMonthlyCheck(v.date), records: asTexts(v.records),
+  };
 }
 export function useCaseHash(value: unknown): string {
   return createHash("sha256").update(JSON.stringify(canonical(value))).digest("hex");
@@ -540,6 +562,7 @@ export function deriveUseCaseInputs(input: { records: CatalogueRecord[] }): UseC
       setting: asText(a.setting), exclusions: asTexts(a.exclusions), clinical_scope: asText(a.clinical_scope),
       evidence_gaps: asTexts(a.evidence_gaps), citations: (a.citation_locators || []) as Citation[], review,
       ...(a.collection_plan ? { collection_plan: a.collection_plan as UseCase["collection_plan"] } : {}),
+      ...(a.evidence_checked ? { evidence_checked: evidenceChecked(a.evidence_checked) } : {}),
       ...(summary ? { summary: { text: summary, status: "reviewed" as const } } : {}),
       planned_work: (a.planned_work || []) as UseCase["planned_work"],
     };

@@ -42,6 +42,11 @@ const useCaseSchema = z.object({
   evidence_checked: z.object({
     date: isoDate, cutoff_date: isoDate.optional(), next_due: isoDate, records: texts.min(1),
   }).strict().optional(),
+  // The established, pre-machine-learning method that newer methods must beat for this question
+  // (a reviewed claim on the use case). The clinical reference standard is the truth, not the baseline.
+  baseline: z.object({
+    name: text, method_ids: z.array(id).min(1).max(20), rationale: text, source_ids: z.array(id).min(1).max(20),
+  }).strict().optional(),
   // A reviewed or draft plain-language summary of what the evidence shows (a claim on the use case).
   summary: z.object({ text, status: z.enum(["reviewed", "draft"]) }).strict().optional(),
   planned_work: z.array(z.object({
@@ -485,6 +490,9 @@ export function claimPins(records: Map<string, CatalogueRecord>, claim: Catalogu
   if (!useCaseId || typeof field !== "string") return undefined;
   if (field.startsWith("links:assessed_by:"))
     return judgementPins(records, { useCaseId, protocolId: field.slice("links:assessed_by:".length), sourceIds: claim.source_ids, evaluationIds: reviewedEvaluations(claim) });
+  // Descriptive claims on protocols also use the field "baseline"; only a use case's baseline is pinned.
+  if (field === "baseline")
+    return records.get(useCaseId)?.kind === "use_case" ? judgementPins(records, { useCaseId, sourceIds: claim.source_ids }) : undefined;
   if (field !== "summary") return undefined;
   const evaluationIds = [...records.values()].filter((c) => c.kind === "claim" && checked(c)
     && typeof c.attributes.field === "string" && c.attributes.field.startsWith("links:assessed_by:")
@@ -549,9 +557,21 @@ export function deriveUseCaseInputs(input: { records: CatalogueRecord[] }): UseC
     const current = judgementPins(ix.records, { useCaseId, sourceIds: summary.source_ids, evaluationIds });
     return changedPins(summary.attributes.pins as JudgementPin[] | undefined, current).length ? undefined : String(summary.attributes.value);
   }
+  // A baseline is published like a summary: reviewed, from clean sources, naming methods in the store,
+  // with nothing it rests on changed since review.
+  function reviewedBaseline(useCaseId: string): UseCase["baseline"] {
+    const claim = (claimsBySubject.get(useCaseId) || []).find((c) => c.attributes.field === "baseline" && typeof c.attributes.value === "string");
+    if (!claim || !checked(claim) || !claim.source_ids.length || !claim.source_ids.every((id) => cleanSource(ix.records.get(id)))) return undefined;
+    const methodIds = asTexts(claim.attributes.method_ids);
+    if (!methodIds.length || !methodIds.every((id) => ix.records.has(id))) return undefined;
+    const current = judgementPins(ix.records, { useCaseId, sourceIds: claim.source_ids });
+    if (changedPins(claim.attributes.pins as JudgementPin[] | undefined, current).length) return undefined;
+    return { name: String(claim.attributes.value), method_ids: methodIds, rationale: asText(claim.attributes.rationale), source_ids: claim.source_ids };
+  }
   const useCases: UseCase[] = all.filter((r) => r.kind === "use_case" && r.status !== "excluded").map((r) => {
     const a = r.attributes;
     const summary = reviewedSummary(r.id);
+    const baseline = reviewedBaseline(r.id);
     const review = mappingReview(a.review);
     if (!review) throw Error(`Use case ${r.id} needs a review with reviewer_note, note and a review time`);
     return {
@@ -563,6 +583,7 @@ export function deriveUseCaseInputs(input: { records: CatalogueRecord[] }): UseC
       evidence_gaps: asTexts(a.evidence_gaps), citations: (a.citation_locators || []) as Citation[], review,
       ...(a.collection_plan ? { collection_plan: a.collection_plan as UseCase["collection_plan"] } : {}),
       ...(a.evidence_checked ? { evidence_checked: evidenceChecked(a.evidence_checked) } : {}),
+      ...(baseline ? { baseline } : {}),
       ...(summary ? { summary: { text: summary, status: "reviewed" as const } } : {}),
       planned_work: (a.planned_work || []) as UseCase["planned_work"],
     };

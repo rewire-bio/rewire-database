@@ -14,7 +14,7 @@ import { researchAreaLabel } from "@/lib/omics-browse";
 import { socialMetadata } from "@/lib/catalogue-sharing";
 import { evidenceCheckedLabel, evidenceCountParts, summariseUseCaseEvidence, summaryParagraphs } from "@/lib/use-case-summary";
 import { buildCatalogue } from "@/lib/catalogue-build";
-import { buildComparisons, heldJudgements, methodTypeLabel, toolsCompared } from "@/lib/use-case-comparisons";
+import { baselineComparisons, buildComparisons, heldJudgements, methodTypeLabel, toolsCompared } from "@/lib/use-case-comparisons";
 import styles from "@/components/catalogue/UseCases.module.css";
 
 type Params = { slug: string };
@@ -38,11 +38,17 @@ export default function UseCasePage({ params }: { params: Params }) {
   const held = heldJudgements(detail.mappings);
   const { query } = buildCatalogue();
   const tools = toolsCompared(comparisons, (id) => query.record?.(id) ?? null);
+  // The established pre-machine-learning method newer methods must beat (a reviewed claim; older releases have none).
+  const baseline = entry.baseline;
+  const baselineIds = baseline?.method_ids ?? [];
+  const versusBaseline = baseline ? baselineComparisons(comparisons, baselineIds) : [];
+  const baselineSet = new Set(baselineIds);
   const configurations = new Set(comparisons.flatMap((c) => c.rows.map((r) => r.id))).size;
   // A plain-language summary of the evidence, reviewed like any other claim (older releases have none).
   const evidenceSummary = (entry as typeof entry & { summary?: { text: string; status: "reviewed" | "draft" } }).summary;
   const sections = [
     ...(evidenceSummary ? [{ id: "summary", label: "What the evidence shows" }] : []),
+    ...(baseline ? [{ id: "baseline", label: "Baseline" }] : []),
     ...(tools.length ? [{ id: "tools", label: "Tools compared" }] : []),
     { id: "evidence", label: "Comparisons" },
     ...(held.length ? [{ id: "held", label: "Held for review" }] : []),
@@ -78,11 +84,19 @@ export default function UseCasePage({ params }: { params: Params }) {
           <div className={styles.summaryBox}>{summaryParagraphs(evidenceSummary.text).map((paragraph, i) => <p key={i} className={i === 0 ? styles.summaryLead : undefined}>{paragraph}</p>)}</div>
         </section>}
         {cards}
+        {baseline && <section id="baseline" className={styles.section}>
+          <h2>{heading("baseline")}</h2>
+          <p><strong>{baseline.name}</strong>. {baseline.rationale}</p>
+          <p>{versusBaseline.length
+            ? <>Machine-learning methods are compared with the baseline on the same data in {versusBaseline.length === 1 ? "one table" : `${versusBaseline.length} tables`}: {versusBaseline.map((c, i) => <span key={c.id}>{i ? ", " : ""}<a href={`#comparison-${c.id}`}>{c.title}</a></span>)}. Baseline rows are marked in each table.</>
+            : <>No linked comparison scores a machine-learning method against the baseline on the same data yet, so this evidence cannot say whether machine learning beats it.</>}</p>
+        </section>}
         {tools.length > 0 && <section id="tools" className={styles.section}>
           <h2>{heading("tools")}</h2>
           <ul className={styles.toolList}>
             {tools.map((tool) => <li key={tool.id}>
               <a href={`${tool.href}?return_to=${encodeURIComponent(path)}`}>{tool.name}</a>
+              {baselineSet.has(tool.id) && <span className={styles.baselineBadge}>Baseline</span>}
               <span className={styles.srOnly}>, </span>
               <span className={styles.toolMeta}>
                 {tool.methodTypes.length ? tool.methodTypes.map(methodTypeLabel).join(", ") : "type not recorded"}
@@ -95,7 +109,7 @@ export default function UseCasePage({ params }: { params: Params }) {
           <h2>{heading("evidence")}</h2>
           <p>Each table is one study or protocol with its own truth set and scoring. Compare tools within a table, not across tables.</p>
           {comparisons.length
-            ? comparisons.map((comparison) => <UseCaseComparison key={comparison.id} comparison={comparison} useCasePath={path} />)
+            ? comparisons.map((comparison) => <UseCaseComparison key={comparison.id} comparison={comparison} useCasePath={path} baselineIds={baselineIds} />)
             : <div className={styles.notice}><p>No model comparison has been collected for this question yet.</p><p>Relevant methods and studies may exist outside this collection.</p></div>}
         </section>
         {held.length > 0 && <section id="held" className={styles.section}>

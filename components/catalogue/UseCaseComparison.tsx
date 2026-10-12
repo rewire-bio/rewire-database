@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { recordHref } from "@/lib/omics";
-import { methodTypeLabel, originLabel, type Comparison, type ComparisonCell, type ComparisonRow, type ShownValue } from "@/lib/use-case-comparisons";
+import { isBaselineRow, methodTypeLabel, originLabel, type Comparison, type ComparisonCell, type ComparisonRow, type ShownValue } from "@/lib/use-case-comparisons";
 import DerivedMark from "./DerivedMark";
 import styles from "./UseCases.module.css";
 
@@ -33,9 +33,10 @@ function CellContent({ cell }: { cell: ComparisonCell }) {
   </>;
 }
 
-function Tool({ row, href }: { row: ComparisonRow; href: string }) {
+function Tool({ row, href, baseline }: { row: ComparisonRow; href: string; baseline: boolean }) {
   return <>
     <Link href={href}>{row.name}</Link>
+    {baseline && <span className={styles.baselineBadge}>Baseline</span>}
     {row.detail && <span className={styles.rowDetail}>{row.detail}</span>}
     {row.methodTypes.length > 0 && <span className={styles.rowMeta}>{row.methodTypes.map(methodTypeLabel).join(", ")}</span>}
   </>;
@@ -44,7 +45,8 @@ function Tool({ row, href }: { row: ComparisonRow; href: string }) {
 /** One comparison table: tools as rows; strata (in order) or metrics as columns. The best value
  * in each column is marked only within this table, never against another study. A single row is
  * shown as a list of metrics, since there is nothing to compare across rows. */
-export default function UseCaseComparison({ comparison, useCasePath }: { comparison: Comparison; useCasePath: string }) {
+export default function UseCaseComparison({ comparison, useCasePath, baselineIds = [] }: { comparison: Comparison; useCasePath: string; baselineIds?: string[] }) {
+  const baselines = new Set(baselineIds);
   const { headline, layout, rows, columns } = comparison;
   const returnTo = `?return_to=${encodeURIComponent(useCasePath)}`;
   const href = (row: ComparisonRow) => `/database/configuration/${encodeURIComponent(row.id)}/${returnTo}`;
@@ -53,7 +55,7 @@ export default function UseCaseComparison({ comparison, useCasePath }: { compari
   const highlighted = rows.some((row) => row.cells.some((cell) => cell.best));
   const row = (r: ComparisonRow) => (
     <tr key={r.id}>
-      <th scope="row"><Tool row={r} href={href(r)} /></th>
+      <th scope="row"><Tool row={r} href={href(r)} baseline={isBaselineRow(r, baselines)} /></th>
       {r.cells.map((cell, i) => <td key={columns[i].label} className={cell.best ? styles.best : undefined}><CellContent cell={cell} /></td>)}
     </tr>
   );
@@ -78,7 +80,7 @@ export default function UseCaseComparison({ comparison, useCasePath }: { compari
       </p>
       {single
         ? <div className={styles.singleResult}>
-          <p className={styles.singleTool}><Tool row={rows[0]} href={href(rows[0])} /></p>
+          <p className={styles.singleTool}><Tool row={rows[0]} href={href(rows[0])} baseline={isBaselineRow(rows[0], baselines)} /></p>
           <dl className={styles.metricList}>
             {columns.map((column, i) => <div key={column.label}><dt>{column.label}</dt><dd><CellContent cell={rows[0].cells[i]} /></dd></div>)}
           </dl>

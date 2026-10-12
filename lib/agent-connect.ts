@@ -12,7 +12,7 @@ const KG_RELEASES = "https://github.com/rewire-bio/rewire-benchmark-data/release
 export const kgArchiveUrl = (releaseId: string) => `${KG_RELEASES}/kg/${releaseId}/kg-${releaseId}.tar.gz`;
 export const kgManifestUrl = (releaseId: string) => `${KG_RELEASES}/kg/${releaseId}/manifest.json`;
 
-export const pluginCommands = [`/plugin marketplace add ${MARKETPLACE}`, `/plugin install ${PLUGIN}`];
+export const pluginCommands = [`/plugin marketplace add ${MARKETPLACE}`, `/plugin install ${PLUGIN}@rewire-benchmarks`];
 
 export const claudeMcpAdd = (bundle = KG_ALIAS) =>
   `claude mcp add ${GRAPH_SERVER} -- uvx --from ${RDF_KG_MCP} rdf-kg-mcp serve ${bundle}`;

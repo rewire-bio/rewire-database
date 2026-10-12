@@ -6,7 +6,7 @@ import {
   createUseCasesClient, USE_CASE_PAGE_SIZE, type UseCasePage, type UseCaseFilters,
 } from "@/lib/use-cases-client";
 import { researchAreaLabel } from "@/lib/omics-browse";
-import { evidenceCollectedLabel, evidenceSummaryParts, type EvidenceSummary } from "@/lib/use-case-summary";
+import { evidenceCountParts, evidenceSummaryParts, type EvidenceSummary } from "@/lib/use-case-summary";
 import { UseCaseCollectionStatus } from "./UseCaseCollectionPlan";
 import { relatedUseCaseArticles, articleHref } from "@/lib/use-case-articles";
 import styles from "./UseCases.module.css";
@@ -16,18 +16,21 @@ function Cards({ data, search, summaries }: { data: UseCasePage; search: string;
     {data.items.map((entry) => {
       const summary = summaries[entry.slug];
       const articles = relatedUseCaseArticles(entry.slug);
+      // The label follows the evidence: once reviewed comparisons exist, an open collection plan no longer describes the card.
+      const reviewed = Boolean(summary && summary.endpoints > 0);
+      const toPlan = Boolean(entry.collection_plan) && !reviewed;
       return <li key={entry.id}><article className={styles.card}>
         <p className={styles.tag}>{researchAreaLabel(entry.area)} · {entry.contexts.map(caseContextLabel).join(" and ")}</p>
         <h3><a href={`/use-cases/${entry.slug}/${search}`}>{entry.title}</a></h3>
-        {entry.collection_plan && <p>
-          <UseCaseCollectionStatus status={entry.collection_plan.status} />
-          {summary && summary.endpoints > 0 && <span className={styles.muted}> · {evidenceCollectedLabel(summary)}</span>}
-        </p>}
+        {reviewed ? <p>
+          <span className={styles.collectionStatus}>Evidence reviewed</span>
+          <span className={styles.muted}> · {evidenceCountParts(summary!).join(" · ")}</span>
+        </p> : entry.collection_plan && <p><UseCaseCollectionStatus status={entry.collection_plan.status} /></p>}
         <p className={styles.question}>{entry.question}</p>
         <h4 className={styles.cardLabel}>You bring</h4>
         <ul className={styles.inputs}>{entry.inputs.map((input) => <li key={input}>{input}</li>)}</ul>
         <p className={styles.cardFoot}>{summary ? <>Opens with {evidenceSummaryParts(summary).slice(0, 3).join(" · ")}, plus limitations and sources.</> : "Opens with evaluated evidence, limitations and sources."}</p>
-      <a href={`/use-cases/${entry.slug}/${search}${entry.collection_plan ? "#collection-plan" : ""}`}>{entry.collection_plan ? "View question and evidence plan →" : "Inspect evidence and limitations →"}</a>
+      <a href={`/use-cases/${entry.slug}/${search}${toPlan ? "#collection-plan" : ""}`}>{toPlan ? "View question and evidence plan →" : "Inspect evidence and limitations →"}</a>
       {articles.length > 0 && <div className={styles.cardArticles}>
         <h4 className={styles.cardLabel}>Related articles</h4>
         <a href={articleHref(articles[0])}>{articles[0].title}</a>

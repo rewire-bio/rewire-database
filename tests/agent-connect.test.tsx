@@ -3,6 +3,8 @@ import { renderToStaticMarkup } from "react-dom/server";
 
 const releaseId = "2026-10-12-cba623554ce3";
 vi.mock("@/lib/data-pin", () => ({ dataPin: () => ({ release_id: releaseId }) }));
+const nav = vi.hoisted(() => ({ path: "/" }));
+vi.mock("next/navigation", () => ({ usePathname: () => nav.path }));
 
 import { agentGuide, claudeMcpAdd, kgArchiveUrl, mcpJson, pluginCommands, reproducePrompt, KG_ALIAS } from "../lib/agent-connect";
 import AgentConnect from "../components/AgentConnect";
@@ -36,5 +38,15 @@ describe("connect your agent", () => {
     for (const line of pluginCommands) expect(markup).toContain(line);
     expect(markup).toContain('href="/agents/"');
     expect(markup).toContain("nothing is submitted without your consent");
+  });
+});
+
+describe("agent strip on the browse pages", () => {
+  it("shows on the browse pages only", async () => {
+    const { default: AgentConnectStrip, AGENT_STRIP_PATHS } = await import("../components/AgentConnectStrip");
+    const render = (path: string) => { nav.path = path; return renderToStaticMarkup(<AgentConnectStrip />); };
+    for (const path of AGENT_STRIP_PATHS) expect(render(path)).toContain("/plugin install bio-model-benchmarks@rewire-benchmarks");
+    expect(render("/use-cases")).toContain("Connect your agent");
+    for (const path of ["/", "/agents/", "/use-cases/cnv-detection-characterisation/", "/database/model/x/"]) expect(render(path)).toBe("");
   });
 });

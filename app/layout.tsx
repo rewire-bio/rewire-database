@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Header from "@/components/header";
 import Footer from "@/components/Footer";
+import AgentConnectStrip from "@/components/AgentConnectStrip";
 import "./globals.css";
 import { Archivo, Newsreader, IBM_Plex_Mono } from "next/font/google";
 
@@ -55,6 +56,7 @@ export default function RootLayout({
         <main id="main-content" tabIndex={-1} className="flex-grow">
           {children}
         </main>
+        <AgentConnectStrip />
         <Footer />
       </body>
     </html>

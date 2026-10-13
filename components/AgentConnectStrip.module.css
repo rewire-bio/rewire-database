@@ -1,0 +1,7 @@
+.strip { border-top: 1px solid var(--line); background: var(--card); margin-top: 48px; }
+.inner { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px 24px; align-items: center; padding-top: 20px; padding-bottom: 20px; }
+.text h2 { margin: 0 0 4px; font-size: 16px; }
+.text p { margin: 0; font-size: 14px; color: var(--ink-2); }
+.code { margin: 0; padding: 10px 14px; border: 1px solid var(--line); border-radius: var(--radius-sm); font-size: 13px; line-height: 1.6; overflow-x: auto; max-width: 100%; }
+.link { grid-column: 1 / -1; font-size: 14px; }
+@media (max-width: 760px) { .inner { grid-template-columns: minmax(0, 1fr); } }

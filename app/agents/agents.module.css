@@ -1,14 +1,14 @@
 /* Selectors are scoped under these classes so the global .content heading and paragraph rules don't win. */
 .hero {
-  display: grid; grid-template-columns: auto minmax(0, 1fr) minmax(0, 1.2fr); align-items: center; gap: 16px 24px;
-  margin: 8px 0 40px; padding: 22px 26px; border: 1px solid rgba(13, 148, 136, 0.28); border-radius: var(--radius-lg);
+  display: grid; grid-template-columns: auto minmax(0, 0.8fr) minmax(0, 1.5fr); align-items: center; gap: 16px 24px;
+  margin: 28px 0 4px; padding: 22px 26px; border: 1px solid rgba(13, 148, 136, 0.28); border-radius: var(--radius-lg);
   background: linear-gradient(120deg, #f0fdfa 0%, #ecfeff 55%, #f5f3ff 100%);
 }
 .heroArt { width: 84px; height: 84px; }
 .hero .heroText h2 { margin: 0; font-size: 20px; line-height: 1.25; color: var(--accent-ink); }
 .hero .heroText p { margin: 4px 0 0; font-size: 14px; color: #334155; max-width: none; }
 .heroCode { min-width: 0; }
-.section { margin: 0 0 40px; }
+.section { margin: 0; }
 .section > h2 { margin: 0 0 14px; font-size: 20px; }
 
 .steps, .prompts, .rules, .steps li, .prompts li, .rules li { max-width: none; }

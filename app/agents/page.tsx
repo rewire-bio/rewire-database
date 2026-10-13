@@ -39,14 +39,14 @@ export default function AgentsPage() {
       intro="Let a coding agent query the reviewed evidence and run the benchmarks on your machine, for example to check a published result against your own model or configuration."
     />
     <div className="wrap content">
-      <section className={styles.hero} aria-labelledby="install-heading">
+      <div className={styles.hero} role="region" aria-labelledby="install-heading">
         <Illustration className={styles.heroArt} />
         <div className={styles.heroText}>
           <h2 id="install-heading">Install in Claude Code</h2>
           <p>The <code>{PLUGIN}</code> plugin. The server needs <a href="https://docs.astral.sh/uv/">uv</a>.</p>
         </div>
         <div className={styles.heroCode}><CodeBlock code={pluginCommands.join("\n")} /></div>
-      </section>
+      </div>
 
       <section aria-labelledby="how-heading" className={styles.section}>
         <h2 id="how-heading">How it works</h2>

@@ -66,6 +66,7 @@ export default function BenchmarksPage() {
         </nav>
       </PageHeader>
       <div className="wrap content">
+        <AgentConnect />
         <section
           id="browse"
           className={styles.browse}
@@ -83,7 +84,6 @@ export default function BenchmarksPage() {
           compact
           data={readRefresh(undefined, catalogue.release_id)}
         />
-        <AgentConnect />
         <CatalogueEvidence query={query} />
         <CatalogueDownloads
           releaseId={catalogue.release_id}

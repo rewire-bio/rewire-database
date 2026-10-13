@@ -37,7 +37,7 @@ describe("connect your agent", () => {
     const markup = renderToStaticMarkup(<AgentConnect />);
     for (const line of pluginCommands) expect(markup).toContain(line);
     expect(markup).toContain('href="/agents/"');
-    expect(markup).toContain("nothing is submitted without your consent");
+    expect(markup).toContain("Copy the install commands");
   });
 });
 

@@ -1,0 +1,53 @@
+/* Selectors are scoped under these classes so the global .content heading and paragraph rules don't win. */
+.hero {
+  display: grid; grid-template-columns: auto minmax(0, 1fr) minmax(0, 1.2fr); align-items: center; gap: 16px 24px;
+  margin: 8px 0 40px; padding: 22px 26px; border: 1px solid rgba(13, 148, 136, 0.28); border-radius: var(--radius-lg);
+  background: linear-gradient(120deg, #f0fdfa 0%, #ecfeff 55%, #f5f3ff 100%);
+}
+.heroArt { width: 84px; height: 84px; }
+.hero .heroText h2 { margin: 0; font-size: 20px; line-height: 1.25; color: var(--accent-ink); }
+.hero .heroText p { margin: 4px 0 0; font-size: 14px; color: #334155; max-width: none; }
+.heroCode { min-width: 0; }
+.section { margin: 0 0 40px; }
+.section > h2 { margin: 0 0 14px; font-size: 20px; }
+
+.steps, .prompts, .rules, .steps li, .prompts li, .rules li { max-width: none; }
+.steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin: 0; padding: 0; list-style: none; }
+.steps li { position: relative; margin: 0; padding: 18px 18px 16px; border: 1px solid var(--line); border-radius: var(--radius-md); background: var(--card); }
+.steps .stepNumber { display: inline-grid; place-items: center; width: 26px; height: 26px; border-radius: 999px; background: var(--accent); color: #fff; font-size: 13px; font-weight: 700; }
+.steps li h3 { margin: 10px 0 4px; font-size: 15px; }
+.steps li p { margin: 0; font-size: 14px; line-height: 1.5; color: #475569; max-width: none; }
+
+.prompts { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.prompts li { margin: 0; }
+.prompts .code.prose { align-items: center; background: var(--accent-soft); border-color: rgba(13, 148, 136, 0.25); }
+.prompts .code.prose pre code { color: #134e4a; font-family: var(--sans), -apple-system, sans-serif; font-size: 14.5px; white-space: pre-wrap; }
+.prompts .code.prose button { background: #fff; color: var(--accent-ink); border: 1px solid rgba(13, 148, 136, 0.35); }
+
+.code { display: flex; align-items: flex-start; gap: 8px; padding: 10px 10px 10px 14px; border: 1px solid #0f172a; border-radius: var(--radius-md); background: #0f172a; min-width: 0; }
+.code pre { flex: 1; min-width: 0; margin: 0; overflow-x: auto; }
+.code code { font-family: var(--mono); font-size: 12.5px; line-height: 1.6; color: #99f6e4; white-space: pre; }
+.code button { flex: none; padding: 4px 10px; border: 0; border-radius: var(--radius-sm); background: #134e4a; color: #ccfbf1; font-size: 12px; font-weight: 600; cursor: pointer; }
+.code button:hover { background: var(--accent); color: #fff; }
+
+.tabs { border: 1px solid var(--line); border-radius: var(--radius-md); overflow: hidden; }
+.tablist { display: flex; flex-wrap: wrap; gap: 4px; padding: 6px; background: var(--bg-subtle); border-bottom: 1px solid var(--line); }
+.tab, .tabActive { padding: 6px 12px; border: 0; border-radius: var(--radius-sm); font-size: 13px; font-weight: 600; cursor: pointer; background: transparent; color: #475569; }
+.tabActive { background: #fff; color: var(--accent-ink); box-shadow: 0 1px 2px rgba(15, 23, 42, 0.08); }
+.panel { padding: 16px; }
+.panel p { margin: 0 0 10px; font-size: 14px; max-width: none; }
+.panel .muted { margin: 10px 0 0; color: #64748b; font-size: 13px; }
+
+.rules { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin: 0; padding: 0; list-style: none; }
+.rules li { margin: 0; padding: 14px 16px 14px 44px; border-radius: var(--radius-md); background: var(--bg-subtle); position: relative; }
+.rules li::before { content: ""; position: absolute; left: 16px; top: 17px; width: 16px; height: 16px; border-radius: 999px; background: var(--accent);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3 8.5l3 3 7-7' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 12px no-repeat, linear-gradient(#000, #000); -webkit-mask-composite: xor; mask-composite: exclude; }
+.rules li h3 { margin: 0 0 2px; font-size: 14px; }
+.rules li p { margin: 0; font-size: 13.5px; line-height: 1.5; color: #475569; max-width: none; }
+.footnote { margin: 0 0 24px; font-size: 13px; color: #64748b; }
+
+@media (max-width: 900px) {
+  .hero { grid-template-columns: auto minmax(0, 1fr); }
+  .heroCode { grid-column: 1 / -1; }
+  .steps, .rules { grid-template-columns: minmax(0, 1fr); }
+}

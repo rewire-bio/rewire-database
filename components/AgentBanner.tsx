@@ -4,9 +4,9 @@ import { pluginCommands } from "@/lib/agent-connect";
 import styles from "./AgentBanner.module.css";
 
 /** A terminal connected to a small graph: an agent querying the knowledge graph. */
-function Illustration() {
+export function Illustration({ className }: { className?: string }) {
   return (
-    <svg className={styles.art} viewBox="0 0 64 64" aria-hidden="true">
+    <svg className={className ?? styles.art} viewBox="0 0 64 64" aria-hidden="true">
       <rect x="2" y="10" width="34" height="26" rx="5" className={styles.window} />
       <rect x="2" y="10" width="34" height="7" rx="5" className={styles.bar} />
       <circle cx="7.5" cy="13.5" r="1.3" className={styles.dot} />

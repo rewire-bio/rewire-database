@@ -32,6 +32,7 @@ import BenchmarkResearch, {
 import { kindLabels, singularKindLabels, countLabel, uniqueRecords, groupEntities } from "@/lib/omics-browse";
 import {
   linkedResultRecords,
+  unattributedLinkedRecords,
   loadResultMatrix,
   loadUseCaseContext,
   verifiedAssociation,
@@ -87,6 +88,10 @@ export function EvaluationDesignEntityDetail({ detail }: { detail: RecordDetail 
   const results = query.results({ id: record.id, limit: 25 });
   const linked = results.total === 0 ? linkedResultRecords(query, detail) : null;
   const hasLinked = !!linked?.items.length;
+  // Configurations and components whose links are not yet reviewed hold results the
+  // record's own table does not include; list them rather than hide them.
+  const unattributed = results.total > 0 ? unattributedLinkedRecords(query, detail) : null;
+  const hasUnattributed = !!unattributed?.items.length;
   const matrix = record.kind === "protocol" ? loadResultMatrix(query, record.id, results.total) : null;
   const { useCaseLinks, useCaseConfigurations } = loadUseCaseContext(
     query,
@@ -222,6 +227,11 @@ export function EvaluationDesignEntityDetail({ detail }: { detail: RecordDetail 
                     {linkedCount(linked!)} with results
                   </a>
                 )}
+                {hasUnattributed && (
+                  <a href="#linked-results" className={styles.resultCount}>
+                    {linkedCount(unattributed!)} with further results
+                  </a>
+                )}
                 {broaderFamilyOnly && !hasLinked && family && (
                   <Link href={`${recordHref(family.record)}#results`} className={styles.resultCount}>
                     View {countLabel(familyResults!.total, "result")} for the broader family
@@ -239,6 +249,7 @@ export function EvaluationDesignEntityDetail({ detail }: { detail: RecordDetail 
             sections={[
               { id: "overview", label: "Overview" },
               ...(showWorkspace || hasLinked ? [{ id: "results", label: "Results" }] : []),
+              ...(hasUnattributed ? [{ id: "linked-results", label: "Linked results" }] : []),
               { id: "execution", label: "How to run" },
               { id: "evidence", label: "Evidence" },
             ]}
@@ -276,6 +287,7 @@ export function EvaluationDesignEntityDetail({ detail }: { detail: RecordDetail 
               matrix={matrix && <ResultMatrix matrix={matrix} label={`Results for ${catalogueText(record.name)}`} />}
             />
           )}
+          {hasUnattributed && <LinkedResults record={record} linked={unattributed!} alongside />}
           {downstream.length > 0 && !hasLinked && (
             <section id="configurations" className={styles.section}>
               <h2>Related configurations, pipelines and services</h2>

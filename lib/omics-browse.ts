@@ -15,6 +15,28 @@ export function countLabel(count: number, singular: string, plural = `${singular
   return `${count.toLocaleString()} ${count === 1 ? singular : plural}`;
 }
 
+/** One list row's evaluation counts. The linked counts (serving contract 3.2) add results
+ * held on configurations, versions, aliases and components whose links are not yet backed
+ * by a reviewed claim; older files do not have them. */
+export type EvaluationSummary = {
+  evaluation_count: number;
+  result_count: number;
+  linked_evaluation_count?: number;
+  linked_result_count?: number;
+};
+
+/** "3 evaluations · 4 results", plus what sits on linked records and is not counted in it. */
+export function summaryText(summary: EvaluationSummary): string {
+  const own = `${countLabel(summary.evaluation_count, "evaluation")} · ${countLabel(summary.result_count, "result")}`;
+  const linked = summary.linked_evaluation_count ?? summary.evaluation_count;
+  const further = linked - summary.evaluation_count;
+  if (summary.evaluation_count > 0)
+    return further > 0 ? `${own} · ${countLabel(further, "further evaluation")} on linked records` : own;
+  return linked > 0
+    ? `${countLabel(linked, "evaluation")} · ${countLabel(summary.linked_result_count ?? 0, "result")} on linked records`
+    : "No evaluations linked in this release";
+}
+
 /** Reader-facing names for catalogue review states. */
 const statusLabels: Record<string, string> = {
   discovered: "Not yet reviewed",

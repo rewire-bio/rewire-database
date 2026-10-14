@@ -39,6 +39,18 @@ describe("results held on linked configurations", () => {
     expect(linked.items.map((item) => [item.record.id, item.evaluations, item.results])).toEqual([["unverified", 18, 18]]);
   });
 
+  it("leaves out a record that also has a verified link, such as a version with a pending alias claim", () => {
+    const twice = {
+      ...(detail as { reverse: unknown[] }),
+      reverse: [
+        { relation: "configuration_of", record: record("verified") },
+        { relation: "alias_of", record: record("verified", "model") },
+        { relation: "configuration_of", record: record("unverified") },
+      ],
+    } as never;
+    expect(unattributedLinkedRecords(query, twice).items.map((item) => item.record.id)).toEqual(["unverified"]);
+  });
+
   it("keeps every linked record with results when the record has none of its own", () => {
     expect(linkedResultRecords(query, detail).items.map((item) => item.record.id)).toEqual(["verified", "unverified", "pipeline"]);
   });

@@ -108,18 +108,26 @@ const identityRelations = ["configuration_of", "variant_of", "family", "alias_of
 /** Configurations, versions, aliases and components of a record that has results of its
  * own, whose results are not among them because no reviewed association claim ties the
  * link to it yet. Without this, a family page with any direct result hid every
- * evaluation held on such a configuration (rewire-benchmark-data#129). Verified links
- * are left out: their results are already in the record's own table. */
+ * evaluation held on such a configuration (rewire-benchmark-data#129). A record with any
+ * verified link is left out, even if it also has an unverified one: its results are
+ * already in the record's own table. */
 export function unattributedLinkedRecords(
   query: Pick<CatalogueQuery, "results" | "verifiedAssociation">,
   detail: Pick<RecordDetail, "record" | "direct" | "reverse">,
 ) {
+  const verified = new Set(
+    detail.reverse
+      .filter(
+        (item) =>
+          identityRelations.includes(item.relation) &&
+          verifiedAssociation(query, item.record.id, item.relation, detail.record.id),
+      )
+      .map((item) => item.record.id),
+  );
   return linkedResultRecords(
     query,
     detail,
-    (item) =>
-      identityRelations.includes(item.relation) &&
-      !verifiedAssociation(query, item.record.id, item.relation, detail.record.id),
+    (item) => identityRelations.includes(item.relation) && !verified.has(item.record.id),
   );
 }
 

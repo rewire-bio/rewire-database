@@ -1,14 +1,13 @@
 import crypto from 'node:crypto';
 import fs from 'node:fs';
 import os from 'node:os';
-import zlib from 'node:zlib';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { verifyServing } from './fetch-serving-data.mjs';
 import { syncShared } from './sync-shared.mjs';
 import { isCurrentOnlyEntry } from './prepare-benchmark-data.mjs';
-import { fetchVerifiedAsset, releaseHasAssets, usesReleaseAssets } from './release-assets.mjs';
+import { fetchVerifiedAsset, releaseHasAssets, usesReleaseAssets, verifyCompressed } from './release-assets.mjs';
 
 // Adopt the newest published data release: point benchmark-data.lock.json at
 // the producer commit its prepared file was published from, and copy that
@@ -72,27 +71,42 @@ export function withheldMappings(previous, next) {
 
 const gitShow = (producer, object) => execFileSync('git', ['-C', producer, 'show', object], { maxBuffer: 256 * 1024 ** 2 });
 
-/** Whether a release's website files are assets of its serving release, from the asset names it lists. */
-export function publishedAsAssets(manifest, assetNames) {
-  return releaseHasAssets(assetNames, JSON.parse(manifest.toString('utf8')).files.filter(isCurrentOnlyEntry));
+/**
+ * Whether a release's website files are assets of its serving release, from the
+ * asset names it lists. A release with none of them must have every current
+ * file in Git at its revision (`tracked`: the paths there); otherwise its
+ * publication is incomplete, and it is refused rather than pinned to missing files.
+ */
+export function publishedAsAssets(manifest, assetNames, tracked) {
+  const entries = JSON.parse(manifest.toString('utf8')).files.filter(isCurrentOnlyEntry);
+  if (releaseHasAssets(assetNames, entries)) return true;
+  const missing = tracked ? entries.filter(entry => !tracked.has(entry.source)).map(entry => entry.source) : [];
+  if (missing.length) throw new Error(`The release has neither release assets nor files in Git for ${missing.length} current files: ${missing.slice(0, 5).join(', ')}`);
+  return false;
+}
+
+/** Paths in Git at a producer revision under the manifest's source directories (reads trees only). */
+function trackedSources(producer, revision, manifest) {
+  const directories = [...new Set(JSON.parse(manifest.toString('utf8')).files.map(entry => path.posix.dirname(entry.source)))];
+  return new Set(run('git', ['-C', producer, 'ls-tree', '-r', '--name-only', revision, '--', ...directories], { maxBuffer: 64 * 1024 ** 2 }).split('\n').filter(Boolean));
 }
 
 /**
- * A pinned release's use-case artifact, or null for a release without one. A
- * release published as assets is read from its asset and checked against the
- * manifest at the pinned revision; an older one from Git at that revision.
+ * A pinned release's use-case artifact, or null when its manifest lists none.
+ * The manifest at the pinned revision must match the pin and the artifact its
+ * entry: read from the release asset for a release published as assets,
+ * otherwise from Git at that revision. Any failure throws, so the
+ * withheld-mapping check is never skipped silently.
  */
 export async function useCasesOf(producer, pin, { fetchImpl = fetch, show = gitShow } = {}) {
-  if (!usesReleaseAssets(pin)) {
-    try {
-      return JSON.parse(zlib.gunzipSync(show(producer, `${pin.revision}:data/omics/releases/${pin.release_id}/use-cases.json.gz`)).toString('utf8'));
-    } catch { return null; }
-  }
   const manifest = show(producer, `${pin.revision}:website/manifest.json`);
   if (sha256(manifest) !== pin.manifest_sha256) throw new Error(`The producer manifest at ${pin.revision} differs from the pin for ${pin.release_id}`);
   const entry = JSON.parse(manifest.toString('utf8')).files.find(file => file.destination === `public/omics/releases/${pin.release_id}/use-cases.json`);
   if (!entry) return null;
-  return JSON.parse((await fetchVerifiedAsset(pin, entry, { fetchImpl })).toString('utf8'));
+  const bytes = usesReleaseAssets(pin)
+    ? await fetchVerifiedAsset(pin, entry, { fetchImpl })
+    : verifyCompressed(show(producer, `${pin.revision}:${entry.source}`), entry);
+  return JSON.parse(bytes.toString('utf8'));
 }
 
 function tagCommit(tag) {
@@ -122,7 +136,7 @@ export async function adopt({ requested, allowWithheld = false } = {}) {
     run('git', ['-C', producer, 'checkout', '--quiet', revision]);
     const manifest = fs.readFileSync(path.join(producer, 'website/manifest.json'));
     const assetNames = JSON.parse(gh('release', 'view', tag, '--repo', REPOSITORY, '--json', 'assets')).assets.map(asset => asset.name);
-    const lock = lockFor(previous, { releaseId, revision, manifest, receipt, assets: publishedAsAssets(manifest, assetNames) });
+    const lock = lockFor(previous, { releaseId, revision, manifest, receipt, assets: publishedAsAssets(manifest, assetNames, trackedSources(producer, revision, manifest)) });
     run('git', ['-C', producer, 'fetch', '--quiet', '--filter=blob:none', 'origin', previous.revision]);
     const withheld = withheldMappings(await useCasesOf(producer, previous), await useCasesOf(producer, lock));
     if (withheld.length && !allowWithheld)

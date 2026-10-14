@@ -119,19 +119,48 @@ describe('adoption of a release published as assets', () => {
     const names = entries.map(entry => assetName(entry.destination));
     const assets = publishedAsAssets(manifest, names);
     expect(lockFor(lock, { releaseId: release_id, revision: lock.revision, manifest, receipt, assets }).serving).toEqual({ tag: `serving/${release_id}`, file: receipt.file, sha256: receipt.sha256, website_assets: true });
-    expect(lockFor(lock, { releaseId: release_id, revision: lock.revision, manifest, receipt, assets: publishedAsAssets(manifest, [receipt.file]) }).serving.website_assets).toBeUndefined();
+    const inGit = new Set(entries.map(entry => entry.source));
+    expect(lockFor(lock, { releaseId: release_id, revision: lock.revision, manifest, receipt, assets: publishedAsAssets(manifest, [receipt.file], inGit) }).serving.website_assets).toBeUndefined();
+  });
+  it('refuses a release with neither its assets nor its files in Git', () => {
+    const inGit = new Set(entries.slice(1).map(entry => entry.source));
+    expect(() => publishedAsAssets(manifest, [receipt.file], inGit)).toThrow('neither release assets nor files in Git');
   });
   it('reads use cases from the verified asset, or from Git for an older release', async () => {
     const { fetchImpl } = releaseServer();
+    const olderId = '2026-10-01-bbbbbbbbbbbb';
+    const olderUseCases = Buffer.from('{"mappings":[]}');
+    const olderManifest = Buffer.from(JSON.stringify({ schema_version: 1, release_id: olderId, files: [{
+      source: `data/omics/releases/${olderId}/use-cases.json.gz`, destination: `public/omics/releases/${olderId}/use-cases.json`,
+      sha256: sha(olderUseCases), bytes: olderUseCases.length, scope: 'current' }] }));
+    const noUseCases = Buffer.from(JSON.stringify({ schema_version: 1, release_id: olderId, files: [] }));
     const show = vi.fn((_producer: string, object: string) => {
       if (object === `${lock.revision}:website/manifest.json`) return manifest;
-      if (object === `${'b'.repeat(40)}:data/omics/releases/2026-10-01-bbbbbbbbbbbb/use-cases.json.gz`) return gzipSync(Buffer.from('{"mappings":[]}'));
+      if (object === `${'b'.repeat(40)}:website/manifest.json`) return olderManifest;
+      if (object === `${'b'.repeat(40)}:data/omics/releases/${olderId}/use-cases.json.gz`) return gzipSync(olderUseCases);
+      if (object === `${'c'.repeat(40)}:website/manifest.json`) return noUseCases;
       throw new Error(`missing ${object}`);
     });
     expect(await useCasesOf('producer', lock, { fetchImpl, show })).toEqual({ mappings: [{ id: 'm', lifecycle: 'active' }] });
-    const older = { ...lock, revision: 'b'.repeat(40), release_id: '2026-10-01-bbbbbbbbbbbb', serving: { ...lock.serving, website_assets: undefined } };
+    const older = { ...lock, revision: 'b'.repeat(40), release_id: olderId, manifest_sha256: sha(olderManifest), serving: { ...lock.serving, website_assets: undefined } };
     expect(await useCasesOf('producer', older, { fetchImpl, show })).toEqual({ mappings: [] });
-    expect(await useCasesOf('producer', { ...older, revision: 'c'.repeat(40) }, { fetchImpl, show })).toBeNull();
+    // A manifest that lists no use-case artifact means the release has none.
+    expect(await useCasesOf('producer', { ...older, revision: 'c'.repeat(40), manifest_sha256: sha(noUseCases) }, { fetchImpl, show })).toBeNull();
+  });
+  it('fails rather than skipping the check when Git cannot supply the listed artifact', async () => {
+    const olderId = '2026-10-01-bbbbbbbbbbbb';
+    const listed = Buffer.from('{"mappings":[{"id":"m","lifecycle":"active"}]}');
+    const olderManifest = Buffer.from(JSON.stringify({ schema_version: 1, release_id: olderId, files: [{
+      source: `data/omics/releases/${olderId}/use-cases.json.gz`, destination: `public/omics/releases/${olderId}/use-cases.json`,
+      sha256: sha(listed), bytes: listed.length, scope: 'current' }] }));
+    const older = { ...lock, revision: 'b'.repeat(40), release_id: olderId, manifest_sha256: sha(olderManifest), serving: { ...lock.serving, website_assets: undefined } };
+    const missing = (_producer: string, object: string) => {
+      if (object.endsWith(':website/manifest.json')) return olderManifest;
+      throw new Error(`missing ${object}`);
+    };
+    await expect(useCasesOf('producer', older, { show: missing })).rejects.toThrow('missing');
+    const altered = (_producer: string, object: string) => object.endsWith(':website/manifest.json') ? olderManifest : gzipSync(Buffer.from('{"mappings":[]}'));
+    await expect(useCasesOf('producer', older, { show: altered })).rejects.toThrow('differs from the pinned manifest');
   });
   it('fails rather than skipping the check when the asset or manifest is wrong', async () => {
     const show = () => manifest;

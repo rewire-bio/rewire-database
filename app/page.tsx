@@ -18,7 +18,7 @@ import { readRefresh } from "@/lib/refresh-build";
 const pageMetadata = {
   title: "Biological model benchmark database",
   description:
-    "An up-to-date, source-linked record of how biological models perform on specific biological tasks, consolidated from published benchmarks and papers.",
+    "Which biological model works best for your task? Published and reproduced benchmark results, linked to their sources and organised by biological question.",
   alternates: { canonical: "https://benchmarks.rewirebio.io/" },
 };
 export const metadata: Metadata = {
@@ -47,7 +47,7 @@ export default function BenchmarksPage() {
           `Release ${catalogue.released_at.slice(0, 10)}`,
         ]}
         title="Biological model benchmark database"
-        intro="An up-to-date record of which biological models perform best on which tasks, with the evidence behind every result."
+        intro="Which biological model works best for your task? Published and reproduced results, linked to their sources and organised by biological question."
       >
         <nav className={styles.journeys} aria-label="Ways to start">
           {useCases > 0 && (
@@ -67,26 +67,29 @@ export default function BenchmarksPage() {
       </PageHeader>
       <div className="wrap content">
         <section className={styles.section} aria-labelledby="purpose-heading">
-          <h2 id="purpose-heading">Why this database exists</h2>
+          <h2 id="purpose-heading">What this database is for</h2>
           <p>
-            There are now many biological models, built for many different
-            tasks. The evidence on how well they work is spread across
-            academic papers, preprints and benchmark suites, each with its own
-            datasets, metrics and protocols. Working out the best model for a
-            given use case means finding and reconciling all of it.
+            Choosing a biological model for a task is harder than it should
+            be. Results are scattered across papers, preprints and benchmark
+            suites. Each uses its own datasets, splits and metrics, so numbers
+            from two papers often cannot be compared, and new models appear
+            faster than anyone can read about them.
           </p>
           <p>
-            The field also moves quickly. New models and benchmarks appear
-            every month, so a comparison made last year may already be out of
-            date.
+            This database brings those results together. Every value links to
+            the paper, table or run it came from. Results are organised around
+            use cases, so you can start from the biological question you are
+            trying to answer rather than from a model name. Results measured
+            under different protocols are kept apart instead of being merged
+            into one ranking, and where the evidence for a use case is thin or
+            missing, the page says so. Where published results leave a gap
+            that matters, we run the benchmark ourselves and publish the code.
           </p>
           <p>
-            Rewire collects these results, records the source behind every
-            value and links models, benchmarks, datasets and use cases into
-            one view. Each use case shows when its evidence was last checked,
-            and we plan to check for new results every month. The aim is an
-            authoritative, current reference for how biological models score
-            on each biological task.
+            The goal is a trusted, current reference for how biological models
+            perform on each task: kept up to date as the field moves, open to
+            researchers and their AI agents, and correctable by anyone who
+            brings better evidence.
           </p>
         </section>
         <AgentConnect />

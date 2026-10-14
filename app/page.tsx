@@ -18,7 +18,7 @@ import { readRefresh } from "@/lib/refresh-build";
 const pageMetadata = {
   title: "Biological model benchmark database",
   description:
-    "Explore specialist biological models, benchmarks, datasets, baselines and source-linked results in one database.",
+    "An up-to-date, source-linked record of how biological models perform on specific biological tasks, consolidated from published benchmarks and papers.",
   alternates: { canonical: "https://benchmarks.rewirebio.io/" },
 };
 export const metadata: Metadata = {
@@ -47,7 +47,7 @@ export default function BenchmarksPage() {
           `Release ${catalogue.released_at.slice(0, 10)}`,
         ]}
         title="Biological model benchmark database"
-        intro="Find biological models, see how they were tested and inspect the evidence behind each result."
+        intro="An up-to-date record of which biological models perform best on which tasks, with the evidence behind every result."
       >
         <nav className={styles.journeys} aria-label="Ways to start">
           {useCases > 0 && (
@@ -66,6 +66,29 @@ export default function BenchmarksPage() {
         </nav>
       </PageHeader>
       <div className="wrap content">
+        <section className={styles.section} aria-labelledby="purpose-heading">
+          <h2 id="purpose-heading">Why this database exists</h2>
+          <p>
+            There are now many biological models, built for many different
+            tasks. The evidence on how well they work is spread across
+            academic papers, preprints and benchmark suites, each with its own
+            datasets, metrics and protocols. Working out the best model for a
+            given use case means finding and reconciling all of it.
+          </p>
+          <p>
+            The field also moves quickly. New models and benchmarks appear
+            every month, so a comparison made last year may already be out of
+            date.
+          </p>
+          <p>
+            Rewire collects these results, records the source behind every
+            value and links models, benchmarks, datasets and use cases into
+            one view. Each use case shows when its evidence was last checked,
+            and we plan to check for new results every month. The aim is an
+            authoritative, current reference for how biological models score
+            on each biological task.
+          </p>
+        </section>
         <AgentConnect />
         <section
           id="browse"

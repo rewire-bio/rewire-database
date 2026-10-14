@@ -183,6 +183,10 @@ describe("record page labels and empty states (#156, #157, #162, #165, rewire-be
     const sections = [{ title: "How it works", body: "Summary. More." }, { title: "Only", body: "Summary." }, { title: "Other", body: "Other." }];
     expect(mechanismSections({ summary: "Summary.", sections })).toEqual([
       { title: "How it works", body: "More." }, { title: "Other", body: "Other." }]);
+    expect(mechanismSections({ summary: "Summary\n  text.", sections: [{ title: "A", body: "Summary text. More." }] })).toEqual([
+      { title: "A", body: "More." }]);
+    const partial = [{ title: "A", body: "X predicts Yeast growth." }];
+    expect(mechanismSections({ summary: "X predicts Y", sections: partial })).toEqual(partial);
   });
   it("pluralises source counts and labels empty source history", () => {
     const html = page(MethodPage, "somatic-oncogenicity-20261009-method-metalr");

@@ -66,10 +66,12 @@ function LinkedText({ text }: { text: string }) {
 /** The page header already shows the profile summary, so a section that opens with it starts
  * after it, and a section that only repeats it is left out (rewire-benchmark-data#88). */
 export function mechanismSections<T extends { body: string }>(profile: { summary: string; sections: T[] }): T[] {
-  const summary = profile.summary.trim();
+  const squash = (text: string) => text.trim().replace(/\s+/g, " ");
+  const summary = squash(profile.summary);
   return profile.sections.flatMap((section) => {
-    const body = section.body.trim();
-    if (!summary || !body.startsWith(summary)) return [section];
+    const body = squash(section.body);
+    // Only a whole leading sentence or sentences: "X predicts Y" must not cut "X predicts Yeast".
+    if (!summary || !body.startsWith(summary) || /^\S/.test(body.slice(summary.length))) return [section];
     const rest = body.slice(summary.length).trim();
     return rest ? [{ ...section, body: rest }] : [];
   });

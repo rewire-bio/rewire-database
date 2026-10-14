@@ -5,16 +5,14 @@ import { createHash } from "node:crypto";
 import { gunzipSync } from "node:zlib";
 import { readFile } from "node:fs/promises";
 import { pathToFileURL } from "node:url";
+import { downloadUrls } from "./download-locations.mjs";
 
 export async function checkGithubDownloads(origin, { locations, manifestBytes, fetcher = fetch }) {
   assert.equal(new URL(origin).protocol, "https:", "Supply the HTTPS frontend origin");
   assert.equal(locations.repository, "rewire-bio/rewire-benchmark-data");
   assert.match(locations.revision, /^[a-f0-9]{40}$/);
   const manifest = JSON.parse(manifestBytes.toString());
-  const urls = new Map();
-  for (const group of locations.groups) for (const file of group.files) {
-    urls.set(`${group.destination}/${file}`, `https://raw.githubusercontent.com/${locations.repository}/${locations.revision}/${group.source}/${encodeURIComponent(file)}.gz`);
-  }
+  const urls = downloadUrls(locations);
   const probes = [["/omics/manifest.json", createHash("sha256").update(manifestBytes).digest("hex")]];
   // Verify actual scientific export bytes against the release's declared hash,
   // using the small audit-run index rather than re-downloading the catalogue.
@@ -26,7 +24,8 @@ export async function checkGithubDownloads(origin, { locations, manifestBytes, f
     assert.equal(response.status, 307, `Download should redirect: ${pathname}`);
     assert.equal(response.headers.get("location"), target);
     assert.equal(response.headers.get("cache-control"), "no-store");
-    const download = await fetcher(target, { redirect: "error", signal: AbortSignal.timeout(30_000) });
+    // Release assets redirect to GitHub's storage host; raw files are served directly.
+    const download = await fetcher(target, { redirect: target.startsWith("https://github.com/") ? "follow" : "error", signal: AbortSignal.timeout(30_000) });
     assert.equal(download.status, 200, `Pinned GitHub export unavailable: ${pathname}`);
     const compressed = Buffer.from(await download.arrayBuffer());
     const bytes = gunzipSync(compressed, { maxOutputLength: 16 * 1024 * 1024 });

@@ -99,11 +99,16 @@ describe("Cloud Run frontend deployment", () => {
     ["a failing page", { status: 500 }],
     ["another image", { frontend: "e".repeat(40) }],
     ["a download for another revision", { location: "https://raw.githubusercontent.com/rewire-bio/rewire-benchmark-data/other/x.gz" }],
+    ["a download from another release's assets", { location: "https://github.com/rewire-bio/rewire-benchmark-data/releases/download/serving/2000-01-01-000000000000/x.gz" }],
     ["a catalogue API for another release", { apiRelease: "2000-01-01-000000000000" }],
   ])("never shifts traffic to a candidate with %s", async (_name, change) => {
     const { run, calls } = gcloud();
     await expect(deployCloudRun({ config: cloudRunConfig(env), plan: { frontend: false }, receipt, samples: ["/x/"], run, fetchImpl: candidate(change) as never })).rejects.toThrow();
     expect(calls.some((args) => args.includes("update-traffic"))).toBe(false);
+  });
+  it("accepts downloads redirected to the pinned release's assets", async () => {
+    const location = `https://github.com/${pin.repository}/releases/download/serving/${pin.release_id}/public.omics.x.csv.gz`;
+    await expect(verifyCandidate("https://c.a.run.app", { receipt, samples: [], fetchImpl: candidate({ location }) as never })).resolves.toBeUndefined();
   });
   it("rejects a candidate serving another receipt", async () => {
     const fetchImpl = vi.fn(async () => new Response(JSON.stringify({ ...receipt, release_id: "other" })));

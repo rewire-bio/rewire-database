@@ -2,6 +2,8 @@ import assert from 'node:assert/strict';
 import { RECEIPT_SCHEMA } from './deployment-plan.mjs';
 import { readFile } from 'node:fs/promises';
 import { gunzipSync } from 'node:zlib';
+import { downloadUrls } from './download-locations.mjs';
+import { usesReleaseAssets } from './release-assets.mjs';
 
 export async function pinnedDownloads(read = readFile) {
   const lock = JSON.parse(await read(new URL('../benchmark-data.lock.json', import.meta.url), 'utf8'));
@@ -11,14 +13,13 @@ export async function pinnedDownloads(read = readFile) {
   assert.equal(locations.manifest_sha256, lock.manifest_sha256, 'Download inventory must match lock');
   assert.match(lock.revision, /^[a-f0-9]{40}$/);
   assert.equal(lock.repository, 'rewire-bio/rewire-benchmark-data');
-  const urls = new Map();
+  assert.equal(locations.release_tag, usesReleaseAssets(lock) ? lock.serving.tag : undefined, 'Download location must match the lock');
   for (const group of locations.groups) for (const file of group.files) {
     assert.ok(!file.includes('/') && !file.includes('..'), 'Unsafe download name');
     assert.match(group.source, /^(website\/files\/public|data\/omics\/releases)\/[a-zA-Z0-9._/-]+$/);
     assert.ok(!group.source.split('/').includes('..'), 'Unsafe download source');
-    urls.set(`${group.destination}/${file}`, `https://raw.githubusercontent.com/${lock.repository}/${lock.revision}/${group.source}/${encodeURIComponent(file)}.gz`);
   }
-  return { lock, urls };
+  return { lock, urls: downloadUrls(locations) };
 }
 export function assertProducerReceipt(receipt, lock, release) {
   assert.equal(receipt.schema, RECEIPT_SCHEMA, 'Independent frontend receipt must identify its producer');
@@ -32,7 +33,9 @@ export async function fetchGithubDownload(origin, pathname, downloads, request, 
   const redirect = await request(new URL(pathname, origin), { method: 'HEAD', redirect: 'manual', signal: AbortSignal.timeout(30000) });
   assert.ok([301,302,307,308].includes(redirect.status), 'Legacy download must redirect to GitHub');
   assert.equal(redirect.headers.get('location'), expected, 'Download redirect must target the exact pinned producer file');
-  const response = await request(new URL(expected), { method: head ? 'HEAD' : 'GET', redirect: 'manual', signal: AbortSignal.timeout(30000) });
+  // A release asset URL redirects once more, to GitHub's storage host; a raw file does not.
+  const asset = expected.startsWith('https://github.com/');
+  const response = await request(new URL(expected), { method: head ? 'HEAD' : 'GET', redirect: asset ? 'follow' : 'manual', signal: AbortSignal.timeout(30000) });
   assert.equal(response.status, 200, 'Pinned GitHub export must be publicly accessible');
   assert.ok(!response.headers.get('content-type')?.includes('text/html'), 'GitHub download returned HTML');
   if (head) { if(response.headers.has('content-length')) assert.ok(Number(response.headers.get('content-length')) > 0, 'Empty GitHub download'); return; }

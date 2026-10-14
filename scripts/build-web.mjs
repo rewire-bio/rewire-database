@@ -14,7 +14,7 @@ export const OUTPUT = 'build/web';
 export const DATA = 'data';
 const EXCLUDED_PUBLIC = new Set(['omics', 'benchmark-literature']);
 export const RUNTIME_FILES = ['scripts/server-entry.mjs', 'scripts/prepare-benchmark-data.mjs',
-  'scripts/download-locations.mjs', 'scripts/fetch-serving-data.mjs'];
+  'scripts/download-locations.mjs', 'scripts/release-assets.mjs', 'scripts/fetch-serving-data.mjs'];
 export const ENTRYPOINT = 'runtime/scripts/server-entry.mjs';
 const MAX_FILE_BYTES = 50 * 1024 ** 2;
 

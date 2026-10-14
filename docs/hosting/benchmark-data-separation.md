@@ -12,6 +12,12 @@ npm run build
 
 `benchmark-data.lock.json` pins the repository, exact Git revision, prepared manifest SHA-256, scientific release ID and the prepared SQLite file (release tag, file name and SHA-256). `data:fetch` checks out that revision in ignored `workbench/benchmark-data`. `data:prepare` authenticates the pin and every output, restores generated frontend inputs and downloads the prepared file into `serving/`. It never invokes the data generator. `npm run build` builds the image directory with the current release embedded; downloads are redirects to the pinned GitHub files.
 
+### Where the release files come from
+
+The data repository keeps each release's `website/manifest.json` and receipt in Git, and publishes the gzip files the manifest lists as assets of the release's `serving/<release-id>` GitHub release, beside the prepared SQLite file. Each asset is named after its manifest destination with `/` replaced by `.` and `.gz` appended (`public/omics/releases/<id>/records.jsonl` becomes `public.omics.releases.<id>.records.jsonl.gz`). Adoption checks the release's asset list: if every current file has its asset, the lock gets `serving.website_assets: true`. If none has, the release predates the change and its files are read from Git at the pinned revision, as before. A partial set is refused.
+
+With `website_assets`, `scripts/select-current-data.mjs` (CI) and `data:fetch` (local) download the assets to their manifest source paths, and each file's expanded SHA-256 and size must match the manifest whose digest the lock pins; `data:prepare` then checks them again as usual. Downloads redirect to the release asset instead of `raw.githubusercontent.com`, and the adoption's use-case check reads `use-cases.json` from the asset, verified the same way. Without the flag nothing changes: CI sparse-checks-out the files at the pinned revision, downloads redirect to the raw files there and the use-case check runs `git show`.
+
 `data/`, `public/omics/`, literature downloads and `lib/generated-benchmark-catalog.ts` are generated dependencies. Make scientific edits in the data repository. The website retains rendering, the public catalogue API, the contribution service and deployment configuration. `shared/omics/` is a copy of the data repository's shared code as of the pinned release (`npm run shared:sync`).
 
 ## CI and release adoption

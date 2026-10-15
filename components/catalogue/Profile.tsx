@@ -63,6 +63,20 @@ function LinkedText({ text }: { text: string }) {
   );
 }
 
+/** The page header already shows the profile summary, so a section that opens with it starts
+ * after it, and a section that only repeats it is left out (rewire-benchmark-data#88). */
+export function mechanismSections<T extends { body: string }>(profile: { summary: string; sections: T[] }): T[] {
+  const squash = (text: string) => text.trim().replace(/\s+/g, " ");
+  const summary = squash(profile.summary);
+  return profile.sections.flatMap((section) => {
+    const body = squash(section.body);
+    // Only a whole leading sentence or sentences: "X predicts Y" must not cut "X predicts Yeast".
+    if (!summary || !body.startsWith(summary) || /^\S/.test(body.slice(summary.length))) return [section];
+    const rest = body.slice(summary.length).trim();
+    return rest ? [{ ...section, body: rest }] : [];
+  });
+}
+
 /** Keep precise citations one keyboard-accessible disclosure away. */
 export function ProfileEvidence(props: Parameters<typeof Evidence>[0]) {
   return (
@@ -357,11 +371,11 @@ export default function Profile({
           </details>
         </section>
       )}
-      {part === "mechanism" && (
+      {part === "mechanism" && mechanismSections(profile).length > 0 && (
         <section id="how-it-works" className={styles.section}>
           <h2>How it works</h2>
 
-          {profile.sections.map((section, i) => (
+          {mechanismSections(profile).map((section, i) => (
             <details key={i} className={styles.profileDisclosure}>
               <summary>{section.title}</summary>
               <p>{section.body}</p>

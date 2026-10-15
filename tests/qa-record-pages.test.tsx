@@ -15,6 +15,8 @@ import { resultMatrix } from "../lib/result-matrix";
 import { metricName, procedureReference, resultTitle } from "../lib/result-labels";
 import { claimFieldLabel, evidencePropertyLabel } from "../lib/evidence-labels";
 import { provenanceOnly } from "../lib/entity-detail";
+import ModelPage from "../app/database/model/[id]/page";
+import { mechanismSections } from "../components/catalogue/Profile";
 import { blockerText } from "../components/catalogue/ResearchReadiness";
 import type { ResultRow } from "../shared/omics/catalogue-query";
 import Results from "../components/catalogue/Results";
@@ -168,6 +170,23 @@ describe("record page labels and empty states (#156, #157, #162, #165, rewire-be
     const overview = html.slice(start, html.indexOf("</section>", start));
     expect(overview).toContain('href="/database/method/cnv-20261009-method-delly"');
     expect(overview).toContain("Paired-end and split-read structural variant caller.");
+  });
+  it("does not repeat the header subtitle in the overview or how it works", () => {
+    const html = page(ModelPage, "catalog-model-chai-1");
+    const intro = html.match(/<p class="intro">([^<]*)<\/p>/)![1];
+    expect(intro).toContain("Chai-1 predicts the structures of biomolecular complexes");
+    expect(html.split(intro)).toHaveLength(2);
+    const start = html.indexOf('id="how-it-works"');
+    expect(html.slice(start, html.indexOf("</section>", start))).toContain("pair-biased self-attention");
+  });
+  it("drops the summary from the start of a profile section", () => {
+    const sections = [{ title: "How it works", body: "Summary. More." }, { title: "Only", body: "Summary." }, { title: "Other", body: "Other." }];
+    expect(mechanismSections({ summary: "Summary.", sections })).toEqual([
+      { title: "How it works", body: "More." }, { title: "Other", body: "Other." }]);
+    expect(mechanismSections({ summary: "Summary\n  text.", sections: [{ title: "A", body: "Summary text. More." }] })).toEqual([
+      { title: "A", body: "More." }]);
+    const partial = [{ title: "A", body: "X predicts Yeast growth." }];
+    expect(mechanismSections({ summary: "X predicts Y", sections: partial })).toEqual(partial);
   });
   it("pluralises source counts and labels empty source history", () => {
     const html = page(MethodPage, "somatic-oncogenicity-20261009-method-metalr");

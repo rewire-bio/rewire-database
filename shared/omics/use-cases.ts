@@ -540,8 +540,12 @@ function reviewedEvaluations(claim: CatalogueRecord): string[] {
   return (Array.isArray(claim.attributes.reviewed_evaluations) ? claim.attributes.reviewed_evaluations : []).map(String);
 }
 
-export function deriveUseCaseInputs(input: { records: CatalogueRecord[] }): UseCaseInputs {
+/** `published` is the record set a release serves (the store minus disputed, excluded and unreviewed
+ * records). The release rebuilds each mapping's evidence hash from those records, so the hash must be
+ * computed over the same set; otherwise an evaluation with a disputed result always looks changed. */
+export function deriveUseCaseInputs(input: { records: CatalogueRecord[]; published?: CatalogueRecord[] }): UseCaseInputs {
   const ix = index({ records: input.records } as CatalogueSnapshot);
+  const published = input.published ? index({ records: input.published } as CatalogueSnapshot) : ix;
   const all = [...ix.records.values()];
   const claimsBySubject = new Map<string, CatalogueRecord[]>();
   for (const r of all) if (r.kind === "claim")
@@ -663,7 +667,7 @@ export function deriveUseCaseInputs(input: { records: CatalogueRecord[] }): UseC
       mappings.push({ ...draft, lifecycle: "needs_review", reason: `Withheld: ${blockers.join("; ")}.` });
       continue;
     }
-    mappings.push({ ...draft, evidence_sha256: evidenceHash(ix, entries.get(subject)!, draft) });
+    mappings.push({ ...draft, evidence_sha256: evidenceHash(published, entries.get(subject)!, draft) });
   }
   for (const r of all) if (r.kind === "use_case")
     for (const l of r.links) if (l.relation === "assessed_by" && !recorded.has(`${r.id}|${l.target_id}`))

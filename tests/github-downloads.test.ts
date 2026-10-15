@@ -4,14 +4,19 @@ import fs from 'node:fs';
 import { downloadLocations, downloadUrls } from '../scripts/download-locations.mjs';
 import { downloadHref, optionalDownloadHref } from '../lib/downloads';
 import { safeSourceUrl } from '../lib/omics';
+import { assetUrl, usesReleaseAssets } from '../scripts/release-assets.mjs';
 import lock from '../benchmark-data.lock.json';
+
+// The pinned release serves its files as release assets, or from Git at the pinned revision.
+const exportUrl = (destination: string, gitSource: string) =>
+  usesReleaseAssets(lock) ? assetUrl(lock, destination) : `https://raw.githubusercontent.com/${lock.repository}/${lock.revision}/${gitSource}.gz`;
 
 describe('GitHub downloads', () => {
   it('redirects site paths to the exact producer sources of the pinned revision', () => {
     const urls = downloadUrls(downloadLocations(lock, fs.readFileSync('workbench/benchmark-data/website/manifest.json')));
-    expect(urls.get(`/omics/releases/${lock.release_id}/records.jsonl`)).toBe(`https://raw.githubusercontent.com/${lock.repository}/${lock.revision}/data/omics/releases/${lock.release_id}/records.jsonl.gz`);
-    expect(urls.get(`/omics/releases/${lock.release_id}/manifest.json`)).toContain(`/website/files/public/omics/releases/${lock.release_id}/manifest.json.gz`);
-    expect(urls.get('/benchmark-literature/results.csv')).toContain('/website/files/public/benchmark-literature/results.csv.gz');
+    expect(urls.get(`/omics/releases/${lock.release_id}/records.jsonl`)).toBe(exportUrl(`public/omics/releases/${lock.release_id}/records.jsonl`, `data/omics/releases/${lock.release_id}/records.jsonl`));
+    expect(urls.get(`/omics/releases/${lock.release_id}/manifest.json`)).toBe(exportUrl(`public/omics/releases/${lock.release_id}/manifest.json`, `website/files/public/omics/releases/${lock.release_id}/manifest.json`));
+    expect(urls.get('/benchmark-literature/results.csv')).toBe(exportUrl('public/benchmark-literature/results.csv', 'website/files/public/benchmark-literature/results.csv'));
     expect(urls.has('/omics/releases/invented/records.csv')).toBe(false);
   });
   it('links our own download URLs as site paths, the same in server and browser renders', () => {

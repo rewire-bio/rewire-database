@@ -508,6 +508,11 @@ export interface ListEntry {
   row_origins: string[];
   evaluation_count: number;
   result_count: number;
+  /** Counts including records linked to this one as its configurations, versions,
+   * aliases or benchmark components, whether or not the link has a reviewed
+   * association claim. Absent in prepared files written before contract 3.2. */
+  linked_evaluation_count?: number;
+  linked_result_count?: number;
 }
 /** Catalogue search and filters. Facet counts exclude their own filter. */
 export function listPage(
@@ -570,7 +575,12 @@ export function listPage(
     evaluation_summaries: Object.fromEntries(
       selectedPage.items.map((entry) => [
         entry.record.id,
-        { evaluation_count: entry.evaluation_count, result_count: entry.result_count },
+        {
+          evaluation_count: entry.evaluation_count,
+          result_count: entry.result_count,
+          linked_evaluation_count: entry.linked_evaluation_count ?? entry.evaluation_count,
+          linked_result_count: entry.linked_result_count ?? entry.result_count,
+        },
       ]),
     ),
   };
@@ -791,12 +801,45 @@ export function createCatalogueQuery(snapshot: CatalogueSnapshot) {
       .map(row => [row.result.id, row])).values()].sort((a, b) => a.result.id.localeCompare(b.result.id));
     for (const member of component) rowIndex.set(member, shared);
   }
+  // Records that hold results for this one as its configurations, versions, aliases
+  // or benchmark components. Unlike ancestors(), this follows identity links
+  // whether or not a reviewed claim backs them, so a family page can say how much
+  // evidence sits on its linked configurations. The verified counts above stay the
+  // only ones that roll results up. uses_model and evaluates_task are not identity.
+  const identityChildRelations = new Set(["configuration_of", "variant_of", "family", "alias_of", "part_of"]);
+  function identityMembers(id: string): Set<string> {
+    const seen = new Set<string>([id]);
+    const pending = [id];
+    while (pending.length) {
+      const target = byId.get(pending.pop()!);
+      if (!target) continue;
+      for (const { relation, record } of reverse.get(target.id) || []) {
+        if (seen.has(record.id) || !identityChildRelations.has(relation)) continue;
+        const sameFamily =
+          relation === "part_of"
+            ? isBenchmarkSubject(record.kind) && isBenchmarkSubject(target.kind)
+            : relation === "alias_of"
+              ? record.kind === target.kind
+              : isModelSubject(record.kind) && isModelSubject(target.kind);
+        if (!sameFamily) continue;
+        seen.add(record.id);
+        pending.push(record.id);
+      }
+    }
+    return seen;
+  }
+  const evaluationKeys = (items: ResultRow[]) =>
+    new Set(items.flatMap((row) => (row.evaluation ? [evaluationIdentity(row.evaluation)] : [])));
   const release_id = snapshot.release_id;
   // Per-record list inputs, prepared once per engine.
   let listEntries: ListEntry[] | undefined;
   const entries = (): ListEntry[] =>
     (listEntries ||= visibleRecords.map((record) => {
       const linkedRows = rowIndex.get(record.id) || [];
+      // Each result counts once, however many paths lead to it.
+      const withLinked = new Map(linkedRows.map((row) => [row.result.id, row]));
+      for (const member of identityMembers(record.id))
+        for (const row of rowIndex.get(member) || []) withLinked.set(row.result.id, row);
       const ready = readinessById().get(record.id);
       return {
         record,
@@ -807,10 +850,10 @@ export function createCatalogueQuery(snapshot: CatalogueSnapshot) {
             )
           : {},
         row_origins: [...new Set(linkedRows.map((row) => row.origin))],
-        evaluation_count: new Set(
-          linkedRows.flatMap((row) => (row.evaluation ? [evaluationIdentity(row.evaluation)] : [])),
-        ).size,
+        evaluation_count: evaluationKeys(linkedRows).size,
         result_count: linkedRows.length,
+        linked_evaluation_count: evaluationKeys([...withLinked.values()]).size,
+        linked_result_count: withLinked.size,
       };
     }));
   function page<T>(

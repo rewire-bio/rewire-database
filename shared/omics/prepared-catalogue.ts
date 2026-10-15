@@ -39,7 +39,7 @@ const { DatabaseSync } = process.getBuiltinModule("node:sqlite");
  * source_records table; on older files source pages read as having no records.
  * The reader also opens 2.x files, so a website can switch between releases of
  * either form. */
-export const PREPARED_CONTRACT_VERSION = "3.1";
+export const PREPARED_CONTRACT_VERSION = "3.2";
 const READABLE_CONTRACT_MAJORS = ["2", "3"];
 
 /**

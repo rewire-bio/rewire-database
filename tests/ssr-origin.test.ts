@@ -9,6 +9,7 @@ import { fetchServingData, verifyServing } from "../scripts/fetch-serving-data.m
 import { middleware } from "../middleware";
 import { downloadRedirect } from "../lib/download-map";
 import { GET as receiptRoute } from "../app/deployment.json/route";
+import { assetUrl, usesReleaseAssets } from "../scripts/release-assets.mjs";
 import lock from "../benchmark-data.lock.json";
 
 const sha = (bytes: Buffer | string) => crypto.createHash("sha256").update(bytes).digest("hex");
@@ -45,7 +46,9 @@ describe("frontend origin identity, downloads and receipts", () => {
     const path = `/omics/releases/${pin.release_id}/records.jsonl`;
     const found = downloadRedirect(path, new Request(`https://origin.test${path}?download=1`));
     expect(found.status).toBe(307);
-    expect(found.headers.get("location")).toBe(`https://raw.githubusercontent.com/${pin.repository}/${pin.revision}/data/omics/releases/${pin.release_id}/records.jsonl.gz?download=1`);
+    const source = usesReleaseAssets(pin) ? assetUrl(pin, `public${path}`)
+      : `https://raw.githubusercontent.com/${pin.repository}/${pin.revision}/data/omics/releases/${pin.release_id}/records.jsonl.gz`;
+    expect(found.headers.get("location")).toBe(`${source}?download=1`);
     expect(found.headers.get("cache-control")).toBe("no-store");
     for (const missing of [`${path}.gz`, "/omics/releases/invented/records.jsonl"])
       expect(downloadRedirect(missing, new Request(`https://origin.test${missing}`)).status).toBe(404);

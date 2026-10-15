@@ -140,9 +140,12 @@ export function loadResultMatrix(query: Pick<CatalogueQuery, "results">, id: str
   return resultMatrix(query.results({ id, limit: MATRIX_ROWS_LIMIT }).items);
 }
 
-/** Descriptions that only say where a configuration was run, not what it does
- * (rewire-benchmark-data#88), for example "Kraken2 as run in Portik et al. 2022." */
+/** Descriptions that do not say what a configuration does, so its page shows the parent
+ * method's description instead (rewire-benchmark-data#88): provenance such as "Kraken2 as run
+ * in Portik et al. 2022.", or only the name, such as "Configuration of DELLY; no settings beyond
+ * its name are recorded." */
 export function provenanceOnly(description: string): boolean {
-  return /\bas (?:run|evaluated|reported|used|benchmarked|configured) (?:in|by)\b/i.test(description) ||
+  return /^Configuration of [^:;]+(?:; (?:no settings beyond its name are recorded|its settings are not recorded))?\.$/i.test(description.trim()) ||
+    /\bas (?:run|evaluated|reported|used|benchmarked|configured) (?:in|by)\b/i.test(description) ||
     /\bquoted in\b|\bnot a new execution\b|identified in the cited primary source|candidate catalogue entry|identity as reported in this source/i.test(description);
 }

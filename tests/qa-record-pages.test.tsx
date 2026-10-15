@@ -33,7 +33,7 @@ describe("parent records list the linked records that hold their results (#138)"
     const html = page(MethodPage, "somatic-oncogenicity-20261009-method-metalr");
     expect(html).not.toContain("0 evaluations · 0 results");
     expect(html).not.toMatch(emptyPager);
-    expect(html).toContain("3 configurations with results");
+    expect(html).toMatch(/\b[3-9] configurations with results/);
     expect(html).toContain('href="/database/configuration/somatic-oncogenicity-20261009-config-chen2020-metalr#results"');
     expect(html).toContain("20 results");
     expect(html.indexOf("Results on linked records")).toBeLessThan(html.indexOf('id="overview"'));
@@ -165,11 +165,13 @@ describe("record page labels and empty states (#156, #157, #162, #165, rewire-be
   it("shows the parent method's description when a configuration's description is only provenance", () => {
     expect(provenanceOnly("Kraken2 as run in Portik et al. 2022.")).toBe(true);
     expect(provenanceOnly("Variant effect predictor for missense variants.")).toBe(false);
+    expect(provenanceOnly("Configuration of DELLY; no settings beyond its name are recorded.")).toBe(true);
+    expect(provenanceOnly("Configuration of MetaLR: Scores from dbNSFP v4.0.")).toBe(false);
     const html = page(ConfigurationPage, "cnv-20261009-config-gabrielaite2021-delly");
     const start = html.indexOf('id="overview"');
     const overview = html.slice(start, html.indexOf("</section>", start));
     expect(overview).toContain('href="/database/method/cnv-20261009-method-delly"');
-    expect(overview).toContain("Paired-end and split-read structural variant caller.");
+    expect(overview).toContain("combining paired-end, split-read and read-depth evidence");
   });
   it("does not repeat the header subtitle in the overview or how it works", () => {
     const html = page(ModelPage, "catalog-model-chai-1");

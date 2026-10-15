@@ -262,13 +262,18 @@ describe("additive catalogue browsing contract", () => {
       record("empty", "model"),
     );
     const page = createCatalogueQuery(snapshot).list({ kind: "model" });
+    // Serving contract 3.2: with no linked records, the linked counts equal the record's own.
     expect(page.evaluation_summaries.model).toEqual({
       evaluation_count: 30,
       result_count: 31,
+      linked_evaluation_count: 30,
+      linked_result_count: 31,
     });
     expect(page.evaluation_summaries.empty).toEqual({
       evaluation_count: 0,
       result_count: 0,
+      linked_evaluation_count: 0,
+      linked_result_count: 0,
     });
   });
   it("shows available evaluations without inventing a reviewed comparison", () => {

@@ -24,6 +24,7 @@ import SectionNavigation, {
 import { kindLabels, singularKindLabels, countLabel, uniqueRecords, groupEntities } from "@/lib/omics-browse";
 import {
   linkedResultRecords,
+  unattributedLinkedRecords,
   loadResultMatrix,
   loadUseCaseContext,
   provenanceOnly,
@@ -82,6 +83,10 @@ export function PredictiveEntityDetail({ detail }: { detail: RecordDetail }) {
   const results = query.results({ id: record.id, limit: 25 });
   const linked = results.total === 0 ? linkedResultRecords(query, detail) : null;
   const hasLinked = !!linked?.items.length;
+  // Configurations and components whose links are not yet reviewed hold results the
+  // record's own table does not include; list them rather than hide them.
+  const unattributed = results.total > 0 ? unattributedLinkedRecords(query, detail) : null;
+  const hasUnattributed = !!unattributed?.items.length;
   const matrix = loadResultMatrix(query, record.id, results.total);
   const { useCaseLinks, useCaseConfigurations } = loadUseCaseContext(
     query,
@@ -224,6 +229,11 @@ export function PredictiveEntityDetail({ detail }: { detail: RecordDetail }) {
                     {linkedCount(linked!)} with results
                   </a>
                 )}
+                {hasUnattributed && (
+                  <a href="#linked-results" className={styles.resultCount}>
+                    {linkedCount(unattributed!)} with further results
+                  </a>
+                )}
                 {broaderFamilyOnly && !hasLinked && family && (
                   <Link href={`${recordHref(family.record)}#results`} className={styles.resultCount}>
                     View {countLabel(familyResults!.total, "result")} for the broader family
@@ -243,6 +253,7 @@ export function PredictiveEntityDetail({ detail }: { detail: RecordDetail }) {
               ...(hasLinked ? [{ id: "results", label: "Results" }] : []),
               { id: "overview", label: "Overview" },
               ...(hasResults && !hasLinked ? [{ id: "results", label: "Results" }] : []),
+              ...(hasUnattributed ? [{ id: "linked-results", label: "Linked results" }] : []),
               { id: "use-model", label: `Use this ${kindLabel}` },
               { id: "evidence", label: "Evidence" },
             ]}
@@ -276,6 +287,7 @@ export function PredictiveEntityDetail({ detail }: { detail: RecordDetail }) {
               summary={matrix && <ResultMatrix matrix={matrix} label={`Results for ${catalogueText(record.name)}`} />}
             />
           )}
+          {hasUnattributed && <LinkedResults record={record} linked={unattributed!} alongside />}
           {broaderFamilyOnly && !hasLinked && family && (
             <section id="results" className={styles.section}>
               <h2>Results for the broader model family</h2>

@@ -27,16 +27,33 @@ export function linkedCount(linked: Linked): string {
 
 /** The records holding results for a parent with none of its own. Their
  * results are not assigned to the parent, so each links to its own table. */
-export default function LinkedResults({ record, linked }: { record: OmicsRecord; linked: Linked }) {
+export default function LinkedResults({
+  record,
+  linked,
+  alongside = false,
+}: {
+  record: OmicsRecord;
+  linked: Linked;
+  /** The record has results of its own; these linked records hold further results not counted in them. */
+  alongside?: boolean;
+}) {
   const kind = singularKindLabels[record.kind].toLowerCase();
+  const holders = linked.items.length === 1 ? "One linked record has" : `${linked.items.length} linked records have`;
   return (
-    <section id="results" className={styles.section}>
-      <h2>Results on linked records</h2>
-      <p>
-        This {kind} has no results of its own in this release.{" "}
-        {linked.items.length === 1 ? "One linked record has" : `${linked.items.length} linked records have`}{" "}
-        results. They are not assigned to the underlying {kind}: each record keeps its own settings and evaluations, and its scores are on its own page.
-      </p>
+    <section id={alongside ? "linked-results" : "results"} className={styles.section}>
+      <h2>{alongside ? "Further results on linked records" : "Results on linked records"}</h2>
+      {alongside ? (
+        <p>
+          {holders} results that are not included above, because no reviewed claim yet ties the link to this {kind}.
+          Each record keeps its own settings and evaluations, and its scores are on its own page.
+        </p>
+      ) : (
+        <p>
+          This {kind} has no results of its own in this release.{" "}
+          {holders}{" "}
+          results. They are not assigned to the underlying {kind}: each record keeps its own settings and evaluations, and its scores are on its own page.
+        </p>
+      )}
       <ul className={styles.configurationList}>
         {linked.items.map((item) => (
           <li key={item.record.id}>

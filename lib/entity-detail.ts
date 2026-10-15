@@ -85,11 +85,12 @@ export const LINKED_RESULTS_LIMIT = 40;
 export function linkedResultRecords(
   query: Pick<CatalogueQuery, "results">,
   detail: Pick<RecordDetail, "direct" | "reverse">,
+  include: (item: RecordDetail["reverse"][number]) => boolean = () => true,
 ) {
   const candidates = [
     ...detail.reverse.filter((item) => childRelations.includes(item.relation)),
     ...detail.direct.filter((item) => parentRelations.includes(item.relation)),
-  ];
+  ].filter(include);
   const seen = new Set<string>();
   const unique = candidates.filter((item) => !seen.has(item.record.id) && !!seen.add(item.record.id));
   const items = unique.slice(0, LINKED_RESULTS_LIMIT).flatMap((item) => {
@@ -99,6 +100,35 @@ export function linkedResultRecords(
       : [];
   });
   return { items, unchecked: Math.max(0, unique.length - LINKED_RESULTS_LIMIT) };
+}
+
+/** Identity links whose results belong with the parent once a reviewed claim backs them. */
+const identityRelations = ["configuration_of", "variant_of", "family", "alias_of", "part_of"];
+
+/** Configurations, versions, aliases and components of a record that has results of its
+ * own, whose results are not among them because no reviewed association claim ties the
+ * link to it yet. Without this, a family page with any direct result hid every
+ * evaluation held on such a configuration (rewire-benchmark-data#129). A record with any
+ * verified link is left out, even if it also has an unverified one: its results are
+ * already in the record's own table. */
+export function unattributedLinkedRecords(
+  query: Pick<CatalogueQuery, "results" | "verifiedAssociation">,
+  detail: Pick<RecordDetail, "record" | "direct" | "reverse">,
+) {
+  const verified = new Set(
+    detail.reverse
+      .filter(
+        (item) =>
+          identityRelations.includes(item.relation) &&
+          verifiedAssociation(query, item.record.id, item.relation, detail.record.id),
+      )
+      .map((item) => item.record.id),
+  );
+  return linkedResultRecords(
+    query,
+    detail,
+    (item) => identityRelations.includes(item.relation) && !verified.has(item.record.id),
+  );
 }
 
 /** Pivot pages read at most this many result rows (one page of the query). */

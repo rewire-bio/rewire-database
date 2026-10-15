@@ -9,6 +9,7 @@ import {
   researchAreaLabel,
   countLabel,
   supportsEvaluationSummary,
+  summaryText,
 } from "@/lib/omics-browse";
 import { ResearchReadinessSummary } from "@/components/catalogue/ResearchReadiness";
 import styles from "./database.module.css";
@@ -83,11 +84,7 @@ export function ExplorerRows({
           </p>
           {supportsEvaluationSummary(record.kind) &&
             data.evaluation_summaries?.[record.id] && (
-              <p className={ui.counts}>
-                {data.evaluation_summaries[record.id].evaluation_count > 0
-                  ? `${countLabel(data.evaluation_summaries[record.id].evaluation_count, "evaluation")} · ${countLabel(data.evaluation_summaries[record.id].result_count, "result")}`
-                  : "No evaluations linked in this release"}
-              </p>
+              <p className={ui.counts}>{summaryText(data.evaluation_summaries[record.id])}</p>
             )}
           {data.research_readiness?.find(
             (item) => item.record_id === record.id,

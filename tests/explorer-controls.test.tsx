@@ -89,7 +89,7 @@ describe("catalogue controls", () => {
     tree.update(<ExplorerRows data={page} loading={false} selected={Array.from({ length: 20 }, (_, i) => `${i}`)} setSelected={setSelected} returnTo="/" />);
     expect(tree.root.findByType("input").props.disabled).toBe(true); tree.unmount();
     for (const evaluation_count of [0, 2]) {
-      const html = renderToStaticMarkup(<ExplorerRows data={{ ...data, items: [{ ...record, kind: "model", attributes: { profile: { summary: "Profile" } }, facets: { areas: ["dna-genomes"] }, source_ids: ["source"] }], evaluation_summaries: { "result-a": { evaluation_count, result_count: 3 } } } as CataloguePage} loading={false} selected={[]} setSelected={setSelected} returnTo="/" />);
+      const html = renderToStaticMarkup(<ExplorerRows data={{ ...data, items: [{ ...record, kind: "model", attributes: { profile: { summary: "Profile" } }, facets: { areas: ["dna-genomes"] }, source_ids: ["source"] }], evaluation_summaries: { "result-a": { evaluation_count, result_count: 3, linked_evaluation_count: evaluation_count, linked_result_count: 3 } } } as CataloguePage} loading={false} selected={[]} setSelected={setSelected} returnTo="/" />);
       expect(html).toContain(evaluation_count ? "2 evaluations" : "No evaluations linked");
     }
   });

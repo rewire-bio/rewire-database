@@ -1,10 +1,13 @@
 import crypto from 'node:crypto';
 import path from 'node:path';
+import { assetName, usesReleaseAssets } from './release-assets.mjs';
 
 /**
  * Public download locations from the exact producer manifest a pin names.
  * Each public file maps to its manifest `source`: the gzip export at that
  * path, never a guessed name. Shared by data preparation and the server.
+ * A release whose files are assets of its `serving/<id>` GitHub release
+ * (lock `serving.website_assets`) records that tag as `release_tag`.
  */
 export function downloadLocations(lock, bytes) {
   if (lock.repository !== 'rewire-bio/rewire-benchmark-data' || !/^[a-f0-9]{40}$/.test(lock.revision)) throw new Error('Invalid pinned producer');
@@ -29,14 +32,32 @@ export function downloadLocations(lock, bytes) {
     if (!groups.has(key)) groups.set(key, { destination, source, files: [] });
     groups.get(key).files.push(path.posix.basename(file.destination));
   }
-  return { repository: lock.repository, revision: lock.revision, manifest_sha256: lock.manifest_sha256, groups: [...groups.values()] };
+  const assets = usesReleaseAssets(lock);
+  if (assets) {
+    if (lock.serving.tag !== `serving/${lock.release_id}`) throw new Error('Invalid release asset tag');
+    const names = new Set();
+    for (const group of groups.values()) for (const file of group.files) {
+      const name = assetName(`public${group.destination}/${file}`);
+      if (names.has(name)) throw new Error('Duplicate download asset');
+      names.add(name);
+    }
+  }
+  return {
+    repository: lock.repository, revision: lock.revision, manifest_sha256: lock.manifest_sha256,
+    ...(assets ? { release_tag: lock.serving.tag } : {}), groups: [...groups.values()],
+  };
 }
 
-/** Site path to exact raw.githubusercontent.com URL at the pinned revision. */
+/**
+ * Site path to its exact export: the release asset when the release publishes
+ * its files as assets, otherwise the raw.githubusercontent.com file at the pinned revision.
+ */
 export function downloadUrls(locations) {
   const urls = new Map();
   for (const group of locations.groups)
     for (const file of group.files)
-      urls.set(`${group.destination}/${file}`, `https://raw.githubusercontent.com/${locations.repository}/${locations.revision}/${group.source.split('/').map(encodeURIComponent).join('/')}/${encodeURIComponent(file)}.gz`);
+      if (locations.release_tag)
+        urls.set(`${group.destination}/${file}`, `https://github.com/${locations.repository}/releases/download/${locations.release_tag}/${assetName(`public${group.destination}/${file}`)}`);
+      else urls.set(`${group.destination}/${file}`, `https://raw.githubusercontent.com/${locations.repository}/${locations.revision}/${group.source.split('/').map(encodeURIComponent).join('/')}/${encodeURIComponent(file)}.gz`);
   return urls;
 }

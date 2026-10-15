@@ -82,7 +82,10 @@ export async function verifyCandidate(url, { receipt, samples, fetchImpl = fetch
   if (api.status !== 200 || (await api.json()).result?.data?.release_id !== receipt.release_id)
     throw new Error(`Candidate revision does not serve the catalogue API for ${receipt.release_id} (${api.status})`);
   const download = await get(`/omics/releases/${receipt.release_id}/records.jsonl`);
-  if (download.status !== 307 || !download.headers.get('location')?.startsWith(`https://raw.githubusercontent.com/${receipt.producer_repository}/${receipt.producer_revision}/`))
+  // The pinned revision's raw file, or for releases published as assets, an asset of serving/<release_id>.
+  const location = download.headers.get('location') || '';
+  if (download.status !== 307 || ![`https://raw.githubusercontent.com/${receipt.producer_repository}/${receipt.producer_revision}/`,
+    `https://github.com/${receipt.producer_repository}/releases/download/serving/${receipt.release_id}/`].some(prefix => location.startsWith(prefix)))
     throw new Error('Candidate revision does not redirect downloads to the pinned producer revision');
 }
 

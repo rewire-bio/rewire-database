@@ -3,6 +3,8 @@ import path from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { verifyLock } from './prepare-benchmark-data.mjs';
+import { usesReleaseAssets } from './release-assets.mjs';
+import { downloadCurrentData } from './select-current-data.mjs';
 
 /** Inspect existing path components without following links, including dangling links. */
 function checkedDirectory(directory) {
@@ -46,7 +48,8 @@ export function fetchBenchmarkData({ root = process.cwd(), git } = {}) {
     fs.mkdirSync(workbench, { recursive: true });
     command(['clone', '--no-checkout', '--filter=blob:none', `https://github.com/${lock.repository}.git`, directory]);
   }
-  // Only published artifact objects are needed by a frontend build.
+  // Only published artifact objects are needed by a frontend build. A release published
+  // as assets has only its manifest and receipts there; fetchBenchmarkDataFiles downloads the rest.
   command(['-C', directory, 'sparse-checkout', 'set', 'website', 'data/omics/releases']);
   command(['-C', directory, 'fetch', '--depth=1', 'origin', lock.revision]);
   command(['-C', directory, 'checkout', '--detach', lock.revision]);
@@ -54,6 +57,17 @@ export function fetchBenchmarkData({ root = process.cwd(), git } = {}) {
   return directory;
 }
 
+/** Check out the pinned revision, then download its files if they are release assets. */
+export async function fetchBenchmarkDataFiles(options = {}) {
+  const directory = fetchBenchmarkData(options);
+  const lock = JSON.parse(fs.readFileSync(path.join(options.root || process.cwd(), 'benchmark-data.lock.json'), 'utf8'));
+  if (usesReleaseAssets(lock)) {
+    const count = await downloadCurrentData(lock, fs.readFileSync(path.join(directory, 'website/manifest.json')), directory, options);
+    console.log(`Downloaded ${count} release files from ${lock.serving.tag}.`);
+  }
+  return directory;
+}
+
 if (process.argv[1] && fileURLToPath(import.meta.url) === path.resolve(process.argv[1])) {
-  fetchBenchmarkData();
+  await fetchBenchmarkDataFiles();
 }

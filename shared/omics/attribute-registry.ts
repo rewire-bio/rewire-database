@@ -48,6 +48,18 @@ export const attributeRegistry = {
     comparison_group: "text",
     comparison_title: "text",
     constraints: "texts",
+    // A discrepancy_review claim decides a derived discrepancy (scripts/kg/contradictions.py) and
+    // records the work behind the decision: what we looked at, what we raised with the authors,
+    // what we are waiting for, and when to chase it.
+    awaiting: "text",
+    discrepancy_id: "text",
+    expected_by: "date",
+    investigation_url: "url",
+    next_check: "date",
+    report_url: "url",
+    reported_on: "date",
+    resolved_by: "record-ids",
+    upstream_response: "text",
     endpoint: "text",
     excluded_evaluations: "json",
     field: "text",

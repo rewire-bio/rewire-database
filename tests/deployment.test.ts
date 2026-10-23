@@ -183,6 +183,27 @@ describe("bounded live probe retry", () => {
   });
 });
 
+describe("live probe body reads", () => {
+  const stalled = () => ({
+    status: 200,
+    headers: new Headers({ "content-type": "text/html" }),
+    arrayBuffer: () => Promise.reject(new DOMException("The operation was aborted due to timeout", "TimeoutError")),
+    body: null,
+  });
+  it("retries a response whose body stalls past the timeout", async () => {
+    const fetchImpl = vi.fn().mockResolvedValueOnce(stalled()).mockResolvedValueOnce(new Response("<html>ok</html>", { status: 200 }));
+    const response = await fetchWithRetry("https://example.test/use-cases/a/?verify=1", { fetchImpl, sleep: vi.fn() });
+    expect(await response.text()).toBe("<html>ok</html>");
+    expect(fetchImpl).toHaveBeenCalledTimes(2);
+  });
+  it("names the URL when every attempt stalls", async () => {
+    const fetchImpl = vi.fn().mockImplementation(async () => stalled());
+    await expect(
+      fetchWithRetry("https://example.test/use-cases/a/?verify=123", { fetchImpl, sleep: vi.fn() }),
+    ).rejects.toThrow("https://example.test/use-cases/a/ failed after 3 attempts: The operation was aborted due to timeout");
+  });
+});
+
 describe("live probe readiness window", () => {
   function slowGenuineResponse(delayMs: number) {
     return vi.fn(

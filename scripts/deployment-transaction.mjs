@@ -87,14 +87,23 @@ export async function fetchWithRetry(url, options = {}) {
         ![429, 500, 502, 503, 504].includes(response.status) ||
         attempt === attempts - 1
       )
-        return response;
+        return await buffered(response);
       await response.body?.cancel();
     } catch (error) {
-      if (attempt === attempts - 1) throw error;
+      if (attempt === attempts - 1)
+        throw new Error(`${String(url).replace(/[?&]verify=\d+/, "")} failed after ${attempts} attempts: ${error.message}`, { cause: error });
     }
     await sleep(1000 * 2 ** attempt);
   }
   throw new Error("No probe attempts configured");
+}
+/** The response with its body already read. The timeout signal also covers reading the body,
+ * so a body that stalls must be read inside the retry loop: read later by the caller, it
+ * aborted the whole probe with a bare TimeoutError and no URL. */
+async function buffered(response) {
+  if (typeof response.arrayBuffer !== "function") return response;
+  const body = [101, 204, 205, 304].includes(response.status) ? null : await response.arrayBuffer();
+  return new Response(body, { status: response.status, statusText: response.statusText, headers: response.headers });
 }
 /** Firebase CLI may return either project-qualified or site-qualified names. */
 export function hostingVersion(listing, project, site) {

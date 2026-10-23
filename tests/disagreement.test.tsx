@@ -83,9 +83,23 @@ describe("disagreement summary and grouping", () => {
     expect(html).toContain("Mixed: Tied 2023.");
   });
 
+  it("names an agreeing paper that leans the other way on its own, and capitalises a lowercase name", () => {
+    const v = view(ordering([
+      study("source:Livesey 2025", "consensus", { ag: 7 }),
+      study("source:Clinical 2024", "consensus", { ag: 2, bz: 4 }),
+      study("source:Open 2026", "consensus", { ag: 6 }),
+      study("source:proteinbench evidence", "outlier", { bz: 9, ag: 1 }),
+    ]));
+    expect(v.summary).toBe("3 papers rank AlphaGenome above Borzoi in 15 of their 19 comparisons and Borzoi higher in 4. "
+      + "Of those papers, Clinical 2024 ranks Borzoi higher on its own (4 of 6). "
+      + "Proteinbench evidence ranks Borzoi above AlphaGenome in 9 of its 10 comparisons and AlphaGenome higher in 1.");
+    // With one agreeing paper there is no pooled count to qualify.
+    expect(view(ordering([study("source:Clinical 2024", "consensus", { ag: 2, bz: 4 }), study("source:Alavi 2026", "outlier", { bz: 2 })])).summary)
+      .not.toContain("Of those papers");
+  });
   it("names a paper without a source record by its key", () => {
     const html = render(ordering([study("source:unnamed-key", "consensus", { ag: 3 }), study("source:Alavi 2026", "outlier", { bz: 2 })]));
-    expect(html).toContain("unnamed-key ranks AlphaGenome above Borzoi");
+    expect(html).toContain("Unnamed-key ranks AlphaGenome above Borzoi");
     expect(html).toMatch(/<th scope="row">unnamed-key<\/th>/);
   });
 });

@@ -11,7 +11,7 @@ import { ContestedPanel } from "../components/catalogue/Contested";
 import type { Comparison } from "../lib/use-case-comparisons";
 import {
   contestedFilters, contestedList, contestedPaths, contestedQuery, contestedResults, contestingFindings,
-  investigatedFindings, openFindingsForSystem, overdue, pendingCheck,
+  investigatedFindings, openFindingsForSystem, overdue, pendingCheck, resultIdsOfUseCase,
 } from "../lib/discrepancies";
 
 const fixture = vi.hoisted(() => ({ query: null as PreparedCatalogue | null }));
@@ -20,6 +20,12 @@ vi.mock("../lib/catalogue-build", () => ({
     catalogue: { release_id: fixture.query!.release_id, released_at: "2026-10-23T00:00:00Z", schema_version: "1.1", coverage: {} },
     query: fixture.query!,
   }),
+}));
+vi.mock("../lib/use-cases-build", () => ({
+  // One use case whose results are Alavi's AlphaGenome result and an unrelated one.
+  fullUseCaseDetail: (slug: string) => slug === "patient-rna-splicing-validation"
+    ? { use_case: { slug, title: "Patient RNA splicing validation" }, mappings: [{ evaluations: [{ results: [{ result: { id: "r-out-ag" } }, { result: { id: "r-clean" } }] }] }] }
+    : null,
 }));
 vi.mock("next/navigation", () => ({
   notFound: () => { throw new Error("NEXT_NOT_FOUND"); },
@@ -75,6 +81,8 @@ describe("contested results: wrapper", () => {
     expect(contestedFilters({ severity: "high", state: "bogus", status: "open", system: "alphagenome", other: "x" }))
       .toEqual({ severity: "high", settled: "open", system: "alphagenome" });
     expect(contestedFilters({ system: "<script>", severity: ["medium", "low"] })).toEqual({ severity: "medium" });
+    expect(contestedFilters({ use_case: "patient-rna-splicing-validation" })).toEqual({ use_case: "patient-rna-splicing-validation" });
+    expect(contestedQuery({ use_case: "splicing", cursor: "x" })).toBe("/contested/?use_case=splicing");
     expect(contestedQuery({ severity: "high", cursor: "abc" }, { system: "spliceai" })).toBe("/contested/?severity=high&system=spliceai");
     expect(contestedQuery({})).toBe("/contested/");
   });
@@ -101,6 +109,19 @@ describe("contested results: wrapper", () => {
     expect(investigatedFindings().map((f) => [f.discrepancy.id, f.investigation_url]))
       .toEqual([["discrepancy-00000000000000aa", "https://github.com/rewire-bio/rewire-benchmark-data/issues/174"]]);
   });
+  it("filters to the findings a use case's results take part in, in either role", () => {
+    use(findings);
+    const results = (slug: string) => (slug === "u" ? ["r-out-sa", "r-clean"] : null);
+    // r-out-sa is outlier in aa and consensus in bb; r-clean is outlier in the settled cc.
+    expect(contestedList({ use_case: "u" }, undefined, results)!.page.items.map((d) => d.id))
+      .toEqual(["discrepancy-00000000000000aa", "discrepancy-00000000000000bb", "discrepancy-00000000000000cc"]);
+    expect(contestedList({ use_case: "u", settled: "open", severity: "medium" }, undefined, results)!.page.items.map((d) => d.id))
+      .toEqual(["discrepancy-00000000000000bb"]);
+    expect(contestedList({ use_case: "missing" }, undefined, results)!.page.total).toBe(0);
+    expect(contestedList({ use_case: "u" }, undefined, results)!.totals.all).toBe(3);
+    expect(resultIdsOfUseCase({ mappings: [{ evaluations: [{ results: [{ result: { id: "a" } }] }, { results: [{ result: { id: "b" } }] }] }] })).toEqual(["a", "b"]);
+    expect(resultIdsOfUseCase(null)).toBeNull();
+  });
   it("badges a row only for unsettled findings in which its results are the disagreeing study's", () => {
     use(findings);
     const byResult = contestedResults(["r-out-ag", "r-out-sa", "r-con-sa", "r-clean"]);
@@ -124,6 +145,16 @@ describe("contested results: pages", () => {
     expect(html).toMatch(/href="\/contested\/discrepancy-00000000000000bb\/?"/);
     expect(html).not.toContain("discrepancy-00000000000000cc");
     expect(html).toContain("Next check 10 November 2026");
+  });
+  it("names the use case it filters by, and links back to it", async () => {
+    use(findings);
+    const { default: ContestedPage } = await import("../app/contested/page");
+    const html = renderToStaticMarkup(<ContestedPage searchParams={{ use_case: "patient-rna-splicing-validation" }} />);
+    expect(html).toContain("Patient RNA splicing validation");
+    expect(html).toMatch(/href="\/use-cases\/patient-rna-splicing-validation\/?"/);
+    expect(html).toContain("2 findings match");
+    expect(html).toContain('name="use_case" value="patient-rna-splicing-validation"');
+    expect(renderToStaticMarkup(<ContestedPage searchParams={{ use_case: "nothing-here" }} />)).toContain("an unknown use case");
   });
   it("shows a finding's numbers, results and follow-up timeline, and redirects an earlier ID", async () => {
     use(findings);

@@ -112,7 +112,7 @@ export default function UseCasePage({ params }: { params: Params }) {
         <section id="evidence" className={styles.section}>
           <h2>{heading("evidence")}</h2>
           <p>Each table is one study or protocol with its own truth set and scoring. Compare tools within a table, not across tables.</p>
-          {anyContested && <p>Rows marked Contested rest on results that other studies disagree with. The results are still shown. See <a href="/contested/">contested results</a> for what disagrees and what we are doing about it.</p>}
+          {anyContested && <p>Rows marked Contested rest on results that other studies disagree with. The results are still shown. See <a href={`/contested/?use_case=${encodeURIComponent(entry.slug)}`}>the disagreements that involve this use case</a> for what disagrees and what we are doing about it.</p>}
           {orderedComparisons.length
             ? orderedComparisons.map((comparison) => <UseCaseComparison key={comparison.id} comparison={comparison} useCasePath={path} baselineIds={baselineIds} contested={contested} />)
             : <div className={styles.notice}><p>No model comparison has been collected for this question yet.</p><p>Relevant methods and studies may exist outside this collection.</p></div>}

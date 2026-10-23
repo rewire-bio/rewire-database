@@ -26,9 +26,9 @@ A file older than contract 3.3 has no findings. Every reader then returns empty,
 
 | Page | Shows |
 | --- | --- |
-| `/contested/` | Counts for the release, and the findings, most severe first. Filters by status (open or settled), severity, state and model through search parameters. |
+| `/contested/` | Counts for the release, and the findings, most severe first. Filters by status (open or settled), severity, state, model and use case through search parameters. The use-case filter keeps findings in which any of the use case's results takes part, in either role. |
 | `/contested/<id>/` | The summary, what the rule counted, the compared results in each study, the follow-up timeline, and how to help resolve the finding. An earlier ID redirects to the current one. |
-| Use-case pages | A Contested badge on a row whose results are the disagreeing study's in an unsettled finding. |
+| Use-case pages | A Contested badge on a row whose results are the disagreeing study's in an unsettled finding, and a link to `/contested/?use_case=<slug>` when any row has one. |
 | Result and evaluation pages | A Contested panel naming each finding and whether the result is from the study that disagrees or from the agreeing group. An evaluation page covers the results it shows. |
 | Model, method and configuration pages | "N open disagreements between studies involve this model", linking to the filtered list. A configuration uses its model's count, since findings compare models. |
 | Home page | A "New" notice (`lib/home-notice.ts`, set to `null` to remove) and the count of open findings. |

@@ -6,8 +6,9 @@ import { socialMetadata } from "@/lib/catalogue-sharing";
 import { buildCatalogue } from "@/lib/catalogue-build";
 import { recordHref } from "@/lib/omics";
 import { catalogueText } from "@/lib/catalogue-text";
+import { fullUseCaseDetail } from "@/lib/use-cases-build";
 import {
-  contestedFilters, contestedList, contestedQuery, severityLabel, stateLabel, DISCREPANCIES_DOC, STATE_LABELS,
+  contestedFilters, contestedList, contestedQuery, resultIdsOfUseCase, severityLabel, stateLabel, DISCREPANCIES_DOC, STATE_LABELS,
   type ContestedFilters,
 } from "@/lib/discrepancies";
 import styles from "@/components/catalogue/Contested.module.css";
@@ -39,7 +40,8 @@ function FilterLinks({ label, options, current, filters, field }: {
 export default function ContestedPage({ searchParams = {} }: { searchParams?: SearchParams }) {
   const { catalogue, query } = buildCatalogue();
   const filters = contestedFilters(searchParams);
-  const list = contestedList(filters);
+  const useCase = filters.use_case ? fullUseCaseDetail(filters.use_case) : null;
+  const list = contestedList(filters, undefined, () => resultIdsOfUseCase(useCase));
   const lookup: RecordLookup = (id) => {
     const record = query.record(id);
     return record ? { name: record.name, href: recordHref(record) } : null;
@@ -91,6 +93,7 @@ export default function ContestedPage({ searchParams = {} }: { searchParams?: Se
               {filters.severity && <input type="hidden" name="severity" value={filters.severity} />}
               {filters.state && <input type="hidden" name="state" value={filters.state} />}
               {filters.settled && <input type="hidden" name="status" value={filters.settled} />}
+              {filters.use_case && <input type="hidden" name="use_case" value={filters.use_case} />}
               <label><span className={styles.muted}>Model: </span>
                 <select name="system" defaultValue={filters.system ?? ""}>
                   <option value="">All models</option>
@@ -99,6 +102,9 @@ export default function ContestedPage({ searchParams = {} }: { searchParams?: Se
               </label>{" "}
               <button type="submit">Show</button>
             </form>
+            {filters.use_case && <p>Showing findings that involve results in {useCase
+              ? <Link href={`/use-cases/${encodeURIComponent(useCase.use_case.slug)}/`}>{useCase.use_case.title}</Link>
+              : <>an unknown use case, <code>{filters.use_case}</code></>}, from the study that disagrees or from the agreeing group. <Link href={contestedQuery(filters, { use_case: undefined })}>All use cases</Link></p>}
             {filters.system && <p>Showing findings that compare {system ? <Link href={system.href}>{catalogueText(system.name)}</Link> : <code>{filters.system}</code>}. <Link href={contestedQuery(filters, { system: undefined })}>All models</Link></p>}
           </div>
           <p className={styles.muted}>{list.page.total} {list.page.total === 1 ? "finding matches" : "findings match"}, most severe first.</p>

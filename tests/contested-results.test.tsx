@@ -96,9 +96,10 @@ const studied = finding("discrepancy-00000000000000dd", {
 });
 // Resolved: the error was confirmed and the results withdrawn, so the rules no longer find it.
 const resolvedFinding = finding("discrepancy-00000000000000ee", {
-  resolved: true, rule: "", scope: "", identity_basis: "", severity: "high", state: "confirmed-error", settled: true,
-  label: "AlphaGenome and Borzoi: Alavi 2026 reverses the order", numbers: {}, studies: [], systems: ["alphagenome", "spliceai"],
-  outlier_results: [], consensus_results: [],
+  // As the data release writes one: low severity, no sources or results, the last rationale as its summary.
+  resolved: true, rule: "", scope: "", identity_basis: "", severity: "low", state: "confirmed-error", settled: true,
+  label: "AlphaGenome and Borzoi: resolved", summary: "The authors confirmed a one-base offset; the results are marked disputed.",
+  numbers: {}, studies: [], systems: ["alphagenome"], outlier_sources: [], consensus_sources: [], outlier_results: [], consensus_results: [],
   actions: [
     action({ revision: 1, action: "investigated", state: "investigating", date: "2026-10-18", investigation_url: "https://github.com/rewire-bio/rewire-benchmark-data/issues/174" }),
     action({ revision: 2, action: "reported-upstream", state: "awaiting-correction", date: "2026-10-19",
@@ -175,7 +176,7 @@ describe("contested results: wrapper", () => {
     expect(contestedList({ settled: "open" })!.resolved).toEqual([]);
     expect(contestedList({ settled: "settled" })!.resolved.map((d) => d.id)).toEqual([resolvedFinding.id]);
     // The other filters apply to the resolved section too.
-    expect(contestedList({ severity: "low" })!.resolved).toEqual([]);
+    expect(contestedList({ severity: "high" })!.resolved).toEqual([]);
     expect(openFindingsForSystem("alphagenome").map((d) => d.id)).not.toContain(resolvedFinding.id);
   });
   it("filters to the findings a use case's results take part in, in either role", () => {
@@ -284,7 +285,7 @@ describe("contested results: pages", () => {
     const html = renderToStaticMarkup(<ContestedPage />);
     expect(html).toMatch(/<strong>1<\/strong>resolved/);
     expect(html).toContain('<h2 id="resolved-heading">Resolved</h2>');
-    expect(html).toMatch(/href="\/contested\/discrepancy-00000000000000ee\/?">AlphaGenome and Borzoi: Alavi 2026 reverses the order<\/a> <span[^>]*>Confirmed error, 23 October 2026<\/span>/);
+    expect(html).toMatch(/href="\/contested\/discrepancy-00000000000000ee\/?">AlphaGenome and Borzoi: resolved<\/a> <span[^>]*>Confirmed error, 23 October 2026<\/span>/);
     expect(html.indexOf("resolved-heading")).toBeGreaterThan(html.indexOf("list-heading"));
     expect(html).toMatch(/href="\/contested\/?\?status=resolved"[^>]*>Resolved</);
     const only = renderToStaticMarkup(<ContestedPage searchParams={{ status: "resolved" }} />);
@@ -298,7 +299,9 @@ describe("contested results: pages", () => {
     const html = renderToStaticMarkup(<FindingPage params={{ id: resolvedFinding.id }} />);
     expect(html).toContain("Resolved finding");
     expect(html).toContain("<strong>Resolved: confirmed error on 23 October 2026.</strong>");
-    expect(html).toContain("The authors confirmed a one-base offset; the results are marked disputed.");
+    // The last rationale is the summary, shown in the intro and the timeline but not again in the banner.
+    expect(html).toContain('<p class="intro">The authors confirmed a one-base offset; the results are marked disputed.</p>');
+    expect(html.match(/role="status">(.*?)<\/div>/)![1]).not.toContain("one-base offset");
     expect(html).toContain("The compared results were withdrawn from the database (marked disputed) after the error was confirmed");
     expect(html).not.toContain("An automatic lead, not a finding of error");
     expect(html).not.toContain("Which studies agree");

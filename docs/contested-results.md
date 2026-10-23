@@ -54,7 +54,7 @@ Releases before the per-study data have no `studies`. The section and the compac
 A resolved finding (`resolved: true`, schema 4 of the data file) is settled and no longer found by the rules, usually because a confirmed error led a reviewer to mark the results disputed. The data release keeps it with its follow-up history; it has no rule, studies or numbers.
 
 - `/contested/` never mixes them into the main list. They are listed below it, under Resolved (for all findings or settled ones), with their final state and the date of their last step, filtered like the list. `?status=resolved` lists only them, and "settled" means settled but not resolved. The header counts them separately.
-- The finding page opens with "Resolved: confirmed error on 23 October 2026", the last step's rationale, and, with no studies, a note that the comparison is not shown because the results were withdrawn (or, for other outcomes, because the check no longer finds it). The timeline is shown in full.
+- The finding page opens with "Resolved: confirmed error on 23 October 2026", the last step's rationale when it is not already the summary, and, with no studies, a note that the comparison is not shown because the results were withdrawn (or, for other outcomes, because the check no longer finds it). The timeline is shown in full.
 - Open counts (home page, model pages, use-case badges) count only unsettled findings, so resolved ones never appear in them.
 
 ## Flag only

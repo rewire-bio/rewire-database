@@ -163,7 +163,8 @@ export default function ContestedFindingPage({ params }: { params: Params }) {
       {d.resolved
         ? <div className={styles.resolved} role="status">
           <p><strong>Resolved: {stateLabel(d.state).toLowerCase()}{last?.date && <> on {formatDate(last.date)}</>}.</strong></p>
-          {last?.rationale && <p>{last.rationale}</p>}
+          {/* A resolved finding's summary is usually its last rationale, already shown above. */}
+          {last?.rationale && last.rationale !== d.summary && <p>{last.rationale}</p>}
           {!view && <p>{d.state === "confirmed-error"
             ? "The compared results were withdrawn from the database (marked disputed) after the error was confirmed, so the check no longer finds this disagreement and the comparison between studies is not shown. The follow-up below records how it was resolved."
             : "The check no longer finds this disagreement, so the comparison between studies is not shown. The follow-up below records how it was resolved."}</p>}

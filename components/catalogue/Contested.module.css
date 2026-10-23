@@ -32,8 +32,29 @@
 .panel p { margin: 0 0 8px; }
 .panel p:last-child { margin-bottom: 0; }
 .outlierRow th, .outlierRow td { background: var(--accent-soft); }
+.outlierRow th:first-child { box-shadow: inset 3px 0 0 var(--accent-ink); }
+.chart { margin: 16px 0; }
+.chart svg { display: block; overflow: visible; }
+.chartLabel { font-size: 13px; fill: var(--ink-2); }
+.chartRole { font-weight: 700; fill: var(--ink); }
+.chartOutlier .chartLabel { font-weight: 600; fill: var(--ink); }
+.barA { fill: var(--accent); }
+.barTie { fill: var(--line-2); }
+.barB { fill: var(--ink-3); }
+.chartCount { font-size: 12px; font-weight: 600; fill: var(--bg); }
+.chartCountDark { font-size: 12px; font-weight: 600; fill: var(--ink); }
+.chartFrame { fill: none; stroke: var(--ink); stroke-width: 2; }
+.legend { display: flex; flex-wrap: wrap; gap: 4px 16px; margin-top: 8px; font-size: 13px; color: var(--ink-3); }
+.legend i { display: inline-block; width: 12px; height: 12px; margin-right: 6px; vertical-align: -1px; border-radius: 2px; }
+.swatchA { background: var(--accent); }
+.swatchTie { background: var(--line-2); }
+.swatchB { background: var(--ink-3); }
+.study { margin: 8px 0; font-size: 14px; }
+.study summary { cursor: pointer; }
 @media (max-width: 640px) {
   .entry { padding: 16px; }
   .facts { grid-template-columns: 1fr; }
   .facts dd { margin-bottom: 8px; }
 }
+.stepLinks { margin: 0 0 6px; padding-left: 18px; font-size: 14px; }
+.stepLinks li { margin: 0; }

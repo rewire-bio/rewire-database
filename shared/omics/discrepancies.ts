@@ -31,6 +31,30 @@ export type DiscrepancyAction = {
   resolved_by: string[];
 };
 
+/** One study's side of a finding: how often it ranks each compared system higher, and the
+ * comparisons behind the counts (capped; `comparisons_total` is the full number). */
+export type DiscrepancyStudy = {
+  /** doi:..., repository:https://github.com/o/r, or source:<id>. */
+  key: string;
+  role: "outlier" | "consensus";
+  source_ids: string[];
+  higher: Record<string, number>;
+  ties: number;
+  gap: number | null;
+  comparisons_total: number;
+  comparisons: {
+    protocol: string | null;
+    dataset: string | null;
+    metric: string;
+    unit: string | null;
+    qualifier: string | null;
+    split: string | null;
+    values: Record<string, number>;
+    results: Record<string, string>;
+    higher: string | null;
+  }[];
+};
+
 export type Discrepancy = {
   id: string;
   previous_ids: string[];
@@ -52,6 +76,8 @@ export type Discrepancy = {
   numbers: Record<string, unknown>;
   /** Oldest first. Empty while no one has reviewed the finding. */
   actions: DiscrepancyAction[];
+  /** One entry per study. Absent or empty in releases before per-study data. */
+  studies?: DiscrepancyStudy[];
 };
 
 export type DiscrepancyFile = {
@@ -113,6 +139,7 @@ export function normaliseDiscrepancies(raw: Record<string, unknown>): Discrepanc
       consensus_results: texts(d.consensus_results),
       numbers: (d.numbers as Record<string, unknown>) ?? {},
       actions,
+      studies: Array.isArray(d.studies) ? (d.studies as DiscrepancyStudy[]) : [],
     };
   });
   const order = (s: string) => (severities as readonly string[]).indexOf(s);

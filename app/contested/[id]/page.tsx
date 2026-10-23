@@ -5,6 +5,7 @@ import { notFound, permanentRedirect } from "next/navigation";
 import Breadcrumbs from "@/components/catalogue/Breadcrumbs";
 import { FindingBadges, RecordLinks, formatDate, type RecordLookup } from "@/components/catalogue/Contested";
 import OverdueMark from "@/components/catalogue/OverdueMark";
+import { StudyAgreement, type StudyView } from "@/components/catalogue/StudyAgreement";
 import { socialMetadata } from "@/lib/catalogue-sharing";
 import { buildCatalogue } from "@/lib/catalogue-build";
 import { catalogueText } from "@/lib/catalogue-text";
@@ -12,8 +13,8 @@ import { recordHref, safeSourceUrl } from "@/lib/omics";
 import { metricName } from "@/lib/result-labels";
 import { formatScore } from "@/lib/score-display";
 import {
-  actionLabel, discrepancyHref, discrepancyReader, pendingCheck, ruleLabel, scopeLabel, stateLabel, DISCREPANCIES_DOC,
-  type Discrepancy, type DiscrepancyAction,
+  actionLabel, discrepancyHref, discrepancyReader, linkLabel, pendingCheck, ruleLabel, scopeLabel, stateLabel, studyKeyUrl,
+  DISCREPANCIES_DOC, type Discrepancy, type DiscrepancyAction,
 } from "@/lib/discrepancies";
 import styles from "@/components/catalogue/Contested.module.css";
 import tables from "@/app/database/database.module.css";
@@ -88,6 +89,47 @@ function resultRows(ids: string[]): Row[] {
   });
 }
 
+/** The finding's studies with their records resolved: the disagreeing study first, then the most compared. */
+function studyViews(d: Discrepancy, a: string, b: string, lookup: RecordLookup): StudyView[] {
+  const { query } = buildCatalogue();
+  const named = (id: string | null) => {
+    if (!id) return null;
+    const record = lookup(id);
+    return record ? { name: catalogueText(record.name), href: record.href } : { name: catalogueText(id), href: null };
+  };
+  return [...(d.studies ?? [])]
+    .sort((x, y) => Number(y.role === "outlier") - Number(x.role === "outlier") || y.comparisons_total - x.comparisons_total)
+    .map((s) => {
+      const records = s.source_ids.flatMap((id) => {
+        const record = query.record(id);
+        return record ? [record] : [];
+      });
+      const [first, ...rest] = records;
+      return {
+        key: s.key,
+        role: s.role,
+        source: first ? { name: catalogueText(first.name), href: recordHref(first) } : { name: s.key.replace(/^(doi|repository|source):/, ""), href: null },
+        more: rest.map((r) => ({ name: catalogueText(r.name), href: recordHref(r) })),
+        url: safeSourceUrl(first?.attributes.url) ?? studyKeyUrl(s.key),
+        higherA: s.higher[a] ?? 0,
+        higherB: s.higher[b] ?? 0,
+        ties: s.ties,
+        gap: s.gap,
+        total: s.comparisons_total,
+        comparisons: s.comparisons.map((c) => ({
+          protocol: named(c.protocol),
+          dataset: named(c.dataset),
+          metric: [metricName(c.metric, c.qualifier), c.unit, c.split && `${c.split} split`].filter(Boolean).join(", "),
+          valueA: c.values[a] ?? null,
+          valueB: c.values[b] ?? null,
+          resultA: c.results[a] ?? null,
+          resultB: c.results[b] ?? null,
+          higher: c.higher === a ? "a" : c.higher === b ? "b" : null,
+        })),
+      };
+    });
+}
+
 const RESULT_TABLE_ROWS = 40;
 
 function ResultTable({ caption, rows, outlier }: { caption: string; rows: Row[]; outlier?: boolean }) {
@@ -108,20 +150,30 @@ function ResultTable({ caption, rows, outlier }: { caption: string; rows: Row[];
   </div>;
 }
 
+/** A follow-up link with its short name: "owner/repo#N" for a GitHub issue or pull request, else the host. */
+function namedLink(url: string | null, text: string) {
+  const href = url ? safeSourceUrl(url) : undefined;
+  const name = href ? linkLabel(href) : null;
+  return href && name ? { href, text, name } : null;
+}
+
 function Action({ a, latest, pending, lookup }: { a: DiscrepancyAction; latest: boolean; pending: string | null; lookup: RecordLookup }) {
-  const links = [
-    a.investigation_url && safeSourceUrl(a.investigation_url) && { href: safeSourceUrl(a.investigation_url)!, text: "Our investigation" },
-    a.report_url && safeSourceUrl(a.report_url) && { href: safeSourceUrl(a.report_url)!, text: "Report to the authors" },
-  ].filter((x): x is { href: string; text: string } => !!x);
+  const issue = /^https:\/\/github\.com\/[^/]+\/[^/]+\/issues\/\d+/.test(a.report_url ?? "");
+  const report = namedLink(a.report_url, issue ? "Issue raised with the authors" : "Report to the authors");
+  const investigation = namedLink(a.investigation_url, "Our investigation");
+  const links = [report, investigation].filter((x): x is NonNullable<typeof x> => !!x);
+  // The step's main link: the report for a step that reported upstream, otherwise whichever it has.
+  const main = links[0];
   return <li>
-    <h3>{a.date ? formatDate(a.date) : "Undated"}: {a.action ? actionLabel(a.action) : stateLabel(a.state)}</h3>
+    <h3>{a.date ? formatDate(a.date) : "Undated"}: {a.action ? actionLabel(a.action) : stateLabel(a.state)}
+      {main && <> · <a href={main.href}>{main.name}</a></>}</h3>
     <p className={styles.muted}>State after this step: {stateLabel(a.state)}</p>
     {a.rationale && <p>{a.rationale}</p>}
-    {a.upstream_response && <p>Response: {a.upstream_response}</p>}
+    {a.upstream_response && <p>Authors&apos; response{a.date && <> (recorded {formatDate(a.date)})</>}: {a.upstream_response}</p>}
     {a.awaiting && <p>Waiting for: {a.awaiting.replace(/\.$/, "")}{a.expected_by && <>, expected by {formatDate(a.expected_by)}</>}.</p>}
     {a.next_check && <p>Next check: {formatDate(a.next_check)}{latest && pending && <OverdueMark nextCheck={pending} />}</p>}
     {a.resolved_by.length > 0 && <p>Resolved by: <RecordLinks ids={a.resolved_by} lookup={lookup} /></p>}
-    {links.length > 0 && <p>{links.map((l, i) => <span key={l.href}>{i > 0 && " · "}<a href={l.href}>{l.text}</a></span>)}</p>}
+    {links.length > 0 && <ul className={styles.stepLinks}>{links.map((l) => <li key={l.href}>{l.text} · <a href={l.href}>{l.name}</a></li>)}</ul>}
   </li>;
 }
 
@@ -138,6 +190,10 @@ export default function ContestedFindingPage({ params }: { params: Params }) {
   const consensus = resultRows(d.consensus_results);
   const pending = pendingCheck(d);
   const firstOutlier = d.outlier_results[0];
+  const systemA = d.consensus_higher ?? d.systems[0];
+  const systemB = d.systems.find((s) => s !== systemA) ?? null;
+  const studies = systemA && systemB ? studyViews(d, systemA, systemB, lookup) : [];
+  const systemName = (id: string) => catalogueText(lookup(id)?.name ?? id);
   return <>
     <header className="page-head"><div className="wrap">
       <Breadcrumbs items={[{ name: "Database", path: "/" }, { name: "Contested results", path: "/contested/" }, { name: d.label, path: discrepancyHref(d.id) }]} />
@@ -150,6 +206,10 @@ export default function ContestedFindingPage({ params }: { params: Params }) {
       <div className={styles.notice}>
         <p>An automatic lead, not a finding of error. The results below are shown as published, everywhere on the site, until a reviewer decides otherwise.</p>
       </div>
+      {studies.length > 0 && <section className={styles.section} aria-labelledby="studies-heading">
+        <h2 id="studies-heading">Which studies agree</h2>
+        <StudyAgreement studies={studies} a={systemName(systemA!)} b={systemName(systemB!)} gap={d.rule === "gap-outlier" || studies.some((s) => s.gap !== null)} />
+      </section>}
       <section className={styles.section} aria-labelledby="summary-heading">
         <h2 id="summary-heading">What disagrees</h2>
         <Numbers d={d} lookup={lookup} />

@@ -27,7 +27,7 @@ export function DisagreementView({ view, compact = false }: { view: Disagreement
       : <><Groups view={view} id={id} /><Bars view={view} id={id} /></>}
     {more > 0 && <p className={styles.muted}>The charts show the {shown.length} papers with the most comparisons, the one that disagrees first; {more} more are in the table.</p>}
     <PaperTable view={view} />
-    {view.papers.map((p) => <Comparisons key={p.key} p={p} view={view} />)}
+    {view.papers.filter((p) => p.comparisons.length).map((p) => <Comparisons key={p.key} p={p} view={view} />)}
   </>;
 }
 
@@ -45,7 +45,7 @@ const listNames = (papers: Paper[]) =>
   papers.length ? papers.map((p) => `${p.short}${p.role === "outlier" ? " (disagrees)" : ""}`).join(", ") : "none";
 
 // Two overlapping circles: left ranks A higher, right ranks B higher, the overlap is mixed.
-const VENN = { width: 640, height: 330, cy: 185, r: 150, left: 230, right: 410 };
+const VENN = { width: 640, height: 345, cy: 188, r: 150, left: 230, right: 410 };
 
 /** Papers grouped by which system they rank higher in every comparison that is not a tie. */
 function Groups({ view, id }: { view: Disagreement; id: string }) {
@@ -167,8 +167,10 @@ function GapPlot({ view, id, compact = false }: { view: Disagreement; id: string
   const pad = Math.max((Math.max(...values) - Math.min(...values)) * 0.08, 0.02);
   const lo = Math.min(...values) - pad;
   const hi = Math.max(...values) + pad;
-  const x = (gap: number) => pct(5 + ((gap - lo) / (hi - lo)) * 90);
-  const rowHeight = compact ? 0 : 42;
+  // The full plot keeps the left quarter for paper names, on the same line as their dots.
+  const [from, span] = compact ? [5, 90] : [27, 68];
+  const x = (gap: number) => pct(from + ((gap - lo) / (hi - lo)) * span);
+  const rowHeight = compact ? 0 : 30;
   const top = 8;
   const plotHeight = compact ? 24 : papers.length * rowHeight;
   const height = top + plotHeight + 30;
@@ -181,15 +183,13 @@ function GapPlot({ view, id, compact = false }: { view: Disagreement; id: string
     <svg width="100%" height={height} role="img" aria-labelledby={`${id}-gap-title ${id}-gap-desc`}>
       <title id={`${id}-gap-title`}>{`How far ${view.a.name} scores from ${view.b.name} in each paper`}</title>
       <desc id={`${id}-gap-desc`}>{description}</desc>
-      {band && <rect x={x(band[0])} y={top} width={pct(((band[1] - band[0]) / (hi - lo)) * 90 || 0.4)} height={plotHeight} className={styles.gapBand} />}
+      {band && <rect x={x(band[0])} y={top} width={pct(((band[1] - band[0]) / (hi - lo)) * span || 0.4)} height={plotHeight} className={styles.gapBand} />}
       <line x1={x(0)} x2={x(0)} y1={top} y2={top + plotHeight} className={styles.gapZero} />
       {papers.map((p, i) => {
-        const y = compact ? top + plotHeight / 2 : top + i * rowHeight + 28;
+        const y = compact ? top + plotHeight / 2 : top + i * rowHeight + rowHeight / 2;
         const outlier = p.role === "outlier";
         return <g key={p.key} className={outlier ? styles.chartOutlier : undefined}>
-          {!compact && <text x="0" y={y - 12} className={styles.chartLabel}>
-            {outlier && <tspan className={styles.chartRole}>Disagrees: </tspan>}{clip(p.short, 80)}<title>{p.name}</title>
-          </text>}
+          {!compact && <text x="0" y={y + 4} className={styles.chartLabel}>{clip(p.short, 24)}<title>{p.name}</title></text>}
           <circle cx={x(p.gap!)} cy={y} r={outlier ? 7 : 5} className={outlier ? styles.dotOutlier : styles.dot}><title>{`${p.short}: ${gapPercent(p.gap!)}`}</title></circle>
           {(!compact || outlier) && <text x={x(p.gap!)} dx="11" y={y + 4} className={styles.chartLabel}>{compact ? `${clip(p.short, 22)} ` : ""}{gapPercent(p.gap!)}</text>}
         </g>;

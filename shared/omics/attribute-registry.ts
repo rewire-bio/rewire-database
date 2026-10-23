@@ -50,9 +50,13 @@ export const attributeRegistry = {
     constraints: "texts",
     // A discrepancy_review claim decides a derived discrepancy (scripts/kg/contradictions.py) and
     // records the work behind the decision: what we looked at, what we raised with the authors,
-    // what we are waiting for, and when to chase it.
+    // what we are waiting for, and when to chase it. Each revision is one follow-up action
+    // (`action`, taken on `date`, else on `reported_on`); `previous_ids` lists IDs the discrepancy had before.
+    action: "concept:discrepancy-action",
+    date: "date",
     awaiting: "text",
     discrepancy_id: "text",
+    previous_ids: "texts",
     expected_by: "date",
     investigation_url: "url",
     next_check: "date",

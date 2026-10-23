@@ -31,6 +31,13 @@ export function ExplorerSearch({
         placeholder="Model name, benchmark, organism or biological task"
         aria-describedby="catalogue-search-scope"
         onChange={(event) => change("q", event.target.value)}
+        onKeyDown={(event) => {
+          if (event.key === "Enter") {
+            event.preventDefault();
+            if (filters.q) change("q", filters.q);
+            else change("kind", filters.kind);
+          }
+        }}
       />
       <div className={ui.scope}>
         <span id="catalogue-search-scope" className={ui.scopeLabel}>

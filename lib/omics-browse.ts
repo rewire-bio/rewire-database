@@ -293,12 +293,17 @@ export function researchAreaLabel(value: string): string {
     "proteins-complexes": "Proteins and complexes",
     "microbes-communities": "Microbes and communities",
     rna: "RNA",
+    "protein-function": "Protein function",
+    "protein-structure": "Protein structure",
     "protein-sequence-function": "Protein sequence and function",
     "protein-structure-design": "Protein structure and design",
+    "single-cell": "Single-cell omics",
+    "spatial-omics": "Spatial omics",
     "single-cell-spatial": "Single-cell and spatial omics",
     "molecular-interactions": "Molecular interactions",
     "microbes-metagenomics": "Microbes and metagenomics",
     metabolomics: "Metabolomics",
+    "biological-networks": "Biological networks",
     "networks-mechanistic": "Networks and mechanistic biology",
   };
   return (

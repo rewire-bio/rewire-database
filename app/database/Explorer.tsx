@@ -1,4 +1,5 @@
 "use client";
+import type { ReactNode } from "react";
 import type { CataloguePage, CatalogueRelease } from "@/lib/catalogue-client";
 import { defaultFilters } from "@/lib/omics-browse";
 import { useCatalogueExplorer } from "./useCatalogueExplorer";
@@ -14,12 +15,16 @@ import ui from "./Explorer.module.css";
 export default function Explorer({
   initial,
   release,
+  children,
 }: {
   initial: CataloguePage;
   release: CatalogueRelease;
+  children?: ReactNode;
 }) {
-  const state = useCatalogueExplorer(initial, release);
+  const hasHomeContent = Boolean(children);
+  const state = useCatalogueExplorer(initial, release, hasHomeContent);
   const {
+    browsing,
     showResults,
     applied,
     selected,
@@ -30,8 +35,9 @@ export default function Explorer({
     error,
     navigate,
     filters,
+    resetToHome,
   } = state;
-  return (
+  const controlsAndResults = (
     <>
       <ExplorerSearch
         filters={filters}
@@ -40,60 +46,91 @@ export default function Explorer({
         change={state.change}
         release={release}
       />
-      <ExplorerFilters
-        filters={filters}
-        change={state.change}
-        navigate={navigate}
-        data={data}
-        release={release}
-      />
-      <ExplorerStatus
-        busy={state.busy}
-        filters={filters}
-        showResults={showResults}
-        data={data}
-        applied={applied}
-        error={error}
-        retry={state.retry}
-      />
-      {showResults && applied.filters.kind === "result" && (
-        <ExplorerComparison
-          selected={selected}
-          comparison={comparison}
-          clearSelection={() => setSelected([])}
-        />
+      {browsing && (
+        <>
+          {hasHomeContent && (
+            <div className={ui.resultsHeader}>
+              <button
+                type="button"
+                className={ui.backHome}
+                onClick={resetToHome}
+              >
+                ← Back to overview
+              </button>
+            </div>
+          )}
+          <ExplorerFilters
+            filters={filters}
+            change={state.change}
+            navigate={navigate}
+            data={data}
+            release={release}
+          />
+          <ExplorerStatus
+            busy={state.busy}
+            filters={filters}
+            showResults={showResults}
+            data={data}
+            applied={applied}
+            error={error}
+            retry={state.retry}
+          />
+          {showResults && applied.filters.kind === "result" && (
+            <ExplorerComparison
+              selected={selected}
+              comparison={comparison}
+              clearSelection={() => setSelected([])}
+            />
+          )}
+          {showResults ? (
+            <ExplorerRows
+              data={data}
+              loading={loading}
+              selected={selected}
+              setSelected={setSelected}
+              returnTo={state.returnTo}
+            />
+          ) : (
+            <div className={ui.rows} aria-busy={loading} />
+          )}
+          {showResults && !data.total && !loading && !error && (
+            <div className={ui.empty}>
+              <p>No records match these filters.</p>
+              <button
+                className={styles.button}
+                onClick={() => navigate({ ...defaultFilters, kind: filters.kind })}
+              >
+                Reset filters
+              </button>
+            </div>
+          )}
+          {showResults && (
+            <ExplorerPagination
+              data={data}
+              loading={loading}
+              error={error}
+              navigate={navigate}
+              applied={applied}
+            />
+          )}
+        </>
       )}
-      {showResults ? (
-        <ExplorerRows
-          data={data}
-          loading={loading}
-          selected={selected}
-          setSelected={setSelected}
-          returnTo={state.returnTo}
-        />
-      ) : (
-        <div className={ui.rows} aria-busy={loading} />
-      )}
-      {showResults && !data.total && !loading && !error && (
-        <div className={ui.empty}>
-          <p>No records match these filters.</p>
-          <button
-            className={styles.button}
-            onClick={() => navigate({ ...defaultFilters, kind: filters.kind })}
-          >
-            Reset filters
-          </button>
-        </div>
-      )}
-      {showResults && (
-        <ExplorerPagination
-          data={data}
-          loading={loading}
-          error={error}
-          navigate={navigate}
-          applied={applied}
-        />
-      )}
+    </>
+  );
+  if (!hasHomeContent) return controlsAndResults;
+  return (
+    <>
+      <section
+        id="browse"
+        className={styles.browse}
+        aria-labelledby="browse-heading"
+      >
+        <h2 id="browse-heading" className="sr-only">
+          Search and browse the database
+        </h2>
+        {controlsAndResults}
+      </section>
+      {!browsing && children}
     </>
   );
 }

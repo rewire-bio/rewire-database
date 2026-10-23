@@ -97,7 +97,7 @@
   }
 }
 
-@container (min-width: 760px) {
+@container (min-width: 560px) {
   .diagram > .wide {
     display: block;
   }

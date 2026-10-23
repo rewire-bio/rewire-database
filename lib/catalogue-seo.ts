@@ -21,9 +21,9 @@ const object = (value: unknown): Record<string, unknown> =>
     ? (value as Record<string, unknown>)
     : {};
 
-/** Supporting assertions remain readable and crawlable but are not search landing pages. */
+/** Supporting assertions and use-case record stubs remain readable and crawlable but are not search landing pages. */
 export function recordIsIndexable(record: Pick<OmicsRecord, "kind">): boolean {
-  return record.kind !== "claim";
+  return record.kind !== "claim" && record.kind !== "use_case";
 }
 
 /** Presentation only: use recorded fields and explicit links, never inferred model aliases.
@@ -99,12 +99,12 @@ export function recordSearchMetadata(
       text(record.attributes.numeric_value);
     const value = rawValue ? formatScore(rawValue) : "";
     const unit = text(record.attributes.unit);
-    const valueWithUnit = [
-      value,
-      /%/.test(value) && /^(%|percent|percentage)$/i.test(unit) ? "" : unit,
-    ]
-      .filter(Boolean)
-      .join(" ");
+    const cleanUnit =
+      (/%/.test(value) && /^(%|percent|percentage)$/i.test(unit)) ||
+      /^(unitless|dimensionless)$/i.test(unit)
+        ? ""
+        : unit;
+    const valueWithUnit = [value, cleanUnit].filter(Boolean).join(" ");
     const measurement = metric
       ? `${metric}${valueWithUnit ? `: ${valueWithUnit}` : ""}`
       : valueWithUnit;
@@ -175,7 +175,9 @@ export function recordSearchMetadata(
   } else {
     description = [
       sentence(
-        `${identity}: ${summary || `${kind} record in the biological benchmark database`}`,
+        summary && summary.toLowerCase().startsWith(identity.toLowerCase())
+          ? summary
+          : `${identity}: ${summary || `${kind} record in the biological benchmark database`}`,
       ),
       sentence(context(record)),
       sentence(

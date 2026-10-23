@@ -340,25 +340,46 @@ export function buildComparisons(mappings: ResolvedMapping[]): Comparison[] {
 export function heldJudgements(mappings: ResolvedMapping[]) {
   return mappings
     .filter((m) => m.lifecycle !== "active" && !["withdrawn", "superseded"].includes(m.lifecycle))
-    .map((m) => ({ id: m.id, title: presentationOf(m)?.title ?? m.protocol?.name ?? m.id, lifecycle: m.lifecycle, reason: m.reason, endpoint: m.endpoint ?? "" }));
+    .map((m) => {
+      const presentation = presentationOf(m);
+      const baseTitle = presentation?.title ?? m.protocol?.name ?? m.id;
+      const title = presentation?.title && presentation.stratum_label ? `${baseTitle} (${presentation.stratum_label})` : baseTitle;
+      return { id: m.id, title, lifecycle: m.lifecycle, reason: m.reason, endpoint: m.endpoint ?? "" };
+    });
 }
 
 export type ComparedTool = { id: string; name: string; href: string; methodTypes: string[]; configurations: number };
+
+function conciseToolName(raw: string): string {
+  const cleaned = raw.replace(CITATION, "").trim();
+  if (cleaned.length <= 60) return cleaned;
+  const split = cleaned.split(/\s*(?:,|;|\(|—|–|\bzero-shot\b)\s*/i)[0]?.trim();
+  return split && split.length >= 2 ? split : cleaned;
+}
 
 /** Every tool in the rendered rows, once: the model or method a row's configuration belongs to
  * (named and linked from `lookup`), else the configuration itself. */
 export function toolsCompared(comparisons: Comparison[], lookup: (id: string) => CatalogueRecord | null = () => null): ComparedTool[] {
   const tools = new Map<string, { tool: ComparedTool; types: Set<string>; configurations: Set<string>; parent: CatalogueRecord | null }>();
+  const byName = new Map<string, string>();
   for (const c of comparisons) for (const r of c.rows) {
-    const key = r.parentId ?? r.id;
+    const rawKey = r.parentId ?? r.id;
+    const parent = r.parentId ? lookup(r.parentId) : null;
+    const displayName = conciseToolName(parent?.name ?? r.name);
+    const normName = displayName.toLowerCase();
+    const key = byName.get(normName) ?? rawKey;
     let entry = tools.get(key);
     if (!entry) {
-      const parent = r.parentId ? lookup(r.parentId) : null;
       const href = parent ? recordHref(parent) : `/database/configuration/${encodeURIComponent(r.id)}/`;
-      entry = { tool: { id: key, name: parent?.name ?? r.name, href, methodTypes: [], configurations: 0 }, types: new Set(), configurations: new Set(), parent };
+      entry = { tool: { id: key, name: displayName, href, methodTypes: [], configurations: 0 }, types: new Set(), configurations: new Set(), parent };
       tools.set(key, entry);
+      byName.set(normName, key);
+    } else if (!entry.parent && parent) {
+      entry.parent = parent;
+      entry.tool.href = recordHref(parent);
     }
     r.methodTypes.forEach((t) => entry!.types.add(t));
+    parent?.facets?.method_types?.forEach((t) => entry!.types.add(t));
     entry.configurations.add(r.id);
   }
   return [...tools.values()].map(({ tool, types, configurations, parent }) => ({
@@ -366,7 +387,7 @@ export function toolsCompared(comparisons: Comparison[], lookup: (id: string) =>
   })).sort((a, b) => a.name.localeCompare(b.name));
 }
 
-const ML_TYPES = new Set(["foundation_model", "supervised_machine_learning"]);
+const ML_TYPES = new Set(["foundation_model", "supervised_machine_learning", "specialist"]);
 export const isBaselineRow = (row: ComparisonRow, methodIds: Set<string>) =>
   methodIds.has(row.id) || (row.parentId !== null && methodIds.has(row.parentId));
 

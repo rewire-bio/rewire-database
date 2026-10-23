@@ -1,14 +1,24 @@
 import { downloadHref } from "@/lib/downloads";
 import type { Metadata } from "next";
 import Link from "next/link";
+import Breadcrumbs from "@/components/catalogue/Breadcrumbs";
+import { socialMetadata } from "@/lib/catalogue-sharing";
 import { buildCatalogue } from "@/lib/catalogue-build";
 import { InvestigationList } from "@/components/catalogue/ResearchInvestigation";
 import styles from "@/components/catalogue/Research.module.css";
 
-export const metadata: Metadata = {
+const pageMetadata = {
   title: "Discrepancy investigations",
   description: "Reviewed investigations of benchmark discrepancies, including failed explanations, reproducible tests and limits of biological interpretation.",
   alternates: { canonical: "https://benchmarks.rewirebio.io/investigations/" },
+};
+export const metadata: Metadata = {
+  ...pageMetadata,
+  ...socialMetadata({
+    title: pageMetadata.title,
+    description: pageMetadata.description,
+    path: pageMetadata.alternates.canonical,
+  }),
 };
 
 export default function InvestigationsPage() {
@@ -16,12 +26,13 @@ export default function InvestigationsPage() {
   const research = query.research();
   return <>
     <header className="page-head"><div className="wrap">
+      <Breadcrumbs items={[{ name: "Database", path: "/" }, { name: "Investigations", path: "/investigations/" }]} />
       <span className="kick">Evidence and investigation</span>
       <h1>Discrepancy investigations</h1>
       <p className="intro">Examine why benchmark results differ, test possible explanations, and identify which findings need independent evidence.</p>
     </div></header>
     <section className="block first"><div className="wrap">
-      <nav aria-label="Investigation navigation"><Link href="/">Benchmark database</Link> · <Link href="/?kind=dataset#browse">Dataset readiness</Link> · <Link href="/?kind=evaluation&readiness=analysis#browse">Evaluations ready for investigation</Link></nav>
+      <nav className={styles.nav} aria-label="Investigation navigation"><Link href="/">Benchmark database</Link> · <Link href="/?kind=dataset#browse">Dataset readiness</Link> · <Link href="/?kind=evaluation&readiness=analysis#browse">Evaluations ready for investigation</Link></nav>
       <section className={styles.section}>
         <h2>Reviewed reports</h2>
         <p className={styles.muted}>Release {catalogue.release_id} · {research.investigations.length} reviewed reports</p>

@@ -10,8 +10,11 @@ export function CatalogueDownloads({
 }) {
   const release = `/omics/releases/${releaseId}`;
   return (
-    <section id="downloads" className={styles.information}>
-      <h2>Download the database</h2>
+    <section id="downloads" className={styles.downloadsPanel}>
+      <div className={styles.sectionHeader}>
+        <span className={styles.sectionKicker}>Data access</span>
+        <h2>Download the database</h2>
+      </div>
       <p className={styles.muted}>
         Release {releaseId} · {releasedAt.slice(0, 10)}
       </p>
@@ -23,7 +26,7 @@ export function CatalogueDownloads({
         <a href="/evidence/">Evidence and review methods</a>
         <a href={downloadHref(`${release}/manifest.json`)}>Checksums and release manifest (gzip)</a>
       </div>
-      <details>
+      <details className={styles.profileDisclosure}>
         <summary>Original literature downloads</summary>
         <p>
           The original 100-paper collection is retained for citation history.

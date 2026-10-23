@@ -172,8 +172,9 @@ describe("independent Cloudflare frontend", () => {
   ])("never stores a response with %s", (_name, response) => {
     expect(storableResponse(response, identity)).toBe(false);
   });
-  it("stores Next's own navigation variation, which cache-eligible requests never carry", () => {
+  it("stores Next's own navigation variation and markdown agent guides, which cache-eligible requests never carry", () => {
     expect(storableResponse(page("x", { vary: "RSC, Next-Router-State-Tree, Next-Router-Prefetch, Next-Url, Accept-Encoding" }), identity)).toBe(true);
+    expect(storableResponse(page("# Agents", { "content-type": "text/markdown; charset=utf-8" }), identity)).toBe(true);
   });
   it("still serves the page when the edge cache write fails", async () => {
     vi.stubGlobal("fetch", vi.fn(async () => page()));

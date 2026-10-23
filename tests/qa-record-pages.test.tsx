@@ -113,6 +113,8 @@ describe("claim pages show the claim (#149)", () => {
   it("maps attribute paths to readable field names", () => {
     expect(evidencePropertyLabel("attributes.citation_locators")).toBe("Citation locations");
     expect(evidencePropertyLabel("attributes.comparison_group")).toBe("Comparison group");
+    expect(evidencePropertyLabel("attributes.artifact_sha256")).toBe("Artifact SHA-256");
+    expect(evidencePropertyLabel("attributes.licence: reason")).toBe("Licence: reason");
     expect(evidencePropertyLabel("Relationship: subject")).toBe("Relationship: subject");
     expect(claimFieldLabel("links:assessed_by:protocol")).toBe("Assessed by");
   });

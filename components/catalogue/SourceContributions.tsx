@@ -77,13 +77,12 @@ export default function SourceContributions({ query, id, params }: { query: Prep
           <p className={styles.muted}>Values as the source printed them. Compare results only under compatible protocols, datasets and metrics.</p>
           <div className={styles.tableScroll} tabIndex={0} role="region" aria-label="Results from this source">
             <table className={styles.resultTable}>
-              <thead><tr><th scope="col">Value</th><th scope="col">Metric</th><th scope="col">Model or configuration</th><th scope="col">Dataset</th><th scope="col">Evaluation</th></tr></thead>
+              <thead><tr><th scope="col">Model or configuration</th><th scope="col">Metric</th><th scope="col">Value</th><th scope="col">Dataset</th><th scope="col">Evaluation</th></tr></thead>
               <tbody>
                 {results.items.map((row) => (
-                  <tr key={row.id}>
-                    <th scope="row"><Link href={recordHref({ id: row.id, kind: "result" } as OmicsRecord)}>{row.printed_value || "Not recorded"}{row.unit ? ` ${row.unit}` : ""}</Link></th>
+                  <tr key={row.id}><th scope="row">{linked(row.tested)}</th>
                     <td>{metricName(row.metric, row.qualifier)}</td>
-                    <td>{linked(row.tested)}</td>
+                    <td><Link href={recordHref({ id: row.id, kind: "result" } as OmicsRecord)}>{row.printed_value || "Not recorded"}{row.unit ? ` ${row.unit}` : ""}</Link></td>
                     <td>{linked(row.datasets)}</td>
                     <td>{row.evaluation ? linked([row.evaluation]) : "Not recorded"}</td>
                   </tr>

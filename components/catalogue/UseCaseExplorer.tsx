@@ -137,7 +137,7 @@ export default function UseCaseExplorer({ initial, summaries = {}, areaCounts = 
       </div>
       <div>
         <label htmlFor="use-case-context">Research setting</label>
-        <select id="use-case-context" name="context" value={draft.context} aria-describedby="use-case-context-hint" onChange={(event) => setDraft({ ...draft, context: event.target.value as UseCaseFilters["context"] })}>
+        <select id="use-case-context" name="context" value={draft.context} aria-describedby="use-case-context-hint" onChange={(event) => navigate({ ...draft, context: event.target.value as UseCaseFilters["context"] })}>
           <option value="">All settings</option>{initial.available.contexts.map((context) => <option key={context} value={context}>{caseContextLabel(context)}</option>)}
         </select>
         <p id="use-case-context-hint" className={styles.hint}>Clinical research questions also state what the evidence does not establish for patients or clinical workflows.</p>

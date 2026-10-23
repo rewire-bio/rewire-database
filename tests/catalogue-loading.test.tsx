@@ -285,4 +285,39 @@ describe("explorer controls after component extraction", () => {
     expect(text()).not.toContain("Stale comparison");
     expect(checks().every((check) => !check.props.checked)).toBe(true);
   });
+
+  it("shows home overview until the user searches or selects a record type, and returns to overview on reset", async () => {
+    list.mockResolvedValue(page("model", "Searched model"));
+    url = new URL("https://benchmarks.rewirebio.io/");
+    await act(async () => {
+      tree = create(
+        <Explorer initial={page() as never} release={release as never}>
+          <p>What this database is for</p>
+        </Explorer>,
+      );
+    });
+    expect(text()).toContain("What this database is for");
+    expect(rows()).toHaveLength(0);
+    await act(async () =>
+      tree.root
+        .findByProps({ id: "catalogue-search" })
+        .props.onChange({ target: { value: "ESM" } }),
+    );
+    await act(async () => {
+      vi.advanceTimersByTime(200);
+    });
+    expect(text()).not.toContain("What this database is for");
+    expect(text()).toContain("Searched model");
+    await act(async () =>
+      tree.root
+        .findByProps({ id: "catalogue-search" })
+        .props.onChange({ target: { value: "" } }),
+    );
+    expect(text()).toContain("What this database is for");
+    expect(rows()).toHaveLength(0);
+    await click("Benchmarks");
+    expect(text()).not.toContain("What this database is for");
+    await click("← Back to overview");
+    expect(text()).toContain("What this database is for");
+  });
 });

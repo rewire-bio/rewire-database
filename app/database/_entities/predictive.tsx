@@ -416,12 +416,27 @@ export function PredictiveEntityDetail({ detail }: { detail: RecordDetail }) {
                   </p>
                 </section>
               )}
+              {!family &&
+                !usesModels.length &&
+                profileOwner.record.id === record.id &&
+                !memberLinks.length &&
+                !profile.success &&
+                !protocolLinks.length && (
+                  <p className={styles.muted}>
+                    Additional methodological details, versions and access terms
+                    have not yet been extracted into a structured profile for
+                    this {kindLabel}. Consult the linked sources and evaluation
+                    records below.
+                  </p>
+                )}
             </details>
           </section>
-          <details className={styles.profileDisclosure}>
-            <summary>Strengths, limitations and unresolved questions</summary>
-            <Profile record={profileOwner.record} sources={profileOwner.sources} part="limitations" />
-          </details>
+          {profile.success && (
+            <details className={styles.profileDisclosure}>
+              <summary>Strengths, limitations and unresolved questions</summary>
+              <Profile record={profileOwner.record} sources={profileOwner.sources} part="limitations" />
+            </details>
+          )}
           <Profile record={profileOwner.record} sources={profileOwner.sources} part="specifications" />
           {proposals.length > 0 && (
             <details className={styles.profileDisclosure}>

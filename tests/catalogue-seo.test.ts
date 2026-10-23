@@ -131,15 +131,40 @@ describe("record search metadata", () => {
       `https://benchmarks.rewirebio.io${recordHref(variant)}`,
     );
   });
-  it("keeps supporting claims crawlable with noindex and self-canonical", () => {
+  it("keeps supporting claims and use_case stubs crawlable with noindex and self-canonical", () => {
     const claim = record("claim", "claim");
     const metadata = recordSearchMetadata(claim, [claim]);
     expect(metadata.robots).toEqual({ index: false, follow: true });
     expect(metadata.alternates.canonical).toBe(
       "https://benchmarks.rewirebio.io/database/claim/claim/",
     );
+    const useCaseRecord = record("uc-1", "use_case", {
+      name: "Rank coding variants",
+      description: "Rank coding variants by pathogenicity.",
+    });
+    const ucMetadata = recordSearchMetadata(useCaseRecord, [useCaseRecord]);
+    expect(ucMetadata.robots).toEqual({ index: false, follow: true });
+    expect(recordIsIndexable(useCaseRecord)).toBe(false);
+    expect(ucMetadata.description).toContain("Rank coding variants by pathogenicity.");
+    expect(ucMetadata.description).not.toContain(
+      "Rank coding variants: Rank coding variants",
+    );
     expect(robots().rules).toEqual({ userAgent: "*", allow: "/" });
     expect(robots().sitemap).toBe("https://benchmarks.rewirebio.io/sitemap.xml");
+  });
+  it("omits literal unitless and dimensionless from result titles and descriptions", () => {
+    const result = record("unitless-result", "result", {
+      name: "AUROC measurement",
+      attributes: {
+        metric: "AUROC",
+        printed_value: "0.812",
+        unit: "unitless",
+      },
+    });
+    const metadata = recordSearchMetadata(result, [result]);
+    expect(metadata.title).not.toContain("unitless");
+    expect(metadata.description).toContain("AUROC: 0.812.");
+    expect(metadata.description).not.toContain("unitless");
   });
   it("covers every released record and uses exactly the same sitemap eligibility without unsupported timestamps", () => {
     // Tests run before exports are generated in a clean checkout. Give the
@@ -158,7 +183,9 @@ describe("record search metadata", () => {
       expect(paths.has(metadata.alternates.canonical), item.id).toBe(
         recordIsIndexable(item),
       );
-      expect(metadata.robots.index, item.id).toBe(item.kind !== "claim");
+      expect(metadata.robots.index, item.id).toBe(
+        item.kind !== "claim" && item.kind !== "use_case",
+      );
     }
     expect(entries.every((entry) => entry.lastModified === undefined)).toBe(
       true,

@@ -425,6 +425,20 @@ export function EvaluationDesignEntityDetail({ detail }: { detail: RecordDetail 
                   )}
                 </section>
               )}
+              {!family &&
+                !usesModels.length &&
+                profileOwner.record.id === record.id &&
+                !memberLinks.length &&
+                !profile.success &&
+                !protocolLinks.length &&
+                !linkedEvaluations.length && (
+                  <p className={styles.muted}>
+                    Additional methodological details, tasks and evaluated
+                    configurations have not yet been extracted into a structured
+                    profile for this {singularKindLabels[record.kind].toLowerCase()}.
+                    Consult the linked sources and evaluation records below.
+                  </p>
+                )}
             </details>
           </section>
           <div id="execution" />
@@ -434,18 +448,22 @@ export function EvaluationDesignEntityDetail({ detail }: { detail: RecordDetail 
             sources={detail.sources}
             protocols={protocolLinks.filter((item) => item.kind === "protocol")}
           />
-          {record.attributes.run_recipes ? (
+          {record.attributes.run_recipes &&
+          (Boolean(record.attributes.run_guide) ||
+            Boolean(record.attributes.run_documentation)) ? (
             <details className={styles.section}>
               <summary>Original repository instructions</summary>
-              <RunGuide record={record} sources={detail.sources} />
+              <RunGuide record={record} sources={detail.sources} embedded />
             </details>
-          ) : (
+          ) : !record.attributes.run_recipes ? (
             <RunGuide record={record} sources={detail.sources} />
+          ) : null}
+          {profile.success && (
+            <details className={styles.profileDisclosure}>
+              <summary>Strengths, limitations and unresolved questions</summary>
+              <Profile record={profileOwner.record} sources={profileOwner.sources} part="limitations" />
+            </details>
           )}
-          <details className={styles.profileDisclosure}>
-            <summary>Strengths, limitations and unresolved questions</summary>
-            <Profile record={profileOwner.record} sources={profileOwner.sources} part="limitations" />
-          </details>
           <Profile record={profileOwner.record} sources={profileOwner.sources} part="specifications" />
           {proposals.length > 0 && (
             <details className={styles.profileDisclosure}>

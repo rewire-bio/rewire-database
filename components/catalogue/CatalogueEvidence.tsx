@@ -1,7 +1,9 @@
 import Link from "next/link";
+import { Fragment } from "react";
 import type { PreparedQuery } from "@/lib/catalogue-build";
 import { CompositionCharts, CoverageChart } from "./CatalogueCharts";
-import { researchAreaLabel } from "@/lib/omics-browse";
+import { displayValue } from "@/lib/omics";
+import { kindLabels, researchAreaLabel } from "@/lib/omics-browse";
 import styles from "@/app/database/database.module.css";
 
 type SummarySource = Pick<PreparedQuery, "homeSummary" | "release">;
@@ -21,7 +23,10 @@ function formatSummary(raw: ReturnType<SummarySource["homeSummary"]>) {
     records: raw.records,
     external: raw.external,
     own: raw.own,
-    kindRows: raw.kinds.map((row) => ({ ...row, label: row.label.replace(/_/g, " ") })),
+    kindRows: raw.kinds.map((row) => ({
+      ...row,
+      label: kindLabels[row.label as keyof typeof kindLabels] || row.label.replace(/_/g, " "),
+    })),
     areaRows: raw.areas.map((row) => ({ ...row, label: researchAreaLabel(row.label) })),
     coverageRows: raw.coverage.map((entry) => ({
       label: entry.name,
@@ -38,33 +43,23 @@ export function CatalogueEvidence({ query }: { query: SummarySource }) {
 
   return (
     <section id="evidence" className={styles.information}>
-      <h2>How to read the evidence</h2>
-      <details className={styles.section}>
-        <summary>Coverage: records and linked evaluations</summary>
+      <div className={styles.sectionHeader}>
+        <span className={styles.sectionKicker}>Verification and provenance</span>
+        <h2>How to read the evidence</h2>
+      </div>
+      <div className={styles.evidenceLead}>
         <p>
-          {records.toLocaleString()} records across{" "}
-          {kindRows.length} record types. These counts describe catalogue
-          coverage, not model performance.
+          Published evaluations and rewire evaluations are records in the same
+          database, with their origin shown beside each result. This release
+          includes {external.toLocaleString()} source-checked published results
+          and {own.toLocaleString()} results from existing rewire runs.
         </p>
-        <CompositionCharts kinds={kindRows} areas={areaRows} />
-        <h3>Benchmark evidence coverage</h3>
-        <CoverageChart
-          covered={covered}
-          total={benchmarks}
-          rows={coverageRows}
-        />
-      </details>
-      <p>
-        Published evaluations and rewire evaluations are records in the same
-        database, with their origin shown beside each result. This release
-        includes {external.toLocaleString()} source-checked published results
-        and {own.toLocaleString()} results from existing rewire runs.
-      </p>
-      <p>
-        <strong>Source checked does not mean independently reproduced.</strong>{" "}
-        Comparisons require compatible data, protocols and metrics. Missing
-        details stay visible.
-      </p>
+        <p className={styles.evidenceCallout}>
+          <strong>Source checked does not mean independently reproduced.</strong>{" "}
+          Comparisons require compatible data, protocols and metrics. Missing
+          details stay visible.
+        </p>
+      </div>
       <div className={styles.referenceGrid}>
         <article>
           <h3>Investigate discrepancies</h3>
@@ -91,18 +86,40 @@ export function CatalogueEvidence({ query }: { query: SummarySource }) {
           <Link href="/runs/mfass-v1/">Archived MFASS v1 report →</Link>
         </article>
       </div>
-      <details className={styles.section}>
-        <summary>Collection coverage and remaining gaps</summary>
-        <p>
-          This is a dated collection, not an exhaustive model census. Models,
-          methods, evaluated configurations and pipelines are listed separately.
-          Counts describe records, not unique checkpoints or independent
-          experiments.
-        </p>
-        <pre className={styles.pre}>
-          {JSON.stringify(query.release().coverage, null, 2)}
-        </pre>
-      </details>
+      <div className={styles.disclosureStack}>
+        <details className={styles.profileDisclosure}>
+          <summary>Coverage: records and linked evaluations</summary>
+          <p>
+            {records.toLocaleString()} records across{" "}
+            {kindRows.length} record types. These counts describe catalogue
+            coverage, not model performance.
+          </p>
+          <CompositionCharts kinds={kindRows} areas={areaRows} />
+          <h3>Benchmark evidence coverage</h3>
+          <CoverageChart
+            covered={covered}
+            total={benchmarks}
+            rows={coverageRows}
+          />
+        </details>
+        <details className={styles.profileDisclosure}>
+          <summary>Collection coverage and remaining gaps</summary>
+          <p>
+            This is a dated collection, not an exhaustive model census. Models,
+            methods, evaluated configurations and pipelines are listed separately.
+            Counts describe records, not unique checkpoints or independent
+            experiments.
+          </p>
+          <dl className={styles.details}>
+            {Object.entries(query.release().coverage ?? {}).map(([key, value]) => (
+              <Fragment key={key}>
+                <dt>{key.replace(/_/g, " ")}</dt>
+                <dd>{displayValue(value)}</dd>
+              </Fragment>
+            ))}
+          </dl>
+        </details>
+      </div>
     </section>
   );
 }

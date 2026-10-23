@@ -55,15 +55,25 @@ export default function LinkedResults({
         </p>
       )}
       <ul className={styles.configurationList}>
-        {linked.items.map((item) => (
-          <li key={item.record.id}>
-            <Link href={`${recordHref(item.record)}#results`}>{catalogueText(item.record.name)}</Link>{" "}
-            <span>
-              {singularKindLabels[item.record.kind]} · {item.relation === "part_of" ? `part of this ${kind}` : relationText[item.relation] || item.relation.replace(/_/g, " ")} ·{" "}
-              {countLabel(item.evaluations, "evaluation")} · {countLabel(item.results, "result")}
-            </span>
-          </li>
-        ))}
+        {linked.items.map((item) => {
+          const itemKind = singularKindLabels[item.record.kind];
+          const relation =
+            item.relation === "part_of"
+              ? `part of this ${kind}`
+              : item.relation === "configuration_of"
+                ? `configuration of this ${kind}`
+                : relationText[item.relation] || item.relation.replace(/_/g, " ");
+          return (
+            <li key={item.record.id}>
+              <Link href={`${recordHref(item.record)}#results`}>{catalogueText(item.record.name)}</Link>{" "}
+              <span>
+                {itemKind}
+                {relation.toLowerCase() !== itemKind.toLowerCase() ? ` · ${relation}` : ""} ·{" "}
+                {countLabel(item.evaluations, "evaluation")} · {countLabel(item.results, "result")}
+              </span>
+            </li>
+          );
+        })}
       </ul>
       {linked.unchecked > 0 && (
         <p className={styles.muted}>

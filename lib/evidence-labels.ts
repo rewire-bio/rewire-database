@@ -24,6 +24,7 @@ const FIELD_LABELS: Record<string, string> = {
   numeric_value: "Numeric value",
   metric_direction: "Metric direction",
   metric_qualifier: "Metric qualifier",
+  artifact_sha256: "Artifact SHA-256",
   "review.method": "Review method",
   "review.note": "Review note",
   "review.reviewed_at": "Review date",
@@ -47,5 +48,7 @@ export function claimFieldLabel(path: string): string {
 /** Evidence table property labels: relationship labels pass through; field paths are named. */
 export function evidencePropertyLabel(property: string): string {
   if (/^Relationship:/.test(property)) return property;
-  return /^[a-z_]+(?:\.[a-z_]+)*$/.test(property) || property.startsWith("links:") ? claimFieldLabel(property) : property;
+  return /^[a-z0-9_]+(?:\.[a-z0-9_]+)*(?::\s*[a-z0-9_]+)?$/i.test(property) || property.startsWith("links:")
+    ? claimFieldLabel(property)
+    : property;
 }

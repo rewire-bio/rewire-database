@@ -34,7 +34,6 @@ export const metadata: Metadata = {
     "Biological models, evaluation protocols, published results and reproducible rewirebio.io benchmark runs.",
   authors: [{ name: "Tim Richardson" }],
   publisher: "rewirebio.io",
-  alternates: { canonical: "https://benchmarks.rewirebio.io/" },
 };
 
 export default function RootLayout({

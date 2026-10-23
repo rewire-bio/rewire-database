@@ -2,11 +2,41 @@ import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it, vi } from "vitest";
 import EvidencePage from "../app/evidence/page";
+import AgentsPage from "../app/agents/page";
+import CoveragePage from "../app/coverage/page";
+import UpdatesPage from "../app/updates/page";
+import InvestigationsPage from "../app/investigations/page";
 import MfassV1Page from "../app/runs/mfass-v1/page";
 import MfassV2Page from "../app/runs/mfass-v2/page";
 import ContributePage from "../app/contribute/page";
 import { checkPageMetadata } from "../scripts/seo/check-page-metadata";
 import { utilityPageMetadataContracts } from "../scripts/seo/utility-page-metadata";
+
+vi.mock("node:fs", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("node:fs")>();
+  const readFileSync = ((path: Parameters<typeof actual.readFileSync>[0], ...rest: unknown[]) => {
+    if (String(path).endsWith("/public/omics/coverage/utility-metadata-test.json")) {
+      return JSON.stringify({
+        release_id: "utility-metadata-test",
+        released_at: "2026-09-25T00:00:00Z",
+        scope: "Test",
+        summary: {},
+        pages: [],
+      });
+    }
+    if (String(path).endsWith("/public/omics/refresh.json")) {
+      const err = new Error("ENOENT") as NodeJS.ErrnoException;
+      err.code = "ENOENT";
+      throw err;
+    }
+    return (actual.readFileSync as (...args: unknown[]) => unknown)(path, ...rest);
+  }) as typeof actual.readFileSync;
+  return {
+    ...actual,
+    default: { ...actual, readFileSync },
+    readFileSync,
+  };
+});
 
 // The real pages and Breadcrumbs render normally; catalogue rows are irrelevant
 // to their navigation, and the fixture release has no audit files on disk.
@@ -23,6 +53,34 @@ const cases = [
     hierarchy: [
       ["Database", "/"],
       ["Evidence and sources", "/evidence/"],
+    ],
+  },
+  {
+    path: "/agents/", Page: AgentsPage, indexable: true,
+    hierarchy: [
+      ["Database", "/"],
+      ["Connect your agent", "/agents/"],
+    ],
+  },
+  {
+    path: "/coverage/", Page: CoveragePage, indexable: true,
+    hierarchy: [
+      ["Database", "/"],
+      ["Collection coverage", "/coverage/"],
+    ],
+  },
+  {
+    path: "/updates/", Page: UpdatesPage, indexable: true,
+    hierarchy: [
+      ["Database", "/"],
+      ["Updates", "/updates/"],
+    ],
+  },
+  {
+    path: "/investigations/", Page: InvestigationsPage, indexable: true,
+    hierarchy: [
+      ["Database", "/"],
+      ["Investigations", "/investigations/"],
     ],
   },
   {

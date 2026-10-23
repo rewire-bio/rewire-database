@@ -9,5 +9,10 @@
     "file": "catalogue-2026-10-22-fbd3d9705499.sqlite",
     "sha256": "8d8c483d3f969bba3e6d45aed34fad0abb33012dc9364b29160d427d7f400154",
     "website_assets": true
+  },
+  "kg": {
+    "tag": "kg/2026-10-22-fbd3d9705499",
+    "file": "discrepancies.json",
+    "sha256": "75ce1ae51448c1b980f1589316dd1c1f2696a9915598e68fc7b9222ffe028f3b"
   }
 }

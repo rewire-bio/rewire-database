@@ -2,6 +2,7 @@ import { currentRecords } from "./current.js";
 import { createHash } from "node:crypto";
 import { z } from "zod";
 import { assertNoPrivateFields } from "./private-fields.js";
+import { concernTargets, evidencePath, sourceWideConcern } from "./concerns.js";
 import {
   createCatalogueQuery, recordReference,
   type CatalogueSnapshot, type CatalogueRecord, type CatalogueQuery, type ResultRow,
@@ -228,9 +229,10 @@ function tombstone(m: Mapping) { return ["withdrawn", "superseded"].includes(m.l
 function positive(m: Mapping) { return m.relevance === "direct" || m.relevance === "proxy"; }
 function checked(r: CatalogueRecord) { return ["source_checked", "reproduced"].includes(r.status); }
 function inactive(r: CatalogueRecord) { return ["disputed", "excluded", "superseded"].includes(r.status); }
+/** A source that is reviewed and carries no concern over everything it supports. Concerns scoped
+ * with applies_to are gated where the named records are used (see concerns.ts). */
 function cleanSource(r: CatalogueRecord | undefined) {
-  return r?.kind === "source" && checked(r) &&
-    !(Array.isArray(r.attributes.evidence_concerns) && r.attributes.evidence_concerns.length);
+  return !!r && r.kind === "source" && checked(r) && !sourceWideConcern(r);
 }
 export function parseUseCaseInputs(value: unknown): UseCaseInputs {
   assertNoPrivateFields(value);
@@ -276,6 +278,8 @@ function index(input: CatalogueSnapshot) {
   // Archived catalogues written before single-meaning relations are read under current names.
   const snapshot = { ...input, records: currentRecords(input.records) };
   const records = new Map(snapshot.records.map((r) => [r.id, r]));
+  // Records named by a scoped evidence concern; pathConcerned says whether a result rests on one.
+  const concerned = concernTargets(snapshot.records);
   const results = new Map<string, CatalogueRecord[]>();
   const claims = new Map<string, CatalogueRecord[]>();
   for (const r of snapshot.records) {
@@ -294,10 +298,14 @@ function index(input: CatalogueSnapshot) {
     return associationClaims(subject, relation, target).some((claim) =>
       checked(claim) && claim.attributes.value === target && claim.source_ids.length > 0 &&
       typeof claim.attributes.source_locator === "string" && !!claim.attributes.source_locator.trim() &&
-      claim.source_ids.every((s) => cleanSource(records.get(s))),
+      claim.source_ids.every((s) => cleanSource(records.get(s))) && !concerned.has(claim.id),
     );
   }
-  return { records, results, associationClaims, reviewedAssociation };
+  function pathConcerned(result: CatalogueRecord | undefined, evaluation: CatalogueRecord) {
+    const assessments = evaluation.links.filter((l) => l.relation === "assessment").map((l) => records.get(l.target_id));
+    return evidencePath(result, evaluation, assessments).some((id) => concerned.has(id));
+  }
+  return { records, results, associationClaims, reviewedAssociation, concerned, pathConcerned };
 }
 type Index = ReturnType<typeof index>;
 
@@ -376,6 +384,8 @@ function validateMapping(ix: Index, entry: UseCase, m: Mapping, activeChecks: bo
   if (activeChecks && positive(m) && (!checked(p) || inactive(p))) throw Error("Positive applicability requires a reviewed protocol");
   if (activeChecks && positive(m) && p.source_ids.some((id) => !cleanSource(ix.records.get(id))))
     throw Error("Protocol evidence is disputed or unchecked");
+  if (activeChecks && positive(m) && [p.id, ...evidencePath(undefined, undefined, [p])].some((id) => ix.concerned.has(id)))
+    throw Error("An evidence concern names the protocol or its benchmark");
   if (activeChecks && m.task_id && !ix.reviewedAssociation(p, "evaluates_task", m.task_id))
     throw Error("Task membership needs a direct reviewed protocol relationship");
   for (const id of m.evaluation_ids) {
@@ -400,6 +410,7 @@ function validateMapping(ix: Index, entry: UseCase, m: Mapping, activeChecks: bo
         if (!cleanSource(source))
           throw Error("Result evidence is disputed or unchecked");
       }
+      if (rows.some((r) => ix.pathConcerned(r, e))) throw Error("An evidence concern applies to the result evidence");
     }
   }
 }
@@ -531,6 +542,7 @@ function evaluationBlocker(ix: Index, protocolId: string, evaluation: CatalogueR
   if (!rows.length) return "no reviewed result";
   if (rows.some((r) => [...r.source_ids, ...evaluation.source_ids].some((id) => !cleanSource(ix.records.get(id)))))
     return "result evidence disputed or unchecked";
+  if (rows.some((r) => ix.pathConcerned(r, evaluation))) return "an evidence concern applies to its results";
   return null;
 }
 
@@ -556,7 +568,7 @@ export function deriveUseCaseInputs(input: { records: CatalogueRecord[]; publish
   // rests on has changed: the use case, its sources and the reviewed evaluations of its judgements.
   function reviewedSummary(useCaseId: string): string | undefined {
     const summary = (claimsBySubject.get(useCaseId) || []).find((c) => c.attributes.field === "summary" && typeof c.attributes.value === "string");
-    if (!summary || !checked(summary) || !summary.source_ids.every((id) => cleanSource(ix.records.get(id)))) return undefined;
+    if (!summary || !checked(summary) || ix.concerned.has(summary.id) || !summary.source_ids.every((id) => cleanSource(ix.records.get(id)))) return undefined;
     const evaluationIds = judgementsOf(useCaseId).filter(checked).flatMap(reviewedEvaluations);
     const current = judgementPins(ix.records, { useCaseId, sourceIds: summary.source_ids, evaluationIds });
     return changedPins(summary.attributes.pins as JudgementPin[] | undefined, current).length ? undefined : String(summary.attributes.value);
@@ -565,7 +577,7 @@ export function deriveUseCaseInputs(input: { records: CatalogueRecord[]; publish
   // with nothing it rests on changed since review.
   function reviewedBaseline(useCaseId: string): UseCase["baseline"] {
     const claim = (claimsBySubject.get(useCaseId) || []).find((c) => c.attributes.field === "baseline" && typeof c.attributes.value === "string");
-    if (!claim || !checked(claim) || !claim.source_ids.length || !claim.source_ids.every((id) => cleanSource(ix.records.get(id)))) return undefined;
+    if (!claim || !checked(claim) || ix.concerned.has(claim.id) || !claim.source_ids.length || !claim.source_ids.every((id) => cleanSource(ix.records.get(id)))) return undefined;
     const methodIds = asTexts(claim.attributes.method_ids);
     if (!methodIds.length || !methodIds.every((id) => ix.records.has(id))) return undefined;
     const current = judgementPins(ix.records, { useCaseId, sourceIds: claim.source_ids });
@@ -638,6 +650,7 @@ export function deriveUseCaseInputs(input: { records: CatalogueRecord[]; publish
     }
     const blockers: string[] = [];
     if (claim.status === "disputed") blockers.push("the judgement is disputed");
+    if (ix.concerned.has(claim.id)) blockers.push("an evidence concern names the judgement");
     const useCase = ix.records.get(subject)!;
     if (!useCase.links.some((l) => l.relation === "assessed_by" && l.target_id === protocolId)) blockers.push("the use case has no assessed_by link to this protocol");
     const reviewed = reviewedEvaluations(claim);
@@ -650,6 +663,8 @@ export function deriveUseCaseInputs(input: { records: CatalogueRecord[]; publish
     const protocol = ix.records.get(protocolId);
     if (!protocol || protocol.kind !== "protocol" || !checked(protocol) || inactive(protocol)) blockers.push("the protocol is not reviewed");
     else if (protocol.source_ids.some((id) => !cleanSource(ix.records.get(id)))) blockers.push("protocol evidence is disputed or unchecked");
+    else if (isPositive && [protocolId, ...evidencePath(undefined, undefined, [protocol])].some((id) => ix.concerned.has(id)))
+      blockers.push("an evidence concern names the protocol or its benchmark");
     if (a.task_id) {
       const task = ix.records.get(String(a.task_id));
       if (!task || task.kind !== "task" || inactive(task)) blockers.push("the task is unavailable, disputed or superseded");

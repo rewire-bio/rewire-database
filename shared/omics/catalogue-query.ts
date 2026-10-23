@@ -11,6 +11,7 @@ import {
 import { assertNoPrivateFields as assertPublicCatalogue } from "./private-fields.js";
 import { recordSearchText } from "./source-identity.js";
 import { createEvidenceIndex } from "./evidence-table.js";
+import { concernTargetsOf, evidencePath, sourceWideConcern } from "./concerns.js";
 import { resolveComparisons } from "./published-comparisons.js";
 import type { ResolvedComparison } from "./published-comparisons.js";
 import { deriveResearchReadiness, getResearch, validateResearchData, type ResearchData, type ResearchReadiness, type ResearchCapability } from "./research.js";
@@ -359,6 +360,7 @@ export function compareResults(
   ids: string[],
   rowFor: (id: string) => ResultRow | undefined,
   inactiveAssessmentDatasetIds: ReadonlySet<string>,
+  concerned: ReadonlySet<string> = new Set(),
 ) {
   const reasons = new Set<string>();
   if (ids.length < 2) reasons.add("Choose at least two results.");
@@ -382,12 +384,15 @@ export function compareResults(
     if (
       row.sources.some(
         (source) =>
-          Array.isArray(source.attributes.evidence_concerns) &&
-          source.attributes.evidence_concerns.length,
+          sourceWideConcern(source),
       )
     )
       reasons.add(
         "A source has unresolved evidence concerns; this result cannot support a comparison.",
+      );
+    if (evidencePath(row.result, row.evaluation, row.benchmarks).some((id) => concerned.has(id)))
+      reasons.add(
+        "An evidence concern applies to this result; it cannot support a comparison.",
       );
     if (!["source_checked", "reproduced"].includes(row.result.status))
       reasons.add(
@@ -1008,7 +1013,7 @@ export function createCatalogueQuery(snapshot: CatalogueSnapshot) {
       return resultPage(release_id, rowIndex.get(input.id) || [], input);
     },
     compare({ ids }: { ids: string[] }) {
-      return compareResults(release_id, ids, (id) => rowsById.get(id), inactiveAssessmentDatasetIds);
+      return compareResults(release_id, ids, (id) => rowsById.get(id), inactiveAssessmentDatasetIds, concernTargetsOf(byId));
     },
     /** Every source's citing record IDs by kind (source-records.ts), built on first use. */
     sourceIndex: () => (sourceIndex ||= sourceRecordIndex(records, rows)),

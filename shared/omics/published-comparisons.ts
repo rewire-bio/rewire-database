@@ -1,5 +1,6 @@
 import { isBenchmarkSubject, isDatasetSubject } from "./entity-kinds.js";
 import type { CatalogueRecord, ResultRow } from "./catalogue-query.js";
+import { concernTargetsOf, evidencePath, sourceWideConcern } from "./concerns.js";
 
 /** A curated figure reproduces one source table, not a cross-study ranking.
  * It references released results rather than copying their numerical values. */
@@ -149,11 +150,8 @@ export function resolveComparisons(
       )
         return fail("inactive or missing evaluation");
       if (
-        [...row.sources, ...sources].some(
-          (source) =>
-            Array.isArray(source.attributes.evidence_concerns) &&
-            source.attributes.evidence_concerns.length,
-        )
+        [...row.sources, ...sources].some(sourceWideConcern) ||
+        evidencePath(row.result, row.evaluation, row.benchmarks).some((id) => concernTargetsOf(byId).has(id))
       )
         return fail("unresolved source concerns");
       if (

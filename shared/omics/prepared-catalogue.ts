@@ -64,6 +64,7 @@ export function openPreparedCatalogue(file: string) {
   const db = new DatabaseSync(file, { readOnly: true });
   const text = (key: string) =>
     (db.prepare("SELECT value FROM meta WHERE key = ?").get(key) as { value: string } | undefined)?.value;
+  const hasBlob = (key: string) => !!db.prepare("SELECT 1 FROM blobs WHERE key = ?").get(key);
   const blob = <T>(key: string): T => {
     const row = db.prepare("SELECT value FROM blobs WHERE key = ?").get(key) as { value: Uint8Array } | undefined;
     if (!row) throw new Error(`Prepared release lacks ${key}`);
@@ -83,6 +84,8 @@ export function openPreparedCatalogue(file: string) {
   const readiness = lazy(() => blob<ResearchReadiness[]>("readiness"));
   const research = lazy(() => blob<ResearchData>("research"));
   const inactive = lazy(() => new Set(blob<string[]>("inactive_assessment_dataset_ids")));
+  // Releases prepared before scoped evidence concerns have none.
+  const concerned = lazy(() => new Set(hasBlob("concern_target_ids") ? blob<string[]>("concern_target_ids") : []));
   const entries = lazy(() => blob<ListEntry[]>("list_entries"));
   const useCases = lazy(() => (referenced ? useCaseRows() : useCaseQueryFrom(blob<UseCaseState>("use_cases"))));
   const evidenceSources = lazy(() => blob<Parameters<typeof unpackEvidence>[3]>("evidence_sources"));
@@ -254,7 +257,7 @@ export function openPreparedCatalogue(file: string) {
     },
     compare({ ids }: { ids: string[] }) {
       const lookup = sharedLookup();
-      return compareResults(release_id, ids, (id) => resultRow(id, lookup), inactive());
+      return compareResults(release_id, ids, (id) => resultRow(id, lookup), inactive(), concerned());
     },
     /** What the catalogue took from one source: counts by kind and a page of
      * record IDs per kind, or of `kind` alone. Reads only that source's rows. */

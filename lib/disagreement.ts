@@ -53,8 +53,13 @@ export type Disagreement = {
 /** Papers drawn one by one; above this, views show the first ones and say how many more. */
 export const PAPER_LIMIT = 12;
 
+/** The longest name used as it is for a paper that has no author and year to cite. */
+const SHORT_NAME = 40;
+
 /** "Alavi 2026" from a source name such as "Title (Alavi, bioRxiv 2026)" or "Tan et al., Nature 15 (2024)".
- * Names without an author and year are shortened at a word boundary. */
+ * Source records hold no author list, so other names give, in order: the name up to its first year
+ * ("AlphaGenome Nature 2026"), a short label before a colon or bracket ("ProteinGym"), the whole name when it is
+ * short, or the name cut at a word boundary. The record's year is added when the result has none. */
 export function shortCitation(name: string, year?: unknown): string {
   const trailing = name.match(/\(([^()]+)\)\s*$/)?.[1];
   if (trailing) {
@@ -65,12 +70,20 @@ export function shortCitation(name: string, year?: unknown): string {
       return `${author} ${yearMatch[0]}`;
     }
   }
+  const recorded = typeof year === "number" || typeof year === "string" ? String(year) : null;
   const leading = name.match(/^([A-Z][\p{L}'-]+ et al\.?)[ ,]/u)?.[1];
-  const anyYear = name.match(/\b(?:19|20)\d{2}\b/)?.[0] ?? (typeof year === "number" || typeof year === "string" ? String(year) : null);
+  const anyYear = name.match(/\b(?:19|20)\d{2}\b/)?.[0] ?? recorded;
   if (leading && anyYear) return `${leading.replace(/\.?$/, ".")} ${anyYear}`;
-  if (name.length <= 32) return name;
-  const cut = name.slice(0, 32);
-  return `${cut.slice(0, cut.lastIndexOf(" ") > 16 ? cut.lastIndexOf(" ") : 32)}…`;
+  const upToYear = name.match(/^[^():]*?\b(?:19|20)\d{2}\b/)?.[0];
+  if (upToYear && upToYear.length >= 8 && upToYear.length <= SHORT_NAME) return upToYear;
+  const withYear = (text: string) => (recorded && !text.includes(recorded) ? `${text} ${recorded}` : text);
+  const label = name.match(/^([^:]{3,30}):\s/)?.[1] ?? name.match(/^([^():]{8,40}?)\s*\(/)?.[1];
+  if (label && !/^(abstract|supplementary|appendix|source data)$/i.test(label)) return withYear(label);
+  if (name.length <= SHORT_NAME) return withYear(name);
+  const cut = name.slice(0, SHORT_NAME);
+  const words = cut.slice(0, cut.lastIndexOf(" ") > 20 ? cut.lastIndexOf(" ") : SHORT_NAME)
+    .replace(/[\s,;:(-]+$/, "").replace(/\s+(?:a|an|and|the|of|for|in|on|to|with|by|from)$/i, "");
+  return `${words}…`;
 }
 
 const plural = (n: number, one: string, many = `${one}s`) => `${n} ${n === 1 ? one : many}`;

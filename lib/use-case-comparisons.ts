@@ -33,6 +33,8 @@ export type ComparisonRow = {
   parentId: string | null;
   methodTypes: string[];
   origin: string | null;
+  /** The results behind the row's values, so a page can mark those an unsettled discrepancy rests on. */
+  resultIds: string[];
   cells: ComparisonCell[];
 };
 export type ComparisonColumn = { label: string; metric: string; qualifier: string | null; direction: "higher" | "lower" | "unknown" };
@@ -88,7 +90,7 @@ const direction = (value: unknown): ComparisonColumn["direction"] =>
   value === "higher" || value === "lower" ? value : "unknown";
 
 type Measured = {
-  metric: string; qualifier: string | null; printed: string; numeric: number | null; direction: ComparisonColumn["direction"];
+  id: string; metric: string; qualifier: string | null; printed: string; numeric: number | null; direction: ComparisonColumn["direction"];
   unit: string | null; uncertainty: string | null; anomaly: string | null; undefinedReason: string | null;
   derived: boolean;
 };
@@ -96,6 +98,7 @@ function measurements(evaluation: ResolvedMapping["evaluations"][number]): Measu
   return evaluation.results.map(({ result }) => {
     const a = result.attributes;
     return {
+      id: result.id,
       metric: text(a.metric),
       qualifier: text(a.metric_qualifier) || null,
       printed: text(a.printed_value),
@@ -225,7 +228,7 @@ function finishCells(rows: ComparisonRow[], columns: ComparisonColumn[]) {
   });
 }
 
-function rowBase(configuration: CatalogueRecord, evaluation: CatalogueRecord): Omit<ComparisonRow, "cells"> {
+function rowBase(configuration: CatalogueRecord, evaluation: CatalogueRecord): Omit<ComparisonRow, "cells" | "resultIds"> {
   const parent = configuration.links.find((l) => ["configuration_of", "family", "variant_of"].includes(l.relation));
   return {
     id: configuration.id,
@@ -272,7 +275,8 @@ export function buildComparisons(mappings: ResolvedMapping[]): Comparison[] {
           const leads = measured.filter((r) => r.metric === headline);
           const lead = leads[0];
           if (lead && lead.direction !== "unknown") { columns[i].direction = lead.direction; headlineDirection = lead.direction; }
-          const row = rows.get(configuration.id) ?? { ...rowBase(configuration, e.evaluation), cells: columns.map(emptyCell) };
+          const row = rows.get(configuration.id) ?? { ...rowBase(configuration, e.evaluation), resultIds: [], cells: columns.map(emptyCell) };
+          row.resultIds.push(...measured.map((r) => r.id));
           const cell: Draft = {
             ...emptyCell(), printed: lead?.printed ?? null, numeric: lead?.numeric ?? null,
             reading: lead ? readValue(lead, percent.has(scaleKey(lead.metric))) : null,
@@ -296,7 +300,8 @@ export function buildComparisons(mappings: ResolvedMapping[]): Comparison[] {
         const measured = measurements(e);
         shownMeasures.push(...measured);
         configurationNames.set(configuration.id, configuration.name);
-        const row = rows.get(configuration.id) ?? { ...rowBase(configuration, e.evaluation), cells: columns.map(emptyCell) };
+        const row = rows.get(configuration.id) ?? { ...rowBase(configuration, e.evaluation), resultIds: [], cells: columns.map(emptyCell) };
+        row.resultIds.push(...measured.map((r) => r.id));
         columns.forEach((column, i) => {
           const r = measured.find((x) => x.metric === column.metric && x.qualifier === column.qualifier);
           if (r) row.cells[i] = { ...emptyCell(), printed: r.printed, numeric: r.numeric, reading: readValue(r, percent.has(scaleKey(r.metric))) } as Draft;

@@ -14,6 +14,7 @@ import { researchAreaLabel } from "@/lib/omics-browse";
 import { socialMetadata } from "@/lib/catalogue-sharing";
 import { evidenceCheckedLabel, evidenceCountParts, summariseUseCaseEvidence, summaryParagraphs } from "@/lib/use-case-summary";
 import { buildCatalogue } from "@/lib/catalogue-build";
+import { contestedResults } from "@/lib/discrepancies";
 import { baselineComparisons, buildComparisons, heldJudgements, methodTypeLabel, toolsCompared } from "@/lib/use-case-comparisons";
 import styles from "@/components/catalogue/UseCases.module.css";
 
@@ -35,6 +36,8 @@ export default function UseCasePage({ params }: { params: Params }) {
   const clinical = entry.contexts.includes("clinical_research");
   const summary = summariseUseCaseEvidence(detail.mappings, entry.evidence_gaps.length);
   const comparisons = buildComparisons(detail.mappings);
+  const contested = contestedResults();
+  const anyContested = comparisons.some((c) => c.rows.some((r) => r.resultIds.some((id) => contested.has(id))));
   const held = heldJudgements(detail.mappings);
   const { query } = buildCatalogue();
   const tools = toolsCompared(comparisons, (id) => query.record?.(id) ?? null);
@@ -108,8 +111,9 @@ export default function UseCasePage({ params }: { params: Params }) {
         <section id="evidence" className={styles.section}>
           <h2>{heading("evidence")}</h2>
           <p>Each table is one study or protocol with its own truth set and scoring. Compare tools within a table, not across tables.</p>
+          {anyContested && <p>Rows marked Contested rest on results that other studies disagree with. See <a href="/contested/">contested results</a> for what disagrees and whether it has been checked.</p>}
           {comparisons.length
-            ? comparisons.map((comparison) => <UseCaseComparison key={comparison.id} comparison={comparison} useCasePath={path} baselineIds={baselineIds} />)
+            ? comparisons.map((comparison) => <UseCaseComparison key={comparison.id} comparison={comparison} useCasePath={path} baselineIds={baselineIds} contested={contested} />)
             : <div className={styles.notice}><p>No model comparison has been collected for this question yet.</p><p>Relevant methods and studies may exist outside this collection.</p></div>}
         </section>
         {held.length > 0 && <section id="held" className={styles.section}>

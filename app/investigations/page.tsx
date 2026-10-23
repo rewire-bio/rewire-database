@@ -21,7 +21,7 @@ export default function InvestigationsPage() {
       <p className="intro">Examine why benchmark results differ, test possible explanations, and identify which findings need independent evidence.</p>
     </div></header>
     <section className="block first"><div className="wrap">
-      <nav aria-label="Investigation navigation"><Link href="/">Benchmark database</Link> · <Link href="/?kind=dataset#browse">Dataset readiness</Link> · <Link href="/?kind=evaluation&readiness=analysis#browse">Evaluations ready for investigation</Link></nav>
+      <nav aria-label="Investigation navigation"><Link href="/">Benchmark database</Link> · <Link href="/?kind=dataset#browse">Dataset readiness</Link> · <Link href="/?kind=evaluation&readiness=analysis#browse">Evaluations ready for investigation</Link> · <Link href="/contested/">Contested results</Link></nav>
       <section className={styles.section}>
         <h2>Reviewed reports</h2>
         <p className={styles.muted}>Release {catalogue.release_id} · {research.investigations.length} reviewed reports</p>
@@ -30,6 +30,7 @@ export default function InvestigationsPage() {
       <section className={styles.section}>
         <h2>What an investigation establishes</h2>
         <p>A discrepancy can arise from a data error, metric definition, sample population, model limitation or biological context. We check the data and evaluation procedure before interpreting an unexpected score as a biological effect.</p>
+        <p>Unreviewed disagreements between studies, found automatically in each release, are listed under <Link href="/contested/">contested results</Link>. The reports here are the ones we have investigated.</p>
         <p>Each report connects its question to exact artifacts, a frozen analysis plan, every attempted explanation and its remaining uncertainty. All current reports are exploratory. Independent biological validation requires a separate study with a hypothesis fixed before examining the validation data.</p>
         <h3>Start with the evidence</h3>
         <p>Dataset and evaluation pages assess four separate capabilities: replay metrics, investigate discrepancies, run locally and validate independently. Missing evidence is listed explicitly. Complete evidence does not imply that the necessary files are installed on your computer.</p>

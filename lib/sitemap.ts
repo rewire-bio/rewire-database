@@ -28,6 +28,7 @@ export function sitemapEntries(): SitemapEntry[] {
     ...catalogueIndexPaths(indexSource(query, "model")).map((path) => ({ path })),
     ...query.recordIds().filter(recordIsIndexable).map((record) => ({ path: recordHref(record) })),
     { path: "/investigations/" },
+    { path: "/contested/" },
     ...query.research().investigations.map((report) => ({ path: `/investigations/${report.id}/`, lastModified: report.review.reviewed_at })),
   ];
 }

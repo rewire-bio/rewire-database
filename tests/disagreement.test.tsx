@@ -30,8 +30,13 @@ describe("disagreement summary and grouping", () => {
     expect(shortCitation("A deep protein language model (Brandes et al., Nature Genetics 2023)")).toBe("Brandes et al. 2023");
     expect(shortCitation("Splice prediction algorithms (Fortier, Rudy and Scherer, PLOS One 2026)")).toBe("Fortier et al. 2026");
     expect(shortCitation("Blaabjerg et al. 2024, Nature Communications 15:9646 (Europe PMC full text XML)")).toBe("Blaabjerg et al. 2024");
-    expect(shortCitation("Abstract: Qwen2 Technical Report (arXiv:2407.10671)")).toBe("Abstract: Qwen2 Technical…");
-    expect(shortCitation("BEACON: repository README")).toBe("BEACON: repository README");
+    expect(shortCitation("Abstract: Qwen2 Technical Report (arXiv:2407.10671)")).toBe("Abstract: Qwen2 Technical Report…");
+    // Names with no author: up to the first year, a label before a colon or bracket, or cut at a word.
+    expect(shortCitation("AlphaGenome Nature 2026 supplementary comparison tables")).toBe("AlphaGenome Nature 2026");
+    expect(shortCitation("ProteinGym: Large-Scale Benchmarks for Protein Fitness Prediction and Design", 2023)).toBe("ProteinGym 2023");
+    expect(shortCitation("GENEB leaderboard (leaderboard.json, 13 task-type aggregates)")).toBe("GENEB leaderboard");
+    expect(shortCitation("Comprehensive assessment of computational algorithms in predicting cancer driver mutations")).toBe("Comprehensive assessment…");
+    expect(shortCitation("BEACON: repository README")).toBe("BEACON");
     // At least two thirds of the comparisons that are not ties decide the group.
     expect(paperGroup(3, 0)).toBe("a");
     expect(paperGroup(0, 2)).toBe("b");

@@ -169,7 +169,7 @@ function Action({ a, latest, pending, lookup }: { a: DiscrepancyAction; latest: 
       {main && <> · <a href={main.href}>{main.name}</a></>}</h3>
     <p className={styles.muted}>State after this step: {stateLabel(a.state)}</p>
     {a.rationale && <p>{a.rationale}</p>}
-    {a.upstream_response && <p>Authors&apos; response{a.date && <> (recorded {formatDate(a.date)})</>}: {a.upstream_response}</p>}
+    {a.upstream_response && <p>Authors&apos; response: {a.upstream_response}</p>}
     {a.awaiting && <p>Waiting for: {a.awaiting.replace(/\.$/, "")}{a.expected_by && <>, expected by {formatDate(a.expected_by)}</>}.</p>}
     {a.next_check && <p>Next check: {formatDate(a.next_check)}{latest && pending && <OverdueMark nextCheck={pending} />}</p>}
     {a.resolved_by.length > 0 && <p>Resolved by: <RecordLinks ids={a.resolved_by} lookup={lookup} /></p>}

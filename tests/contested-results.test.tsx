@@ -213,7 +213,7 @@ describe("contested results: pages", () => {
     expect(html).toContain('18 October 2026: Investigated · <a href="https://github.com/rewire-bio/rewire-benchmark-data/issues/174">rewire-bio/rewire-benchmark-data#174</a>');
     expect(html).toContain("Issue raised with the authors · ");
     expect(html).toContain("Our investigation · ");
-    expect(html).toContain("Authors&#x27; response (recorded 19 October 2026): The owner confirmed the offset.");
+    expect(html).toContain("Authors&#x27; response: The owner confirmed the offset.");
     // Without per-study data the page keeps the result lists and has no studies section.
     expect(html).not.toContain("Which studies agree");
     expect(html).toMatch(/\/contribute\/?\?type=correction&amp;target_id=r-out-ag/);

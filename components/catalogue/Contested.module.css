@@ -38,7 +38,7 @@
 .chartLabel { font-size: 13px; fill: var(--ink-2); }
 .chartRole { font-weight: 700; fill: var(--ink); }
 .chartOutlier .chartLabel { font-weight: 600; fill: var(--ink); }
-.barA { fill: var(--accent); }
+.barA { fill: var(--accent-ink); }
 .barTie { fill: var(--line-2); }
 .barB { fill: var(--ink-3); }
 .chartCount { font-size: 12px; font-weight: 600; fill: var(--bg); }
@@ -46,7 +46,7 @@
 .chartFrame { fill: none; stroke: var(--ink); stroke-width: 2; }
 .legend { display: flex; flex-wrap: wrap; gap: 4px 16px; margin-top: 8px; font-size: 13px; color: var(--ink-3); }
 .legend i { display: inline-block; width: 12px; height: 12px; margin-right: 6px; vertical-align: -1px; border-radius: 2px; }
-.swatchA { background: var(--accent); }
+.swatchA { background: var(--accent-ink); }
 .swatchTie { background: var(--line-2); }
 .swatchB { background: var(--ink-3); }
 .study { margin: 8px 0; font-size: 14px; }

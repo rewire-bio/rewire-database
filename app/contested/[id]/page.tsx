@@ -162,7 +162,7 @@ function Action({ a, latest, pending, lookup }: { a: DiscrepancyAction; latest: 
   const report = namedLink(a.report_url, issue ? "Issue raised with the authors" : "Report to the authors");
   const investigation = namedLink(a.investigation_url, "Our investigation");
   const links = [report, investigation].filter((x): x is NonNullable<typeof x> => !!x);
-  // The step's main link: the report for a step that reported upstream, otherwise whichever it has.
+  // The step's main link: the report to the authors when there is one, otherwise our investigation.
   const main = links[0];
   return <li>
     <h3>{a.date ? formatDate(a.date) : "Undated"}: {a.action ? actionLabel(a.action) : stateLabel(a.state)}

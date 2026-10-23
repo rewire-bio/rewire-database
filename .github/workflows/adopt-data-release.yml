@@ -4,6 +4,9 @@ name: Adopt the newest data release
 # shared code, run every website check including the production build, commit
 # to main and start the deployment workflow. The deployment verifies a
 # candidate revision before traffic and rolls back on failure, as for any change.
+# The producer dispatches again once the release's knowledge-graph build has
+# published its discrepancies between studies; that run pins them for the
+# release already adopted.
 on:
   repository_dispatch:
     types: [data-release]
@@ -74,11 +77,12 @@ jobs:
         if: steps.adopt.outputs.adopted == 'true'
         env:
           RELEASE: ${{ steps.adopt.outputs.release_id }}
+          DISCREPANCIES_ONLY: ${{ steps.adopt.outputs.discrepancies_only }}
         run: |
           git config user.name "rewire-release-bot"
           git config user.email "rewire-release-bot@users.noreply.github.com"
           git add benchmark-data.lock.json shared/omics
-          git commit -m "Adopt data release $RELEASE"
+          if [ "$DISCREPANCIES_ONLY" = true ]; then git commit -m "Adopt the discrepancies published for data release $RELEASE"; else git commit -m "Adopt data release $RELEASE"; fi
           git push origin HEAD:main
       - name: Deploy it
         if: steps.adopt.outputs.adopted == 'true'

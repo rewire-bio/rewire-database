@@ -3,7 +3,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { downloadLocations } from './download-locations.mjs';
-import { verifyServing } from './fetch-serving-data.mjs';
+import { kgPath, verifyServing } from './fetch-serving-data.mjs';
 
 // Container entrypoint: check the release the image embeds (data/), then
 // start Next's unmodified standalone server. The image build verified the
@@ -52,6 +52,7 @@ export function prepareOrigin(env = process.env) {
   if (!manifestFile) throw new Error('Pinned producer manifest unavailable');
   downloadLocations(pin, fs.readFileSync(manifestFile)); // Verifies digest, release and every download mapping.
   checkPrepared(path.join(root, 'serving', pin.serving.file), pin);
+  if (kgPath(pin) && !fs.existsSync(path.join(root, kgPath(pin)))) throw new Error('Pinned discrepancies file unavailable');
   const releaseManifest = fs.readFileSync(path.join(root, 'public/omics/manifest.json'));
   if (JSON.parse(releaseManifest.toString('utf8')).release_id !== pin.release_id) throw new Error('Release manifest differs from the data pin');
   if (env.REWIRE_DEPLOYMENT_RECEIPT) checkReceipt(JSON.parse(env.REWIRE_DEPLOYMENT_RECEIPT), pin, frontend, releaseManifest);

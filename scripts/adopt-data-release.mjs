@@ -4,7 +4,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
-import { verifyServing } from './fetch-serving-data.mjs';
+import { verifyKg, verifyServing } from './fetch-serving-data.mjs';
 import { syncShared } from './sync-shared.mjs';
 import { isCurrentOnlyEntry } from './prepare-benchmark-data.mjs';
 import { fetchVerifiedAsset, releaseHasAssets, usesReleaseAssets, verifyCompressed } from './release-assets.mjs';
@@ -17,6 +17,10 @@ import { fetchVerifiedAsset, releaseHasAssets, usesReleaseAssets, verifyCompress
 // serves, unless told otherwise. A release whose website files are assets of
 // its serving/<id> GitHub release is pinned with serving.website_assets; older
 // releases keep their files in Git and are read from there.
+// The release's discrepancies between studies are pinned as kg once its
+// knowledge-graph build has published them on kg/<id>. That build finishes after
+// the release is dispatched, so the producer dispatches again when it does, and
+// a run that finds the pinned release unchanged adopts its discrepancies alone.
 //   node scripts/adopt-data-release.mjs [--release <release-id>] [--allow-withheld-mappings]
 const REPOSITORY = 'rewire-bio/rewire-benchmark-data';
 const RELEASE_ID = /^\d{4}-\d{2}-\d{2}-[a-f0-9]{12}$/;
@@ -43,8 +47,22 @@ export function chooseRelease(releases, current, requested) {
   return !newest || newest === current ? null : newest;
 }
 
-/** The lock for a release, from its tag commit, the producer manifest there, the published receipt and whether its files are assets. */
-export function lockFor(previous, { releaseId, revision, manifest, receipt, assets = false }) {
+/**
+ * The kg pin for a release, from its knowledge-graph manifest and discrepancies
+ * file as published on kg/<release_id>. Both must name the release, and the file
+ * must have the manifest's checksum.
+ */
+export function kgPinFor(releaseId, manifest, discrepancies) {
+  const parsed = JSON.parse(manifest.toString('utf8'));
+  if (parsed.release_id !== releaseId) throw new Error(`The knowledge-graph manifest on kg/${releaseId} is for ${parsed.release_id}`);
+  const digest = sha256(discrepancies);
+  if (digest !== parsed.derived?.discrepancies_json_sha256) throw new Error(`discrepancies.json on kg/${releaseId} differs from its manifest`);
+  if (JSON.parse(discrepancies.toString('utf8')).release_id !== releaseId) throw new Error(`discrepancies.json on kg/${releaseId} names another release`);
+  return { tag: `kg/${releaseId}`, file: 'discrepancies.json', sha256: digest };
+}
+
+/** The lock for a release, from its tag commit, the producer manifest there, the published receipt, whether its files are assets and its kg pin. */
+export function lockFor(previous, { releaseId, revision, manifest, receipt, assets = false, kg = null }) {
   const parsed = JSON.parse(manifest.toString('utf8'));
   if (parsed.release_id !== releaseId) throw new Error(`The producer manifest at ${revision} is for ${parsed.release_id}, not ${releaseId}`);
   if (receipt.release_id !== releaseId) throw new Error('The prepared file receipt names another release');
@@ -52,8 +70,10 @@ export function lockFor(previous, { releaseId, revision, manifest, receipt, asse
     schema_version: previous.schema_version, repository: REPOSITORY, revision,
     manifest_sha256: sha256(manifest), release_id: releaseId,
     serving: { tag: `serving/${releaseId}`, file: receipt.file, sha256: receipt.sha256, ...(assets ? { website_assets: true } : {}) },
+    ...(kg ? { kg } : {}),
   };
   verifyServing(lock);
+  verifyKg(lock);
   return lock;
 }
 
@@ -117,16 +137,36 @@ function tagCommit(tag) {
   return commit;
 }
 
+/** The release's kg pin, or null while kg/<release_id> has no discrepancies file (not built yet, or built before they existed). */
+function publishedKg(releaseId, work) {
+  const tag = `kg/${releaseId}`;
+  let names;
+  try { names = JSON.parse(gh('release', 'view', tag, '--repo', REPOSITORY, '--json', 'assets')).assets.map(asset => asset.name); }
+  catch { return null; }
+  if (!names.includes('manifest.json') || !names.includes('discrepancies.json')) return null;
+  const directory = fs.mkdtempSync(path.join(work, 'kg-'));
+  gh('release', 'download', tag, '--repo', REPOSITORY, '--pattern', 'manifest.json', '--pattern', 'discrepancies.json', '--dir', directory);
+  return kgPinFor(releaseId, fs.readFileSync(path.join(directory, 'manifest.json')), fs.readFileSync(path.join(directory, 'discrepancies.json')));
+}
+
 export async function adopt({ requested, allowWithheld = false } = {}) {
   const lockFile = path.join(root, 'benchmark-data.lock.json');
   const previous = JSON.parse(fs.readFileSync(lockFile, 'utf8'));
   const releases = servingReleases(JSON.parse(gh('release', 'list', '--repo', REPOSITORY, '--limit', '200', '--json', 'tagName,createdAt,isDraft')));
   const releaseId = chooseRelease(releases, previous.release_id, requested);
-  if (!releaseId) return { adopted: false, release_id: previous.release_id };
-  const tag = `serving/${releaseId}`;
-  const revision = tagCommit(tag);
   const work = fs.mkdtempSync(path.join(os.tmpdir(), 'adopt-'));
   try {
+    if (!releaseId) {
+      // The pinned release, once its discrepancies are published: only the kg pin changes.
+      const kg = previous.kg ? null : publishedKg(previous.release_id, work);
+      if (!kg) return { adopted: false, release_id: previous.release_id };
+      const lock = { ...previous, kg };
+      verifyKg(lock);
+      fs.writeFileSync(lockFile, JSON.stringify(lock, null, 2) + '\n');
+      return { adopted: true, release_id: previous.release_id, previous_release_id: previous.release_id, revision: previous.revision, kg: kg.sha256, discrepancies_only: true };
+    }
+    const tag = `serving/${releaseId}`;
+    const revision = tagCommit(tag);
     gh('release', 'download', tag, '--repo', REPOSITORY, '--pattern', `catalogue-${releaseId}.json`, '--dir', work);
     const receipt = JSON.parse(fs.readFileSync(path.join(work, `catalogue-${releaseId}.json`), 'utf8'));
     // Only the shared code and the manifest are needed from the producer commit.
@@ -136,14 +176,14 @@ export async function adopt({ requested, allowWithheld = false } = {}) {
     run('git', ['-C', producer, 'checkout', '--quiet', revision]);
     const manifest = fs.readFileSync(path.join(producer, 'website/manifest.json'));
     const assetNames = JSON.parse(gh('release', 'view', tag, '--repo', REPOSITORY, '--json', 'assets')).assets.map(asset => asset.name);
-    const lock = lockFor(previous, { releaseId, revision, manifest, receipt, assets: publishedAsAssets(manifest, assetNames, trackedSources(producer, revision, manifest)) });
+    const lock = lockFor(previous, { releaseId, revision, manifest, receipt, assets: publishedAsAssets(manifest, assetNames, trackedSources(producer, revision, manifest)), kg: publishedKg(releaseId, work) });
     run('git', ['-C', producer, 'fetch', '--quiet', '--filter=blob:none', 'origin', previous.revision]);
     const withheld = withheldMappings(await useCasesOf(producer, previous), await useCasesOf(producer, lock));
     if (withheld.length && !allowWithheld)
       throw new Error(`${releaseId} withholds ${withheld.length} use-case mappings that ${previous.release_id} serves (evidence changed since review: ${withheld.slice(0, 5).join(', ')}${withheld.length > 5 ? ', ...' : ''}). Re-review them in rewire-benchmark-data, or adopt with --allow-withheld-mappings.`);
     fs.writeFileSync(lockFile, JSON.stringify(lock, null, 2) + '\n');
     const files = syncShared(producer);
-    return { adopted: true, release_id: releaseId, previous_release_id: previous.release_id, revision, shared_files: files.length };
+    return { adopted: true, release_id: releaseId, previous_release_id: previous.release_id, revision, shared_files: files.length, ...(lock.kg ? { kg: lock.kg.sha256 } : {}) };
   } finally { fs.rmSync(work, { recursive: true, force: true }); }
 }
 
@@ -152,5 +192,5 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
   const result = await adopt({ requested: index > 0 ? process.argv[index + 1] : undefined, allowWithheld: process.argv.includes('--allow-withheld-mappings') });
   console.log(JSON.stringify(result));
   if (process.env.GITHUB_OUTPUT)
-    fs.appendFileSync(process.env.GITHUB_OUTPUT, `adopted=${result.adopted}\nrelease_id=${result.release_id}\n`);
+    fs.appendFileSync(process.env.GITHUB_OUTPUT, `adopted=${result.adopted}\nrelease_id=${result.release_id}\ndiscrepancies_only=${!!result.discrepancies_only}\n`);
 }

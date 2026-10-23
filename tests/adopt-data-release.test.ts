@@ -1,6 +1,6 @@
 import crypto from "node:crypto";
 import { describe, expect, it } from "vitest";
-import { chooseRelease, lockFor, servingReleases, withheldMappings } from "../scripts/adopt-data-release.mjs";
+import { chooseRelease, kgPinFor, lockFor, servingReleases, withheldMappings } from "../scripts/adopt-data-release.mjs";
 import lock from "../benchmark-data.lock.json";
 
 const release = (id: string, createdAt: string, extra = {}) => ({ tagName: `serving/${id}`, createdAt, isDraft: false, ...extra });
@@ -37,6 +37,23 @@ describe("data release adoption", () => {
     });
     expect(() => lockFor(lock, { releaseId, revision, manifest: Buffer.from('{"release_id":"2026-10-07-aaaaaaaaaaaa"}'), receipt })).toThrow("manifest");
     expect(() => lockFor(lock, { releaseId, revision, manifest, receipt: { ...receipt, release_id: "2026-10-07-aaaaaaaaaaaa" } })).toThrow("receipt");
+  });
+  it("pins a release's discrepancies only when the knowledge-graph manifest names the release and their checksum", () => {
+    const releaseId = "2026-10-09-cccccccccccc";
+    const found = Buffer.from(JSON.stringify({ release_id: releaseId, rules: {}, discrepancies: [] }));
+    const digest = crypto.createHash("sha256").update(found).digest("hex");
+    const kgManifest = (extra = {}) => Buffer.from(JSON.stringify({ release_id: releaseId, derived: { discrepancies_json_sha256: digest }, ...extra }));
+    const kg = kgPinFor(releaseId, kgManifest(), found);
+    expect(kg).toEqual({ tag: `kg/${releaseId}`, file: "discrepancies.json", sha256: digest });
+    expect(() => kgPinFor(releaseId, kgManifest({ release_id: "2026-10-07-aaaaaaaaaaaa" }), found)).toThrow("manifest");
+    expect(() => kgPinFor(releaseId, kgManifest({ derived: { discrepancies_json_sha256: "0".repeat(64) } }), found)).toThrow("differs");
+    const other = Buffer.from(JSON.stringify({ release_id: "2026-10-07-aaaaaaaaaaaa", discrepancies: [] }));
+    expect(() => kgPinFor(releaseId, Buffer.from(JSON.stringify({ release_id: releaseId, derived: { discrepancies_json_sha256: crypto.createHash("sha256").update(other).digest("hex") } })), other)).toThrow("another release");
+    const manifest = Buffer.from(JSON.stringify({ release_id: releaseId }));
+    const receipt = { release_id: releaseId, file: `catalogue-${releaseId}.sqlite`, sha256: "f".repeat(64) };
+    expect(lockFor(lock, { releaseId, revision: "a".repeat(40), manifest, receipt, kg }).kg).toEqual(kg);
+    // A new release never inherits the previous release's discrepancies.
+    expect(lockFor({ ...lock, kg: { ...kg, tag: `kg/${lock.release_id}` } }, { releaseId, revision: "a".repeat(40), manifest, receipt }).kg).toBeUndefined();
   });
   it("names live mappings the new release withholds, but not deliberate review changes", () => {
     const previous = { mappings: [{ id: "a", lifecycle: "active" }, { id: "b", lifecycle: "active" }, { id: "c", lifecycle: "needs_review" }] };

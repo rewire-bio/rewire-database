@@ -4,7 +4,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { spawn, spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
-import { verifyServing } from './fetch-serving-data.mjs';
+import { kgPath, verifyServing } from './fetch-serving-data.mjs';
 
 // The production image: Next's standalone server, its static assets and public
 // files, plus the pinned release under data/: the prepared SQLite file that
@@ -24,6 +24,8 @@ export function renderFiles(lock, root) {
   const releases = path.join(root, 'data/omics/releases');
   return [
     'benchmark-data.lock.json', 'website/manifest.json', `serving/${serving.file}`,
+    // Discrepancies between studies, once the release's knowledge-graph build has published them.
+    ...(kgPath(lock) ? [kgPath(lock)] : []),
     'public/omics/manifest.json', 'public/omics/refresh.json', `public/omics/coverage/${lock.release_id}.json`,
     'data/benchmark-literature/papers.json', 'data/benchmark-literature/results.csv', 'data/omics/scope-audit.jsonl',
     'data/benchmark-runs/mfass-v2.json',

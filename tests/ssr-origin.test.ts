@@ -5,7 +5,7 @@ import os from "node:os";
 import path from "node:path";
 import { NextRequest } from "next/server";
 import { checkPrepared, checkReceipt } from "../scripts/server-entry.mjs";
-import { fetchServingData, verifyServing } from "../scripts/fetch-serving-data.mjs";
+import { fetchServingData, kgPath, verifyKg, verifyServing } from "../scripts/fetch-serving-data.mjs";
 import { middleware } from "../middleware";
 import { downloadRedirect } from "../lib/download-map";
 import { GET as receiptRoute } from "../app/deployment.json/route";
@@ -102,7 +102,7 @@ describe("embedded prepared release", () => {
     const root = fs.mkdtempSync(path.join(os.tmpdir(), "rewire-serving-"));
     try {
       const body = Buffer.from("prepared release bytes");
-      const pinned = { ...lock, serving: { ...serving, sha256: sha(body) } };
+      const pinned = { ...lock, serving: { ...serving, sha256: sha(body) }, kg: undefined };
       fs.writeFileSync(path.join(root, "benchmark-data.lock.json"), JSON.stringify(pinned));
       const fetchImpl = vi.fn(async () => new Response(body));
       const file = await fetchServingData({ root, fetchImpl: fetchImpl as never });
@@ -113,6 +113,28 @@ describe("embedded prepared release", () => {
       fs.rmSync(file);
       await expect(fetchServingData({ root, fetchImpl: (async () => new Response("altered")) as never })).rejects.toThrow("differs from the lock");
       expect(fs.readdirSync(path.join(root, "serving"))).toEqual([]);
+    } finally { fs.rmSync(root, { recursive: true, force: true }); }
+  });
+  it("downloads the pinned discrepancies beside the prepared file and drops earlier releases' copies", async () => {
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), "rewire-serving-"));
+    try {
+      const body = Buffer.from("prepared release bytes");
+      const found = Buffer.from(JSON.stringify({ release_id: lock.release_id, rules: {}, discrepancies: [] }));
+      const kg = { tag: `kg/${lock.release_id}`, file: "discrepancies.json", sha256: sha(found) };
+      const pinned = { ...lock, serving: { ...serving, sha256: sha(body) }, kg };
+      fs.writeFileSync(path.join(root, "benchmark-data.lock.json"), JSON.stringify(pinned));
+      fs.mkdirSync(path.join(root, "serving"));
+      fs.writeFileSync(path.join(root, "serving/discrepancies-2000-01-01-000000000000.json"), "{}");
+      const fetchImpl = vi.fn(async (url: string) => new Response(url.endsWith("/discrepancies.json") ? found : body));
+      await fetchServingData({ root, fetchImpl: fetchImpl as never });
+      expect(fetchImpl.mock.calls.map((call) => String(call[0]))).toContain(`https://github.com/${lock.repository}/releases/download/kg/${lock.release_id}/discrepancies.json`);
+      expect(kgPath(pinned)).toBe(`serving/discrepancies-${lock.release_id}.json`);
+      expect(fs.readFileSync(path.join(root, kgPath(pinned)!))).toEqual(found);
+      expect(fs.readdirSync(path.join(root, "serving")).sort()).toEqual([serving.file, `discrepancies-${lock.release_id}.json`].sort());
+      expect(() => verifyKg({ ...pinned, kg: { ...kg, tag: "kg/2000-01-01-000000000000" } })).toThrow("kg");
+      expect(verifyKg({ ...pinned, kg: undefined })).toBeNull();
+      fs.rmSync(path.join(root, kgPath(pinned)!));
+      await expect(fetchServingData({ root, fetchImpl: (async () => new Response("altered")) as never })).rejects.toThrow("Discrepancies file digest");
     } finally { fs.rmSync(root, { recursive: true, force: true }); }
   });
 });

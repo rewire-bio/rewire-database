@@ -38,7 +38,6 @@ const GROUP_LABEL = (view: Disagreement): Record<PaperGroup, string> => ({
   a: `Rank ${view.a.name} higher`,
   b: `Rank ${view.b.name} higher`,
   mixed: "Mixed",
-  ties: "Tied in every comparison",
 });
 
 const listNames = (papers: Paper[]) =>
@@ -47,11 +46,29 @@ const listNames = (papers: Paper[]) =>
 // Two overlapping circles: left ranks A higher, right ranks B higher, the overlap is mixed.
 const VENN = { width: 640, height: 345, cy: 188, r: 150, left: 230, right: 410 };
 
-/** Papers grouped by which system they rank higher in every comparison that is not a tie. */
+// Label widths are estimated from character counts: names are short citations, and an estimate that is
+// a little wide only makes a label smaller or wrap sooner.
+const LABEL_SIZE = 13;
+const labelWidth = (text: string, size: number) => text.length * size * 0.56;
+
+/** A label that fits `room` pixels: one line, shrunk to no less than 10px, else two lines split before a
+ * citation's year or at the space nearest the middle. */
+function fitLabel(text: string, room: number): { lines: string[]; size: number } {
+  const shrink = (lines: string[], floor: number) =>
+    Math.max(floor, Math.min(LABEL_SIZE, LABEL_SIZE * room / Math.max(...lines.map((l) => labelWidth(l, LABEL_SIZE)))));
+  if (labelWidth(text, shrink([text], 10)) <= room || !text.includes(" ")) return { lines: [text], size: shrink([text], 9) };
+  const spaces = [...text.matchAll(/ /g)].map((m) => m.index!);
+  const at = / (?:19|20)\d{2}$/.test(text) ? text.lastIndexOf(" ")
+    : spaces.reduce((best, i) => (Math.abs(i - text.length / 2) < Math.abs(best - text.length / 2) ? i : best));
+  const lines = [text.slice(0, at), text.slice(at + 1)];
+  return { lines, size: shrink(lines, 9) };
+}
+
+/** Papers grouped by the system at least two thirds of their comparisons that are not ties rank higher. */
 function Groups({ view, id }: { view: Disagreement; id: string }) {
   const labels = GROUP_LABEL(view);
   const by = (g: PaperGroup) => view.papers.filter((p) => p.group === g);
-  const groups = { a: by("a"), b: by("b"), mixed: by("mixed"), ties: by("ties") };
+  const groups = { a: by("a"), b: by("b"), mixed: by("mixed") };
   const dots = view.papers.length <= PAPER_LIMIT;
   const { cy, r, left, right } = VENN;
   // A region's horizontal extent at height y: left only, overlap, right only.
@@ -60,9 +77,18 @@ function Groups({ view, id }: { view: Disagreement; id: string }) {
     return g === "a" ? [left - h, right - h] : g === "mixed" ? [right - h, left + h] : [left + h, right + h];
   };
   const centre = { a: (left - r + right - r) / 2, mixed: (left + right) / 2, b: (left + r + right + r) / 2 };
-  const description = (["a", "b", "mixed", "ties"] as const)
-    .filter((g) => g !== "ties" || groups.ties.length)
-    .map((g) => `${labels[g]}: ${listNames(groups[g])}.`).join(" ");
+  const description = (["a", "b", "mixed"] as const).map((g) => `${labels[g]}: ${listNames(groups[g])}.`).join(" ");
+  // Each paper's dot and label in its region, spaced further apart when a label needs two lines.
+  const place = (g: "a" | "b" | "mixed", papers: Paper[]) => {
+    const layout = (step: number) => papers.map((p, i) => {
+      const y = cy + (i - (papers.length - 1) / 2) * step;
+      const [start, end] = extent(g, y);
+      const x = start + 10;
+      return { p, x, y, label: fitLabel(p.short, end - 6 - (x + 9)) };
+    });
+    const tight = layout(Math.min(22, 230 / Math.max(papers.length, 1)));
+    return tight.some((d) => d.label.lines.length > 1) ? layout(Math.min(32, 230 / Math.max(papers.length, 1))) : tight;
+  };
   return <figure className={styles.chart}>
     <div className={styles.chartScroll}>
       <svg viewBox={`0 0 ${VENN.width} ${VENN.height}`} className={styles.venn} role="img" aria-labelledby={`${id}-groups-title ${id}-groups-desc`}>
@@ -76,16 +102,15 @@ function Groups({ view, id }: { view: Disagreement; id: string }) {
         {(["a", "mixed", "b"] as const).map((g) => {
           const papers = groups[g];
           if (!dots) return <text key={g} x={centre[g]} y={cy + 6} textAnchor="middle" className={styles.vennCount}>{papers.length}</text>;
-          const step = Math.min(22, 220 / Math.max(papers.length, 1));
-          return papers.map((p, i) => {
-            const y = cy + (i - (papers.length - 1) / 2) * step;
-            const [start, end] = extent(g, y);
-            const x = start + 10;
-            const chars = Math.floor((end - 6 - (x + 9)) / 6.6);
+          return place(g, papers).map(({ p, x, y, label }) => {
             const outlier = p.role === "outlier";
+            const first = y + 4 - ((label.lines.length - 1) * label.size * 1.1) / 2;
             return <g key={p.key} className={outlier ? styles.chartOutlier : undefined}>
               <circle cx={x} cy={y} r={outlier ? 6 : 4} className={outlier ? styles.dotOutlier : styles.dot} />
-              <text x={x + 9} y={y + 4} className={styles.chartLabel}>{clip(p.short, Math.max(chars, 3))}<title>{p.name}</title></text>
+              <text x={x + 9} y={first} className={styles.chartLabel} style={{ fontSize: `${label.size.toFixed(1)}px` }}>
+                {label.lines.map((line, i) => <tspan key={i} x={x + 9} dy={i ? `${label.size * 1.1}` : undefined}>{line}</tspan>)}
+                <title>{p.name}</title>
+              </text>
             </g>;
           });
         })}
@@ -93,12 +118,11 @@ function Groups({ view, id }: { view: Disagreement; id: string }) {
     </div>
     <figcaption className={dots ? styles.srOnly : styles.legend}>
       <ul className={styles.groupList}>
-        {(["a", "b", "mixed", "ties"] as const).filter((g) => g !== "ties" || groups.ties.length).map((g) =>
+        {(["a", "b", "mixed"] as const).map((g) =>
           <li key={g}>{labels[g]} ({groups[g].length}): {listNames(groups[g])}</li>)}
       </ul>
     </figcaption>
-    {dots && groups.ties.length > 0 && <p className={styles.muted}>{labels.ties}: {listNames(groups.ties)}.</p>}
-    {dots && <p className={styles.muted}>Each dot is a paper; the larger, outlined dot is the paper that disagrees. Mixed papers rank each system higher in some comparisons.</p>}
+    <p className={styles.muted}>Each paper sits where at least two thirds of its comparisons point; Mixed means neither model reaches two thirds.{dots && " The larger, outlined dot is the paper that disagrees."}</p>
   </figure>;
 }
 
@@ -189,9 +213,9 @@ function GapPlot({ view, id, compact = false }: { view: Disagreement; id: string
         const y = compact ? top + plotHeight / 2 : top + i * rowHeight + rowHeight / 2;
         const outlier = p.role === "outlier";
         return <g key={p.key} className={outlier ? styles.chartOutlier : undefined}>
-          {!compact && <text x="0" y={y + 4} className={styles.chartLabel}>{clip(p.short, 24)}<title>{p.name}</title></text>}
+          {!compact && <text x="0" y={y + 4} className={styles.chartLabel}>{p.short}<title>{p.name}</title></text>}
           <circle cx={x(p.gap!)} cy={y} r={outlier ? 7 : 5} className={outlier ? styles.dotOutlier : styles.dot}><title>{`${p.short}: ${gapPercent(p.gap!)}`}</title></circle>
-          {(!compact || outlier) && <text x={x(p.gap!)} dx="11" y={y + 4} className={styles.chartLabel}>{compact ? `${clip(p.short, 22)} ` : ""}{gapPercent(p.gap!)}</text>}
+          {(!compact || outlier) && <text x={x(p.gap!)} dx="11" y={y + 4} className={styles.chartLabel}>{compact ? `${p.short} ` : ""}{gapPercent(p.gap!)}</text>}
         </g>;
       })}
       <text x={x(lo + pad)} y={height - 8} textAnchor="middle" className={styles.chartAxis}>{gapPercent(lo + pad)}</text>

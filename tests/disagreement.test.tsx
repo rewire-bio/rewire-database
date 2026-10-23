@@ -32,10 +32,13 @@ describe("disagreement summary and grouping", () => {
     expect(shortCitation("Blaabjerg et al. 2024, Nature Communications 15:9646 (Europe PMC full text XML)")).toBe("Blaabjerg et al. 2024");
     expect(shortCitation("Abstract: Qwen2 Technical Report (arXiv:2407.10671)")).toBe("Abstract: Qwen2 Technical…");
     expect(shortCitation("BEACON: repository README")).toBe("BEACON: repository README");
+    // At least two thirds of the comparisons that are not ties decide the group.
     expect(paperGroup(3, 0)).toBe("a");
     expect(paperGroup(0, 2)).toBe("b");
-    expect(paperGroup(3, 1)).toBe("mixed");
-    expect(paperGroup(0, 0)).toBe("ties");
+    expect(paperGroup(2, 1)).toBe("a");
+    expect(paperGroup(3, 9)).toBe("b");
+    expect(paperGroup(3, 2)).toBe("mixed");
+    expect(paperGroup(0, 0)).toBe("mixed");
     expect(gapPercent(0.123)).toBe("+12%");
     expect(gapPercent(-0.3)).toBe("−30%");
   });
@@ -54,14 +57,14 @@ describe("disagreement summary and grouping", () => {
     expect(v.papers.map((p) => p.short)).toEqual(["Alavi 2026", "Kim 2025", "Lee 2024"]);
     expect(v.a.name).toBe("AlphaGenome");
     expect(v.summary).toBe("2 papers rank AlphaGenome above Borzoi in all 25 of their comparisons. Alavi 2026 ranks Borzoi above AlphaGenome in 9 of its 12 comparisons and AlphaGenome higher in 3.");
-    expect(v.papers.map((p) => p.group)).toEqual(["mixed", "a", "a"]);
+    expect(v.papers.map((p) => p.group)).toEqual(["b", "a", "a"]);
   });
 
   it("handles one consensus paper, a mixed paper and a tie-heavy paper", () => {
     expect(view(ordering([study("source:Kim 2025", "consensus", { ag: 6 }), study("source:Alavi 2026", "outlier", { bz: 2 })])).summary)
       .toBe("Kim 2025 ranks AlphaGenome above Borzoi in all 6 of its comparisons. Alavi 2026 ranks Borzoi above AlphaGenome in all 2 of its comparisons.");
-    const mixed = view(ordering([study("source:Kim 2025", "consensus", { ag: 5, bz: 2 }, { ties: 1 }), study("source:Alavi 2026", "outlier", { bz: 2 })]));
-    expect(mixed.summary).toBe("Kim 2025 ranks AlphaGenome above Borzoi in 5 of its 8 comparisons and Borzoi higher in 2; 1 is a tie. Alavi 2026 ranks Borzoi above AlphaGenome in all 2 of its comparisons.");
+    const mixed = view(ordering([study("source:Kim 2025", "consensus", { ag: 4, bz: 3 }, { ties: 1 }), study("source:Alavi 2026", "outlier", { bz: 2 })]));
+    expect(mixed.summary).toBe("Kim 2025 ranks AlphaGenome above Borzoi in 4 of its 8 comparisons and Borzoi higher in 3; 1 is a tie. Alavi 2026 ranks Borzoi above AlphaGenome in all 2 of its comparisons.");
     expect(mixed.papers[1].group).toBe("mixed");
     const ties = view(ordering([
       study("source:Kim 2025", "consensus", { ag: 1 }, { ties: 9 }),
@@ -71,7 +74,8 @@ describe("disagreement summary and grouping", () => {
     expect(ties.summary).toBe("2 papers rank AlphaGenome above Borzoi in the one comparison that is not a tie (13 are ties). Alavi 2026 ranks Borzoi above AlphaGenome in all 2 comparisons that are not ties (6 are ties).");
     const html = render(ordering([study("source:Tied 2023", "consensus", {}, { ties: 4 }), study("source:Alavi 2026", "outlier", { bz: 2 })]));
     expect(html).toContain("Tied 2023 finds AlphaGenome and Borzoi tied in all 4 comparisons.");
-    expect(html).toContain("Tied in every comparison: Tied 2023.");
+    // A paper with only ties sits in the overlap.
+    expect(html).toContain("Mixed: Tied 2023.");
   });
 
   it("names a paper without a source record by its key", () => {
@@ -85,15 +89,21 @@ describe("disagreement views", () => {
   it("draws an ordering reversal as grouped dots and bars, with the outlier marked", () => {
     const html = render(ordering([
       study("source:Kim 2025", "consensus", { ag: 20 }),
-      study("source:Mixed 2024", "consensus", { ag: 4, bz: 1 }),
+      study("source:Fortier et al. 2026", "consensus", { ag: 4, bz: 1 }),
+      study("source:Jaganathan et al. 2026", "consensus", { ag: 3, bz: 2 }),
       study("source:Alavi 2026", "outlier", { bz: 9, ag: 3 }),
     ]));
-    expect(html).toContain("Rank AlphaGenome higher: Kim 2025. Rank Borzoi higher: none. Mixed: Alavi 2026 (disagrees), Mixed 2024.");
-    expect(html.match(/<circle cx="[\d.]+" cy="[\d.]+" r="(4|6)"/g)?.length).toBe(3);
+    // Alavi ranks Borzoi higher in 9 of 12: three quarters, so it sits in the Borzoi circle.
+    expect(html).toContain("Rank AlphaGenome higher: Kim 2025, Fortier et al. 2026. Rank Borzoi higher: Alavi 2026 (disagrees). Mixed: Jaganathan et al. 2026.");
+    expect(html).toContain("Each paper sits where at least two thirds of its comparisons point; Mixed means neither model reaches two thirds.");
+    // Labels are never cut short: the long name in the narrow overlap wraps onto two lines.
+    expect(html).not.toContain("…");
+    expect(html).toMatch(/<tspan[^>]*>Jaganathan et al\.<\/tspan><tspan[^>]*>2026<\/tspan>/);
+    expect(html.match(/<circle cx="[\d.]+" cy="[\d.]+" r="(4|6)"/g)?.length).toBe(4);
     expect(html).toContain(">Mixed<");
     expect(html).toContain("Alavi 2026 (disagrees): AlphaGenome higher in 3, Borzoi higher in 9, 0 ties.");
     expect(html).toMatch(/Disagrees: <\/tspan>Alavi 2026/);
-    expect(html).toContain("Papers compared (3)");
+    expect(html).toContain("Papers compared (4)");
   });
 
   it("caps drawn papers at 12 and switches the groups to counts for 20 papers", () => {

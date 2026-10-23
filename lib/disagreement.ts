@@ -7,9 +7,12 @@ export type Named = { name: string; href: string | null };
 /** A study's source records as the page shows them; `short` is a citation such as "Alavi 2026". */
 export type PaperSource = Named & { short: string; url: string | null; more: Named[] };
 
-/** Which system a paper ranks higher in every comparison that is not a tie, "mixed" when both happen,
- * "ties" when it has no decided comparison. */
-export type PaperGroup = "a" | "b" | "mixed" | "ties";
+/** Which system at least two thirds of a paper's comparisons that are not ties rank higher; "mixed" when
+ * neither reaches two thirds or every comparison is a tie. */
+export type PaperGroup = "a" | "b" | "mixed";
+
+/** The share of a paper's decided comparisons a system needs for the paper to count as ranking it higher. */
+export const CLEAR_MAJORITY = 2 / 3;
 
 export type Paper = PaperSource & {
   key: string;
@@ -73,8 +76,9 @@ export function shortCitation(name: string, year?: unknown): string {
 const plural = (n: number, one: string, many = `${one}s`) => `${n} ${n === 1 ? one : many}`;
 
 export function paperGroup(higherA: number, higherB: number): PaperGroup {
-  if (higherA && higherB) return "mixed";
-  return higherA ? "a" : higherB ? "b" : "ties";
+  const decided = higherA + higherB;
+  if (!decided) return "mixed";
+  return higherA / decided >= CLEAR_MAJORITY ? "a" : higherB / decided >= CLEAR_MAJORITY ? "b" : "mixed";
 }
 
 /** "+12%" or "-30%": a relative gap as a percentage. */

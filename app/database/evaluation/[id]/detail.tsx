@@ -7,6 +7,8 @@ import { Fragment } from "react";
 import UseCaseBacklinks from "@/components/catalogue/UseCaseBacklinks";
 import { recordHref, displayValue, originLabel, safeSourceUrl, type OmicsRecord } from "@/lib/omics";
 import { EvidenceConcerns } from "@/components/catalogue/Profile";
+import { ContestedPanel } from "@/components/catalogue/Contested";
+import type { ResultContest } from "@/lib/discrepancies";
 import EvidenceTable from "@/components/catalogue/EvidenceTable";
 import Reproduction from "@/components/catalogue/Reproduction";
 import Results from "@/components/catalogue/Results";
@@ -63,7 +65,11 @@ function Fields({
 /** An evaluation: the model, data and conditions behind a result, plus its
  * own reviewed research readiness. Renders only the prepared page, which the
  * importer builds with the release's query engine. */
-export function EvaluationDetail({ page }: { page: EvaluationRecordPage }) {
+export function EvaluationDetail({ page, contested = [] }: {
+  page: EvaluationRecordPage;
+  /** The discrepancies between studies the shown results take part in, read by the route beside the page. */
+  contested?: ResultContest[];
+}) {
   const { detail, results, evidence, manifests } = page;
   const { record } = detail;
   const useCaseLinks = page.use_case_links;
@@ -133,6 +139,7 @@ export function EvaluationDetail({ page }: { page: EvaluationRecordPage }) {
       </header>
       <section className="block first">
         <div className="wrap">
+          <ContestedPanel contests={contested} scope="evaluation" />
           <UseCaseBacklinks links={useCaseLinks} configurations={useCaseConfigurations} />
           <SectionNavigation
             sections={[

@@ -23,6 +23,14 @@ function mapping(id: string, evaluations: ReturnType<typeof evaluation>[], prese
 const bin = (label: string, order: number) => ({ group: "bins", title: "Deletions by size", stratum_label: label, stratum_order: order, headline_metric: "f1-score" });
 
 describe("use-case comparisons", () => {
+  it("keeps the results behind each row, across strata, so contested results can be marked", () => {
+    const [comparison] = buildComparisons([
+      mapping("b2", [evaluation("dragen", [result("f1-score", "0.966")])], bin("5 to 10 kb", 2)),
+      mapping("b1", [evaluation("dragen", [result("f1-score", "0.926")]), evaluation("cnvnator", [result("f1-score", "0.391")])], bin("1 to 5 kb", 1)),
+    ]);
+    expect(comparison.rows.find((r) => r.id === "dragen")!.resultIds.sort()).toEqual(["r-f1-score-0.926", "r-f1-score-0.966"]);
+    expect(comparison.rows.find((r) => r.id === "cnvnator")!.resultIds).toEqual(["r-f1-score-0.391"]);
+  });
   it("joins strata of one study into one table, in stratum order, with the headline metric and the others below", () => {
     const [comparison] = buildComparisons([
       mapping("b2", [evaluation("dragen", [result("f1-score", "0.966"), result("recall", "0.933")]), evaluation("cnvnator", [result("f1-score", "0.618")])], bin("5 to 10 kb", 2)),

@@ -1,4 +1,5 @@
 import { downloadHref } from "@/lib/downloads";
+import { openFindingsForSystem } from "@/lib/discrepancies";
 import Breadcrumbs from "@/components/catalogue/Breadcrumbs";
 import { recordBreadcrumbs } from "@/lib/catalogue-sharing";
 import { catalogueText } from "@/lib/catalogue-text";
@@ -175,6 +176,11 @@ export function PredictiveEntityDetail({ detail }: { detail: RecordDetail }) {
       )?.record
     : undefined;
   const hasResults = results.total > 0 || hasLinked || broaderFamilyOnly;
+  // Findings compare models after configuration and alias resolution, so a configuration
+  // borrows the count of the model it configures.
+  const comparedAs = [record.id, ...detail.direct.filter((item) => item.relation === "configuration_of").map((item) => item.record.id)]
+    .find((id) => openFindingsForSystem(id).length > 0);
+  const disagreements = comparedAs ? openFindingsForSystem(comparedAs).length : 0;
   const kindLabel = singularKindLabels[record.kind].toLowerCase();
   return (
     <>
@@ -233,6 +239,12 @@ export function PredictiveEntityDetail({ detail }: { detail: RecordDetail }) {
                   <a href="#linked-results" className={styles.resultCount}>
                     {linkedCount(unattributed!)} with further results
                   </a>
+                )}
+                {disagreements > 0 && (
+                  <Link href={`/contested/?system=${encodeURIComponent(comparedAs!)}&status=open`} className={styles.resultCount}>
+                    {disagreements === 1 ? "1 open disagreement between studies involves" : `${disagreements} open disagreements between studies involve`}{" "}
+                    {comparedAs === record.id ? `this ${kindLabel}` : "its model"}
+                  </Link>
                 )}
                 {broaderFamilyOnly && !hasLinked && family && (
                   <Link href={`${recordHref(family.record)}#results`} className={styles.resultCount}>

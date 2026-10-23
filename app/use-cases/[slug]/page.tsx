@@ -14,6 +14,7 @@ import { researchAreaLabel } from "@/lib/omics-browse";
 import { socialMetadata } from "@/lib/catalogue-sharing";
 import { evidenceCheckedLabel, evidenceCountParts, summariseUseCaseEvidence, summaryParagraphs } from "@/lib/use-case-summary";
 import { buildCatalogue } from "@/lib/catalogue-build";
+import { contestedResults, contestingFindings } from "@/lib/discrepancies";
 import { baselineComparisons, buildComparisons, heldJudgements, methodTypeLabel, toolsCompared } from "@/lib/use-case-comparisons";
 import styles from "@/components/catalogue/UseCases.module.css";
 
@@ -38,6 +39,8 @@ export default function UseCasePage({ params }: { params: Params }) {
   const orderedComparisons = [...comparisons].sort((a, b) => Number(b.rows.length > 1) - Number(a.rows.length > 1));
   const held = heldJudgements(detail.mappings);
   const { query } = buildCatalogue();
+  const contested = contestedResults(comparisons.flatMap((c) => c.rows.flatMap((r) => r.resultIds)));
+  const anyContested = comparisons.some((c) => c.rows.some((r) => contestingFindings(r.resultIds, contested).length > 0));
   const tools = toolsCompared(comparisons, (id) => query.record?.(id) ?? null);
   // The established pre-machine-learning method newer methods must beat (a reviewed claim; older releases have none).
   const baseline = entry.baseline;
@@ -109,8 +112,9 @@ export default function UseCasePage({ params }: { params: Params }) {
         <section id="evidence" className={styles.section}>
           <h2>{heading("evidence")}</h2>
           <p>Each table is one study or protocol with its own truth set and scoring. Compare tools within a table, not across tables.</p>
+          {anyContested && <p>Rows marked Contested rest on results that other studies disagree with. The results are still shown. See <a href="/contested/">contested results</a> for what disagrees and what we are doing about it.</p>}
           {orderedComparisons.length
-            ? orderedComparisons.map((comparison) => <UseCaseComparison key={comparison.id} comparison={comparison} useCasePath={path} baselineIds={baselineIds} />)
+            ? orderedComparisons.map((comparison) => <UseCaseComparison key={comparison.id} comparison={comparison} useCasePath={path} baselineIds={baselineIds} contested={contested} />)
             : <div className={styles.notice}><p>No model comparison has been collected for this question yet.</p><p>Relevant methods and studies may exist outside this collection.</p></div>}
         </section>
         {held.length > 0 && <section id="held" className={styles.section}>

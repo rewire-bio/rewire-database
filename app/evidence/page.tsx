@@ -128,6 +128,13 @@ export default function EvidenceGuide() {
               every cited source. Source disagreements and superseded records
               remain visible.
             </p>
+            <p>
+              Each release also checks whether one study ranks models against
+              the order other studies agree on. These automatic leads are listed
+              under <Link href="/contested/">contested results</Link>, with what
+              we are doing to resolve each one. A lead marks results; it never
+              hides them.
+            </p>
           </section>
           <section className={styles.section}>
             <h2>Inspect an example</h2>

@@ -13,6 +13,7 @@ flowchart TD
     Auth["Firebase Auth handler"]
     Firestore["Firestore<br/>private submissions only"]
     GitHub["GitHub: rewire-benchmark-data<br/>release asset and downloads"]
+    KG["Knowledge-graph build<br/>discrepancies between studies"]
 
     Browser --> Worker
     Worker -->|"pages, assets, download redirects,<br/>/api/trpc/catalogue.*"| SSR
@@ -20,6 +21,7 @@ flowchart TD
     Worker -->|"/__/auth"| Auth
     Functions --> Firestore
     Functions -.->|"publication check: catalogue.get"| Worker
+    KG -.->|"findings and follow-up actions,<br/>discrepancy tables (contract 3.3)"| GitHub
     GitHub -.->|"prepared file, at image build"| SSR
     Browser -.->|"follows 307 to the gzip download"| GitHub
 ```
@@ -42,6 +44,7 @@ The producer publishes each release as one SQLite file (tag `serving/<release>`,
 
 - **Pages** read the file through `shared/omics/prepared-catalogue.ts` (`lib/prepared.ts`). A request reads only the rows it needs; no page parses the whole catalogue or builds an index.
 - **The public catalogue API** (`/api/trpc/catalogue.*`) runs in the same server over the same reader, so pages and API cannot disagree. A request pinned to another release gets a 404 naming the current one.
+- **Contested results** (`/contested/`, the Contested badges and panels) read the discrepancy tables in the same file. The data repository's knowledge-graph build infers them before the file is built. See [docs/contested-results.md](docs/contested-results.md).
 - **Downloads** are site paths (`/omics/...`, `/benchmark-literature/...`). The server redirects each to the exact gzip `source` the pinned manifest lists, and returns 404 for anything it does not list.
 
 Nothing is prerendered at build time. Next builds against an empty data directory, so a build that tries to read release data fails.

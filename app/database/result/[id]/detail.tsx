@@ -20,6 +20,8 @@ import type { ResultRecordPage } from "@/lib/record-page";
 import { DERIVED_LABEL, derivationScriptUrl, resultDerivation, type Derivation } from "@/lib/derivation";
 import { dataPin } from "@/lib/data-pin";
 import DerivedMark from "@/components/catalogue/DerivedMark";
+import { ContestedPanel } from "@/components/catalogue/Contested";
+import type { ResultContest } from "@/lib/discrepancies";
 import styles from "../../database.module.css";
 
 /** How Rewire computed a value that its source does not print: the data files and
@@ -124,7 +126,11 @@ function Fields({
 /** A result record: a single measurement, its evaluation context and evidence.
  * Renders only the prepared page, which the importer builds with the release's
  * query engine; this component performs no catalogue reads of its own. */
-export function ResultDetail({ page }: { page: ResultRecordPage }) {
+export function ResultDetail({ page, contested = [] }: {
+  page: ResultRecordPage;
+  /** The discrepancies between studies this result takes part in, read by the route beside the page. */
+  contested?: ResultContest[];
+}) {
   const { detail, first, evidence } = page;
   const { record } = detail;
   const useCaseLinks = page.use_case_links;
@@ -192,6 +198,7 @@ export function ResultDetail({ page }: { page: ResultRecordPage }) {
       </header>
       <section className="block first">
         <div className="wrap">
+          <ContestedPanel contests={contested} scope="result" />
           <UseCaseBacklinks links={useCaseLinks} configurations={useCaseConfigurations} />
           <SectionNavigation
             sections={[

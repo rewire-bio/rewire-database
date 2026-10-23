@@ -21,6 +21,14 @@ describe("public catalogue API", () => {
       .toEqual(JSON.parse(JSON.stringify(query.results({ id, limit: 3 }))));
     expect((await call("auditRuns", { release_id: lock.release_id, limit: 2 })).status).toBe(404);
   });
+  it("answers discrepancy queries from the prepared file, empty when the release has none", async () => {
+    const page = await data(await call("discrepancies", { release_id: lock.release_id, settled: "open" }));
+    expect(page.available).toBe(query.hasDiscrepancies());
+    expect(page.total).toBe(query.discrepancies({ settled: "open" }).total);
+    if (!query.hasDiscrepancies()) expect(page.items).toEqual([]);
+    expect(await data(await call("discrepancy", { release_id: lock.release_id, id: "discrepancy-0000000000000000" }))).toBeNull();
+    expect((await call("discrepancies", { release_id: lock.release_id, severity: "extreme" })).status).toBe(400);
+  });
   it("refuses another release instead of answering from this one", async () => {
     const response = await call("list", { release_id: "2000-01-01-000000000000" });
     expect(response.status).toBe(404);

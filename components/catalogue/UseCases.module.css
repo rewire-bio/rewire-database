@@ -225,3 +225,6 @@
 .heldGrid > article { min-width: 0; padding: 16px 18px; border: 1px dashed var(--line-2); border-radius: var(--radius-sm); }
 .heldGrid h3 { margin: 0 0 6px; font-size: var(--fs-h5); }
 .heldGrid p { margin: 0; }
+/* A row whose results are the disagreeing study's in an unsettled discrepancy between studies. */
+.contestedBadge { display: inline-flex; margin-left: 6px; padding: 0 8px; border-radius: 999px; font-size: 11px; line-height: 1.6; font-weight: 500; background: var(--ink); color: var(--bg); vertical-align: 1px; text-decoration: none; }
+a.contestedBadge, a.contestedBadge:hover { color: var(--bg); text-decoration: none; }

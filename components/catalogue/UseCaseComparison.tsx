@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { recordHref } from "@/lib/omics";
 import { isBaselineRow, methodTypeLabel, originLabel, type Comparison, type ComparisonCell, type ComparisonRow, type ShownValue } from "@/lib/use-case-comparisons";
+import { contestingFindings, discrepancyHref, type DiscrepancySummary, type ResultContest } from "@/lib/discrepancies";
 import DerivedMark from "./DerivedMark";
 import styles from "./UseCases.module.css";
 
@@ -33,10 +34,20 @@ function CellContent({ cell }: { cell: ComparisonCell }) {
   </>;
 }
 
-function Tool({ row, href, baseline }: { row: ComparisonRow; href: string; baseline: boolean }) {
+/** Links a row to the unsettled discrepancies between studies in which its results are the
+ * disagreeing study's. It flags the results for checking; it does not say which study is right. */
+function Contested({ found }: { found: DiscrepancySummary[] }) {
+  if (!found.length) return null;
+  return <Link href={found.length === 1 ? discrepancyHref(found[0].id) : "/contested/"} className={styles.contestedBadge} title={found.map((d) => d.summary).join("\n")}>
+    Contested{found.length > 1 && ` (${found.length})`}<span className="sr-only">: other studies disagree with this study&apos;s ranking of this tool</span>
+  </Link>;
+}
+
+function Tool({ row, href, baseline, contested = [] }: { row: ComparisonRow; href: string; baseline: boolean; contested?: DiscrepancySummary[] }) {
   return <>
     <Link href={href}>{row.name}</Link>
     {baseline && <span className={styles.baselineBadge}>Baseline</span>}
+    <Contested found={contested} />
     {row.detail && <span className={styles.rowDetail}>{row.detail}</span>}
     {row.methodTypes.length > 0 && <span className={styles.rowMeta}>{row.methodTypes.map(methodTypeLabel).join(", ")}</span>}
   </>;
@@ -45,8 +56,13 @@ function Tool({ row, href, baseline }: { row: ComparisonRow; href: string; basel
 /** One comparison table: tools as rows; strata (in order) or metrics as columns. The best value
  * in each column is marked only within this table, never against another study. A single row is
  * shown as a list of metrics, since there is nothing to compare across rows. */
-export default function UseCaseComparison({ comparison, useCasePath, baselineIds = [] }: { comparison: Comparison; useCasePath: string; baselineIds?: string[] }) {
+export default function UseCaseComparison({ comparison, useCasePath, baselineIds = [], contested = {} }: {
+  comparison: Comparison; useCasePath: string; baselineIds?: string[];
+  /** The discrepancies each result takes part in (lib/discrepancies contestedResults). */
+  contested?: Record<string, ResultContest[]>;
+}) {
   const baselines = new Set(baselineIds);
+  const flags = (r: ComparisonRow) => contestingFindings(r.resultIds ?? [], contested);
   const { headline, layout, rows, columns } = comparison;
   const returnTo = `?return_to=${encodeURIComponent(useCasePath)}`;
   const href = (row: ComparisonRow) => `/database/configuration/${encodeURIComponent(row.id)}/${returnTo}`;
@@ -56,7 +72,7 @@ export default function UseCaseComparison({ comparison, useCasePath, baselineIds
   const highlighted = rows.some((row) => row.cells.some((cell) => cell.best));
   const row = (r: ComparisonRow) => (
     <tr key={r.id}>
-      <th scope="row"><Tool row={r} href={href(r)} baseline={hasNonBaseline && isBaselineRow(r, baselines)} /></th>
+      <th scope="row"><Tool row={r} href={href(r)} baseline={hasNonBaseline && isBaselineRow(r, baselines)} contested={flags(r)} /></th>
       {r.cells.map((cell, i) => <td key={columns[i].label} className={cell.best ? styles.best : undefined}><CellContent cell={cell} /></td>)}
     </tr>
   );
@@ -81,7 +97,7 @@ export default function UseCaseComparison({ comparison, useCasePath, baselineIds
       </p>
       {single
         ? <div className={styles.singleResult}>
-          <p className={styles.singleTool}><Tool row={rows[0]} href={href(rows[0])} baseline={isBaselineRow(rows[0], baselines)} /></p>
+          <p className={styles.singleTool}><Tool row={rows[0]} href={href(rows[0])} baseline={isBaselineRow(rows[0], baselines)} contested={flags(rows[0])} /></p>
           <dl className={styles.metricList}>
             {columns.map((column, i) => <div key={column.label}><dt>{column.label}</dt><dd><CellContent cell={rows[0].cells[i]} /></dd></div>)}
           </dl>

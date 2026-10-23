@@ -14,6 +14,9 @@ import { BROWSE_PAGE_SIZE } from "@/lib/omics-browse";
 import RefreshStatus from "@/components/RefreshStatus";
 import AgentConnect from "@/components/AgentConnect";
 import { readRefresh } from "@/lib/refresh-build";
+import { contestedList } from "@/lib/discrepancies";
+import { HOME_NOTICE } from "@/lib/home-notice";
+import contested from "@/components/catalogue/Contested.module.css";
 
 const pageMetadata = {
   title: "Biological model benchmark database",
@@ -34,6 +37,7 @@ export default function BenchmarksPage() {
   const { catalogue, query } = buildCatalogue();
   // The release's count, not the use-case evidence itself, which is large to load.
   const useCases = (catalogue.coverage.use_cases as { use_cases?: number } | undefined)?.use_cases ?? 0;
+  const disagreements = contestedList({})?.totals;
 
   return (
     <>
@@ -66,6 +70,14 @@ export default function BenchmarksPage() {
             <strong>A benchmark</strong> <span>Benchmarks</span>
           </a>
         </nav>
+        {/* Shown from the first release with discrepancy data (contract 3.3). */}
+        {disagreements && <div className={contested.notice}>
+          {HOME_NOTICE && <p><strong>New.</strong> {HOME_NOTICE.text} <a href={HOME_NOTICE.href}>{HOME_NOTICE.link}</a></p>}
+          <p>
+            <a href="/contested/?status=open">{disagreements.open} open {disagreements.open === 1 ? "disagreement" : "disagreements"} between studies</a>
+            {disagreements.settled > 0 && <>, {disagreements.settled} settled</>} in this release.
+          </p>
+        </div>}
       </PageHeader>
       <div className="wrap content">
         <Explorer

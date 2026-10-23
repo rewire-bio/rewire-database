@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { loadRecordPage, recordPageMetadata } from "@/lib/record-page";
+import { contestedResults } from "@/lib/discrepancies";
 import { ResultDetail } from "./detail";
 
 type Params = { id: string };
@@ -13,5 +14,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
 }
 
 export default async function Page({ params }: { params: Params }) {
-  return <ResultDetail page={await loadRecordPage("result", params.id)} />;
+  const page = await loadRecordPage("result", params.id);
+  const contested = Object.values(contestedResults([params.id])).flat();
+  return <ResultDetail page={page} contested={contested} />;
 }

@@ -21,7 +21,7 @@ vi.mock("@/lib/use-cases-build", () => ({
   accumulateUseCaseDetail: (_query: unknown, slug: string) => state.get({ slug }),
   useCaseSummaries: () => ({}),
 }));
-vi.mock("@/lib/catalogue-build", () => ({ buildCatalogue: () => ({ query: { get: () => null } }) }));
+vi.mock("@/lib/catalogue-build", () => ({ buildCatalogue: () => ({ query: { get: () => null, hasDiscrepancies: () => false } }) }));
 vi.mock("@/lib/use-cases-client", async (original) => ({ ...(await original<object>()), createUseCasesClient: () => ({ list: state.list }) }));
 
 type CollectionPlan = NonNullable<UseCase["collection_plan"]>;

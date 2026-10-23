@@ -5,6 +5,8 @@ import Breadcrumbs from "@/components/catalogue/Breadcrumbs";
 import { socialMetadata } from "@/lib/catalogue-sharing";
 import { buildCatalogue } from "@/lib/catalogue-build";
 import { InvestigationList } from "@/components/catalogue/ResearchInvestigation";
+import { discrepancyHref, investigatedFindings, stateLabel } from "@/lib/discrepancies";
+import { safeSourceUrl } from "@/lib/omics";
 import styles from "@/components/catalogue/Research.module.css";
 
 const pageMetadata = {
@@ -24,6 +26,7 @@ export const metadata: Metadata = {
 export default function InvestigationsPage() {
   const { catalogue, query } = buildCatalogue();
   const research = query.research();
+  const followed = investigatedFindings();
   return <>
     <header className="page-head"><div className="wrap">
       <Breadcrumbs items={[{ name: "Database", path: "/" }, { name: "Investigations", path: "/investigations/" }]} />
@@ -32,11 +35,24 @@ export default function InvestigationsPage() {
       <p className="intro">Examine why benchmark results differ, test possible explanations, and identify which findings need independent evidence.</p>
     </div></header>
     <section className="block first"><div className="wrap">
-      <nav className={styles.nav} aria-label="Investigation navigation"><Link href="/">Benchmark database</Link> · <Link href="/?kind=dataset#browse">Dataset readiness</Link> · <Link href="/?kind=evaluation&readiness=analysis#browse">Evaluations ready for investigation</Link></nav>
+      <nav className={styles.nav} aria-label="Investigation navigation"><Link href="/">Benchmark database</Link> · <Link href="/?kind=dataset#browse">Dataset readiness</Link> · <Link href="/?kind=evaluation&readiness=analysis#browse">Evaluations ready for investigation</Link> · <Link href="/contested/">Contested results</Link></nav>
       <section className={styles.section}>
         <h2>Reviewed reports</h2>
         <p className={styles.muted}>Release {catalogue.release_id} · {research.investigations.length} reviewed reports</p>
         <InvestigationList reports={research.investigations} />
+      </section>
+      <section className={styles.section}>
+        <h2>Disagreements between studies</h2>
+        <p>Each release flags studies that rank models against the order other studies agree on. These automatic leads, and what we are doing about each, are listed under <Link href="/contested/">contested results</Link>.</p>
+        {followed.length > 0 && <>
+          <p>We have opened an investigation for these:</p>
+          <ul>
+            {followed.map(({ discrepancy: d, investigation_url }) => <li key={d.id}>
+              <Link href={discrepancyHref(d.id)}>{d.label}</Link> · {stateLabel(d.state)}
+              {safeSourceUrl(investigation_url) && <> · <a href={safeSourceUrl(investigation_url)}>Investigation</a></>}
+            </li>)}
+          </ul>
+        </>}
       </section>
       <section className={styles.section}>
         <h2>What an investigation establishes</h2>

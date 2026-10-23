@@ -3,6 +3,7 @@ import { z } from "zod";
 import { entityKinds } from "../shared/omics/entity-kinds";
 import { recordPageKinds } from "../lib/record-pages";
 import { researchCapabilities } from "../shared/omics/research";
+import { discrepancyStates, severities } from "../shared/omics/discrepancies";
 import type { PreparedCatalogue } from "../shared/omics/prepared-catalogue";
 import { preparedCatalogue, preparedUseCases } from "./prepared";
 import { localRecordPage } from "./record-page-local";
@@ -108,6 +109,25 @@ export function catalogueRouter(open: () => PreparedCatalogue = preparedCatalogu
       investigations: t.procedure
         .input(z.object({ ...pinned, ...pagination, id: id.optional(), record_id: id.optional() }).strict())
         .query(({ input }) => read(input.release_id, (q) => q.investigations(omit(input)))),
+      // Discrepancies between studies (contract 3.3): automatic leads, never a reason to withhold a
+      // result. Releases without them answer an empty page and null.
+      discrepancies: t.procedure
+        .input(z.object({
+          ...pinned,
+          cursor: z.string().max(200).optional(),
+          limit: z.number().int().min(1).max(500).optional(),
+          severity: z.enum(severities).optional(),
+          state: z.enum(discrepancyStates).optional(),
+          settled: z.enum(["open", "settled"]).optional(),
+          system: id.optional(),
+          rule: z.string().max(100).optional(),
+        }).strict())
+        .query(({ input }) => read(input.release_id, (q) => ({
+          available: q.hasDiscrepancies(), ...q.discrepancyRules(), ...q.discrepancies(omit(input)),
+        }))),
+      discrepancy: t.procedure
+        .input(z.object({ ...pinned, id }).strict())
+        .query(({ input }) => read(input.release_id, (q) => q.discrepancy(input.id))),
       compare: t.procedure
         .input(z.object({ ...pinned, ids: z.array(id).min(2).max(20) }).strict())
         .query(({ input }) => read(input.release_id, (q) => q.compare(input))),

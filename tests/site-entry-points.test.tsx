@@ -5,7 +5,7 @@ import MfassV2Page from "../app/runs/mfass-v2/page";
 vi.mock("@/lib/catalogue-build", () => ({
   buildCatalogue: () => ({
     catalogue: { release_id: "fixture", released_at: "2026-10-10T00:00:00Z", coverage: { use_cases: { schema_version: "1.0", use_cases: 2, mappings: 5 } } },
-    query: { list: () => ({ items: [], total: 0 }), release: () => ({}) },
+    query: { list: () => ({ items: [], total: 0 }), release: () => ({}), hasDiscrepancies: () => false },
   }),
 }));
 vi.mock("@/lib/use-cases-build", () => ({ buildUseCases: () => { throw new Error("The home page must not load use-case evidence"); } }));

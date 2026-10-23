@@ -13,6 +13,7 @@ import { auditChecksPage, auditRecordsPage, auditRunsPage, type AuditTable } fro
 import { benchmarkCoverage } from "../../scripts/omics/audit-benchmark-evidence";
 import { buildBaselineAudit } from "../../lib/baseline-coverage";
 import type { PreparedCatalogue } from "../../shared/omics/prepared-catalogue";
+import { discrepanciesPage, summarise, type Discrepancy } from "../../shared/omics/discrepancies";
 
 export function preparedFromSnapshot(
   snapshot: CatalogueSnapshot,
@@ -21,6 +22,8 @@ export function preparedFromSnapshot(
     audit?: AuditTable;
     /** Research data served as-is, bypassing the engine's validation, to test route privacy. */
     research?: CatalogueSnapshot["research"];
+    /** Discrepancies between studies, as a 3.3 file stores them, in display order. Absent: a file older than 3.3. */
+    discrepancies?: Discrepancy[];
   } = {},
 ): PreparedCatalogue {
   const live = createCatalogueQuery(snapshot);
@@ -86,7 +89,32 @@ export function preparedFromSnapshot(
     auditRecords: (input: Parameters<typeof auditRecordsPage>[1]) => auditRecordsPage(audit, input),
     auditChecks: (input: Parameters<typeof auditChecksPage>[1]) =>
       auditChecksPage(audit, input, [], live.record(input.record_id) ?? undefined, new Map()),
+    ...discrepancyReaders(snapshot.release_id, options.discrepancies),
     close: () => undefined,
   };
   return reader as unknown as PreparedCatalogue;
+}
+
+/** The prepared reader's discrepancy answers (shared/omics/prepared-catalogue.ts) over a list of findings. */
+function discrepancyReaders(releaseId: string, findings: Discrepancy[] | undefined) {
+  const list = findings ?? [];
+  const summaries = new Map(list.map((d) => [d.id, summarise(d)]));
+  const find = (id: string) => list.find((d) => d.id === id) ?? list.find((d) => d.previous_ids.includes(id)) ?? null;
+  return {
+    hasDiscrepancies: () => !!findings,
+    discrepancyRules: () => ({ rules: findings ? { version: "test" } : {}, excluded: null }),
+    discrepancies: (input = {}) => discrepanciesPage(releaseId, [...summaries.values()], input),
+    discrepancy: find,
+    contestedBy(resultIds: readonly string[]) {
+      const out: Record<string, { discrepancy: ReturnType<typeof summarise>; role: string }[]> = {};
+      for (const id of new Set(resultIds))
+        for (const d of list) {
+          const role = d.outlier_results.includes(id) ? "outlier" : d.consensus_results.includes(id) ? "consensus" : null;
+          if (role) (out[id] ??= []).push({ discrepancy: summaries.get(d.id)!, role });
+        }
+      return out;
+    },
+    discrepanciesForSystem: (id: string) => list.filter((d) => d.systems.includes(id)).map((d) => summaries.get(d.id)!),
+    discrepancyActions: (id: string) => find(id)?.actions ?? [],
+  } satisfies Partial<PreparedCatalogue>;
 }

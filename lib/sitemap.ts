@@ -2,6 +2,7 @@ import { recordIsIndexable } from "./catalogue-seo";
 import { recordHref } from "./omics";
 import { catalogueIndexPaths, indexSource } from "./catalogue-index";
 import { buildCatalogue } from "./catalogue-build";
+import { contestedPaths } from "./discrepancies";
 
 export const SITEMAP_ORIGIN = "https://benchmarks.rewirebio.io";
 /** URLs per sitemap file; the protocol allows 50,000. */
@@ -30,6 +31,8 @@ export function sitemapEntries(): SitemapEntry[] {
     ...query.recordIds().filter(recordIsIndexable).map((record) => ({ path: recordHref(record) })),
     { path: "/investigations/" },
     ...query.research().investigations.map((report) => ({ path: `/investigations/${report.id}/` })),
+    { path: "/contested/" },
+    ...contestedPaths(query).map((path) => ({ path })),
   ];
 }
 

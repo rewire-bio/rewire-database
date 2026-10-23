@@ -15,6 +15,7 @@ import { localRecordPage } from "../lib/record-page-local";
 import { resultPageTitle } from "../lib/result-labels";
 import type { ResultRecordPage } from "../lib/record-pages";
 import { getResearch } from "../shared/omics/research";
+import { contestedPaths } from "../lib/discrepancies";
 import { downloadLocations, downloadUrls } from "./download-locations.mjs";
 import { checkPageMetadata, checkSitemap, checkSitemapIndex, checkSocialImage } from "./seo/check-page-metadata";
 import { utilityPageMetadataContracts } from "./seo/utility-page-metadata";
@@ -111,13 +112,15 @@ async function main() {
     assert.ok(home.includes('id="mfass-v1"') && home.includes('href="/use-cases/"'), "Home navigation");
     const useCase = useCaseSlugs(catalogue)[0];
     for (const pathname of ["/models/", "/models/page/2/", "/benchmarks/", "/evidence/", "/coverage/", "/use-cases/",
-      "/investigations/", "/runs/mfass-v2/", "/updates/", "/agents/",
-      ...(useCase ? [`/use-cases/${useCase}/`] : []),
+      "/investigations/", "/contested/", "/runs/mfass-v2/", "/updates/", "/agents/",
+      ...(useCase ? [`/use-cases/${useCase}/`] : []), ...contestedPaths().slice(0, 1),
       ...getResearch(catalogue).investigations.slice(0, 1).map((report) => `/investigations/${report.id}/`)])
       assert.match(await html(pathname), new RegExp(`<link rel="canonical" href="https://benchmarks\\.rewirebio\\.io${pathname}"`), pathname);
     for (const pathname of ["/literature/", `/${DOMAINS[0].id}/`, `/literature/papers/${getLiterature().papers[0].id}/`])
       assert.match(await html(pathname), /<link rel="canonical" href="https:\/\/benchmarks\.rewirebio\.io\//, pathname);
     assert.match(await (await get("/updates/feed.xml")).text(), /<feed/);
+    // Discrepancies between studies come from the prepared file alone (contract 3.3); older files have none.
+    if (!contestedPaths().length) assert.match(await html("/contested/"), /No discrepancy data in this release/);
     verifyContributionExport(await html("/contribute/"), process.env.NEXT_PUBLIC_OMICS_CONTRIBUTIONS_ENABLED);
     assert.deepEqual(failures, [], "Rendered pages must meet their search and evidence contracts");
     console.log(`SSR checks passed: ${rendered} pages rendered (${full ? "full corpus" : "representative sample"}).`);
@@ -232,6 +235,7 @@ function checkSitemapInventory(catalogue: CatalogueSnapshot, urls: Set<string>) 
   const expected = new Set([
     "/", "/runs/mfass-v2/", "/evidence/", "/agents/", "/coverage/", "/updates/", "/use-cases/", "/investigations/",
     ...getResearch(catalogue).investigations.map((report) => `/investigations/${report.id}/`),
+    "/contested/", ...contestedPaths(),
     ...useCaseSlugs(catalogue).map((slug) => `/use-cases/${slug}/`),
     ...catalogueIndexPaths(withoutVerifiedAliases(catalogue.records, createCatalogueQuery(catalogue).association)),
     ...catalogue.records.filter(recordIsIndexable).map(recordHref),

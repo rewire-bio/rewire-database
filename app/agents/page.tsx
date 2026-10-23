@@ -6,7 +6,7 @@ import SetupTabs from "@/components/agents/SetupTabs";
 import { socialMetadata } from "@/lib/catalogue-sharing";
 import { dataPin } from "@/lib/data-pin";
 import {
-  claudeMcpAdd, examplePrompts, kgArchiveUrl, mcpJson, pluginCommands, GRAPH_SERVER, KG_ALIAS, PLUGIN, SKILL_URL,
+  claudeMcpAdd, discrepancyApi, discrepancyQueries, examplePrompts, kgArchiveUrl, mcpJson, pluginCommands, GRAPH_SERVER, KG_ALIAS, PLUGIN, SKILL_URL,
 } from "@/lib/agent-connect";
 import styles from "./agents.module.css";
 
@@ -89,6 +89,20 @@ export default function AgentsPage() {
             <p className={styles.muted}>The server checks every file against the bundle&apos;s manifest before loading it, and it is read-only.</p>
           </> },
         ]} />
+      </section>
+
+      <section aria-labelledby="contested-heading" className={styles.section}>
+        <h2 id="contested-heading">Contested results</h2>
+        <p>Each release flags studies that disagree with what other studies report for the same models, and records what we are doing to resolve each case. The findings are leads, not findings of error, and never withhold a result. People read them at <a href="/contested/">contested results</a>; agents can read the same findings two ways.</p>
+        <h3>Public API</h3>
+        <ul>
+          {discrepancyApi.map((p) => <li key={p.name}><code>{p.name}</code>: {p.input}. Returns {p.returns}.</li>)}
+        </ul>
+        <h3>Knowledge graph</h3>
+        <p>The bundle&apos;s derived graph holds the same findings. The MCP server&apos;s <code>list_queries</code> and <code>run_query</code> tools offer these named queries:</p>
+        <ul>
+          {discrepancyQueries.map((q) => <li key={q.name}><code>{q.name}</code> ({q.params}): {q.returns}.</li>)}
+        </ul>
       </section>
 
       <section aria-labelledby="rules-heading" className={styles.section}>

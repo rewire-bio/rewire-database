@@ -2,7 +2,9 @@ import { buildCatalogue } from "./catalogue-build";
 import { catalogueText } from "./catalogue-text";
 import { disagreement, shortCitation, type Disagreement } from "./disagreement";
 import { recordHref, safeSourceUrl } from "./omics";
-import { discrepanciesPage, discrepancyStates, severities, type Discrepancy, type DiscrepancySummary } from "../shared/omics/discrepancies";
+import {
+  discrepanciesPage, discrepancyStates, severities, type DiscrepanciesInput, type Discrepancy, type DiscrepancySummary,
+} from "../shared/omics/discrepancies";
 import type { PreparedCatalogue } from "../shared/omics/prepared-catalogue";
 
 export { overdue } from "./discrepancy-dates";
@@ -65,7 +67,10 @@ export const discrepancyHref = (id: string) => `/contested/${encodeURIComponent(
 
 /** The list filters, as /contested/ reads them from its search parameters. Unknown values are dropped. */
 export type ContestedFilters = {
-  severity?: string; state?: string; settled?: "open" | "settled"; system?: string;
+  severity?: string; state?: string;
+  /** "open", "settled" (settled but not resolved) or "resolved". */
+  settled?: "open" | "settled" | "resolved";
+  system?: string;
   /** A use case's slug: findings in which any of its results takes part, in either role. */
   use_case?: string;
   cursor?: string;
@@ -84,7 +89,7 @@ export function contestedFilters(params: Record<string, string | string[] | unde
   return {
     ...(severity && (severities as readonly string[]).includes(severity) ? { severity } : {}),
     ...(state && (discrepancyStates as readonly string[]).includes(state) ? { state } : {}),
-    ...(settled === "open" || settled === "settled" ? { settled } : {}),
+    ...(settled === "open" || settled === "settled" || settled === "resolved" ? { settled } : {}),
     ...(system && recordId.test(system) ? { system } : {}),
     ...(useCase && recordId.test(useCase) ? { use_case: useCase } : {}),
     ...(cursor && cursor.length <= 200 ? { cursor } : {}),
@@ -108,7 +113,7 @@ export function contestedQuery(filters: ContestedFilters, change: Partial<Record
 export const CONTESTED_PAGE_SIZE = 50;
 
 /** Every finding matching the filters, across all pages, in stored order. */
-function allFindings(reader: DiscrepancyReader, filters: Omit<ContestedFilters, "cursor" | "use_case">) {
+function allFindings(reader: DiscrepancyReader, filters: Omit<DiscrepanciesInput, "cursor" | "limit">) {
   const items: DiscrepancySummary[] = [];
   let cursor: string | undefined;
   do {
@@ -120,6 +125,8 @@ function allFindings(reader: DiscrepancyReader, filters: Omit<ContestedFilters, 
 }
 
 /** One page of findings for /contested/, plus the release-wide counts for its header.
+ * Resolved findings never share the main list: they are its own page with status "resolved", and
+ * with no status or "settled" come back in `resolved`, filtered the same way, for their own section.
  * `resultsOfUseCase` gives a use case's result IDs by slug, or null when there is no such use case. */
 export function contestedList(
   filters: ContestedFilters,
@@ -128,25 +135,41 @@ export function contestedList(
 ) {
   if (!reader.hasDiscrepancies()) return null;
   const all = reader.discrepancies({ limit: 500 });
-  const { cursor, use_case, ...rest } = filters;
+  const resolvedCount = allFindings(reader, { settled: "settled" }).filter((d) => d.resolved).length;
+  const { cursor, use_case, settled: status, ...rest } = filters;
+  // The findings a use case's results take part in: few enough to list on one page.
+  const involved = use_case
+    ? new Set(Object.values(reader.contestedBy(resultsOfUseCase(use_case) ?? [])).flat().map((c) => c.discrepancy.id))
+    : null;
+  const matching = (settled: "open" | "settled" | undefined) =>
+    allFindings(reader, { ...rest, settled }).filter((d) => !involved || involved.has(d.id));
+  const resolvedMatches = matching("settled").filter((d) => d.resolved);
   let page: ReturnType<DiscrepancyReader["discrepancies"]>;
-  if (use_case) {
-    // The findings a use case's results take part in: few enough to list on one page.
-    const involved = new Set(Object.values(reader.contestedBy(resultsOfUseCase(use_case) ?? [])).flat().map((c) => c.discrepancy.id));
-    const items = allFindings(reader, rest).filter((d) => involved.has(d.id));
-    page = discrepanciesPage(all.release_id, items, { limit: 500 });
+  if (status === "resolved") page = discrepanciesPage(all.release_id, resolvedMatches, { limit: 500 });
+  else if (involved || resolvedCount) {
+    const items = matching(status).filter((d) => !d.resolved);
+    try {
+      page = discrepanciesPage(all.release_id, items, { cursor: involved ? undefined : cursor, limit: involved ? 500 : CONTESTED_PAGE_SIZE });
+    } catch {
+      page = discrepanciesPage(all.release_id, items, { limit: CONTESTED_PAGE_SIZE });
+    }
   } else {
     try {
-      page = reader.discrepancies({ ...rest, cursor, limit: CONTESTED_PAGE_SIZE });
+      page = reader.discrepancies({ ...rest, settled: status, cursor, limit: CONTESTED_PAGE_SIZE });
     } catch {
       // A cursor from another release or a hand-edited URL starts the list again.
-      page = reader.discrepancies({ ...rest, limit: CONTESTED_PAGE_SIZE });
+      page = reader.discrepancies({ ...rest, settled: status, limit: CONTESTED_PAGE_SIZE });
     }
   }
   const settled = reader.discrepancies({ settled: "settled", limit: 1 }).total;
   return {
     page,
-    totals: { all: all.total, open: all.total - settled, settled, severity: all.counts.severity, state: all.counts.state },
+    /** Resolved findings for their own section below the list of all or settled findings. */
+    resolved: !status || status === "settled" ? resolvedMatches : [],
+    totals: {
+      all: all.total, open: all.total - settled, settled: settled - resolvedCount, resolved: resolvedCount,
+      severity: all.counts.severity, state: all.counts.state,
+    },
     /** Every system any finding compares, for the model filter. */
     systems: [...new Set(all.items.flatMap((d) => d.systems))],
     rules: reader.discrepancyRules(),

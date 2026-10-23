@@ -26,8 +26,8 @@ A file older than contract 3.3 has no findings. Every reader then returns empty,
 
 | Page | Shows |
 | --- | --- |
-| `/contested/` | Counts for the release, and the findings, most severe first, each with a one-line summary and small chart when the release has per-study data. Filters by status (open or settled), severity, state, model and use case through search parameters. The use-case filter keeps findings in which any of the use case's results takes part, in either role. |
-| `/contested/<id>/` | The summary, which studies agree (when the release has per-study data), what the rule counted, the compared results in each study, the follow-up timeline, and how to help resolve the finding. An earlier ID redirects to the current one. |
+| `/contested/` | Counts for the release, and the findings, most severe first, each with a one-line summary and small chart when the release has per-study data. Resolved findings follow in their own section. Filters by status (open, settled, resolved), severity, state, model and use case through search parameters. The use-case filter keeps findings in which any of the use case's results takes part, in either role. |
+| `/contested/<id>/` | The summary, which studies agree (when the release has per-study data), what the rule counted, the compared results in each study, the follow-up timeline, and how to help resolve the finding. A resolved finding shows its outcome and date, the last step's rationale and the whole timeline instead of the comparison. An earlier ID redirects to the current one. |
 | Use-case pages | A Contested badge on a row whose results are the disagreeing study's in an unsettled finding, and a link to `/contested/?use_case=<slug>` when any row has one. |
 | Result and evaluation pages | A Contested panel naming each finding and whether the result is from the study that disagrees or from the agreeing group. An evaluation page covers the results it shows. |
 | Model, method and configuration pages | "N open disagreements between studies involve this model", linking to the filtered list. A configuration uses its model's count, since findings compare models. |
@@ -48,6 +48,14 @@ The paper that disagrees comes first and is outlined in every chart. Above 12 pa
 On `/contested/` each entry with per-study data shows the compact form: the summary and one small chart (a bar for the other papers together and one for the paper that disagrees, or a single gap strip).
 
 Releases before the per-study data have no `studies`. The section and the compact form are then left out and the pages are as before.
+
+## Resolved findings
+
+A resolved finding (`resolved: true`, schema 4 of the data file) is settled and no longer found by the rules, usually because a confirmed error led a reviewer to mark the results disputed. The data release keeps it with its follow-up history; it has no rule, studies or numbers.
+
+- `/contested/` never mixes them into the main list. They are listed below it, under Resolved (for all findings or settled ones), with their final state and the date of their last step, filtered like the list. `?status=resolved` lists only them, and "settled" means settled but not resolved. The header counts them separately.
+- The finding page opens with "Resolved: confirmed error on 23 October 2026", the last step's rationale, and, with no studies, a note that the comparison is not shown because the results were withdrawn (or, for other outcomes, because the check no longer finds it). The timeline is shown in full.
+- Open counts (home page, model pages, use-case badges) count only unsettled findings, so resolved ones never appear in them.
 
 ## Flag only
 

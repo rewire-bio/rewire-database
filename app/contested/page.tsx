@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Breadcrumbs from "@/components/catalogue/Breadcrumbs";
-import { FindingEntry, type RecordLookup } from "@/components/catalogue/Contested";
+import { FindingEntry, ResolvedEntry, type RecordLookup } from "@/components/catalogue/Contested";
 import { socialMetadata } from "@/lib/catalogue-sharing";
 import { buildCatalogue } from "@/lib/catalogue-build";
 import { recordHref } from "@/lib/omics";
@@ -80,6 +80,7 @@ export default function ContestedPage({ searchParams = {} }: { searchParams?: Se
           <ul className={styles.counts}>
             <li><strong>{list.totals.open}</strong>open</li>
             <li><strong>{list.totals.settled}</strong>settled</li>
+            {list.totals.resolved > 0 && <li><strong>{list.totals.resolved}</strong>resolved</li>}
             {severities.map((s) => <li key={s}><strong>{list.totals.severity[s]}</strong>{severityLabel(s).toLowerCase()}</li>)}
           </ul>
           <p className={styles.muted}>Release {catalogue.release_id} · {list.totals.all} findings in all{list.rules.rules.version !== undefined && <> · rules version {String(list.rules.rules.version)}</>}</p>
@@ -88,7 +89,8 @@ export default function ContestedPage({ searchParams = {} }: { searchParams?: Se
           <h2 id="list-heading">Findings</h2>
           <div className={styles.filters}>
             <FilterLinks label="Status" field="settled" filters={filters} current={filters.settled}
-              options={[{ text: "All" }, { value: "open", text: "Open" }, { value: "settled", text: "Settled" }]} />
+              options={[{ text: "All" }, { value: "open", text: "Open" }, { value: "settled", text: "Settled" },
+                ...(list.totals.resolved ? [{ value: "resolved", text: "Resolved" }] : [])]} />
             <FilterLinks label="Severity" field="severity" filters={filters} current={filters.severity}
               options={[{ text: "All" }, ...severities.map((s) => ({ value: s, text: severityLabel(s).split(" ")[0] }))]} />
             <FilterLinks label="State" field="state" filters={filters} current={filters.state}
@@ -111,8 +113,10 @@ export default function ContestedPage({ searchParams = {} }: { searchParams?: Se
               : <>an unknown use case, <code>{filters.use_case}</code></>}, from the study that disagrees or from the agreeing group. <Link href={contestedQuery(filters, { use_case: undefined })}>All use cases</Link></p>}
             {filters.system && <p>Showing findings that compare {system ? <Link href={system.href}>{catalogueText(system.name)}</Link> : <code>{filters.system}</code>}. <Link href={contestedQuery(filters, { system: undefined })}>All models</Link></p>}
           </div>
-          <p className={styles.muted}>{list.page.total} {list.page.total === 1 ? "finding matches" : "findings match"}, most severe first.</p>
-          {list.page.items.map((d) => <FindingEntry key={d.id} d={d} lookup={lookup} view={disagreementFor(d.id)} />)}
+          <p className={styles.muted}>{list.page.total} {filters.settled === "resolved" ? "resolved " : ""}{list.page.total === 1 ? "finding matches" : "findings match"}, most severe first.</p>
+          {filters.settled === "resolved"
+            ? <ul className={styles.resolvedList}>{list.page.items.map((d) => <ResolvedEntry key={d.id} d={d} />)}</ul>
+            : list.page.items.map((d) => <FindingEntry key={d.id} d={d} lookup={lookup} view={disagreementFor(d.id)} />)}
           {!list.page.items.length && <p>No findings match these filters.</p>}
           {(filters.cursor || list.page.next_cursor) && <p>
             {filters.cursor && <Link href={contestedQuery(filters)}>First page</Link>}
@@ -120,6 +124,11 @@ export default function ContestedPage({ searchParams = {} }: { searchParams?: Se
             {list.page.next_cursor && <Link href={contestedQuery(filters, { cursor: list.page.next_cursor })}>Next page</Link>}
           </p>}
         </section>
+        {list.resolved.length > 0 && <section className={styles.section} aria-labelledby="resolved-heading">
+          <h2 id="resolved-heading">Resolved</h2>
+          <p>Findings the check no longer makes, kept with their follow-up history: usually because a confirmed error led us to withdraw the results involved.</p>
+          <ul className={styles.resolvedList}>{list.resolved.map((d) => <ResolvedEntry key={d.id} d={d} />)}</ul>
+        </section>}
       </>}
     </div></section>
   </>;

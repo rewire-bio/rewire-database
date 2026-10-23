@@ -119,11 +119,20 @@ function orderingSummary(papers: Paper[], a: string, b: string): string {
   };
   const consensus = papers.filter((p) => p.role !== "outlier");
   const outliers = papers.filter((p) => p.role === "outlier");
+  // The rule pools the other papers' comparisons, so one of them can lean the outlier's way on its own.
+  const against = consensus.length > 1 ? consensus.filter((p) => p.group === "b") : [];
+  const exception = against.length
+    ? `Of those papers, ${against.map((p) => p.short).join(", ")} ${against.length === 1 ? "ranks" : "rank"} ${b} higher on ${against.length === 1 ? "its" : "their"} own (${against.map((p) => `${p.higherB} of ${p.higherA + p.higherB + p.ties}`).join(", ")}).`
+    : "";
   return [
     sentence(consensus, a, b, (p) => p.higherA, (p) => p.higherB),
+    exception,
     sentence(outliers, b, a, (p) => p.higherB, (p) => p.higherA),
-  ].filter(Boolean).join(" ");
+  ].filter(Boolean).map(capitalise).join(" ");
 }
+
+/** A sentence that starts with a lowercase source name ("proteinbench ...") starts with a capital. */
+const capitalise = (sentence: string) => sentence.charAt(0).toUpperCase() + sentence.slice(1);
 
 function gapSummary(papers: Paper[], a: string, reference: string, range: [number, number] | null): string {
   const consensus = papers.filter((p) => p.role !== "outlier");
@@ -140,7 +149,7 @@ function gapSummary(papers: Paper[], a: string, reference: string, range: [numbe
     parts.push(`In ${subject}, ${a} scores ${where}.`);
   }
   for (const o of outliers) parts.push(`In ${o.short}, ${a} scores ${relative(o.gap!, reference)}.`);
-  return parts.join(" ");
+  return parts.map(capitalise).join(" ");
 }
 
 export type SourceResolver = (study: DiscrepancyStudy) => PaperSource;

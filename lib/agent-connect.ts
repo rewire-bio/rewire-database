@@ -63,7 +63,9 @@ The skill (how to find, run and compare benchmarks with the rewirebench CLI): ${
 - [Use cases](${SITE}/use-cases/): questions with the evidence that bears on them
 - [Benchmarks](${SITE}/benchmarks/) and [models](${SITE}/models/)
 - [Evidence and review methods](${SITE}/evidence/)
-- [Downloads](${SITE}/#downloads): the release as JSONL with checksums
+- [Collection coverage](${SITE}/coverage/) and [discrepancy investigations](${SITE}/investigations/)
+- [Database updates](${SITE}/updates/) and [Atom feed](${SITE}/updates/feed.xml)
+- [Downloads](${SITE}/#downloads): the release as JSONL with checksums ([release manifest](${SITE}/release-manifest.json), [KG manifest](${SITE}/agents/kg-manifest.json))
 - [Agent setup](${SITE}/agents/)
 
 ## Rules

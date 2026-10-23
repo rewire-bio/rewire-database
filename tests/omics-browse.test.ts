@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import fs from "node:fs";
-import { filterCatalogue, readCatalogueFilters } from "../lib/omics-browse";
+import { filterCatalogue, readCatalogueFilters, researchAreaLabel } from "../lib/omics-browse";
 const records = JSON.parse(fs.readFileSync("tests/fixtures/legacy-browse.json", "utf8")) as import("../lib/omics").OmicsRecord[];
 describe("one catalogue with provenance filters", () => {
   it("includes all migrated in-scope literature results without importing excluded rows", () => {
@@ -43,5 +43,10 @@ describe("one catalogue with provenance filters", () => {
     expect(
       readCatalogueFilters("?kind=clinical&origin=invented"),
     ).toMatchObject({ kind: "model", origin: "" });
+    expect(researchAreaLabel("protein-function")).toBe("Protein function");
+    expect(researchAreaLabel("protein-structure")).toBe("Protein structure");
+    expect(researchAreaLabel("single-cell")).toBe("Single-cell omics");
+    expect(researchAreaLabel("spatial-omics")).toBe("Spatial omics");
+    expect(researchAreaLabel("biological-networks")).toBe("Biological networks");
   });
 });

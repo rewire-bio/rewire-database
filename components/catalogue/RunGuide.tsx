@@ -11,9 +11,11 @@ import guideStyles from "./ExecutionGuide.module.css";
 export default function RunGuide({
   record,
   sources,
+  embedded = false,
 }: {
   record: OmicsRecord;
   sources: OmicsRecord[];
+  embedded?: boolean;
 }) {
   const sectionId = record.attributes.run_recipes ? "run-upstream" : "run";
   const [copied, setCopied] = useState<number | null>(null);
@@ -24,15 +26,20 @@ export default function RunGuide({
       record.attributes.run_documentation,
     );
     if (!documentation.success) {
-      if (!["benchmark", "task", "protocol", "evaluator"].includes(record.kind))
+      if (
+        !["benchmark", "task", "protocol", "evaluator"].includes(record.kind) ||
+        (Array.isArray(record.attributes.run_recipes) &&
+          record.attributes.run_recipes.length > 0)
+      )
         return null;
       return (
         <section
           id={sectionId}
           className={`${styles.section} ${styles.runGuide}`}
-          aria-labelledby="run-title"
+          aria-labelledby={embedded ? undefined : "run-title"}
+          aria-label={embedded ? "Run instructions" : undefined}
         >
-          <h2 id="run-title">Run instructions</h2>
+          {!embedded && <h2 id="run-title">Run instructions</h2>}
           <p>
             No runnable recipe has been reviewed for this {record.kind}. Dataset
             access, model requirements, licences and compute requirements must
@@ -51,9 +58,10 @@ export default function RunGuide({
       <section
         id={sectionId}
         className={`${styles.section} ${styles.runGuide}`}
-        aria-labelledby="run-title"
+        aria-labelledby={embedded ? undefined : "run-title"}
+        aria-label={embedded ? "Run this benchmark" : undefined}
       >
-        <h2 id="run-title">Run this benchmark</h2>
+        {!embedded && <h2 id="run-title">Run this benchmark</h2>}
         <p>{documentation.data.summary}</p>
         <p className={styles.muted}>
           A maintained rewire runner has not been verified for this benchmark.
@@ -85,9 +93,10 @@ export default function RunGuide({
     <section
       id={sectionId}
       className={`${styles.section} ${styles.runGuide}`}
-      aria-labelledby="run-title"
+      aria-labelledby={embedded ? undefined : "run-title"}
+      aria-label={embedded ? "Official run instructions" : undefined}
     >
-      <h2 id="run-title">Official run instructions</h2>
+      {!embedded && <h2 id="run-title">Official run instructions</h2>}
       <p>{guide.summary}</p>
       <p className={styles.muted}>
         Checked against the official instructions on {guide.review.date}. These

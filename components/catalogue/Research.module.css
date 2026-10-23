@@ -18,10 +18,15 @@
   overflow-wrap: anywhere;
 }
 .section a,
-.summary a {
+.summary a,
+.nav a {
   color: var(--accent-ink);
   text-decoration: underline;
   text-underline-offset: 3px;
+}
+.nav {
+  margin-bottom: 24px;
+  font-size: 14px;
 }
 .grid {
   display: grid;

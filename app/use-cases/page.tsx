@@ -20,7 +20,7 @@ const EXAMPLE_SLUG = "genetic-perturbation-response";
 
 export default function UseCasesPage() {
   const { query, entries } = buildUseCases();
-  const initial = query.list({ limit: 10 });
+  const initial = query.list({ limit: Math.max(10, entries.length) });
   const areaCounts: Record<string, number> = {};
   const summaries = useCaseSummaries();
   for (const entry of entries) areaCounts[entry.area] = (areaCounts[entry.area] || 0) + 1;

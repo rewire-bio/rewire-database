@@ -2,16 +2,26 @@ import { downloadHref } from "@/lib/downloads";
 import type { Metadata } from "next";
 import { readFileSync } from "node:fs";
 import Link from "next/link";
+import Breadcrumbs from "@/components/catalogue/Breadcrumbs";
+import { socialMetadata } from "@/lib/catalogue-sharing";
 import { buildCatalogue } from "@/lib/catalogue-build";
 import { dataPath } from "@/lib/data-pin";
 import type { BenchmarkCoverageAudit } from "@/shared/omics/benchmark-coverage";
-import { kindLabels } from "@/lib/omics-browse";
+import { countLabel, kindLabels } from "@/lib/omics-browse";
 import { catalogueText } from "@/lib/catalogue-text";
 import styles from "@/app/database/database.module.css";
-export const metadata: Metadata = {
+const pageMetadata = {
   title: "Benchmark result coverage",
   description: "A release-pinned audit of results, source-scoped charts and collection gaps across every benchmark, task, protocol and evaluator.",
   alternates: { canonical: "https://benchmarks.rewirebio.io/coverage/" },
+};
+export const metadata: Metadata = {
+  ...pageMetadata,
+  ...socialMetadata({
+    title: pageMetadata.title,
+    description: pageMetadata.description,
+    path: pageMetadata.alternates.canonical,
+  }),
 };
 export default function CoveragePage() {
   const { catalogue } = buildCatalogue();
@@ -19,6 +29,7 @@ export default function CoveragePage() {
   if (audit.release_id !== catalogue.release_id) throw new Error("Coverage audit does not match the pinned catalogue release");
   return <>
     <header className="page-head"><div className="wrap">
+      <Breadcrumbs items={[{ name: "Database", path: "/" }, { name: "Collection coverage", path: "/coverage/" }]} />
       <span className="kick">Collection coverage</span><h1>Benchmark results and remaining gaps</h1>
       <p className="intro">See which pages have checked results and charts, and which still need their published evidence collected.</p>
     </div></header>
@@ -31,10 +42,10 @@ export default function CoveragePage() {
         <h2>{kindLabels[kind as keyof typeof kindLabels]}</h2>
         <p>{counts.pages} pages · {counts.with_results} with results · {counts.with_charts} with charts.</p>
         <div className={styles.tableScroll} tabIndex={0} role="region" aria-label={`${kind} coverage`}><table className={styles.resultTable}>
-          <thead><tr><th scope="col">Page</th><th scope="col">Evaluations / metric rows</th><th scope="col">Charts</th><th scope="col">Collection status</th></tr></thead>
+          <thead><tr><th scope="col">Page</th><th scope="col">Evaluations and metric rows</th><th scope="col">Charts</th><th scope="col">Collection status</th></tr></thead>
           <tbody>{audit.pages.filter((page) => page.kind === kind).map((page) => <tr key={page.id}>
             <th scope="row"><Link href={page.url}>{catalogueText(page.name)}</Link></th>
-            <td><Link href={`${page.url}#results`}>{page.evaluations} / {page.metric_rows}</Link></td>
+            <td><Link href={`${page.url}#results`}>{countLabel(page.evaluations, "evaluation")} · {countLabel(page.metric_rows, "row")}</Link></td>
             <td>{page.charts ? <Link href={`${page.url}#charts`}>{page.charts} source-scoped figures</Link> : "Not yet available"}</td>
             <td>{page.state === "historical" ? "Superseded record, retained for history." : page.metric_rows === 0 ? "Published results still to collect." : page.charts ? "Checked result tables available." : "Results available; comparison group not yet validated."}
               {page.gaps.length > 0 && <details><summary>Scope and remaining work</summary><ul>{page.gaps.map((gap, i) => <li key={i}>{catalogueText(gap)}</li>)}</ul></details>}

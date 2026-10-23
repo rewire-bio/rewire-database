@@ -35,6 +35,7 @@ export default function UseCasePage({ params }: { params: Params }) {
   const clinical = entry.contexts.includes("clinical_research");
   const summary = summariseUseCaseEvidence(detail.mappings, entry.evidence_gaps.length);
   const comparisons = buildComparisons(detail.mappings);
+  const orderedComparisons = [...comparisons].sort((a, b) => Number(b.rows.length > 1) - Number(a.rows.length > 1));
   const held = heldJudgements(detail.mappings);
   const { query } = buildCatalogue();
   const tools = toolsCompared(comparisons, (id) => query.record?.(id) ?? null);
@@ -108,8 +109,8 @@ export default function UseCasePage({ params }: { params: Params }) {
         <section id="evidence" className={styles.section}>
           <h2>{heading("evidence")}</h2>
           <p>Each table is one study or protocol with its own truth set and scoring. Compare tools within a table, not across tables.</p>
-          {comparisons.length
-            ? comparisons.map((comparison) => <UseCaseComparison key={comparison.id} comparison={comparison} useCasePath={path} baselineIds={baselineIds} />)
+          {orderedComparisons.length
+            ? orderedComparisons.map((comparison) => <UseCaseComparison key={comparison.id} comparison={comparison} useCasePath={path} baselineIds={baselineIds} />)
             : <div className={styles.notice}><p>No model comparison has been collected for this question yet.</p><p>Relevant methods and studies may exist outside this collection.</p></div>}
         </section>
         {held.length > 0 && <section id="held" className={styles.section}>
@@ -138,7 +139,7 @@ export default function UseCasePage({ params }: { params: Params }) {
             </dl>
             {entry.exclusions.length > 0 && <><h3>Outside this use case</h3><ul>{entry.exclusions.map((exclusion) => <li key={exclusion}>{exclusion}</li>)}</ul></>}
           </details>
-          {entry.collection_plan && comparisons.length > 0 && <details><summary>Evidence collection plan</summary><UseCaseCollectionPlan plan={entry.collection_plan} summary={summary} /></details>}
+          {entry.collection_plan && comparisons.length > 0 && <details><summary>Evidence collection plan</summary><UseCaseCollectionPlan plan={entry.collection_plan} summary={summary} embedded /></details>}
           {relatedUseCaseArticles(entry.slug).length > 0 && <details><summary>Related articles</summary><UseCaseArticles slug={entry.slug} /></details>}
           <details>
             <summary>Sources, review and downloads</summary>

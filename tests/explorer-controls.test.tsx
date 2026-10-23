@@ -20,6 +20,12 @@ describe("catalogue controls", () => {
     const tree = create(<ExplorerSearch filters={defaultFilters} moreOpen={false} setMoreOpen={setMoreOpen} change={change} release={release} />);
     tree.root.findByType("input").props.onChange({ target: { value: "BRCA" } });
     expect(change).toHaveBeenCalledWith("q", "BRCA");
+    tree.root.findByType("input").props.onKeyDown({ key: "Escape", preventDefault: vi.fn() });
+    tree.root.findByType("input").props.onKeyDown({ key: "Enter", preventDefault: vi.fn() });
+    expect(change).toHaveBeenCalledWith("kind", "model");
+    tree.update(<ExplorerSearch filters={{ ...defaultFilters, q: "BRCA" }} moreOpen={false} setMoreOpen={setMoreOpen} change={change} release={release} />);
+    tree.root.findByType("input").props.onKeyDown({ key: "Enter", preventDefault: vi.fn() });
+    expect(change).toHaveBeenLastCalledWith("q", "BRCA");
     tree.root.findAllByType("button").forEach((button) => button.props.onClick());
     expect(change).toHaveBeenCalledWith("kind", "model");
     expect(change).toHaveBeenCalledWith("kind", "protocol");

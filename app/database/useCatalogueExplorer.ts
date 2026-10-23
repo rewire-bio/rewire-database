@@ -19,6 +19,7 @@ import { researchKinds } from "@/components/catalogue/ResearchLabels";
 export function useCatalogueExplorer(
   initial: CataloguePage,
   release: CatalogueRelease,
+  deferInitialResults = false,
 ) {
   const [filters, setFilters] = useState(defaultFilters);
   const [data, setData] = useState(initial);
@@ -28,6 +29,7 @@ export function useCatalogueExplorer(
     cursor: undefined as string | undefined,
   });
   const [ready, setReady] = useState(false);
+  const [browsing, setBrowsing] = useState(!deferInitialResults);
   const [moreOpen, setMoreOpen] = useState(false);
   const [selected, setSelected] = useState<string[]>([]);
   const [comparison, setComparison] = useState<Comparison | null>(null);
@@ -41,10 +43,13 @@ export function useCatalogueExplorer(
   useEffect(() => {
     const read = () => {
       const next = readCatalogueFilters(window.location.search);
+      const hasQueryOrHash =
+        Boolean(window.location.search) || window.location.hash === "#browse";
       setFilters(next);
       setCursor(
         new URLSearchParams(window.location.search).get("cursor") || undefined,
       );
+      setBrowsing(!deferInitialResults || hasQueryOrHash);
       if (!primaryKinds.some((kind) => kind === next.kind)) setMoreOpen(true);
       setSelected([]);
       setReady(true);
@@ -52,9 +57,9 @@ export function useCatalogueExplorer(
     read();
     window.addEventListener("popstate", read);
     return () => window.removeEventListener("popstate", read);
-  }, []);
+  }, [deferInitialResults]);
   useEffect(() => {
-    if (!ready) return;
+    if (!ready || !browsing) return;
     let active = true;
     const controller = new AbortController();
     let deadline: ReturnType<typeof setTimeout> | undefined;
@@ -105,7 +110,7 @@ export function useCatalogueExplorer(
       clearTimeout(deadline);
       controller.abort();
     };
-  }, [client, filters, cursor, retry, ready]);
+  }, [client, filters, cursor, retry, ready, browsing]);
   useEffect(() => {
     let active = true;
     setComparison(null);
@@ -129,21 +134,43 @@ export function useCatalogueExplorer(
       active = false;
     };
   }, [selected, client, release.release_id]);
+  const resetToHome = () => {
+    setFilters(defaultFilters);
+    setCursor(undefined);
+    setSelected([]);
+    setBrowsing(false);
+    window.history.pushState(null, "", window.location.pathname);
+  };
   const navigate = (
     next: CatalogueFilters,
     nextCursor?: string,
     replace = false,
   ) => {
+    const shouldReplace = replace && browsing;
     setFilters(next);
     setCursor(nextCursor);
     setSelected([]);
+    setBrowsing(true);
     if (!primaryKinds.some((kind) => kind === next.kind)) setMoreOpen(true);
     const url = `${window.location.pathname}${catalogueSearch(next, nextCursor)}#browse`;
-    window.history[replace ? "replaceState" : "pushState"](null, "", url);
+    window.history[shouldReplace ? "replaceState" : "pushState"](null, "", url);
   };
   const change = (key: keyof CatalogueFilters, value: string) => {
     const next = { ...filters, [key]: value };
     if (key === "kind" && !researchKinds.includes(value)) next.readiness = "";
+    if (
+      deferInitialResults &&
+      key === "q" &&
+      !value &&
+      next.kind === defaultFilters.kind &&
+      !next.area &&
+      !next.status &&
+      !next.origin &&
+      !next.readiness
+    ) {
+      resetToHome();
+      return;
+    }
     navigate(next, undefined, key === "q");
   };
   // Controls reflect the requested URL immediately; rows belong to the last
@@ -157,6 +184,7 @@ export function useCatalogueExplorer(
     filters,
     data,
     applied,
+    browsing,
     moreOpen,
     setMoreOpen,
     selected,
@@ -169,6 +197,7 @@ export function useCatalogueExplorer(
     returnTo,
     navigate,
     change,
+    resetToHome,
     retry: () => setRetry((attempt) => attempt + 1),
   };
 }

@@ -3,6 +3,7 @@ import PageHeader from "@/components/PageHeader";
 import { Illustration } from "@/components/AgentBanner";
 import CodeBlock from "@/components/agents/CodeBlock";
 import SetupTabs from "@/components/agents/SetupTabs";
+import { socialMetadata } from "@/lib/catalogue-sharing";
 import { dataPin } from "@/lib/data-pin";
 import {
   claudeMcpAdd, examplePrompts, kgArchiveUrl, mcpJson, pluginCommands, GRAPH_SERVER, KG_ALIAS, PLUGIN, SKILL_URL,
@@ -11,9 +12,18 @@ import styles from "./agents.module.css";
 
 export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = {
+const pageMetadata = {
   title: "Connect your agent | Benchmark database",
   description: "Set up Claude Code or another MCP client to query the benchmark database and reproduce benchmarks locally.",
+  alternates: { canonical: "https://benchmarks.rewirebio.io/agents/" },
+};
+export const metadata: Metadata = {
+  ...pageMetadata,
+  ...socialMetadata({
+    title: pageMetadata.title,
+    description: pageMetadata.description,
+    path: pageMetadata.alternates.canonical,
+  }),
 };
 
 const steps = [

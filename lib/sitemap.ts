@@ -23,12 +23,13 @@ export function sitemapEntries(): SitemapEntry[] {
     { path: "/evidence/" },
     { path: "/agents/" },
     { path: "/coverage/" },
+    { path: "/updates/" },
     { path: "/use-cases/" },
     ...useCases.map((slug) => ({ path: `/use-cases/${slug}/` })),
     ...catalogueIndexPaths(indexSource(query, "model")).map((path) => ({ path })),
     ...query.recordIds().filter(recordIsIndexable).map((record) => ({ path: recordHref(record) })),
     { path: "/investigations/" },
-    ...query.research().investigations.map((report) => ({ path: `/investigations/${report.id}/`, lastModified: report.review.reviewed_at })),
+    ...query.research().investigations.map((report) => ({ path: `/investigations/${report.id}/` })),
   ];
 }
 

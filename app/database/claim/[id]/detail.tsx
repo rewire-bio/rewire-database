@@ -37,6 +37,14 @@ function Fields({
   );
 }
 
+function readableClaimHeading(name: string) {
+  const attr = /^(.+?):\s*(attributes\.[a-z0-9_.:\s]+)$/i.exec(name);
+  if (attr) {
+    return `${attr[1]}: ${claimFieldLabel(attr[2]).toLowerCase()}`;
+  }
+  return name;
+}
+
 /** A claim record: an individual evidence assertion and its citation. No
  * alias records currently route to the `claim` legacy segment (see
  * workbench/entity-page-split-checkpoint.md). */
@@ -87,7 +95,7 @@ export function ClaimDetail({ detail }: { detail: RecordDetail }) {
           <div>
             <div>
               <span className="kick">{singularKindLabels[record.kind]}</span>
-              <h1>{catalogueText(record.name)}</h1>
+              <h1>{catalogueText(readableClaimHeading(record.name))}</h1>
               <EvidenceConcerns sources={detail.sources} />
               {link ? (
                 <dl className={styles.details}>

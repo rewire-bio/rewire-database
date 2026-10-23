@@ -96,7 +96,12 @@ export function SourceDetail({ detail, params = {} }: { detail: RecordDetail; pa
               <span className="kick">{singularKindLabels[record.kind]}</span>
               <h1>{catalogueText(record.name)}</h1>
               <EvidenceConcerns sources={[record]} />
-              {citation.length > 0 && <p className="intro">{citation.join(" · ")}</p>}
+              {citation.length > 0 ? (
+                <p className="intro">{citation.join(" · ")}</p>
+              ) : !/^Primary source retrieved/i.test(record.description) &&
+                !scope ? (
+                <p className="intro">{catalogueText(record.description)}</p>
+              ) : null}
               <p className={styles.heroActions}>
                 {doiUrl && (
                   <a href={doiUrl} className={styles.resultCount}>

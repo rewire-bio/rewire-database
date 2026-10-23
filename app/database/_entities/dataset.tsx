@@ -8,7 +8,7 @@ import { buildCatalogue } from "@/lib/catalogue-build";
 import UseCaseBacklinks from "@/components/catalogue/UseCaseBacklinks";
 import { recordHref, displayValue, safeSourceUrl } from "@/lib/omics";
 import { profileSchema } from "@/lib/omics-profile";
-import { EvidenceConcerns, ProfileEvidence } from "@/components/catalogue/Profile";
+import Profile, { EvidenceConcerns, ProfileEvidence } from "@/components/catalogue/Profile";
 import EvidenceTable from "@/components/catalogue/EvidenceTable";
 import Results from "@/components/catalogue/Results";
 import { resultsPayload } from "@/lib/results-payload";
@@ -154,6 +154,7 @@ export function DatasetDetail({ detail }: { detail: RecordDetail }) {
               { id: "finding", label: "Overview" },
               ...(results.total > 0 ? [{ id: "results", label: "Results" }] : []),
               ...(readiness ? [{ id: "research-readiness", label: "Readiness" }] : []),
+              ...(profile.success ? [{ id: "specifications", label: "Specifications" }] : []),
               { id: "evidence", label: "Evidence" },
             ]}
           />
@@ -227,6 +228,13 @@ export function DatasetDetail({ detail }: { detail: RecordDetail }) {
               </div>
             )}
           </section>
+          {profile.success && (
+            <Profile
+              record={profileOwner.record}
+              sources={profileOwner.sources}
+              part="specifications"
+            />
+          )}
           {proposals.length > 0 && (
             <details className={styles.profileDisclosure}>
               <summary>Applicable tests and references</summary>

@@ -5,8 +5,7 @@ export default function UseCaseArticles({ slug }: { slug: string }) {
   const articles = relatedUseCaseArticles(slug);
   if (!articles.length) return null;
 
-  return <section id="related-articles" className={styles.section}>
-    <h2>Related articles</h2>
+  return <section id="related-articles" className={styles.section} aria-label="Related articles">
     <p>Read the background, methods and practical considerations behind this question.</p>
     <ul className={styles.articleList}>
       {articles.map((article) => <li key={article.slug}>

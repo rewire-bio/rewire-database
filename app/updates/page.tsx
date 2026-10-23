@@ -2,14 +2,23 @@ import { downloadHref } from "@/lib/downloads";
 import type { Metadata } from "next";
 import PageHeader from "@/components/PageHeader";
 import RefreshStatus from "@/components/RefreshStatus";
+import { socialMetadata } from "@/lib/catalogue-sharing";
 import { buildCatalogue } from "@/lib/catalogue-build";
 import { readRefresh } from "@/lib/refresh-build";
 import { refreshDate } from "@/lib/refresh";
 
-export const metadata: Metadata = {
+const pageMetadata = {
   title: "Database update history | Rewire",
   description: "Published catalogue changes, evidence sweep coverage and the planned review cadence.",
   alternates: { canonical: "https://benchmarks.rewirebio.io/updates/", types: { "application/atom+xml": "https://benchmarks.rewirebio.io/updates/feed.xml" } },
+};
+export const metadata: Metadata = {
+  ...pageMetadata,
+  ...socialMetadata({
+    title: pageMetadata.title,
+    description: pageMetadata.description,
+    path: pageMetadata.alternates.canonical,
+  }),
 };
 
 export default function UpdatesPage() {
@@ -42,7 +51,7 @@ export default function UpdatesPage() {
           {run.outcome === "no_change" && <p>No candidate catalogue changes found in this sweep.</p>}
           {run.outcome === "review_required" && <p>Candidate changes prepared for review. See the publication history for changes that reached this website.</p>}
           <p>Coverage: {run.coverage.checked_ids.length} of {run.coverage.target_ids.length} declared targets checked. Added: {run.counts.added}; revised: {run.counts.revised}; excluded: {run.counts.excluded}; blocked: {run.counts.blocked}. These are run counts, not a claim of new published records.</p>
-          <details><summary>Checked scope and gaps</summary><p>Target scope: {run.coverage.target_ids.join(", ") || "None recorded"}.</p><p>Checked: {run.coverage.checked_ids.join(", ") || "None recorded"}.</p>{run.coverage.gaps.length ? <ul>{run.coverage.gaps.map((gap, index) => <li key={index}>{gap}</li>)}</ul> : <p>No gaps recorded within this bounded scope.</p>}</details>
+          <details><summary>Checked scope and gaps</summary><p>Target scope: {run.coverage.target_ids.join(", ") || "None recorded"}.</p><p>Checked: {run.coverage.checked_ids.join(", ") || "None recorded"}.</p>{run.coverage.gaps.length ? <ul>{run.coverage.gaps.map((gap, index) => <li key={index}>{gap.replace(/\ball(\d+)\b/g, "all $1")}</li>)}</ul> : <p>No gaps recorded within this bounded scope.</p>}</details>
           {(run.report_url || run.pr_url) && <p>{run.report_url && <a href={run.report_url}>Run report</a>}{run.report_url && run.pr_url && " · "}{run.pr_url && <a href={run.pr_url}>Review pull request</a>}</p>}
         </article>)}
       </section>

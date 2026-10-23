@@ -52,10 +52,11 @@ export default function UseCaseComparison({ comparison, useCasePath, baselineIds
   const href = (row: ComparisonRow) => `/database/configuration/${encodeURIComponent(row.id)}/${returnTo}`;
   const single = rows.length === 1;
   const long = rows.length > LONG_TABLE;
+  const hasNonBaseline = single || rows.some((r) => !isBaselineRow(r, baselines));
   const highlighted = rows.some((row) => row.cells.some((cell) => cell.best));
   const row = (r: ComparisonRow) => (
     <tr key={r.id}>
-      <th scope="row"><Tool row={r} href={href(r)} baseline={isBaselineRow(r, baselines)} /></th>
+      <th scope="row"><Tool row={r} href={href(r)} baseline={hasNonBaseline && isBaselineRow(r, baselines)} /></th>
       {r.cells.map((cell, i) => <td key={columns[i].label} className={cell.best ? styles.best : undefined}><CellContent cell={cell} /></td>)}
     </tr>
   );

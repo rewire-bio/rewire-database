@@ -5,8 +5,14 @@ import LegacyCatalogueRedirect from "../LegacyCatalogueRedirect";
 type Props = { params: { domain: string } };
 export function generateMetadata({ params }: Props): Metadata {
   const domain = getDomain(params.domain);
+  if (!domain) {
+    return {
+      title: "Page not found | Benchmark database",
+      robots: { index: false, follow: false },
+    };
+  }
   return {
-    title: `${domain?.name || "Models"} | Benchmark database`,
+    title: `${domain.name} | Benchmark database`,
     alternates: { canonical: "https://benchmarks.rewirebio.io/" },
     robots: { index: false, follow: true },
   };

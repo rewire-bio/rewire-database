@@ -111,9 +111,11 @@ async function main() {
     assert.ok(home.includes('id="mfass-v1"') && home.includes('href="/use-cases/"'), "Home navigation");
     const useCase = useCaseSlugs(catalogue)[0];
     for (const pathname of ["/models/", "/models/page/2/", "/benchmarks/", "/evidence/", "/coverage/", "/use-cases/",
-      "/investigations/", "/literature/", "/runs/mfass-v2/", "/updates/", `/${DOMAINS[0].id}/`,
-      ...(useCase ? [`/use-cases/${useCase}/`] : []), `/literature/papers/${getLiterature().papers[0].id}/`,
+      "/investigations/", "/runs/mfass-v2/", "/updates/", "/agents/",
+      ...(useCase ? [`/use-cases/${useCase}/`] : []),
       ...getResearch(catalogue).investigations.slice(0, 1).map((report) => `/investigations/${report.id}/`)])
+      assert.match(await html(pathname), new RegExp(`<link rel="canonical" href="https://benchmarks\\.rewirebio\\.io${pathname}"`), pathname);
+    for (const pathname of ["/literature/", `/${DOMAINS[0].id}/`, `/literature/papers/${getLiterature().papers[0].id}/`])
       assert.match(await html(pathname), /<link rel="canonical" href="https:\/\/benchmarks\.rewirebio\.io\//, pathname);
     assert.match(await (await get("/updates/feed.xml")).text(), /<feed/);
     verifyContributionExport(await html("/contribute/"), process.env.NEXT_PUBLIC_OMICS_CONTRIBUTIONS_ENABLED);
@@ -228,7 +230,7 @@ function useCaseSlugs(catalogue: CatalogueSnapshot): string[] {
 /** The sitemap lists exactly the indexable canonical pages of the pinned release. */
 function checkSitemapInventory(catalogue: CatalogueSnapshot, urls: Set<string>) {
   const expected = new Set([
-    "/", "/runs/mfass-v2/", "/evidence/", "/agents/", "/coverage/", "/use-cases/", "/investigations/",
+    "/", "/runs/mfass-v2/", "/evidence/", "/agents/", "/coverage/", "/updates/", "/use-cases/", "/investigations/",
     ...getResearch(catalogue).investigations.map((report) => `/investigations/${report.id}/`),
     ...useCaseSlugs(catalogue).map((slug) => `/use-cases/${slug}/`),
     ...catalogueIndexPaths(withoutVerifiedAliases(catalogue.records, createCatalogueQuery(catalogue).association)),

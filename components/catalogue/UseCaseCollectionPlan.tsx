@@ -8,11 +8,11 @@ export function UseCaseCollectionStatus({ status }: { status: CollectionPlan["st
   return <span className={styles.collectionStatus}>{status === "planned" ? "Collection planned" : "Collecting evidence"}</span>;
 }
 
-export default function UseCaseCollectionPlan({ plan, summary }: { plan: CollectionPlan; summary: EvidenceSummary }) {
+export default function UseCaseCollectionPlan({ plan, summary, embedded = false }: { plan: CollectionPlan; summary: EvidenceSummary; embedded?: boolean }) {
   const hasEvidence = summary.endpoints > 0;
   return <section id="collection-plan" className={`${styles.section} ${styles.collectionPlan}`} aria-labelledby="collection-plan-heading">
     <div className={styles.planHeading}>
-      <h2 id="collection-plan-heading">Evidence collection plan</h2>
+      {embedded ? <span id="collection-plan-heading" className="sr-only">Evidence collection plan</span> : <h2 id="collection-plan-heading">Evidence collection plan</h2>}
       <UseCaseCollectionStatus status={plan.status} />
     </div>
     <p>

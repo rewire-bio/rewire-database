@@ -15,7 +15,7 @@ const UNCACHED_FILES = new Set(["/deployment.json", "/release-manifest.json"]);
 // intercepted route or a server action rather than a full HTML document.
 const RSC_HEADERS = ["rsc", "next-router-state-tree", "next-router-prefetch", "next-url", "next-action"];
 const PERSONAL_HEADERS = ["authorization", "cookie"];
-const CACHEABLE_TYPES = /^(text\/html|text\/css|text\/plain|text\/javascript|application\/javascript|application\/xml|text\/xml|application\/atom\+xml|image\/[a-z0-9.+-]+|font\/[a-z0-9.+-]+)\s*(;|$)/i;
+const CACHEABLE_TYPES = /^(text\/html|text\/css|text\/plain|text\/markdown|text\/javascript|application\/javascript|application\/xml|text\/xml|application\/atom\+xml|image\/[a-z0-9.+-]+|font\/[a-z0-9.+-]+)\s*(;|$)/i;
 
 /** Paths never cached anywhere: private pages, API/auth, downloads and publication metadata. */
 export const privatePath = pathname => UNCACHED_FILES.has(pathname) ||

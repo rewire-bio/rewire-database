@@ -28,6 +28,14 @@ export function InvestigationList({ reports }: { reports: Investigation[] }) {
 
 function EvidenceValue({ value }: { value: unknown }) {
   if (value === null || value === undefined || value === "") return <>Not recorded</>;
+  if (typeof value === "string" && value.startsWith("{") && value.endsWith("}")) {
+    try {
+      const parsed: unknown = JSON.parse(value);
+      if (parsed && typeof parsed === "object") return <EvidenceValue value={parsed} />;
+    } catch {
+      // Fall through to plain string rendering.
+    }
+  }
   if (Array.isArray(value)) return value.length ? <ul className={styles.list}>{value.map((item, i) => <li key={i}><EvidenceValue value={item} /></li>)}</ul> : <>None recorded</>;
   if (typeof value === "object") return <dl className={styles.details}>{Object.entries(value).map(([key, item]) => <Fragment key={key}><dt>{key.replace(/_/g, " ")}</dt><dd><EvidenceValue value={item} /></dd></Fragment>)}</dl>;
   return <>{String(value)}</>;

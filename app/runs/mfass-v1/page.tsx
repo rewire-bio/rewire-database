@@ -76,11 +76,6 @@ export default function HistoricalMfassPage() {
       <section className={`block ${styles.historical}`} id="mfass-v1">
         <div className="wrap prose-brief">
           <h2 className="sec-head">mfass-v1 · historical report</h2>
-          <div className={styles.correction}>
-            <strong>Superseded by MFASS v2.</strong> The original baseline centred sequence windows incorrectly
-            for 7,770 eligible variants. Its score and comparisons below are the preserved v1 record,
-            not current evidence for choosing a model. <Link href="/runs/mfass-v2/">Read the corrected v2 result &rarr;</Link>
-          </div>
           <p>
             <strong>Splice-variant prioritisation against a functional assay.</strong> Does a model
             improve the ranking of splice-region variants over the tools a diagnostic laboratory

@@ -14,6 +14,46 @@ const pages: Omit<PageMetadataContract, "canonical">[] = [
     ],
   },
   {
+    path: "/agents/",
+    indexable: true,
+    inSitemap: true,
+    social: true,
+    breadcrumbs: [
+      { name: "Database", path: "/" },
+      { name: "Connect your agent", path: "/agents/" },
+    ],
+  },
+  {
+    path: "/coverage/",
+    indexable: true,
+    inSitemap: true,
+    social: true,
+    breadcrumbs: [
+      { name: "Database", path: "/" },
+      { name: "Collection coverage", path: "/coverage/" },
+    ],
+  },
+  {
+    path: "/updates/",
+    indexable: true,
+    inSitemap: true,
+    social: true,
+    breadcrumbs: [
+      { name: "Database", path: "/" },
+      { name: "Updates", path: "/updates/" },
+    ],
+  },
+  {
+    path: "/investigations/",
+    indexable: true,
+    inSitemap: true,
+    social: true,
+    breadcrumbs: [
+      { name: "Database", path: "/" },
+      { name: "Investigations", path: "/investigations/" },
+    ],
+  },
+  {
     path: "/runs/mfass-v1/",
     indexable: false,
     inSitemap: false,

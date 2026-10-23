@@ -14,7 +14,7 @@ import { GET as llms } from "../app/llms.txt/route";
 describe("connect your agent", () => {
   it("installs the plugin and the knowledge-graph server from one set of commands", () => {
     expect(pluginCommands).toEqual(["/plugin marketplace add rewire-bio/rewire-benchmarks", "/plugin install bio-model-benchmarks@rewire-benchmarks"]);
-    expect(claudeMcpAdd()).toBe(`claude mcp add rewire-benchmark-graph -- uvx --from git+https://github.com/rewire-bio/rdf-kg-mcp@v0.1.0 rdf-kg-mcp serve ${KG_ALIAS}`);
+    expect(claudeMcpAdd()).toBe(`claude mcp add rewire-benchmark-graph -- uvx --from git+https://github.com/rewire-bio/rdf-kg-mcp@v0.2.0 rdf-kg-mcp serve ${KG_ALIAS}`);
     expect(JSON.parse(mcpJson()).mcpServers["rewire-benchmark-graph"].args.at(-1)).toBe(KG_ALIAS);
     expect(kgArchiveUrl(releaseId)).toBe(`https://github.com/rewire-bio/rewire-benchmark-data/releases/download/kg/${releaseId}/kg-${releaseId}.tar.gz`);
     expect(reproducePrompt("mfass-v2-baseline", "mfass-v2")).toContain("run recipe mfass-v2-baseline (protocol mfass-v2)");

@@ -4,7 +4,7 @@ export const SITE = "https://benchmarks.rewirebio.io";
 export const MARKETPLACE = "rewire-bio/rewire-benchmarks";
 export const PLUGIN = "bio-model-benchmarks";
 export const GRAPH_SERVER = "rewire-benchmark-graph";
-export const RDF_KG_MCP = "git+https://github.com/rewire-bio/rdf-kg-mcp@v0.1.0";
+export const RDF_KG_MCP = "git+https://github.com/rewire-bio/rdf-kg-mcp@v0.2.0";
 /** Redirects to the knowledge-graph bundle of the release this site serves. */
 export const KG_ALIAS = `${SITE}/agents/kg.tar.gz`;
 
@@ -29,7 +29,7 @@ export const examplePrompts = [
   "Run my model through the ProteinGym protocol next to the registered baselines and report the difference.",
 ];
 
-/** Named SPARQL queries the knowledge-graph bundle ships for discrepancies between studies (rdf-kg-mcp 0.2 or later). */
+/** Named SPARQL queries the knowledge-graph bundle ships for discrepancies between studies (rdf-kg-mcp 0.2, pinned in RDF_KG_MCP). */
 export const discrepancyQueries = [
   { name: "open_discrepancies", params: "severity (optional)", returns: "unsettled findings, most severe first" },
   { name: "discrepancies_for_system", params: "system (IRI)", returns: "findings that compare a model, method or configuration" },
@@ -79,7 +79,7 @@ Each release flags studies that disagree with what other studies report for the 
 - Pages: ${SITE}/contested/ and ${SITE}/contested/<id>/
 - API (GET ${SITE}/api/trpc/<procedure>?input=<URL-encoded JSON>):
 ${discrepancyApi.map((p) => `  - ${p.name}: ${p.input}. Returns ${p.returns}.`).join("\n")}
-- Knowledge graph: the derived graph holds the same findings. With rdf-kg-mcp 0.2 or later, list_queries and run_query offer:
+- Knowledge graph: the derived graph holds the same findings. The MCP server's list_queries and run_query tools offer:
 ${discrepancyQueries.map((q) => `  - ${q.name}: ${q.params}. Returns ${q.returns}.`).join("\n")}
 
 ## Pages

@@ -99,7 +99,7 @@ export default function AgentsPage() {
           {discrepancyApi.map((p) => <li key={p.name}><code>{p.name}</code>: {p.input}. Returns {p.returns}.</li>)}
         </ul>
         <h3>Knowledge graph</h3>
-        <p>The bundle&apos;s derived graph holds the same findings. With rdf-kg-mcp 0.2 or later, <code>list_queries</code> and <code>run_query</code> offer these named queries:</p>
+        <p>The bundle&apos;s derived graph holds the same findings. The MCP server&apos;s <code>list_queries</code> and <code>run_query</code> tools offer these named queries:</p>
         <ul>
           {discrepancyQueries.map((q) => <li key={q.name}><code>{q.name}</code> ({q.params}): {q.returns}.</li>)}
         </ul>

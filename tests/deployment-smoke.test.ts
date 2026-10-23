@@ -30,6 +30,17 @@ describe("read-only deployment smoke", () => {
     expect(JSON.parse(api[0].searchParams.get("input")!)).toMatchObject({ q: "AlphaGenome", kind: "model", release_id: release });
     expect(JSON.parse(api[1].searchParams.get("input")!)).toMatchObject({ kind: "benchmark", release_id: release });
   });
+  it("retries a connection that is reset while a new revision warms up", async () => {
+    const ok = fixture();
+    let reset = true;
+    const request = vi.fn(async (input: Parameters<typeof fetch>[0], init?: RequestInit) => {
+      const path = new URL(input instanceof Request ? input.url : input).pathname;
+      if (path === "/evidence/" && reset) { reset = false; throw new TypeError("terminated"); }
+      return ok(input, init);
+    });
+    await smokeDeployment("https://example.test", { request, log: vi.fn() });
+    expect(request).toHaveBeenCalledTimes(18);
+  });
   it("fails when a core route is unavailable", async () => {
     await expect(smokeDeployment("https://example.test", { request: fixture("/models/"), log: vi.fn() })).rejects.toThrow("HTTP 503");
   });

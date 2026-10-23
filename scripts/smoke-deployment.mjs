@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { pathToFileURL } from 'node:url';
 import { pinnedDownloads, assertProducerReceipt, fetchGithubDownload } from './github-downloads.mjs';
+import { fetchWithRetry } from './deployment-transaction.mjs';
 
 /** Read-only deployment checks. No credentials, submissions or mutations. */
 export async function smokeDeployment(origin, { request = fetch, log = console.log, independentFrontend = false, downloads: suppliedDownloads } = {}) {
@@ -10,7 +11,9 @@ export async function smokeDeployment(origin, { request = fetch, log = console.l
   async function get(path, type) {
     const url = new URL(path, base);
     assert.equal(url.origin, base.origin, 'Smoke requests must stay on the deployment origin');
-    const response = await request(url, { signal: AbortSignal.timeout(30000) });
+    // A new revision can drop a connection while it warms up, so each check is retried and its
+    // body read inside the retry, like check-live-catalogue's probes.
+    const response = await fetchWithRetry(url, { fetchImpl: request, timeoutMs: 30000 });
     assert.equal(response.status, 200, `${url.pathname}: HTTP ${response.status}`);
     assert.ok(response.headers.get('content-type')?.includes(type), `${url.pathname}: expected ${type}`);
     log(`PASS ${url.pathname}`);

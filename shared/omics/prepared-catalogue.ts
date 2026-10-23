@@ -21,6 +21,14 @@ import { useCaseQueryFrom, type UseCaseState } from "./use-cases.js";
 import { decodeRecords, unpackEvidence, type PackedEvidence } from "./serving-codec.js";
 import { sourceRecordsPage, sourceResultsPage, type SourceRecordsInput, type SourceResultsInput } from "./source-records.js";
 import type { ResearchData, ResearchReadiness } from "./research.js";
+import {
+  discrepanciesPage,
+  type Discrepancy,
+  type DiscrepanciesInput,
+  type DiscrepancyAction,
+  type DiscrepancyFile,
+  type DiscrepancySummary,
+} from "./discrepancies.js";
 import type { AuditCheck } from "./audit.js";
 import {
   auditChecksPage,
@@ -37,9 +45,12 @@ const { DatabaseSync } = process.getBuiltinModule("node:sqlite");
  * 3.x stores each record once and refers to it from details, result rows and
  * use cases (serving-codec.ts), and stores use cases as rows. 3.1 adds the
  * source_records table; on older files source pages read as having no records.
+ * 3.3 adds the discrepancy tables (discrepancies between studies, inferred by
+ * the knowledge-graph build, and their follow-up actions); on older files there
+ * are none.
  * The reader also opens 2.x files, so a website can switch between releases of
  * either form. */
-export const PREPARED_CONTRACT_VERSION = "3.2";
+export const PREPARED_CONTRACT_VERSION = "3.3";
 const READABLE_CONTRACT_MAJORS = ["2", "3"];
 
 /**
@@ -171,6 +182,29 @@ export function openPreparedCatalogue(file: string) {
     return row ? (unzip(row.gz) as string[]) : [];
   };
   const evidenceStatement = db.prepare("SELECT gz FROM evidence WHERE record_id = ?");
+  // Discrepancies between studies (3.3). Older files, and releases built without the
+  // knowledge graph, have no index blob and so no findings.
+  const hasDiscrepancies = !!db.prepare("SELECT 1 FROM blobs WHERE key = 'discrepancy_index'").get();
+  type DiscrepancyIndex = Pick<DiscrepancyFile, "rules" | "excluded" | "schema_version"> & { entries: DiscrepancySummary[] };
+  const discrepancyIndex = lazy((): DiscrepancyIndex =>
+    hasDiscrepancies ? blob<DiscrepancyIndex>("discrepancy_index") : { rules: {}, excluded: null, schema_version: 0, entries: [] });
+  const findingStatement = hasDiscrepancies ? db.prepare("SELECT gz FROM discrepancies WHERE id = ?") : null;
+  const aliasStatement = hasDiscrepancies ? db.prepare("SELECT discrepancy_id FROM discrepancy_aliases WHERE previous_id = ?") : null;
+  const byResultStatement = hasDiscrepancies
+    ? db.prepare("SELECT r.result_id, r.discrepancy_id, r.role FROM discrepancy_results r JOIN discrepancies d ON d.id = r.discrepancy_id WHERE r.result_id = ? ORDER BY d.pos")
+    : null;
+  const bySystemStatement = hasDiscrepancies
+    ? db.prepare("SELECT s.discrepancy_id FROM discrepancy_systems s JOIN discrepancies d ON d.id = s.discrepancy_id WHERE s.system_id = ? ORDER BY d.pos")
+    : null;
+  const finding = (id: string): Discrepancy | null => {
+    let row = findingStatement?.get(id) as { gz: Uint8Array } | undefined;
+    if (!row) {
+      const alias = aliasStatement?.get(id) as { discrepancy_id: string } | undefined;
+      if (alias) row = findingStatement?.get(alias.discrepancy_id) as { gz: Uint8Array } | undefined;
+    }
+    return row ? (unzip(row.gz) as Discrepancy) : null;
+  };
+  const summaries = lazy(() => new Map(discrepancyIndex().entries.map((d) => [d.id, d])));
 
   return {
     release_id,
@@ -255,6 +289,31 @@ export function openPreparedCatalogue(file: string) {
       for (const id of [...new Set(checks.flatMap((check) => check.source_ids))]) sources.set(id, record(id) ?? undefined);
       return auditChecksPage(audit(), input, checks, record(input.record_id) ?? undefined, sources);
     },
+    /** Whether this file carries discrepancies between studies (3.3, built with the knowledge graph). */
+    hasDiscrepancies: () => hasDiscrepancies,
+    /** The rules version and the counts of results the rules left out. */
+    discrepancyRules: () => ({ rules: discrepancyIndex().rules, excluded: discrepancyIndex().excluded }),
+    /** One page of findings, most severe first, with counts by severity, state and rule. */
+    discrepancies: (input: DiscrepanciesInput = {}) => discrepanciesPage(release_id, discrepancyIndex().entries, input),
+    /** One finding with its numbers and follow-up actions, by ID or by an earlier ID it replaced. */
+    discrepancy: (id: string) => finding(id),
+    /** The findings each result takes part in, as outlier or consensus. Results in none are left out. */
+    contestedBy(resultIds: readonly string[]) {
+      const out: Record<string, { discrepancy: DiscrepancySummary; role: string }[]> = {};
+      for (const id of new Set(resultIds))
+        for (const row of (byResultStatement?.all(id) || []) as { discrepancy_id: string; role: string }[]) {
+          const summary = summaries().get(row.discrepancy_id);
+          if (summary) (out[id] ??= []).push({ discrepancy: summary, role: row.role });
+        }
+      return out;
+    },
+    /** The findings that compare a model, method or configuration. */
+    discrepanciesForSystem: (systemId: string): DiscrepancySummary[] =>
+      ((bySystemStatement?.all(systemId) || []) as { discrepancy_id: string }[])
+        .map((row) => summaries().get(row.discrepancy_id))
+        .filter((d): d is DiscrepancySummary => !!d),
+    /** A finding's follow-up actions, oldest first. */
+    discrepancyActions: (id: string): DiscrepancyAction[] => finding(id)?.actions ?? [],
     close: () => db.close(),
   };
 }

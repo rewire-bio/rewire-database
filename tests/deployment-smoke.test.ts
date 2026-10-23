@@ -33,10 +33,10 @@ describe("read-only deployment smoke", () => {
   it("retries a connection that is reset while a new revision warms up", async () => {
     const ok = fixture();
     let reset = true;
-    const request = vi.fn(async (input: Parameters<typeof fetch>[0], init?: RequestInit) => {
+    const request = vi.fn(async (input: Parameters<typeof fetch>[0]) => {
       const path = new URL(input instanceof Request ? input.url : input).pathname;
       if (path === "/evidence/" && reset) { reset = false; throw new TypeError("terminated"); }
-      return ok(input, init);
+      return ok(input);
     });
     await smokeDeployment("https://example.test", { request, log: vi.fn() });
     expect(request).toHaveBeenCalledTimes(18);

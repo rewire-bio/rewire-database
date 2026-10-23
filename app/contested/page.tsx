@@ -8,7 +8,7 @@ import { recordHref } from "@/lib/omics";
 import { catalogueText } from "@/lib/catalogue-text";
 import { fullUseCaseDetail } from "@/lib/use-cases-build";
 import {
-  contestedFilters, contestedList, contestedQuery, resultIdsOfUseCase, severityLabel, stateLabel, DISCREPANCIES_DOC, STATE_LABELS,
+  contestedFilters, contestedList, contestedQuery, disagreementOf, resultIdsOfUseCase, severityLabel, stateLabel, DISCREPANCIES_DOC, STATE_LABELS,
   type ContestedFilters,
 } from "@/lib/discrepancies";
 import styles from "@/components/catalogue/Contested.module.css";
@@ -47,6 +47,10 @@ export default function ContestedPage({ searchParams = {} }: { searchParams?: Se
     return record ? { name: record.name, href: recordHref(record) } : null;
   };
   const system = filters.system ? lookup(filters.system) : null;
+  const disagreementFor = (id: string) => {
+    const finding = query.discrepancy(id);
+    return finding ? disagreementOf(finding) : null;
+  };
   const severities = ["high", "medium", "low"].filter((s) => list?.totals.severity[s]);
   const states = Object.keys(STATE_LABELS).filter((s) => list?.totals.state[s]);
   const systems = (list?.systems ?? [])
@@ -108,7 +112,7 @@ export default function ContestedPage({ searchParams = {} }: { searchParams?: Se
             {filters.system && <p>Showing findings that compare {system ? <Link href={system.href}>{catalogueText(system.name)}</Link> : <code>{filters.system}</code>}. <Link href={contestedQuery(filters, { system: undefined })}>All models</Link></p>}
           </div>
           <p className={styles.muted}>{list.page.total} {list.page.total === 1 ? "finding matches" : "findings match"}, most severe first.</p>
-          {list.page.items.map((d) => <FindingEntry key={d.id} d={d} lookup={lookup} />)}
+          {list.page.items.map((d) => <FindingEntry key={d.id} d={d} lookup={lookup} view={disagreementFor(d.id)} />)}
           {!list.page.items.length && <p>No findings match these filters.</p>}
           {(filters.cursor || list.page.next_cursor) && <p>
             {filters.cursor && <Link href={contestedQuery(filters)}>First page</Link>}

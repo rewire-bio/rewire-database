@@ -58,3 +58,21 @@
 }
 .stepLinks { margin: 0 0 6px; padding-left: 18px; font-size: 14px; }
 .stepLinks li { margin: 0; }
+.summary { font-size: 16px; margin: 0 0 12px; }
+.chartScroll { overflow-x: auto; }
+.venn { display: block; width: 100%; min-width: 480px; max-width: 640px; height: auto; }
+.vennA { fill: var(--accent-soft); stroke: var(--accent-ink); stroke-width: 1.5; fill-opacity: 0.7; }
+.vennB { fill: var(--bg-hover); stroke: var(--ink-3); stroke-width: 1.5; fill-opacity: 0.6; }
+.vennHeading { font-size: 14px; font-weight: 600; fill: var(--ink); }
+.vennCount { font-size: 28px; font-weight: 700; fill: var(--ink); }
+.dot { fill: var(--ink-2); }
+.dotOutlier { fill: var(--accent-ink); stroke: var(--ink); stroke-width: 2.5; }
+.chartAxis { font-size: 12px; fill: var(--ink-3); }
+.gapBand { fill: var(--accent-soft); stroke: var(--accent); stroke-dasharray: 3 3; }
+.gapZero { stroke: var(--ink-3); stroke-width: 1; }
+.swatchBand { background: var(--accent-soft); border: 1px dashed var(--accent); }
+.groupList { margin: 0; padding-left: 18px; }
+.compactView { margin: 10px 0; }
+.compactView .summary { font-size: 14px; margin-bottom: 6px; }
+.compactChart { margin: 0 0 8px; max-width: 520px; }
+.srOnly { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }

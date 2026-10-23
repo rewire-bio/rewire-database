@@ -4,6 +4,8 @@ import {
   discrepancyHref, ruleLabel, scopeLabel, severityLabel, stateLabel,
   type DiscrepancySummary, type ResultContest,
 } from "@/lib/discrepancies";
+import type { Disagreement } from "@/lib/disagreement";
+import { DisagreementView } from "./DisagreementView";
 import OverdueMark from "./OverdueMark";
 import styles from "./Contested.module.css";
 
@@ -42,11 +44,13 @@ export function FollowUpLine({ d }: { d: DiscrepancySummary }) {
   </p>;
 }
 
-export function FindingEntry({ d, lookup }: { d: DiscrepancySummary; lookup: RecordLookup }) {
+/** A list entry; `view` adds the compact summary and chart when the finding has per-study data. */
+export function FindingEntry({ d, lookup, view }: { d: DiscrepancySummary; lookup: RecordLookup; view?: Disagreement | null }) {
   return <article className={styles.entry}>
     <h3><Link href={discrepancyHref(d.id)}>{d.label}</Link></h3>
     <FindingBadges d={d} />
     <p>{d.summary}</p>
+    {view && <DisagreementView view={view} compact />}
     <dl className={styles.facts}>
       <dt>Compared</dt><dd><RecordLinks ids={d.systems} lookup={lookup} /></dd>
     </dl>

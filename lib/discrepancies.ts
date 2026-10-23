@@ -3,7 +3,7 @@ import { discrepanciesPage, discrepancyStates, severities, type DiscrepancySumma
 import type { PreparedCatalogue } from "../shared/omics/prepared-catalogue";
 
 export { overdue } from "./discrepancy-dates";
-export type { Discrepancy, DiscrepancyAction, DiscrepancySummary } from "../shared/omics/discrepancies";
+export type { Discrepancy, DiscrepancyAction, DiscrepancyStudy, DiscrepancySummary } from "../shared/omics/discrepancies";
 
 /** Discrepancies between studies, read from the pinned release's prepared file (contract 3.3).
  * The knowledge-graph build infers them; the serving build copies them into SQL tables. A finding
@@ -204,4 +204,24 @@ export function openFindingsForSystem(systemId: string, reader: DiscrepancyReade
 /** The date the latest follow-up action asks to check again, while the finding is unsettled. */
 export function pendingCheck(d: { settled: boolean; actions: { next_check: string | null }[] }): string | null {
   return d.settled ? null : d.actions[d.actions.length - 1]?.next_check ?? null;
+}
+
+/** A link's short name: "owner/repo#N" for a GitHub issue or pull request, otherwise the host name. */
+export function linkLabel(url: string): string | null {
+  let parsed: URL;
+  try { parsed = new URL(url); } catch { return null; }
+  if (!["https:", "http:"].includes(parsed.protocol)) return null;
+  const host = parsed.hostname.replace(/^www\./, "");
+  const github = host === "github.com" && parsed.pathname.match(/^\/([^/]+)\/([^/]+)\/(?:issues|pull)\/(\d+)/);
+  return github ? `${github[1]}/${github[2]}#${github[3]}` : host;
+}
+
+/** A study's role in a finding, in words: the outlier disagrees with the consensus studies, which agree. */
+export const studyRoleLabel = (role: string) => (role === "outlier" ? "Disagrees" : "Agrees");
+
+/** Where a study key points when its source records do not say: a DOI or a repository. */
+export function studyKeyUrl(key: string): string | null {
+  if (key.startsWith("doi:")) return `https://doi.org/${key.slice(4)}`;
+  if (key.startsWith("repository:")) return /^https?:\/\//.test(key.slice(11)) ? key.slice(11) : null;
+  return null;
 }

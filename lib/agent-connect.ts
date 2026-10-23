@@ -40,7 +40,7 @@ export const discrepancyQueries = [
 /** The public API procedures that read the same findings from the release's SQL tables. */
 export const discrepancyApi = [
   { name: "catalogue.discrepancies", input: "severity, state, settled (open or settled), system, rule, cursor, limit", returns: "a page of findings with counts" },
-  { name: "catalogue.discrepancy", input: "id (an earlier ID also works)", returns: "one finding with its compared results and follow-up actions" },
+  { name: "catalogue.discrepancy", input: "id (an earlier ID also works)", returns: "one finding with its compared result IDs and follow-up actions" },
 ] as const;
 
 export const reproducePrompt = (recipeId: string, protocolId: string) =>

@@ -21,7 +21,7 @@ function mapping(id: string, relevance: ResolvedMapping["relevance"], configurat
 }
 
 const state = vi.hoisted(() => ({ entry: undefined as unknown as UseCase, mappings: [] as ResolvedMapping[] }));
-vi.mock("../lib/catalogue-build", () => ({ buildCatalogue: () => ({ query: { get: () => undefined, record: () => null } }) }));
+vi.mock("../lib/catalogue-build", () => ({ buildCatalogue: () => ({ query: { get: () => undefined, record: () => null, hasDiscrepancies: () => false } }) }));
 vi.mock("../lib/use-cases-build", async () => {
   const { summariseUseCaseEvidence } = await import("../lib/use-case-summary");
   return {

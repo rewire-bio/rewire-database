@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { overdue } from "@/lib/discrepancies";
+import { overdue } from "@/lib/discrepancy-dates";
 import styles from "./Contested.module.css";
 
 /** Marks a follow-up whose next check date has passed. Pages are cached at the edge for days,

@@ -2,6 +2,7 @@ import { buildCatalogue } from "./catalogue-build";
 import { discrepancyStates, severities, type DiscrepancySummary } from "../shared/omics/discrepancies";
 import type { PreparedCatalogue } from "../shared/omics/prepared-catalogue";
 
+export { overdue } from "./discrepancy-dates";
 export type { Discrepancy, DiscrepancyAction, DiscrepancySummary } from "../shared/omics/discrepancies";
 
 /** Discrepancies between studies, read from the pinned release's prepared file (contract 3.3).
@@ -161,14 +162,6 @@ export function contestingFindings(resultIds: readonly string[], byResult: Recor
 /** Unsettled findings that compare this model, method or configuration. */
 export function openFindingsForSystem(systemId: string, reader: DiscrepancyReader = discrepancyReader()): DiscrepancySummary[] {
   return reader.hasDiscrepancies() ? reader.discrepanciesForSystem(systemId).filter((d) => !d.settled) : [];
-}
-
-/** Whether a follow-up's next check date has passed. Dates are ISO (YYYY-MM-DD) and compare as text.
- * Pages are cached at the edge for days, so they decide this in the browser (OverdueMark). */
-export function overdue(nextCheck: string | null, today: string | Date): boolean {
-  if (!nextCheck || !/^\d{4}-\d{2}-\d{2}/.test(nextCheck)) return false;
-  const day = typeof today === "string" ? today.slice(0, 10) : today.toISOString().slice(0, 10);
-  return nextCheck.slice(0, 10) < day;
 }
 
 /** The date the latest follow-up action asks to check again, while the finding is unsettled. */

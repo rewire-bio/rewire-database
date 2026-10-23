@@ -101,7 +101,7 @@ export default function ContestedPage({ searchParams = {} }: { searchParams?: Se
             </form>
             {filters.system && <p>Showing findings that compare {system ? <Link href={system.href}>{catalogueText(system.name)}</Link> : <code>{filters.system}</code>}. <Link href={contestedQuery(filters, { system: undefined })}>All models</Link></p>}
           </div>
-          <p className={styles.muted}>{list.page.total} {list.page.total === 1 ? "finding" : "findings"} match, most severe first.</p>
+          <p className={styles.muted}>{list.page.total} {list.page.total === 1 ? "finding matches" : "findings match"}, most severe first.</p>
           {list.page.items.map((d) => <FindingEntry key={d.id} d={d} lookup={lookup} />)}
           {!list.page.items.length && <p>No findings match these filters.</p>}
           {(filters.cursor || list.page.next_cursor) && <p>

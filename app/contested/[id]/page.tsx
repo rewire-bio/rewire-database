@@ -73,7 +73,8 @@ function resultRows(ids: string[]): Row[] {
     const result = row?.result ?? query.record(id);
     if (!result) return [];
     const link = (r: { id: string; kind: string; name: string }) => ({ name: catalogueText(r.name), href: recordHref(r as never) });
-    const tested = row ? [...row.configurations, ...row.models, ...row.methods, ...row.pipelines, ...row.services] : [];
+    // models holds every tested record, configurations included; list each once, configurations first.
+    const tested = row ? [...new Map([...row.configurations, ...row.models].map((r) => [r.id, r])).values()] : [];
     const procedure = row?.protocols[0] ?? row?.benchmarks[0] ?? row?.evaluation ?? null;
     const a = result.attributes;
     return [{
@@ -113,11 +114,11 @@ function Action({ a, latest, pending, lookup }: { a: DiscrepancyAction; latest: 
     a.report_url && safeSourceUrl(a.report_url) && { href: safeSourceUrl(a.report_url)!, text: "Report to the authors" },
   ].filter((x): x is { href: string; text: string } => !!x);
   return <li>
-    <h3>{a.date ? formatDate(a.date) : "Undated"}: {actionLabel(a.action)}</h3>
+    <h3>{a.date ? formatDate(a.date) : "Undated"}: {a.action ? actionLabel(a.action) : stateLabel(a.state)}</h3>
     <p className={styles.muted}>State after this step: {stateLabel(a.state)}</p>
     {a.rationale && <p>{a.rationale}</p>}
     {a.upstream_response && <p>Response: {a.upstream_response}</p>}
-    {a.awaiting && <p>Waiting for: {a.awaiting}{a.expected_by && <>, expected by {formatDate(a.expected_by)}</>}.</p>}
+    {a.awaiting && <p>Waiting for: {a.awaiting.replace(/\.$/, "")}{a.expected_by && <>, expected by {formatDate(a.expected_by)}</>}.</p>}
     {a.next_check && <p>Next check: {formatDate(a.next_check)}{latest && pending && <OverdueMark nextCheck={pending} />}</p>}
     {a.resolved_by.length > 0 && <p>Resolved by: <RecordLinks ids={a.resolved_by} lookup={lookup} /></p>}
     {links.length > 0 && <p>{links.map((l, i) => <span key={l.href}>{i > 0 && " · "}<a href={l.href}>{l.text}</a></span>)}</p>}

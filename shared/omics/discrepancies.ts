@@ -6,7 +6,9 @@
  * one action per accepted revision of its `discrepancy_review` claims. Files
  * written before the history existed (schema 1) only carry the latest review,
  * which becomes a single action. Schema 3 adds each finding's per-study breakdown
- * (`studies`); earlier files read as having none. docs/discrepancies.md describes the whole feature. */
+ * (`studies`); earlier files read as having none. Schema 4 adds resolved findings:
+ * settled discrepancies the rules no longer find, kept with their follow-up history
+ * (`resolved: true`, no rule, studies or numbers). docs/discrepancies.md describes the whole feature. */
 
 export const discrepancyStates = [
   "open", "investigating", "reported-upstream", "awaiting-correction", "explained", "confirmed-error", "false-positive",
@@ -67,6 +69,9 @@ export type DiscrepancyStudy = {
 export type Discrepancy = {
   id: string;
   previous_ids: string[];
+  /** Settled, and no longer found by the rules (for example, its results were disputed). */
+  resolved?: boolean;
+  /** The rule that found it; "" for a resolved finding, whose rule is not recorded. */
   rule: string;
   label: string;
   summary: string;
@@ -131,7 +136,8 @@ export function normaliseDiscrepancies(raw: Record<string, unknown>): Discrepanc
     return {
       id: String(d.id),
       previous_ids: texts(d.previous_ids),
-      rule: String(d.rule),
+      resolved: d.resolved === true,
+      rule: text(d.rule) ?? "",
       label: String(d.label ?? d.id),
       summary: String(d.summary ?? ""),
       severity: String(d.severity),
@@ -152,7 +158,7 @@ export function normaliseDiscrepancies(raw: Record<string, unknown>): Discrepanc
     };
   });
   const order = (s: string) => (severities as readonly string[]).indexOf(s);
-  discrepancies.sort((a, b) => order(a.severity) - order(b.severity) || a.rule.localeCompare(b.rule) || a.id.localeCompare(b.id));
+  discrepancies.sort((a, b) => Number(a.resolved) - Number(b.resolved) || order(a.severity) - order(b.severity) || a.rule.localeCompare(b.rule) || a.id.localeCompare(b.id));
   const excluded = raw.excluded as { disputed?: number; concern?: number } | undefined;
   return {
     release_id: String(raw.release_id),
@@ -167,12 +173,12 @@ export function normaliseDiscrepancies(raw: Record<string, unknown>): Discrepanc
 export type DiscrepancySummary = Pick<
   Discrepancy,
   "id" | "rule" | "label" | "summary" | "severity" | "scope" | "state" | "settled" | "systems"
-> & { actions: number; last_action_date: string | null; next_check: string | null };
+> & { resolved: boolean; actions: number; last_action_date: string | null; next_check: string | null };
 
 export function summarise(d: Discrepancy): DiscrepancySummary {
   const last = d.actions[d.actions.length - 1];
   return {
-    id: d.id, rule: d.rule, label: d.label, summary: d.summary, severity: d.severity, scope: d.scope,
+    id: d.id, resolved: d.resolved === true, rule: d.rule, label: d.label, summary: d.summary, severity: d.severity, scope: d.scope,
     state: d.state, settled: d.settled, systems: d.systems,
     actions: d.actions.length, last_action_date: last?.date ?? null, next_check: last?.next_check ?? null,
   };

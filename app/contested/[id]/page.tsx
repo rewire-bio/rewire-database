@@ -150,24 +150,33 @@ export default function ContestedFindingPage({ params }: { params: Params }) {
   const pending = pendingCheck(d);
   const firstOutlier = d.outlier_results[0];
   const view = disagreementOf(d);
+  const last = d.actions[d.actions.length - 1];
   return <>
     <header className="page-head"><div className="wrap">
       <Breadcrumbs items={[{ name: "Database", path: "/" }, { name: "Contested results", path: "/contested/" }, { name: d.label, path: discrepancyHref(d.id) }]} />
-      <span className="kick">Contested result</span>
+      <span className="kick">{d.resolved ? "Resolved finding" : "Contested result"}</span>
       <h1>{d.label}</h1>
       <FindingBadges d={d} />
       <p className="intro">{d.summary}</p>
     </div></header>
     <section className="block first"><div className="wrap content">
-      <div className={styles.notice}>
-        <p>An automatic lead, not a finding of error. The results below are shown as published, everywhere on the site, until a reviewer decides otherwise.</p>
-      </div>
+      {d.resolved
+        ? <div className={styles.resolved} role="status">
+          <p><strong>Resolved: {stateLabel(d.state).toLowerCase()}{last?.date && <> on {formatDate(last.date)}</>}.</strong></p>
+          {last?.rationale && <p>{last.rationale}</p>}
+          {!view && <p>{d.state === "confirmed-error"
+            ? "The compared results were withdrawn from the database (marked disputed) after the error was confirmed, so the check no longer finds this disagreement and the comparison between studies is not shown. The follow-up below records how it was resolved."
+            : "The check no longer finds this disagreement, so the comparison between studies is not shown. The follow-up below records how it was resolved."}</p>}
+        </div>
+        : <div className={styles.notice}>
+          <p>An automatic lead, not a finding of error. The results below are shown as published, everywhere on the site, until a reviewer decides otherwise.</p>
+        </div>}
       {view && <section className={styles.section} aria-labelledby="studies-heading">
         <h2 id="studies-heading">Which studies agree</h2>
         <DisagreementView view={view} />
       </section>}
       <section className={styles.section} aria-labelledby="summary-heading">
-        <h2 id="summary-heading">What disagrees</h2>
+        <h2 id="summary-heading">{d.resolved ? "What disagreed" : "What disagrees"}</h2>
         <Numbers d={d} lookup={lookup} />
         <dl className={styles.facts}>
           <dt>Compared</dt><dd><RecordLinks ids={d.systems} lookup={lookup} /></dd>
@@ -175,19 +184,19 @@ export default function ContestedFindingPage({ params }: { params: Params }) {
           <dt>Other studies</dt><dd>{d.consensus_sources.length > 5
             ? <details><summary>{d.consensus_sources.length} studies</summary><RecordLinks ids={d.consensus_sources} lookup={lookup} /></details>
             : <RecordLinks ids={d.consensus_sources} lookup={lookup} />}</dd>
-          <dt>Rule</dt><dd>{ruleLabel(d.rule)}; {scopeLabel(d.scope).toLowerCase()}</dd>
-          <dt>Model identity</dt><dd>{d.identity_basis === "reviewed" ? "Matched across studies through reviewed links" : "Matched across studies partly through links not yet reviewed"}</dd>
+          {d.rule && <><dt>Rule</dt><dd>{ruleLabel(d.rule)}{d.scope && <>; {scopeLabel(d.scope).toLowerCase()}</>}</dd></>}
+          {d.identity_basis && <><dt>Model identity</dt><dd>{d.identity_basis === "reviewed" ? "Matched across studies through reviewed links" : "Matched across studies partly through links not yet reviewed"}</dd></>}
           {d.previous_ids.length > 0 && <><dt>Earlier IDs</dt><dd>{d.previous_ids.join(", ")}</dd></>}
         </dl>
       </section>
-      <section className={styles.section} aria-labelledby="numbers-heading">
+      {(outlier.length > 0 || consensus.length > 0) && <section className={styles.section} aria-labelledby="numbers-heading">
         <h2 id="numbers-heading">The compared numbers</h2>
         <p>Each value links to its result record and source. Compare values within one protocol; the rule compares rankings, not raw values across protocols.</p>
         {outlier.length > 0 && <ResultTable caption={`In the study that disagrees (${outlier.length})`} rows={outlier} outlier />}
         {consensus.length > 0 && (consensus.length > RESULT_TABLE_ROWS
           ? <details><summary>In the other studies ({consensus.length} results)</summary><ResultTable caption="In the other studies" rows={consensus} /></details>
           : <ResultTable caption={`In the other studies (${consensus.length})`} rows={consensus} />)}
-      </section>
+      </section>}
       <section className={styles.section} aria-labelledby="follow-up-heading">
         <h2 id="follow-up-heading">Follow-up</h2>
         <p className={styles.muted}>Current state: {stateLabel(d.state)}{d.settled ? ". Settled." : "."}{pending && <> Next check {formatDate(pending)}<OverdueMark nextCheck={pending} />.</>}</p>
@@ -198,8 +207,10 @@ export default function ContestedFindingPage({ params }: { params: Params }) {
           : <p>No one has reviewed this finding yet.</p>}
       </section>
       <section className={styles.section} aria-labelledby="help-heading">
-        <h2 id="help-heading">How to help resolve this</h2>
-        <p>If you know why these studies disagree, for example a different population, metric or preprocessing step, or you have a corrected value, tell us through the <Link href={firstOutlier ? `/contribute/?type=correction&target_id=${encodeURIComponent(firstOutlier)}` : "/contribute/"}>contribution form</Link>. A reviewer checks every submission against its source before anything changes, and the step is added to the follow-up above.</p>
+        <h2 id="help-heading">{d.resolved ? "If you know more" : "How to help resolve this"}</h2>
+        {d.resolved
+          ? <p>If you have a correction to this record of how the finding was resolved, tell us through the <Link href="/contribute/">contribution form</Link>.</p>
+          : <p>If you know why these studies disagree, for example a different population, metric or preprocessing step, or you have a corrected value, tell us through the <Link href={firstOutlier ? `/contribute/?type=correction&target_id=${encodeURIComponent(firstOutlier)}` : "/contribute/"}>contribution form</Link>. A reviewer checks every submission against its source before anything changes, and the step is added to the follow-up above.</p>}
         <p className={styles.muted}>Finding {d.id} · <Link href="/contested/">All contested results</Link> · <a href={DISCREPANCIES_DOC}>How findings are made and followed up</a></p>
       </section>
     </div></section>

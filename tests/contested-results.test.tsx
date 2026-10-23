@@ -94,6 +94,18 @@ const studied = finding("discrepancy-00000000000000dd", {
       comparisons: [comparison(0.41, 0.62, { results: { alphagenome: "r-out-ag", spliceai: "r-out-sa" } }), comparison(0.3, 0.5)] }),
   ],
 });
+// Resolved: the error was confirmed and the results withdrawn, so the rules no longer find it.
+const resolvedFinding = finding("discrepancy-00000000000000ee", {
+  resolved: true, rule: "", scope: "", identity_basis: "", severity: "high", state: "confirmed-error", settled: true,
+  label: "AlphaGenome and Borzoi: Alavi 2026 reverses the order", numbers: {}, studies: [], systems: ["alphagenome", "spliceai"],
+  outlier_results: [], consensus_results: [],
+  actions: [
+    action({ revision: 1, action: "investigated", state: "investigating", date: "2026-10-18", investigation_url: "https://github.com/rewire-bio/rewire-benchmark-data/issues/174" }),
+    action({ revision: 2, action: "reported-upstream", state: "awaiting-correction", date: "2026-10-19",
+      report_url: "https://github.com/marcel-2c8/Probing-genomic-foundation-models-2026/issues/2" }),
+    action({ revision: 3, action: "closed", state: "confirmed-error", date: "2026-10-23", rationale: "The authors confirmed a one-base offset; the results are marked disputed." }),
+  ],
+});
 const use = (discrepancies?: Discrepancy[]) => { fixture.query = preparedFromSnapshot(snapshot(), { discrepancies }); return fixture.query; };
 
 describe("contested results: wrapper", () => {
@@ -148,6 +160,23 @@ describe("contested results: wrapper", () => {
     expect(openFindingsForSystem("spliceai").map((d) => d.id)).toEqual(["discrepancy-00000000000000aa", "discrepancy-00000000000000bb"]);
     expect(investigatedFindings().map((f) => [f.discrepancy.id, f.investigation_url]))
       .toEqual([["discrepancy-00000000000000aa", "https://github.com/rewire-bio/rewire-benchmark-data/issues/174"]]);
+  });
+  it("keeps resolved findings out of the main list, in their own section and status, and out of open counts", () => {
+    use([...findings, resolvedFinding]);
+    expect(contestedFilters({ status: "resolved" })).toEqual({ settled: "resolved" });
+    const all = contestedList({})!;
+    expect(all.totals).toMatchObject({ all: 4, open: 2, settled: 1, resolved: 1 });
+    expect(all.page.items.map((d) => d.id)).toEqual(findings.map((d) => d.id));
+    expect(all.resolved.map((d) => d.id)).toEqual([resolvedFinding.id]);
+    expect(contestedList({ settled: "settled" })!.page.items.map((d) => d.id)).toEqual(["discrepancy-00000000000000cc"]);
+    const only = contestedList({ settled: "resolved" })!;
+    expect(only.page.items.map((d) => d.id)).toEqual([resolvedFinding.id]);
+    expect(only.resolved).toEqual([]);
+    expect(contestedList({ settled: "open" })!.resolved).toEqual([]);
+    expect(contestedList({ settled: "settled" })!.resolved.map((d) => d.id)).toEqual([resolvedFinding.id]);
+    // The other filters apply to the resolved section too.
+    expect(contestedList({ severity: "low" })!.resolved).toEqual([]);
+    expect(openFindingsForSystem("alphagenome").map((d) => d.id)).not.toContain(resolvedFinding.id);
   });
   it("filters to the findings a use case's results take part in, in either role", () => {
     use(findings);
@@ -248,6 +277,36 @@ describe("contested results: pages", () => {
     expect(html).toContain("<td>Unlinked set</td>");
     // The result lists stay below.
     expect(html).toContain("The compared numbers");
+  });
+  it("lists resolved findings in their own section with their final state and date", async () => {
+    use([...findings, resolvedFinding]);
+    const { default: ContestedPage } = await import("../app/contested/page");
+    const html = renderToStaticMarkup(<ContestedPage />);
+    expect(html).toMatch(/<strong>1<\/strong>resolved/);
+    expect(html).toContain('<h2 id="resolved-heading">Resolved</h2>');
+    expect(html).toMatch(/href="\/contested\/discrepancy-00000000000000ee\/?">AlphaGenome and Borzoi: Alavi 2026 reverses the order<\/a> <span[^>]*>Confirmed error, 23 October 2026<\/span>/);
+    expect(html.indexOf("resolved-heading")).toBeGreaterThan(html.indexOf("list-heading"));
+    expect(html).toMatch(/href="\/contested\/?\?status=resolved"[^>]*>Resolved</);
+    const only = renderToStaticMarkup(<ContestedPage searchParams={{ status: "resolved" }} />);
+    expect(only).toContain("1 resolved finding matches");
+    expect(only).not.toContain("resolved-heading");
+    expect(renderToStaticMarkup(<ContestedPage searchParams={{ status: "open" }} />)).not.toContain("discrepancy-00000000000000ee");
+  });
+  it("shows a resolved finding's outcome, rationale and full follow-up, without the comparison", async () => {
+    use([...findings, resolvedFinding]);
+    const { default: FindingPage } = await import("../app/contested/[id]/page");
+    const html = renderToStaticMarkup(<FindingPage params={{ id: resolvedFinding.id }} />);
+    expect(html).toContain("Resolved finding");
+    expect(html).toContain("<strong>Resolved: confirmed error on 23 October 2026.</strong>");
+    expect(html).toContain("The authors confirmed a one-base offset; the results are marked disputed.");
+    expect(html).toContain("The compared results were withdrawn from the database (marked disputed) after the error was confirmed");
+    expect(html).not.toContain("An automatic lead, not a finding of error");
+    expect(html).not.toContain("Which studies agree");
+    expect(html).not.toContain("The compared numbers");
+    expect(html).not.toContain("<dt>Rule</dt>");
+    expect(html).toContain("What disagreed");
+    for (const step of ["18 October 2026: Investigated", "19 October 2026: Reported to the authors", "23 October 2026: Closed"]) expect(html).toContain(step);
+    expect(html).not.toContain("How to help resolve this");
   });
   it("adds the compact summary and chart to a list entry with per-study data", async () => {
     use([...findings, studied]);

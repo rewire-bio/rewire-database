@@ -29,7 +29,7 @@ export function FindingBadges({ d }: { d: Pick<DiscrepancySummary, "severity" | 
   return <ul className={styles.badges} aria-label="About this finding">
     <li className={d.severity === "high" ? styles.high : undefined}>{severityLabel(d.severity)}</li>
     <li className={d.settled ? styles.settled : undefined}>{stateLabel(d.state)}</li>
-    <li>{ruleLabel(d.rule)}</li>
+    {d.rule && <li>{ruleLabel(d.rule)}</li>}
     {d.scope && <li>{scopeLabel(d.scope)}</li>}
   </ul>;
 }
@@ -56,6 +56,19 @@ export function FindingEntry({ d, lookup, view }: { d: DiscrepancySummary; looku
     </dl>
     <FollowUpLine d={d} />
   </article>;
+}
+
+/** A resolved finding in its section of the list: what it was, how it ended and when. */
+export function ResolvedEntry({ d }: { d: DiscrepancySummary }) {
+  return <li>
+    <Link href={discrepancyHref(d.id)}>{d.label}</Link>{" "}
+    <span className={styles.muted}>{resolvedLine(d)}</span>
+  </li>;
+}
+
+/** "Confirmed error, 23 October 2026": a resolved finding's final state and the date of its last step. */
+export function resolvedLine(d: Pick<DiscrepancySummary, "state" | "last_action_date">): string {
+  return `${stateLabel(d.state)}${d.last_action_date ? `, ${formatDate(d.last_action_date)}` : ""}`;
 }
 
 /** On a result or evaluation page: the findings its results take part in. Flag only; the

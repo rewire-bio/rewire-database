@@ -5,7 +5,7 @@ import { notFound, permanentRedirect } from "next/navigation";
 import Breadcrumbs from "@/components/catalogue/Breadcrumbs";
 import { FindingBadges, RecordLinks, formatDate, type RecordLookup } from "@/components/catalogue/Contested";
 import OverdueMark from "@/components/catalogue/OverdueMark";
-import { StudyAgreement, type StudyView } from "@/components/catalogue/StudyAgreement";
+import { DisagreementView } from "@/components/catalogue/DisagreementView";
 import { socialMetadata } from "@/lib/catalogue-sharing";
 import { buildCatalogue } from "@/lib/catalogue-build";
 import { catalogueText } from "@/lib/catalogue-text";
@@ -13,7 +13,7 @@ import { recordHref, safeSourceUrl } from "@/lib/omics";
 import { metricName } from "@/lib/result-labels";
 import { formatScore } from "@/lib/score-display";
 import {
-  actionLabel, discrepancyHref, discrepancyReader, linkLabel, pendingCheck, ruleLabel, scopeLabel, stateLabel, studyKeyUrl,
+  actionLabel, disagreementOf, discrepancyHref, discrepancyReader, linkLabel, pendingCheck, ruleLabel, scopeLabel, stateLabel,
   DISCREPANCIES_DOC, type Discrepancy, type DiscrepancyAction,
 } from "@/lib/discrepancies";
 import styles from "@/components/catalogue/Contested.module.css";
@@ -89,47 +89,6 @@ function resultRows(ids: string[]): Row[] {
   });
 }
 
-/** The finding's studies with their records resolved: the disagreeing study first, then the most compared. */
-function studyViews(d: Discrepancy, a: string, b: string, lookup: RecordLookup): StudyView[] {
-  const { query } = buildCatalogue();
-  const named = (id: string | null) => {
-    if (!id) return null;
-    const record = lookup(id);
-    return record ? { name: catalogueText(record.name), href: record.href } : { name: catalogueText(id), href: null };
-  };
-  return [...(d.studies ?? [])]
-    .sort((x, y) => Number(y.role === "outlier") - Number(x.role === "outlier") || y.comparisons_total - x.comparisons_total)
-    .map((s) => {
-      const records = s.source_ids.flatMap((id) => {
-        const record = query.record(id);
-        return record ? [record] : [];
-      });
-      const [first, ...rest] = records;
-      return {
-        key: s.key,
-        role: s.role,
-        source: first ? { name: catalogueText(first.name), href: recordHref(first) } : { name: s.key.replace(/^(doi|repository|source):/, ""), href: null },
-        more: rest.map((r) => ({ name: catalogueText(r.name), href: recordHref(r) })),
-        url: safeSourceUrl(first?.attributes.url) ?? studyKeyUrl(s.key),
-        higherA: s.higher[a] ?? 0,
-        higherB: s.higher[b] ?? 0,
-        ties: s.ties,
-        gap: s.gap,
-        total: s.comparisons_total,
-        comparisons: s.comparisons.map((c) => ({
-          protocol: named(c.protocol),
-          dataset: named(c.dataset),
-          metric: [metricName(c.metric, c.qualifier), c.unit, c.split && `${c.split} split`].filter(Boolean).join(", "),
-          valueA: c.values[a] ?? null,
-          valueB: c.values[b] ?? null,
-          resultA: c.results[a] ?? null,
-          resultB: c.results[b] ?? null,
-          higher: c.higher === a ? "a" : c.higher === b ? "b" : null,
-        })),
-      };
-    });
-}
-
 const RESULT_TABLE_ROWS = 40;
 
 function ResultTable({ caption, rows, outlier }: { caption: string; rows: Row[]; outlier?: boolean }) {
@@ -190,10 +149,7 @@ export default function ContestedFindingPage({ params }: { params: Params }) {
   const consensus = resultRows(d.consensus_results);
   const pending = pendingCheck(d);
   const firstOutlier = d.outlier_results[0];
-  const systemA = d.consensus_higher ?? d.systems[0];
-  const systemB = d.systems.find((s) => s !== systemA) ?? null;
-  const studies = systemA && systemB ? studyViews(d, systemA, systemB, lookup) : [];
-  const systemName = (id: string) => catalogueText(lookup(id)?.name ?? id);
+  const view = disagreementOf(d);
   return <>
     <header className="page-head"><div className="wrap">
       <Breadcrumbs items={[{ name: "Database", path: "/" }, { name: "Contested results", path: "/contested/" }, { name: d.label, path: discrepancyHref(d.id) }]} />
@@ -206,9 +162,9 @@ export default function ContestedFindingPage({ params }: { params: Params }) {
       <div className={styles.notice}>
         <p>An automatic lead, not a finding of error. The results below are shown as published, everywhere on the site, until a reviewer decides otherwise.</p>
       </div>
-      {studies.length > 0 && <section className={styles.section} aria-labelledby="studies-heading">
+      {view && <section className={styles.section} aria-labelledby="studies-heading">
         <h2 id="studies-heading">Which studies agree</h2>
-        <StudyAgreement studies={studies} a={systemName(systemA!)} b={systemName(systemB!)} gap={d.rule === "gap-outlier" || studies.some((s) => s.gap !== null)} />
+        <DisagreementView view={view} />
       </section>}
       <section className={styles.section} aria-labelledby="summary-heading">
         <h2 id="summary-heading">What disagrees</h2>

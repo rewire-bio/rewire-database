@@ -26,7 +26,7 @@ A file older than contract 3.3 has no findings. Every reader then returns empty,
 
 | Page | Shows |
 | --- | --- |
-| `/contested/` | Counts for the release, and the findings, most severe first. Filters by status (open or settled), severity, state, model and use case through search parameters. The use-case filter keeps findings in which any of the use case's results takes part, in either role. |
+| `/contested/` | Counts for the release, and the findings, most severe first, each with a one-line summary and small chart when the release has per-study data. Filters by status (open or settled), severity, state, model and use case through search parameters. The use-case filter keeps findings in which any of the use case's results takes part, in either role. |
 | `/contested/<id>/` | The summary, which studies agree (when the release has per-study data), what the rule counted, the compared results in each study, the follow-up timeline, and how to help resolve the finding. An earlier ID redirects to the current one. |
 | Use-case pages | A Contested badge on a row whose results are the disagreeing study's in an unsettled finding, and a link to `/contested/?use_case=<slug>` when any row has one. |
 | Result and evaluation pages | A Contested panel naming each finding and whether the result is from the study that disagrees or from the agreeing group. An evaluation page covers the results it shows. |
@@ -36,13 +36,18 @@ A file older than contract 3.3 has no findings. Every reader then returns empty,
 
 ## Which studies agree
 
-A finding's optional `studies` list has one entry per study: its role (`outlier` or `consensus`), its source records, how many of its comparisons rank each system higher, its ties, its gap for the gap rule, and its comparisons (capped; `comparisons_total` is the full count). The finding page shows it as:
+A finding's optional `studies` list has one entry per study: its role (`outlier` or `consensus`), its source records, how many of its comparisons rank each system higher, its ties, its gap for the gap rule, and its comparisons (at most 200; `comparisons_total` is the full count). One component, `components/catalogue/DisagreementView.tsx`, draws it for every finding; `lib/disagreement.ts` builds what it shows from the finding alone, so no finding has its own code.
 
-- a chart (inline SVG, `components/catalogue/StudyAgreement.tsx`): one 100% stacked bar per study, split into comparisons where the consensus's higher system scores higher, ties, and the reverse, labelled with counts. The study that disagrees comes first and is outlined and named "Disagrees". The SVG has a title and a description listing every count.
-- a table: the study (its source record, else its key, with the DOI or repository link), its role in words ("Disagrees" or "Agrees"), the two counts, ties, and the gap when the rule is the gap rule.
-- each study's comparisons in a collapsed section: protocol, dataset, metric with qualifier, unit and split, both values linked to their result pages, and which is higher. A capped list says "first N of M".
+- **Summary.** One or two sentences from the counts, for example "4 papers rank AlphaGenome above Borzoi in all 25 of their comparisons. Alavi 2026 ranks Borzoi above AlphaGenome in 9 of its 12 comparisons and AlphaGenome higher in 3." Ties, mixed papers and a single consensus paper each have their own wording. Papers are named by a short citation taken from the source record's name ("Alavi 2026"), else the shortened name, else the study key.
+- **Ordering reversal.** Two overlapping circles. A paper sits in "Rank A higher" when at least two thirds of its comparisons that are not ties rank A higher, in "Rank B higher" likewise, and in the overlap ("Mixed") when neither reaches two thirds or every comparison is a tie. Labels are never cut short; a name that does not fit is set smaller or on two lines. Then one 100% stacked bar per paper: comparisons where A scored higher, ties, and B higher, labelled with counts. A is the system the consensus ranks higher.
+- **Gap outlier.** A dot per paper at its median relative gap to the reference, (system - reference) / reference, with the other papers' range shaded.
+- **Table and comparisons.** Every paper with its role ("Disagrees" or "Agrees"), counts, ties and gap, then each paper's comparisons in a collapsed section with both values linked to their result pages. A capped list says "first N of M".
 
-Releases before the per-study data have no `studies`. The section is then left out and the page shows the result tables as before.
+The paper that disagrees comes first and is outlined in every chart. Above 12 papers the charts draw the 12 with the most comparisons and say how many more are in the table; the circles show a count per group with every name in the caption. Each chart is an SVG with a title and a description that lists every value, and uses the site's colour variables.
+
+On `/contested/` each entry with per-study data shows the compact form: the summary and one small chart (a bar for the other papers together and one for the paper that disagrees, or a single gap strip).
+
+Releases before the per-study data have no `studies`. The section and the compact form are then left out and the pages are as before.
 
 ## Flag only
 

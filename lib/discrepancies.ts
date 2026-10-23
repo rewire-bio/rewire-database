@@ -1,9 +1,13 @@
 import { buildCatalogue } from "./catalogue-build";
-import { discrepanciesPage, discrepancyStates, severities, type DiscrepancySummary } from "../shared/omics/discrepancies";
+import { catalogueText } from "./catalogue-text";
+import { disagreement, shortCitation, type Disagreement } from "./disagreement";
+import { recordHref, safeSourceUrl } from "./omics";
+import { discrepanciesPage, discrepancyStates, severities, type Discrepancy, type DiscrepancySummary } from "../shared/omics/discrepancies";
 import type { PreparedCatalogue } from "../shared/omics/prepared-catalogue";
 
 export { overdue } from "./discrepancy-dates";
 export type { Discrepancy, DiscrepancyAction, DiscrepancyStudy, DiscrepancySummary } from "../shared/omics/discrepancies";
+export type { Disagreement } from "./disagreement";
 
 /** Discrepancies between studies, read from the pinned release's prepared file (contract 3.3).
  * The knowledge-graph build infers them; the serving build copies them into SQL tables. A finding
@@ -218,6 +222,32 @@ export function linkLabel(url: string): string | null {
 
 /** A study's role in a finding, in words: the outlier disagrees with the consensus studies, which agree. */
 export const studyRoleLabel = (role: string) => (role === "outlier" ? "Disagrees" : "Agrees");
+
+/** What a finding's studies show, with their source records and named records resolved from the
+ * pinned release. Null for a finding without per-study data. */
+export function disagreementOf(d: Discrepancy): Disagreement | null {
+  const { query } = buildCatalogue();
+  const name = (id: string) => {
+    const record = query.record(id);
+    return record ? { name: catalogueText(record.name), href: recordHref(record) } : { name: catalogueText(id), href: null };
+  };
+  return disagreement(d, (study) => {
+    const records = study.source_ids.flatMap((id) => {
+      const record = query.record(id);
+      return record ? [record] : [];
+    });
+    const [first, ...rest] = records;
+    const fallback = study.key.replace(/^(doi|repository|source):/, "");
+    const title = first ? catalogueText(first.name) : fallback;
+    return {
+      name: title,
+      short: first ? shortCitation(title, first.attributes.year) : fallback,
+      href: first ? recordHref(first) : null,
+      url: safeSourceUrl(first?.attributes.url) ?? studyKeyUrl(study.key),
+      more: rest.map((r) => ({ name: catalogueText(r.name), href: recordHref(r) })),
+    };
+  }, name);
+}
 
 /** Where a study key points when its source records do not say: a DOI or a repository. */
 export function studyKeyUrl(key: string): string | null {

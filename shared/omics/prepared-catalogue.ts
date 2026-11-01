@@ -47,10 +47,11 @@ const { DatabaseSync } = process.getBuiltinModule("node:sqlite");
  * source_records table; on older files source pages read as having no records.
  * 3.3 adds the discrepancy tables (discrepancies between studies, inferred by
  * the knowledge-graph build, and their follow-up actions); on older files there
- * are none.
+ * are none. 3.4 adds the discrepancies.listing column (public or review) and
+ * "party" rows in discrepancy_results for two-study conflicts (rules version 4).
  * The reader also opens 2.x files, so a website can switch between releases of
  * either form. */
-export const PREPARED_CONTRACT_VERSION = "3.3";
+export const PREPARED_CONTRACT_VERSION = "3.4";
 const READABLE_CONTRACT_MAJORS = ["2", "3"];
 
 /**

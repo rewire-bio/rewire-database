@@ -55,7 +55,8 @@ const action = (extra: Partial<DiscrepancyAction>): DiscrepancyAction => ({
 });
 const finding = (id: string, extra: Partial<Discrepancy> = {}): Discrepancy => ({
   id, previous_ids: [], rule: "ordering-reversal", label: `Label ${id}`, summary: `Summary ${id}`, severity: "low", scope: "cross-task",
-  identity_basis: "unreviewed", state: "open", settled: false, systems: ["alphagenome", "spliceai"], consensus_higher: "alphagenome",
+  identity_basis: "unreviewed", listing: "public", variant_mismatch: false, unlinked_protocols: [], party_sources: [], party_results: [],
+  state: "open", settled: false, systems: ["alphagenome", "spliceai"], consensus_higher: "alphagenome",
   reference_system: null, outlier_sources: ["alavi-2026"], consensus_sources: ["study-b"], outlier_results: [], consensus_results: [],
   numbers: { outlier_comparisons: 2, outlier_reversals: 2, consensus_comparisons: 6, consensus_agreements: 6 }, actions: [], ...extra,
 });

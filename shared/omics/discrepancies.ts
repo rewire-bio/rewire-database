@@ -8,13 +8,18 @@
  * which becomes a single action. Schema 3 adds each finding's per-study breakdown
  * (`studies`); earlier files read as having none. Schema 4 adds resolved findings:
  * settled discrepancies the rules no longer find, kept with their follow-up history
- * (`resolved: true`, no rule, studies or numbers). docs/discrepancies.md describes the whole feature. */
+ * (`resolved: true`, no rule, studies or numbers). Schema 5 (rules version 4) adds two-study conflicts
+ * (`party_sources`, `party_results`, study role `party`), each study's verdict and configurations,
+ * the scopes `different-task` and `unknown`, and each finding's `listing`; earlier files read as
+ * public with no variant mismatch. docs/discrepancies.md describes the whole feature. */
 
 export const discrepancyStates = [
   "open", "investigating", "reported-upstream", "awaiting-correction", "explained", "confirmed-error", "false-positive",
 ] as const;
 export const settledStates = ["explained", "confirmed-error", "false-positive"] as const;
 export const severities = ["high", "medium", "low"] as const;
+/** public: shown on the contested page by default. review: listed for curation only. */
+export const listings = ["public", "review"] as const;
 
 export type DiscrepancyAction = {
   revision: number;
@@ -54,7 +59,12 @@ export type DiscrepancyComparison = {
 export type DiscrepancyStudy = {
   /** The study key: doi:..., repository:... or source:... */
   key: string;
-  role: "outlier" | "consensus";
+  /** "party" is one of the two studies of a two-study conflict. */
+  role: "outlier" | "consensus" | "party";
+  /** The system the study's comparisons favour, "split", or null when it has too few for a verdict. From schema 5. */
+  verdict?: string | null;
+  /** System ID to the configuration (or model) the study's values come from. From schema 5. */
+  configurations?: Record<string, string>;
   source_ids: string[];
   /** System ID (as in `systems`) to the number of comparisons in which it scored better. */
   higher: Record<string, number>;
@@ -76,8 +86,12 @@ export type Discrepancy = {
   label: string;
   summary: string;
   severity: string;
+  /** same-protocol, same-task, different-task or unknown (cross-task before schema 5). */
   scope: string;
   identity_basis: string;
+  listing: string;
+  variant_mismatch: boolean;
+  unlinked_protocols: string[];
   state: string;
   settled: boolean;
   systems: string[];
@@ -87,6 +101,8 @@ export type Discrepancy = {
   consensus_sources: string[];
   outlier_results: string[];
   consensus_results: string[];
+  party_sources: string[];
+  party_results: string[];
   numbers: Record<string, unknown>;
   /** Outlier study first, then the others, most comparisons first. Empty before schema 3. */
   studies?: DiscrepancyStudy[];
@@ -143,6 +159,9 @@ export function normaliseDiscrepancies(raw: Record<string, unknown>): Discrepanc
       severity: String(d.severity),
       scope: String(d.scope ?? ""),
       identity_basis: String(d.identity_basis ?? ""),
+      listing: text(d.listing) ?? "public",
+      variant_mismatch: d.variant_mismatch === true,
+      unlinked_protocols: texts(d.unlinked_protocols),
       state,
       settled: (settledStates as readonly string[]).includes(state),
       systems: texts(d.systems),
@@ -152,6 +171,8 @@ export function normaliseDiscrepancies(raw: Record<string, unknown>): Discrepanc
       consensus_sources: texts(d.consensus_sources),
       outlier_results: texts(d.outlier_results),
       consensus_results: texts(d.consensus_results),
+      party_sources: texts(d.party_sources),
+      party_results: texts(d.party_results),
       numbers: (d.numbers as Record<string, unknown>) ?? {},
       studies: Array.isArray(d.studies) ? (d.studies as DiscrepancyStudy[]) : [],
       actions,
@@ -172,14 +193,14 @@ export function normaliseDiscrepancies(raw: Record<string, unknown>): Discrepanc
 /** The list entry for one finding: everything but its numbers and action details. */
 export type DiscrepancySummary = Pick<
   Discrepancy,
-  "id" | "rule" | "label" | "summary" | "severity" | "scope" | "state" | "settled" | "systems"
+  "id" | "rule" | "label" | "summary" | "severity" | "scope" | "listing" | "state" | "settled" | "systems"
 > & { resolved: boolean; actions: number; last_action_date: string | null; next_check: string | null };
 
 export function summarise(d: Discrepancy): DiscrepancySummary {
   const last = d.actions[d.actions.length - 1];
   return {
     id: d.id, resolved: d.resolved === true, rule: d.rule, label: d.label, summary: d.summary, severity: d.severity, scope: d.scope,
-    state: d.state, settled: d.settled, systems: d.systems,
+    listing: d.listing, state: d.state, settled: d.settled, systems: d.systems,
     actions: d.actions.length, last_action_date: last?.date ?? null, next_check: last?.next_check ?? null,
   };
 }
@@ -191,6 +212,8 @@ export type DiscrepanciesInput = {
   settled?: "open" | "settled";
   system?: string;
   rule?: string;
+  /** "public" for the default contested list, "review" for the curation list. */
+  listing?: string;
   cursor?: string;
   limit?: number;
 };
@@ -202,6 +225,7 @@ export function discrepanciesPage(release_id: string, all: DiscrepancySummary[],
       (!input.severity || d.severity === input.severity) &&
       (!input.state || d.state === input.state) &&
       (!input.rule || d.rule === input.rule) &&
+      (!input.listing || (d.listing ?? "public") === input.listing) &&
       (!input.system || d.systems.includes(input.system)) &&
       (!input.settled || d.settled === (input.settled === "settled")),
   );
@@ -219,7 +243,10 @@ export function discrepanciesPage(release_id: string, all: DiscrepancySummary[],
   return {
     release_id,
     total: filtered.length,
-    counts: { severity: tally((d) => d.severity), state: tally((d) => d.state), rule: tally((d) => d.rule) },
+    counts: {
+      severity: tally((d) => d.severity), state: tally((d) => d.state), rule: tally((d) => d.rule),
+      listing: tally((d) => d.listing ?? "public"),
+    },
     items,
     next_cursor: next,
   };

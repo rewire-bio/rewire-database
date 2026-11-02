@@ -1,12 +1,24 @@
 # Benchmark site analytics
 
-The benchmark site uses the existing Rewire GA4 measurement ID, `G-P0CLMZMKF8`, also present on the main blog. In Analytics, use the **Hostname** dimension to distinguish `benchmarks.rewire.it` from the blog. This change does not create a property or change its retention, sharing or administrator settings.
+The benchmark site uses the existing Rewire GA4 measurement ID, `G-P0CLMZMKF8`, also present on the main blog. In Analytics, use the **Hostname** dimension to distinguish `benchmarks.rewirebio.io` from the blog. This change does not create a property or change its retention, sharing or administrator settings.
 
 ## Deployment
 
-Set the non-secret GitHub repository variable `NEXT_PUBLIC_GA_ID` to that measurement ID. The Firebase workflow validates it before building, includes it in the Next.js client bundle, and checks the exported bundle. Changing it requires a rebuild. Local development, Firebase preview hostnames and builds without a measurement ID do not collect analytics. Production tracking is restricted to `https://benchmarks.rewire.it`.
+Set the non-secret GitHub repository variable `NEXT_PUBLIC_GA_ID` to that measurement ID. The Firebase workflow validates it before building, includes it in the Next.js client bundle, and checks the exported bundle. Changing it requires a rebuild. Local development, Firebase preview hostnames and builds without a measurement ID do not collect analytics. Production tracking is restricted to `https://benchmarks.rewirebio.io`.
 
-The current implementation measures public **page views**. Frame visibility and browser storage restrictions can affect session and engagement metrics; they are not validated measures in this release. It does not instrument catalogue searches, clicks, downloads, scrolling, forms or submissions. Do not interpret it as a complete product-engagement measurement system. Returning to a pathname counts another visit; changing only query parameters or fragments does not.
+The current implementation measures public **page views** and **engagement time**. It does not instrument catalogue searches, clicks, downloads, scrolling, forms or submissions. Do not interpret it as a complete product-engagement measurement system. Returning to a pathname counts another visit; changing only query parameters or fragments does not.
+
+## Engagement time
+
+Google's tag counts engagement time only while its own document is visible and has focus. The tag runs in a hidden frame that never has focus, so it recorded no engagement time: no hit carried `_et` and no `user_engagement` event was sent, which is why reports showed 0s average engagement (#211).
+
+The page now tells the frame, on load, focus, blur and visibility changes, one boolean: whether the page is visible and focused. The frame times the foreground periods and sends `user_engagement` with `engagement_time_msec` when the visitor moves to another page, when the tab is hidden, and on `pagehide`. On `pagehide` it disables collection only after Google's tag has had its chance to send the queued event. Nothing else crosses into the frame.
+
+Before this change, `pagehide` disabled the tag and cleared its `rewire_bench_*` cookies on every full page load, so each load started a new GA session and a new `first_visit`. The 19 to 25 October figures show this: 34 sessions, 35 `session_start` and 34 `first_visit` for 49 page views. Unload no longer clears those cookies, so a session now spans page loads and session and new-user counts will fall. Withdrawal still disables the tag, denies consent and clears the cookies.
+
+Browser storage restrictions can still affect session metrics.
+
+The `scroll` events in reports are not real scrolling. Enhanced measurement's scroll event fires in the hidden frame about five seconds after each page view, because the frame's document is shorter than its viewport. Turn off **Scrolls** under the web stream's enhanced measurement settings, or ignore that event for this hostname. That is a property setting, shared with the blog, so it is not changed here.
 
 ## Consent and private workflows
 
@@ -29,6 +41,17 @@ Before reporting real traffic as verified, complete a browser and GA property ch
 3. Enter `/contribute/`, including an email-link callback, and confirm no tracking frame or Google analytics requests. Return to a public page and confirm that the contribution URL is not its reported referrer.
 4. Withdraw consent, reload, then test another tab. Confirm no new Google requests and no benchmark client ID in local storage or benchmark-prefixed GA cookies on the frame origin.
 5. In the existing GA property, check Realtime or DebugView for the public visit and hostname. Do not send fabricated Measurement Protocol hits to stand in for this check.
+6. Stay on a public page for at least 30 seconds in the foreground, then close the tab. Confirm a `user_engagement` event with `engagement_time_msec` in DebugView, and that a day later the hostname's average engagement time is no longer 0s. If DebugView shows the event but reports still show 0s, rename the event (for example `page_engagement`): GA adds up `engagement_time_msec` on any event, and `user_engagement` sent from the data layer may be handled differently from the tag's own.
+
+### Engagement check, 2 November 2026
+
+Run in headless Chromium 156 (Playwright) against the live site with consent stored, GA requests intercepted and answered locally:
+
+- Live site, 25 s on `/evidence/` then 15 s on `/audits/`: `page_view` and `scroll` for each page; no hit carried `_et` and no `user_engagement` was sent.
+- Same tag and ID on a test page, top level against a hidden frame, 20 s dwell then a probe event: top level `_et=20035`; in the frame, no `_et` and `document.hasFocus()` false, plus a `scroll` at 5 s.
+- Live site with the patched `frame.js` and a parent reporting foreground state: after 24 s on `/evidence/` and an in-app navigation, `user_engagement` with `_et=24277` for `/evidence/`, then the next `page_view` marked `seg=1` (engaged session).
+
+The harness could not observe hits sent while a page unloads, for the original top-level tag as well, so the tab-close and leave-the-site path still needs the real browser check in step 6 below.
 
 At implementation time the Mac was locked, so browser network verification and GA Realtime were not available. Unit and export checks are not evidence of events appearing in the property's reports. Record the real browser/GA check when access is available.
 

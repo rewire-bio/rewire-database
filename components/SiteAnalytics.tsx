@@ -98,7 +98,29 @@ export default function SiteAnalytics() {
       type: "rewire-public-page", measurementId, clientId: clientId.current, page,
       referrer: publicReferrer(document.referrer),
     }, ANALYTICS_FRAME_ORIGIN);
+    reportForeground();
   }
+  // The hidden frame never has focus, so Google's tag cannot time engagement itself. Tell it
+  // only whether this page is visible and focused; it times the visit and reports the total.
+  function reportForeground() {
+    if (!active || stopping || typeof document === "undefined") return;
+    frame.current?.contentWindow?.postMessage({
+      type: "rewire-foreground",
+      foreground: document.visibilityState === "visible" && document.hasFocus(),
+    }, ANALYTICS_FRAME_ORIGIN);
+  }
+  useEffect(() => {
+    if (!active || stopping) return;
+    window.addEventListener("focus", reportForeground);
+    window.addEventListener("blur", reportForeground);
+    document.addEventListener("visibilitychange", reportForeground);
+    return () => {
+      window.removeEventListener("focus", reportForeground);
+      window.removeEventListener("blur", reportForeground);
+      document.removeEventListener("visibilitychange", reportForeground);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [active, stopping, frameKey]);
   useEffect(() => {
     sendPage();
     // Query and fragment changes deliberately do not create analytics events.

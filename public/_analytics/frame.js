@@ -7,6 +7,23 @@
   let id;
   let previous;
   let stopped = false;
+  // gtag cannot see foreground time from a hidden frame (it never has focus), so the parent reports
+  // only whether its page is visible and focused, and this frame sends the engagement time itself.
+  let foreground = false;
+  let since = null;
+  let engaged = 0;
+  const clock = () => (window.performance ? window.performance.now() : Date.now());
+  function settle() {
+    const now = clock();
+    if (since !== null) engaged += now - since;
+    since = foreground && document.visibilityState !== "hidden" ? now : null;
+  }
+  function flush() {
+    settle();
+    const ms = Math.round(engaged);
+    engaged = 0;
+    if (id && !stopped && ms > 0) gtag("event", "user_engagement", { engagement_time_msec: ms, send_to: id, transport_type: "beacon" });
+  }
   window.dataLayer = window.dataLayer || [];
   function gtag() { window.dataLayer.push(arguments); }
   function stop() {
@@ -20,7 +37,10 @@
       });
     } catch { /* Third-party storage can be blocked. */ }
   }
-  window.addEventListener("pagehide", stop);
+  // Queue the last engagement, then disable after gtag's own pagehide handler has sent its batch.
+  // If the page is restored from the back/forward cache the timer runs then, and the parent replaces this frame.
+  window.addEventListener("pagehide", () => { flush(); setTimeout(stop, 0); });
+  document.addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden") flush(); else settle(); });
   const allowed = path => /^\/(?:$|(?:evidence|audits)\/?$|runs\/mfass-v[12]\/?$|database\/[a-z_-]+\/[a-z0-9-]+\/?$)/.test(path);
   const pageUrl = value => {
     try {
@@ -41,6 +61,10 @@
     if (data?.type === "rewire-stop") {
       stop();
       window.parent.postMessage({ type: "rewire-stopped" }, origin);
+      return;
+    }
+    if (data?.type === "rewire-foreground") {
+      if (!stopped && typeof data.foreground === "boolean") { settle(); foreground = data.foreground; settle(); }
       return;
     }
     if (stopped || data?.type !== "rewire-public-page" ||
@@ -65,6 +89,7 @@
       script.src = "https://www.googletagmanager.com/gtag/js?id=" + id;
       document.head.appendChild(script);
     } else {
+      flush();
       gtag("set", page);
     }
     gtag("event", "page_view", { ...page, send_to: id });

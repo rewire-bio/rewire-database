@@ -6,19 +6,31 @@ import { ANALYTICS_ORIGIN, ANALYTICS_FRAME_ORIGIN, isPublicAnalyticsPath, privac
 function analyticsFrame(origin = ANALYTICS_FRAME_ORIGIN) {
   const scripts: Record<string, unknown>[] = [];
   let listener: (event: unknown) => void = () => {};
+  const handlers: Record<string, () => void> = {};
+  const timers: (() => void)[] = [];
+  const clock = { now: 0 };
   const replies: unknown[] = [];
   const parent = { postMessage: (...args: unknown[]) => replies.push(args) };
-  const window = { location: { origin }, parent, dataLayer: [] as IArguments[], addEventListener: (name: string, fn: typeof listener) => { if (name === "message") listener = fn; } };
+  const window = {
+    location: { origin }, parent, dataLayer: [] as IArguments[], performance: { now: () => clock.now },
+    addEventListener: (name: string, fn: typeof listener) => { if (name === "message") listener = fn; else handlers[name] = fn as () => void; },
+  };
+  const document = {
+    cookie: "", visibilityState: "visible", createElement: () => ({}),
+    head: { appendChild: (script: Record<string, unknown>) => scripts.push(script) },
+    addEventListener: (name: string, fn: () => void) => { handlers["document:" + name] = fn; },
+  };
   vm.runInNewContext(readFileSync("public/_analytics/frame.js", "utf8"), {
-    window, URL, Date,
-    document: { cookie: "", createElement: () => ({}), head: { appendChild: (script: Record<string, unknown>) => scripts.push(script) } },
+    window, document, URL, Date, setTimeout: (fn: () => void) => timers.push(fn),
   });
   const post = (path: string, overrides = {}) => listener({
     origin: ANALYTICS_ORIGIN, source: parent,
     data: { type: "rewire-public-page", measurementId: "G-P0CLMZMKF8", clientId: "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa", page: { location: ANALYTICS_ORIGIN + path, title: "Model results" }, referrer: "https://example.org/search?email=private@example.org" },
     ...overrides,
   });
-  return { scripts, window, post, replies, commands: () => window.dataLayer.map(args => Array.from(args)) };
+  const foreground = (value: unknown) => listener({ origin: ANALYTICS_ORIGIN, source: parent, data: { type: "rewire-foreground", foreground: value } });
+  const engagement = () => window.dataLayer.map(args => Array.from(args)).filter(row => row[0] === "event" && row[1] === "user_engagement");
+  return { scripts, window, document, post, replies, clock, handlers, timers, foreground, engagement, commands: () => window.dataLayer.map(args => Array.from(args)) };
 }
 
 describe("consented public analytics", () => {
@@ -95,6 +107,55 @@ describe("consented public analytics", () => {
     const frame = analyticsFrame();
     frame.post("/", { data: { type: "rewire-public-page", measurementId: "G-P0CLMZMKF8", clientId: "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa", page: { location: ANALYTICS_ORIGIN + "/", title: "Database" }, referrer: ANALYTICS_ORIGIN + "/contribute/?email=private" } });
     expect(frame.commands().find(row => row[0] === "event")?.[2]).toMatchObject({ page_referrer: "" });
+  });
+  it("times foreground engagement reported by the parent and sends it for the page it belongs to", () => {
+    const frame = analyticsFrame();
+    frame.post("/evidence/");
+    frame.foreground(true); frame.clock.now = 20000;
+    frame.foreground(false); frame.clock.now = 50000;
+    frame.foreground(true); frame.clock.now = 55000;
+    frame.post("/audits/");
+    expect(frame.engagement()).toEqual([["event", "user_engagement", { engagement_time_msec: 25000, send_to: "G-P0CLMZMKF8", transport_type: "beacon" }]]);
+    const rows = frame.commands();
+    const at = rows.findIndex(row => row[1] === "user_engagement");
+    expect(rows.slice(0, at).filter(row => row[0] === "set").at(-1)?.[1]).toMatchObject({ page_location: ANALYTICS_ORIGIN + "/evidence/" });
+    expect(rows.slice(at).find(row => row[0] === "event" && row[1] === "page_view")?.[2]).toMatchObject({ page_location: ANALYTICS_ORIGIN + "/audits/" });
+  });
+  it("does not count time while the tab is hidden, and flushes when it is hidden", () => {
+    const frame = analyticsFrame();
+    frame.post("/"); frame.foreground(true); frame.clock.now = 4000;
+    frame.document.visibilityState = "hidden"; frame.handlers["document:visibilitychange"]();
+    expect(frame.engagement().map(row => (row[2] as { engagement_time_msec: number }).engagement_time_msec)).toEqual([4000]);
+    frame.clock.now = 60000;
+    frame.document.visibilityState = "visible"; frame.handlers["document:visibilitychange"]();
+    frame.clock.now = 61000;
+    frame.handlers.pagehide();
+    expect(frame.engagement().map(row => (row[2] as { engagement_time_msec: number }).engagement_time_msec)).toEqual([4000, 1000]);
+  });
+  it("queues the last engagement on pagehide before disabling collection", () => {
+    const frame = analyticsFrame();
+    frame.post("/"); frame.foreground(true); frame.clock.now = 3000;
+    frame.handlers.pagehide();
+    expect(frame.engagement()).toHaveLength(1);
+    expect(frame.window).not.toHaveProperty("ga-disable-G-P0CLMZMKF8");
+    frame.timers.forEach(fn => fn());
+    expect(frame.window).toHaveProperty("ga-disable-G-P0CLMZMKF8", true);
+  });
+  it("sends no engagement without foreground time, after withdrawal, or for malformed messages", () => {
+    const frame = analyticsFrame();
+    frame.foreground(true); frame.clock.now = 1000;
+    frame.post("/"); frame.foreground("yes"); frame.foreground(false);
+    frame.clock.now = 9000; frame.post("/evidence/");
+    expect(frame.engagement()).toHaveLength(1);
+    frame.foreground(true); frame.clock.now = 12000;
+    frame.post("/", { data: { type: "rewire-stop" } });
+    frame.handlers.pagehide();
+    expect(frame.engagement()).toHaveLength(1);
+    const other = analyticsFrame();
+    other.post("/"); other.foreground(true); other.clock.now = 5000;
+    other.post("/", { source: {}, data: { type: "rewire-foreground", foreground: false } });
+    other.clock.now = 7000; other.post("/evidence/");
+    expect(other.engagement()[0][2]).toMatchObject({ engagement_time_msec: 7000 });
   });
   it("sanitizes in the parent too", () => {
     expect(publicPage({ origin: ANALYTICS_ORIGIN, pathname: "/" }, "Database")).toEqual({ location: ANALYTICS_ORIGIN + "/", title: "Database" });

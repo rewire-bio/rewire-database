@@ -11,6 +11,9 @@ let rendered: ReactTestRenderer | undefined;
 let listeners: Map<string, Set<(event: any) => void>>;
 let storage: Map<string, string>;
 let frames: { contentWindow: { postMessage: ReturnType<typeof vi.fn> } }[];
+let focused = true;
+const sent = (frame: { contentWindow: { postMessage: ReturnType<typeof vi.fn> } }, type: string) =>
+  frame.contentWindow.postMessage.mock.calls.filter(([payload]) => payload.type === type);
 let location: { origin: string; pathname: string; search: string; hash: string };
 const stored = (choice: string) => JSON.stringify({ choice, at: Date.now() });
 const emit = (name: string, event: unknown) => act(() => listeners.get(name)?.forEach(fn => fn(event)));
@@ -58,7 +61,16 @@ beforeEach(() => {
   });
   vi.stubGlobal("localStorage", { getItem: (key: string) => storage.get(key) || null, setItem: (key: string, value: string) => storage.set(key, value), removeItem: (key: string) => storage.delete(key) });
   vi.stubGlobal("navigator", {});
-  vi.stubGlobal("document", { title: "Benchmark database", referrer: ANALYTICS_ORIGIN + "/contribute/?email=private" });
+  vi.stubGlobal("document", {
+    title: "Benchmark database", referrer: ANALYTICS_ORIGIN + "/contribute/?email=private",
+    visibilityState: "visible", hasFocus: () => focused,
+    addEventListener: (name: string, fn: (event: any) => void) => {
+      if (!listeners.has("document:" + name)) listeners.set("document:" + name, new Set());
+      listeners.get("document:" + name)!.add(fn);
+    },
+    removeEventListener: (name: string, fn: (event: any) => void) => listeners.get("document:" + name)?.delete(fn),
+  });
+  focused = true;
 });
 afterEach(() => {
   act(() => rendered?.unmount());
@@ -83,11 +95,27 @@ describe("analytics consent and React navigation", () => {
     expect(iframe()[0].props.src).toBe(ANALYTICS_FRAME_ORIGIN + "/_analytics/");
     expect(iframe()[0].props.referrerPolicy).toBe("no-referrer");
     act(() => iframe()[0].props.onLoad());
-    const [payload, target] = frames.at(-1)!.contentWindow.postMessage.mock.calls.at(-1)!;
+    const [payload, target] = sent(frames.at(-1)!, "rewire-public-page").at(-1)!;
     expect(target).toBe(ANALYTICS_FRAME_ORIGIN);
     expect(payload).toMatchObject({ page: { location: ANALYTICS_ORIGIN + "/" }, referrer: "" });
     expect(JSON.stringify(payload)).not.toContain("private");
     expect(storage.get(CLIENT_KEY)).toBe(payload.clientId);
+  });
+  it("tells the frame only whether the page is visible and focused, and stops after withdrawal", () => {
+    mount(); click("Allow analytics");
+    const frame = frames.at(-1)!;
+    act(() => iframe()[0].props.onLoad());
+    expect(sent(frame, "rewire-foreground").at(-1)).toEqual([{ type: "rewire-foreground", foreground: true }, ANALYTICS_FRAME_ORIGIN]);
+    focused = false; emit("blur", {});
+    expect(sent(frame, "rewire-foreground").at(-1)![0]).toEqual({ type: "rewire-foreground", foreground: false });
+    focused = true; emit("focus", {});
+    expect(sent(frame, "rewire-foreground").at(-1)![0].foreground).toBe(true);
+    (document as { visibilityState: string }).visibilityState = "hidden"; emit("document:visibilitychange", {});
+    expect(sent(frame, "rewire-foreground").at(-1)![0].foreground).toBe(false);
+    const before = sent(frame, "rewire-foreground").length;
+    click("Analytics preferences"); click("No thanks");
+    emit("focus", {}); emit("document:visibilitychange", {});
+    expect(sent(frame, "rewire-foreground")).toHaveLength(before);
   });
   it("sends withdrawal before teardown, deletes identity and waits for a trusted acknowledgement", () => {
     mount(); click("Allow analytics");

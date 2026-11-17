@@ -1,10 +1,13 @@
 import { describe, expect, it, vi } from "vitest";
+import lock from "../benchmark-data.lock.json";
 import { checkSitemap, checkSitemapIndex } from "../scripts/seo/check-page-metadata";
 import { SITEMAP_CHUNK_SIZE, sitemapChunkCount, sitemapChunkXml, sitemapEntries, sitemapIndexXml } from "../lib/sitemap";
 
 vi.mock("../lib/use-cases-build", () => ({ buildUseCases: () => { throw new Error("The sitemap must not load use-case evidence"); } }));
 
 const origin = "https://benchmarks.rewirebio.io";
+// The pinned release's date: adopting a release changes it.
+const releaseDate = lock.release_id.slice(0, 10);
 
 describe("chunked sitemap", () => {
   it("splits the release's pages into consecutive files listed by one index, each URL exactly once", () => {
@@ -30,7 +33,7 @@ describe("chunked sitemap", () => {
     expect(urls).toContain(`${origin}/use-cases/transcriptomics/`);
     expect(urls).toContain(`${origin}/use-cases/genomic-grammar/`);
     for (const entry of entries) {
-      expect(entry.lastModified).toBe("2026-11-02");
+      expect(entry.lastModified).toBe(releaseDate);
     }
   });
   it("has no file past the last chunk and escapes XML", () => {

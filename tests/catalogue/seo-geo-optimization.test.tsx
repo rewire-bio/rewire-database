@@ -1,6 +1,7 @@
 import React from "react";
 import { describe, expect, it, vi } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
+import lock from "../../benchmark-data.lock.json";
 import {
   generateLeaderboardItemListJsonLd,
   generateModelSoftwareApplicationJsonLd,
@@ -621,11 +622,12 @@ describe("Feature 13: Sitemap & Robots Configuration Validation", () => {
     }
   });
 
-  it("TC-SITEMAP-02: sitemapEntries() sets lastModified to pinned release date 2026-11-02", () => {
+  it("TC-SITEMAP-02: sitemapEntries() sets lastModified to the pinned release date", () => {
+    const releaseDate = lock.release_id.slice(0, 10);
     const entries = sitemapEntries();
     expect(entries.length).toBeGreaterThan(100);
     for (const entry of entries) {
-      expect(entry.lastModified).toBe("2026-11-02");
+      expect(entry.lastModified).toBe(releaseDate);
     }
   });
 
@@ -636,7 +638,7 @@ describe("Feature 13: Sitemap & Robots Configuration Validation", () => {
     expect(xml).toContain('<?xml version="1.0" encoding="UTF-8"?>');
     expect(xml).toContain('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">');
     expect(xml).toContain("<loc>https://benchmarks.rewirebio.io/</loc>");
-    expect(xml).toContain("<lastmod>2026-11-02</lastmod>");
+    expect(xml).toContain(`<lastmod>${lock.release_id.slice(0, 10)}</lastmod>`);
   });
 
   it("TC-SITEMAP-04: sitemapIndexXml renders sequential chunk paths", () => {

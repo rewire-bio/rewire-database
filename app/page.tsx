@@ -4,6 +4,7 @@ import {
   socialMetadata,
 } from "@/lib/catalogue-sharing";
 import type { Metadata } from "next";
+import Image from "next/image";
 import { buildCatalogue } from "@/lib/catalogue-build";
 import { getUseCaseLeaderboard } from "@/lib/use-case-leaderboard";
 import { UnifiedLeaderboard } from "@/components/catalogue/UnifiedLeaderboard";
@@ -36,6 +37,29 @@ export const metadata: Metadata = {
     path: pageMetadata.alternates.canonical,
   }),
 };
+
+const HOME_PILLARS = [
+  {
+    src: "/images/pillars/use-case-rankings.png",
+    title: "Per-Use-Case Rankings",
+    description: "No monolithic scores; models ranked strictly by biological domain.",
+  },
+  {
+    src: "/images/pillars/protocol-baselines.png",
+    title: "Protocol Baselines",
+    description: "Anchored against pre-ML conventional baselines and assay noise ceilings.",
+  },
+  {
+    src: "/images/pillars/pareto-efficiency.png",
+    title: "Pareto Efficiency",
+    description: "Capability index vs. latency, GPU memory (VRAM), and execution cost.",
+  },
+  {
+    src: "/images/pillars/source-evidence.png",
+    title: "Source Evidence",
+    description: "Transparent distinction between open weights, gated weights, and APIs.",
+  },
+] as const;
 
 export default function BenchmarksPage() {
   const { catalogue, query } = buildCatalogue();
@@ -92,24 +116,25 @@ export default function BenchmarksPage() {
           <a className={styles.useCasePill} href="/use-cases/genomic-grammar">Genomic Grammar</a>
         </nav>
 
-        {/* Value Proposition Badges */}
+        {/* Value Proposition Pillars */}
         <div className={styles.valueProps}>
-          <div className={styles.valuePropItem}>
-            <span className={styles.valuePropBullet}>⚡</span>
-            <span><strong>Per-Use-Case Rankings:</strong> No monolithic scores; models ranked strictly by biological domain.</span>
-          </div>
-          <div className={styles.valuePropItem}>
-            <span className={styles.valuePropBullet}>🎯</span>
-            <span><strong>Protocol Baselines:</strong> Anchored against pre-ML conventional baselines and assay noise ceilings.</span>
-          </div>
-          <div className={styles.valuePropItem}>
-            <span className={styles.valuePropBullet}>📊</span>
-            <span><strong>Pareto Efficiency:</strong> Capability index vs. latency, GPU memory (VRAM), and execution cost.</span>
-          </div>
-          <div className={styles.valuePropItem}>
-            <span className={styles.valuePropBullet}>🔬</span>
-            <span><strong>Source Evidence:</strong> Transparent distinction between open weights and proprietary APIs.</span>
-          </div>
+          {HOME_PILLARS.map((pillar) => (
+            <div key={pillar.title} className={styles.valuePropCard}>
+              <Image
+                src={pillar.src}
+                alt=""
+                width={48}
+                height={48}
+                decoding="async"
+                unoptimized
+                className={styles.valuePropImg}
+              />
+              <div>
+                <strong className={styles.valuePropTitle}>{pillar.title}</strong>
+                <p className={styles.valuePropDesc}>{pillar.description}</p>
+              </div>
+            </div>
+          ))}
         </div>
 
         {/* Discrepancy Notice */}

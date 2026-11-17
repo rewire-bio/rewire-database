@@ -376,7 +376,11 @@ export function PredictiveEntityDetail({ detail }: { detail: RecordDetail }) {
                   <div className={styles.capabilityTile}>
                     <span className={styles.capabilityLabel}>Weights Access</span>
                     <span className={styles.capabilityValue}>
-                      {telemetry.open_weights ? "Open Weights" : "Hosted API Only"}
+                      {telemetry.open_weights
+                        ? "Open Weights"
+                        : telemetry.min_vram_gb !== null && telemetry.min_vram_gb !== undefined
+                        ? "Gated Weights"
+                        : "Hosted API Only"}
                     </span>
                   </div>
                   <div className={styles.capabilityTile}>

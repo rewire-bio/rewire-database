@@ -142,10 +142,28 @@ export default function UseCasePage({ params }: { params: Params }) {
         </section>}
         {cards}
         {/* Generative Engine Optimization (GEO) Takeaway */}
-        <GeoTakeaway
-          data={generateUseCaseTakeaway({ leaderboard })}
-          testId="use-case-geo-takeaway"
-        />
+        {(() => {
+          const topComp = orderedComparisons[0];
+          const topRow = topComp?.rows.find((r) => r.cells[0] && !r.cells[0].shown.missing) || topComp?.rows[0];
+          const topMetricValue = topRow?.cells[0] && !topRow.cells[0].shown.missing ? topRow.cells[0].shown.text : undefined;
+          return (
+            <GeoTakeaway
+              data={generateUseCaseTakeaway({
+                leaderboard,
+                pageContext: {
+                  slug: params.slug,
+                  title: entry.title,
+                  baselineName: baseline?.name,
+                  topToolName: topRow?.name,
+                  topMetricLabel: topComp?.headline.label,
+                  topMetricValue,
+                  comparisonCount: orderedComparisons.length,
+                },
+              })}
+              testId="use-case-geo-takeaway"
+            />
+          );
+        })()}
         {baseline && <section id="baseline" className={styles.section}>
           <h2>{heading("baseline")}</h2>
           <p><strong>{baseline.name}</strong>. {baseline.rationale}</p>

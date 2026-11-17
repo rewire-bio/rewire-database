@@ -809,11 +809,11 @@ details.qa .qa-body { font-family: var(--sans); font-size: 15px; line-height: 1.
 .content :where(p:last-child, ul:last-child, ol:last-child) { margin-bottom: 0; }
 .content :where(section, article, details, dl) { min-width: 0; }
 .content :where(p, li, dd, code) { overflow-wrap: anywhere; }
-.content > section, .content-section { padding: 36px 0; border-top: 1px solid var(--line); }
-.content > section:first-child, .content-section:first-child { border-top: 0; padding-top: 28px; }
+.content > section:not(.geo-takeaway), .content-section { padding: 36px 0; border-top: 1px solid var(--line); }
+.content > section:not(.geo-takeaway):first-child, .content-section:first-child { border-top: 0; padding-top: 28px; }
 
 @media (max-width: 720px) {
   .page-head.compact { padding: 20px 0 18px; }
   .page-head.compact .breadcrumb [aria-current="page"] { max-width: 22ch; }
-  .content > section, .content-section { padding: 28px 0; }
+  .content > section:not(.geo-takeaway), .content-section { padding: 28px 0; }
 }

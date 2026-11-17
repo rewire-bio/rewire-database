@@ -136,7 +136,7 @@
   .filters > .searchField { grid-column: 1 / -1; }
 }
 @media (max-width: 720px) {
-  .cards, .facts, .planGrid { grid-template-columns: 1fr; }
+  .cards, .facts, .planGrid, .cardsRow { grid-template-columns: 1fr; }
   .filters { grid-template-columns: 1fr; }
   .filters > .button { margin-top: 0; }
   .card, .mapping, .notice, .example { padding: 16px; }
@@ -150,7 +150,7 @@
 
 /* Decision view: summary, tools and comparison tables */
 .srOnly { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
-.cardsRow { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin: 24px 0 8px; }
+.cardsRow { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin: 24px 0 16px; }
 .cardsRow > div { min-width: 0; padding: 14px 16px; border: 1px solid var(--line); border-radius: var(--radius-sm); background: var(--bg-subtle); }
 .cardsRow dt { font-size: var(--fs-meta); color: var(--ink-3); margin-bottom: 4px; }
 .cardsRow dd { margin: 0; line-height: 1.5; }

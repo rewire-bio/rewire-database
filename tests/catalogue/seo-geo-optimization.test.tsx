@@ -467,6 +467,41 @@ describe("Feature 11: Generative Engine Optimization (GEO) Lead Summaries", () =
     expect(html).toContain("BLOSUM62");
     expect(html).toContain("42 ms");
   });
+
+  it("TC-GEO-08: GeoTakeaway formats clean numbers, renders highlights grid, and grounds specialized use cases", () => {
+    const struct = generateUseCaseTakeaway({ category: "structure_prediction" });
+    expect(struct.triple?.metricValue).toBe("89.5");
+    expect(struct.primaryStatement).not.toContain("89.500");
+
+    const homeHtml = renderToStaticMarkup(<GeoTakeaway data={generateHomepageTakeaway()} />);
+    expect(homeHtml).toContain("89.5 lDDT");
+    expect(homeHtml).toContain("1.20 Å scRMSD");
+    expect(homeHtml).not.toContain("89.500");
+
+    const specializedWithTop = generateUseCaseTakeaway({
+      pageContext: {
+        slug: "brca1-brca2-germline-interpretation",
+        title: "Interpret BRCA1/BRCA2 germline variants",
+        baselineName: "BayesDel under the ENIGMA specification",
+        topToolName: "AlphaMissense",
+        topMetricLabel: "AUROC",
+        topMetricValue: "0.941",
+        comparisonCount: 3,
+      },
+    });
+    expect(specializedWithTop.primaryStatement).toContain("AlphaMissense");
+    expect(specializedWithTop.primaryStatement).toContain("BayesDel");
+    expect(specializedWithTop.highlights?.some((h) => h.value === "AlphaMissense")).toBe(true);
+
+    const specializedNoTop = generateUseCaseTakeaway({
+      pageContext: {
+        slug: "custom-specialized-question",
+        title: "Custom Specialized Question",
+        comparisonCount: 0,
+      },
+    });
+    expect(specializedNoTop.primaryStatement).toContain("0 reviewed comparisons are tracked");
+  });
 });
 
 // ============================================================================

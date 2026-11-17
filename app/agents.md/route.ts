@@ -1,10 +1,10 @@
 import { dataPin } from "@/lib/data-pin";
-import { agentGuide } from "@/lib/agent-connect";
+import { generateAgentsMd } from "@/lib/llm-discoverability";
 
 export const dynamic = "force-dynamic";
 
 export function GET() {
-  return new Response(agentGuide(dataPin().release_id), {
+  return new Response(generateAgentsMd(dataPin().release_id), {
     headers: { "Content-Type": "text/markdown; charset=utf-8", "Cache-Control": "public, max-age=300" },
   });
 }

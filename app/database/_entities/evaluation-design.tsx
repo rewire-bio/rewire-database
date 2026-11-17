@@ -1,7 +1,8 @@
 import { downloadHref } from "@/lib/downloads";
 import Breadcrumbs from "@/components/catalogue/Breadcrumbs";
 import BenchmarkCoverage from "@/components/catalogue/BenchmarkCoverage";
-import { recordBreadcrumbs } from "@/lib/catalogue-sharing";
+import { recordBreadcrumbs, safeJsonLd } from "@/lib/catalogue-sharing";
+import { generateBenchmarkDatasetJsonLd } from "@/lib/catalogue-seo";
 import { catalogueText } from "@/lib/catalogue-text";
 import Link from "next/link";
 import { Fragment } from "react";
@@ -112,20 +113,20 @@ export function EvaluationDesignEntityDetail({ detail }: { detail: RecordDetail 
     ? query.results({ id: family.record.id, limit: 1 })
     : null;
   const broaderFamilyOnly = !!family && results.total === 0 && !!familyResults?.total;
-  const localProfile = profileSchema.safeParse(record.attributes.profile);
+  const localProfile = profileSchema.safeParse(record.attributes?.profile);
   const shared =
     family &&
     profileSchema.safeParse(
-      query.get({ id: family.record.id })?.record.attributes.profile,
+      query.get({ id: family.record.id })?.record.attributes?.profile,
     ).success
       ? query.get({ id: family.record.id })
       : null;
   const profileOwner = shared && !localProfile.success ? shared : detail;
   const profile = profileSchema.safeParse(
-    profileOwner.record.attributes.profile,
+    profileOwner.record.attributes?.profile,
   );
   const summary = catalogueText(
-    (profileOwner.record.attributes.profile as { summary?: string } | undefined)
+    (profileOwner.record.attributes?.profile as { summary?: string } | undefined)
       ?.summary || record.description,
   );
   const finding = catalogueText(record.name);
@@ -170,7 +171,7 @@ export function EvaluationDesignEntityDetail({ detail }: { detail: RecordDetail 
       .map((item) => item.record),
   );
   const identitySubjectId = (
-    record.attributes.source_identity as { subject_id?: unknown } | undefined
+    record.attributes?.source_identity as { subject_id?: unknown } | undefined
   )?.subject_id;
   const identitySubject =
     typeof identitySubjectId === "string"
@@ -243,6 +244,25 @@ export function EvaluationDesignEntityDetail({ detail }: { detail: RecordDetail 
         </div>
       </header>
       <section className="block first">
+        {record.kind === "benchmark" && detail.sources && detail.sources.length > 0 && (
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{
+              __html: safeJsonLd(
+                generateBenchmarkDatasetJsonLd({
+                  name: `${record.name} Benchmark Dataset`,
+                  description: summary || record.description || `${record.name} benchmark evaluation protocol`,
+                  url: `https://benchmarks.rewirebio.io${recordHref(record)}`,
+                  variableMeasured: (record.attributes?.metric as string) || undefined,
+                  creator: detail.sources?.[0]?.name,
+                  citation: detail.sources
+                    ?.map((s) => (s.attributes?.doi ? `https://doi.org/${s.attributes.doi}` : (s.attributes?.url as string) || s.name))
+                    .filter(Boolean),
+                })
+              ),
+            }}
+          />
+        )}
         <div className="wrap">
           <UseCaseBacklinks links={useCaseLinks} configurations={useCaseConfigurations} />
           <SectionNavigation
@@ -350,7 +370,7 @@ export function EvaluationDesignEntityDetail({ detail }: { detail: RecordDetail 
                     fields={{
                       record: record.name,
                       configuration:
-                        record.attributes.version || record.attributes.checkpoint,
+                        record.attributes?.version || record.attributes?.checkpoint,
                       entity_type: singularKindLabels[record.kind],
                     }}
                   />
@@ -448,14 +468,14 @@ export function EvaluationDesignEntityDetail({ detail }: { detail: RecordDetail 
             sources={detail.sources}
             protocols={protocolLinks.filter((item) => item.kind === "protocol")}
           />
-          {record.attributes.run_recipes &&
-          (Boolean(record.attributes.run_guide) ||
-            Boolean(record.attributes.run_documentation)) ? (
+          {record.attributes?.run_recipes &&
+          (Boolean(record.attributes?.run_guide) ||
+            Boolean(record.attributes?.run_documentation)) ? (
             <details className={styles.section}>
               <summary>Original repository instructions</summary>
               <RunGuide record={record} sources={detail.sources} embedded />
             </details>
-          ) : !record.attributes.run_recipes ? (
+          ) : !record.attributes?.run_recipes ? (
             <RunGuide record={record} sources={detail.sources} />
           ) : null}
           {profile.success && (
@@ -477,7 +497,7 @@ export function EvaluationDesignEntityDetail({ detail }: { detail: RecordDetail 
                     </Link>{" "}
                     ·{" "}
                     {String(
-                      item.record.attributes.applicability ||
+                      item.record.attributes?.applicability ||
                         "Proposed association",
                     )}
                   </li>
@@ -491,7 +511,7 @@ export function EvaluationDesignEntityDetail({ detail }: { detail: RecordDetail 
               Source checking verifies the cited claim or transcription. It does
               not establish independent reproduction.
             </p>
-            {record.attributes.benchmark_research ? (
+            {record.attributes?.benchmark_research ? (
               <BenchmarkResearch
                 research={record.attributes.benchmark_research as BenchmarkResearchData}
                 sources={detail.sources}
@@ -569,19 +589,11 @@ export function EvaluationDesignEntityDetail({ detail }: { detail: RecordDetail 
               </details>
             </section>
             <details className={styles.section}>
-              <summary>Technical metadata and extraction receipts</summary>
-              <p>Stable ID: {record.id}</p>
-              <Fields
-                verbatim
-                fields={{
-                  ...record.facets,
-                  ...Object.fromEntries(
-                    Object.entries(record.attributes).filter(
-                      ([key]) => key !== "profile",
-                    ),
-                  ),
-                }}
-              />
+              <summary>Technical metadata and record identifiers</summary>
+              <p>Technical metadata for this record is tracked under stable ID <code>{record.id}</code>.</p>
+              {typeof record.attributes?.source_locator === "string" && (
+                <p>Source locator: <code>{record.attributes.source_locator}</code></p>
+              )}
             </details>
             <details className={styles.section}>
               <summary>Related records</summary>

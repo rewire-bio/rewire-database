@@ -1,11 +1,15 @@
 import { downloadHref } from "@/lib/downloads";
 import { openFindingsForSystem } from "@/lib/discrepancies";
 import Breadcrumbs from "@/components/catalogue/Breadcrumbs";
-import { recordBreadcrumbs } from "@/lib/catalogue-sharing";
+import { recordBreadcrumbs, safeJsonLd } from "@/lib/catalogue-sharing";
 import { catalogueText } from "@/lib/catalogue-text";
 import Link from "next/link";
 import { Fragment } from "react";
 import { buildCatalogue } from "@/lib/catalogue-build";
+import { getModelTelemetry } from "@/lib/operational-telemetry";
+import { generateModelSoftwareApplicationJsonLd } from "@/lib/catalogue-seo";
+import { GeoTakeaway } from "@/components/catalogue/GeoTakeaway";
+import { generateModelTakeaway } from "@/lib/geo-takeaway";
 import UseCaseBacklinks from "@/components/catalogue/UseCaseBacklinks";
 import { recordHref, displayValue, safeSourceUrl, type OmicsRecord } from "@/lib/omics";
 import { profileSchema } from "@/lib/omics-profile";
@@ -108,20 +112,20 @@ export function PredictiveEntityDetail({ detail }: { detail: RecordDetail }) {
     ? query.results({ id: family.record.id, limit: 1 })
     : null;
   const broaderFamilyOnly = !!family && results.total === 0 && !!familyResults?.total;
-  const localProfile = profileSchema.safeParse(record.attributes.profile);
+  const localProfile = profileSchema.safeParse(record.attributes?.profile);
   const shared =
     family &&
     profileSchema.safeParse(
-      query.get({ id: family.record.id })?.record.attributes.profile,
+      query.get({ id: family.record.id })?.record.attributes?.profile,
     ).success
       ? query.get({ id: family.record.id })
       : null;
   const profileOwner = shared && !localProfile.success ? shared : detail;
   const profile = profileSchema.safeParse(
-    profileOwner.record.attributes.profile,
+    profileOwner.record.attributes?.profile,
   );
   const summary = catalogueText(
-    (profileOwner.record.attributes.profile as { summary?: string } | undefined)
+    (profileOwner.record.attributes?.profile as { summary?: string } | undefined)
       ?.summary || record.description,
   );
   const finding = catalogueText(record.name);
@@ -157,7 +161,7 @@ export function PredictiveEntityDetail({ detail }: { detail: RecordDetail }) {
       .map((item) => item.record),
   ]);
   const identitySubjectId = (
-    record.attributes.source_identity as { subject_id?: unknown } | undefined
+    record.attributes?.source_identity as { subject_id?: unknown } | undefined
   )?.subject_id;
   const identitySubject =
     typeof identitySubjectId === "string"
@@ -284,6 +288,115 @@ export function PredictiveEntityDetail({ detail }: { detail: RecordDetail }) {
               )
             }
           />
+          {/* Model GEO Takeaway */}
+          {record.kind === "model" && (
+            <GeoTakeaway
+              data={generateModelTakeaway(record as unknown as { id: string; name: string; kind?: string })}
+              variant="card"
+              testId="model-geo-takeaway"
+            />
+          )}
+          {/* Model Capabilities & Hardware Requirements Capability Card */}
+          {(() => {
+            const telemetry = getModelTelemetry(
+              record.id,
+              record.name,
+              record as unknown as Record<string, unknown>,
+            );
+            const accessText = (record.attributes?.access as string) || "";
+            const versionText = (record.attributes?.version as string) || (record.attributes?.checkpoint as string) || "";
+
+            const primarySource = detail.sources?.[0];
+            const profileFacts = (record.attributes?.profile as { facts?: Array<{ label: string; value: string }> } | undefined)?.facts;
+            const orgFact = profileFacts?.find((f) => /organization|laboratory|institution|creator|author/i.test(f.label))?.value;
+            const resolvedCreator = orgFact || primarySource?.name || (record.attributes?.creator as string) || undefined;
+
+            const softwareAppJsonLd = generateModelSoftwareApplicationJsonLd({
+              id: record.id,
+              name: record.name,
+              description: `${record.name} biological foundation model.`,
+              applicationCategory: "Bioinformatics Foundation Model",
+              operatingSystem: "Linux, macOS, Windows",
+              creator: resolvedCreator,
+              telemetry,
+              url: `https://benchmarks.rewirebio.io${recordHref(record)}`,
+            });
+
+            return (
+              <section className={`${styles.section} capability-card`} id="capabilities">
+                {record.kind === "model" && (
+                  <script
+                    type="application/ld+json"
+                    dangerouslySetInnerHTML={{
+                      __html: safeJsonLd(softwareAppJsonLd),
+                    }}
+                  />
+                )}
+                <h2>Model Capabilities & Hardware Requirements</h2>
+                <p>
+                  Engineering prerequisites and deployment profile for <strong>{record.name}</strong>:
+                </p>
+                <div className={styles.capabilityGrid}>
+                  <div className={styles.capabilityTile}>
+                    <span className={styles.capabilityLabel}>Parameters</span>
+                    <span className={styles.capabilityValue}>
+                      {telemetry.parameter_count_millions !== null && telemetry.parameter_count_millions !== undefined
+                        ? telemetry.parameter_count_millions >= 1000
+                          ? `${(telemetry.parameter_count_millions / 1000).toFixed(1)}B`
+                          : `${telemetry.parameter_count_millions}M`
+                        : "Not reported"}
+                    </span>
+                  </div>
+                  <div className={styles.capabilityTile}>
+                    <span className={styles.capabilityLabel}>Minimum VRAM</span>
+                    <span className={styles.capabilityValue}>
+                      {telemetry.min_vram_gb !== null && telemetry.min_vram_gb !== undefined ? `${telemetry.min_vram_gb} GB` : "CPU / Cloud"}
+                    </span>
+                  </div>
+                  <div className={styles.capabilityTile}>
+                    <span className={styles.capabilityLabel}>Inference Latency</span>
+                    <span className={styles.capabilityValue}>
+                      {telemetry.inference_latency_ms !== null && telemetry.inference_latency_ms !== undefined
+                        ? telemetry.inference_latency_ms < 1
+                          ? `${telemetry.inference_latency_ms.toFixed(1)} ms`
+                          : telemetry.inference_latency_ms >= 1000
+                          ? `${(telemetry.inference_latency_ms / 1000).toFixed(1)} s`
+                          : `${Math.round(telemetry.inference_latency_ms)} ms`
+                        : "Not benchmarked"}
+                    </span>
+                  </div>
+                  <div className={styles.capabilityTile}>
+                    <span className={styles.capabilityLabel}>Context Window</span>
+                    <span className={styles.capabilityValue}>
+                      {telemetry.context_window_length !== null && telemetry.context_window_length !== undefined
+                        ? `${telemetry.context_window_length.toLocaleString()} tokens`
+                        : "Sequence length variable"}
+                    </span>
+                  </div>
+                  <div className={styles.capabilityTile}>
+                    <span className={styles.capabilityLabel}>Weights Access</span>
+                    <span className={styles.capabilityValue}>
+                      {telemetry.open_weights ? "Open Weights" : "Hosted API Only"}
+                    </span>
+                  </div>
+                  <div className={styles.capabilityTile}>
+                    <span className={styles.capabilityLabel}>License</span>
+                    <span className={styles.capabilityValue}>{telemetry.license || "Not stated"}</span>
+                  </div>
+                </div>
+                {accessText && (
+                  <p className={styles.accessNote}>
+                    <strong>Deployment Note:</strong> {accessText}
+                  </p>
+                )}
+                {versionText && (
+                  <p className={styles.versionNote}>
+                    <strong>Evaluated Checkpoint:</strong> {versionText}
+                  </p>
+                )}
+              </section>
+            );
+          })()}
           {record.status === "superseded" && (
             <aside className={styles.notice}>
               This record is superseded and retained for its history. Consult
@@ -376,7 +489,7 @@ export function PredictiveEntityDetail({ detail }: { detail: RecordDetail }) {
                     fields={{
                       record: record.name,
                       configuration:
-                        record.attributes.version || record.attributes.checkpoint,
+                        record.attributes?.version || record.attributes?.checkpoint,
                       entity_type: singularKindLabels[record.kind],
                     }}
                   />
@@ -462,7 +575,7 @@ export function PredictiveEntityDetail({ detail }: { detail: RecordDetail }) {
                     </Link>{" "}
                     ·{" "}
                     {String(
-                      item.record.attributes.applicability ||
+                      item.record.attributes?.applicability ||
                         "Proposed association",
                     )}
                   </li>
@@ -547,19 +660,11 @@ export function PredictiveEntityDetail({ detail }: { detail: RecordDetail }) {
               </details>
             </section>
             <details className={styles.section}>
-              <summary>Technical metadata and extraction receipts</summary>
-              <p>Stable ID: {record.id}</p>
-              <Fields
-                verbatim
-                fields={{
-                  ...record.facets,
-                  ...Object.fromEntries(
-                    Object.entries(record.attributes).filter(
-                      ([key]) => key !== "profile",
-                    ),
-                  ),
-                }}
-              />
+              <summary>Technical metadata and record identifiers</summary>
+              <p>Technical metadata for this record is tracked under stable ID <code>{record.id}</code>.</p>
+              {typeof record.attributes?.source_locator === "string" && (
+                <p>Source locator: <code>{record.attributes.source_locator}</code></p>
+              )}
             </details>
             <details className={styles.section}>
               <summary>Related records</summary>

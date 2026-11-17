@@ -65,7 +65,7 @@ describe("protocol display and metadata", () => {
     const heading = html.match(/<h1>([\s\S]*?)<\/h1>/)![1];
     expect(heading).toContain("Reference network:");
     expect(heading).not.toContain("reference_network");
-    expect(html).toContain("Technical metadata and extraction receipts");
+    expect(html).toContain("Technical metadata");
     // The source locator is the technical evidence the cleaned heading must not replace.
     const locator = record.attributes.source_locator;
     if (typeof locator === "string") expect(html).toContain(locator);

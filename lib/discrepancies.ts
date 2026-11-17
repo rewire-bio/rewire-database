@@ -6,8 +6,14 @@ import {
   discrepanciesPage, discrepancyStates, severities, type DiscrepanciesInput, type Discrepancy, type DiscrepancySummary,
 } from "../shared/omics/discrepancies";
 import type { PreparedCatalogue } from "../shared/omics/prepared-catalogue";
+import {
+  discrepancyHref,
+  contestingFindings,
+  type ResultContest,
+} from "./discrepancy-helpers";
 
 export { overdue } from "./discrepancy-dates";
+export { discrepancyHref, contestingFindings, type ResultContest };
 export type { Discrepancy, DiscrepancyAction, DiscrepancyStudy, DiscrepancySummary } from "../shared/omics/discrepancies";
 export type { Disagreement } from "./disagreement";
 
@@ -62,8 +68,6 @@ export const severityLabel = (severity: string) => `${severity[0]?.toUpperCase()
 
 /** The data repository's reference for the rules, states and follow-up actions. */
 export const DISCREPANCIES_DOC = "https://github.com/rewire-bio/rewire-benchmark-data/blob/main/docs/discrepancies.md";
-
-export const discrepancyHref = (id: string) => `/contested/${encodeURIComponent(id)}/`;
 
 /** The list filters, as /contested/ reads them from its search parameters. Unknown values are dropped. */
 export type ContestedFilters = {
@@ -205,22 +209,9 @@ export function resultIdsOfUseCase(detail: { mappings: { evaluations: { results:
   return detail ? detail.mappings.flatMap((m) => m.evaluations.flatMap((e) => e.results.map((r) => r.result.id))) : null;
 }
 
-export type ResultContest = { discrepancy: DiscrepancySummary; role: string };
-
 /** The findings each result takes part in, as outlier or consensus, settled or not. */
 export function contestedResults(resultIds: readonly string[], reader: DiscrepancyReader = discrepancyReader()) {
   return reader.hasDiscrepancies() ? reader.contestedBy(resultIds) : {};
-}
-
-/** The unsettled findings in which these results are the disagreeing study's: what a
- * "Contested" badge on a use-case row means. Deduplicated, in stored order (most severe first). */
-export function contestingFindings(resultIds: readonly string[], byResult: Record<string, ResultContest[]>): DiscrepancySummary[] {
-  const found = new Map<string, DiscrepancySummary>();
-  for (const id of resultIds)
-    for (const { discrepancy, role } of byResult[id] ?? [])
-      if (role === "outlier" && !discrepancy.settled) found.set(discrepancy.id, discrepancy);
-  const order = (s: string) => (severities as readonly string[]).indexOf(s);
-  return [...found.values()].sort((a, b) => order(a.severity) - order(b.severity));
 }
 
 /** Unsettled findings that compare this model, method or configuration. */

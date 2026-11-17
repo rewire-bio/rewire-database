@@ -10,30 +10,41 @@ export const SITEMAP_CHUNK_SIZE = 10_000;
 
 export type SitemapEntry = { path: string; lastModified?: string };
 
+export const PRIMARY_USE_CASE_PATHS = [
+  "/use-cases/structure-prediction/",
+  "/use-cases/variant-effect/",
+  "/use-cases/protein-design/",
+  "/use-cases/transcriptomics/",
+  "/use-cases/genomic-grammar/",
+] as const;
+
 /** Every indexable canonical page of the pinned release, in a stable order. Reads
  * record IDs and the few use-case records only: never the use-case evidence blob,
  * which takes more than 1 GB once parsed. */
 export function sitemapEntries(): SitemapEntry[] {
   const { catalogue, query } = buildCatalogue();
+  const releaseDate = catalogue.release_id.slice(0, 10);
   const useCases = catalogue.coverage.use_cases
     ? query.recordsOfKind("use_case").filter((record) => record.status !== "excluded").map((record) => String(record.attributes.slug)).sort()
     : [];
-  return [
-    { path: "/" },
-    { path: "/runs/mfass-v2/" },
-    { path: "/evidence/" },
-    { path: "/agents/" },
-    { path: "/coverage/" },
-    { path: "/updates/" },
-    { path: "/use-cases/" },
-    ...useCases.map((slug) => ({ path: `/use-cases/${slug}/` })),
-    ...catalogueIndexPaths(indexSource(query, "model")).map((path) => ({ path })),
-    ...query.recordIds().filter(recordIsIndexable).map((record) => ({ path: recordHref(record) })),
-    { path: "/investigations/" },
-    ...query.research().investigations.map((report) => ({ path: `/investigations/${report.id}/` })),
-    { path: "/contested/" },
-    ...contestedPaths(query).map((path) => ({ path })),
+  const paths: string[] = [
+    "/",
+    "/runs/mfass-v2/",
+    "/evidence/",
+    "/agents/",
+    "/coverage/",
+    "/updates/",
+    "/use-cases/",
+    ...PRIMARY_USE_CASE_PATHS,
+    ...useCases.map((slug) => `/use-cases/${slug}/`),
+    ...catalogueIndexPaths(indexSource(query, "model")),
+    ...query.recordIds().filter(recordIsIndexable).map(recordHref),
+    "/investigations/",
+    ...query.research().investigations.map((report) => `/investigations/${report.id}/`),
+    "/contested/",
+    ...contestedPaths(query),
   ];
+  return paths.map((path) => ({ path, lastModified: releaseDate }));
 }
 
 export const sitemapChunkPath = (index: number) => `/sitemap/${index}.xml`;

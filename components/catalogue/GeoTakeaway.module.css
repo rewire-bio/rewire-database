@@ -1,0 +1,65 @@
+.geoTakeaway {
+  margin: 16px 0 24px;
+  padding: 16px 20px;
+  background: var(--accent-soft, #f0fdf4);
+  border-left: 4px solid var(--accent, #0d9488);
+  border-radius: var(--radius-sm, 6px);
+  border-top: 1px solid var(--line, #e2e8f0);
+  border-right: 1px solid var(--line, #e2e8f0);
+  border-bottom: 1px solid var(--line, #e2e8f0);
+}
+
+.banner {
+  margin: 16px 0 24px;
+}
+
+.card {
+  margin: 12px 0 20px;
+  padding: 14px 18px;
+}
+
+.inline {
+  margin: 8px 0 16px;
+  padding: 12px 16px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.icon {
+  font-size: 14px;
+  line-height: 1;
+}
+
+.title {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--accent-ink, #115e59);
+}
+
+.primaryStatement {
+  margin: 0 0 4px;
+  font-size: 14.5px;
+  line-height: 1.55;
+  color: var(--ink, #1e293b);
+  font-weight: 500;
+}
+
+.primaryStatement strong {
+  font-weight: 700;
+  color: var(--ink, #0f172a);
+}
+
+.secondaryStatement {
+  margin: 4px 0 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--ink-2, #64748b);
+}

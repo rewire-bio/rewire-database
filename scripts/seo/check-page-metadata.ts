@@ -2,6 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { XMLParser, XMLValidator } from "fast-xml-parser";
 import { SOCIAL_IMAGE, type BreadcrumbItem } from "../../lib/catalogue-sharing";
+import { dataPin } from "../../lib/data-pin";
 
 const ORIGIN = "https://benchmarks.rewirebio.io";
 /** Decode only after extracting markup: escaped record text is not an HTML tag. */
@@ -74,8 +75,12 @@ export function checkSitemap(xml: string): {
     }
     if (urls.has(loc)) failures.push(`Sitemap duplicates ${loc}`);
     urls.add(loc);
-    if (entry.lastmod !== undefined)
-      failures.push(`Sitemap has unsupported lastmod: ${loc}`);
+    const expectedReleaseDate = dataPin().release_id.slice(0, 10);
+    if (entry.lastmod !== undefined) {
+      if (typeof entry.lastmod !== "string" || entry.lastmod !== expectedReleaseDate) {
+        failures.push(`Sitemap has unsupported lastmod: ${loc}`);
+      }
+    }
   }
   return { urls, failures };
 }
@@ -239,6 +244,15 @@ export function checkPageMetadata(
     expected.breadcrumbs ? "BreadcrumbList" : "",
     expected.website ? "WebSite" : "",
   ].filter(Boolean);
+  if (structured.some((d) => d["@type"] === "ItemList") && (expected.path === "/" || expected.path.startsWith("/use-cases/"))) {
+    allowed.push("ItemList");
+  }
+  if (structured.some((d) => d["@type"] === "SoftwareApplication") && (expected.path.includes("/model/") || expected.path.startsWith("/models/"))) {
+    allowed.push("SoftwareApplication");
+  }
+  if (structured.some((d) => d["@type"] === "Dataset") && (expected.path.includes("/benchmark/") || expected.path.startsWith("/benchmarks/") || expected.path.startsWith("/use-cases/"))) {
+    allowed.push("Dataset");
+  }
   if (structured.length !== allowed.length)
     fail("structured data count mismatch");
   for (const data of structured) {

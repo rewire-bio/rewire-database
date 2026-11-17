@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from "vitest";
 import { recordSearchMetadata, recordIsIndexable } from "../lib/catalogue-seo";
 import { parseCatalogue, recordHref, type OmicsRecord } from "../lib/omics";
 import { sitemapEntries } from "../lib/sitemap";
-import robots from "../app/robots";
+import robots, { AI_BOT_USER_AGENTS } from "../app/robots";
 
 vi.mock("node:fs", async (importOriginal) => {
   const actual = await importOriginal<typeof import("node:fs")>();
@@ -149,8 +149,27 @@ describe("record search metadata", () => {
     expect(ucMetadata.description).not.toContain(
       "Rank coding variants: Rank coding variants",
     );
-    expect(robots().rules).toEqual({ userAgent: "*", allow: "/" });
+    expect(robots().rules).toEqual([
+      { userAgent: "*", allow: "/", disallow: ["/api/"] },
+      {
+        userAgent: [...AI_BOT_USER_AGENTS],
+        allow: [
+          "/",
+          "/use-cases/",
+          "/models/",
+          "/benchmarks/",
+          "/evidence/",
+          "/agents/",
+          "/coverage/",
+          "/updates/",
+          "/llms.txt",
+          "/agents.md",
+        ],
+        disallow: ["/api/"],
+      },
+    ]);
     expect(robots().sitemap).toBe("https://benchmarks.rewirebio.io/sitemap.xml");
+    expect(robots().host).toBe("https://benchmarks.rewirebio.io");
   });
   it("omits literal unitless and dimensionless from result titles and descriptions", () => {
     const result = record("unitless-result", "result", {
@@ -187,7 +206,8 @@ describe("record search metadata", () => {
         item.kind !== "claim" && item.kind !== "use_case",
       );
     }
-    expect(entries.every((entry) => entry.lastModified === undefined)).toBe(
+    const expectedReleaseDate = catalogue.release_id.slice(0, 10);
+    expect(entries.every((entry) => entry.lastModified === expectedReleaseDate)).toBe(
       true,
     );
   });

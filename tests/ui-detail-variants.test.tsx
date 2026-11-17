@@ -65,7 +65,7 @@ describe("detail pages with incomplete and historical evidence", () => {
     const html = render(kind, Component);
     expect(html.match(/<h1\b/g)).toHaveLength(1);
     expect(html).toContain("No supporting source is linked yet");
-    expect(html).toContain("Technical metadata and extraction receipts");
+    expect(html).toContain("Technical metadata");
     expect(html).toContain("Suggest a correction");
     expect(html).toContain('href="/omics/releases/fixture/records.jsonl"');
     expect(html).not.toContain("Applicable tests and references");

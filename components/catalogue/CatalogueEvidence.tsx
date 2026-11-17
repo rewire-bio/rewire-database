@@ -86,24 +86,24 @@ export function CatalogueEvidence({ query }: { query: SummarySource }) {
           <Link href="/runs/mfass-v1/">Archived MFASS v1 report →</Link>
         </article>
       </div>
-      <div className={styles.disclosureStack}>
-        <details className={styles.profileDisclosure}>
-          <summary>Coverage: records and linked evaluations</summary>
+      <div className={styles.coveragePanels}>
+        <div className={styles.coveragePanel}>
+          <h3>Coverage: records and linked evaluations</h3>
           <p>
             {records.toLocaleString()} records across{" "}
             {kindRows.length} record types. These counts describe catalogue
             coverage, not model performance.
           </p>
           <CompositionCharts kinds={kindRows} areas={areaRows} />
-          <h3>Benchmark evidence coverage</h3>
+          <h4>Benchmark evidence coverage</h4>
           <CoverageChart
             covered={covered}
             total={benchmarks}
             rows={coverageRows}
           />
-        </details>
-        <details className={styles.profileDisclosure}>
-          <summary>Collection coverage and remaining gaps</summary>
+        </div>
+        <div className={styles.coveragePanel}>
+          <h3>Collection coverage and remaining gaps</h3>
           <p>
             This is a dated collection, not an exhaustive model census. Models,
             methods, evaluated configurations and pipelines are listed separately.
@@ -118,7 +118,7 @@ export function CatalogueEvidence({ query }: { query: SummarySource }) {
               </Fragment>
             ))}
           </dl>
-        </details>
+        </div>
       </div>
     </section>
   );

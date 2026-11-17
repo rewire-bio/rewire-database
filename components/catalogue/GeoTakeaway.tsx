@@ -23,6 +23,8 @@ export function GeoTakeaway({
 }: GeoTakeawayProps) {
   if (!primaryStatement) return null;
 
+  const highlights = data?.highlights;
+
   return (
     <section
       className={`${styles.geoTakeaway} ${styles[variant]} ${className} geo-takeaway`}
@@ -30,12 +32,25 @@ export function GeoTakeaway({
       aria-label={title}
     >
       <div className={styles.header} data-testid={testId}>
-        <span className={styles.icon} aria-hidden="true">💡</span>
+        <span className={styles.dot} aria-hidden="true" />
         <strong className={styles.title}>{title}</strong>
       </div>
-      <p className={styles.primaryStatement}>
-        {primaryStatement}
-      </p>
+      {highlights ? (
+        <>
+          <p className={styles.srOnly}>{primaryStatement}</p>
+          <div className={styles.highlightsGrid}>
+            {highlights.map((item) => (
+              <div key={item.label} className={styles.highlightCard}>
+                <span className={styles.highlightLabel}>{item.label}</span>
+                <strong className={styles.highlightValue}>{item.value}</strong>
+                <span className={styles.highlightSub}>{item.subtext}</span>
+              </div>
+            ))}
+          </div>
+        </>
+      ) : (
+        <p className={styles.primaryStatement}>{primaryStatement}</p>
+      )}
       {secondaryStatement && (
         <p className={styles.secondaryStatement}>
           {secondaryStatement}

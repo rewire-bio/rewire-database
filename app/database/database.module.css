@@ -1162,32 +1162,69 @@
 
 .valueProps {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px 18px;
-  margin: 20px 0 4px;
-  padding: 16px 20px;
-  background: var(--card);
-  border: 1px solid var(--line-2);
-  border-radius: var(--radius-md);
-  box-shadow: 0 2px 8px -2px rgba(15, 23, 42, 0.04);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+  margin: 22px 0 20px;
 }
 
-.valuePropItem {
+.valuePropCard {
   display: flex;
-  align-items: baseline;
-  gap: 8px;
-  font-size: 13.5px;
-  color: var(--ink-2);
-  line-height: 1.45;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px 18px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.03);
 }
 
-.valuePropItem strong {
-  color: var(--ink);
-}
-
-.valuePropBullet {
-  font-size: 14px;
+.valuePropImg {
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: var(--bg-subtle);
+  object-fit: cover;
   flex-shrink: 0;
+}
+
+.valuePropTitle {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 4px;
+  line-height: 1.35;
+}
+
+.valuePropDesc {
+  margin: 0;
+  font-size: 13px;
+  color: var(--ink-2);
+  line-height: 1.5;
+}
+
+.coveragePanels {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-top: 24px;
+}
+
+.coveragePanel {
+  padding: 22px 24px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+}
+
+.coveragePanel h3 {
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+
+.coveragePanel h4 {
+  margin: 22px 0 10px;
 }
 
 .useCaseNav {
@@ -1218,11 +1255,15 @@
   text-decoration: none;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 960px) {
+  .valueProps {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
   .valueProps {
     grid-template-columns: 1fr;
-    gap: 10px;
-    padding: 14px 16px;
   }
 }
 
@@ -1237,9 +1278,21 @@
 
 .capabilityGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 14px;
   margin: 16px 0 12px;
+}
+
+@media (max-width: 900px) {
+  .capabilityGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .capabilityGrid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .capabilityTile {

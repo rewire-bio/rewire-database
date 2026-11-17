@@ -29,11 +29,44 @@ export interface GeoTakeawayTriple {
   openWeights?: boolean;
 }
 
+export interface GeoHighlightItem {
+  label: string;
+  value: string;
+  subtext: string;
+}
+
 export interface GeoTakeawayData {
   title: string;
   primaryStatement: string;
   secondaryStatement?: string;
+  highlights?: GeoHighlightItem[];
   triple?: GeoTakeawayTriple;
+}
+
+const PRIMARY_CATEGORY_SLUGS = new Set([
+  "structure-prediction",
+  "variant-effect",
+  "protein-design",
+  "transcriptomics",
+  "genomic-grammar",
+  "structural-hypotheses-experiments",
+  "protein-variant-effect-prediction",
+  "de-novo-binder-design",
+  "genetic-perturbation-response",
+  "plant-promoter-reporters",
+]);
+
+function formatMetricValue(val: number): string {
+  const n = Number(val);
+  if (!Number.isFinite(n)) return String(val);
+  if (Math.abs(n) >= 10) return n.toFixed(1);
+  if (Math.abs(n) >= 1) return n.toFixed(2);
+  return n.toFixed(3);
+}
+
+function formatAccessMode(openWeights: boolean, minVramGb: number | null | undefined): string {
+  if (openWeights) return "open weights";
+  return minVramGb !== null && minVramGb !== undefined ? "gated weights" : "hosted API";
 }
 
 function formatLatency(ms: number | null | undefined): string {
@@ -55,7 +88,39 @@ export function generateUseCaseTakeaway(options: {
   useCaseSlug?: string;
   category?: BiologicalUseCaseCategory | string;
   leaderboard?: LeaderboardResult;
+  pageContext?: {
+    slug: string;
+    title: string;
+    baselineName?: string;
+    topToolName?: string;
+    topMetricLabel?: string;
+    topMetricValue?: string;
+    comparisonCount?: number;
+  };
 }): GeoTakeawayData {
+  const ctx = options.pageContext;
+  if (ctx && !PRIMARY_CATEGORY_SLUGS.has(ctx.slug)) {
+    const primaryStatement =
+      ctx.topToolName && ctx.topMetricValue
+        ? `For "${ctx.title}", ${ctx.topToolName} leads the primary reviewed comparison (${ctx.topMetricLabel || "primary metric"}: ${ctx.topMetricValue})${ctx.baselineName ? `, evaluated against the ${ctx.baselineName} baseline` : ""}.`
+        : `For "${ctx.title}", ${ctx.comparisonCount || 0} reviewed comparisons are tracked${ctx.baselineName ? ` against the ${ctx.baselineName} baseline` : ""}.`;
+    const highlights: GeoHighlightItem[] = [
+      { label: "Use Case", value: ctx.title, subtext: `${ctx.comparisonCount || 0} comparisons tracked` },
+      ...(ctx.topToolName && ctx.topMetricValue
+        ? [{ label: ctx.topMetricLabel || "Primary Comparison", value: ctx.topToolName, subtext: `Lead value: ${ctx.topMetricValue}` }]
+        : []),
+      ...(ctx.baselineName
+        ? [{ label: "Protocol Baseline", value: ctx.baselineName, subtext: "Pre-ML / conventional anchor" }]
+        : []),
+    ];
+    return {
+      title: "Executive Takeaway",
+      primaryStatement,
+      secondaryStatement: "Derived directly from source-checked comparisons recorded for this biological question.",
+      highlights,
+    };
+  }
+
   const leaderboard =
     options.leaderboard ||
     getUseCaseLeaderboard(undefined, {
@@ -72,7 +137,7 @@ export function generateUseCaseTakeaway(options: {
     };
   }
 
-  const metricVal = Number(topModel.raw_metric_value).toFixed(3);
+  const metricVal = formatMetricValue(topModel.raw_metric_value);
   const baseline = leaderboard.baselines.conventional_baseline;
   const marginSign = topModel.margin_over_conventional > 0 ? "+" : "";
   const marginStr = `${marginSign}${topModel.margin_over_conventional.toFixed(1)}%`;
@@ -86,19 +151,33 @@ export function generateUseCaseTakeaway(options: {
     ? ` and achieving ${ceilingStr} of experimental assay replicate ceiling`
     : "";
 
-  const primaryStatement = `In ${leaderboard.use_case_title}, ${topModel.model_name} ranks #1 with a ${leaderboard.primary_metric_name} of ${metricVal}, outperforming the conventional ${baseline.name} baseline by ${marginStr}${ceilingPhrase}.`;
+  const primaryStatement = `In ${leaderboard.use_case_title}, ${topModel.model_name} ranks #1 (${leaderboard.primary_metric_name}: ${metricVal}), outperforming the conventional ${baseline.name} baseline by ${marginStr}${ceilingPhrase}.`;
 
   const latencyStr = formatLatency(topModel.telemetry.inference_latency_ms);
   const vramStr = formatVram(topModel.telemetry.min_vram_gb);
-  const accessStr = topModel.telemetry.open_weights ? "open weights" : "proprietary API";
+  const accessStr = formatAccessMode(topModel.telemetry.open_weights, topModel.telemetry.min_vram_gb);
   const licenseStr = topModel.telemetry.license || "Standard license";
 
-  const secondaryStatement = `Hardware profile: ${vramStr}, ${latencyStr} inference latency (${licenseStr}, ${accessStr}).`;
+  const baseNote = `Hardware profile: ${vramStr}, ${latencyStr} inference latency (${licenseStr}, ${accessStr}).`;
+  const secondaryStatement =
+    ctx?.baselineName && ctx.baselineName !== baseline.name
+      ? `${baseNote} Question-specific experimental baseline below: ${ctx.baselineName}.`
+      : baseNote;
 
   return {
     title: "Executive Takeaway",
     primaryStatement,
     secondaryStatement,
+    highlights: [
+      { label: "Top Ranked Model", value: topModel.model_name, subtext: topModel.creator },
+      {
+        label: leaderboard.primary_metric_name,
+        value: metricVal,
+        subtext: ceilingStr ? `${ceilingStr} of assay ceiling` : "Reported benchmark score",
+      },
+      { label: "vs Pre-ML Baseline", value: marginStr, subtext: baseline.name },
+      { label: "Compute Profile", value: vramStr, subtext: `${latencyStr} · ${accessStr}` },
+    ],
     triple: {
       modelName: topModel.model_name,
       creator: topModel.creator,
@@ -124,9 +203,16 @@ export function generateHomepageTakeaway(): GeoTakeawayData {
   return {
     title: "Frontier Benchmark Takeaway",
     primaryStatement:
-      "Across biological foundation model benchmarks, AlphaFold 3 ranks #1 in Structure Prediction (lDDT 89.500, +46.7% over homology modeling), PoET-2 ranks #1 in Variant Effect Prediction (Spearman Rho 0.612, +42.3% over BLOSUM62), and Chroma ranks #1 in Protein Design (scRMSD 1.200 Å, 73.3% lower divergence than RosettaDesign).",
+      "Across biological foundation model benchmarks, AlphaFold 3 ranks #1 in Structure Prediction (lDDT 89.5, +46.7% over homology modeling), PoET-2 ranks #1 in Variant Effect Prediction (Spearman Rho 0.612, +42.3% over BLOSUM62), and Chroma ranks #1 in Protein Design (scRMSD 1.20 Å, 73.3% lower divergence than RosettaDesign).",
     secondaryStatement:
       "All evaluations are anchored against pre-ML conventional baselines and experimental assay noise ceilings with operational latency, memory, and cost telemetry.",
+    highlights: [
+      { label: "Structure Prediction", value: "AlphaFold 3", subtext: "89.5 lDDT · +46.7% vs Homology" },
+      { label: "Variant Effect", value: "PoET-2", subtext: "0.612 ρ · +42.3% vs BLOSUM62" },
+      { label: "Protein Design", value: "Chroma", subtext: "1.20 Å scRMSD · +73.3% vs Rosetta" },
+      { label: "Transcriptomics", value: "GEARS", subtext: "0.790 r · +88.1% vs Linear/PCA" },
+      { label: "Genomic Grammar", value: "Enformer", subtext: "0.890 AUROC · +27.1% vs 6-mer PWM" },
+    ],
   };
 }
 
@@ -152,15 +238,16 @@ export function generateModelTakeaway(record: {
     );
 
     if (row && !row.is_baseline) {
-      const metricVal = Number(row.raw_metric_value).toFixed(3);
+      const metricVal = formatMetricValue(row.raw_metric_value);
       const baseline = lb.baselines.conventional_baseline;
       const marginSign = row.margin_over_conventional > 0 ? "+" : "";
       const marginStr = `${marginSign}${row.margin_over_conventional.toFixed(1)}%`;
+      const accessStr = formatAccessMode(telemetry.open_weights, telemetry.min_vram_gb);
 
       return {
         title: "Model Benchmark Takeaway",
         primaryStatement: `${record.name} is evaluated in ${config.title}, achieving a capability index of ${row.use_case_index_score.toFixed(1)}/100 (${lb.primary_metric_name}: ${metricVal}) with a ${marginStr} margin over conventional baseline (${baseline.name}).`,
-        secondaryStatement: `Deployment profile: ${formatVram(telemetry.min_vram_gb)}, ${formatLatency(telemetry.inference_latency_ms)} latency (${telemetry.license || "Standard license"}, ${telemetry.open_weights ? "open weights" : "proprietary"}).`,
+        secondaryStatement: `Deployment profile: ${formatVram(telemetry.min_vram_gb)}, ${formatLatency(telemetry.inference_latency_ms)} latency (${telemetry.license || "Standard license"}, ${accessStr}).`,
       };
     }
   }
@@ -171,10 +258,15 @@ export function generateModelTakeaway(record: {
       ? `${(telemetry.parameter_count_millions / 1000).toFixed(1)}B parameters`
       : `${telemetry.parameter_count_millions}M parameters`
     : "recorded architecture";
+  const accessLabel = telemetry.open_weights
+    ? "open weights"
+    : telemetry.min_vram_gb !== null && telemetry.min_vram_gb !== undefined
+    ? "gated weights access"
+    : "proprietary API access";
 
   return {
     title: "Model Deployment Profile",
-    primaryStatement: `${record.name} is a biological AI model in the rewire-database catalog with ${paramStr} and ${telemetry.open_weights ? "open weights" : "proprietary API access"}.`,
+    primaryStatement: `${record.name} is a biological AI model in the rewire-database catalog with ${paramStr} and ${accessLabel}.`,
     secondaryStatement: `Prerequisites: ${formatVram(telemetry.min_vram_gb)}, ${formatLatency(telemetry.inference_latency_ms)} inference latency (${telemetry.license || "Standard license"}).`,
   };
 }

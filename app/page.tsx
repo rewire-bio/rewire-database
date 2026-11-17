@@ -23,7 +23,7 @@ import { HOME_NOTICE } from "@/lib/home-notice";
 import contested from "@/components/catalogue/Contested.module.css";
 
 const pageMetadata = {
-  title: "The Artificial Analysis of Biological Models",
+  title: "Independent Benchmarks for Biological Models | rewirebio.io",
   description:
     "Which biological model works best for your task? Independent benchmark comparisons across biological use cases against protocol baselines and experimental assay noise ceilings with operational latency, memory, and cost telemetry.",
   alternates: { canonical: "https://benchmarks.rewirebio.io/" },
@@ -62,7 +62,7 @@ export default function BenchmarksPage() {
           "The Independent Standard for Biological AI",
           `Release ${catalogue.released_at.slice(0, 10)}`,
         ]}
-        title="The Artificial Analysis of Biological Models"
+        title="Independent Benchmarks for Biological Models"
         intro="Which biological model works best for your task? Independent, reproducible capability rankings across biological use cases against protocol baselines and experimental assay noise ceilings with operational latency, memory, and cost telemetry."
       >
         <nav className={styles.journeys} aria-label="Ways to start">

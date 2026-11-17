@@ -616,10 +616,10 @@ describe("Tier 1: Feature Coverage (F1 - F15)", () => {
       expect(html).toMatch(/<table[\s\S]*?AlphaFold|<section[^>]*class="[^"]*headline-leaderboard[^"]*"/i);
     });
 
-    it("F9.4: Value proposition positioning platform as Artificial Analysis of biological models is visible", () => {
+    it("F9.4: Value proposition positioning platform for independent biological benchmarks is visible", () => {
       const html = renderToStaticMarkup(React.createElement(BenchmarksPage));
 
-      expect(html).toMatch(/Artificial Analysis of biological models|biological model benchmark database/i);
+      expect(html).toMatch(/Independent Benchmarks for Biological Models|biological model benchmark database/i);
       expect(html).toContain("Which biological model works best for your task?");
     });
 

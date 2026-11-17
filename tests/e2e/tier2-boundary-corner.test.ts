@@ -634,11 +634,11 @@ describe("Tier 2: Boundary & Corner Cases (F1 - F15)", () => {
 
     it("F9.B3: Homepage metadata fallback when database is empty", () => {
       const meta = socialMetadata({
-        title: "Artificial Analysis of Biological Models",
+        title: "Independent Benchmarks for Biological Models",
         description: "Unified single-view model comparison",
         path: "/use-cases/structure-prediction",
       });
-      expect(meta.openGraph?.title).toBe("Artificial Analysis of Biological Models");
+      expect(meta.openGraph?.title).toBe("Independent Benchmarks for Biological Models");
       expect(meta.openGraph?.url).toBe("https://benchmarks.rewirebio.io/use-cases/structure-prediction");
     });
 

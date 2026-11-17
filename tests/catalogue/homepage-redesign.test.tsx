@@ -23,7 +23,8 @@ describe("Homepage Redesign (TC-HP-01 to TC-HP-08)", () => {
   it("TC-HP-01: Renders hero positioning headline and subhead", () => {
     const html = renderToStaticMarkup(<BenchmarksPage />);
 
-    expect(html).toContain("The Artificial Analysis of Biological Models");
+    expect(html).toContain("Independent Benchmarks for Biological Models");
+    expect(html).not.toMatch(/Artificial Analysis/i);
     expect(html).toContain("The Independent Standard for Biological AI");
     expect(html).toContain("Which biological model works best for your task?");
     expect(html).toContain("Per-Use-Case Rankings");

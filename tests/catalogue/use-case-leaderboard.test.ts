@@ -13,6 +13,7 @@ import {
   getUseCaseLeaderboard,
   normalizeCategory,
   categoryForSlug,
+  resolveLeaderboardModelHref,
   type BiologicalModelRankingRow,
 } from "../../lib/use-case-leaderboard";
 import {
@@ -574,5 +575,29 @@ describe("getUseCaseLeaderboard Aggregator", () => {
     expect(categoryForSlug("de-novo-binder-design")).toBe("protein_design");
     expect(categoryForSlug("genetic-perturbation-response")).toBe("transcriptomics");
     expect(categoryForSlug("plant-promoter-reporters")).toBe("genomic_grammar");
+  });
+
+  it("resolves leaderboard model links to valid catalogue routes", () => {
+    expect(
+      resolveLeaderboardModelHref({
+        model_id: "alphafold-3",
+        model_name: "AlphaFold 3",
+      })
+    ).toBe("/database/model/discovery-model-alphafold-3/");
+
+    expect(
+      resolveLeaderboardModelHref({
+        model_id: "blosum62-baseline",
+        model_name: "BLOSUM62",
+        is_baseline: true,
+      })
+    ).toBe("/use-cases/");
+
+    expect(
+      resolveLeaderboardModelHref({
+        model_id: "poet-2",
+        model_name: "PoET-2",
+      })
+    ).toBe("/?kind=model&q=PoET-2#browse");
   });
 });

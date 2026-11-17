@@ -1,0 +1,47 @@
+name: Pipeline alert
+# Opens one issue labelled pipeline-broken, assigned to timini, when a data adoption or a
+# deployment run on main fails, and closes it when every failing source has succeeded again
+# (rewire-benchmark-data #252). rewire-benchmark-data runs the same script for its checks
+# and releases, and checks daily that this site serves the newest release.
+# workflow_run matches workflows by name; tests/pipeline-alert.test.ts checks the names.
+on:
+  workflow_run:
+    workflows:
+      - "Adopt the newest data release"
+      - "Database checks and independent frontend deployment"
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: The workflow run to judge
+        required: true
+      dry_run:
+        description: Print the issue changes instead of making them
+        type: boolean
+        default: true
+permissions:
+  contents: read
+  actions: read
+  issues: write
+# One alert at a time, so two finishing runs cannot each open an issue.
+concurrency:
+  group: pipeline-alert
+  cancel-in-progress: false
+jobs:
+  alert:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: scripts/ops
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Judge the finished run
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_ID: ${{ github.event.workflow_run.id || inputs.run_id }}
+          DRY_RUN: ${{ inputs.dry_run && '--dry-run' || '' }}
+        run: node scripts/ops/pipeline-alert.mjs run --run-id "$RUN_ID" $DRY_RUN

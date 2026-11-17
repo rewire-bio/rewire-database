@@ -40,6 +40,9 @@ describe("catalogue information panels", () => {
     expect(html).not.toContain("/omics/releases/fixture/evidence.jsonl");
     expect(html).toContain("2026-10-01");
     expect(html).toContain("six result rows excluded");
+    const compactDownloads = renderToStaticMarkup(<CatalogueDownloads releaseId="fixture" releasedAt="2026-10-01T12:34:56Z" compact />);
+    for (const file of ["records.jsonl", "manifest.json"]) expect(compactDownloads).toContain(`/omics/releases/fixture/${file}`);
+    expect(compactDownloads).not.toContain("Original literature downloads");
   });
   it("counts evidence provenance separately from catalogue coverage, including missing benchmark evidence", () => {
     const benchmark = record("benchmark", "benchmark");
@@ -56,6 +59,13 @@ describe("catalogue information panels", () => {
     expect(html).toContain("DNA and genomes");
     expect(html).toContain("Dated collection");
     expect(html).toContain("MFASS v1 is superseded");
+    const compactHtml = renderToStaticMarkup(<CatalogueEvidence query={preparedFromSnapshot(catalogue)} compact />);
+    expect(compactHtml).toContain('id="mfass-v1"');
+    expect(compactHtml).toMatch(/href="\/coverage\/?"/);
+    expect(compactHtml).toMatch(/href="\/evidence\/?"/);
+    expect(compactHtml).toContain("1 source-checked published results");
+    expect(compactHtml).not.toContain("Benchmark evidence coverage");
+    expect(compactHtml).not.toContain("Collection coverage and remaining gaps");
   });
   it("shows absent readiness evidence without suggesting analysis can start", () => {
     const value = assessment();

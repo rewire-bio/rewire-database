@@ -16,9 +16,7 @@ import styles from "./database/database.module.css";
 import { CatalogueEvidence } from "@/components/catalogue/CatalogueEvidence";
 import { CatalogueDownloads } from "@/components/catalogue/CatalogueDownloads";
 import { BROWSE_PAGE_SIZE } from "@/lib/omics-browse";
-import RefreshStatus from "@/components/RefreshStatus";
 import AgentConnect from "@/components/AgentConnect";
-import { readRefresh } from "@/lib/refresh-build";
 import { contestedList } from "@/lib/discrepancies";
 import { HOME_NOTICE } from "@/lib/home-notice";
 import contested from "@/components/catalogue/Contested.module.css";
@@ -174,69 +172,18 @@ export default function BenchmarksPage() {
           initial={query.list({ kind: "model", limit: BROWSE_PAGE_SIZE })}
           release={query.release()}
         >
-          {/* Purpose and Methodology */}
-          <section
-            className={styles.purposeSection}
-            aria-labelledby="purpose-heading"
-          >
-            <div className={styles.sectionHeader}>
-              <span className={styles.sectionKicker}>Purpose and scope</span>
-              <h2 id="purpose-heading">What this platform is for</h2>
-            </div>
-            <div className={styles.purposeGrid}>
-              <article className={styles.purposeCard}>
-                <span className={styles.purposeIndex}>01 · The problem</span>
-                <h3>Why comparisons break</h3>
-                <p>
-                  Choosing a biological model for a task is harder than it should
-                  be. Results are scattered across papers, preprints and benchmark
-                  suites. Each uses its own datasets, splits and metrics, so numbers
-                  from two papers often cannot be compared, and new models appear
-                  faster than anyone can read about them.
-                </p>
-              </article>
-              <article className={styles.purposeCard}>
-                <span className={styles.purposeIndex}>02 · Methodology</span>
-                <h3>Organised by biological question</h3>
-                <p>
-                  This platform brings those results together. Every value links to
-                  the paper, table or run it came from. Results are organised around
-                  use cases, so you can start from the biological question you are
-                  trying to answer rather than from a model name. Results measured
-                  under different protocols are kept apart instead of being merged
-                  into one ranking, and calibrated against pre-ML conventional baselines.
-                </p>
-              </article>
-              <article className={styles.purposeCard}>
-                <span className={styles.purposeIndex}>03 · Standard</span>
-                <h3>Open, current and correctable</h3>
-                <p>
-                  The goal is a trusted, current reference for how biological models
-                  perform on each task: kept up to date as the field moves, open to
-                  researchers and their AI agents, and correctable by anyone who
-                  brings better evidence.
-                </p>
-              </article>
-            </div>
-          </section>
-
-          <CatalogueEvidence query={query} />
+          <CatalogueEvidence query={query} compact />
 
           <section
             className={styles.workflowSection}
-            aria-label="Agent integration, freshness and downloads"
+            aria-label="Agent integration and database downloads"
           >
             <AgentConnect />
-            <div className={styles.homeMetaGrid}>
-              <RefreshStatus
-                compact
-                data={readRefresh(undefined, catalogue.release_id)}
-              />
-              <CatalogueDownloads
-                releaseId={catalogue.release_id}
-                releasedAt={catalogue.released_at}
-              />
-            </div>
+            <CatalogueDownloads
+              compact
+              releaseId={catalogue.release_id}
+              releasedAt={catalogue.released_at}
+            />
           </section>
         </Explorer>
       </div>

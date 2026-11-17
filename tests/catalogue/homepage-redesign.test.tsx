@@ -81,13 +81,21 @@ describe("Homepage Redesign (TC-HP-01 to TC-HP-08)", () => {
     expect(html).toContain("rewirebio.io");
   });
 
-  it("TC-HP-07: Renders value proposition cards and agent/download footer sections", () => {
+  it("TC-HP-07: Renders compact provenance and agent/download footer without low-value homepage bloat", () => {
     const html = renderToStaticMarkup(<BenchmarksPage />);
 
-    expect(html).toContain("01 · The problem");
-    expect(html).toContain("02 · Methodology");
-    expect(html).toContain("03 · Standard");
-    expect(html).toContain("Agent integration, freshness and downloads");
+    expect(html).toContain("Audit the evidence");
+    expect(html).toContain('id="mfass-v1"');
+    expect(html).toContain("Agent integration and database downloads");
+    expect(html).toContain('id="downloads"');
+    expect(html).toContain("Connect your agent");
+
+    expect(html).not.toContain("Benchmark evidence coverage");
+    expect(html).not.toContain("Collection coverage and remaining gaps");
+    expect(html).not.toContain("Coverage: records and linked evaluations");
+    expect(html).not.toContain("What this platform is for");
+    expect(html).not.toContain("Database freshness");
+    expect(html).not.toContain("Original literature downloads");
   });
 
   it("TC-HP-08: Defensively renders without throwing even when useCases is 0 or discrepancies are absent", () => {

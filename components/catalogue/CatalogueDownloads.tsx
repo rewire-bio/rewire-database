@@ -4,44 +4,59 @@ import styles from "@/app/database/database.module.css";
 export function CatalogueDownloads({
   releaseId,
   releasedAt,
+  compact = false,
 }: {
   releaseId: string;
   releasedAt: string;
+  compact?: boolean;
 }) {
   const release = `/omics/releases/${releaseId}`;
   return (
-    <section id="downloads" className={styles.downloadsPanel}>
-      <div className={styles.sectionHeader}>
-        <span className={styles.sectionKicker}>Data access</span>
-        <h2>Download the database</h2>
-      </div>
-      <p className={styles.muted}>
-        Release {releaseId} · {releasedAt.slice(0, 10)}
-      </p>
-      <p>Downloads are hosted on GitHub at the pinned data revision and compressed with gzip.</p>
-      <div className={styles.downloads}>
-        <a href={downloadHref(`${release}/records.jsonl`)}>
-          JSONL (gzip)
-        </a>
-        <a href="/evidence/">Evidence and review methods</a>
-        <a href={downloadHref(`${release}/manifest.json`)}>Checksums and release manifest (gzip)</a>
-      </div>
-      <details className={styles.profileDisclosure}>
-        <summary>Original literature downloads</summary>
-        <p>
-          The original 100-paper collection is retained for citation history.
-          These files include six result rows excluded from the current omics
-          scope; use the database release above for the reviewed collection.
-        </p>
-        <div className={styles.downloads}>
-          <a href={downloadHref("/benchmark-literature/results.csv")}>
-            Original results CSV (gzip)
-          </a>
-          <a href={downloadHref("/benchmark-literature/papers.json")}>
-            Original papers JSON (gzip)
-          </a>
+    <section
+      id="downloads"
+      className={`${styles.downloadsPanel}${compact ? ` ${styles.downloadsPanelCompact}` : ""}`}
+    >
+      <div className={styles.downloadsIntro}>
+        <div className={styles.sectionHeader}>
+          <span className={styles.sectionKicker}>Data access</span>
+          <h2>Download the database</h2>
         </div>
-      </details>
+        <p className={styles.muted}>
+          Release {releaseId} · {releasedAt.slice(0, 10)}
+        </p>
+        <p>
+          {compact
+            ? "Immutable release exports compressed with gzip and pinned to SHA-256 checksums."
+            : "Downloads are hosted on GitHub at the pinned data revision and compressed with gzip."}
+        </p>
+      </div>
+      <div className={styles.downloadsActions}>
+        <div className={styles.downloads}>
+          <a href={downloadHref(`${release}/records.jsonl`)}>
+            JSONL (gzip)
+          </a>
+          <a href="/evidence/">Evidence and review methods</a>
+          <a href={downloadHref(`${release}/manifest.json`)}>Checksums and release manifest (gzip)</a>
+        </div>
+        {!compact && (
+          <details className={styles.profileDisclosure}>
+            <summary>Original literature downloads</summary>
+            <p>
+              The original 100-paper collection is retained for citation history.
+              These files include six result rows excluded from the current omics
+              scope; use the database release above for the reviewed collection.
+            </p>
+            <div className={styles.downloads}>
+              <a href={downloadHref("/benchmark-literature/results.csv")}>
+                Original results CSV (gzip)
+              </a>
+              <a href={downloadHref("/benchmark-literature/papers.json")}>
+                Original papers JSON (gzip)
+              </a>
+            </div>
+          </details>
+        )}
+      </div>
     </section>
   );
 }

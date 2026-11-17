@@ -16,23 +16,43 @@ import { evidenceCheckedLabel, evidenceCountParts, summariseUseCaseEvidence, sum
 import { buildCatalogue } from "@/lib/catalogue-build";
 import { contestedResults, contestingFindings } from "@/lib/discrepancies";
 import { baselineComparisons, buildComparisons, heldJudgements, methodTypeLabel, toolsCompared } from "@/lib/use-case-comparisons";
+import { getUseCaseLeaderboard } from "@/lib/use-case-leaderboard";
+import { safeJsonLd } from "@/lib/catalogue-sharing";
+import {
+  generateLeaderboardItemListJsonLd,
+  generateBenchmarkDatasetJsonLd,
+  CATEGORY_SLUG_MAP,
+  resolveUseCaseTargetSlug,
+} from "@/lib/catalogue-seo";
+import { GeoTakeaway } from "@/components/catalogue/GeoTakeaway";
+import { generateUseCaseTakeaway } from "@/lib/geo-takeaway";
 import styles from "@/components/catalogue/UseCases.module.css";
 
 type Params = { slug: string };
 export function generateMetadata({ params }: { params: Params }): Metadata {
-  const detail = fullUseCaseDetail(params.slug);
+  const targetSlug = resolveUseCaseTargetSlug(params.slug);
+  const detail = fullUseCaseDetail(targetSlug);
   if (!detail) return {};
-  const title = `${detail.use_case.title} | rewirebio.io`;
+  const isCategory = params.slug in CATEGORY_SLUG_MAP;
+  const title = isCategory
+    ? `${detail.use_case.title} Rankings & Protocol Baselines | rewirebio.io`
+    : `${detail.use_case.title} | rewirebio.io`;
   const description = detail.use_case.question;
-  const path = `/use-cases/${detail.use_case.slug}/`;
-  return { title, description, alternates: { canonical: `https://benchmarks.rewirebio.io${path}` }, ...socialMetadata({ title, description, path }) };
+  const path = `/use-cases/${params.slug}/`;
+  return {
+    title,
+    description,
+    alternates: { canonical: `https://benchmarks.rewirebio.io${path}` },
+    ...socialMetadata({ title, description, path }),
+  };
 }
 
 export default function UseCasePage({ params }: { params: Params }) {
-  const detail = fullUseCaseDetail(params.slug);
+  const targetSlug = resolveUseCaseTargetSlug(params.slug);
+  const detail = fullUseCaseDetail(targetSlug);
   if (!detail) notFound();
   const entry = detail.use_case;
-  const path = `/use-cases/${entry.slug}/`;
+  const path = `/use-cases/${params.slug}/`;
   const clinical = entry.contexts.includes("clinical_research");
   const summary = summariseUseCaseEvidence(detail.mappings, entry.evidence_gaps.length);
   const comparisons = buildComparisons(detail.mappings);
@@ -72,7 +92,40 @@ export default function UseCasePage({ params }: { params: Params }) {
     <div><dt>Kept up to date</dt><dd>{evidenceCheckedLabel(entry.evidence_checked)}</dd></div>
   </dl>;
   const heading = (id: string) => sections.find((section) => section.id === id)!.label;
+
+  const leaderboard = getUseCaseLeaderboard(undefined, { use_case_slug: entry.slug });
+  const itemListJsonLd = generateLeaderboardItemListJsonLd({
+    name: `${entry.title} - Biological Model Rankings`,
+    description: entry.question,
+    url: `https://benchmarks.rewirebio.io${path}`,
+    rows: leaderboard.rows,
+  });
+
+  const datasetCitations = detail.sources
+    .map((s) => (s.attributes.doi ? `https://doi.org/${s.attributes.doi}` : (s.attributes.url as string) || s.name))
+    .filter(Boolean);
+
+  const datasetJsonLd = generateBenchmarkDatasetJsonLd({
+    name: `${entry.title} Benchmark Dataset Evidence`,
+    description: `Benchmark datasets and evaluated protocols for ${entry.title}. ${entry.question}`,
+    url: `https://benchmarks.rewirebio.io${path}`,
+    variableMeasured: leaderboard.primary_metric_name || entry.output,
+    creator: {
+      name: "rewirebio.io / Community Benchmark Contributors",
+      url: "https://benchmarks.rewirebio.io",
+    },
+    citation: datasetCitations.length > 0 ? datasetCitations : undefined,
+  });
+
   return <>
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: safeJsonLd(itemListJsonLd) }}
+    />
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: safeJsonLd(datasetJsonLd) }}
+    />
     <PageHeader
       breadcrumbs={[{ name: "Database", path: "/" }, { name: "Use cases", path: "/use-cases/" }, { name: entry.title, path }]}
       breadcrumbLinks={{ "/use-cases/": <UseCaseReturn label="Use cases" /> }}
@@ -88,6 +141,11 @@ export default function UseCasePage({ params }: { params: Params }) {
           <div className={styles.summaryBox}>{summaryParagraphs(evidenceSummary.text).map((paragraph, i) => <p key={i} className={i === 0 ? styles.summaryLead : undefined}>{paragraph}</p>)}</div>
         </section>}
         {cards}
+        {/* Generative Engine Optimization (GEO) Takeaway */}
+        <GeoTakeaway
+          data={generateUseCaseTakeaway({ leaderboard })}
+          testId="use-case-geo-takeaway"
+        />
         {baseline && <section id="baseline" className={styles.section}>
           <h2>{heading("baseline")}</h2>
           <p><strong>{baseline.name}</strong>. {baseline.rationale}</p>
@@ -111,11 +169,34 @@ export default function UseCasePage({ params }: { params: Params }) {
         </section>}
         <section id="evidence" className={styles.section}>
           <h2>{heading("evidence")}</h2>
-          <p>Each table is one study or protocol with its own truth set and scoring. Compare tools within a table, not across tables.</p>
+          <p>
+            {orderedComparisons.length > 1
+              ? "Unified model comparison for this use case. Compare tools against protocol baselines in a single view."
+              : "Each table is one study or protocol with its own truth set and scoring. Compare tools within a table, not across tables."}
+          </p>
           {anyContested && <p>Rows marked Contested rest on results that other studies disagree with. The results are still shown. See <a href={`/contested/?use_case=${encodeURIComponent(entry.slug)}`}>the disagreements that involve this use case</a> for what disagrees and what we are doing about it.</p>}
-          {orderedComparisons.length
-            ? orderedComparisons.map((comparison) => <UseCaseComparison key={comparison.id} comparison={comparison} useCasePath={path} baselineIds={baselineIds} contested={contested} />)
-            : <div className={styles.notice}><p>No model comparison has been collected for this question yet.</p><p>Relevant methods and studies may exist outside this collection.</p></div>}
+          {orderedComparisons.length > 0 ? (
+            <>
+              <UseCaseComparison
+                comparison={orderedComparisons[0]}
+                useCasePath={path}
+                baselineIds={baselineIds}
+                contested={contested}
+              />
+              {orderedComparisons.length > 1 && (
+                <div className={styles.additionalProtocolsNotice}>
+                  <p className={styles.muted}>
+                    Primary benchmark evaluation shown ({orderedComparisons[0].title}). {orderedComparisons.length - 1} additional study protocols ({orderedComparisons.slice(1, 4).map((c) => c.title).join(", ")}{orderedComparisons.length > 4 ? " and others" : ""}) are cited in individual tool drawer rows and under <a href="#details">Question, sources and review</a>.
+                  </p>
+                </div>
+              )}
+            </>
+          ) : (
+            <div className={styles.notice}>
+              <p>No model comparison has been collected for this question yet.</p>
+              <p>Relevant methods and studies may exist outside this collection.</p>
+            </div>
+          )}
         </section>
         {held.length > 0 && <section id="held" className={styles.section}>
           <h2>{heading("held")}</h2>

@@ -22,24 +22,6 @@ import { countLabel, kindLabels, singularKindLabels, groupEntities, uniqueRecord
 import { loadUseCaseContext, verifiedAssociation, type RecordDetail } from "@/lib/entity-detail";
 import styles from "../database.module.css";
 
-function Fields({
-  fields,
-  verbatim = false,
-}: {
-  fields: Record<string, unknown>;
-  verbatim?: boolean;
-}) {
-  return (
-    <dl className={styles.details}>
-      {Object.entries(fields).map(([key, value]) => (
-        <Fragment key={key}>
-          <dt>{key.replace(/_/g, " ")}</dt>
-          <dd>{displayValue(value, verbatim)}</dd>
-        </Fragment>
-      ))}
-    </dl>
-  );
-}
 
 /** Shared composition for the dataset family: dataset and dataset_subset
  * (`datasetSubjectKinds` in entity-kinds.ts). Evaluation results, derived
@@ -74,20 +56,20 @@ export function DatasetDetail({ detail }: { detail: RecordDetail }) {
       ["family", "variant_of", "configuration_of", "alias_of"].includes(item.relation) &&
       verifiedAssociation(query, record.id, item.relation, item.record.id),
   );
-  const localProfile = profileSchema.safeParse(record.attributes.profile);
+  const localProfile = profileSchema.safeParse(record.attributes?.profile);
   const shared =
     family &&
     profileSchema.safeParse(
-      query.get({ id: family.record.id })?.record.attributes.profile,
+      query.get({ id: family.record.id })?.record.attributes?.profile,
     ).success
       ? query.get({ id: family.record.id })
       : null;
   const profileOwner = shared && !localProfile.success ? shared : detail;
   const profile = profileSchema.safeParse(
-    profileOwner.record.attributes.profile,
+    profileOwner.record.attributes?.profile,
   );
   const summary = catalogueText(
-    (profileOwner.record.attributes.profile as { summary?: string } | undefined)
+    (profileOwner.record.attributes?.profile as { summary?: string } | undefined)
       ?.summary || record.description,
   );
   const protocolLinks = uniqueRecords([
@@ -107,7 +89,7 @@ export function DatasetDetail({ detail }: { detail: RecordDetail }) {
       .map((item) => item.record),
   ]);
   const identitySubjectId = (
-    record.attributes.source_identity as { subject_id?: unknown } | undefined
+    record.attributes?.source_identity as { subject_id?: unknown } | undefined
   )?.subject_id;
   const identitySubject =
     typeof identitySubjectId === "string"
@@ -247,7 +229,7 @@ export function DatasetDetail({ detail }: { detail: RecordDetail }) {
                     </Link>{" "}
                     ·{" "}
                     {String(
-                      item.record.attributes.applicability ||
+                      item.record.attributes?.applicability ||
                         "Proposed association",
                     )}
                   </li>
@@ -332,19 +314,11 @@ export function DatasetDetail({ detail }: { detail: RecordDetail }) {
               </details>
             </section>
             <details className={styles.section}>
-              <summary>Technical metadata and extraction receipts</summary>
-              <p>Stable ID: {record.id}</p>
-              <Fields
-                verbatim
-                fields={{
-                  ...record.facets,
-                  ...Object.fromEntries(
-                    Object.entries(record.attributes).filter(
-                      ([key]) => key !== "profile",
-                    ),
-                  ),
-                }}
-              />
+              <summary>Technical metadata and record identifiers</summary>
+              <p>Technical metadata for this record is tracked under stable ID <code>{record.id}</code>.</p>
+              {typeof record.attributes?.source_locator === "string" && (
+                <p>Source locator: <code>{record.attributes.source_locator}</code></p>
+              )}
             </details>
             <details className={styles.section}>
               <summary>Related records</summary>

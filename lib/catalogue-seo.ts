@@ -200,3 +200,312 @@ export function recordSearchMetadata(
     robots: { index: recordIsIndexable(record), follow: true as const },
   };
 }
+
+// ============================================================================
+// Schema.org JSON-LD Type Definitions & Generators (Milestone 4 - Feature 10)
+// ============================================================================
+
+export interface SchemaOrganization {
+  "@type": "Organization";
+  name: string;
+  url?: string;
+}
+
+export interface SchemaOffer {
+  "@type": "Offer";
+  price: string | number;
+  priceCurrency: string;
+}
+
+export interface SchemaSoftwareApplicationItem {
+  "@type": "SoftwareApplication";
+  name: string;
+  url: string;
+  applicationCategory: string;
+  operatingSystem: string;
+  memoryRequirements?: string;
+  author?: SchemaOrganization;
+  license?: string;
+  offers?: SchemaOffer;
+  description?: string;
+}
+
+export interface SchemaListItem {
+  "@type": "ListItem";
+  position: number;
+  name: string;
+  url: string;
+  item: SchemaSoftwareApplicationItem;
+}
+
+export interface SchemaItemList {
+  "@context": "https://schema.org";
+  "@type": "ItemList";
+  name: string;
+  description: string;
+  numberOfItems: number;
+  itemListElement: SchemaListItem[];
+  url?: string;
+}
+
+export interface SchemaSoftwareApplicationRoot extends SchemaSoftwareApplicationItem {
+  "@context": "https://schema.org";
+}
+
+export interface SchemaDatasetRoot {
+  "@context": "https://schema.org";
+  "@type": "Dataset";
+  name: string;
+  description: string;
+  url?: string;
+  variableMeasured?: string | string[];
+  creator?: SchemaOrganization;
+  citation?: string[];
+  license?: string;
+}
+
+export interface LeaderboardItemRowInput {
+  model_id: string;
+  model_name: string;
+  creator?: string;
+  category?: string;
+  primary_metric_name?: string;
+  raw_metric_value?: number;
+  use_case_index_score?: number;
+  is_baseline?: boolean;
+  telemetry?: {
+    min_vram_gb?: number | null;
+    inference_latency_ms?: number | null;
+    open_weights?: boolean;
+    license?: string;
+    parameter_count_millions?: number | null;
+  } | null;
+}
+
+export interface LeaderboardItemListOptions {
+  name: string;
+  description: string;
+  rows: readonly LeaderboardItemRowInput[];
+  url?: string;
+  baseUrl?: string;
+}
+
+export interface ModelSoftwareApplicationOptions {
+  id: string;
+  name: string;
+  description?: string;
+  applicationCategory?: string;
+  operatingSystem?: string;
+  creator?: string;
+  telemetry?: {
+    min_vram_gb?: number | null;
+    inference_latency_ms?: number | null;
+    open_weights?: boolean;
+    license?: string;
+    parameter_count_millions?: number | null;
+  } | null;
+  url?: string;
+  baseUrl?: string;
+}
+
+export interface BenchmarkDatasetOptions {
+  name: string;
+  description: string;
+  variableMeasured?: string | string[];
+  creator?: string | { name: string; url?: string };
+  citation?: string | string[];
+  url?: string;
+  license?: string;
+  baseUrl?: string;
+}
+
+const DEFAULT_ORIGIN = "https://benchmarks.rewirebio.io";
+
+/**
+ * Generates a Schema.org ItemList JSON-LD representation for model leaderboards.
+ */
+export function generateLeaderboardItemListJsonLd({
+  name,
+  description,
+  rows,
+  url,
+  baseUrl = DEFAULT_ORIGIN,
+}: LeaderboardItemListOptions): SchemaItemList {
+  const itemListElement: SchemaListItem[] = rows.map((row, index) => {
+    const canonicalPath = row.is_baseline
+      ? `/database/baseline/${row.model_id}/`
+      : `/database/model/${row.model_id}/`;
+    const canonicalUrl = `${baseUrl}${canonicalPath}`;
+
+    const appItem: SchemaSoftwareApplicationItem = {
+      "@type": "SoftwareApplication",
+      name: row.model_name,
+      url: canonicalUrl,
+      applicationCategory: "Bioinformatics Foundation Model",
+      operatingSystem: "Linux, macOS, Windows",
+    };
+
+    if (row.telemetry?.min_vram_gb !== null && row.telemetry?.min_vram_gb !== undefined) {
+      appItem.memoryRequirements = `${row.telemetry.min_vram_gb} GB VRAM`;
+    }
+
+    if (row.creator) {
+      appItem.author = {
+        "@type": "Organization",
+        name: row.creator,
+      };
+    }
+
+    if (row.telemetry?.license) {
+      appItem.license = row.telemetry.license;
+    }
+
+    if (row.telemetry?.open_weights) {
+      appItem.offers = {
+        "@type": "Offer",
+        price: "0",
+        priceCurrency: "USD",
+      };
+    }
+
+    if (row.use_case_index_score !== null && row.use_case_index_score !== undefined) {
+      appItem.description = `Capability index score: ${row.use_case_index_score}`;
+    } else if (row.primary_metric_name && row.raw_metric_value !== undefined) {
+      appItem.description = `${row.primary_metric_name}: ${row.raw_metric_value}`;
+    }
+
+    return {
+      "@type": "ListItem",
+      position: index + 1,
+      name: row.model_name,
+      url: canonicalUrl,
+      item: appItem,
+    };
+  });
+
+  const schema: SchemaItemList = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name,
+    description,
+    numberOfItems: rows.length,
+    itemListElement,
+  };
+
+  if (url) {
+    schema.url = url;
+  }
+
+  return schema;
+}
+
+/**
+ * Generates a Schema.org SoftwareApplication JSON-LD representation for model profile pages.
+ */
+export function generateModelSoftwareApplicationJsonLd({
+  id,
+  name,
+  description,
+  applicationCategory = "Bioinformatics Foundation Model",
+  operatingSystem = "Linux, macOS, Windows",
+  creator,
+  telemetry,
+  url,
+  baseUrl = DEFAULT_ORIGIN,
+}: ModelSoftwareApplicationOptions): SchemaSoftwareApplicationRoot {
+  const canonicalUrl = url || `${baseUrl}/database/model/${id}/`;
+
+  const schema: SchemaSoftwareApplicationRoot = {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    name,
+    url: canonicalUrl,
+    applicationCategory,
+    operatingSystem,
+    description: description || `${name} biological foundation model.`,
+  };
+
+  if (telemetry?.min_vram_gb !== null && telemetry?.min_vram_gb !== undefined) {
+    schema.memoryRequirements = `${telemetry.min_vram_gb} GB VRAM`;
+  }
+
+  if (creator) {
+    schema.author = {
+      "@type": "Organization",
+      name: creator,
+    };
+  }
+
+  if (telemetry?.license) {
+    schema.license = telemetry.license;
+  }
+
+  if (telemetry?.open_weights) {
+    schema.offers = {
+      "@type": "Offer",
+      price: "0",
+      priceCurrency: "USD",
+    };
+  }
+
+  return schema;
+}
+
+/**
+ * Generates a Schema.org Dataset JSON-LD representation for benchmark and dataset pages.
+ */
+export function generateBenchmarkDatasetJsonLd({
+  name,
+  description,
+  variableMeasured,
+  creator,
+  citation,
+  url,
+  license,
+}: BenchmarkDatasetOptions): SchemaDatasetRoot {
+  const citations = citation
+    ? Array.isArray(citation)
+      ? citation
+      : [citation]
+    : undefined;
+
+  const orgCreator: SchemaOrganization | undefined = creator
+    ? typeof creator === "string"
+      ? { "@type": "Organization", name: creator }
+      : { "@type": "Organization", ...creator }
+    : undefined;
+
+  const schema: SchemaDatasetRoot = {
+    "@context": "https://schema.org",
+    "@type": "Dataset",
+    name,
+    description,
+  };
+
+  if (url) schema.url = url;
+  if (variableMeasured) schema.variableMeasured = variableMeasured;
+  if (orgCreator) schema.creator = orgCreator;
+  if (citations && citations.length > 0) schema.citation = citations;
+  if (license) schema.license = license;
+
+  return schema;
+}
+
+/**
+ * Mapping of primary biological category slugs to underlying database records.
+ */
+export const CATEGORY_SLUG_MAP: Record<string, string> = {
+  "structure-prediction": "structural-hypotheses-experiments",
+  "variant-effect": "protein-variant-effect-prediction",
+  "protein-design": "de-novo-binder-design",
+  "transcriptomics": "genetic-perturbation-response",
+  "genomic-grammar": "plant-promoter-reporters",
+};
+
+/**
+ * Resolves a URL slug to its target use-case record ID/slug.
+ */
+export function resolveUseCaseTargetSlug(slug: string): string {
+  return CATEGORY_SLUG_MAP[slug] ?? slug;
+}
+

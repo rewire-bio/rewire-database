@@ -17,14 +17,21 @@ describe("chunked sitemap", () => {
     const urls: string[] = [];
     for (let file = 0; file < chunks; file++) {
       const part = checkSitemap(sitemapChunkXml(entries, file)!);
-      expect(part.failures.filter((failure) => !failure.includes("lastmod"))).toEqual([]);
+      expect(part.failures).toEqual([]);
       expect(part.urls.size).toBeLessThanOrEqual(SITEMAP_CHUNK_SIZE);
       urls.push(...part.urls);
     }
     expect(urls).toEqual(entries.map((entry) => origin + entry.path));
     expect(new Set(urls).size).toBe(urls.length);
     expect(urls).toContain(`${origin}/use-cases/`);
-    expect(urls.some((url) => url.startsWith(`${origin}/use-cases/`) && url !== `${origin}/use-cases/`)).toBe(true);
+    expect(urls).toContain(`${origin}/use-cases/structure-prediction/`);
+    expect(urls).toContain(`${origin}/use-cases/variant-effect/`);
+    expect(urls).toContain(`${origin}/use-cases/protein-design/`);
+    expect(urls).toContain(`${origin}/use-cases/transcriptomics/`);
+    expect(urls).toContain(`${origin}/use-cases/genomic-grammar/`);
+    for (const entry of entries) {
+      expect(entry.lastModified).toBe("2026-11-02");
+    }
   });
   it("has no file past the last chunk and escapes XML", () => {
     expect(sitemapChunkXml([{ path: "/" }], 1)).toBeNull();

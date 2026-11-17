@@ -16,6 +16,7 @@ import { resultPageTitle } from "../lib/result-labels";
 import type { ResultRecordPage } from "../lib/record-pages";
 import { getResearch } from "../shared/omics/research";
 import { contestedPaths } from "../lib/discrepancies";
+import { PRIMARY_USE_CASE_PATHS } from "../lib/sitemap";
 import { downloadLocations, downloadUrls } from "./download-locations.mjs";
 import { checkPageMetadata, checkSitemap, checkSitemapIndex, checkSocialImage } from "./seo/check-page-metadata";
 import { utilityPageMetadataContracts } from "./seo/utility-page-metadata";
@@ -233,7 +234,9 @@ function useCaseSlugs(catalogue: CatalogueSnapshot): string[] {
 /** The sitemap lists exactly the indexable canonical pages of the pinned release. */
 function checkSitemapInventory(catalogue: CatalogueSnapshot, urls: Set<string>) {
   const expected = new Set([
-    "/", "/runs/mfass-v2/", "/evidence/", "/agents/", "/coverage/", "/updates/", "/use-cases/", "/investigations/",
+    "/", "/runs/mfass-v2/", "/evidence/", "/agents/", "/coverage/", "/updates/", "/use-cases/",
+    ...PRIMARY_USE_CASE_PATHS,
+    "/investigations/",
     ...getResearch(catalogue).investigations.map((report) => `/investigations/${report.id}/`),
     "/contested/", ...contestedPaths(),
     ...useCaseSlugs(catalogue).map((slug) => `/use-cases/${slug}/`),

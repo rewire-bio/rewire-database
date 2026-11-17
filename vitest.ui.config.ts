@@ -7,6 +7,8 @@ export default mergeConfig(base, defineConfig({
   test: {
     coverage: {
       provider: "v8",
+      clean: false,
+      processingConcurrency: 1,
       all: true,
       reportOnFailure: true,
       include: [

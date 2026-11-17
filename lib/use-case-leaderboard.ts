@@ -928,3 +928,43 @@ export function getUseCaseLeaderboard(
     total_models: filteredRows.length,
   };
 }
+
+/**
+ * Mapping of leaderboard model IDs to their verified /database/model/<id>/ routes
+ * in the pinned release catalogue.
+ */
+export const CATALOGUE_MODEL_HREFS: Record<string, string> = {
+  "alphafold-3": "/database/model/discovery-model-alphafold-3/",
+  "boltz-1": "/database/model/discovery-model-boltz/",
+  "chai-1": "/database/model/catalog-model-chai-1/",
+  "esmfold": "/database/model/catalog-model-esmfold/",
+  "esm-2-3b": "/database/model/catalog-model-esm-2/",
+  "esm-2-650m": "/database/model/catalog-model-esm-2/",
+  "tranception": "/database/model/uc20260930-model-tranception/",
+  "eve": "/database/model/uc20260930-model-eve/",
+  "protgpt2": "/database/model/uc20260930-model-protgpt2/",
+  "chroma": "/database/model/lit-structure-20261011-scaffoldlab-model-chroma/",
+  "rfdiffusion": "/database/model/discovery-model-rfdiffusion/",
+  "proteinmpnn": "/database/model/catalog-model-proteinmpnn/",
+  "gears": "/database/model/catalog-model-gears/",
+  "scgpt": "/database/model/catalog-model-scgpt/",
+  "geneformer": "/database/model/catalog-model-geneformer/",
+  "cpa": "/database/model/perturbation-ahlmann-20261011-model-cpa/",
+  "enformer": "/database/model/regulatory-variant-20261009-model-enformer/",
+  "borzoi": "/database/model/regulatory-variant-20261009-model-borzoi/",
+  "alphagenome": "/database/model/catalog-model-alphagenome/",
+  "evo-2": "/database/model/catalog-model-evo-2/",
+  "dnabert-2": "/database/model/catalog-model-dnabert-2/",
+};
+
+/**
+ * Resolves a leaderboard row to a valid canonical href in the catalogue.
+ */
+export function resolveLeaderboardModelHref(
+  row: Pick<BiologicalModelRankingRow, "model_id" | "model_name" | "is_baseline">
+): string {
+  const direct = CATALOGUE_MODEL_HREFS[row.model_id];
+  if (direct) return direct;
+  if (row.is_baseline) return "/use-cases/";
+  return `/?kind=model&q=${encodeURIComponent(row.model_name)}#browse`;
+}

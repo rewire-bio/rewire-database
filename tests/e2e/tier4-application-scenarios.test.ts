@@ -29,7 +29,7 @@ describe("Tier 4: Real-World Application Scenarios (S1 - S5)", () => {
   it("Scenario S1: Structural Biologist Benchmarking Flow (F1, F2, F3, F4, F5, F6, F7, F9)", async () => {
     // 1. Biologist begins on Homepage with use-case selector (F9)
     const homepageHtml = renderToStaticMarkup(React.createElement(BenchmarksPage));
-    expect(homepageHtml).toMatch(/Artificial Analysis of biological models|biological model benchmark database/i);
+    expect(homepageHtml).toMatch(/Independent Benchmarks for Biological Models|biological model benchmark database/i);
     expect(homepageHtml).toContain("/use-cases/structure-prediction");
 
     // 2. Evaluates Structure Prediction ranking data (F2, F3)

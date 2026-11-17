@@ -8,6 +8,7 @@ import {
   getUseCaseLeaderboard,
   normalizeCategory,
   categoryForSlug,
+  resolveLeaderboardModelHref,
   type BiologicalModelRankingRow,
   type StudyCitation,
   type BiologicalUseCaseCategory,
@@ -462,7 +463,12 @@ export function UnifiedLeaderboard({
       )}
 
       {/* Main Single-View Leaderboard Table */}
-      <div className={styles.tableWrap}>
+      <div
+        className={styles.tableWrap}
+        tabIndex={0}
+        role="region"
+        aria-label={`${categoryConfig.title} Leaderboard`}
+      >
         <table className={styles.table} aria-label={`${categoryConfig.title} Leaderboard`}>
           <thead>
             <tr>
@@ -724,7 +730,8 @@ export function UnifiedLeaderboard({
                       <td className={styles.modelCell}>
                         <div className={styles.modelNameWrap}>
                           <Link
-                            href={`/database/record/${row.source_record_id || row.model_id}`}
+                            href={resolveLeaderboardModelHref(row)}
+                            prefetch={false}
                             className={styles.modelLink}
                             onClick={(e) => e.stopPropagation()}
                           >
@@ -906,7 +913,8 @@ export function UnifiedLeaderboard({
                                 <dt>Source Record:</dt>
                                 <dd>
                                   <Link
-                                    href={`/database/record/${row.source_record_id}`}
+                                    href="/evidence/"
+                                    prefetch={false}
                                     className={styles.provenanceLink}
                                   >
                                     {row.source_record_id}

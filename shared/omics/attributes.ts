@@ -77,6 +77,15 @@ export const coverageSchema = z
   })
   .strict();
 
+/** Review is automated: every pass is a tool and no value is read off a rendered page
+ * (docs/record-contract.md, "Review is automated"; determination 6 of 2026-11-17). The
+ * concept stays in data/vocab/review-method.ttl for the reviews already stored under it, so
+ * the refusal is dated on the review's own date and no stored record fails. `method` holds
+ * keys of the review-method scheme; the reviewer is a separate field over a separate scheme
+ * (data/vocab/agent.ttl), and data/ontology/mapping.json is where each is bound. */
+export const renderedSourceVisualCheck = "rendered-source-visual-check";
+export const visualCheckRetiredAfter = "2026-11-17";
+
 export const reviewSchema = z
   .object({
     method: z.array(text).min(1),
@@ -93,7 +102,18 @@ export const reviewSchema = z
     artifact_sha256: z.string().regex(/^[a-f0-9]{64}$/).optional(),
     retrieval_url: z.string().url().optional(),
   })
-  .strict();
+  .strict()
+  .superRefine((r, ctx) => {
+    const reviewed = r.date ?? r.reviewed_at?.slice(0, 10);
+    if (r.method.includes(renderedSourceVisualCheck) && reviewed !== undefined && reviewed > visualCheckRetiredAfter)
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message:
+          `${renderedSourceVisualCheck} is historical and a review dated after ${visualCheckRetiredAfter} may not carry it. ` +
+          "Record what the tool did: pdf-text-parse or deterministic-table-parse for a parsed value, " +
+          "independent-cell-check for a second check, and name the technique in method_note.",
+      });
+  });
 
 const repoPath = z.string().regex(/^(?!\/)(?!.*\.\.)[\w./-]+$/, "Expected a repository-relative path");
 
@@ -163,6 +183,8 @@ export const attributeTypes = {
   review: reviewSchema,
   "reported-population": reportedPopulationSchema,
   derivation: derivationSchema,
+  // Collection depth tier (docs/tiers.md): 1, 2 or 3.
+  "depth-tier": z.union([z.literal(1), z.literal(2), z.literal(3)]),
 } as const;
 export type AttributeType = keyof typeof attributeTypes | `concept:${string}` | `concepts:${string}`;
 

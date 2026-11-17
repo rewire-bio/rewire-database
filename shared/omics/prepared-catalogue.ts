@@ -51,7 +51,7 @@ const { DatabaseSync } = process.getBuiltinModule("node:sqlite");
  * "party" rows in discrepancy_results for two-study conflicts (rules version 4).
  * The reader also opens 2.x files, so a website can switch between releases of
  * either form. */
-export const PREPARED_CONTRACT_VERSION = "3.4";
+export const PREPARED_CONTRACT_VERSION = "3.5";
 const READABLE_CONTRACT_MAJORS = ["2", "3"];
 
 /**

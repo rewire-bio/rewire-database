@@ -1,10 +1,9 @@
 import React from "react";
 import { describe, expect, it, vi } from "vitest";
 
-// These tests cover the leaderboard UI that is hidden until its rows come from the release (#218, #229).
-vi.mock("@/lib/ranking-visibility", () => ({ SHOW_UNSOURCED_RANKINGS: true }));
 import { renderToStaticMarkup } from "react-dom/server";
 import BenchmarksPage from "@/app/page";
+import { homeLeaderboards } from "@/lib/release-leaderboard";
 
 vi.mock("next/link", () => ({
   default: ({
@@ -32,7 +31,8 @@ describe("Homepage Redesign (TC-HP-01 to TC-HP-08)", () => {
     expect(html).toContain("Which biological model works best for your task?");
     expect(html).toContain("Per-Use-Case Rankings");
     expect(html).toContain("Protocol Baselines");
-    expect(html).toContain("Pareto Efficiency");
+    expect(html).toContain("Independence and Coverage");
+    expect(html).not.toContain("noise ceilings");
     expect(html).toContain("Source Evidence");
   });
 
@@ -51,11 +51,13 @@ describe("Homepage Redesign (TC-HP-01 to TC-HP-08)", () => {
     const html = renderToStaticMarkup(<BenchmarksPage />);
 
     expect(html).toMatch(/<section[^>]*class="[^"]*headline-leaderboard[^"]*"/);
-    expect(html).toContain("Biological Foundation Model Rankings");
-    // Should render table markup with biological model rows
+    expect(html).toContain("Biological Model Rankings");
+    // The table shows the release's rows for the first lead use case that has a ranking.
+    const [first] = homeLeaderboards();
     expect(html).toContain("<table");
-    expect(html).toContain("Capability Index");
-    expect(html).toContain("AlphaFold 3");
+    expect(html).toContain(first.rows[0].model_name.replace(/&/g, "&amp;"));
+    expect(html).toContain(`/database/result/${encodeURIComponent(first.rows[0].source_record_id)}/`);
+    expect(html).not.toContain("Capability Index");
   });
 
   it("TC-HP-04: Retains backward-compatible 'Ways to start' navigation", () => {

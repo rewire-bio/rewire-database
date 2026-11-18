@@ -6,10 +6,8 @@
  * Location: lib/llm-discoverability.ts
  */
 
-import {
-  getUseCaseLeaderboard,
-  type BiologicalUseCaseCategory,
-} from "./use-case-leaderboard";
+import { protocolLabel, REVIEW_STATUS_LABELS, type LeaderboardResult } from "./use-case-leaderboard";
+import { leadStatement } from "./geo-takeaway";
 import {
   SITE,
   pluginCommands,
@@ -20,55 +18,42 @@ import {
   discrepancyApi,
   discrepancyQueries,
 } from "./agent-connect";
-import { SHOW_UNSOURCED_RANKINGS } from "./ranking-visibility";
 
-/**
- * Formats operational latency cleanly.
- */
-function formatLatency(ms: number | null | undefined): string {
-  if (ms === null || ms === undefined || !Number.isFinite(ms)) return "—";
-  if (ms < 1) return `${ms.toFixed(1)} ms`;
-  if (ms >= 1000) return `${(ms / 1000).toFixed(1)} s`;
-  return `${Math.round(ms)} ms`;
-}
+const ranked = (boards: readonly LeaderboardResult[]) => boards.filter((b) => b.protocol && b.rows.length);
+const resultUrl = (id: string) => `${SITE}/database/result/${encodeURIComponent(id)}/`;
+const cell = (text: string) => text.replace(/\|/g, "\\|").replace(/\s+/g, " ");
 
 /**
  * 1. Generates concise index conforming strictly to llmstxt.org specification.
  */
-export function generateLlmsTxt(releaseId: string): string {
+export function generateLlmsTxt(releaseId: string, boards: readonly LeaderboardResult[] = []): string {
+  const leaderboards = ranked(boards);
   return `# Biological model benchmark database
 
-> Reviewed published results for DNA, RNA, protein and cell models, with sources, review status and run recipes. ${SHOW_UNSOURCED_RANKINGS ? "The evidence for each use case is re-checked against new publications every month." : "Every figure links to the published source it was taken from. Use-case rankings are being rebuilt from the evidence store and are not published yet."}
+> Reviewed published results for DNA, RNA, protein and cell models, with sources, review status and run recipes. Every figure links to the published source it was taken from. Each use case is ranked on one protocol at a time, never across protocols.
 
 Release ${releaseId}. Site: ${SITE}/
 
-${SHOW_UNSOURCED_RANKINGS ? `## Core Leaderboards
-- [Zero-Shot Variant Effect Prediction](${SITE}/use-cases/protein-variant-effect-prediction): Top biological models (PoET-2, ESM-2, AlphaMissense) ranked by Spearman rho against BLOSUM62 baseline.
-- [Protein Structure Prediction](${SITE}/use-cases/structural-hypotheses-experiments): Multimer and monomer folding architectures (AlphaFold 3, Boltz-1, ESMFold) evaluated on lDDT.
-- [De Novo Protein Design](${SITE}/use-cases/de-novo-binder-design): Generative sequence-structure models (Chroma, RFdiffusion, ProteinMPNN) ranked by self-consistency RMSD (scRMSD).
-- [Transcriptomics & Perturbation Response](${SITE}/use-cases/genetic-perturbation-response): Single-cell perturbation prediction models (GEARS, scGPT, Geneformer) evaluated on Pearson correlation.
-- [Genomic Regulatory Grammar](${SITE}/use-cases/plant-promoter-reporters): Cis-regulatory sequence models (Enformer, Borzoi, AlphaGenome) evaluated on expression AUROC.
+${leaderboards.length ? `## Use-case leaderboards
+${leaderboards.map((b) => `- [${b.use_case_title}](${SITE}${b.use_case_href}): ${b.rows.length} tools ranked on ${protocolLabel(b.protocol!)} (${b.protocol!.metric_label}, ${b.protocol!.direction} is better)${b.protocol!.relevance === "proxy" ? ", a proxy protocol" : ""}.`).join("\n")}
 
 ## Full Knowledge Base
-- [Full Benchmark Knowledge Base](${SITE}/llms-full.txt): Complete multi-column ranking tables, four-tier protocol baseline panels, and operational hardware telemetry.
+- [Full Benchmark Knowledge Base](${SITE}/llms-full.txt): every use-case ranking table, with each value's result record, source, review status and origin.
 
-` : `## Use cases
+` : ""}## Use cases
 - [All use cases](${SITE}/use-cases/): each page lists the published comparisons for that use case, with their sources.
 - [Contested results](${SITE}/contested/): where published studies disagree.
 
-`}## Developer & Autonomous Agent Hub
+## Developer & Autonomous Agent Hub
 - [Autonomous Agent Hub](${SITE}/agents.md): Machine-readable query schemas, operational constraint filters, and tRPC/MCP protocols for scientific agents.
 - [Release Manifest](${SITE}/release-manifest.json): Pinned SQLite release verification, SHA-256 checksums, and dataset hashes.
 - [Knowledge Graph Manifest](${SITE}/agents/kg-manifest.json): RDF knowledge graph bundle with discrepancy verification queries.
 
-${SHOW_UNSOURCED_RANKINGS ? `## Key Benchmark Quick Facts
-- Variant Effect: PoET-2 ranks #1 (Spearman ρ = 0.612, +42.3% over BLOSUM62, 82.7% of assay ceiling) at 42 ms/seq on NVIDIA A100 (16GB VRAM, Apache-2.0).
-- Structure Prediction: AlphaFold 3 ranks #1 (lDDT = 89.5, +46.7% over homology modeling, 96.5% of coordinate ceiling) at 14.2 s/target (80GB VRAM, Non-commercial).
-- Protein Design: Chroma ranks #1 (scRMSD = 1.20 Å, 73.3% lower divergence than RosettaDesign, 98.2% of ceiling) at 3.5 s/target (24GB VRAM, Open source).
-- Transcriptomics: GEARS ranks #1 (Pearson r = 0.790, +88.1% over linear baseline, 96.1% of replicate ceiling) at 12 ms/perturbation (8GB VRAM, BSD-3-Clause).
-- Genomic Grammar: Enformer ranks #1 (AUROC = 0.890, +27.1% over 6-mer PWM baseline, 88.6% of replicate ceiling) at 240 ms/sequence (24GB VRAM, Apache-2.0).
+${leaderboards.length ? `## Key Benchmark Quick Facts
+Each line is the best reported value on the protocol a use case is ranked on, with the result record it comes from.
+${leaderboards.map((b) => `- ${b.use_case_title}: ${leadStatement(b)} (${resultUrl(b.rows[0].source_record_id)}).`).join("\n")}
 
-` : ``}## Connect your agent
+` : ""}## Connect your agent
 
 Claude Code, one plugin with the benchmark skill and the knowledge-graph MCP:
 
@@ -117,27 +102,10 @@ ${discrepancyQueries.map((q) => `  - ${q.name}: ${q.params}. Returns ${q.returns
 /**
  * 2. Generates companion full knowledge base (/llms-full.txt) with complete ranking tables.
  */
-export function generateLlmsFullText(releaseId: string): string {
-  if (!SHOW_UNSOURCED_RANKINGS) {
-    return `# Rewire.bio Biological AI Benchmark Database: Full Knowledge Base
+export function generateLlmsFullText(releaseId: string, boards: readonly LeaderboardResult[] = []): string {
+  let out = `# Rewire.bio Biological AI Benchmark Database: Full Knowledge Base
 
-Release: ${releaseId}
-Site: ${SITE}/
-
-Use-case ranking tables are being rebuilt from the evidence store and are not published yet. Until then, each use-case page at ${SITE}/use-cases/ lists the published comparisons with their sources, and the release is downloadable from ${SITE}/release-manifest.json.
-`;
-  }
-  const categories: BiologicalUseCaseCategory[] = [
-    "structure_prediction",
-    "variant_effect",
-    "protein_design",
-    "transcriptomics",
-    "genomic_grammar",
-  ];
-
-  let out = `# Rewire.bio Biological AI Benchmark Database — Companion Full Knowledge Base
-
-> Complete multi-column ranking tables, four-tier protocol baseline reference panels, and operational hardware telemetry across biological foundation model benchmarks.
+> One ranking table per use case, built from the published results in this release. Each use case is ranked on one protocol (one benchmark and metric); values are never compared across protocols. Every value links to its result record.
 
 Release: ${releaseId}
 Site: ${SITE}/
@@ -146,62 +114,37 @@ Specification: https://llmstxt.org
 ---
 `;
 
-  for (const cat of categories) {
-    const lb = getUseCaseLeaderboard(undefined, { category: cat });
-
-    out += `\n## Use Case: ${lb.use_case_title}\n`;
-    out += `Primary Metric: ${lb.primary_metric_name} (${lb.metric_direction === "higher" ? "Higher is better" : "Lower is better"})\n\n`;
-
-    out += `### Protocol Baselines & Biological Noise Floor\n`;
-    out += `- **Null Baseline**: ${lb.baselines.null_baseline.name} = ${lb.baselines.null_baseline.value} (${lb.baselines.null_baseline.description})\n`;
-    out += `- **Conventional Pre-ML Baseline**: ${lb.baselines.conventional_baseline.name} = ${lb.baselines.conventional_baseline.value} (${lb.baselines.conventional_baseline.description})\n`;
-    if (lb.baselines.experimental_ceiling) {
-      out += `- **Experimental Assay Ceiling**: ${lb.baselines.experimental_ceiling.name} = ${lb.baselines.experimental_ceiling.value} (${lb.baselines.experimental_ceiling.assay_replicate_noise})\n`;
+  for (const board of boards) {
+    out += `\n## Use Case: ${board.use_case_title}\n`;
+    out += `Page: ${SITE}${board.use_case_href}\n`;
+    if (!board.protocol || !board.rows.length) {
+      out += `\nNo ranking. ${board.empty_reason ?? ""}\n\n---\n`;
+      continue;
     }
-    out += `\n### Complete Model Rankings\n\n`;
-
-    out += `| Rank | Model Name | Creator | Capability Index (0-100) | ${lb.primary_metric_name} | vs. Conventional | % of Ceiling | Pareto Optimal | Latency | Min VRAM | License | Open Weights |\n`;
-    out += `| :--- | :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :--- | :---: |\n`;
-
-    let rank = 1;
-    for (const row of lb.rows) {
-      const rankStr = row.is_baseline ? "Baseline" : String(rank++);
-      const valStr = row.raw_metric_value.toFixed(3);
-      const idxStr = row.use_case_index_score.toFixed(1);
-      const sign = row.margin_over_conventional > 0 ? "+" : "";
-      const marginStr = `${sign}${row.margin_over_conventional.toFixed(1)}%`;
-      const ceilStr =
-        row.fraction_of_biological_ceiling !== undefined &&
-        row.fraction_of_biological_ceiling !== null
-          ? `${row.fraction_of_biological_ceiling.toFixed(1)}%`
-          : "N/A";
-      const paretoStr = row.pareto_optimal ? "Yes" : "No";
-      const latencyStr = formatLatency(row.telemetry.inference_latency_ms);
-      const vramStr = row.telemetry.min_vram_gb !== null && row.telemetry.min_vram_gb !== undefined ? `${row.telemetry.min_vram_gb} GB` : "0 GB";
-      const openStr = row.telemetry.open_weights ? "Yes" : "No";
-
-      out += `| ${rankStr} | ${row.model_name} | ${row.creator} | ${idxStr} | ${valStr} | ${marginStr} | ${ceilStr} | ${paretoStr} | ${latencyStr} | ${vramStr} | ${row.telemetry.license || "Standard"} | ${openStr} |\n`;
+    const protocol = board.protocol;
+    out += `Protocol: ${protocolLabel(protocol)}${protocol.relevance === "proxy" ? " (judged a proxy for this use case)" : ""}\n`;
+    out += `Metric: ${protocol.metric_label} (${protocol.direction === "higher" ? "higher is better" : "lower is better"})\n`;
+    out += board.baseline
+      ? `Baseline on this protocol: ${board.baseline.name} = ${board.baseline.display_value} (${resultUrl(board.baseline.source_record_id)})\n`
+      : `Baseline on this protocol: none scored\n`;
+    out += `\n| Rank | Model | ${protocol.metric_label} |${board.baseline ? " vs. baseline |" : ""} Review | Origin | Coverage | Open discrepancies | Source | Result record |\n`;
+    out += `| :--- | :--- | :---: |${board.baseline ? " :---: |" : ""} :--- | :--- | :---: | :---: | :--- | :--- |\n`;
+    for (const row of board.rows) {
+      const margin = row.margin_over_conventional === null ? "" : `${row.margin_over_conventional > 0 ? "+" : ""}${row.margin_over_conventional.toFixed(1)}%`;
+      out += `| ${row.rank} | ${cell(row.model_name + (row.model_detail ? ` (${row.model_detail})` : ""))}${row.is_baseline ? " [baseline]" : ""} | ${cell(row.display_value)} |${board.baseline ? ` ${margin} |` : ""} ${REVIEW_STATUS_LABELS[row.reviewed_status]} | ${row.origin ?? "unreported"} | ${row.coverage.evaluated}/${row.coverage.relevant} | ${row.open_findings.length} | ${cell(row.source?.name ?? "Not recorded")} | ${resultUrl(row.source_record_id)} |\n`;
     }
-
+    if (board.unranked.length)
+      out += `\nNot ranked (evaluated elsewhere in this use case, not on this protocol): ${board.unranked.map((m) => m.model_name).join(", ")}.\n`;
     out += `\n---\n`;
   }
 
-  out += `\n## Methodology & Mathematical Definitions
+  out += `\n## Definitions
 
-1. **Capability Index (0-100 Normalized)**:
-   - For values below conventional baseline:
-     $Index = 50 \\times \\frac{v - B_{\\text{null}}}{B_{\\text{conv}} - B_{\\text{null}}}$
-   - For values exceeding conventional baseline:
-     $Index = 50 + 50 \\times \\frac{v - B_{\\text{conv}}}{C_{\\text{exp}} - B_{\\text{conv}}}$
-
-2. **Direction-Adjusted Conventional Margin**:
-   $\\Delta_{\\text{conv}} = d \\times \\frac{v - B_{\\text{conv}}}{B_{\\text{conv}}} \\times 100\\%$
-
-3. **Assay Noise Ceiling Signal Capture**:
-   $F_{\\text{ceiling}} = \\frac{v - B_{\\text{null}}}{C_{\\text{exp}} - B_{\\text{null}}} \\times 100\\%$
-
-4. **2D Pareto Frontier**:
-   A model $m$ is Pareto optimal if no other evaluated model $m'$ has strictly greater Capability Index at equal or lower inference latency and cost.
+1. **Rank**: competition rank (1, 2, 2, 4) by the protocol's metric in its stated direction, among tools with a value on that protocol.
+2. **Margin over baseline**: shown only when the same protocol scores exactly one of the use case's baseline methods. $\\Delta = d \\times \\frac{v - B}{|B|} \\times 100\\%$, with $d = 1$ when higher is better and $-1$ when lower is better.
+3. **Review**: Reproduced only when a run receipt in the release is cited by the result or its evaluation; Source-checked when the published value was checked against its source.
+4. **Origin**: who produced the result (author_reported means the tool's developers).
+5. **Coverage**: comparisons in the use case that score the tool, out of all the use case's comparisons.
 `;
 
   return out;
@@ -210,7 +153,8 @@ Specification: https://llmstxt.org
 /**
  * 3. Generates autonomous scientific agent specifications (/agents.md).
  */
-export function generateAgentsMd(releaseId: string): string {
+export function generateAgentsMd(releaseId: string, boards: readonly LeaderboardResult[] = []): string {
+  const leaderboards = ranked(boards);
   return `# Rewire.bio Autonomous Scientific Agent Protocol Specification
 
 > Machine-readable query schemas, operational constraint filters, and tRPC/MCP protocols for autonomous bioinformatic agents.
@@ -219,30 +163,21 @@ Release: ${releaseId}
 Site: ${SITE}/
 
 ## 1. Agent Operational Mission
-${SHOW_UNSOURCED_RANKINGS ? "Rewire.bio is the independent decision and benchmark query platform for biological AI models. Autonomous bioinformatic agents use this endpoint to retrieve empirically validated capability rankings across biological tasks, filtered by hardware constraints and Pareto efficiency." : "Rewire.bio is an independent database of published benchmark results for biological AI models. Agents use it to find which results exist for a use case, where they come from, and where studies disagree. Use-case rankings are being rebuilt from the evidence store and are not published yet."}
+Rewire.bio is an independent database of published benchmark results for biological AI models. Agents use it to find which results exist for a use case, where they come from, how a use case's tools rank on one protocol, and where studies disagree.
 
-## 2. Biological Use-Case Categories
-Use cases are identified by standardized slugs:
-- \`variant_effect\` / \`protein-variant-effect-prediction\`: Zero-Shot Mutation Fitness Prediction (Metric: Spearman Rho)
-- \`structure_prediction\` / \`structural-hypotheses-experiments\`: 3D Protein Structure Prediction (Metric: lDDT)
-- \`protein_design\` / \`de-novo-binder-design\`: De Novo Binder Design (Metric: scRMSD, lower is better)
-- \`transcriptomics\` / \`genetic-perturbation-response\`: Single-Cell Perturbation Response (Metric: Pearson r)
-- \`genomic_grammar\` / \`plant-promoter-reporters\`: Regulatory Sequence Grammar (Metric: AUROC)
+## 2. Use-case leaderboards
+Each use case is ranked on one protocol. Use cases are identified by slug:
+${leaderboards.length ? leaderboards.map((b) => `- \`${b.use_case_slug}\`: ${protocolLabel(b.protocol!)} (Metric: ${b.protocol!.metric_label}, ${b.protocol!.direction} is better), ${b.rows.length} tools ranked`).join("\n") : "- No use case has a ranking in this release."}
 
-${SHOW_UNSOURCED_RANKINGS ? `## 3. Decision Framework for AI Agents
-When selecting models for downstream bioinformatic pipelines:
-1. **High-Throughput In Silico Mutagenesis ($10^6$ variants)**:
-   - Filter criteria: \`inference_latency_ms <= 50\` or \`throughput_items_per_sec >= 20\`
-   - Require: \`pareto_optimal === true\`
-   - Recommended: PoET-2 (42 ms/seq, 16GB VRAM, Apache-2.0)
-2. **Workstation / Consumer GPU Deployment ($\\le 24$GB VRAM)**:
-   - Filter criteria: \`min_vram_gb <= 24\` and \`open_weights === true\`
-   - Recommended: Boltz-1 (lDDT 88.2, 16GB VRAM, MIT) or ESM-2 3B (24GB VRAM, MIT)
-3. **Frontier Accuracy / Unconstrained Compute**:
-   - Filter criteria: Sort by \`use_case_index_score\` descending
-   - Recommended: AlphaFold 3 (lDDT 89.5, 80GB VRAM)
+## 3. Decision Framework for AI Agents
+When choosing a model for a use case:
+1. Read the ranking for the use case and the protocol it is ranked on. A rank holds only for that protocol.
+2. Prefer rows where \`independent === true\`: the result comes from a study other than the tool's developers, or from a Rewire run.
+3. Check \`open_findings\`: a non-empty list means another study disagrees with a result behind the row. Follow the link before relying on it.
+4. Check \`coverage\`: a tool scored on one of many comparisons has less evidence behind its rank.
+5. Hardware fields are filled only when the model record carries them; null means not recorded, not zero.
 
-` : ``}## 4. Machine-Readable Schema Contracts (JSON Schema)
+## 4. Machine-Readable Schema Contracts (JSON Schema)
 
 ### BiologicalModelRankingRow
 \`\`\`json
@@ -253,25 +188,38 @@ When selecting models for downstream bioinformatic pipelines:
   "required": [
     "model_id",
     "model_name",
-    "creator",
-    "category",
+    "model_href",
+    "use_case_slug",
     "primary_metric_name",
     "raw_metric_value",
-    "use_case_index_score",
-    "margin_over_conventional",
-    "telemetry",
-    "pareto_optimal"
+    "display_value",
+    "rank",
+    "reviewed_status",
+    "independent",
+    "source_record_id",
+    "coverage",
+    "open_findings",
+    "telemetry"
   ],
   "properties": {
-    "model_id": { "type": "string" },
+    "model_id": { "type": "string", "description": "Configuration record id" },
     "model_name": { "type": "string" },
-    "creator": { "type": "string" },
-    "category": { "type": "string" },
+    "model_href": { "type": "string" },
+    "parent_id": { "type": ["string", "null"] },
+    "use_case_slug": { "type": "string" },
     "primary_metric_name": { "type": "string" },
-    "raw_metric_value": { "type": "number" },
-    "use_case_index_score": { "type": "number", "minimum": 0, "maximum": 100 },
-    "margin_over_conventional": { "type": "number" },
-    "fraction_of_biological_ceiling": { "type": "number" },
+    "raw_metric_value": { "type": ["number", "null"] },
+    "display_value": { "type": "string" },
+    "rank": { "type": ["integer", "null"], "minimum": 1 },
+    "margin_over_conventional": { "type": ["number", "null"], "description": "Percent over the one baseline scored on the same protocol" },
+    "reviewed_status": { "enum": ["reproduced", "source_checked", "author_reported"] },
+    "origin": { "type": ["string", "null"] },
+    "independent": { "type": "boolean" },
+    "source_record_id": { "type": "string", "description": "Result record id in the release" },
+    "source": { "type": ["object", "null"] },
+    "coverage": { "type": "object", "properties": { "evaluated": { "type": "integer" }, "relevant": { "type": "integer" } } },
+    "open_findings": { "type": "array" },
+    "is_baseline": { "type": "boolean" },
     "pareto_optimal": { "type": "boolean" },
     "telemetry": {
       "type": "object",
@@ -279,10 +227,12 @@ When selecting models for downstream bioinformatic pipelines:
         "inference_latency_ms": { "type": ["number", "null"] },
         "throughput_items_per_sec": { "type": ["number", "null"] },
         "min_vram_gb": { "type": ["number", "null"] },
-        "parameter_count_millions": { "type": ["number", "null"] },
         "estimated_cost_per_1k_evals_usd": { "type": ["number", "null"] },
-        "open_weights": { "type": "boolean" },
-        "license": { "type": "string" }
+        "parameters": { "type": ["string", "null"] },
+        "context_window": { "type": ["string", "null"] },
+        "license": { "type": ["string", "null"] },
+        "access": { "type": ["string", "null"] },
+        "open_weights": { "type": ["boolean", "null"] }
       }
     }
   }

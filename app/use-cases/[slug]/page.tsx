@@ -16,8 +16,8 @@ import { evidenceCheckedLabel, evidenceCountParts, summariseUseCaseEvidence, sum
 import { buildCatalogue } from "@/lib/catalogue-build";
 import { contestedResults, contestingFindings } from "@/lib/discrepancies";
 import { baselineComparisons, buildComparisons, heldJudgements, methodTypeLabel, toolsCompared } from "@/lib/use-case-comparisons";
-import { getUseCaseLeaderboard } from "@/lib/use-case-leaderboard";
-import { SHOW_UNSOURCED_RANKINGS } from "@/lib/ranking-visibility";
+import { leaderboardForDetail } from "@/lib/release-leaderboard";
+import { UnifiedLeaderboard } from "@/components/catalogue/UnifiedLeaderboard";
 import { safeJsonLd } from "@/lib/catalogue-sharing";
 import {
   generateLeaderboardItemListJsonLd,
@@ -57,7 +57,12 @@ export default function UseCasePage({ params }: { params: Params }) {
   const clinical = entry.contexts.includes("clinical_research");
   const summary = summariseUseCaseEvidence(detail.mappings, entry.evidence_gaps.length);
   const comparisons = buildComparisons(detail.mappings);
-  const orderedComparisons = [...comparisons].sort((a, b) => Number(b.rows.length > 1) - Number(a.rows.length > 1));
+  // One protocol of this use case, ranked from the same comparisons (lib/use-case-ranking.ts).
+  const leaderboard = leaderboardForDetail(detail, comparisons);
+  // The ranked comparison leads the comparisons section, so the page names one primary protocol.
+  const rankedId = leaderboard.protocol?.comparison_id;
+  const orderedComparisons = [...comparisons].sort((a, b) =>
+    Number(b.id === rankedId) - Number(a.id === rankedId) || Number(b.rows.length > 1) - Number(a.rows.length > 1));
   const held = heldJudgements(detail.mappings);
   const { query } = buildCatalogue();
   const contested = contestedResults(comparisons.flatMap((c) => c.rows.flatMap((r) => r.resultIds)));
@@ -73,6 +78,7 @@ export default function UseCasePage({ params }: { params: Params }) {
   const evidenceSummary = (entry as typeof entry & { summary?: { text: string; status: "reviewed" | "draft" } }).summary;
   const sections = [
     ...(evidenceSummary ? [{ id: "summary", label: "What the evidence shows" }] : []),
+    ...(leaderboard.rows.length ? [{ id: "ranking", label: "Ranking" }] : []),
     ...(baseline ? [{ id: "baseline", label: "Baseline" }] : []),
     ...(tools.length ? [{ id: "tools", label: "Tools compared" }] : []),
     { id: "evidence", label: "Comparisons" },
@@ -94,7 +100,6 @@ export default function UseCasePage({ params }: { params: Params }) {
   </dl>;
   const heading = (id: string) => sections.find((section) => section.id === id)!.label;
 
-  const leaderboard = getUseCaseLeaderboard(undefined, { use_case_slug: entry.slug });
   const itemListJsonLd = generateLeaderboardItemListJsonLd({
     name: `${entry.title} - Biological Model Rankings`,
     description: entry.question,
@@ -110,7 +115,7 @@ export default function UseCasePage({ params }: { params: Params }) {
     name: `${entry.title} Benchmark Dataset Evidence`,
     description: `Benchmark datasets and evaluated protocols for ${entry.title}. ${entry.question}`,
     url: `https://benchmarks.rewirebio.io${path}`,
-    variableMeasured: (SHOW_UNSOURCED_RANKINGS && leaderboard.primary_metric_name) || entry.output,
+    variableMeasured: leaderboard.protocol?.metric_label || entry.output,
     creator: {
       name: "rewirebio.io / Community Benchmark Contributors",
       url: "https://benchmarks.rewirebio.io",
@@ -119,7 +124,7 @@ export default function UseCasePage({ params }: { params: Params }) {
   });
 
   return <>
-    {SHOW_UNSOURCED_RANKINGS && <script
+    {leaderboard.rows.length > 0 && <script
       type="application/ld+json"
       dangerouslySetInnerHTML={{ __html: safeJsonLd(itemListJsonLd) }}
     />}
@@ -142,29 +147,20 @@ export default function UseCasePage({ params }: { params: Params }) {
           <div className={styles.summaryBox}>{summaryParagraphs(evidenceSummary.text).map((paragraph, i) => <p key={i} className={i === 0 ? styles.summaryLead : undefined}>{paragraph}</p>)}</div>
         </section>}
         {cards}
-        {/* Generative Engine Optimization (GEO) Takeaway */}
-        {SHOW_UNSOURCED_RANKINGS && (() => {
-          const topComp = orderedComparisons[0];
-          const topRow = topComp?.rows.find((r) => r.cells[0] && !r.cells[0].shown.missing) || topComp?.rows[0];
-          const topMetricValue = topRow?.cells[0] && !topRow.cells[0].shown.missing ? topRow.cells[0].shown.text : undefined;
-          return (
-            <GeoTakeaway
-              data={generateUseCaseTakeaway({
-                leaderboard,
-                pageContext: {
-                  slug: params.slug,
-                  title: entry.title,
-                  baselineName: baseline?.name,
-                  topToolName: topRow?.name,
-                  topMetricLabel: topComp?.headline.label,
-                  topMetricValue,
-                  comparisonCount: orderedComparisons.length,
-                },
-              })}
-              testId="use-case-geo-takeaway"
-            />
-          );
-        })()}
+        {/* Generative Engine Optimization (GEO) Takeaway, from the ranking below */}
+        <GeoTakeaway
+          data={generateUseCaseTakeaway({ leaderboard })}
+          testId="use-case-geo-takeaway"
+        />
+        {leaderboard.rows.length > 0 && <section id="ranking" className={styles.section}>
+          <h2>{heading("ranking")}</h2>
+          <UnifiedLeaderboard
+            boards={[leaderboard]}
+            showCategorySwitcher={false}
+            emitJsonLd={false}
+            testId="use-case-leaderboard"
+          />
+        </section>}
         {baseline && <section id="baseline" className={styles.section}>
           <h2>{heading("baseline")}</h2>
           <p><strong>{baseline.name}</strong>. {baseline.rationale}</p>

@@ -19,7 +19,6 @@ export default defineConfig({
       "workbench/**",
       "scratch/**",
       "benchmarks/**",
-      "tests/e2e/**",
     ],
   },
 });

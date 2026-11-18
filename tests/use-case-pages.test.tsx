@@ -185,6 +185,7 @@ describe("use-case decision view", () => {
     expect(text(html)).toContain("Showing the top 10 of 20 rows. The best value in each column is highlighted.");
     expect(html).toContain('<tbody class="extraRows">');
     expect(text(html)).toContain("Show all 20 rows");
-    expect(html.match(/<tr>/g)).toHaveLength(21);
+    // Count the comparison table's rows, not the ranking table's above it.
+    expect(html.slice(html.indexOf('id="evidence"')).match(/<tr>/g)).toHaveLength(21);
   });
 });

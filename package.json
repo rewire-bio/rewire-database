@@ -9,7 +9,6 @@
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "test:e2e": "vitest run --config vitest.e2e.config.ts",
     "check:data": "tsx scripts/check-release-data.ts",
     "check:build": "tsx scripts/check-ssr-build.ts",
     "check:build:full": "tsx scripts/check-ssr-build.ts --full",

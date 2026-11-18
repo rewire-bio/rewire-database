@@ -1,8 +1,6 @@
 import React from "react";
 import { describe, expect, it, vi } from "vitest";
 
-// These tests cover the leaderboard UI that is hidden until its rows come from the release (#218, #229).
-vi.mock("@/lib/ranking-visibility", () => ({ SHOW_UNSOURCED_RANKINGS: true }));
 import { renderToStaticMarkup } from "react-dom/server";
 import { PredictiveEntityDetail } from "@/app/database/_entities/predictive";
 import { DatasetDetail } from "@/app/database/_entities/dataset";
@@ -108,19 +106,23 @@ describe("Predictive Entity Detail Redesign (TC-PED-01 to TC-PED-08)", () => {
     expect(html).toContain("AlphaGenome Foundation Model");
   });
 
-  it("TC-PED-04: Displays structured telemetry (parameters, VRAM, latency, context window, license)", () => {
+  it("TC-PED-04: Displays only the telemetry the record carries, never figures matched by model name", () => {
     const detail = createSampleRecordDetail("model");
     detail.record.id = "catalog-model-esmfold";
     detail.record.name = "ESMFold";
     const html = renderToStaticMarkup(<PredictiveEntityDetail detail={detail} />);
 
-    expect(html).toContain("Parameters");
-    expect(html).toContain("Minimum VRAM");
-    expect(html).toContain("Inference Latency");
-    expect(html).toContain("Context Window");
-    expect(html).toContain("Weights Access");
-    expect(html).toContain("License");
-    expect(html).toContain("Open Weights");
+    for (const label of ["Parameters", "Minimum VRAM", "Inference Latency", "Context Window", "Access", "License"]) expect(html).toContain(label);
+    expect(html).toContain("24 GB");
+    expect(html).toContain("125 ms");
+    expect(html).toContain("Open weights via HuggingFace repository");
+    expect(html).toContain("Not recorded");
+
+    const bare = createSampleRecordDetail("model");
+    bare.record.attributes = {};
+    const bareHtml = renderToStaticMarkup(<PredictiveEntityDetail detail={bare} />);
+    expect(bareHtml).not.toContain("24 GB");
+    expect(bareHtml).not.toContain("125 ms");
   });
 
   it("TC-PED-05: Missing or empty fields render defensively via displayValue as Not reported or None recorded", () => {

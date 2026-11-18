@@ -1,8 +1,6 @@
 import React from "react";
 import { describe, expect, it, vi } from "vitest";
 
-// These tests cover the leaderboard UI that is hidden until its rows come from the release (#218, #229).
-vi.mock("@/lib/ranking-visibility", () => ({ SHOW_UNSOURCED_RANKINGS: true }));
 import { renderToStaticMarkup } from "react-dom/server";
 import lock from "../../benchmark-data.lock.json";
 import {
@@ -47,6 +45,9 @@ import { GET as getAgentsMd } from "../../app/agents.md/route";
 import { createCatalogueQuery } from "../../shared/omics/catalogue-query";
 import { buildCatalogue } from "../../lib/catalogue-build";
 import type { RecordDetail } from "../../lib/entity-detail";
+import { allUseCaseLeaderboards, homeLeaderboards } from "../../lib/release-leaderboard";
+import { telemetryFromRecord } from "../../lib/operational-telemetry";
+import { EMPTY_BOARD, RUNTIME_BOARD, VARIANT_BOARD } from "./fixtures/leaderboards";
 
 // Mock next/link for React static rendering in Node environment
 vi.mock("next/link", () => ({
@@ -69,89 +70,54 @@ vi.mock("next/link", () => ({
 // Feature 10: Schema.org JSON-LD Structured Data
 // ============================================================================
 describe("Feature 10: Schema.org JSON-LD Structured Data", () => {
-  it("TC-SEO-01: generateLeaderboardItemListJsonLd produces valid @type: ItemList with 1-based ranks", () => {
+  it("TC-SEO-01: generateLeaderboardItemListJsonLd produces valid @type: ItemList with the rows' ranks", () => {
     const jsonLd = generateLeaderboardItemListJsonLd({
       name: "Test Leaderboard",
       description: "Evaluation rankings",
-      url: "https://benchmarks.rewirebio.io/use-cases/variant-effect/",
+      url: "https://benchmarks.rewirebio.io/use-cases/fixture/",
       rows: [
-        {
-          model_id: "poet-2",
-          model_name: "PoET-2",
-          creator: "OpenProt",
-          use_case_index_score: 94.1,
-          telemetry: { min_vram_gb: 16, open_weights: true, license: "Apache-2.0" },
-        },
-        {
-          model_id: "esm-2-3b",
-          model_name: "ESM-2 (3B)",
-          creator: "Meta AI",
-          use_case_index_score: 88.5,
-          telemetry: { min_vram_gb: 24, open_weights: true, license: "MIT" },
-        },
+        { model_id: "alpha", model_name: "Alpha", model_href: "/database/model/alpha/", rank: 1, telemetry: { min_vram_gb: 16, open_weights: true, license: "MIT" } },
+        { model_id: "beta", model_name: "Beta", rank: 1, telemetry: null },
+        { model_id: "gamma", model_name: "Gamma", model_href: "/database/method/gamma/" },
       ],
     });
 
     expect(jsonLd["@context"]).toBe("https://schema.org");
     expect(jsonLd["@type"]).toBe("ItemList");
     expect(jsonLd.name).toBe("Test Leaderboard");
-    expect(jsonLd.description).toBe("Evaluation rankings");
-    expect(jsonLd.url).toBe("https://benchmarks.rewirebio.io/use-cases/variant-effect/");
-    expect(jsonLd.numberOfItems).toBe(2);
-    expect(jsonLd.itemListElement).toHaveLength(2);
-
-    expect(jsonLd.itemListElement[0].position).toBe(1);
-    expect(jsonLd.itemListElement[0].name).toBe("PoET-2");
-    expect(jsonLd.itemListElement[0].url).toBe("https://benchmarks.rewirebio.io/database/model/poet-2/");
-
-    expect(jsonLd.itemListElement[1].position).toBe(2);
-    expect(jsonLd.itemListElement[1].name).toBe("ESM-2 (3B)");
-    expect(jsonLd.itemListElement[1].url).toBe("https://benchmarks.rewirebio.io/database/model/esm-2-3b/");
+    expect(jsonLd.url).toBe("https://benchmarks.rewirebio.io/use-cases/fixture/");
+    expect(jsonLd.numberOfItems).toBe(3);
+    expect(jsonLd.itemListElement.map((i) => i.position)).toEqual([1, 1, 3]);
+    expect(jsonLd.itemListElement[0].url).toBe("https://benchmarks.rewirebio.io/database/model/alpha/");
+    expect(jsonLd.itemListElement[1].url).toBe("https://benchmarks.rewirebio.io/database/configuration/beta/");
+    expect(jsonLd.itemListElement[2].url).toBe("https://benchmarks.rewirebio.io/database/method/gamma/");
   });
 
-  it("TC-SEO-02: generateLeaderboardItemListJsonLd nests SoftwareApplication with full properties", () => {
+  it("TC-SEO-02: generateLeaderboardItemListJsonLd nests SoftwareApplication with recorded properties and the result link", () => {
     const jsonLd = generateLeaderboardItemListJsonLd({
-      name: "Structure Prediction",
-      description: "lDDT Rankings",
+      name: "Fixture",
+      description: "Rankings",
       rows: [
         {
-          model_id: "alphafold-3",
-          model_name: "AlphaFold 3",
-          creator: "DeepMind",
-          use_case_index_score: 96.5,
-          is_baseline: false,
-          telemetry: {
-            min_vram_gb: 80,
-            inference_latency_ms: 14200,
-            open_weights: false,
-            license: "Non-commercial",
-          },
+          model_id: "alpha", model_name: "Alpha", model_href: "/database/model/alpha/", rank: 1,
+          primary_metric_name: "AUROC", display_value: "0.91", source_record_id: "result-1",
+          telemetry: { min_vram_gb: 80, open_weights: false, license: "Non-commercial" },
         },
-        {
-          model_id: "homology-baseline",
-          model_name: "Homology Modeling Baseline",
-          creator: "Baseline",
-          is_baseline: true,
-          primary_metric_name: "lDDT",
-          raw_metric_value: 61.0,
-        },
+        { model_id: "beta", model_name: "Beta", rank: 2, telemetry: { min_vram_gb: null, open_weights: null, license: null } },
       ],
     });
 
-    const af3App = jsonLd.itemListElement[0].item;
-    expect(af3App["@type"]).toBe("SoftwareApplication");
-    expect(af3App.name).toBe("AlphaFold 3");
-    expect(af3App.applicationCategory).toBe("Bioinformatics Foundation Model");
-    expect(af3App.operatingSystem).toBe("Linux, macOS, Windows");
-    expect(af3App.memoryRequirements).toBe("80 GB VRAM");
-    expect(af3App.author).toEqual({ "@type": "Organization", name: "DeepMind" });
-    expect(af3App.license).toBe("Non-commercial");
-    expect(af3App.offers).toBeUndefined(); // open_weights is false
-    expect(af3App.description).toBe("Capability index score: 96.5");
-
-    const baselineApp = jsonLd.itemListElement[1].item;
-    expect(jsonLd.itemListElement[1].url).toBe("https://benchmarks.rewirebio.io/database/baseline/homology-baseline/");
-    expect(baselineApp.description).toBe("lDDT: 61");
+    const app = jsonLd.itemListElement[0].item;
+    expect(app["@type"]).toBe("SoftwareApplication");
+    expect(app.memoryRequirements).toBe("80 GB VRAM");
+    expect(app.license).toBe("Non-commercial");
+    expect(app.offers).toBeUndefined();
+    expect(app.author).toBeUndefined();
+    expect(app.description).toBe("AUROC: 0.91 (result https://benchmarks.rewirebio.io/database/result/result-1/)");
+    const bare = jsonLd.itemListElement[1].item;
+    expect(bare.memoryRequirements).toBeUndefined();
+    expect(bare.license).toBeUndefined();
+    expect(bare.description).toBeUndefined();
   });
 
   it("TC-SEO-03: generateLeaderboardItemListJsonLd handles empty rows and custom baseUrl", () => {
@@ -173,10 +139,8 @@ describe("Feature 10: Schema.org JSON-LD Structured Data", () => {
       creator: "MIT / Genesis Therapeutics",
       telemetry: {
         min_vram_gb: 16,
-        inference_latency_ms: 2400,
         open_weights: true,
         license: "https://opensource.org/licenses/MIT",
-        parameter_count_millions: 400,
       },
     });
 
@@ -259,7 +223,7 @@ describe("Feature 10: Schema.org JSON-LD Structured Data", () => {
   it("TC-SEO-08: UnifiedLeaderboard renders <script type='application/ld+json'> by default", () => {
     const html = renderToStaticMarkup(
       <UnifiedLeaderboard
-        initialCategory="variant_effect"
+        boards={[VARIANT_BOARD]}
         showCategorySwitcher={false}
       />
     );
@@ -275,7 +239,7 @@ describe("Feature 10: Schema.org JSON-LD Structured Data", () => {
   it("TC-SEO-09: UnifiedLeaderboard suppresses JSON-LD when emitJsonLd is false", () => {
     const html = renderToStaticMarkup(
       <UnifiedLeaderboard
-        initialCategory="variant_effect"
+        boards={[VARIANT_BOARD]}
         emitJsonLd={false}
       />
     );
@@ -408,103 +372,69 @@ describe("Feature 11: Generative Engine Optimization (GEO) Lead Summaries", () =
     expect(inlineHtml).toContain("Chroma ranks #1");
   });
 
-  it("TC-GEO-03: generateUseCaseTakeaway produces structured factual triples for all 5 categories", () => {
-    const categories = [
-      "structure_prediction",
-      "variant_effect",
-      "protein_design",
-      "transcriptomics",
-      "genomic_grammar",
-    ] as const;
+  it("TC-GEO-03: generateUseCaseTakeaway names the protocol, metric and source, never an overall #1", () => {
+    const data = generateUseCaseTakeaway({ leaderboard: VARIANT_BOARD });
+    expect(data.title).toBe("Executive Takeaway");
+    expect(data.primaryStatement).toBe(
+      'For "Fixture variant effect", on Fixture DMS substitutions, All assays (Spearman), Alpha scored 0.600, reported by Fixture study of variant effect predictors.',
+    );
+    expect(data.primaryStatement).not.toMatch(/ranks #|#1/);
+    expect(data.secondaryStatement).toContain("Fixture alignment baseline, scored 0.400 on the same protocol");
+    expect(data.triple).toMatchObject({ modelName: "Alpha", metricValue: "0.600", sourceRecordId: "fixture-result-alpha", reviewStatus: "reproduced" });
 
-    for (const cat of categories) {
-      const data = generateUseCaseTakeaway({ category: cat });
-      expect(data.title).toBe("Executive Takeaway");
-      expect(data.primaryStatement).toBeTruthy();
-      expect(data.secondaryStatement).toBeTruthy();
-      expect(data.triple).toBeDefined();
+    const proxy = generateUseCaseTakeaway({ leaderboard: RUNTIME_BOARD });
+    expect(proxy.secondaryStatement).toContain("No baseline method is scored on this protocol.");
+    expect(proxy.secondaryStatement).toContain("proxy");
+    expect(proxy.primaryStatement).toContain("(Runtime, a proxy protocol)");
 
-      const triple = data.triple!;
-      expect(triple.modelName).toBeTruthy();
-      expect(triple.metricValue).toBeTruthy();
-      expect(triple.conventionalBaselineName).toBeTruthy();
-      expect(triple.marginOverConventional).toBeTruthy();
-      expect(triple.vramGb).toBeTruthy();
-      expect(triple.latency).toBeTruthy();
-    }
+    const empty = generateUseCaseTakeaway({ leaderboard: EMPTY_BOARD });
+    expect(empty.primaryStatement).toContain("No ranking");
+    expect(empty.triple).toBeUndefined();
   });
 
-  it("TC-GEO-04: generateHomepageTakeaway produces multi-use-case frontier summary", () => {
-    const data = generateHomepageTakeaway();
-    expect(data.title).toBe("Frontier Benchmark Takeaway");
-    expect(data.primaryStatement).toContain("AlphaFold 3");
-    expect(data.primaryStatement).toContain("PoET-2");
-    expect(data.primaryStatement).toContain("Chroma");
-    expect(data.secondaryStatement).toContain("conventional baselines");
+  it("TC-GEO-04: generateHomepageTakeaway summarises each ranked use case with its protocol and source", () => {
+    const data = generateHomepageTakeaway([VARIANT_BOARD, EMPTY_BOARD, RUNTIME_BOARD]);
+    expect(data.title).toBe("Benchmark Takeaway");
+    expect(data.primaryStatement).toContain("on Fixture DMS substitutions, All assays (Spearman), Alpha scored 0.600");
+    expect(data.primaryStatement).toContain("on Fixture pipeline runtimes, Read mapping (Runtime, a proxy protocol), Fast pipeline scored 14 min");
+    expect(data.highlights).toHaveLength(2);
+    expect(generateHomepageTakeaway([EMPTY_BOARD]).primaryStatement).toBe("No use case has a ranking in this release yet.");
   });
 
-  it("TC-GEO-05: generateModelTakeaway distinguishes evaluated models from catalog records", () => {
-    const af3 = generateModelTakeaway({ id: "alphafold-3", name: "AlphaFold 3" });
-    expect(af3.title).toBe("Model Benchmark Takeaway");
-    expect(af3.primaryStatement).toContain("AlphaFold 3");
-    expect(af3.primaryStatement).toContain("Structure Prediction");
-    expect(af3.secondaryStatement).toContain("80 GB VRAM");
+  it("TC-GEO-05: generateModelTakeaway reports a model's ranked results, or says it has none", () => {
+    const ranked = generateModelTakeaway(
+      { id: "alpha", name: "Alpha" },
+      [{ board: VARIANT_BOARD, row: VARIANT_BOARD.rows[0] }, { board: RUNTIME_BOARD, row: RUNTIME_BOARD.rows[0] }],
+      telemetryFromRecord({ attributes: { profile: { facts: [{ label: "Parameters", value: "650M", status: "source_checked" }] } } }),
+    );
+    expect(ranked.title).toBe("Model Benchmark Takeaway");
+    expect(ranked.primaryStatement).toContain("On Fixture DMS substitutions, All assays (Spearman), Alpha scored 0.600, reported by Fixture study");
+    expect(ranked.primaryStatement).toContain("position 1 of 4 on this protocol");
+    expect(ranked.primaryStatement).toContain("1 other use case: Fixture runtime");
+    expect(ranked.secondaryStatement).toBe("Recorded parameters: 650M. Licence: Not recorded.");
 
-    const unknownModel = generateModelTakeaway({ id: "catalog-model-custom-xyz", name: "CustomBioModel" });
-    expect(unknownModel.title).toBe("Model Deployment Profile");
-    expect(unknownModel.primaryStatement).toContain("CustomBioModel");
+    const unranked = generateModelTakeaway({ id: "x", name: "CustomBioModel" }, [], telemetryFromRecord(null));
+    expect(unranked.title).toBe("Model Deployment Profile");
+    expect(unranked.primaryStatement).toBe("CustomBioModel has no ranked result on a use-case protocol in this release.");
   });
 
-  it("TC-GEO-06: Homepage SSR renders <section class='... geo-takeaway'>", () => {
+  it("TC-GEO-06: Homepage SSR renders the takeaway from the release's leaderboards", () => {
     const html = renderToStaticMarkup(<BenchmarksPage />);
     expect(html).toMatch(/<section[^>]*class="[^"]*geo-takeaway[^"]*"[^>]*data-geo-takeaway="true"/i);
-    expect(html).toContain("Frontier Benchmark Takeaway");
-    expect(html).toContain("AlphaFold 3");
+    expect(html).toContain("Benchmark Takeaway");
+    const [first] = homeLeaderboards();
+    expect(html).toContain(first.use_case_title);
   });
 
-  it("TC-GEO-07: Use-case page SSR renders dynamic GEO takeaway with verified score and baseline", () => {
+  it("TC-GEO-07: Use-case page SSR renders the takeaway and ranking from the release", () => {
+    const board = allUseCaseLeaderboards().find((b) => b.use_case_slug === "protein-variant-effect-prediction")!;
     const html = renderToStaticMarkup(<UseCasePage params={{ slug: "protein-variant-effect-prediction" }} />);
     expect(html).toMatch(/<section[^>]*class="[^"]*geo-takeaway[^"]*"[^>]*data-geo-takeaway="true"/i);
     expect(html).toContain("Executive Takeaway");
-    expect(html).toContain("PoET-2");
-    expect(html).toContain("Spearman Rho");
-    expect(html).toContain("BLOSUM62");
-    expect(html).toContain("42 ms");
-  });
-
-  it("TC-GEO-08: GeoTakeaway formats clean numbers, renders highlights grid, and grounds specialized use cases", () => {
-    const struct = generateUseCaseTakeaway({ category: "structure_prediction" });
-    expect(struct.triple?.metricValue).toBe("89.5");
-    expect(struct.primaryStatement).not.toContain("89.500");
-
-    const homeHtml = renderToStaticMarkup(<GeoTakeaway data={generateHomepageTakeaway()} />);
-    expect(homeHtml).toContain("89.5 lDDT");
-    expect(homeHtml).toContain("1.20 Å scRMSD");
-    expect(homeHtml).not.toContain("89.500");
-
-    const specializedWithTop = generateUseCaseTakeaway({
-      pageContext: {
-        slug: "brca1-brca2-germline-interpretation",
-        title: "Interpret BRCA1/BRCA2 germline variants",
-        baselineName: "BayesDel under the ENIGMA specification",
-        topToolName: "AlphaMissense",
-        topMetricLabel: "AUROC",
-        topMetricValue: "0.941",
-        comparisonCount: 3,
-      },
-    });
-    expect(specializedWithTop.primaryStatement).toContain("AlphaMissense");
-    expect(specializedWithTop.primaryStatement).toContain("BayesDel");
-    expect(specializedWithTop.highlights?.some((h) => h.value === "AlphaMissense")).toBe(true);
-
-    const specializedNoTop = generateUseCaseTakeaway({
-      pageContext: {
-        slug: "custom-specialized-question",
-        title: "Custom Specialized Question",
-        comparisonCount: 0,
-      },
-    });
-    expect(specializedNoTop.primaryStatement).toContain("0 reviewed comparisons are tracked");
+    expect(html).toContain('data-testid="use-case-leaderboard"');
+    expect(html).toContain(board.protocol!.metric_label);
+    expect(html).toContain(`/database/result/${encodeURIComponent(board.rows[0].source_record_id)}/`);
+    expect(html).not.toContain("ranks #1");
   });
 });
 
@@ -519,17 +449,16 @@ describe("Feature 12: LLM Discoverability Enhancement", () => {
     expect(contentType).toMatch(/text\/(markdown|plain)/);
   });
 
-  it("TC-LLM-02: /llms.txt conforms strictly to llmstxt.org markdown index structure", async () => {
+  it("TC-LLM-02: /llms.txt conforms to the llmstxt.org index structure and lists the ranked use cases", async () => {
     const text = await getLlmsTxt().text();
-
     expect(text.startsWith("# Biological model benchmark database")).toBe(true);
     expect(text).toContain("> Reviewed published results for DNA, RNA, protein and cell models");
-
-    expect(text).toMatch(/- \[Zero-Shot Variant Effect Prediction\]\(https:\/\/benchmarks\.rewirebio\.io\/[^)]+\):/);
-    expect(text).toMatch(/- \[Protein Structure Prediction\]\(https:\/\/benchmarks\.rewirebio\.io\/[^)]+\):/);
-    expect(text).toMatch(/- \[De Novo Protein Design\]\(https:\/\/benchmarks\.rewirebio\.io\/[^)]+\):/);
+    for (const board of allUseCaseLeaderboards().filter((b) => b.rows.length))
+      expect(text).toContain(`- [${board.use_case_title}](https://benchmarks.rewirebio.io${board.use_case_href}):`);
     expect(text).toMatch(/- \[Full Benchmark Knowledge Base\]\(https:\/\/benchmarks\.rewirebio\.io\/llms-full\.txt\):/);
     expect(text).toMatch(/- \[Autonomous Agent Hub\]\(https:\/\/benchmarks\.rewirebio\.io\/agents\.md\):/);
+    expect(text).toContain("## Key Benchmark Quick Facts");
+    expect(text).not.toContain("ranks #1");
   });
 
   it("TC-LLM-03: /llms.txt preserves backward-compatible Claude Code CLI install commands", async () => {
@@ -537,29 +466,22 @@ describe("Feature 12: LLM Discoverability Enhancement", () => {
     expect(text).toContain("/plugin marketplace add rewire-bio/rewire-benchmarks");
     expect(text).toContain("/plugin install bio-model-benchmarks@rewire-benchmarks");
     expect(text).toContain("claude mcp add rewire-benchmark-graph");
-    expect(text).toContain("re-checked against new publications every month");
+    expect(text).not.toContain("re-checked against new publications every month");
   });
 
-  it("TC-LLM-04: GET /llms-full.txt returns HTTP 200 with complete markdown ranking tables", async () => {
+  it("TC-LLM-04: GET /llms-full.txt returns one ranking table per use case, each value linked to its result", async () => {
     const res = getLlmsFullTxt();
     expect(res.status).toBe(200);
-    const contentType = res.headers.get("Content-Type");
-    expect(contentType).toMatch(/text\/(markdown|plain)/);
-
+    expect(res.headers.get("Content-Type")).toMatch(/text\/(markdown|plain)/);
     const text = await res.text();
-    expect(text).toContain("# Rewire.bio Biological AI Benchmark Database — Companion Full Knowledge Base");
-    expect(text).toContain("## Use Case: Structure Prediction");
-    expect(text).toContain("## Use Case: Variant Effect Prediction");
-    expect(text).toContain("## Use Case: Protein Design");
-    expect(text).toContain("## Use Case: Transcriptomics");
-    expect(text).toContain("## Use Case: Genomic Grammar");
-
-    expect(text).toContain("| Rank | Model Name | Creator | Capability Index (0-100) |");
-    expect(text).toContain("AlphaFold 3");
-    expect(text).toContain("Boltz-1");
-    expect(text).toContain("PoET-2");
-    expect(text).toContain("Chroma");
-    expect(text).toContain("Protocol Baselines & Biological Noise Floor");
+    expect(text).toContain("# Rewire.bio Biological AI Benchmark Database: Full Knowledge Base");
+    const boards = allUseCaseLeaderboards();
+    for (const board of boards) expect(text).toContain(`## Use Case: ${board.use_case_title}`);
+    expect(text).toContain("| Rank | Model |");
+    const ranked = boards.find((b) => b.rows.length)!;
+    expect(text).toContain(`https://benchmarks.rewirebio.io/database/result/${encodeURIComponent(ranked.rows[0].source_record_id)}/`);
+    expect(text).not.toContain("Capability Index");
+    expect(text).not.toContain("Noise Floor");
   });
 
   it("TC-LLM-05: GET /agents.md returns HTTP 200 with schemas, queries, and constraints", async () => {
@@ -570,9 +492,9 @@ describe("Feature 12: LLM Discoverability Enhancement", () => {
 
     const text = await res.text();
     expect(text).toContain("# Rewire.bio Autonomous Scientific Agent Protocol Specification");
-    expect(text).toContain("Biological Use-Case Categories");
-    expect(text).toContain("variant_effect");
-    expect(text).toContain("structure_prediction");
+    expect(text).toContain("## 2. Use-case leaderboards");
+    expect(text).toContain("`protein-variant-effect-prediction`");
+    expect(text).not.toContain("Recommended: PoET-2");
     expect(text).toContain('"title": "BiologicalModelRankingRow"');
     expect(text).toContain("/api/trpc/catalogue.useCases");
     expect(text).toContain("/api/trpc/catalogue.list");

@@ -424,3 +424,44 @@
   color: var(--ink-2, #334155);
   margin-bottom: 6px;
 }
+
+/* Which protocol the table ranks on, and whether reviewers judged it a proxy. */
+.protocolNote {
+  margin: 8px 0 12px;
+  font-size: 13px;
+  color: var(--ink-2, #334155);
+}
+
+.proxyBadge {
+  display: inline-flex;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: #fef3c7;
+  color: #92400e;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.findingBadge {
+  display: inline-flex;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: #fee2e2;
+  color: #991b1b;
+  font-size: 11px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+/* Tools scored elsewhere in the use case but not on the ranked protocol. */
+.unrankedList {
+  margin: 12px 0;
+  font-size: 13px;
+  color: var(--ink-2, #334155);
+}
+
+.unrankedList ul {
+  columns: 2 220px;
+  margin: 8px 0 0;
+  padding-left: 18px;
+}

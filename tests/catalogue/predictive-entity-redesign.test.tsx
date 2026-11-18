@@ -1,5 +1,8 @@
 import React from "react";
 import { describe, expect, it, vi } from "vitest";
+
+// These tests cover the leaderboard UI that is hidden until its rows come from the release (#218, #229).
+vi.mock("@/lib/ranking-visibility", () => ({ SHOW_UNSOURCED_RANKINGS: true }));
 import { renderToStaticMarkup } from "react-dom/server";
 import { PredictiveEntityDetail } from "@/app/database/_entities/predictive";
 import { DatasetDetail } from "@/app/database/_entities/dataset";

@@ -20,6 +20,7 @@ import {
   discrepancyApi,
   discrepancyQueries,
 } from "./agent-connect";
+import { SHOW_UNSOURCED_RANKINGS } from "./ranking-visibility";
 
 /**
  * Formats operational latency cleanly.
@@ -37,11 +38,11 @@ function formatLatency(ms: number | null | undefined): string {
 export function generateLlmsTxt(releaseId: string): string {
   return `# Biological model benchmark database
 
-> Reviewed published results for DNA, RNA, protein and cell models, with sources, review status and run recipes. The evidence for each use case is re-checked against new publications every month.
+> Reviewed published results for DNA, RNA, protein and cell models, with sources, review status and run recipes. ${SHOW_UNSOURCED_RANKINGS ? "The evidence for each use case is re-checked against new publications every month." : "Every figure links to the published source it was taken from. Use-case rankings are being rebuilt from the evidence store and are not published yet."}
 
 Release ${releaseId}. Site: ${SITE}/
 
-## Core Leaderboards
+${SHOW_UNSOURCED_RANKINGS ? `## Core Leaderboards
 - [Zero-Shot Variant Effect Prediction](${SITE}/use-cases/protein-variant-effect-prediction): Top biological models (PoET-2, ESM-2, AlphaMissense) ranked by Spearman rho against BLOSUM62 baseline.
 - [Protein Structure Prediction](${SITE}/use-cases/structural-hypotheses-experiments): Multimer and monomer folding architectures (AlphaFold 3, Boltz-1, ESMFold) evaluated on lDDT.
 - [De Novo Protein Design](${SITE}/use-cases/de-novo-binder-design): Generative sequence-structure models (Chroma, RFdiffusion, ProteinMPNN) ranked by self-consistency RMSD (scRMSD).
@@ -51,19 +52,23 @@ Release ${releaseId}. Site: ${SITE}/
 ## Full Knowledge Base
 - [Full Benchmark Knowledge Base](${SITE}/llms-full.txt): Complete multi-column ranking tables, four-tier protocol baseline panels, and operational hardware telemetry.
 
-## Developer & Autonomous Agent Hub
+` : `## Use cases
+- [All use cases](${SITE}/use-cases/): each page lists the published comparisons for that use case, with their sources.
+- [Contested results](${SITE}/contested/): where published studies disagree.
+
+`}## Developer & Autonomous Agent Hub
 - [Autonomous Agent Hub](${SITE}/agents.md): Machine-readable query schemas, operational constraint filters, and tRPC/MCP protocols for scientific agents.
 - [Release Manifest](${SITE}/release-manifest.json): Pinned SQLite release verification, SHA-256 checksums, and dataset hashes.
 - [Knowledge Graph Manifest](${SITE}/agents/kg-manifest.json): RDF knowledge graph bundle with discrepancy verification queries.
 
-## Key Benchmark Quick Facts
+${SHOW_UNSOURCED_RANKINGS ? `## Key Benchmark Quick Facts
 - Variant Effect: PoET-2 ranks #1 (Spearman ρ = 0.612, +42.3% over BLOSUM62, 82.7% of assay ceiling) at 42 ms/seq on NVIDIA A100 (16GB VRAM, Apache-2.0).
 - Structure Prediction: AlphaFold 3 ranks #1 (lDDT = 89.5, +46.7% over homology modeling, 96.5% of coordinate ceiling) at 14.2 s/target (80GB VRAM, Non-commercial).
 - Protein Design: Chroma ranks #1 (scRMSD = 1.20 Å, 73.3% lower divergence than RosettaDesign, 98.2% of ceiling) at 3.5 s/target (24GB VRAM, Open source).
 - Transcriptomics: GEARS ranks #1 (Pearson r = 0.790, +88.1% over linear baseline, 96.1% of replicate ceiling) at 12 ms/perturbation (8GB VRAM, BSD-3-Clause).
 - Genomic Grammar: Enformer ranks #1 (AUROC = 0.890, +27.1% over 6-mer PWM baseline, 88.6% of replicate ceiling) at 240 ms/sequence (24GB VRAM, Apache-2.0).
 
-## Connect your agent
+` : ``}## Connect your agent
 
 Claude Code, one plugin with the benchmark skill and the knowledge-graph MCP:
 
@@ -113,6 +118,15 @@ ${discrepancyQueries.map((q) => `  - ${q.name}: ${q.params}. Returns ${q.returns
  * 2. Generates companion full knowledge base (/llms-full.txt) with complete ranking tables.
  */
 export function generateLlmsFullText(releaseId: string): string {
+  if (!SHOW_UNSOURCED_RANKINGS) {
+    return `# Rewire.bio Biological AI Benchmark Database: Full Knowledge Base
+
+Release: ${releaseId}
+Site: ${SITE}/
+
+Use-case ranking tables are being rebuilt from the evidence store and are not published yet. Until then, each use-case page at ${SITE}/use-cases/ lists the published comparisons with their sources, and the release is downloadable from ${SITE}/release-manifest.json.
+`;
+  }
   const categories: BiologicalUseCaseCategory[] = [
     "structure_prediction",
     "variant_effect",
@@ -205,7 +219,7 @@ Release: ${releaseId}
 Site: ${SITE}/
 
 ## 1. Agent Operational Mission
-Rewire.bio is the independent decision and benchmark query platform for biological AI models. Autonomous bioinformatic agents use this endpoint to retrieve empirically validated capability rankings across biological tasks, filtered by hardware constraints and Pareto efficiency.
+${SHOW_UNSOURCED_RANKINGS ? "Rewire.bio is the independent decision and benchmark query platform for biological AI models. Autonomous bioinformatic agents use this endpoint to retrieve empirically validated capability rankings across biological tasks, filtered by hardware constraints and Pareto efficiency." : "Rewire.bio is an independent database of published benchmark results for biological AI models. Agents use it to find which results exist for a use case, where they come from, and where studies disagree. Use-case rankings are being rebuilt from the evidence store and are not published yet."}
 
 ## 2. Biological Use-Case Categories
 Use cases are identified by standardized slugs:
@@ -215,20 +229,20 @@ Use cases are identified by standardized slugs:
 - \`transcriptomics\` / \`genetic-perturbation-response\`: Single-Cell Perturbation Response (Metric: Pearson r)
 - \`genomic_grammar\` / \`plant-promoter-reporters\`: Regulatory Sequence Grammar (Metric: AUROC)
 
-## 3. Decision Framework for AI Agents
+${SHOW_UNSOURCED_RANKINGS ? `## 3. Decision Framework for AI Agents
 When selecting models for downstream bioinformatic pipelines:
 1. **High-Throughput In Silico Mutagenesis ($10^6$ variants)**:
-   - Filter criteria: \`inference_latency_ms <= 50\` or \`throughput_items_per_sec >= 20\`
-   - Require: \`pareto_optimal === true\`
+   - Filter criteria: \\`inference_latency_ms <= 50\\` or \\`throughput_items_per_sec >= 20\\`
+   - Require: \\`pareto_optimal === true\\`
    - Recommended: PoET-2 (42 ms/seq, 16GB VRAM, Apache-2.0)
 2. **Workstation / Consumer GPU Deployment ($\\le 24$GB VRAM)**:
-   - Filter criteria: \`min_vram_gb <= 24\` and \`open_weights === true\`
+   - Filter criteria: \\`min_vram_gb <= 24\\` and \\`open_weights === true\\`
    - Recommended: Boltz-1 (lDDT 88.2, 16GB VRAM, MIT) or ESM-2 3B (24GB VRAM, MIT)
 3. **Frontier Accuracy / Unconstrained Compute**:
-   - Filter criteria: Sort by \`use_case_index_score\` descending
+   - Filter criteria: Sort by \\`use_case_index_score\\` descending
    - Recommended: AlphaFold 3 (lDDT 89.5, 80GB VRAM)
 
-## 4. Machine-Readable Schema Contracts (JSON Schema)
+` : ``}## 4. Machine-Readable Schema Contracts (JSON Schema)
 
 ### BiologicalModelRankingRow
 \`\`\`json

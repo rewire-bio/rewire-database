@@ -17,6 +17,7 @@ import { buildCatalogue } from "@/lib/catalogue-build";
 import { contestedResults, contestingFindings } from "@/lib/discrepancies";
 import { baselineComparisons, buildComparisons, heldJudgements, methodTypeLabel, toolsCompared } from "@/lib/use-case-comparisons";
 import { getUseCaseLeaderboard } from "@/lib/use-case-leaderboard";
+import { SHOW_UNSOURCED_RANKINGS } from "@/lib/ranking-visibility";
 import { safeJsonLd } from "@/lib/catalogue-sharing";
 import {
   generateLeaderboardItemListJsonLd,
@@ -109,7 +110,7 @@ export default function UseCasePage({ params }: { params: Params }) {
     name: `${entry.title} Benchmark Dataset Evidence`,
     description: `Benchmark datasets and evaluated protocols for ${entry.title}. ${entry.question}`,
     url: `https://benchmarks.rewirebio.io${path}`,
-    variableMeasured: leaderboard.primary_metric_name || entry.output,
+    variableMeasured: (SHOW_UNSOURCED_RANKINGS && leaderboard.primary_metric_name) || entry.output,
     creator: {
       name: "rewirebio.io / Community Benchmark Contributors",
       url: "https://benchmarks.rewirebio.io",
@@ -118,10 +119,10 @@ export default function UseCasePage({ params }: { params: Params }) {
   });
 
   return <>
-    <script
+    {SHOW_UNSOURCED_RANKINGS && <script
       type="application/ld+json"
       dangerouslySetInnerHTML={{ __html: safeJsonLd(itemListJsonLd) }}
-    />
+    />}
     <script
       type="application/ld+json"
       dangerouslySetInnerHTML={{ __html: safeJsonLd(datasetJsonLd) }}
@@ -142,7 +143,7 @@ export default function UseCasePage({ params }: { params: Params }) {
         </section>}
         {cards}
         {/* Generative Engine Optimization (GEO) Takeaway */}
-        {(() => {
+        {SHOW_UNSOURCED_RANKINGS && (() => {
           const topComp = orderedComparisons[0];
           const topRow = topComp?.rows.find((r) => r.cells[0] && !r.cells[0].shown.missing) || topComp?.rows[0];
           const topMetricValue = topRow?.cells[0] && !topRow.cells[0].shown.missing ? topRow.cells[0].shown.text : undefined;

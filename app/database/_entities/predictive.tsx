@@ -7,6 +7,7 @@ import Link from "next/link";
 import { Fragment } from "react";
 import { buildCatalogue } from "@/lib/catalogue-build";
 import { getModelTelemetry } from "@/lib/operational-telemetry";
+import { SHOW_UNSOURCED_RANKINGS } from "@/lib/ranking-visibility";
 import { generateModelSoftwareApplicationJsonLd } from "@/lib/catalogue-seo";
 import { GeoTakeaway } from "@/components/catalogue/GeoTakeaway";
 import { generateModelTakeaway } from "@/lib/geo-takeaway";
@@ -289,7 +290,7 @@ export function PredictiveEntityDetail({ detail }: { detail: RecordDetail }) {
             }
           />
           {/* Model GEO Takeaway */}
-          {record.kind === "model" && (
+          {SHOW_UNSOURCED_RANKINGS && record.kind === "model" && (
             <GeoTakeaway
               data={generateModelTakeaway(record as unknown as { id: string; name: string; kind?: string })}
               variant="card"
@@ -297,7 +298,7 @@ export function PredictiveEntityDetail({ detail }: { detail: RecordDetail }) {
             />
           )}
           {/* Model Capabilities & Hardware Requirements Capability Card */}
-          {(() => {
+          {SHOW_UNSOURCED_RANKINGS && (() => {
             const telemetry = getModelTelemetry(
               record.id,
               record.name,

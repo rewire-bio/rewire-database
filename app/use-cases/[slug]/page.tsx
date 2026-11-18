@@ -57,7 +57,12 @@ export default function UseCasePage({ params }: { params: Params }) {
   const clinical = entry.contexts.includes("clinical_research");
   const summary = summariseUseCaseEvidence(detail.mappings, entry.evidence_gaps.length);
   const comparisons = buildComparisons(detail.mappings);
-  const orderedComparisons = [...comparisons].sort((a, b) => Number(b.rows.length > 1) - Number(a.rows.length > 1));
+  // One protocol of this use case, ranked from the same comparisons (lib/use-case-ranking.ts).
+  const leaderboard = leaderboardForDetail(detail, comparisons);
+  // The ranked comparison leads the comparisons section, so the page names one primary protocol.
+  const rankedId = leaderboard.protocol?.comparison_id;
+  const orderedComparisons = [...comparisons].sort((a, b) =>
+    Number(b.id === rankedId) - Number(a.id === rankedId) || Number(b.rows.length > 1) - Number(a.rows.length > 1));
   const held = heldJudgements(detail.mappings);
   const { query } = buildCatalogue();
   const contested = contestedResults(comparisons.flatMap((c) => c.rows.flatMap((r) => r.resultIds)));
@@ -71,8 +76,6 @@ export default function UseCasePage({ params }: { params: Params }) {
   const configurations = new Set(comparisons.flatMap((c) => c.rows.map((r) => r.id))).size;
   // A plain-language summary of the evidence, reviewed like any other claim (older releases have none).
   const evidenceSummary = (entry as typeof entry & { summary?: { text: string; status: "reviewed" | "draft" } }).summary;
-  // One protocol of this use case, ranked from the same comparisons (lib/use-case-ranking.ts).
-  const leaderboard = leaderboardForDetail(detail, comparisons);
   const sections = [
     ...(evidenceSummary ? [{ id: "summary", label: "What the evidence shows" }] : []),
     ...(leaderboard.rows.length ? [{ id: "ranking", label: "Ranking" }] : []),

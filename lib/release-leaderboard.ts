@@ -90,13 +90,18 @@ export function allUseCaseLeaderboards(): LeaderboardResult[] {
 /** The use cases the homepage leads with (the /use-cases/<category>/ aliases), in that order. */
 export const HOME_LEADERBOARD_SLUGS = Object.values(CATEGORY_SLUG_MAP);
 
-/** Homepage leaderboards: the lead use cases that have a ranking in this release. */
+/** Homepage leaderboards: the lead use cases that have a ranking, directly relevant protocols first. */
 export function homeLeaderboards(): LeaderboardResult[] {
-  return HOME_LEADERBOARD_SLUGS.map(leaderboardForUseCase).filter((b): b is LeaderboardResult => !!b && b.rows.length > 0);
+  return HOME_LEADERBOARD_SLUGS.map(leaderboardForUseCase)
+    .filter((b): b is LeaderboardResult => !!b && b.rows.length > 0)
+    .sort((a, b) => Number(b.protocol?.relevance === "direct") - Number(a.protocol?.relevance === "direct"));
 }
 
-/** Every ranked row for a model, method or configuration, with its leaderboard. */
+/** A model's, method's or configuration's best-ranked row on each leaderboard it appears on. */
 export function rankingsForRecord(id: string): { board: LeaderboardResult; row: BiologicalModelRankingRow }[] {
-  return allUseCaseLeaderboards().flatMap((board) =>
-    board.rows.filter((row) => row.model_id === id || row.parent_id === id).map((row) => ({ board, row })));
+  return allUseCaseLeaderboards().flatMap((board) => {
+    // Rows are in rank order, so the first match is the best of the record's configurations.
+    const row = board.rows.find((r) => r.model_id === id || r.parent_id === id);
+    return row ? [{ board, row }] : [];
+  });
 }

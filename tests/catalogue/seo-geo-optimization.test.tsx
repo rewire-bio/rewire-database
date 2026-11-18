@@ -433,7 +433,7 @@ describe("Feature 11: Generative Engine Optimization (GEO) Lead Summaries", () =
     expect(html).toContain('data-testid="use-case-leaderboard"');
     expect(html).toContain(board.protocol!.metric_label);
     expect(html).toContain(`/database/result/${encodeURIComponent(board.rows[0].source_record_id)}/`);
-    expect(html).not.toContain("PoET-2");
+    expect(html).not.toContain("ranks #1");
   });
 });
 

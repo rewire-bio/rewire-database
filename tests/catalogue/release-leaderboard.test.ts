@@ -32,7 +32,7 @@ describe("use-case leaderboards from the release", () => {
     for (const board of boards.filter((b) => b.rows.length)) {
       expect(board.protocol).not.toBeNull();
       const metrics = new Set(board.rows.map((r) => query.record(r.source_record_id)!.attributes.metric));
-      expect(metrics.size, board.use_case_slug).toBe(1);
+      expect([...metrics], board.use_case_slug).toEqual([board.protocol!.metric]);
       const values = board.rows.map((r) => r.raw_metric_value!);
       const sorted = [...values].sort((a, b) => (board.protocol!.direction === "higher" ? b - a : a - b));
       expect(values, board.use_case_slug).toEqual(sorted);
@@ -62,9 +62,17 @@ describe("use-case leaderboards from the release", () => {
     }
   });
 
-  it("indexes ranked rows by model for model pages", () => {
+  it("indexes each model's best row once per leaderboard for model pages", () => {
     const { row } = rows.find(({ row }) => row.parent_id) ?? rows[0];
     expect(rankingsForRecord(row.parent_id ?? row.model_id).some((r) => r.row.source_record_id === row.source_record_id)).toBe(true);
+    const counts = new Map<string, number>();
+    for (const { board, row } of rows) if (row.parent_id) counts.set(`${board.use_case_slug}|${row.parent_id}`, (counts.get(`${board.use_case_slug}|${row.parent_id}`) ?? 0) + 1);
+    const repeated = [...counts].find(([, n]) => n > 1);
+    if (repeated) {
+      const parent = repeated[0].split("|")[1];
+      const found = rankingsForRecord(parent);
+      expect(new Set(found.map((r) => r.board.use_case_slug)).size).toBe(found.length);
+    }
   });
 
   it("publishes no figure that is not in the release", () => {
@@ -75,7 +83,8 @@ describe("use-case leaderboards from the release", () => {
       generateHomepageTakeaway(homeLeaderboards()).primaryStatement,
       ...boards.map((b) => generateUseCaseTakeaway({ leaderboard: b }).primaryStatement),
     ].join("\n");
-    for (const invented of ["PoET-2", "0.612", "ranks #1", "89.5", "of assay ceiling", "Capability Index", "42 ms/seq", "re-checked against new publications every month"])
+    // Phrases from the hand-written figures that no release value can produce.
+    for (const invented of ["ranks #1", "of assay ceiling", "Capability Index", "42 ms/seq", "re-checked against new publications every month"])
       expect(texts).not.toContain(invented);
     for (const { row } of rows.slice(0, 5)) expect(generateLlmsFullText("r", boards)).toContain(`/database/result/${encodeURIComponent(row.source_record_id)}/`);
   });

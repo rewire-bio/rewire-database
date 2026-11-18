@@ -385,6 +385,7 @@ describe("Feature 11: Generative Engine Optimization (GEO) Lead Summaries", () =
     const proxy = generateUseCaseTakeaway({ leaderboard: RUNTIME_BOARD });
     expect(proxy.secondaryStatement).toContain("No baseline method is scored on this protocol.");
     expect(proxy.secondaryStatement).toContain("proxy");
+    expect(proxy.primaryStatement).toContain("(Runtime, a proxy protocol)");
 
     const empty = generateUseCaseTakeaway({ leaderboard: EMPTY_BOARD });
     expect(empty.primaryStatement).toContain("No ranking");
@@ -395,7 +396,7 @@ describe("Feature 11: Generative Engine Optimization (GEO) Lead Summaries", () =
     const data = generateHomepageTakeaway([VARIANT_BOARD, EMPTY_BOARD, RUNTIME_BOARD]);
     expect(data.title).toBe("Benchmark Takeaway");
     expect(data.primaryStatement).toContain("on Fixture DMS substitutions, All assays (Spearman), Alpha scored 0.600");
-    expect(data.primaryStatement).toContain("on Fixture pipeline runtimes, Read mapping (Runtime), Fast pipeline scored 14 min");
+    expect(data.primaryStatement).toContain("on Fixture pipeline runtimes, Read mapping (Runtime, a proxy protocol), Fast pipeline scored 14 min");
     expect(data.highlights).toHaveLength(2);
     expect(generateHomepageTakeaway([EMPTY_BOARD]).primaryStatement).toBe("No use case has a ranking in this release yet.");
   });

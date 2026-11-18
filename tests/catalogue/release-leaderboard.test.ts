@@ -50,6 +50,19 @@ describe("use-case leaderboards from the release", () => {
     }
   });
 
+  it("labels proxy protocols in the takeaway and llms.txt, and gives no tab to a use case without comparisons", () => {
+    const llms = generateLlmsTxt("r", boards);
+    for (const board of boards.filter((b) => b.rows.length && b.protocol!.relevance === "proxy")) {
+      expect(generateUseCaseTakeaway({ leaderboard: board }).primaryStatement, board.use_case_slug).toContain("a proxy protocol");
+      const line = llms.split("\n").find((l) => l.startsWith(`- [${board.use_case_title}]`))!;
+      expect(line, board.use_case_slug).toContain("a proxy protocol");
+    }
+    for (const board of boards.filter((b) => !b.rows.length)) {
+      expect(board.baseline).toBeNull();
+      expect(homeLeaderboards().some((b) => b.use_case_slug === board.use_case_slug)).toBe(false);
+    }
+  });
+
   it("shows a baseline only when the release scores it on the ranked protocol", () => {
     for (const board of boards) {
       if (!board.baseline) {

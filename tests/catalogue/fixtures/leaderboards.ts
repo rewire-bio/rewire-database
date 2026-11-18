@@ -103,5 +103,5 @@ export const EMPTY_BOARD: LeaderboardResult = {
   baseline: null,
   rows: [],
   unranked: [],
-  empty_reason: "No comparison has been collected for this use case yet.",
+  empty_reason: "No comparable results yet: no comparison has been collected for this use case.",
 };

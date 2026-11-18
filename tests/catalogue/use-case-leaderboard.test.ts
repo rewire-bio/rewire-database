@@ -67,7 +67,7 @@ describe("choosing the protocol a use case is ranked on", () => {
     const unknown = mapping("unknown", [evaluation("alpha", [result("u-a", "count", "3", "unknown")]), evaluation("beta", [result("u-b", "count", "4", "unknown")])]);
     expect(selectRankingComparison(buildComparisons([single, unknown]), [])).toBeNull();
     expect(buildLeaderboard(inputs([single, unknown])).empty_reason).toContain("two or more tools");
-    expect(buildLeaderboard(inputs([])).empty_reason).toBe("No comparison has been collected for this use case yet.");
+    expect(buildLeaderboard(inputs([])).empty_reason).toBe("No comparable results yet: no comparison has been collected for this use case.");
   });
 
   it("labels the column when it is a stratum, not the metric", () => {

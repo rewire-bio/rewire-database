@@ -69,7 +69,7 @@ export function selectRankingComparison(
 }
 
 function emptyReason(comparisons: Comparison[], allowProxy: boolean): string {
-  if (!comparisons.length) return "No comparison has been collected for this use case yet.";
+  if (!comparisons.length) return "No comparable results yet: no comparison has been collected for this use case.";
   if (!allowProxy && !comparisons.some((c) => c.relevance === "direct"))
     return "No comparison in this release is judged directly relevant to this use case, so nothing is ranked.";
   return "No comparison for this use case scores two or more tools on one metric with a stated direction, so nothing is ranked.";

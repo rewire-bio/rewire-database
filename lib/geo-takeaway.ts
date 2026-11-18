@@ -40,9 +40,11 @@ export interface GeoTakeawayData {
 const sourceName = (row: BiologicalModelRankingRow) => row.source?.name ?? "an unnamed source";
 
 /** "on ProteinGym zero-shot DMS substitutions (Spearman), VenusREM scored 0.518, reported by <source>" */
+const proxyNote = (board: LeaderboardResult) => (board.protocol?.relevance === "proxy" ? ", a proxy protocol" : "");
+
 export function rowStatement(board: LeaderboardResult, row: BiologicalModelRankingRow): string {
   const protocol = board.protocol!;
-  return `on ${protocolLabel(protocol)} (${protocol.metric_label}), ${row.model_name} scored ${row.display_value}, reported by ${sourceName(row)}`;
+  return `on ${protocolLabel(protocol)} (${protocol.metric_label}${proxyNote(board)}), ${row.model_name} scored ${row.display_value}, reported by ${sourceName(row)}`;
 }
 
 const best = (board: LeaderboardResult) => board.rows.filter((r) => r.rank === board.rows[0]?.rank);
@@ -52,7 +54,7 @@ export function leadStatement(board: LeaderboardResult): string {
   const leaders = best(board);
   if (leaders.length === 1) return rowStatement(board, leaders[0]);
   const protocol = board.protocol!;
-  return `on ${protocolLabel(protocol)} (${protocol.metric_label}), ${leaders.map((r) => r.model_name).join(" and ")} share the best value, ${leaders[0].display_value}, reported by ${sourceName(leaders[0])}`;
+  return `on ${protocolLabel(protocol)} (${protocol.metric_label}${proxyNote(board)}), ${leaders.map((r) => r.model_name).join(" and ")} share the best value, ${leaders[0].display_value}, reported by ${sourceName(leaders[0])}`;
 }
 
 const capitalise = (text: string) => text.charAt(0).toUpperCase() + text.slice(1);

@@ -7,6 +7,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { buildCatalogue } from "@/lib/catalogue-build";
 import { getUseCaseLeaderboard } from "@/lib/use-case-leaderboard";
+import { SHOW_UNSOURCED_RANKINGS } from "@/lib/ranking-visibility";
 import { UnifiedLeaderboard } from "@/components/catalogue/UnifiedLeaderboard";
 import { GeoTakeaway } from "@/components/catalogue/GeoTakeaway";
 import { generateHomepageTakeaway } from "@/lib/geo-takeaway";
@@ -147,7 +148,7 @@ export default function BenchmarksPage() {
 
       <div className="wrap content">
         {/* Above-the-fold Unified Leaderboard */}
-        <section className={`${styles.leaderboardSection} headline-leaderboard`} aria-labelledby="leaderboard-heading">
+        {SHOW_UNSOURCED_RANKINGS && <section className={`${styles.leaderboardSection} headline-leaderboard`} aria-labelledby="leaderboard-heading">
           <div className={styles.sectionHeader}>
             <span className={styles.sectionKicker}>Frontier Leaderboard</span>
             <h2 id="leaderboard-heading">Biological Foundation Model Rankings</h2>
@@ -165,7 +166,7 @@ export default function BenchmarksPage() {
             initialCategory="structure_prediction"
             rows={precomputedRows}
           />
-        </section>
+        </section>}
 
         {/* Database Search & Supporting Content Wrapped in Explorer */}
         <Explorer

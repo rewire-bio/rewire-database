@@ -30,7 +30,7 @@ describe("connect your agent", () => {
     const text = await llms().text();
     expect(text).toBe(agentGuide(releaseId));
     for (const line of [...pluginCommands, claudeMcpAdd(), kgArchiveUrl(releaseId)]) expect(text).toContain(line);
-    expect(text).toContain("re-checked against new publications every month");
+    expect(text).toContain("Every figure links to the published source it was taken from.");
   });
 
   it("shows the plugin install on the home page box", () => {

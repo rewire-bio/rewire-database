@@ -3,6 +3,8 @@ import { renderToStaticMarkup } from "react-dom/server";
 
 const releaseId = "2026-10-12-cba623554ce3";
 vi.mock("@/lib/data-pin", () => ({ dataPin: () => ({ release_id: releaseId }) }));
+// The route adds the release's leaderboards; this release id has no file here, so it has none.
+vi.mock("@/lib/release-leaderboard", () => ({ allUseCaseLeaderboards: () => [] }));
 const nav = vi.hoisted(() => ({ path: "/" }));
 vi.mock("next/navigation", () => ({ usePathname: () => nav.path }));
 
@@ -30,6 +32,7 @@ describe("connect your agent", () => {
     const text = await llms().text();
     expect(text).toBe(agentGuide(releaseId));
     for (const line of [...pluginCommands, claudeMcpAdd(), kgArchiveUrl(releaseId)]) expect(text).toContain(line);
+    expect(text).not.toContain("re-checked against new publications every month");
     expect(text).toContain("Every figure links to the published source it was taken from.");
   });
 

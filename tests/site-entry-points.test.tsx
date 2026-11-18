@@ -8,7 +8,9 @@ vi.mock("@/lib/catalogue-build", () => ({
     query: { list: () => ({ items: [], total: 0 }), release: () => ({}), hasDiscrepancies: () => false },
   }),
 }));
-vi.mock("@/lib/use-cases-build", () => ({ buildUseCases: () => { throw new Error("The home page must not load use-case evidence"); } }));
+vi.mock("@/lib/use-cases-build", () => ({ buildUseCases: () => { throw new Error("The home page must not load every use case's evidence"); } }));
+// The leaderboard reads only the lead use cases, once per process (lib/release-leaderboard.ts).
+vi.mock("@/lib/release-leaderboard", () => ({ homeLeaderboards: () => [] }));
 vi.mock("@/app/database/Explorer", () => ({ default: () => <div>Search the database</div> }));
 vi.mock("@/components/catalogue/CatalogueEvidence", () => ({ CatalogueEvidence: () => null }));
 vi.mock("@/components/catalogue/CatalogueDownloads", () => ({ CatalogueDownloads: () => null }));

@@ -267,18 +267,16 @@ export interface SchemaDatasetRoot {
 export interface LeaderboardItemRowInput {
   model_id: string;
   model_name: string;
-  creator?: string;
-  category?: string;
+  /** The model's page on this site. */
+  model_href?: string;
   primary_metric_name?: string;
-  raw_metric_value?: number;
-  use_case_index_score?: number;
-  is_baseline?: boolean;
+  display_value?: string;
+  rank?: number | null;
+  source_record_id?: string;
   telemetry?: {
     min_vram_gb?: number | null;
-    inference_latency_ms?: number | null;
-    open_weights?: boolean;
-    license?: string;
-    parameter_count_millions?: number | null;
+    open_weights?: boolean | null;
+    license?: string | null;
   } | null;
 }
 
@@ -299,10 +297,8 @@ export interface ModelSoftwareApplicationOptions {
   creator?: string;
   telemetry?: {
     min_vram_gb?: number | null;
-    inference_latency_ms?: number | null;
-    open_weights?: boolean;
-    license?: string;
-    parameter_count_millions?: number | null;
+    open_weights?: boolean | null;
+    license?: string | null;
   } | null;
   url?: string;
   baseUrl?: string;
@@ -332,10 +328,7 @@ export function generateLeaderboardItemListJsonLd({
   baseUrl = DEFAULT_ORIGIN,
 }: LeaderboardItemListOptions): SchemaItemList {
   const itemListElement: SchemaListItem[] = rows.map((row, index) => {
-    const canonicalPath = row.is_baseline
-      ? `/database/baseline/${row.model_id}/`
-      : `/database/model/${row.model_id}/`;
-    const canonicalUrl = `${baseUrl}${canonicalPath}`;
+    const canonicalUrl = `${baseUrl}${row.model_href ?? `/database/configuration/${encodeURIComponent(row.model_id)}/`}`;
 
     const appItem: SchemaSoftwareApplicationItem = {
       "@type": "SoftwareApplication",
@@ -349,18 +342,11 @@ export function generateLeaderboardItemListJsonLd({
       appItem.memoryRequirements = `${row.telemetry.min_vram_gb} GB VRAM`;
     }
 
-    if (row.creator) {
-      appItem.author = {
-        "@type": "Organization",
-        name: row.creator,
-      };
-    }
-
     if (row.telemetry?.license) {
       appItem.license = row.telemetry.license;
     }
 
-    if (row.telemetry?.open_weights) {
+    if (row.telemetry?.open_weights === true) {
       appItem.offers = {
         "@type": "Offer",
         price: "0",
@@ -368,15 +354,13 @@ export function generateLeaderboardItemListJsonLd({
       };
     }
 
-    if (row.use_case_index_score !== null && row.use_case_index_score !== undefined) {
-      appItem.description = `Capability index score: ${row.use_case_index_score}`;
-    } else if (row.primary_metric_name && row.raw_metric_value !== undefined) {
-      appItem.description = `${row.primary_metric_name}: ${row.raw_metric_value}`;
+    if (row.primary_metric_name && row.display_value) {
+      appItem.description = `${row.primary_metric_name}: ${row.display_value}${row.source_record_id ? ` (result ${baseUrl}/database/result/${encodeURIComponent(row.source_record_id)}/)` : ""}`;
     }
 
     return {
       "@type": "ListItem",
-      position: index + 1,
+      position: row.rank ?? index + 1,
       name: row.model_name,
       url: canonicalUrl,
       item: appItem,

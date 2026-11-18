@@ -44,11 +44,12 @@ export const discrepancyApi = [
 ] as const;
 
 import { generateLlmsTxt } from "./llm-discoverability";
+import type { LeaderboardResult } from "./use-case-leaderboard";
 
 export const reproducePrompt = (recipeId: string, protocolId: string) =>
   `Using the ${PLUGIN} plugin, run recipe ${recipeId} (protocol ${protocolId}) locally and compare the result with the published values.`;
 
 /** The plain-text guide served at /llms.txt and /agents.md. */
-export function agentGuide(releaseId: string): string {
-  return generateLlmsTxt(releaseId);
+export function agentGuide(releaseId: string, boards: readonly LeaderboardResult[] = []): string {
+  return generateLlmsTxt(releaseId, boards);
 }

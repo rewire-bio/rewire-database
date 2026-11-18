@@ -4,33 +4,23 @@ import React, { useId, useMemo, useState } from "react";
 import Link from "next/link";
 import styles from "./UnifiedLeaderboard.module.css";
 import {
-  CATEGORY_PROTOCOL_BASELINES,
-  getUseCaseLeaderboard,
-  normalizeCategory,
-  categoryForSlug,
-  resolveLeaderboardModelHref,
+  REVIEW_STATUS_LABELS,
+  protocolLabel,
   type BiologicalModelRankingRow,
-  type StudyCitation,
-  type BiologicalUseCaseCategory,
-  type ProtocolBaselineAnchor,
+  type LeaderboardResult,
+  type RankingProtocol,
 } from "../../lib/use-case-leaderboard";
-import type { OperationalTelemetry } from "../../lib/operational-telemetry";
+import { NOT_RECORDED, shortFact, type OperationalTelemetry } from "../../lib/operational-telemetry";
 import { generateLeaderboardItemListJsonLd } from "../../lib/catalogue-seo";
 import { safeJsonLd } from "../../lib/catalogue-sharing";
 
-export type {
-  BiologicalModelRankingRow,
-  StudyCitation,
-  BiologicalUseCaseCategory,
-  ProtocolBaselineAnchor,
-  OperationalTelemetry,
-};
+export type { BiologicalModelRankingRow, LeaderboardResult, OperationalTelemetry, RankingProtocol };
 
 export interface UnifiedLeaderboardProps {
-  rows?: BiologicalModelRankingRow[];
-  models?: BiologicalModelRankingRow[];
-  initialCategory?: BiologicalUseCaseCategory | string;
-  useCaseSlug?: string;
+  /** One leaderboard per tab, built from the release (lib/release-leaderboard.ts). */
+  boards: LeaderboardResult[];
+  /** The use case shown first; defaults to the first board. */
+  initialSlug?: string;
   expandedRowId?: string;
   showCategorySwitcher?: boolean;
   showParetoHighlight?: boolean;
@@ -39,75 +29,70 @@ export interface UnifiedLeaderboardProps {
   testId?: string;
 }
 
-export type SortColumn =
-  | "rank"
-  | "index"
-  | "metric"
-  | "vs_baseline"
-  | "latency"
-  | "vram"
-  | "model"
-  | "creator"
-  | "license";
-
+export type SortColumn = "rank" | "metric" | "vs_baseline" | "latency" | "vram" | "model" | "source" | "license";
 export type SortDirection = "asc" | "desc";
 
-export const CATEGORY_TAB_CONFIG: Array<{
-  key: BiologicalUseCaseCategory;
-  slug: string;
-  label: string;
-}> = [
-  { key: "structure_prediction", slug: "structure-prediction", label: "Structure Prediction" },
-  { key: "variant_effect", slug: "variant-effect", label: "Variant Effect" },
-  { key: "protein_design", slug: "protein-design", label: "Protein Design" },
-  { key: "transcriptomics", slug: "transcriptomics", label: "Transcriptomics" },
-  { key: "genomic_grammar", slug: "genomic-grammar", label: "Genomic Grammar" },
-];
+const ORIGIN_LABELS: Record<string, string> = {
+  author_reported: "Developer-reported",
+  independent_paper: "Independent study",
+  rewire_run: "Rewire run",
+  paper_compilation: "Compiled from papers",
+  unreported: "Origin not reported",
+};
+export const originLabel = (origin: string | null) => (origin ? ORIGIN_LABELS[origin] ?? origin.replace(/_/g, " ") : "Origin not reported");
 
-/**
- * Format a number to 1-3 decimal places cleanly.
- */
-function formatNumber(num: number | null | undefined, decimals = 3): string {
-  if (num === null || num === undefined || !Number.isFinite(num)) return "—";
-  return Number(num).toFixed(decimals);
-}
-
-/**
- * Format margin over conventional baseline with explicit sign.
- */
 function formatMargin(delta: number | null | undefined): string {
-  if (delta === null || delta === undefined || !Number.isFinite(delta)) return "—";
+  if (delta === null || delta === undefined || !Number.isFinite(delta)) return NOT_RECORDED;
   const sign = delta > 0 ? "+" : "";
   return `${sign}${delta.toFixed(1)}%`;
 }
 
-/**
- * Formats latency value in ms or s.
- */
 function formatLatency(ms: number | null | undefined): string {
-  if (ms === null || ms === undefined || !Number.isFinite(ms)) return "—";
+  if (ms === null || ms === undefined || !Number.isFinite(ms)) return NOT_RECORDED;
   if (ms < 1) return `${ms.toFixed(1)} ms`;
   if (ms >= 1000) return `${(ms / 1000).toFixed(1)} s`;
   return `${Math.round(ms)} ms`;
 }
 
-/**
- * Formats VRAM value in GB.
- */
 function formatVram(gb: number | null | undefined): string {
-  if (gb === null || gb === undefined || !Number.isFinite(gb)) return "—";
+  if (gb === null || gb === undefined || !Number.isFinite(gb)) return NOT_RECORDED;
   return `${gb} GB`;
 }
 
+const recorded = (text: string | null | undefined) => text || NOT_RECORDED;
+
+function SortHeader({ column, label, sortColumn, sortDirection, onSort, className }: {
+  column: SortColumn; label: React.ReactNode; sortColumn: SortColumn; sortDirection: SortDirection;
+  onSort: (column: SortColumn) => void; className: string;
+}) {
+  const active = sortColumn === column;
+  return (
+    <th
+      scope="col"
+      tabIndex={0}
+      className={`${styles.sortHeader} ${className}`}
+      aria-sort={active ? (sortDirection === "asc" ? "ascending" : "descending") : "none"}
+      onClick={() => onSort(column)}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " " || e.key === "Spacebar") {
+          e.preventDefault();
+          onSort(column);
+        }
+      }}
+    >
+      {label}
+      {active && <span className={styles.sortIndicator}>{sortDirection === "asc" ? "▲" : "▼"}</span>}
+    </th>
+  );
+}
+
 /**
- * Clean, single-view Unified Leaderboard component comparing biological foundation
- * models against protocol baselines and biological noise ceilings per use case.
+ * Per-use-case leaderboard: models ranked on one protocol of the use case, with each value's
+ * source, review status, independence, coverage and open findings.
  */
 export function UnifiedLeaderboard({
-  rows: inputRows,
-  models: inputModels,
-  initialCategory,
-  useCaseSlug,
+  boards,
+  initialSlug,
   expandedRowId,
   showCategorySwitcher = true,
   showParetoHighlight = false,
@@ -116,593 +101,262 @@ export function UnifiedLeaderboard({
   testId = "unified-leaderboard",
 }: UnifiedLeaderboardProps) {
   const componentId = useId();
+  const [activeSlug, setActiveSlug] = useState<string | undefined>(
+    () => boards.find((b) => b.use_case_slug === initialSlug)?.use_case_slug ?? boards[0]?.use_case_slug,
+  );
+  const board = boards.find((b) => b.use_case_slug === activeSlug) ?? boards[0];
+  const protocol = board?.protocol ?? null;
+  const availableRows = useMemo(() => board?.rows ?? [], [board]);
 
-  // Resolve initial active category from initialCategory or useCaseSlug
-  const initialCat = useMemo<BiologicalUseCaseCategory>(() => {
-    if (useCaseSlug) {
-      return categoryForSlug(useCaseSlug);
-    }
-    if (initialCategory) {
-      return normalizeCategory(initialCategory);
-    }
-    return "variant_effect";
-  }, [initialCategory, useCaseSlug]);
+  const [sortColumn, setSortColumn] = useState<SortColumn>("rank");
+  const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
+  const [openWeightsOnly, setOpenWeightsOnly] = useState(false);
+  const [maxVram, setMaxVram] = useState("all");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [expandedRowIds, setExpandedRowIds] = useState<Set<string>>(() => (expandedRowId ? new Set([expandedRowId]) : new Set()));
 
-  const [activeCategory, setActiveCategory] = useState<BiologicalUseCaseCategory>(initialCat);
-  const [sortColumn, setSortColumn] = useState<SortColumn>("index");
-  const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
+  // Columns and filters appear only when some row carries the data they act on.
+  const hasLatency = availableRows.some((r) => r.telemetry.inference_latency_ms !== null);
+  const hasVram = availableRows.some((r) => r.telemetry.min_vram_gb !== null);
+  const hasOpenWeights = availableRows.some((r) => r.telemetry.open_weights !== null);
+  const hasMargin = !!board?.baseline;
+  const hasPareto = availableRows.some((r) => r.pareto_optimal);
+  const columnCount = 8 + Number(hasMargin) + Number(hasLatency) + Number(hasVram);
 
-  const [openWeightsOnly, setOpenWeightsOnly] = useState<boolean>(false);
-  const [maxVram, setMaxVram] = useState<string>("all");
-  const [searchQuery, setSearchQuery] = useState<string>("");
-
-  const [expandedRowIds, setExpandedRowIds] = useState<Set<string>>(() => {
-    return expandedRowId ? new Set([expandedRowId]) : new Set();
-  });
-
-  // Effective rows from props (rows or models)
-  const propRows = inputModels ?? inputRows;
-
-  // Category protocol baselines config
-  const categoryConfig = CATEGORY_PROTOCOL_BASELINES[activeCategory];
-  const primaryMetricName = categoryConfig.metric;
-
-  // Resolve rows: from props or queried directly
-  const availableRows = useMemo(() => {
-    if (propRows === undefined) {
-      return getUseCaseLeaderboard(undefined, { category: activeCategory }).rows;
-    }
-    // Filter rows by category if multiple categories are present
-    const matching = propRows.filter(
-      (r) => normalizeCategory(r.category) === activeCategory
-    );
-    if (matching.length > 0) return matching;
-    // If none matched active category, but rows were explicitly provided
-    if (propRows.length > 0 && !propRows.some((r) => r.category && normalizeCategory(r.category) === activeCategory)) {
-      return propRows;
-    }
-    return matching;
-  }, [propRows, activeCategory]);
-
-  // Handle row expansion
-  const toggleRowExpanded = (modelId: string) => {
+  const toggleRowExpanded = (id: string) =>
     setExpandedRowIds((prev) => {
       const next = new Set(prev);
-      if (next.has(modelId)) {
-        next.delete(modelId);
-      } else {
-        next.add(modelId);
-      }
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
       return next;
     });
-  };
 
-  // Handle column sorting click
   const handleSortClick = (column: SortColumn) => {
     if (sortColumn === column) {
       setSortDirection((prev) => (prev === "asc" ? "desc" : "asc"));
-    } else {
-      setSortColumn(column);
-      // Sensible defaults for initial column click
-      if (
-        column === "rank" ||
-        column === "latency" ||
-        column === "vram" ||
-        column === "model" ||
-        column === "creator" ||
-        column === "license"
-      ) {
-        setSortDirection("asc");
-      } else {
-        setSortDirection("desc");
-      }
+      return;
     }
+    setSortColumn(column);
+    setSortDirection(column === "vs_baseline" ? "desc" : "asc");
   };
 
-  // Handle column sorting keyboard navigation
-  const handleSortKeyDown = (e: React.KeyboardEvent, column: SortColumn) => {
-    if (e.key === "Enter" || e.key === " " || e.key === "Spacebar") {
-      e.preventDefault();
-      handleSortClick(column);
-    }
-  };
-
-  // Filtering
   const filteredRows = useMemo(() => {
     let list = availableRows;
-
-    if (openWeightsOnly) {
-      list = list.filter((r) => r.telemetry?.open_weights === true || r.is_baseline);
-    }
-
+    if (openWeightsOnly) list = list.filter((r) => r.telemetry.open_weights === true || r.is_baseline);
     if (maxVram !== "all") {
       const limit = parseInt(maxVram, 10);
-      list = list.filter((r) => {
-        if (r.is_baseline) return true;
-        if (r.telemetry?.min_vram_gb === null || r.telemetry?.min_vram_gb === undefined) {
-          return false;
-        }
-        return r.telemetry.min_vram_gb <= limit;
-      });
+      list = list.filter((r) => r.is_baseline || (r.telemetry.min_vram_gb !== null && r.telemetry.min_vram_gb <= limit));
     }
-
-    if (searchQuery.trim().length > 0) {
-      const q = searchQuery.trim().toLowerCase();
-      list = list.filter((r) => {
-        return (
-          r.model_name.toLowerCase().includes(q) ||
-          r.creator.toLowerCase().includes(q) ||
-          (r.telemetry?.license && r.telemetry.license.toLowerCase().includes(q))
-        );
-      });
-    }
-
+    const q = searchQuery.trim().toLowerCase();
+    if (q)
+      list = list.filter((r) =>
+        r.model_name.toLowerCase().includes(q) ||
+        (r.model_detail ?? "").toLowerCase().includes(q) ||
+        (r.source?.name ?? "").toLowerCase().includes(q) ||
+        (r.telemetry.license ?? "").toLowerCase().includes(q));
     return list;
   }, [availableRows, openWeightsOnly, maxVram, searchQuery]);
 
-  // Sorting with safe null handling
   const sortedRows = useMemo(() => {
     const list = [...filteredRows];
-
+    // "Best first" for the metric column follows the protocol's direction.
+    const metricSign = protocol?.direction === "lower" ? 1 : -1;
+    const numeric = (a: number | null, b: number | null, sign: number) => {
+      if (a === null && b === null) return 0;
+      if (a === null) return 1;
+      if (b === null) return -1;
+      return sign * (a - b);
+    };
+    const flip = sortDirection === "asc" ? 1 : -1;
     list.sort((a, b) => {
-      let valA: unknown;
-      let valB: unknown;
-      let isNumeric = false;
-      let nullsLast = false;
-
       switch (sortColumn) {
-        case "rank":
-          valA = a.use_case_index_score;
-          valB = b.use_case_index_score;
-          isNumeric = true;
-          // Invert so rank asc means highest index score
-          return sortDirection === "asc"
-            ? (b.use_case_index_score ?? 0) - (a.use_case_index_score ?? 0)
-            : (a.use_case_index_score ?? 0) - (b.use_case_index_score ?? 0);
-        case "index":
-          valA = a.use_case_index_score;
-          valB = b.use_case_index_score;
-          isNumeric = true;
-          break;
-        case "metric":
-          valA = a.raw_metric_value;
-          valB = b.raw_metric_value;
-          isNumeric = true;
-          break;
-        case "vs_baseline":
-          valA = a.margin_over_conventional;
-          valB = b.margin_over_conventional;
-          isNumeric = true;
-          break;
-        case "latency":
-          valA = a.telemetry?.inference_latency_ms;
-          valB = b.telemetry?.inference_latency_ms;
-          isNumeric = true;
-          nullsLast = true;
-          break;
-        case "vram":
-          valA = a.telemetry?.min_vram_gb;
-          valB = b.telemetry?.min_vram_gb;
-          isNumeric = true;
-          nullsLast = true;
-          break;
-        case "model":
-          valA = a.model_name.toLowerCase();
-          valB = b.model_name.toLowerCase();
-          break;
-        case "creator":
-          valA = a.creator.toLowerCase();
-          valB = b.creator.toLowerCase();
-          break;
-        case "license":
-          valA = (a.telemetry?.license || "").toLowerCase();
-          valB = (b.telemetry?.license || "").toLowerCase();
-          break;
-        default:
-          valA = a.use_case_index_score;
-          valB = b.use_case_index_score;
-          isNumeric = true;
-      }
-
-      // Safe null handling: null telemetry placed at end in both asc and desc sorts
-      if (nullsLast) {
-        const aIsNull = valA === null || valA === undefined || !Number.isFinite(valA);
-        const bIsNull = valB === null || valB === undefined || !Number.isFinite(valB);
-        if (aIsNull && bIsNull) return 0;
-        if (aIsNull) return 1;
-        if (bIsNull) return -1;
-      }
-
-      if (isNumeric) {
-        const numA = Number(valA ?? 0);
-        const numB = Number(valB ?? 0);
-        return sortDirection === "asc" ? numA - numB : numB - numA;
-      } else {
-        const strA = String(valA ?? "");
-        const strB = String(valB ?? "");
-        return sortDirection === "asc" ? strA.localeCompare(strB) : strB.localeCompare(strA);
+        case "rank": return flip * ((a.rank ?? Infinity) - (b.rank ?? Infinity)) || a.model_name.localeCompare(b.model_name);
+        case "metric": return numeric(a.raw_metric_value, b.raw_metric_value, flip * metricSign);
+        case "vs_baseline": return numeric(a.margin_over_conventional, b.margin_over_conventional, -flip);
+        case "latency": return numeric(a.telemetry.inference_latency_ms, b.telemetry.inference_latency_ms, flip);
+        case "vram": return numeric(a.telemetry.min_vram_gb, b.telemetry.min_vram_gb, flip);
+        case "model": return flip * a.model_name.localeCompare(b.model_name);
+        case "source": return flip * (a.source?.name ?? "").localeCompare(b.source?.name ?? "");
+        case "license": return flip * (a.telemetry.license ?? "").localeCompare(b.telemetry.license ?? "");
       }
     });
-
     return list;
-  }, [filteredRows, sortColumn, sortDirection]);
+  }, [filteredRows, sortColumn, sortDirection, protocol]);
 
-  // Filter state check
-  const hasActiveFilters =
-    openWeightsOnly || maxVram !== "all" || searchQuery.trim().length > 0;
-
+  const hasActiveFilters = openWeightsOnly || maxVram !== "all" || searchQuery.trim().length > 0;
   const handleClearFilters = () => {
     setOpenWeightsOnly(false);
     setMaxVram("all");
     setSearchQuery("");
   };
 
-  // Top model ceiling signal check
-  const topNonBaseline = sortedRows.find((r) => !r.is_baseline && r.creator !== "Baseline");
-
-  const itemListJsonLd = useMemo(() => {
-    return generateLeaderboardItemListJsonLd({
-      name: `${categoryConfig.title} Leaderboard`,
-      description: `Ranked biological foundation models evaluated on ${categoryConfig.metric} against protocol baselines.`,
-      rows: sortedRows,
-    });
-  }, [categoryConfig, sortedRows]);
+  const title = board?.use_case_title ?? "Use-case";
+  const itemListJsonLd = useMemo(
+    () =>
+      generateLeaderboardItemListJsonLd({
+        name: `${title} leaderboard`,
+        description: protocol
+          ? `Models ranked by ${protocol.metric_label} on ${protocolLabel(protocol)}. Each value links to its result record.`
+          : `No ranking for ${title} in this release.`,
+        rows: availableRows,
+      }),
+    [title, protocol, availableRows],
+  );
 
   const searchInputId = `${componentId}-search`;
   const vramSelectId = `${componentId}-vram`;
   const openWeightsId = `${componentId}-open-weights`;
+  const metricHeader = protocol ? `${protocol.metric_label} ${protocol.direction === "lower" ? "(lower is better)" : "(higher is better)"}` : "Value";
 
   return (
     <div className={`${styles.container} ${className || ""}`} data-testid={testId}>
-      {emitJsonLd && (
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: safeJsonLd(itemListJsonLd) }}
-        />
+      {emitJsonLd && board && board.rows.length > 0 && (
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJsonLd(itemListJsonLd) }} />
       )}
-      {/* Category Switcher Tabs */}
-      {showCategorySwitcher && (
-        <nav
-          className={styles.tabs}
-          aria-label="Biological use-case rankings"
-          role="tablist"
-        >
-          {CATEGORY_TAB_CONFIG.map((tab) => {
-            const isActive = activeCategory === tab.key;
-            return (
-              <button
-                key={tab.key}
-                type="button"
-                role="tab"
-                data-use-case={tab.slug}
-                aria-selected={isActive}
-                className={styles.tabButton}
-                onClick={() => {
-                  setActiveCategory(tab.key);
-                  setExpandedRowIds(new Set());
-                }}
-              >
-                {tab.label}
-              </button>
-            );
-          })}
+      {showCategorySwitcher && boards.length > 1 && (
+        <nav className={styles.tabs} aria-label="Use-case rankings" role="tablist">
+          {boards.map((b) => (
+            <button
+              key={b.use_case_slug}
+              type="button"
+              role="tab"
+              data-use-case={b.use_case_slug}
+              aria-selected={b.use_case_slug === board?.use_case_slug}
+              className={styles.tabButton}
+              onClick={() => {
+                setActiveSlug(b.use_case_slug);
+                setExpandedRowIds(new Set());
+              }}
+            >
+              {b.use_case_title}
+            </button>
+          ))}
         </nav>
       )}
 
-      {/* Filter Controls Bar */}
-      <div className={styles.filterBar} role="search" aria-label="Leaderboard Filters">
-        <div className={styles.filterControls}>
-          <input
-            id={searchInputId}
-            type="search"
-            placeholder="Search models or creators..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className={styles.searchInput}
-            aria-label="Search models or creators"
-          />
+      {protocol && (
+        <p className={styles.protocolNote} data-testid="leaderboard-protocol">
+          Ranked on <strong>{protocolLabel(protocol)}</strong> ({protocol.metric_label}, {protocol.direction} is better).
+          {protocol.relevance === "proxy" && (
+            <> <span className={styles.proxyBadge}>Proxy protocol</span> Reviewers judged this protocol a proxy for the use case, not a direct test of it.</>
+          )}{" "}
+          Only results on this protocol are ranked; other tools are listed below the table.
+        </p>
+      )}
 
-          <label className={styles.checkboxLabel} htmlFor={openWeightsId}>
+      {availableRows.length > 0 && (
+        <div className={styles.filterBar} role="search" aria-label="Leaderboard Filters">
+          <div className={styles.filterControls}>
             <input
-              id={openWeightsId}
-              type="checkbox"
-              name="open_weights_only"
-              checked={openWeightsOnly}
-              onChange={(e) => setOpenWeightsOnly(e.target.checked)}
+              id={searchInputId}
+              type="search"
+              placeholder="Search models or sources..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className={styles.searchInput}
+              aria-label="Search models or sources"
             />
-            Open Weights Only
-          </label>
-
-          <label className={styles.checkboxLabel} htmlFor={vramSelectId}>
-            <span>Max VRAM:</span>
-            <select
-              id={vramSelectId}
-              value={maxVram}
-              onChange={(e) => setMaxVram(e.target.value)}
-              className={styles.filterSelect}
-              aria-label="Filter by maximum VRAM requirement"
-            >
-              <option value="all">All VRAM</option>
-              <option value="16">&lt; 16 GB</option>
-              <option value="24">&lt; 24 GB</option>
-              <option value="48">&lt; 48 GB</option>
-              <option value="80">&lt; 80 GB</option>
-            </select>
-          </label>
-        </div>
-
-        {hasActiveFilters && (
-          <button
-            type="button"
-            onClick={handleClearFilters}
-            className={styles.clearButton}
-          >
-            Clear Filters
-          </button>
-        )}
-      </div>
-
-      {/* Optional Pareto Frontier Highlight Banner */}
-      {showParetoHighlight && (
-        <div className={styles.ceilingBanner} role="region" aria-label="Pareto Frontier Highlights">
-          <span className={styles.ceilingHighlight}>★ Pareto Frontier Screening:</span>{" "}
-          {sortedRows
-            .filter((r) => r.pareto_optimal)
-            .map((r) => (
-              <span key={r.model_id} style={{ marginRight: 12 }}>
-                <strong>{r.model_name}</strong> (
-                {formatLatency(r.telemetry?.inference_latency_ms)}
-                {r.telemetry?.throughput_items_per_sec !== null &&
-                r.telemetry?.throughput_items_per_sec !== undefined
-                  ? `, ${r.telemetry.throughput_items_per_sec} items/sec`
-                  : ""}
-                )
-              </span>
-            ))}
+            {hasOpenWeights && (
+              <label className={styles.checkboxLabel} htmlFor={openWeightsId}>
+                <input
+                  id={openWeightsId}
+                  type="checkbox"
+                  name="open_weights_only"
+                  checked={openWeightsOnly}
+                  onChange={(e) => setOpenWeightsOnly(e.target.checked)}
+                />
+                Open Weights Only
+              </label>
+            )}
+            {hasVram && (
+              <label className={styles.checkboxLabel} htmlFor={vramSelectId}>
+                <span>Max VRAM:</span>
+                <select
+                  id={vramSelectId}
+                  value={maxVram}
+                  onChange={(e) => setMaxVram(e.target.value)}
+                  className={styles.filterSelect}
+                  aria-label="Filter by maximum VRAM requirement"
+                >
+                  <option value="all">All VRAM</option>
+                  <option value="16">&lt; 16 GB</option>
+                  <option value="24">&lt; 24 GB</option>
+                  <option value="48">&lt; 48 GB</option>
+                  <option value="80">&lt; 80 GB</option>
+                </select>
+              </label>
+            )}
+          </div>
+          {hasActiveFilters && (
+            <button type="button" onClick={handleClearFilters} className={styles.clearButton}>
+              Clear Filters
+            </button>
+          )}
         </div>
       )}
 
-      {/* Main Single-View Leaderboard Table */}
-      <div
-        className={styles.tableWrap}
-        tabIndex={0}
-        role="region"
-        aria-label={`${categoryConfig.title} Leaderboard`}
-      >
-        <table className={styles.table} aria-label={`${categoryConfig.title} Leaderboard`}>
+      {showParetoHighlight && hasPareto && (
+        <div className={styles.ceilingBanner} role="region" aria-label="Pareto Frontier Highlights">
+          <span className={styles.ceilingHighlight}>★ Pareto frontier (value against recorded latency):</span>{" "}
+          {sortedRows.filter((r) => r.pareto_optimal).map((r) => (
+            <span key={r.model_id} style={{ marginRight: 12 }}>
+              <strong>{r.model_name}</strong> ({formatLatency(r.telemetry.inference_latency_ms)})
+            </span>
+          ))}
+        </div>
+      )}
+
+      <div className={styles.tableWrap} tabIndex={0} role="region" aria-label={`${title} Leaderboard`}>
+        <table className={styles.table} aria-label={`${title} Leaderboard`}>
           <thead>
             <tr>
               <th scope="col" className={`${styles.toggleCell} col-toggle w-8`} aria-label="Expand details"></th>
-              <th
-                scope="col"
-                tabIndex={0}
-                className={`${styles.sortHeader} col-rank w-12 align-center`}
-                aria-sort={
-                  sortColumn === "rank"
-                    ? sortDirection === "asc"
-                      ? "ascending"
-                      : "descending"
-                    : "none"
-                }
-                onClick={() => handleSortClick("rank")}
-                onKeyDown={(e) => handleSortKeyDown(e, "rank")}
-              >
-                Rank
-                {sortColumn === "rank" && (
-                  <span className={styles.sortIndicator}>
-                    {sortDirection === "asc" ? "▲" : "▼"}
-                  </span>
-                )}
-              </th>
-              <th
-                scope="col"
-                tabIndex={0}
-                className={`${styles.sortHeader} col-model min-w-48 align-left`}
-                aria-sort={
-                  sortColumn === "model"
-                    ? sortDirection === "asc"
-                      ? "ascending"
-                      : "descending"
-                    : "none"
-                }
-                onClick={() => handleSortClick("model")}
-                onKeyDown={(e) => handleSortKeyDown(e, "model")}
-              >
-                Model
-                {sortColumn === "model" && (
-                  <span className={styles.sortIndicator}>
-                    {sortDirection === "asc" ? "▲" : "▼"}
-                  </span>
-                )}
-              </th>
-              <th
-                scope="col"
-                tabIndex={0}
-                className={`${styles.sortHeader} col-creator min-w-28 align-left`}
-                aria-sort={
-                  sortColumn === "creator"
-                    ? sortDirection === "asc"
-                      ? "ascending"
-                      : "descending"
-                    : "none"
-                }
-                onClick={() => handleSortClick("creator")}
-                onKeyDown={(e) => handleSortKeyDown(e, "creator")}
-              >
-                Creator
-                {sortColumn === "creator" && (
-                  <span className={styles.sortIndicator}>
-                    {sortDirection === "asc" ? "▲" : "▼"}
-                  </span>
-                )}
-              </th>
-              <th
-                scope="col"
-                tabIndex={0}
-                className={`${styles.sortHeader} col-index min-w-32 align-right`}
-                aria-sort={
-                  sortColumn === "index"
-                    ? sortDirection === "asc"
-                      ? "ascending"
-                      : "descending"
-                    : "none"
-                }
-                onClick={() => handleSortClick("index")}
-                onKeyDown={(e) => handleSortKeyDown(e, "index")}
-              >
-                Capability Index
-                {sortColumn === "index" && (
-                  <span className={styles.sortIndicator}>
-                    {sortDirection === "asc" ? "▲" : "▼"}
-                  </span>
-                )}
-              </th>
-              <th
-                scope="col"
-                tabIndex={0}
-                className={`${styles.sortHeader} col-metric min-w-28 align-right`}
-                aria-sort={
-                  sortColumn === "metric"
-                    ? sortDirection === "asc"
-                      ? "ascending"
-                      : "descending"
-                    : "none"
-                }
-                onClick={() => handleSortClick("metric")}
-                onKeyDown={(e) => handleSortKeyDown(e, "metric")}
-              >
-                {primaryMetricName}
-                {sortColumn === "metric" && (
-                  <span className={styles.sortIndicator}>
-                    {sortDirection === "asc" ? "▲" : "▼"}
-                  </span>
-                )}
-              </th>
-              <th
-                scope="col"
-                tabIndex={0}
-                className={`${styles.sortHeader} col-margin min-w-32 align-right`}
-                aria-sort={
-                  sortColumn === "vs_baseline"
-                    ? sortDirection === "asc"
-                      ? "ascending"
-                      : "descending"
-                    : "none"
-                }
-                onClick={() => handleSortClick("vs_baseline")}
-                onKeyDown={(e) => handleSortKeyDown(e, "vs_baseline")}
-              >
-                Margin vs Pre-ML
-                {sortColumn === "vs_baseline" && (
-                  <span className={styles.sortIndicator}>
-                    {sortDirection === "asc" ? "▲" : "▼"}
-                  </span>
-                )}
-              </th>
-              <th
-                scope="col"
-                tabIndex={0}
-                className={`${styles.sortHeader} col-latency min-w-24 align-right`}
-                aria-sort={
-                  sortColumn === "latency"
-                    ? sortDirection === "asc"
-                      ? "ascending"
-                      : "descending"
-                    : "none"
-                }
-                onClick={() => handleSortClick("latency")}
-                onKeyDown={(e) => handleSortKeyDown(e, "latency")}
-              >
-                Latency
-                {sortColumn === "latency" && (
-                  <span className={styles.sortIndicator}>
-                    {sortDirection === "asc" ? "▲" : "▼"}
-                  </span>
-                )}
-              </th>
-              <th
-                scope="col"
-                tabIndex={0}
-                className={`${styles.sortHeader} col-vram min-w-20 align-right`}
-                aria-sort={
-                  sortColumn === "vram"
-                    ? sortDirection === "asc"
-                      ? "ascending"
-                      : "descending"
-                    : "none"
-                }
-                onClick={() => handleSortClick("vram")}
-                onKeyDown={(e) => handleSortKeyDown(e, "vram")}
-              >
-                VRAM
-                {sortColumn === "vram" && (
-                  <span className={styles.sortIndicator}>
-                    {sortDirection === "asc" ? "▲" : "▼"}
-                  </span>
-                )}
-              </th>
-              <th
-                scope="col"
-                tabIndex={0}
-                className={`${styles.sortHeader} col-license min-w-28 align-left`}
-                aria-sort={
-                  sortColumn === "license"
-                    ? sortDirection === "asc"
-                      ? "ascending"
-                      : "descending"
-                    : "none"
-                }
-                onClick={() => handleSortClick("license")}
-                onKeyDown={(e) => handleSortKeyDown(e, "license")}
-              >
-                License
-                {sortColumn === "license" && (
-                  <span className={styles.sortIndicator}>
-                    {sortDirection === "asc" ? "▲" : "▼"}
-                  </span>
-                )}
-              </th>
+              <SortHeader column="rank" label="Rank" className="col-rank w-12 align-center" {...{ sortColumn, sortDirection }} onSort={handleSortClick} />
+              <SortHeader column="model" label="Model" className="col-model min-w-48 align-left" {...{ sortColumn, sortDirection }} onSort={handleSortClick} />
+              <SortHeader column="metric" label={metricHeader} className="col-metric min-w-28 align-right" {...{ sortColumn, sortDirection }} onSort={handleSortClick} />
+              {hasMargin && (
+                <SortHeader column="vs_baseline" label={`vs ${board!.baseline!.name}`} className="col-margin min-w-32 align-right" {...{ sortColumn, sortDirection }} onSort={handleSortClick} />
+              )}
+              <th scope="col" className="col-evidence min-w-32 align-left">Evidence</th>
+              <th scope="col" className="col-coverage min-w-20 align-right">Coverage</th>
+              <SortHeader column="source" label="Reported by" className="col-source min-w-28 align-left" {...{ sortColumn, sortDirection }} onSort={handleSortClick} />
+              {hasLatency && <SortHeader column="latency" label="Latency" className="col-latency min-w-24 align-right" {...{ sortColumn, sortDirection }} onSort={handleSortClick} />}
+              {hasVram && <SortHeader column="vram" label="VRAM" className="col-vram min-w-20 align-right" {...{ sortColumn, sortDirection }} onSort={handleSortClick} />}
+              <SortHeader column="license" label="License" className="col-license min-w-28 align-left" {...{ sortColumn, sortDirection }} onSort={handleSortClick} />
             </tr>
           </thead>
           <tbody>
             {sortedRows.length === 0 ? (
               <tr>
-                <td colSpan={10}>
+                <td colSpan={columnCount}>
                   <div className={styles.emptyState}>
-                    <div className={styles.emptyTitle}>No matching models found</div>
-                    <p>No models match the selected filters or search terms.</p>
-                    {hasActiveFilters && (
-                      <button
-                        type="button"
-                        onClick={handleClearFilters}
-                        className={styles.clearButton}
-                      >
-                        Reset Filters
-                      </button>
+                    {availableRows.length === 0 ? (
+                      <>
+                        <div className={styles.emptyTitle}>No ranking for this use case yet</div>
+                        <p>{board?.empty_reason ?? "No comparison in this release can be ranked."}</p>
+                      </>
+                    ) : (
+                      <>
+                        <div className={styles.emptyTitle}>No matching models found</div>
+                        <p>No models match the selected filters or search terms.</p>
+                        {hasActiveFilters && (
+                          <button type="button" onClick={handleClearFilters} className={styles.clearButton}>
+                            Reset Filters
+                          </button>
+                        )}
+                      </>
                     )}
                   </div>
                 </td>
               </tr>
             ) : (
-              sortedRows.map((row, index) => {
+              sortedRows.map((row) => {
                 const isExpanded = expandedRowIds.has(row.model_id);
-                const isBaseline = row.is_baseline || row.creator === "Baseline";
-                const isPareto = row.pareto_optimal;
                 const margin = row.margin_over_conventional;
-                const isPositiveMargin = margin > 0;
-                const rankNumber = index + 1;
-
-                const rowClassName = `${styles.tableRow} ${
-                  isBaseline ? styles.baselineRow : ""
-                } ${isExpanded ? styles.expandedRow : ""} ${isPareto ? "pareto-row" : ""}`;
-
+                const rowClassName = `${styles.tableRow} ${row.is_baseline ? styles.baselineRow : ""} ${isExpanded ? styles.expandedRow : ""} ${row.pareto_optimal ? "pareto-row" : ""}`;
                 return (
                   <React.Fragment key={row.model_id}>
-                    <tr
-                      className={rowClassName}
-                      onClick={() => toggleRowExpanded(row.model_id)}
-                      data-model-id={row.model_id}
-                    >
+                    <tr className={rowClassName} onClick={() => toggleRowExpanded(row.model_id)} data-model-id={row.model_id}>
                       <td className={styles.toggleCell}>
                         <button
                           type="button"
@@ -716,252 +370,163 @@ export function UnifiedLeaderboard({
                             toggleRowExpanded(row.model_id);
                           }}
                         >
-                          <span
-                            className={styles.chevronIcon}
-                            style={{
-                              transform: isExpanded ? "rotate(90deg)" : "rotate(0deg)",
-                            }}
-                          >
-                            ▶
-                          </span>
+                          <span className={styles.chevronIcon} style={{ transform: isExpanded ? "rotate(90deg)" : "rotate(0deg)" }}>▶</span>
                         </button>
                       </td>
-                      <td className={styles.monoValue}>#{rankNumber}</td>
+                      <td className={styles.monoValue}>{row.rank === null ? "" : `#${row.rank}`}</td>
                       <td className={styles.modelCell}>
                         <div className={styles.modelNameWrap}>
-                          <Link
-                            href={resolveLeaderboardModelHref(row)}
-                            prefetch={false}
-                            className={styles.modelLink}
-                            onClick={(e) => e.stopPropagation()}
-                          >
+                          <Link href={row.model_href} prefetch={false} className={styles.modelLink} onClick={(e) => e.stopPropagation()}>
                             {row.model_name}
                           </Link>
-                          {isPareto && (
-                            <span
-                              className={`${styles.paretoBadge} pareto-badge`}
-                              title="Pareto Optimal: Maximum capability per unit latency"
-                            >
-                              ★ Pareto Frontier
-                            </span>
+                          {row.model_detail && <span className={styles.closedWeightsBadge}>{row.model_detail}</span>}
+                          {row.pareto_optimal && (
+                            <span className={`${styles.paretoBadge} pareto-badge`} title="Pareto optimal: best value for its recorded latency">★ Pareto Frontier</span>
                           )}
-                          {isBaseline && (
-                            <span className={styles.baselineBadge}>
-                              [-] Baseline
-                            </span>
+                          {row.is_baseline && <span className={styles.baselineBadge}>[-] Baseline</span>}
+                          {row.open_findings.length > 0 && (
+                            <Link
+                              href={row.open_findings[0].href}
+                              prefetch={false}
+                              className={styles.findingBadge}
+                              title={row.open_findings.map((f) => f.label).join("; ")}
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              {row.open_findings.length === 1 ? "Open discrepancy" : `${row.open_findings.length} open discrepancies`}
+                            </Link>
                           )}
                         </div>
                       </td>
-                      <td>{row.creator}</td>
                       <td>
-                        <span className={styles.indexScore}>
-                          {formatNumber(row.use_case_index_score, 1)}
-                        </span>
+                        <Link
+                          href={`/database/result/${encodeURIComponent(row.source_record_id)}/`}
+                          prefetch={false}
+                          className={styles.monoValue}
+                          title={`Result record ${row.source_record_id}`}
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          {row.display_value}
+                        </Link>
                       </td>
-                      <td>
-                        <span className={styles.monoValue}>
-                          {formatNumber(row.raw_metric_value)}
-                        </span>
-                      </td>
+                      {hasMargin && (
+                        <td>
+                          {row.is_baseline ? "" : (
+                            <span className={margin !== null && margin > 0 ? styles.deltaPositive : styles.deltaNegative}>{formatMargin(margin)}</span>
+                          )}
+                        </td>
+                      )}
                       <td>
                         <span
-                          className={
-                            isPositiveMargin
-                              ? styles.deltaPositive
-                              : styles.deltaNegative
-                          }
+                          className={`${styles.statusBadge} ${row.reviewed_status === "reproduced" ? styles.statusReproduced : row.reviewed_status === "source_checked" ? styles.statusChecked : styles.statusCommunity}`}
+                          data-status={row.reviewed_status}
                         >
-                          {formatMargin(margin)}
-                        </span>
+                          {REVIEW_STATUS_LABELS[row.reviewed_status]}
+                        </span>{" "}
+                        <span className={row.independent ? styles.openWeightsBadge : styles.closedWeightsBadge}>{originLabel(row.origin)}</span>
+                      </td>
+                      <td className={styles.monoValue} title="Comparisons in this use case that score the tool">
+                        {`${row.coverage.evaluated}/${row.coverage.relevant}`}
                       </td>
                       <td>
-                        <span className={styles.monoValue}>
-                          {formatLatency(row.telemetry?.inference_latency_ms)}
-                        </span>
+                        {row.source ? (
+                          <Link href={row.source.href} prefetch={false} title={row.source.name} onClick={(e) => e.stopPropagation()}>
+                            {shortFact(row.source.name, 48)}
+                          </Link>
+                        ) : NOT_RECORDED}
                       </td>
+                      {hasLatency && <td><span className={styles.monoValue}>{formatLatency(row.telemetry.inference_latency_ms)}</span></td>}
+                      {hasVram && <td><span className={styles.monoValue}>{formatVram(row.telemetry.min_vram_gb)}</span></td>}
                       <td>
-                        <span className={styles.monoValue}>
-                          {formatVram(row.telemetry?.min_vram_gb)}
+                        <span className={row.telemetry.open_weights ? styles.openWeightsBadge : styles.closedWeightsBadge} title={row.telemetry.license ?? undefined}>
+                          {shortFact(row.telemetry.license, 28)}
                         </span>
-                      </td>
-                      <td>
-                        {row.telemetry?.open_weights ? (
-                          <span className={styles.openWeightsBadge}>
-                            {row.telemetry.license || "Open"}
-                          </span>
-                        ) : (
-                          <span className={styles.closedWeightsBadge}>
-                            {row.telemetry?.license || "Restricted"}
-                          </span>
-                        )}
                       </td>
                     </tr>
 
-                    {/* Secondary Metrics Drawer Row */}
                     {isExpanded && (
-                      <tr
-                        id={`drawer-${row.model_id}`}
-                        className={`${styles.drawerRow} drawer metric-details`}
-                        data-drawer-for={row.model_id}
-                      >
-                        <td colSpan={10} className={styles.drawerCell}>
+                      <tr id={`drawer-${row.model_id}`} className={`${styles.drawerRow} drawer metric-details`} data-drawer-for={row.model_id}>
+                        <td colSpan={columnCount} className={styles.drawerCell}>
                           <div className={styles.drawerGrid}>
-                            {/* Card 1: Hardware & Deployment */}
                             <div className={styles.drawerCard}>
                               <h4>Hardware & Telemetry</h4>
                               <dl className={styles.drawerDl}>
                                 <dt>Latency:</dt>
-                                <dd>{formatLatency(row.telemetry?.inference_latency_ms)}</dd>
-
+                                <dd>{formatLatency(row.telemetry.inference_latency_ms)}</dd>
                                 <dt>Throughput:</dt>
-                                <dd>
-                                  {row.telemetry?.throughput_items_per_sec !== null &&
-                                  row.telemetry?.throughput_items_per_sec !== undefined
-                                    ? `${row.telemetry.throughput_items_per_sec.toFixed(1)} /s`
-                                    : "Not measured"}
-                                </dd>
-
+                                <dd>{row.telemetry.throughput_items_per_sec !== null ? `${row.telemetry.throughput_items_per_sec.toFixed(1)} /s` : NOT_RECORDED}</dd>
                                 <dt>Min VRAM:</dt>
-                                <dd>{formatVram(row.telemetry?.min_vram_gb)}</dd>
-
+                                <dd>{formatVram(row.telemetry.min_vram_gb)}</dd>
                                 <dt>Parameters:</dt>
-                                <dd>
-                                  {row.telemetry?.parameter_count_millions !== null &&
-                                  row.telemetry?.parameter_count_millions !== undefined
-                                    ? `${row.telemetry.parameter_count_millions}M`
-                                    : "Not reported"}
-                                </dd>
-
+                                <dd>{recorded(row.telemetry.parameters)}</dd>
                                 <dt>Est. Cost:</dt>
-                                <dd>
-                                  {row.telemetry?.estimated_cost_per_1k_evals_usd !== null &&
-                                  row.telemetry?.estimated_cost_per_1k_evals_usd !== undefined
-                                    ? `$${row.telemetry.estimated_cost_per_1k_evals_usd.toFixed(3)} / 1k`
-                                    : "Not estimated"}
-                                </dd>
-
+                                <dd>{row.telemetry.estimated_cost_per_1k_evals_usd !== null ? `$${row.telemetry.estimated_cost_per_1k_evals_usd.toFixed(3)} / 1k` : NOT_RECORDED}</dd>
                                 <dt>Context Window:</dt>
-                                <dd>
-                                  {row.telemetry?.context_window_length !== null &&
-                                  row.telemetry?.context_window_length !== undefined
-                                    ? `${row.telemetry.context_window_length}`
-                                    : "Not reported"}
-                                </dd>
-
+                                <dd>{recorded(row.telemetry.context_window)}</dd>
                                 <dt>License:</dt>
-                                <dd>{row.telemetry?.license || "Unspecified"}</dd>
-
-                                <dt>Weights:</dt>
-                                <dd>
-                                  {row.telemetry?.open_weights
-                                    ? "Open Weights"
-                                    : "Closed / Proprietary"}
-                                </dd>
+                                <dd>{recorded(row.telemetry.license)}</dd>
+                                <dt>Access:</dt>
+                                <dd>{recorded(row.telemetry.access)}</dd>
                               </dl>
                             </div>
 
-                            {/* Card 2: Protocol Baselines & Signal Capture */}
                             <div className={styles.drawerCard}>
-                              <h4>Protocol Baselines & Signal</h4>
+                              <h4>Protocol & Baseline</h4>
                               <dl className={styles.drawerDl}>
-                                <dt>Conventional:</dt>
-                                <dd>
-                                  {row.baselines?.conventional_baseline?.name} (
-                                  {row.baselines?.conventional_baseline?.value})
-                                </dd>
-
-                                <dt>Conv. Margin:</dt>
-                                <dd
-                                  className={
-                                    isPositiveMargin
-                                      ? styles.deltaPositive
-                                      : styles.deltaNegative
-                                  }
-                                >
-                                  {formatMargin(row.margin_over_conventional)}
-                                </dd>
-
-                                <dt>Null Control:</dt>
-                                <dd>
-                                  {row.baselines?.null_baseline?.name} (
-                                  {row.baselines?.null_baseline?.value})
-                                </dd>
-
-                                <dt>Exp. Ceiling:</dt>
-                                <dd>
-                                  {row.baselines?.experimental_ceiling
-                                    ? `${row.baselines.experimental_ceiling.name} (${row.baselines.experimental_ceiling.value})`
-                                    : "Not standardized"}
-                                </dd>
-
-                                <dt className={styles.fullWidth}>
-                                  % Biological Ceiling Captured:
-                                </dt>
-                                <dd className={`${styles.fullWidth} ${styles.deltaPositive}`}>
-                                  {typeof row.fraction_of_biological_ceiling === "number" &&
-                                  Number.isFinite(row.fraction_of_biological_ceiling)
-                                    ? `${row.fraction_of_biological_ceiling.toFixed(1)}%`
-                                    : "Undefined"}
-                                </dd>
+                                <dt>Protocol:</dt>
+                                <dd>{protocol ? protocolLabel(protocol) : NOT_RECORDED}</dd>
+                                <dt>Metric:</dt>
+                                <dd>{protocol ? `${protocol.metric_label}, ${protocol.direction} is better` : NOT_RECORDED}</dd>
+                                {protocol?.endpoint && (
+                                  <>
+                                    <dt>Endpoint:</dt>
+                                    <dd>{protocol.endpoint}</dd>
+                                  </>
+                                )}
+                                <dt>Baseline:</dt>
+                                <dd>{board?.baseline ? `${board.baseline.name} (${board.baseline.display_value})` : "None scored on this protocol"}</dd>
+                                {board?.baseline && !row.is_baseline && (
+                                  <>
+                                    <dt>Margin:</dt>
+                                    <dd className={margin !== null && margin > 0 ? styles.deltaPositive : styles.deltaNegative}>{formatMargin(margin)}</dd>
+                                  </>
+                                )}
+                                <dt>Coverage:</dt>
+                                <dd>{`${row.coverage.evaluated} of ${row.coverage.relevant} comparisons in this use case`}</dd>
                               </dl>
                             </div>
 
-                            {/* Card 3: Scientific Provenance & Verification */}
                             <div className={styles.drawerCard}>
                               <h4>Scientific Provenance</h4>
                               <dl className={styles.drawerDl}>
-                                <dt>Source Record:</dt>
+                                <dt>Result record:</dt>
                                 <dd>
-                                  <Link
-                                    href="/evidence/"
-                                    prefetch={false}
-                                    className={styles.provenanceLink}
-                                  >
+                                  <Link href={`/database/result/${encodeURIComponent(row.source_record_id)}/`} prefetch={false} className={styles.provenanceLink}>
                                     {row.source_record_id}
                                   </Link>
                                 </dd>
-
-                                <dt>Verification:</dt>
+                                <dt>Source:</dt>
                                 <dd>
-                                  <span
-                                    className={`${styles.statusBadge} ${
-                                      row.reviewed_status === "reproduced"
-                                        ? styles.statusReproduced
-                                        : row.reviewed_status === "community_verified"
-                                        ? styles.statusCommunity
-                                        : styles.statusChecked
-                                    }`}
-                                  >
-                                    {row.reviewed_status}
-                                  </span>
+                                  {row.source ? (
+                                    <Link href={row.source.href} prefetch={false} className={styles.provenanceLink}>
+                                      {row.source.name}
+                                    </Link>
+                                  ) : NOT_RECORDED}
+                                  {row.source?.doi && <> [{row.source.doi}]</>}
                                 </dd>
-
-                                <dt>Pareto Status:</dt>
+                                <dt>Review:</dt>
+                                <dd>{REVIEW_STATUS_LABELS[row.reviewed_status]}</dd>
+                                <dt>Who ran it:</dt>
+                                <dd>{originLabel(row.origin)}</dd>
+                                <dt>Discrepancies:</dt>
                                 <dd>
-                                  {row.pareto_optimal ? (
-                                    <span className={styles.paretoBadge}>
-                                      ★ Pareto Frontier
-                                    </span>
-                                  ) : (
-                                    "Dominated / Uncalibrated"
-                                  )}
+                                  {row.open_findings.length
+                                    ? row.open_findings.map((f, i) => (
+                                      <span key={f.id}>{i ? "; " : ""}<Link href={f.href} prefetch={false}>{f.label}</Link></span>
+                                    ))
+                                    : "No open finding"}
                                 </dd>
-
                                 <dt>Classification:</dt>
-                                <dd>{isBaseline ? "Reference Baseline" : "Frontier Model"}</dd>
-
-                                {row.study_citations && row.study_citations.length > 0 && (
-                                  <>
-                                    <dt className={styles.fullWidth}>Benchmark Studies:</dt>
-                                    <dd className={styles.fullWidth}>
-                                      {row.study_citations.map((c) => (
-                                        <div key={c.study_id} style={{ marginBottom: 4 }}>
-                                          <strong>{c.title}</strong> — {c.journal} {c.year} [{c.doi}]
-                                        </div>
-                                      ))}
-                                    </dd>
-                                  </>
-                                )}
+                                <dd>{row.is_baseline ? "Reference Baseline" : "Model or method"}</dd>
                               </dl>
                             </div>
                           </div>
@@ -976,37 +541,37 @@ export function UnifiedLeaderboard({
         </table>
       </div>
 
-      {/* Assay Noise Ceiling Banner */}
-      <footer className={styles.ceilingBanner} aria-label="Assay Ceiling Summary">
-        {categoryConfig.experimental_ceiling ? (
+      {board && board.unranked.length > 0 && (
+        <details className={styles.unrankedList} data-testid="leaderboard-unranked">
+          <summary>
+            {board.unranked.length} {board.unranked.length === 1 ? "tool is" : "tools are"} evaluated elsewhere in this use case but not on this protocol, so not ranked
+          </summary>
+          <ul>
+            {board.unranked.map((m) => (
+              <li key={m.model_id}>
+                <Link href={m.model_href} prefetch={false}>{m.model_name}</Link>{" "}
+                <span className={styles.monoValue}>{`(${m.coverage.evaluated} of ${m.coverage.relevant} comparisons)`}</span>
+              </li>
+            ))}
+          </ul>
+        </details>
+      )}
+
+      <footer className={styles.ceilingBanner} aria-label="Baseline Summary">
+        {board?.baseline ? (
           <div>
             <span className={styles.ceilingHighlight}>
-              Assay Noise Ceiling / Assay Replicate Noise Ceiling: {categoryConfig.metric} ={" "}
-              {categoryConfig.experimental_ceiling.value}
-            </span>{" "}
-            ({categoryConfig.experimental_ceiling.assay_replicate_noise}).{" "}
-            {topNonBaseline &&
-              typeof topNonBaseline.fraction_of_biological_ceiling === "number" &&
-              Number.isFinite(topNonBaseline.fraction_of_biological_ceiling) && (
-              <span>
-                Top model (<strong>{topNonBaseline.model_name}</strong>) captures{" "}
-                <strong>
-                  {topNonBaseline.fraction_of_biological_ceiling.toFixed(1)}%
-                </strong>{" "}
-                of reproducible physical assay variance.
-              </span>
-            )}
+              Baseline on this protocol: {board.baseline.name} ({board.baseline.display_value})
+            </span>
+            . Margins are percent differences from this value, positive when better.
           </div>
         ) : (
           <div>
-            <span className={styles.ceilingHighlight}>
-              Protocol Baseline: Conventional baseline{" "}
-              {categoryConfig.conventional_baseline.name} (
-              {categoryConfig.conventional_baseline.value})
-            </span>
-            . Experimental noise floor not yet standardized for this biological assay.
+            <span className={styles.ceilingHighlight}>No baseline scored on this protocol.</span> Margins are shown only where the
+            same study scores the use case&apos;s baseline method.
           </div>
         )}
+        {board && <> <Link href={board.use_case_href} prefetch={false}>All comparisons for {board.use_case_title}</Link></>}
       </footer>
     </div>
   );

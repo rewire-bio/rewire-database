@@ -6,8 +6,7 @@ import {
 import type { Metadata } from "next";
 import Image from "next/image";
 import { buildCatalogue } from "@/lib/catalogue-build";
-import { getUseCaseLeaderboard } from "@/lib/use-case-leaderboard";
-import { SHOW_UNSOURCED_RANKINGS } from "@/lib/ranking-visibility";
+import { homeLeaderboards } from "@/lib/release-leaderboard";
 import { UnifiedLeaderboard } from "@/components/catalogue/UnifiedLeaderboard";
 import { GeoTakeaway } from "@/components/catalogue/GeoTakeaway";
 import { generateHomepageTakeaway } from "@/lib/geo-takeaway";
@@ -25,7 +24,7 @@ import contested from "@/components/catalogue/Contested.module.css";
 const pageMetadata = {
   title: "Independent Benchmarks for Biological Models | rewirebio.io",
   description:
-    "Which biological model works best for your task? Independent benchmark comparisons across biological use cases against protocol baselines and experimental assay noise ceilings with operational latency, memory, and cost telemetry.",
+    "Which biological model works best for your task? Published benchmark results ranked per biological use case on one protocol at a time, each linked to its source, with baselines where the same study scores them.",
   alternates: { canonical: "https://benchmarks.rewirebio.io/" },
 };
 export const metadata: Metadata = {
@@ -41,22 +40,22 @@ const HOME_PILLARS = [
   {
     src: "/images/pillars/use-case-rankings.png",
     title: "Per-Use-Case Rankings",
-    description: "No monolithic scores; models ranked strictly by biological domain.",
+    description: "No composite scores; models ranked within one protocol per use case.",
   },
   {
     src: "/images/pillars/protocol-baselines.png",
     title: "Protocol Baselines",
-    description: "Anchored against pre-ML conventional baselines and assay noise ceilings.",
+    description: "A baseline appears only where the same study scores it on the same protocol.",
   },
   {
     src: "/images/pillars/pareto-efficiency.png",
-    title: "Pareto Efficiency",
-    description: "Capability index vs. latency, GPU memory (VRAM), and execution cost.",
+    title: "Independence and Coverage",
+    description: "Each rank shows who produced the result and how many of the use case's comparisons score the model.",
   },
   {
     src: "/images/pillars/source-evidence.png",
     title: "Source Evidence",
-    description: "Transparent distinction between open weights, gated weights, and APIs.",
+    description: "Every value links to its result record, its source and any open discrepancy.",
   },
 ] as const;
 
@@ -65,14 +64,8 @@ export default function BenchmarksPage() {
   const useCases = (catalogue.coverage.use_cases as { use_cases?: number } | undefined)?.use_cases ?? 0;
   const disagreements = contestedList({})?.totals;
 
-  // Precompute multi-category rows for instantaneous SSR and client switching
-  const precomputedRows = [
-    ...getUseCaseLeaderboard(undefined, { category: "structure_prediction" }).rows,
-    ...getUseCaseLeaderboard(undefined, { category: "variant_effect" }).rows,
-    ...getUseCaseLeaderboard(undefined, { category: "protein_design" }).rows,
-    ...getUseCaseLeaderboard(undefined, { category: "transcriptomics" }).rows,
-    ...getUseCaseLeaderboard(undefined, { category: "genomic_grammar" }).rows,
-  ];
+  // The lead use cases that have a ranking in this release, built from the release at render time.
+  const boards = homeLeaderboards();
 
   return (
     <>
@@ -86,7 +79,7 @@ export default function BenchmarksPage() {
           `Release ${catalogue.released_at.slice(0, 10)}`,
         ]}
         title="Independent Benchmarks for Biological Models"
-        intro="Which biological model works best for your task? Independent, reproducible capability rankings across biological use cases against protocol baselines and experimental assay noise ceilings with operational latency, memory, and cost telemetry."
+        intro="Which biological model works best for your task? Published benchmark results ranked per biological use case, on one protocol at a time, each linked to the source it was taken from."
       >
         <nav className={styles.journeys} aria-label="Ways to start">
           {useCases > 0 && (
@@ -148,23 +141,22 @@ export default function BenchmarksPage() {
 
       <div className="wrap content">
         {/* Above-the-fold Unified Leaderboard */}
-        {SHOW_UNSOURCED_RANKINGS && <section className={`${styles.leaderboardSection} headline-leaderboard`} aria-labelledby="leaderboard-heading">
+        {boards.length > 0 && <section className={`${styles.leaderboardSection} headline-leaderboard`} aria-labelledby="leaderboard-heading">
           <div className={styles.sectionHeader}>
-            <span className={styles.sectionKicker}>Frontier Leaderboard</span>
-            <h2 id="leaderboard-heading">Biological Foundation Model Rankings</h2>
+            <span className={styles.sectionKicker}>Use-case Leaderboards</span>
+            <h2 id="leaderboard-heading">Biological Model Rankings</h2>
             <p className={styles.sectionIntro}>
-              Compare top-ranked biological AI models across key use cases. Switch categories to view task-specific capability indexes, primary metrics, margins over conventional baselines, and operational telemetry.
+              Each tab ranks models on one protocol of a use case, from the published results in this release. Open a row for its source, review status and baseline.
             </p>
           </div>
           <GeoTakeaway
-            data={generateHomepageTakeaway()}
+            data={generateHomepageTakeaway(boards)}
             testId="home-geo-takeaway"
           />
           <UnifiedLeaderboard
+            boards={boards}
             showCategorySwitcher={true}
             showParetoHighlight={true}
-            initialCategory="structure_prediction"
-            rows={precomputedRows}
           />
         </section>}
 

@@ -22,6 +22,11 @@ export type ComparisonCell = {
   qualifier: string | null;
   /** Other metrics of the same evaluation, for strata tables ("R 0.873", "Count (sample A) 12"). */
   secondary: (ShownValue & { label: string })[];
+  /** The number on the column's display scale (percent when the column shows percentages), when there is one. */
+  value?: number | null;
+  /** The result record the value is read from, and its evaluation, when a value was recorded. */
+  resultId?: string | null;
+  evaluationId?: string | null;
 };
 export type ComparisonRow = {
   id: string;
@@ -222,7 +227,10 @@ function finishCells(rows: ComparisonRow[], columns: ComparisonColumn[]) {
     const cells = rows.map((row) => row.cells[i] as Draft);
     const decimals = columnDecimals(cells.map((c) => c.reading));
     for (const cell of cells) {
-      if (cell.reading) cell.shown = formatReading(cell.reading, decimals);
+      if (cell.reading) {
+        cell.shown = formatReading(cell.reading, decimals);
+        if (cell.resultId) cell.value = cell.reading.value;
+      }
       delete (cell as Partial<Draft>).reading;
     }
   });
@@ -279,6 +287,7 @@ export function buildComparisons(mappings: ResolvedMapping[]): Comparison[] {
           row.resultIds.push(...measured.map((r) => r.id));
           const cell: Draft = {
             ...emptyCell(), printed: lead?.printed ?? null, numeric: lead?.numeric ?? null,
+            ...(lead ? { resultId: lead.id, evaluationId: e.evaluation.id } : {}),
             reading: lead ? readValue(lead, percent.has(scaleKey(lead.metric))) : null,
             qualifier: leads.length > 1 && lead.qualifier ? acronymCase(distinguishing(leads.map((r) => r.qualifier ?? ""))[0]) : null,
             secondary: secondaryValues(measured.filter((r) => r !== lead), percent),
@@ -304,7 +313,7 @@ export function buildComparisons(mappings: ResolvedMapping[]): Comparison[] {
         row.resultIds.push(...measured.map((r) => r.id));
         columns.forEach((column, i) => {
           const r = measured.find((x) => x.metric === column.metric && x.qualifier === column.qualifier);
-          if (r) row.cells[i] = { ...emptyCell(), printed: r.printed, numeric: r.numeric, reading: readValue(r, percent.has(scaleKey(r.metric))) } as Draft;
+          if (r) row.cells[i] = { ...emptyCell(), printed: r.printed, numeric: r.numeric, resultId: r.id, evaluationId: e.evaluation.id, reading: readValue(r, percent.has(scaleKey(r.metric))) } as Draft;
         });
         rows.set(configuration.id, row);
       }

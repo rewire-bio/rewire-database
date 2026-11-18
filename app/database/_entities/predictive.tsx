@@ -6,8 +6,8 @@ import { catalogueText } from "@/lib/catalogue-text";
 import Link from "next/link";
 import { Fragment } from "react";
 import { buildCatalogue } from "@/lib/catalogue-build";
-import { getModelTelemetry } from "@/lib/operational-telemetry";
-import { SHOW_UNSOURCED_RANKINGS } from "@/lib/ranking-visibility";
+import { NOT_RECORDED, shortFact, telemetryFromRecord } from "@/lib/operational-telemetry";
+import { rankingsForRecord } from "@/lib/release-leaderboard";
 import { generateModelSoftwareApplicationJsonLd } from "@/lib/catalogue-seo";
 import { GeoTakeaway } from "@/components/catalogue/GeoTakeaway";
 import { generateModelTakeaway } from "@/lib/geo-takeaway";
@@ -290,27 +290,18 @@ export function PredictiveEntityDetail({ detail }: { detail: RecordDetail }) {
             }
           />
           {/* Model GEO Takeaway */}
-          {SHOW_UNSOURCED_RANKINGS && record.kind === "model" && (
+          {record.kind === "model" && (
             <GeoTakeaway
-              data={generateModelTakeaway(record as unknown as { id: string; name: string; kind?: string })}
+              data={generateModelTakeaway(record, rankingsForRecord(record.id), telemetryFromRecord(record))}
               variant="card"
               testId="model-geo-takeaway"
             />
           )}
           {/* Model Capabilities & Hardware Requirements Capability Card */}
-          {SHOW_UNSOURCED_RANKINGS && (() => {
-            const telemetry = getModelTelemetry(
-              record.id,
-              record.name,
-              record as unknown as Record<string, unknown>,
-            );
-            const accessText = (record.attributes?.access as string) || "";
+          {/* Model Capabilities & Hardware Requirements: only what the record carries */}
+          {(() => {
+            const telemetry = telemetryFromRecord(record);
             const versionText = (record.attributes?.version as string) || (record.attributes?.checkpoint as string) || "";
-
-            const primarySource = detail.sources?.[0];
-            const profileFacts = (record.attributes?.profile as { facts?: Array<{ label: string; value: string }> } | undefined)?.facts;
-            const orgFact = profileFacts?.find((f) => /organization|laboratory|institution|creator|author/i.test(f.label))?.value;
-            const resolvedCreator = orgFact || primarySource?.name || (record.attributes?.creator as string) || undefined;
 
             const softwareAppJsonLd = generateModelSoftwareApplicationJsonLd({
               id: record.id,
@@ -318,10 +309,17 @@ export function PredictiveEntityDetail({ detail }: { detail: RecordDetail }) {
               description: `${record.name} biological foundation model.`,
               applicationCategory: "Bioinformatics Foundation Model",
               operatingSystem: "Linux, macOS, Windows",
-              creator: resolvedCreator,
               telemetry,
               url: `https://benchmarks.rewirebio.io${recordHref(record)}`,
             });
+            const tiles: [string, string][] = [
+              ["Parameters", telemetry.parameters ?? NOT_RECORDED],
+              ["Minimum VRAM", telemetry.min_vram_gb !== null ? `${telemetry.min_vram_gb} GB` : NOT_RECORDED],
+              ["Inference Latency", telemetry.inference_latency_ms !== null ? `${telemetry.inference_latency_ms} ms` : NOT_RECORDED],
+              ["Context Window", telemetry.context_window ?? NOT_RECORDED],
+              ["Access", telemetry.access ?? NOT_RECORDED],
+              ["License", telemetry.license ?? NOT_RECORDED],
+            ];
 
             return (
               <section className={`${styles.section} capability-card`} id="capabilities">
@@ -335,65 +333,16 @@ export function PredictiveEntityDetail({ detail }: { detail: RecordDetail }) {
                 )}
                 <h2>Model Capabilities & Hardware Requirements</h2>
                 <p>
-                  Engineering prerequisites and deployment profile for <strong>{record.name}</strong>:
+                  Deployment facts recorded for <strong>{record.name}</strong>. Fields the record does not carry are marked {NOT_RECORDED.toLowerCase()}.
                 </p>
                 <div className={styles.capabilityGrid}>
-                  <div className={styles.capabilityTile}>
-                    <span className={styles.capabilityLabel}>Parameters</span>
-                    <span className={styles.capabilityValue}>
-                      {telemetry.parameter_count_millions !== null && telemetry.parameter_count_millions !== undefined
-                        ? telemetry.parameter_count_millions >= 1000
-                          ? `${(telemetry.parameter_count_millions / 1000).toFixed(1)}B`
-                          : `${telemetry.parameter_count_millions}M`
-                        : "Not reported"}
-                    </span>
-                  </div>
-                  <div className={styles.capabilityTile}>
-                    <span className={styles.capabilityLabel}>Minimum VRAM</span>
-                    <span className={styles.capabilityValue}>
-                      {telemetry.min_vram_gb !== null && telemetry.min_vram_gb !== undefined ? `${telemetry.min_vram_gb} GB` : "CPU / Cloud"}
-                    </span>
-                  </div>
-                  <div className={styles.capabilityTile}>
-                    <span className={styles.capabilityLabel}>Inference Latency</span>
-                    <span className={styles.capabilityValue}>
-                      {telemetry.inference_latency_ms !== null && telemetry.inference_latency_ms !== undefined
-                        ? telemetry.inference_latency_ms < 1
-                          ? `${telemetry.inference_latency_ms.toFixed(1)} ms`
-                          : telemetry.inference_latency_ms >= 1000
-                          ? `${(telemetry.inference_latency_ms / 1000).toFixed(1)} s`
-                          : `${Math.round(telemetry.inference_latency_ms)} ms`
-                        : "Not benchmarked"}
-                    </span>
-                  </div>
-                  <div className={styles.capabilityTile}>
-                    <span className={styles.capabilityLabel}>Context Window</span>
-                    <span className={styles.capabilityValue}>
-                      {telemetry.context_window_length !== null && telemetry.context_window_length !== undefined
-                        ? `${telemetry.context_window_length.toLocaleString()} tokens`
-                        : "Sequence length variable"}
-                    </span>
-                  </div>
-                  <div className={styles.capabilityTile}>
-                    <span className={styles.capabilityLabel}>Weights Access</span>
-                    <span className={styles.capabilityValue}>
-                      {telemetry.open_weights
-                        ? "Open Weights"
-                        : telemetry.min_vram_gb !== null && telemetry.min_vram_gb !== undefined
-                        ? "Gated Weights"
-                        : "Hosted API Only"}
-                    </span>
-                  </div>
-                  <div className={styles.capabilityTile}>
-                    <span className={styles.capabilityLabel}>License</span>
-                    <span className={styles.capabilityValue}>{telemetry.license || "Not stated"}</span>
-                  </div>
+                  {tiles.map(([label, value]) => (
+                    <div key={label} className={styles.capabilityTile}>
+                      <span className={styles.capabilityLabel}>{label}</span>
+                      <span className={styles.capabilityValue} title={value}>{shortFact(value, 60)}</span>
+                    </div>
+                  ))}
                 </div>
-                {accessText && (
-                  <p className={styles.accessNote}>
-                    <strong>Deployment Note:</strong> {accessText}
-                  </p>
-                )}
                 {versionText && (
                   <p className={styles.versionNote}>
                     <strong>Evaluated Checkpoint:</strong> {versionText}

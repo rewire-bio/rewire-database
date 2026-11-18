@@ -232,14 +232,14 @@ Use cases are identified by standardized slugs:
 ${SHOW_UNSOURCED_RANKINGS ? `## 3. Decision Framework for AI Agents
 When selecting models for downstream bioinformatic pipelines:
 1. **High-Throughput In Silico Mutagenesis ($10^6$ variants)**:
-   - Filter criteria: \\`inference_latency_ms <= 50\\` or \\`throughput_items_per_sec >= 20\\`
-   - Require: \\`pareto_optimal === true\\`
+   - Filter criteria: \`inference_latency_ms <= 50\` or \`throughput_items_per_sec >= 20\`
+   - Require: \`pareto_optimal === true\`
    - Recommended: PoET-2 (42 ms/seq, 16GB VRAM, Apache-2.0)
 2. **Workstation / Consumer GPU Deployment ($\\le 24$GB VRAM)**:
-   - Filter criteria: \\`min_vram_gb <= 24\\` and \\`open_weights === true\\`
+   - Filter criteria: \`min_vram_gb <= 24\` and \`open_weights === true\`
    - Recommended: Boltz-1 (lDDT 88.2, 16GB VRAM, MIT) or ESM-2 3B (24GB VRAM, MIT)
 3. **Frontier Accuracy / Unconstrained Compute**:
-   - Filter criteria: Sort by \\`use_case_index_score\\` descending
+   - Filter criteria: Sort by \`use_case_index_score\` descending
    - Recommended: AlphaFold 3 (lDDT 89.5, 80GB VRAM)
 
 ` : ``}## 4. Machine-Readable Schema Contracts (JSON Schema)

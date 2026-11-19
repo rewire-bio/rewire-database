@@ -192,22 +192,41 @@ const TOKENS: { name: TokenName; re: RegExp }[] = [
   { name: "addr_sentence", re: /\b(?:sentence|sentences)\s+(?:beginning|starting|reading)\s*['‘’"](?<sent>[^'’"]{4,})['’"]/i },
   { name: "addr_quote", re: /(?<![\p{L}\p{N}_])['‘’"](?<quote>[^'’"]{40,})['’"]/u },
   { name: "addr_para", re: /\b(?:paragraph|para\.?|bullet|sentence)\s*(?<para>\d{1,3})\b/i },
-  { name: "addr_jsonp", re: /\b(?<jp2>(?:\$|entries|data|results|root)(?:\.[\p{L}\p{N}_%+() -]+|\[\d+\])+)/u },
+  { name: "addr_jsonp", re: /\b(?<jp2>(?:\$|entries|data|results|root)(?!\.(?:json|jsonl|csv|tsv|txt|xml|html|ya?ml)\b)(?:\.[\p{L}\p{N}_%+() -]+|\[\d+\])+)/u },
   // Qualifiers: which rendering of the source, which page, which commit, and loose notes.
-  { name: "qual_layer", re: /\(?\b(?:text-layer|PDF page text|PDF caption|PDF text|PDF|XML|HTML|JATS|JSON|CSV|TSV|source CSV|source data|SI)\b[\p{L}\p{N}_.: /\u2013-]{0,24}\)?/iu },
+  // The trailing run reads "text-layer line 12" and "PDF page 4" as one qualifier. It stops
+  // before a JSON path, because `JSON entries[63].score_avg` names the layer and then the
+  // value, and a qualifier that swallowed `entries` left the path with no head: 1,048 stored
+  // locators addressed nothing for that reason.
+  { name: "qual_layer", re: /\(?\b(?:text-layer|PDF page text|PDF caption|PDF text|PDF|XML|HTML|JATS|JSON|CSV|TSV|source CSV|source data|SI)\b(?:(?!\s*(?:\$|entries|data|results|root|leaderboard)[[.])[\p{L}\p{N}_.: /\u2013-]){0,24}\)?/iu },
   { name: "qual_layerline", re: /\(?\btext-layer line\s*\d+\)?/i },
   { name: "qual_page", re: /\(?\b(?:page|pages|p\.|pp\.)\s*\d+(?:\s*of\s*\d+)?\)?/i },
   { name: "qual_commit", re: /\bat commit [0-9a-f]{7,40}\b/i },
-  { name: "qual_paren", re: /\([^()]{0,44}\)/ },
+  // A parenthetical is a note, except where it holds a sheet name. `Table S9 (sheet 'Table S9')
+  // cell I9` loses the sheet entirely to this token, because the token starts at the bracket and
+  // the bracket stands to the left of the word the sheet token needs: 81 of the 958 locators
+  // whose quoted sheet name the grammar read wrong were this, and the sheet anchor was absent
+  // rather than truncated.
+  { name: "qual_paren", re: /\((?!\s*sheets?\b)[^()]{0,44}\)/i },
   // Addresses.
   { name: "addr_xml", re: /\bXML\s+(?:data\s+)?(?:tr\s+)?row\s*(?<xrow>\d+)[ ,]*(?:column|col)\s*(?<xcol>\d+)/i },
   { name: "addr_range", re: /(?:!|\bcells?\s+)(?<c1>[A-Z]{1,3}\d{1,6}):(?<c2>[A-Z]{1,3}\d{1,6})/ },
   { name: "addr_sheetcell", re: /(?:!|\bcell\s+|\bcells\s+|\b)(?<cell>[A-Z]{1,3}\d{1,6})\b(?![\p{L}\p{N}_.(])/u },
   { name: "addr_line", re: /\b(?:line|lines)\s*(?<line>\d{1,7})\b/i },
   { name: "addr_rowno", re: /\b(?:data\s+)?rows?\s*(?<rowno>\d{1,7})\b(?!\s*[:=])/i },
-  { name: "addr_json", re: /\b(?<jp>(?:\$|data|entries|results|root|leaderboard)(?:\.[\p{L}\p{N}_%+() -]+|\[\d+\])+)/u },
+  // A head followed by a file extension is a file name, not a path into a document.
+  // `leaderboard.json data.10shot` names the file and then the path, and reading the file name
+  // as the path addressed the whole document on 1,845 stored locators.
+  { name: "addr_json", re: /\b(?<jp>(?:\$|data|entries|results|root|leaderboard)(?!\.(?:json|jsonl|csv|tsv|txt|xml|html|ya?ml)\b)(?:\.[\p{L}\p{N}_%+() -]+|\[\d+\])+)/u },
   // Anchors.
-  { name: "anchor_sheet", re: /\bsheets?\s*['‘’"]?(?<sheet>[^'’",;()!]{1,60}?)['’"]?(?=\s*[,;)!]|\s*$|\s+cell|\s+[A-Z]{1,3}\d)/i },
+  // A quoted sheet name ends at its closing quote and nowhere else. The unquoted form has to
+  // guess where the name stops, and the lookahead that does the guessing stops it before a
+  // token shaped like a cell reference, which is right for `sheet Data B12` and wrong for
+  // `sheet 'Table S9'`: the name is `Table S9` and the old token read `Table`, leaving `S9` for
+  // the cell-address token to claim. Measured on 2026-11-18: 877 stored locators parsed the
+  // sheet name wrong that way, every one of them a quoted name whose last token reads as a
+  // cell. The quoted alternative stands first, so the closing quote wins.
+  { name: "anchor_sheet", re: /\bsheets?\s*(?:['‘’"](?<qsheet>[^'’"]{1,60})['’"]|(?<sheet>[^'’",;()!]{1,60}?)(?=\s*[,;)!]|\s*$|\s+cell|\s+[A-Z]{1,3}\d))/i },
   { name: "anchor_bangsheet", re: /['‘’"]?(?<bsheet>[\p{L}\p{N}_ .%+-]{1,50})['’"]?(?=!)/u },
   { name: "anchor_table", re: new RegExp(`\\b(?:(?<tcontainer>${CONTAINER})\\s+)?Tables?\\s*(?<table>${TNUM})\\b\\.?`, "i") },
   { name: "anchor_figure", re: new RegExp(`\\b(?:(?<fcontainer>${CONTAINER})\\s+)?(?:Figures?|Fig\\.?)\\s*(?<figure>${TNUM})\\b`, "i") },
@@ -272,6 +291,15 @@ const NOISE = /^[\s,;:.()[\]'"‘’/|-]*$/;
 const NOISE_WORDS =
   /\b(?:and|the|of|in|at|for|with|value|values|cell|cells|row|rows|column|columns|col|sheet|table|tables|workbook|xlsx|xls|csv|tsv|data|file|page|from|as|printed|reported|see|also|only|per|no|not|is|are|to|by|version|v\d+|header|headers|label|labels|first|second|third|final|last|top|bottom|left|right|mean|overall|all|main|text|supplement|supplementary|appendix|figure|fig|note|notes|caption|legend|body|entries|entry|block|blocks|section|sections|sub|subtable|part|parts|panel|panels|image|images|commit|tier|unnamed|single|standard|error|rounded|assessable|count|counts|frozen|bar|read|group|groups|subgroup|strategy|under|above|below|next|prior|same|its|their|which|where|when|that|this|these|those|one|two|three|four|five)\b/gi;
 
+/** Does this word carry no address on its own? The resolvers ask, because a word the grammar
+ * left as residue is a fact about the value's place only where it is not one of these. */
+export function carriesNoAddress(word: string): boolean {
+  NOISE_WORDS.lastIndex = 0;
+  const match = NOISE_WORDS.exec(word);
+  NOISE_WORDS.lastIndex = 0;
+  return match !== null && match[0].length === word.length;
+}
+
 /** Split a locator into segments on `;` and on commas outside quotes and brackets. */
 export function splitSegments(text: string): string[] {
   const out: string[] = [];
@@ -331,7 +359,7 @@ function consume(segment: string): { hits: Hit[]; residue: string } {
 function anchorOf(hit: Hit): LocatorAnchor {
   const g = hit.match.groups ?? {};
   const kind = ANCHOR_KIND[hit.name];
-  const value = g.sheet ?? g.bsheet ?? g.table ?? g.figure ?? g.file ?? g.obj ?? hit.match[0].trim();
+  const value = g.qsheet ?? g.sheet ?? g.bsheet ?? g.table ?? g.figure ?? g.file ?? g.obj ?? hit.match[0].trim();
   // A container anchor with an object number keeps the two apart ("Supplementary Data" and "2"),
   // so rendering writes the label back out rather than the bare number.
   const container = g.tcontainer ?? g.fcontainer ?? (g.obj ? g.ccontainer : undefined);

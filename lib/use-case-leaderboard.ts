@@ -52,6 +52,14 @@ export interface RankingSource {
   doi: string | null;
 }
 
+/** A run receipt the result or its evaluation cites: an executed full-protocol run in the release. */
+export interface RunReceipt {
+  /** The receipt's source record. */
+  id: string;
+  name: string;
+  href: string;
+}
+
 export interface OpenFinding {
   id: string;
   href: string;
@@ -79,9 +87,11 @@ export interface BiologicalModelRankingRow {
   telemetry: OperationalTelemetry;
   pareto_optimal: boolean;
   reviewed_status: ReviewStatus;
-  /** Who produced the result: author_reported, independent_paper, rewire_run, ... */
+  /** The run receipt behind "reproduced"; null for every other status. */
+  receipt: RunReceipt | null;
+  /** Who produced the result: the origin of the evaluation the ranked value belongs to. */
   origin: string | null;
-  /** True when the result comes from someone other than the model's developers. */
+  /** True when the origin is an independent study or a Rewire run. Unreported is not independent. */
   independent: boolean;
   /** The result record the value is read from. */
   source_record_id: string;

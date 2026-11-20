@@ -3,6 +3,8 @@ import { buildCatalogue } from "../../lib/catalogue-build";
 import { allUseCaseLeaderboards, homeLeaderboards, rankingsForRecord, runReceiptSources } from "../../lib/release-leaderboard";
 import { generateAgentsMd, generateLlmsFullText, generateLlmsTxt } from "../../lib/llm-discoverability";
 import { generateHomepageTakeaway, generateUseCaseTakeaway } from "../../lib/geo-takeaway";
+import { telemetryFromRecord } from "../../lib/operational-telemetry";
+import { ORIGIN_LABELS } from "../../lib/result-origin";
 
 // Against the pinned release: every rendered figure must trace to a record in it.
 describe("use-case leaderboards from the release", () => {
@@ -47,6 +49,40 @@ describe("use-case leaderboards from the release", () => {
         ...((row.evaluation_id && query.record(row.evaluation_id)?.source_ids) || []),
       ];
       expect(row.reviewed_status === "reproduced", row.source_record_id).toBe(cited.some((id) => receipts.has(id)));
+    }
+  });
+
+  it("links a run receipt exactly on the reproduced rows", () => {
+    const receipts = runReceiptSources(query);
+    for (const { row } of rows) {
+      expect(row.receipt !== null, row.source_record_id).toBe(row.reviewed_status === "reproduced");
+      if (row.receipt) expect(receipts.has(row.receipt.id), row.source_record_id).toBe(true);
+    }
+  });
+
+  it("shows each row the origin of the evaluation its value belongs to", () => {
+    const known = new Set(Object.keys(ORIGIN_LABELS));
+    for (const { row } of rows) {
+      expect(row.evaluation_id, row.source_record_id).not.toBeNull();
+      const result = query.record(row.source_record_id)!;
+      expect(result.links.find((l) => l.relation === "evaluation")?.target_id, row.source_record_id).toBe(row.evaluation_id);
+      const origin = query.record(row.evaluation_id!)!.attributes.origin;
+      expect(row.origin, row.source_record_id).toBe(origin);
+      // A new origin in the vocabulary needs a label here before it reaches a board.
+      expect(known.has(row.origin!), `${row.source_record_id}: ${row.origin}`).toBe(true);
+      expect(row.independent, row.source_record_id).toBe(origin === "independent_paper" || origin === "rewire_run");
+    }
+  });
+
+  it("shows access and licence only in the record's own words (#230)", () => {
+    for (const kind of ["model", "method", "pipeline", "service"]) for (const record of query.recordsOfKind(kind)) {
+      const t = telemetryFromRecord(record);
+      const facts = ((record.attributes.profile as { facts?: { value: string; status?: string }[] } | undefined)?.facts ?? [])
+        .filter((f) => f.status === undefined || f.status === "source_checked").map((f) => f.value.trim());
+      const written = [record.attributes.access, record.attributes.licence].filter((v): v is string => typeof v === "string").map((v) => v.trim()).concat(facts);
+      for (const text of [t.access, t.license]) if (text !== null) expect(written, record.id).toContain(text);
+      expect(t.license === null, record.id).toBe(t.license_scope === null);
+      if (typeof record.attributes.open_weights !== "boolean") expect(t.open_weights, record.id).toBeNull();
     }
   });
 

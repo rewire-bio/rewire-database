@@ -75,11 +75,7 @@ const UNCERTAINTY: Record<string, string> = {
   credible_interval: "Ranges in brackets are credible intervals.",
   unresolved_spread: "The source does not say whether ± is a standard deviation, a standard error or a range.",
 };
-const ORIGIN_LABELS: Record<string, string> = {
-  author_reported: "Author-reported", independent_paper: "Independent study", rewire_run: "Rewire run",
-  paper_compilation: "Compiled from papers", unreported: "Origin not reported",
-};
-export const originLabel = (origin: string) => ORIGIN_LABELS[origin] ?? origin.replace(/_/g, " ");
+export { originLabel } from "./result-origin";
 const METHOD_LABELS: Record<string, string> = {
   conventional_pipeline: "conventional", supervised_machine_learning: "machine learning",
   foundation_model: "foundation model", specialist: "specialist model", baseline: "baseline",

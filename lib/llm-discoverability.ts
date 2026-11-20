@@ -7,6 +7,7 @@
  */
 
 import { protocolLabel, REVIEW_STATUS_LABELS, type LeaderboardResult } from "./use-case-leaderboard";
+import { ORIGIN_DESCRIPTIONS } from "./result-origin";
 import { leadStatement } from "./geo-takeaway";
 import {
   SITE,
@@ -127,11 +128,11 @@ Specification: https://llmstxt.org
     out += board.baseline
       ? `Baseline on this protocol: ${board.baseline.name} = ${board.baseline.display_value} (${resultUrl(board.baseline.source_record_id)})\n`
       : `Baseline on this protocol: none scored\n`;
-    out += `\n| Rank | Model | ${protocol.metric_label} |${board.baseline ? " vs. baseline |" : ""} Review | Origin | Coverage | Open discrepancies | Source | Result record |\n`;
-    out += `| :--- | :--- | :---: |${board.baseline ? " :---: |" : ""} :--- | :--- | :---: | :---: | :--- | :--- |\n`;
+    out += `\n| Rank | Model | ${protocol.metric_label} |${board.baseline ? " vs. baseline |" : ""} Review | Run receipt | Origin | Coverage | Open discrepancies | Source | Result record |\n`;
+    out += `| :--- | :--- | :---: |${board.baseline ? " :---: |" : ""} :--- | :--- | :--- | :---: | :---: | :--- | :--- |\n`;
     for (const row of board.rows) {
       const margin = row.margin_over_conventional === null ? "" : `${row.margin_over_conventional > 0 ? "+" : ""}${row.margin_over_conventional.toFixed(1)}%`;
-      out += `| ${row.rank} | ${cell(row.model_name + (row.model_detail ? ` (${row.model_detail})` : ""))}${row.is_baseline ? " [baseline]" : ""} | ${cell(row.display_value)} |${board.baseline ? ` ${margin} |` : ""} ${REVIEW_STATUS_LABELS[row.reviewed_status]} | ${row.origin ?? "unreported"} | ${row.coverage.evaluated}/${row.coverage.relevant} | ${row.open_findings.length} | ${cell(row.source?.name ?? "Not recorded")} | ${resultUrl(row.source_record_id)} |\n`;
+      out += `| ${row.rank} | ${cell(row.model_name + (row.model_detail ? ` (${row.model_detail})` : ""))}${row.is_baseline ? " [baseline]" : ""} | ${cell(row.display_value)} |${board.baseline ? ` ${margin} |` : ""} ${REVIEW_STATUS_LABELS[row.reviewed_status]} | ${row.receipt ? `${SITE}${row.receipt.href}` : "none"} | ${row.origin ?? "not recorded"} | ${row.coverage.evaluated}/${row.coverage.relevant} | ${row.open_findings.length} | ${cell(row.source?.name ?? "Not recorded")} | ${resultUrl(row.source_record_id)} |\n`;
     }
     if (board.unranked.length)
       out += `\nNot ranked (evaluated elsewhere in this use case, not on this protocol): ${board.unranked.map((m) => m.model_name).join(", ")}.\n`;
@@ -143,8 +144,10 @@ Specification: https://llmstxt.org
 1. **Rank**: competition rank (1, 2, 2, 4) by the protocol's metric in its stated direction, among tools with a value on that protocol.
 2. **Margin over baseline**: shown only when the same protocol scores exactly one of the use case's baseline methods. $\\Delta = d \\times \\frac{v - B}{|B|} \\times 100\\%$, with $d = 1$ when higher is better and $-1$ when lower is better.
 3. **Review**: Reproduced only when a run receipt in the release is cited by the result or its evaluation; Source-checked when the published value was checked against its source.
-4. **Origin**: who produced the result (author_reported means the tool's developers).
-5. **Coverage**: comparisons in the use case that score the tool, out of all the use case's comparisons.
+4. **Run receipt**: the source record of the executed full-protocol run behind a Reproduced value; "none" for every other row.
+5. **Origin**: who produced the result, as the evaluation record states it.
+${Object.entries(ORIGIN_DESCRIPTIONS).map(([origin, description]) => `   - \`${origin}\`: ${description}`).join("\n")}
+6. **Coverage**: comparisons in the use case that score the tool, out of all the use case's comparisons.
 `;
 
   return out;
@@ -213,8 +216,9 @@ When choosing a model for a use case:
     "rank": { "type": ["integer", "null"], "minimum": 1 },
     "margin_over_conventional": { "type": ["number", "null"], "description": "Percent over the one baseline scored on the same protocol" },
     "reviewed_status": { "enum": ["reproduced", "source_checked", "author_reported"] },
-    "origin": { "type": ["string", "null"] },
-    "independent": { "type": "boolean" },
+    "receipt": { "type": ["object", "null"], "description": "Run receipt source record behind a reproduced value: id, name, href" },
+    "origin": { "type": ["string", "null"], "description": "Origin of the evaluation the ranked value belongs to: author_reported, independent_paper, rewire_run, paper_compilation or unreported" },
+    "independent": { "type": "boolean", "description": "True only for independent_paper and rewire_run" },
     "source_record_id": { "type": "string", "description": "Result record id in the release" },
     "source": { "type": ["object", "null"] },
     "coverage": { "type": "object", "properties": { "evaluated": { "type": "integer" }, "relevant": { "type": "integer" } } },
@@ -231,6 +235,7 @@ When choosing a model for a use case:
         "parameters": { "type": ["string", "null"] },
         "context_window": { "type": ["string", "null"] },
         "license": { "type": ["string", "null"] },
+        "license_scope": { "enum": ["weights", "record", "code", null], "description": "Which licence the text is; code means only the code licence is recorded" },
         "access": { "type": ["string", "null"] },
         "open_weights": { "type": ["boolean", "null"] }
       }

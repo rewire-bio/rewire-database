@@ -60,6 +60,29 @@ describe("UnifiedLeaderboard", () => {
     expect(html).toContain("Rewire run");
   });
 
+  it("links a reproduced row to its run receipt and no other row to one", () => {
+    const html = renderToStaticMarkup(<UnifiedLeaderboard boards={[VARIANT_BOARD]} expandedRowId="alpha" />);
+    expect(html.match(/href="\/database\/source\/fixture-receipt\/"/g)).toHaveLength(2);
+    expect(html).toContain("Run receipt: Fixture full-protocol run");
+    const plain = renderToStaticMarkup(<UnifiedLeaderboard boards={[VARIANT_BOARD]} expandedRowId="beta" />);
+    expect(plain.match(/href="\/database\/source\/fixture-receipt\/"/g)).toHaveLength(1);
+  });
+
+  it("says when the source does not state who ran a tool, and never styles it as independent", () => {
+    const html = renderToStaticMarkup(<UnifiedLeaderboard boards={[VARIANT_BOARD]} />);
+    expect(html).not.toContain("Origin not reported");
+    const badge = html.match(/<span class="([^"]*)" data-origin="unreported"[^>]*>([^<]*)</)!;
+    expect(badge[2]).toBe("Source does not say who ran it");
+    const independent = html.match(/<span class="([^"]*)" data-origin="rewire_run"/)!;
+    expect(badge[1]).not.toBe(independent[1]);
+  });
+
+  it("marks a licence that covers only the code", () => {
+    const html = renderToStaticMarkup(<UnifiedLeaderboard boards={[VARIANT_BOARD]} expandedRowId="gamma" />);
+    expect(html).toContain("Code: MIT");
+    expect(html).toContain("<dt>Code licence:</dt>");
+  });
+
   it("flags open discrepancies with a link to the finding", () => {
     const html = renderToStaticMarkup(<UnifiedLeaderboard boards={[VARIANT_BOARD]} />);
     expect(html).toContain('href="/contested/finding-1/"');

@@ -7,6 +7,7 @@ import type { CatalogueRecord } from "@/shared/omics/catalogue-query";
 import type { ResultContest } from "./discrepancy-helpers";
 import { discrepancyHref } from "./discrepancy-helpers";
 import { recordHref } from "./omics";
+import { isIndependentOrigin } from "./result-origin";
 import { telemetryFromRecord } from "./operational-telemetry";
 import { isBaselineRow, type Comparison, type ComparisonRow } from "./use-case-comparisons";
 import {
@@ -37,9 +38,6 @@ export interface RankingInputs {
   /** Overrides ALLOW_PROXY_PROTOCOLS. */
   allowProxy?: boolean;
 }
-
-/** Results from someone other than the model's developers, or a Rewire run. */
-const INDEPENDENT_ORIGINS = new Set(["independent_paper", "rewire_run"]);
 
 const valued = (row: ComparisonRow) => {
   const cell = row.cells[0];
@@ -118,9 +116,15 @@ export function buildLeaderboard(inputs: RankingInputs): LeaderboardResult {
     const result = record(cell.resultId!);
     const evaluation = cell.evaluationId ? record(cell.evaluationId) : null;
     const cited = [...(result?.source_ids ?? []), ...(evaluation?.source_ids ?? [])];
-    const status: ReviewStatus = cited.some((id) => inputs.receiptSources.has(id))
+    const receiptId = cited.find((id) => inputs.receiptSources.has(id));
+    const receiptRecord = receiptId ? record(receiptId) : null;
+    // The record's own "reproduced" status is not enough: only a cited run receipt is.
+    const status: ReviewStatus = receiptId
       ? "reproduced"
       : result?.status === "source_checked" || result?.status === "reproduced" ? "source_checked" : "author_reported";
+    // A row can hold several evaluations of one configuration; the origin is the ranked value's.
+    const evaluationOrigin = evaluation?.attributes.origin;
+    const origin = typeof evaluationOrigin === "string" && evaluationOrigin ? evaluationOrigin : row.origin;
     const sourceRecord = result?.source_ids[0] ? record(result.source_ids[0]) : null;
     const parent = row.parentId ? record(row.parentId) : null;
     const findings = new Map<string, OpenFinding>();
@@ -142,8 +146,11 @@ export function buildLeaderboard(inputs: RankingInputs): LeaderboardResult {
       telemetry: telemetryFromRecord(parent ?? record(row.id)),
       pareto_optimal: false,
       reviewed_status: status,
-      origin: row.origin,
-      independent: !!row.origin && INDEPENDENT_ORIGINS.has(row.origin),
+      receipt: receiptId
+        ? { id: receiptId, name: receiptRecord?.name ?? receiptId, href: recordHref(receiptRecord ?? { kind: "source", id: receiptId }) }
+        : null,
+      origin,
+      independent: isIndependentOrigin(origin),
       source_record_id: cell.resultId!,
       evaluation_id: cell.evaluationId ?? null,
       source: sourceRecord

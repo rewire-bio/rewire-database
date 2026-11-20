@@ -2,6 +2,8 @@ import { describe, expect, it } from "vitest";
 import { buildCatalogue } from "../../lib/catalogue-build";
 import { HOME_LEADERBOARD_SLUGS, MIN_HOME_TOOLS, allUseCaseLeaderboards, homeLeaderboards, rankingsForRecord, runReceiptSources } from "../../lib/release-leaderboard";
 import { boardStats } from "../../lib/use-case-leaderboard";
+import { HOME_BENCHMARK_IDS, benchmarkBoard, homeBenchmarkBoards } from "../../lib/benchmark-leaderboard";
+import { MIN_BENCHMARK_TOOLS } from "../../lib/benchmark-ranking";
 import { generateAgentsMd, generateLlmsFullText, generateLlmsTxt } from "../../lib/llm-discoverability";
 import { generateHomepageTakeaway, generateUseCaseTakeaway } from "../../lib/geo-takeaway";
 import { shortFact, telemetryFromRecord } from "../../lib/operational-telemetry";
@@ -191,5 +193,75 @@ describe("use-case leaderboards from the release", () => {
     for (const invented of ["ranks #1", "of assay ceiling", "Capability Index", "42 ms/seq", "re-checked against new publications every month"])
       expect(texts).not.toContain(invented);
     for (const { row } of rows.slice(0, 5)) expect(generateLlmsFullText("r", boards)).toContain(`/database/result/${encodeURIComponent(row.source_record_id)}/`);
+  });
+});
+
+// Benchmark boards against the pinned release. A listed benchmark may have no board in a later
+// release, so nothing here expects a particular benchmark to be ranked.
+describe("benchmark boards from the release", () => {
+  const { query } = buildCatalogue();
+  const listed = HOME_BENCHMARK_IDS.map((id) => ({ id, built: benchmarkBoard(id) }));
+  const home = homeBenchmarkBoards();
+
+  it("shows exactly the listed benchmarks the release can rank, apart from every use-case board", () => {
+    expect(home).toEqual(listed.flatMap(({ built }) => (built?.board ? [built.board] : [])));
+    expect(benchmarkBoard("no-such-benchmark")).toBeNull();
+    const useCaseSlugs = new Set(allUseCaseLeaderboards().map((b) => b.use_case_slug));
+    for (const board of home) {
+      expect(useCaseSlugs.has(board.use_case_slug), board.use_case_slug).toBe(false);
+      expect(board.protocol!.relevance).toBe("benchmark");
+      expect(board.baseline).toBeNull();
+      expect(boardStats(board).tools, board.use_case_slug).toBeGreaterThanOrEqual(MIN_BENCHMARK_TOOLS);
+    }
+    for (const board of [...allUseCaseLeaderboards(), ...homeLeaderboards()]) {
+      expect(board.benchmark).toBeUndefined();
+      expect(board.protocol?.relevance).not.toBe("benchmark");
+    }
+  });
+
+  it("ranks one protocol of the benchmark on the metric and direction its protocol record names", () => {
+    for (const board of home) {
+      const scope = board.benchmark!;
+      const protocol = query.record(scope.protocol_id)!;
+      expect(protocol.links.some((l) => l.relation === "part_of" && l.target_id === scope.id), scope.protocol_id).toBe(true);
+      expect(board.protocol!.metric).toBe(protocol.attributes.metric);
+      expect(board.protocol!.direction).toBe(protocol.attributes.metric_direction);
+      expect(board.protocol!.title).toBe(protocol.name);
+      const values = board.rows.map((r) => r.raw_metric_value!);
+      expect(values, scope.id).toEqual([...values].sort((a, b) => (board.protocol!.direction === "higher" ? b - a : a - b)));
+      expect(new Set(board.rows.map((r) => r.model_id)).size).toBe(board.rows.length);
+    }
+  });
+
+  it("gives every row a result record in the release, on that protocol, with the same value and its evaluation's origin", () => {
+    const receipts = runReceiptSources(query);
+    for (const board of home) for (const row of board.rows) {
+      const result = query.record(row.source_record_id)!;
+      expect(result.kind, row.source_record_id).toBe("result");
+      expect(result.attributes.metric, row.source_record_id).toBe(board.protocol!.metric);
+      expect(["source_checked", "reproduced"], row.source_record_id).toContain(result.status);
+      const recorded = Number(result.attributes.numeric_value);
+      expect([recorded, recorded * 100].some((v) => Math.abs(v - row.raw_metric_value!) < 1e-9), row.source_record_id).toBe(true);
+      const evaluation = query.record(row.evaluation_id!)!;
+      expect(evaluation.links.some((l) => l.relation === "assessment" && l.target_id === board.benchmark!.protocol_id), row.evaluation_id!).toBe(true);
+      expect(row.origin, row.source_record_id).toBe(evaluation.attributes.origin ?? null);
+      expect(row.independent).toBe(row.origin === "independent_paper");
+      const cited = [...result.source_ids, ...evaluation.source_ids];
+      expect(row.reviewed_status === "reproduced", row.source_record_id).toBe(cited.some((id) => receipts.has(id)));
+      expect(row.receipt !== null).toBe(row.reviewed_status === "reproduced");
+      for (const id of row.source_ids) expect(query.record(id)?.kind, id).toBe("source");
+    }
+  });
+
+  it("keeps a reason for every protocol it does not rank", () => {
+    for (const { id, built } of listed) {
+      if (!built) continue;
+      for (const protocol of built.protocols) expect(protocol.rankable ? protocol.reason === null : !!protocol.reason, `${id} ${protocol.id}`).toBe(true);
+      if (built.board) {
+        expect(built.board.benchmark!.protocols).toBe(built.protocols.length);
+        expect(built.board.benchmark!.rankable).toBe(built.protocols.filter((p) => p.rankable).length);
+        expect(built.protocols.find((p) => p.id === built.board!.benchmark!.protocol_id)?.rankable).toBe(true);
+      }
+    }
   });
 });

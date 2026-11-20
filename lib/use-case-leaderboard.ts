@@ -41,8 +41,28 @@ export interface RankingProtocol {
   metric_label: string;
   direction: MetricDirection;
   endpoint: string;
-  /** "direct" when the use case's reviewers judged the protocol directly relevant, else "proxy". */
-  relevance: "direct" | "proxy";
+  /**
+   * "direct" when the use case's reviewers judged the protocol directly relevant, else "proxy".
+   * "benchmark" on a benchmark board, which has no relevance judgement (lib/benchmark-ranking.ts).
+   */
+  relevance: "direct" | "proxy" | "benchmark";
+}
+
+/** The benchmark a benchmark board belongs to, and how much of it the board shows. */
+export interface BenchmarkScope {
+  id: string;
+  name: string;
+  href: string;
+  /** The protocol record the board ranks. */
+  protocol_id: string;
+  protocol_href: string;
+  /** Protocols that are part of the benchmark, and how many of them can be ranked without a judgement. */
+  protocols: number;
+  rankable: number;
+  /** How the ranked tools were fitted, as the evaluations record it. */
+  adaptations: string[];
+  /** Evaluations left out because a scoped evidence concern names a record their value rests on. */
+  withheld: number;
 }
 
 export interface RankingSource {
@@ -135,6 +155,8 @@ export interface LeaderboardResult {
   unranked: UnrankedModel[];
   /** Why there is no ranking, when rows is empty. */
   empty_reason: string | null;
+  /** Set on a benchmark board: the use_case_ fields then hold the benchmark's id, name and page. */
+  benchmark?: BenchmarkScope;
 }
 
 /**

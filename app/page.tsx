@@ -7,6 +7,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { buildCatalogue } from "@/lib/catalogue-build";
 import { homeLeaderboards } from "@/lib/release-leaderboard";
+import { homeBenchmarkBoards } from "@/lib/benchmark-leaderboard";
 import { UnifiedLeaderboard } from "@/components/catalogue/UnifiedLeaderboard";
 import { GeoTakeaway } from "@/components/catalogue/GeoTakeaway";
 import { generateHomepageTakeaway } from "@/lib/geo-takeaway";
@@ -66,6 +67,9 @@ export default function BenchmarksPage() {
 
   // The lead use cases that have a ranking in this release, built from the release at render time.
   const boards = homeLeaderboards();
+  // Benchmarks no use case is linked to yet, where the release leaves nothing to choose in ranking them.
+  const benchmarkBoards = homeBenchmarkBoards();
+  const release = { id: catalogue.release_id, released_at: catalogue.released_at };
 
   return (
     <>
@@ -155,9 +159,26 @@ export default function BenchmarksPage() {
           />
           <UnifiedLeaderboard
             boards={boards}
-            release={{ id: catalogue.release_id, released_at: catalogue.released_at }}
+            release={release}
             showCategorySwitcher={true}
             showParetoHighlight={true}
+          />
+        </section>}
+
+        {benchmarkBoards.length > 0 && <section className={`${styles.leaderboardSection} benchmark-leaderboard`} aria-labelledby="benchmark-leaderboard-heading">
+          <div className={styles.sectionHeader}>
+            <span className={styles.sectionKicker}>Benchmark Boards</span>
+            <h2 id="benchmark-leaderboard-heading">Benchmarks Not Yet Linked to a Use Case</h2>
+            <p className={styles.sectionIntro}>
+              These benchmarks have results in this release but no use-case judgement, so they are kept apart from the rankings above. Each tab ranks one protocol of a benchmark on the metric its protocol record names. A rank here says how a tool scored on that benchmark. It is not a recommendation for a task.
+            </p>
+          </div>
+          <UnifiedLeaderboard
+            boards={benchmarkBoards}
+            release={release}
+            showCategorySwitcher={true}
+            emitJsonLd={false}
+            testId="benchmark-leaderboard"
           />
         </section>}
 

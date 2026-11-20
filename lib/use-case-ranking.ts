@@ -136,7 +136,8 @@ export function buildLeaderboard(inputs: RankingInputs): LeaderboardResult {
       model_id: row.id,
       model_name: row.name,
       model_detail: row.detail,
-      model_href: hrefOf(parent, row.id),
+      // Without a parent the row links to its own record: a configuration, or a model tested as it stands.
+      model_href: hrefOf(parent ?? record(row.id), row.id),
       parent_id: row.parentId,
       use_case_slug: slug,
       primary_metric_name: protocol.metric_label,

@@ -4,6 +4,7 @@ import { describe, expect, it, vi } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
 import BenchmarksPage from "@/app/page";
 import { homeLeaderboards } from "@/lib/release-leaderboard";
+import { homeBenchmarkBoards } from "@/lib/benchmark-leaderboard";
 
 vi.mock("next/link", () => ({
   default: ({
@@ -58,6 +59,26 @@ describe("Homepage Redesign (TC-HP-01 to TC-HP-08)", () => {
     expect(html).toContain(first.rows[0].model_name.replace(/&/g, "&amp;"));
     expect(html).toContain(`/database/result/${encodeURIComponent(first.rows[0].source_record_id)}/`);
     expect(html).not.toContain("Capability Index");
+  });
+
+  it("TC-HP-03b: Names what each board rests on and the release, and keeps benchmark boards in their own labelled section", () => {
+    const html = renderToStaticMarkup(<BenchmarksPage />).replace(/<!-- -->/g, "");
+    const release = html.match(/Data release (\d{4}-\d{2}-\d{2}-[a-f0-9]{12}), published (\d{4}-\d{2}-\d{2})\./);
+    expect(release).not.toBeNull();
+    expect(html).toContain('data-testid="leaderboard-stats"');
+    expect(html).toMatch(/\d+ of \d+ results? \(\d+%\) comes? from an independent study/);
+
+    const [useCases, benchmarks = ""] = html.split('id="benchmark-leaderboard-heading"');
+    expect(useCases).not.toContain("Benchmark board");
+    const boards = homeBenchmarkBoards();
+    expect(benchmarks !== "").toBe(boards.length > 0);
+    if (!boards.length) return;
+    expect(benchmarks).toContain("Benchmarks Not Yet Linked to a Use Case");
+    expect(benchmarks).toContain("It is not a recommendation for a task.");
+    expect(benchmarks).toContain("Benchmark board");
+    expect(benchmarks).toContain('data-testid="benchmark-leaderboard"');
+    expect(benchmarks).toContain(`/database/result/${encodeURIComponent(boards[0].rows[0].source_record_id)}/`);
+    expect(benchmarks).toContain(`href="${boards[0].benchmark!.href}"`);
   });
 
   it("TC-HP-04: Retains backward-compatible 'Ways to start' navigation", () => {

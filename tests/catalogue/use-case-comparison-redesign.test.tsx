@@ -116,6 +116,25 @@ function createSampleComparison(overrides?: Partial<Comparison>): Comparison {
   };
 }
 
+describe("Use-Case Comparison origin badges", () => {
+  it("gives the independent style to an independent study only, and writes out what each origin means", () => {
+    const origins = ["independent_paper", "author_reported", "rewire_run", "paper_compilation", "unreported"];
+    const html = renderToStaticMarkup(
+      <UseCaseComparison comparison={createSampleComparison({ origins })} useCasePath="/use-cases/structure-prediction/" />
+    );
+    const direct = html.match(/<span class="([^"]*)">Direct evidence<\/span>/)![1];
+    const badge = (origin: string) => html.match(new RegExp(`<span class="([^"]*)" data-origin="${origin}" title="([^"]*)">([^<]*)<span class="[^"]*">: ([^<]*)</span>`))!;
+    expect(origins.filter((origin) => badge(origin)[1] === direct)).toEqual(["independent_paper"]);
+    expect(new Set(origins.filter((origin) => origin !== "independent_paper").map((origin) => badge(origin)[1])).size).toBe(1);
+    expect(origins.map((origin) => badge(origin)[3])).toEqual([
+      "Independent study", "Developer-reported", "Rewire run", "Quoted from another paper", "Source does not say who ran it",
+    ]);
+    // The meaning is in the badge's text for screen readers, not only in its title.
+    for (const origin of origins) expect(badge(origin)[4]).toBe(badge(origin)[2]);
+    expect(badge("unreported")[4]).toContain("not counted as independent");
+  });
+});
+
 describe("Use-Case Comparison Redesign (TC-UCC-01 to TC-UCC-10)", () => {
   it("TC-UCC-01: Table cells never contain moreValues or details disclosures", () => {
     const comp = createSampleComparison();

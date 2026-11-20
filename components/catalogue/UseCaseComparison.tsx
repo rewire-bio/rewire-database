@@ -333,9 +333,11 @@ export default function UseCaseComparison({
             className={
               isIndependentOrigin(origin) ? styles.badgeIndependent : styles.badgeAuthor
             }
+            data-origin={origin}
             title={originDescription(origin)}
           >
             {originLabel(origin)}
+            <span className={styles.srOnly}>: {originDescription(origin)}</span>
           </span>
         ))}
       </div>

@@ -3,7 +3,8 @@ import { buildCatalogue } from "../../lib/catalogue-build";
 import { allUseCaseLeaderboards, homeLeaderboards, rankingsForRecord, runReceiptSources } from "../../lib/release-leaderboard";
 import { generateAgentsMd, generateLlmsFullText, generateLlmsTxt } from "../../lib/llm-discoverability";
 import { generateHomepageTakeaway, generateUseCaseTakeaway } from "../../lib/geo-takeaway";
-import { telemetryFromRecord } from "../../lib/operational-telemetry";
+import { shortFact, telemetryFromRecord } from "../../lib/operational-telemetry";
+import { originDescription, originEvaluationLabel, originLabel } from "../../lib/result-origin";
 
 // Against the pinned release: every rendered figure must trace to a record in it.
 describe("use-case leaderboards from the release", () => {
@@ -66,7 +67,39 @@ describe("use-case leaderboards from the release", () => {
       expect(result.links.find((l) => l.relation === "evaluation")?.target_id, row.source_record_id).toBe(row.evaluation_id);
       const origin = query.record(row.evaluation_id!)!.attributes.origin;
       expect(row.origin, row.source_record_id).toBe(origin);
-      expect(row.independent, row.source_record_id).toBe(origin === "independent_paper" || origin === "rewire_run");
+      // A Rewire run is not flagged: the release does not record who developed each tool.
+      expect(row.independent, row.source_record_id).toBe(origin === "independent_paper");
+    }
+  });
+
+  it("gives every origin in the release a label that is not the unreported or the missing one", () => {
+    // An origin the site has no label for is shown readably (underscores as spaces), so this does
+    // not fail on a new vocabulary value; it checks that such a value is never merged with another.
+    const origins = new Set(rows.map(({ row }) => row.origin));
+    for (const origin of origins) {
+      expect(origin, "every ranked evaluation in this release has an origin").not.toBeNull();
+      if (origin !== "unreported") expect(originLabel(origin)).not.toBe(originLabel("unreported"));
+      expect(originLabel(origin)).not.toBe(originLabel(null));
+      expect(originEvaluationLabel(origin)).not.toBe(originEvaluationLabel(null));
+      expect(originDescription(origin)).not.toBe("");
+    }
+  });
+
+  it("cuts access and licence text only at the length limit and marks every cut", () => {
+    for (const kind of ["model", "method", "pipeline", "service"]) for (const record of query.recordsOfKind(kind)) {
+      const t = telemetryFromRecord(record);
+      for (const text of [t.access, t.license]) for (const max of [28, 48, 60]) {
+        if (!text) continue;
+        const whole = text.trim().replace(/\.$/, "");
+        const shown = shortFact(text, max);
+        expect(shown.length, record.id).toBeLessThanOrEqual(max);
+        if (whole.length <= max) expect(shown, record.id).toBe(whole);
+        else {
+          expect(shown.endsWith("…"), record.id).toBe(true);
+          expect(whole.startsWith(shown.slice(0, -1)), record.id).toBe(true);
+          expect(shown.length, record.id).toBeGreaterThan(max / 2);
+        }
+      }
     }
   });
 

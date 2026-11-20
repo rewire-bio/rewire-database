@@ -147,7 +147,7 @@ export function UnifiedLeaderboard({
         r.model_name.toLowerCase().includes(q) ||
         (r.model_detail ?? "").toLowerCase().includes(q) ||
         (r.source?.name ?? "").toLowerCase().includes(q) ||
-        (r.telemetry.license ?? "").toLowerCase().includes(q));
+        (licenceText(r.telemetry) ?? "").toLowerCase().includes(q));
     return list;
   }, [availableRows, openWeightsOnly, maxVram, searchQuery]);
 
@@ -171,7 +171,7 @@ export function UnifiedLeaderboard({
         case "vram": return numeric(a.telemetry.min_vram_gb, b.telemetry.min_vram_gb, flip);
         case "model": return flip * a.model_name.localeCompare(b.model_name);
         case "source": return flip * (a.source?.name ?? "").localeCompare(b.source?.name ?? "");
-        case "license": return flip * (a.telemetry.license ?? "").localeCompare(b.telemetry.license ?? "");
+        case "license": return flip * (licenceText(a.telemetry) ?? "").localeCompare(licenceText(b.telemetry) ?? "");
       }
     });
     return list;
@@ -415,7 +415,13 @@ export function UnifiedLeaderboard({
                           data-status={row.reviewed_status}
                         >
                           {row.receipt ? (
-                            <Link href={row.receipt.href} prefetch={false} title={`Run receipt: ${row.receipt.name}`} onClick={(e) => e.stopPropagation()}>
+                            <Link
+                              href={row.receipt.href}
+                              prefetch={false}
+                              title={`Run receipt: ${row.receipt.name}`}
+                              aria-label={`${REVIEW_STATUS_LABELS[row.reviewed_status]}. Run receipt: ${row.receipt.name}`}
+                              onClick={(e) => e.stopPropagation()}
+                            >
                               {REVIEW_STATUS_LABELS[row.reviewed_status]}
                             </Link>
                           ) : REVIEW_STATUS_LABELS[row.reviewed_status]}
@@ -441,7 +447,7 @@ export function UnifiedLeaderboard({
                       {hasLatency && <td><span className={styles.monoValue}>{formatLatency(row.telemetry.inference_latency_ms)}</span></td>}
                       {hasVram && <td><span className={styles.monoValue}>{formatVram(row.telemetry.min_vram_gb)}</span></td>}
                       <td>
-                        <span className={row.telemetry.open_weights ? styles.openWeightsBadge : styles.closedWeightsBadge} title={licenceText(row.telemetry) ?? undefined}>
+                        <span className={row.telemetry.open_weights ? styles.openWeightsBadge : styles.closedWeightsBadge} data-licence-scope={row.telemetry.license_scope ?? "none"} title={licenceText(row.telemetry) ?? undefined}>
                           {shortFact(licenceText(row.telemetry), 28)}
                         </span>
                       </td>
@@ -530,7 +536,7 @@ export function UnifiedLeaderboard({
                                   </>
                                 )}
                                 <dt>Who ran it:</dt>
-                                <dd title={originDescription(row.origin)}>{originLabel(row.origin)}</dd>
+                                <dd data-origin-detail={row.origin ?? "none"}>{originLabel(row.origin)}. {originDescription(row.origin)}</dd>
                                 <dt>Discrepancies:</dt>
                                 <dd>
                                   {row.open_findings.length

@@ -54,7 +54,7 @@ export const VARIANT_BOARD: LeaderboardResult = {
     fixtureRow({
       model_id: "alpha", model_name: "Alpha", raw_metric_value: 0.6, display_value: "0.600", rank: 1, margin_over_conventional: 50,
       telemetry: telemetry({ min_vram_gb: 16, inference_latency_ms: 40, open_weights: true, license: "MIT", parameters: "650M" }),
-      reviewed_status: "reproduced", origin: "rewire_run",
+      reviewed_status: "reproduced", origin: "rewire_run", independent: false,
       receipt: { id: "fixture-receipt", name: "Fixture full-protocol run", href: "/database/source/fixture-receipt/" },
       open_findings: [{ id: "finding-1", href: "/contested/finding-1/", label: "Alpha disagrees with two other studies" }],
     }),

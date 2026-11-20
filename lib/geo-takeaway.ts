@@ -77,7 +77,7 @@ export function generateUseCaseTakeaway({ leaderboard }: { leaderboard: Leaderbo
   return {
     title: "Executive Takeaway",
     primaryStatement: `For "${board.use_case_title}", ${leadStatement(board)}.`,
-    secondaryStatement: `${board.rows.length} ${board.rows.length === 1 ? "tool has" : "tools have"} a value on this protocol; ${independent} of them come from studies other than the tool's developers.${baseline}${proxy}`,
+    secondaryStatement: `${board.rows.length} ${board.rows.length === 1 ? "tool has" : "tools have"} a value on this protocol; ${independent} of them come from studies whose authors did not develop the tool.${baseline}${proxy}`,
     highlights: [
       { label: "Best reported value", value: top.model_name, subtext: shortFact(sourceName(top), 60) },
       { label: board.protocol.metric_label, value: top.display_value, subtext: protocolLabel(board.protocol) },

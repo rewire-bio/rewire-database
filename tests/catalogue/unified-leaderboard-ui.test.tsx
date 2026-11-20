@@ -64,6 +64,8 @@ describe("UnifiedLeaderboard", () => {
     const html = renderToStaticMarkup(<UnifiedLeaderboard boards={[VARIANT_BOARD]} expandedRowId="alpha" />);
     expect(html.match(/href="\/database\/source\/fixture-receipt\/"/g)).toHaveLength(2);
     expect(html).toContain("Run receipt: Fixture full-protocol run");
+    // The link text is only "Reproduced", so its accessible name says where it goes.
+    expect(html).toMatch(/<a href="\/database\/source\/fixture-receipt\/"[^>]*aria-label="Reproduced\. Run receipt: Fixture full-protocol run"[^>]*>Reproduced<\/a>/);
     const plain = renderToStaticMarkup(<UnifiedLeaderboard boards={[VARIANT_BOARD]} expandedRowId="beta" />);
     expect(plain.match(/href="\/database\/source\/fixture-receipt\/"/g)).toHaveLength(1);
   });
@@ -73,14 +75,40 @@ describe("UnifiedLeaderboard", () => {
     expect(html).not.toContain("Origin not reported");
     const badge = html.match(/<span class="([^"]*)" data-origin="unreported"[^>]*>([^<]*)</)!;
     expect(badge[2]).toBe("Source does not say who ran it");
-    const independent = html.match(/<span class="([^"]*)" data-origin="rewire_run"/)!;
+    const independent = html.match(/<span class="([^"]*)" data-origin="independent_paper"/)!;
     expect(badge[1]).not.toBe(independent[1]);
+    // A Rewire run keeps its own label and does not take the independent style either.
+    const rewire = html.match(/<span class="([^"]*)" data-origin="rewire_run"[^>]*>([^<]*)</)!;
+    expect(rewire[2]).toBe("Rewire run");
+    expect(rewire[1]).toBe(badge[1]);
+  });
+
+  it("writes out what an origin means in the row details, not only in a tooltip", () => {
+    const detail = (id: string) =>
+      renderToStaticMarkup(<UnifiedLeaderboard boards={[VARIANT_BOARD]} expandedRowId={id} />).match(/<dd data-origin-detail="[^"]*">([^<]*)<\/dd>/)![1];
+    expect(detail("gamma")).toBe("Source does not say who ran it. The source prints the value but does not say who ran the tool, so it is not counted as independent.");
+    expect(detail("alpha")).toContain("Rewire run. Run by Rewire, not transcribed from a publication.");
+    expect(detail("alpha")).toContain("not counted as independent");
+    expect(detail("beta")).toBe("Developer-reported. Reported by the developers of the evaluated tool.");
   });
 
   it("marks a licence that covers only the code", () => {
     const html = renderToStaticMarkup(<UnifiedLeaderboard boards={[VARIANT_BOARD]} expandedRowId="gamma" />);
-    expect(html).toContain("Code: MIT");
+    // The cell's own text, not only its tooltip, carries the "Code:" prefix.
+    expect(html).toMatch(/<span class="[^"]*" data-licence-scope="code" title="Code: MIT">Code: MIT<\/span>/);
+    expect(html).toMatch(/<span class="[^"]*" data-licence-scope="none" title="MIT">MIT<\/span>/);
     expect(html).toContain("<dt>Code licence:</dt>");
+    expect(renderToStaticMarkup(<UnifiedLeaderboard boards={[VARIANT_BOARD]} expandedRowId="alpha" />)).toContain("<dt>License:</dt>");
+  });
+
+  it("sorts and searches the licence column by the text the cell shows", () => {
+    const { renderer, rows, clickHeader } = mount(<UnifiedLeaderboard boards={[VARIANT_BOARD]} />);
+    // Shown: Alpha "MIT", Beta "Proprietary", Gamma "Code: MIT", the baseline "Not recorded" (empty, sorted first).
+    clickHeader("License");
+    expect(rows()).toEqual(["baseline-a", "gamma", "alpha", "beta"]);
+    const search = renderer.root.findAll((n) => n.type === "input" && n.props.type === "search")[0];
+    act(() => search.props.onChange({ target: { value: "code" } }));
+    expect(rows()).toEqual(["gamma"]);
   });
 
   it("flags open discrepancies with a link to the finding", () => {

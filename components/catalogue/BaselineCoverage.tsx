@@ -5,6 +5,7 @@ import { Fragment } from "react";
 import type { BaselineAudit } from "@/lib/baseline-coverage";
 import type { PreparedQuery } from "@/lib/catalogue-build";
 import { recordHref, type OmicsRecord } from "@/lib/omics";
+import { originCountLabel } from "@/lib/result-origin";
 import styles from "../../app/database/database.module.css";
 
 type BaselineSource = Pick<PreparedQuery, "baselineAudit" | "record" | "release_id">;
@@ -69,7 +70,7 @@ export default function BaselineCoverage({
           <dl className={styles.details}>
             {Object.entries(rows[0].published_evaluations_by_origin).map(([origin, ids]) => (
               <Fragment key={origin}>
-                <dt>{origin === "rewire_run" ? "Published Rewire evaluations" : origin === "author_reported" ? "Author-reported evaluations" : origin === "independent_paper" ? "External evaluations" : origin.replaceAll("_", " ")}</dt>
+                <dt>{originCountLabel(origin)}</dt>
                 <dd>{ids.length}</dd>
               </Fragment>
             ))}

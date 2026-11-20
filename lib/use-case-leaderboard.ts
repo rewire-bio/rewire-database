@@ -91,7 +91,7 @@ export interface BiologicalModelRankingRow {
   receipt: RunReceipt | null;
   /** Who produced the result: the origin of the evaluation the ranked value belongs to. */
   origin: string | null;
-  /** True when the origin is an independent study or a Rewire run. Unreported is not independent. */
+  /** True only when the origin is an independent study. Unreported is not independent, nor is a Rewire run. */
   independent: boolean;
   /** The result record the value is read from. */
   source_record_id: string;

@@ -7,7 +7,7 @@
  */
 
 import { protocolLabel, REVIEW_STATUS_LABELS, type LeaderboardResult } from "./use-case-leaderboard";
-import { ORIGIN_DESCRIPTIONS } from "./result-origin";
+import { ORIGIN_DESCRIPTIONS, ORIGIN_NOT_RECORDED_DESCRIPTION } from "./result-origin";
 import { leadStatement } from "./geo-takeaway";
 import {
   SITE,
@@ -97,7 +97,7 @@ ${discrepancyQueries.map((q) => `  - ${q.name}: ${q.params}. Returns ${q.returns
 
 - Runs happen on your machine. Your model and data are not sent anywhere.
 - Nothing is submitted to the database without your explicit consent.
-- A source-checked result is a transcription of a published number, not an independent reproduction.`;
+- A source-checked result is a value checked against the source it cites, in most cases a transcription of a published number. It is not an independent reproduction.`;
 }
 
 /**
@@ -143,10 +143,11 @@ Specification: https://llmstxt.org
 
 1. **Rank**: competition rank (1, 2, 2, 4) by the protocol's metric in its stated direction, among tools with a value on that protocol.
 2. **Margin over baseline**: shown only when the same protocol scores exactly one of the use case's baseline methods. $\\Delta = d \\times \\frac{v - B}{|B|} \\times 100\\%$, with $d = 1$ when higher is better and $-1$ when lower is better.
-3. **Review**: Reproduced only when a run receipt in the release is cited by the result or its evaluation; Source-checked when the published value was checked against its source.
+3. **Review**: Reproduced only when a run receipt in the release is cited by the result or its evaluation; Source-checked when the value was checked against the source it cites: a publication, or for a Rewire run the run's own execution report. Source-checked does not mean reproduced.
 4. **Run receipt**: the source record of the executed full-protocol run behind a Reproduced value; "none" for every other row.
 5. **Origin**: who produced the result, as the evaluation record states it.
 ${Object.entries(ORIGIN_DESCRIPTIONS).map(([origin, description]) => `   - \`${origin}\`: ${description}`).join("\n")}
+   - \`not recorded\`: ${ORIGIN_NOT_RECORDED_DESCRIPTION}
 6. **Coverage**: comparisons in the use case that score the tool, out of all the use case's comparisons.
 `;
 
@@ -175,7 +176,7 @@ ${leaderboards.length ? leaderboards.map((b) => `- \`${b.use_case_slug}\`: ${pro
 ## 3. Decision Framework for AI Agents
 When choosing a model for a use case:
 1. Read the ranking for the use case and the protocol it is ranked on. A rank holds only for that protocol.
-2. Prefer rows where \`independent === true\`: the result comes from a study other than the tool's developers, or from a Rewire run.
+2. Prefer rows where \`independent === true\`: the result comes from a study whose authors did not develop the tool. A Rewire run has \`origin === "rewire_run"\` and \`independent === false\`, because Rewire wrote some of the baselines it runs.
 3. Check \`open_findings\`: a non-empty list means another study disagrees with a result behind the row. Follow the link before relying on it.
 4. Check \`coverage\`: a tool scored on one of many comparisons has less evidence behind its rank.
 5. Hardware fields are filled only when the model record carries them; null means not recorded, not zero.
@@ -218,7 +219,7 @@ When choosing a model for a use case:
     "reviewed_status": { "enum": ["reproduced", "source_checked", "author_reported"] },
     "receipt": { "type": ["object", "null"], "description": "Run receipt source record behind a reproduced value: id, name, href" },
     "origin": { "type": ["string", "null"], "description": "Origin of the evaluation the ranked value belongs to: author_reported, independent_paper, rewire_run, paper_compilation or unreported" },
-    "independent": { "type": "boolean", "description": "True only for independent_paper and rewire_run" },
+    "independent": { "type": "boolean", "description": "True only for independent_paper. A Rewire run is not flagged, because the release does not record who developed each tool" },
     "source_record_id": { "type": "string", "description": "Result record id in the release" },
     "source": { "type": ["object", "null"] },
     "coverage": { "type": "object", "properties": { "evaluated": { "type": "integer" }, "relevant": { "type": "integer" } } },
@@ -235,7 +236,7 @@ When choosing a model for a use case:
         "parameters": { "type": ["string", "null"] },
         "context_window": { "type": ["string", "null"] },
         "license": { "type": ["string", "null"] },
-        "license_scope": { "enum": ["weights", "record", "code", null], "description": "Which licence the text is; code means only the code licence is recorded" },
+        "license_scope": { "enum": ["weights", "record", "code", "tool", null], "description": "Which licence the text is. code: a code licence is recorded and the weights terms are not. tool: the code licence of a tool whose record says it has no weights" },
         "access": { "type": ["string", "null"] },
         "open_weights": { "type": ["boolean", "null"] }
       }

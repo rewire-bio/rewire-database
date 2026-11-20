@@ -20,8 +20,10 @@ export interface OperationalTelemetry {
   /** The weights licence, else the record's licence attribute, else the code licence, as written. */
   license: string | null;
   /**
-   * Which of those `license` holds. "code" means only a code licence is recorded: it says nothing
-   * about the weights, so every place that shows it must say it is the code licence.
+   * Which of those `license` holds. "code" means a code licence is recorded and the weights terms
+   * are not: it says nothing about the weights, so every place that shows it must say it is the
+   * code licence. "tool" is the code licence of a tool whose record states that a weights licence
+   * does not apply (it has no weights), so the code licence is the tool's licence.
    */
   license_scope: LicenceScope | null;
   /** How the model is obtained, as written. */
@@ -30,7 +32,7 @@ export interface OperationalTelemetry {
   open_weights: boolean | null;
 }
 
-export type LicenceScope = "weights" | "record" | "code";
+export type LicenceScope = "weights" | "record" | "code" | "tool";
 
 export const NOT_RECORDED = "Not recorded";
 
@@ -75,10 +77,12 @@ export function telemetryFromRecord(record: MinimalRecord | null | undefined): O
   const profile = attributes.profile as { facts?: MinimalRecordFact[] } | undefined;
   const facts = (profile?.facts ?? []).filter((f) => f.status === undefined || f.status === "source_checked");
   const fact = (label: string) => facts.find((f) => f.label === label)?.value?.trim() || null;
+  // Read before the status filter: "inapplicable" is the record saying the tool has no weights.
+  const noWeights = (profile?.facts ?? []).some((f) => f.label === "Weights licence" && f.status === "inapplicable");
   const licences: [LicenceScope, string | null][] = [
     ["weights", fact("Weights licence")],
     ["record", textAttribute(attributes, "licence")],
-    ["code", fact("Code licence")],
+    [noWeights ? "tool" : "code", fact("Code licence")],
   ];
   const [licenseScope, license] = licences.find(([, value]) => value) ?? [null, null];
   return {
@@ -104,14 +108,19 @@ export const licenceText = (telemetry: Pick<OperationalTelemetry, "license" | "l
   telemetry.license && telemetry.license_scope === "code" ? `Code: ${telemetry.license}` : telemetry.license;
 
 /**
- * A recorded text shortened for a table cell: its first sentence (or the part before a semicolon),
- * at most `max` characters. Anything left out is marked with an ellipsis, so a cut is never read
- * as the whole statement; a qualifier after a comma ("public, but gated") stays in.
+ * A recorded text shortened for a table cell: the whole text when it fits in `max` characters,
+ * otherwise its start, cut at a word and marked with an ellipsis. The text is never cut at a
+ * comma, semicolon or sentence end, because what follows is often the qualifier ("public, but
+ * gated", "public code; the weights have separate terms"). The full text belongs in the cell's
+ * title or in the row details.
  */
 export function shortFact(text: string | null | undefined, max = 40): string {
-  const full = text?.trim();
+  const full = text?.trim().replace(/\.$/, "");
   if (!full) return NOT_RECORDED;
-  const sentence = full.split(/;\s|\.\s+(?=[A-Z])/)[0].replace(/\.$/, "").trim();
-  if (sentence.length > max) return `${sentence.slice(0, max - 1).trimEnd()}…`;
-  return sentence.length < full.replace(/\.$/, "").length ? `${sentence}…` : sentence;
+  if (full.length <= max) return full;
+  const cut = full.slice(0, max - 1);
+  // Drop a word the limit splits, unless that would lose most of the cell (a long URL or id).
+  const words = /\s/.test(full[max - 1]) ? cut : cut.replace(/\s+\S*$/, "");
+  const kept = words.length >= max / 2 ? words : cut;
+  return `${kept.replace(/[\s,;:.]+$/, "")}…`;
 }

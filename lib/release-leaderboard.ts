@@ -6,10 +6,9 @@
 import type { CatalogueRecord } from "@/shared/omics/catalogue-query";
 import type { UseCaseDetail } from "@/shared/omics/use-cases";
 import { buildCatalogue } from "./catalogue-build";
-import { CATEGORY_SLUG_MAP } from "./catalogue-seo";
 import { contestedResults } from "./discrepancies";
 import { buildComparisons, type Comparison } from "./use-case-comparisons";
-import type { BiologicalModelRankingRow, LeaderboardResult } from "./use-case-leaderboard";
+import { boardStats, type BiologicalModelRankingRow, type LeaderboardResult } from "./use-case-leaderboard";
 import { buildLeaderboard } from "./use-case-ranking";
 import { buildUseCases, fullUseCaseDetail } from "./use-cases-build";
 
@@ -87,13 +86,37 @@ export function allUseCaseLeaderboards(): LeaderboardResult[] {
   return entries.map((e) => state.value.get(e.slug)).filter((b): b is LeaderboardResult => !!b);
 }
 
-/** The use cases the homepage leads with (the /use-cases/<category>/ aliases), in that order. */
-export const HOME_LEADERBOARD_SLUGS = Object.values(CATEGORY_SLUG_MAP);
+/**
+ * The use cases the homepage shows a board for, in this order within each relevance.
+ *
+ * Chosen from what the 2026-11-20 release can rank. Direct boards: every use case whose ranked
+ * comparison is judged directly relevant and scores at least ten tools, except hit discovery (the
+ * metric is a hit count with differing denominators) and phenotype perturbation selection
+ * (anonymous challenge entries, all reported by their authors). Proxy boards: those that also
+ * score at least ten tools, with five or more foundation-model rows and most rows from independent
+ * studies. BRCA1 and BRCA2 interpretation qualifies too but ranks on the same protocol as the
+ * missense board.
+ * The /use-cases/<category>/ aliases (CATEGORY_SLUG_MAP) are separate and unchanged.
+ */
+export const HOME_LEADERBOARD_SLUGS = [
+  "protein-variant-effect-prediction",
+  "tumour-dna-somatic-variant-detection",
+  "protein-variant-stability",
+  "tumour-rna-fusion-detection",
+  "regulatory-variant-gene-follow-up",
+  "missense-pp3-bp4-calibrated-evidence",
+] as const;
 
-/** Homepage leaderboards: the lead use cases that have a ranking, directly relevant protocols first. */
+/** A homepage board ranks at least this many distinct tools; a thinner one stays on its use-case page. */
+export const MIN_HOME_TOOLS = 5;
+
+/**
+ * Homepage leaderboards: the listed use cases that rank enough tools in this release, directly
+ * relevant protocols first. A proxy board is never promoted: it keeps its relevance and its label.
+ */
 export function homeLeaderboards(): LeaderboardResult[] {
   return HOME_LEADERBOARD_SLUGS.map(leaderboardForUseCase)
-    .filter((b): b is LeaderboardResult => !!b && b.rows.length > 0)
+    .filter((b): b is LeaderboardResult => !!b && boardStats(b).tools >= MIN_HOME_TOOLS)
     .sort((a, b) => Number(b.protocol?.relevance === "direct") - Number(a.protocol?.relevance === "direct"));
 }
 

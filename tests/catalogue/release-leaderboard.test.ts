@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { buildCatalogue } from "../../lib/catalogue-build";
-import { allUseCaseLeaderboards, homeLeaderboards, rankingsForRecord, runReceiptSources } from "../../lib/release-leaderboard";
+import { HOME_LEADERBOARD_SLUGS, MIN_HOME_TOOLS, allUseCaseLeaderboards, homeLeaderboards, rankingsForRecord, runReceiptSources } from "../../lib/release-leaderboard";
+import { boardStats } from "../../lib/use-case-leaderboard";
 import { generateAgentsMd, generateLlmsFullText, generateLlmsTxt } from "../../lib/llm-discoverability";
 import { generateHomepageTakeaway, generateUseCaseTakeaway } from "../../lib/geo-takeaway";
 import { shortFact, telemetryFromRecord } from "../../lib/operational-telemetry";
@@ -15,6 +16,31 @@ describe("use-case leaderboards from the release", () => {
   it("ranks at least one use case", () => {
     expect(rows.length).toBeGreaterThan(0);
     expect(homeLeaderboards().length).toBeGreaterThan(0);
+  });
+
+  it("shows on the homepage only listed use cases that rank enough tools, direct protocols first, proxies unchanged", () => {
+    const home = homeLeaderboards();
+    const listed: readonly string[] = HOME_LEADERBOARD_SLUGS;
+    expect(new Set(listed).size).toBe(listed.length);
+    for (const slug of listed) expect(boards.some((b) => b.use_case_slug === slug), slug).toBe(true);
+    for (const board of home) {
+      expect(listed, board.use_case_slug).toContain(board.use_case_slug);
+      expect(boardStats(board).tools, board.use_case_slug).toBeGreaterThanOrEqual(MIN_HOME_TOOLS);
+      // The homepage shows the same board as the use-case page, with the relevance its reviewers gave it.
+      expect(board).toBe(boards.find((b) => b.use_case_slug === board.use_case_slug));
+    }
+    const relevance = home.map((b) => b.protocol!.relevance);
+    expect(relevance).toEqual([...relevance].sort((a, b) => Number(b === "direct") - Number(a === "direct")));
+    for (const board of boards.filter((b) => listed.includes(b.use_case_slug) && boardStats(b).tools < MIN_HOME_TOOLS))
+      expect(home).not.toContain(board);
+  });
+
+  it("counts a board's sources from every source its ranked results cite", () => {
+    for (const board of boards.filter((b) => b.rows.length)) {
+      const cited = new Set(board.rows.flatMap((r) => query.record(r.source_record_id)!.source_ids));
+      expect(boardStats(board).sources, board.use_case_slug).toBe(cited.size);
+      for (const id of cited) expect(query.record(id)?.kind, id).toBe("source");
+    }
   });
 
   it("gives every rendered row a source_record_id that is a result record in the release, with the same value", () => {

@@ -140,6 +140,23 @@ describe("UnifiedLeaderboard", () => {
     expect(html).toContain("not on this protocol, so not ranked");
   });
 
+  it("says what each board rests on, and names the release when given one", () => {
+    const html = renderToStaticMarkup(<UnifiedLeaderboard boards={[VARIANT_BOARD]} release={{ id: "2026-01-02-abcdefabcdef", released_at: "2026-01-02T03:04:05.000Z" }} />);
+    const stats = html.match(/<p[^>]*data-testid="leaderboard-stats"[^>]*>([\s\S]*?)<\/p>/)![1].replace(/<!-- -->/g, "");
+    expect(stats).toBe("4 tools, from 1 source. 1 of 4 results (25%) comes from an independent study; the release does not say who ran 1 of them. Data release 2026-01-02-abcdefabcdef, published 2026-01-02.");
+    const plain = renderToStaticMarkup(<UnifiedLeaderboard boards={[RUNTIME_BOARD]} />);
+    expect(plain).toContain("2 tools, from 1 source. 2 of 2 results (100%) come from an independent study.");
+    expect(plain).not.toContain("Data release");
+    expect(renderToStaticMarkup(<UnifiedLeaderboard boards={[EMPTY_BOARD]} />)).not.toContain('data-testid="leaderboard-stats"');
+  });
+
+  it("marks a proxy board on its tab as well as in its note", () => {
+    const { renderer } = mount(<UnifiedLeaderboard boards={[VARIANT_BOARD, RUNTIME_BOARD]} />);
+    const tabs = renderer.root.findAllByType("button").filter((b) => b.props.role === "tab");
+    expect(textOf(tabs[0].children)).toBe("Fixture variant effect");
+    expect(tabs[1].findAllByType("span").map((span) => textOf(span.children))).toEqual(["Proxy"]);
+  });
+
   it("switches use cases with accessible tabs", () => {
     const { renderer, rows } = mount(<UnifiedLeaderboard boards={[VARIANT_BOARD, RUNTIME_BOARD]} />);
     const tabs = () => renderer.root.findAllByType("button").filter((b) => b.props.role === "tab");

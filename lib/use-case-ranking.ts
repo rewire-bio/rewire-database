@@ -152,6 +152,7 @@ export function buildLeaderboard(inputs: RankingInputs): LeaderboardResult {
       independent: isIndependentOrigin(origin),
       source_record_id: cell.resultId!,
       evaluation_id: cell.evaluationId ?? null,
+      source_ids: [...(result?.source_ids ?? [])],
       source: sourceRecord
         ? {
           id: sourceRecord.id,

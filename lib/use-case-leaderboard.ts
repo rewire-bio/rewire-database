@@ -96,7 +96,10 @@ export interface BiologicalModelRankingRow {
   /** The result record the value is read from. */
   source_record_id: string;
   evaluation_id: string | null;
+  /** The first source the result cites, shown in the row. */
   source: RankingSource | null;
+  /** Every source the result cites. */
+  source_ids: string[];
   /** Comparisons in this use case that score the tool, out of all the use case's comparisons. */
   coverage: { evaluated: number; relevant: number };
   open_findings: OpenFinding[];
@@ -190,6 +193,42 @@ export function markParetoOptimal(rows: BiologicalModelRankingRow[], direction: 
     cost: r.telemetry.inference_latency_ms,
   })));
   for (const row of rows) row.pareto_optimal = optimal.has(row.model_id);
+}
+
+export interface BoardStats {
+  /** Ranked rows: one per configuration. */
+  rows: number;
+  /** Distinct models, methods or pipelines behind the rows (a configuration with no parent counts as itself). */
+  tools: number;
+  /** Distinct sources the ranked results cite. */
+  sources: number;
+  /** Rows whose evaluation was run by an independent study. */
+  independent: number;
+  /** Rows whose evaluation records no origin, or records that the source does not say who ran it. */
+  origin_unreported: number;
+}
+
+/** What a board rests on, counted from its ranked rows. */
+export function boardStats(board: Pick<LeaderboardResult, "rows">): BoardStats {
+  const { rows } = board;
+  return {
+    rows: rows.length,
+    tools: new Set(rows.map((r) => r.parent_id ?? r.model_id)).size,
+    sources: new Set(rows.flatMap((r) => r.source_ids)).size,
+    independent: rows.filter((r) => r.independent).length,
+    origin_unreported: rows.filter((r) => r.origin === null || r.origin === "unreported").length,
+  };
+}
+
+/** "44 tools in 97 rows, from 1 source. 0 of 97 results come from an independent study; ..." */
+export function boardStatsText(stats: BoardStats): string {
+  const plural = (n: number, one: string, many = `${one}s`) => `${n} ${n === 1 ? one : many}`;
+  const tools = stats.tools === stats.rows ? plural(stats.tools, "tool") : `${plural(stats.tools, "tool")} in ${plural(stats.rows, "row")}`;
+  const share = stats.rows ? ` (${Math.round((stats.independent / stats.rows) * 100)}%)` : "";
+  const unreported = !stats.origin_unreported ? ""
+    : stats.origin_unreported === stats.rows ? `; the release does not say who ran ${stats.rows === 1 ? "it" : "them"}`
+    : `; the release does not say who ran ${stats.origin_unreported} of them`;
+  return `${tools}, from ${plural(stats.sources, "source")}. ${stats.independent} of ${plural(stats.rows, "result")}${share} ${stats.independent === 1 ? "comes" : "come"} from an independent study${unreported}.`;
 }
 
 /** "AUROC on Feng Donor sequence classification", or with the stratum when it is not the metric. */

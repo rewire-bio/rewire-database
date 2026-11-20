@@ -3,7 +3,7 @@ import type { CatalogueRecord, ResultRow } from "../../shared/omics/catalogue-qu
 import type { ResolvedMapping } from "../../shared/omics/use-cases";
 import { buildComparisons } from "../../lib/use-case-comparisons";
 import { buildLeaderboard, selectRankingComparison, type RankingInputs } from "../../lib/use-case-ranking";
-import { calculateConventionalMargin, computeParetoOptimal, protocolLabel } from "../../lib/use-case-leaderboard";
+import { boardStats, boardStatsText, calculateConventionalMargin, computeParetoOptimal, protocolLabel, type BiologicalModelRankingRow } from "../../lib/use-case-leaderboard";
 import { licenceLabel, licenceText, shortFact, telemetryFromRecord } from "../../lib/operational-telemetry";
 import {
   ORIGIN_COUNT_LABELS, ORIGIN_DESCRIPTIONS, ORIGIN_EVALUATION_LABELS, ORIGIN_LABELS,
@@ -365,5 +365,30 @@ describe("access and licence labels (#230)", () => {
     const shown = cases.filter(([name]) => ["Ladon", "PerturbPFN", "Novae"].includes(name)).map(([, access, licence]) => card(model(access, licence)));
     expect(shown.map(([access]) => access.split(" ")[0])).toEqual(["No", "Not", "Not"]);
     expect(shown.every(([, licence]) => licence === "Not recorded")).toBe(true);
+  });
+});
+
+describe("board statistics", () => {
+  const row = (model_id: string, extra: Partial<BiologicalModelRankingRow> = {}) =>
+    ({ model_id, parent_id: null, source_ids: ["s1"], independent: true, origin: "independent_paper", ...extra }) as BiologicalModelRankingRow;
+
+  it("counts tools by parent, sources over every cited source, and origins per row", () => {
+    const stats = boardStats({ rows: [
+      row("a-small", { parent_id: "a" }),
+      row("a-large", { parent_id: "a", source_ids: ["s1", "s2"] }),
+      row("b", { independent: false, origin: "author_reported", source_ids: ["s3"] }),
+      row("c", { independent: false, origin: "unreported" }),
+      row("d", { independent: false, origin: null, source_ids: [] }),
+    ] });
+    expect(stats).toEqual({ rows: 5, tools: 4, sources: 3, independent: 2, origin_unreported: 2 });
+    expect(boardStatsText(stats)).toBe("4 tools in 5 rows, from 3 sources. 2 of 5 results (40%) come from an independent study; the release does not say who ran 2 of them.");
+  });
+
+  it("does not present an unreported origin as a lack of independence", () => {
+    const unreported = boardStats({ rows: [row("a", { independent: false, origin: "unreported" }), row("b", { independent: false, origin: "unreported" })] });
+    expect(boardStatsText(unreported)).toBe("2 tools, from 1 source. 0 of 2 results (0%) come from an independent study; the release does not say who ran them.");
+    const one = boardStats({ rows: [row("a", { independent: false, origin: null })] });
+    expect(boardStatsText(one)).toBe("1 tool, from 1 source. 0 of 1 result (0%) come from an independent study; the release does not say who ran it.");
+    expect(boardStatsText(boardStats({ rows: [] }))).toBe("0 tools, from 0 sources. 0 of 0 results come from an independent study.");
   });
 });

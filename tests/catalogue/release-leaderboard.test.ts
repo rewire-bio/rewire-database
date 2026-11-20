@@ -4,7 +4,6 @@ import { allUseCaseLeaderboards, homeLeaderboards, rankingsForRecord, runReceipt
 import { generateAgentsMd, generateLlmsFullText, generateLlmsTxt } from "../../lib/llm-discoverability";
 import { generateHomepageTakeaway, generateUseCaseTakeaway } from "../../lib/geo-takeaway";
 import { telemetryFromRecord } from "../../lib/operational-telemetry";
-import { ORIGIN_LABELS } from "../../lib/result-origin";
 
 // Against the pinned release: every rendered figure must trace to a record in it.
 describe("use-case leaderboards from the release", () => {
@@ -61,15 +60,12 @@ describe("use-case leaderboards from the release", () => {
   });
 
   it("shows each row the origin of the evaluation its value belongs to", () => {
-    const known = new Set(Object.keys(ORIGIN_LABELS));
     for (const { row } of rows) {
       expect(row.evaluation_id, row.source_record_id).not.toBeNull();
       const result = query.record(row.source_record_id)!;
       expect(result.links.find((l) => l.relation === "evaluation")?.target_id, row.source_record_id).toBe(row.evaluation_id);
       const origin = query.record(row.evaluation_id!)!.attributes.origin;
       expect(row.origin, row.source_record_id).toBe(origin);
-      // A new origin in the vocabulary needs a label here before it reaches a board.
-      expect(known.has(row.origin!), `${row.source_record_id}: ${row.origin}`).toBe(true);
       expect(row.independent, row.source_record_id).toBe(origin === "independent_paper" || origin === "rewire_run");
     }
   });

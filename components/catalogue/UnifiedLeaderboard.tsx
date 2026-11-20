@@ -10,7 +10,8 @@ import {
   type LeaderboardResult,
   type RankingProtocol,
 } from "../../lib/use-case-leaderboard";
-import { NOT_RECORDED, shortFact, type OperationalTelemetry } from "../../lib/operational-telemetry";
+import { NOT_RECORDED, licenceLabel, licenceText, shortFact, type OperationalTelemetry } from "../../lib/operational-telemetry";
+import { originDescription, originLabel } from "../../lib/result-origin";
 import { generateLeaderboardItemListJsonLd } from "../../lib/catalogue-seo";
 import { safeJsonLd } from "../../lib/catalogue-sharing";
 
@@ -32,14 +33,7 @@ export interface UnifiedLeaderboardProps {
 export type SortColumn = "rank" | "metric" | "vs_baseline" | "latency" | "vram" | "model" | "source" | "license";
 export type SortDirection = "asc" | "desc";
 
-const ORIGIN_LABELS: Record<string, string> = {
-  author_reported: "Developer-reported",
-  independent_paper: "Independent study",
-  rewire_run: "Rewire run",
-  paper_compilation: "Compiled from papers",
-  unreported: "Origin not reported",
-};
-export const originLabel = (origin: string | null) => (origin ? ORIGIN_LABELS[origin] ?? origin.replace(/_/g, " ") : "Origin not reported");
+export { originLabel };
 
 function formatMargin(delta: number | null | undefined): string {
   if (delta === null || delta === undefined || !Number.isFinite(delta)) return NOT_RECORDED;
@@ -153,7 +147,7 @@ export function UnifiedLeaderboard({
         r.model_name.toLowerCase().includes(q) ||
         (r.model_detail ?? "").toLowerCase().includes(q) ||
         (r.source?.name ?? "").toLowerCase().includes(q) ||
-        (r.telemetry.license ?? "").toLowerCase().includes(q));
+        (licenceText(r.telemetry) ?? "").toLowerCase().includes(q));
     return list;
   }, [availableRows, openWeightsOnly, maxVram, searchQuery]);
 
@@ -177,7 +171,7 @@ export function UnifiedLeaderboard({
         case "vram": return numeric(a.telemetry.min_vram_gb, b.telemetry.min_vram_gb, flip);
         case "model": return flip * a.model_name.localeCompare(b.model_name);
         case "source": return flip * (a.source?.name ?? "").localeCompare(b.source?.name ?? "");
-        case "license": return flip * (a.telemetry.license ?? "").localeCompare(b.telemetry.license ?? "");
+        case "license": return flip * (licenceText(a.telemetry) ?? "").localeCompare(licenceText(b.telemetry) ?? "");
       }
     });
     return list;
@@ -420,9 +414,25 @@ export function UnifiedLeaderboard({
                           className={`${styles.statusBadge} ${row.reviewed_status === "reproduced" ? styles.statusReproduced : row.reviewed_status === "source_checked" ? styles.statusChecked : styles.statusCommunity}`}
                           data-status={row.reviewed_status}
                         >
-                          {REVIEW_STATUS_LABELS[row.reviewed_status]}
+                          {row.receipt ? (
+                            <Link
+                              href={row.receipt.href}
+                              prefetch={false}
+                              title={`Run receipt: ${row.receipt.name}`}
+                              aria-label={`${REVIEW_STATUS_LABELS[row.reviewed_status]}. Run receipt: ${row.receipt.name}`}
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              {REVIEW_STATUS_LABELS[row.reviewed_status]}
+                            </Link>
+                          ) : REVIEW_STATUS_LABELS[row.reviewed_status]}
                         </span>{" "}
-                        <span className={row.independent ? styles.openWeightsBadge : styles.closedWeightsBadge}>{originLabel(row.origin)}</span>
+                        <span
+                          className={row.independent ? styles.openWeightsBadge : styles.closedWeightsBadge}
+                          data-origin={row.origin ?? "none"}
+                          title={originDescription(row.origin)}
+                        >
+                          {originLabel(row.origin)}
+                        </span>
                       </td>
                       <td className={styles.monoValue} title="Comparisons in this use case that score the tool">
                         {`${row.coverage.evaluated}/${row.coverage.relevant}`}
@@ -437,8 +447,8 @@ export function UnifiedLeaderboard({
                       {hasLatency && <td><span className={styles.monoValue}>{formatLatency(row.telemetry.inference_latency_ms)}</span></td>}
                       {hasVram && <td><span className={styles.monoValue}>{formatVram(row.telemetry.min_vram_gb)}</span></td>}
                       <td>
-                        <span className={row.telemetry.open_weights ? styles.openWeightsBadge : styles.closedWeightsBadge} title={row.telemetry.license ?? undefined}>
-                          {shortFact(row.telemetry.license, 28)}
+                        <span className={row.telemetry.open_weights ? styles.openWeightsBadge : styles.closedWeightsBadge} data-licence-scope={row.telemetry.license_scope ?? "none"} title={licenceText(row.telemetry) ?? undefined}>
+                          {shortFact(licenceText(row.telemetry), 28)}
                         </span>
                       </td>
                     </tr>
@@ -462,7 +472,7 @@ export function UnifiedLeaderboard({
                                 <dd>{row.telemetry.estimated_cost_per_1k_evals_usd !== null ? `$${row.telemetry.estimated_cost_per_1k_evals_usd.toFixed(3)} / 1k` : NOT_RECORDED}</dd>
                                 <dt>Context Window:</dt>
                                 <dd>{recorded(row.telemetry.context_window)}</dd>
-                                <dt>License:</dt>
+                                <dt>{licenceLabel(row.telemetry)}:</dt>
                                 <dd>{recorded(row.telemetry.license)}</dd>
                                 <dt>Access:</dt>
                                 <dd>{recorded(row.telemetry.access)}</dd>
@@ -515,8 +525,18 @@ export function UnifiedLeaderboard({
                                 </dd>
                                 <dt>Review:</dt>
                                 <dd>{REVIEW_STATUS_LABELS[row.reviewed_status]}</dd>
+                                {row.receipt && (
+                                  <>
+                                    <dt>Run receipt:</dt>
+                                    <dd>
+                                      <Link href={row.receipt.href} prefetch={false} className={styles.provenanceLink}>
+                                        {row.receipt.name}
+                                      </Link>
+                                    </dd>
+                                  </>
+                                )}
                                 <dt>Who ran it:</dt>
-                                <dd>{originLabel(row.origin)}</dd>
+                                <dd data-origin-detail={row.origin ?? "none"}>{originLabel(row.origin)}. {originDescription(row.origin)}</dd>
                                 <dt>Discrepancies:</dt>
                                 <dd>
                                   {row.open_findings.length

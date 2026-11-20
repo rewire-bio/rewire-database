@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { recordHref } from "@/lib/omics";
+import { isIndependentOrigin, originDescription } from "@/lib/result-origin";
 import {
   isBaselineRow,
   methodTypeLabel,
@@ -330,10 +331,13 @@ export default function UseCaseComparison({
           <span
             key={origin}
             className={
-              origin === "author_reported" ? styles.badgeAuthor : styles.badgeIndependent
+              isIndependentOrigin(origin) ? styles.badgeIndependent : styles.badgeAuthor
             }
+            data-origin={origin}
+            title={originDescription(origin)}
           >
             {originLabel(origin)}
+            <span className={styles.srOnly}>: {originDescription(origin)}</span>
           </span>
         ))}
       </div>

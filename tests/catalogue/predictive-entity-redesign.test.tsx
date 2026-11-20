@@ -125,6 +125,48 @@ describe("Predictive Entity Detail Redesign (TC-PED-01 to TC-PED-08)", () => {
     expect(bareHtml).not.toContain("125 ms");
   });
 
+  it("TC-PED-04b: the capability card shows access and licence in the record's own words (#230)", () => {
+    const tile = (html: string, label: string) =>
+      html.match(new RegExp(`<span class="[^"]*">${label}</span><span class="[^"]*" title="([^"]*)">([^<]*)</span>`));
+    const jsonLd = (html: string) =>
+      [...html.matchAll(/<script type="application\/ld\+json">(.*?)<\/script>/g)].map((m) => JSON.parse(m[1])).find((j) => j["@type"] === "SoftwareApplication");
+    const render = (attributes: Record<string, unknown>) => {
+      const detail = createSampleRecordDetail("model");
+      detail.record.attributes = attributes;
+      return renderToStaticMarkup(<PredictiveEntityDetail detail={detail} />);
+    };
+    const facts = (...list: [string, string, string][]) => ({ profile: { facts: list.map(([label, value, status]) => ({ label, value, status })) } });
+
+    // Text copied from release 2026-11-20-72316db0764b (Bacformer, Ladon).
+    const bacformer = render({
+      access: "Public checkpoints on Hugging Face under macwiatrak, installed through the bacformer package; inference needs protein embeddings from a base protein language model.",
+      licence: "Apache-2.0 for the code and models in the Bacformer repository",
+    });
+    expect(tile(bacformer, "Access")![2]).toBe("Public checkpoints on Hugging Face under macwiatrak…");
+    expect(tile(bacformer, "Access")![1]).toContain("inference needs protein embeddings from a base protein language model.");
+    expect(tile(bacformer, "License")![2]).toBe("Apache-2.0 for the code and models in the Bacformer…");
+    const ladon = render({ access: "No model weights, code repository or model licence is published with the report." });
+    expect(tile(ladon, "Access")![2]).toBe("No model weights, code repository or model licence is…");
+    expect(tile(ladon, "License")![2]).toBe("Not recorded");
+    for (const html of [bacformer, ladon])
+      for (const invented of ["Hosted API", "Open Weights", "Academic / Research", "Unspecified", "Proprietary"])
+        expect([tile(html, "Access")![2], tile(html, "License")![2]].join(" ")).not.toContain(invented);
+
+    // Only a code licence is recorded: the tile says so, and JSON-LD does not publish it as the model's licence.
+    const codeOnly = render(facts(["Weights licence", "Separate checkpoint terms are not stated", "unreported"], ["Code licence", "MIT", "source_checked"]));
+    expect(tile(codeOnly, "Code licence")![2]).toBe("MIT");
+    expect(tile(codeOnly, "License")).toBeNull();
+    expect(jsonLd(codeOnly).license).toBeUndefined();
+    // A weights licence, or the code licence of a tool that has no weights, is the tool's licence.
+    const weights = render(facts(["Weights licence", "CC BY-NC 4.0", "source_checked"], ["Code licence", "MIT", "source_checked"]));
+    expect(tile(weights, "License")![2]).toBe("CC BY-NC 4.0");
+    expect(tile(weights, "Code licence")).toBeNull();
+    expect(jsonLd(weights).license).toBe("CC BY-NC 4.0");
+    const noWeights = render(facts(["Weights licence", "Not applicable", "inapplicable"], ["Code licence", "GPL-3.0", "source_checked"]));
+    expect(tile(noWeights, "License")![2]).toBe("GPL-3.0");
+    expect(jsonLd(noWeights).license).toBe("GPL-3.0");
+  });
+
   it("TC-PED-05: Missing or empty fields render defensively via displayValue as Not reported or None recorded", () => {
     expect(displayValue({})).toBe("None recorded");
     expect(displayValue(undefined)).toBe("Not reported");

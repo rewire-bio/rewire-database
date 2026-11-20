@@ -277,6 +277,7 @@ export interface LeaderboardItemRowInput {
     min_vram_gb?: number | null;
     open_weights?: boolean | null;
     license?: string | null;
+    license_scope?: string | null;
   } | null;
 }
 
@@ -299,6 +300,7 @@ export interface ModelSoftwareApplicationOptions {
     min_vram_gb?: number | null;
     open_weights?: boolean | null;
     license?: string | null;
+    license_scope?: string | null;
   } | null;
   url?: string;
   baseUrl?: string;
@@ -342,7 +344,7 @@ export function generateLeaderboardItemListJsonLd({
       appItem.memoryRequirements = `${row.telemetry.min_vram_gb} GB VRAM`;
     }
 
-    if (row.telemetry?.license) {
+    if (row.telemetry?.license && row.telemetry.license_scope !== "code") {
       appItem.license = row.telemetry.license;
     }
 
@@ -420,7 +422,7 @@ export function generateModelSoftwareApplicationJsonLd({
     };
   }
 
-  if (telemetry?.license) {
+  if (telemetry?.license && telemetry.license_scope !== "code") {
     schema.license = telemetry.license;
   }
 

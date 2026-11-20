@@ -6,7 +6,7 @@ import { catalogueText } from "@/lib/catalogue-text";
 import Link from "next/link";
 import { Fragment } from "react";
 import { buildCatalogue } from "@/lib/catalogue-build";
-import { NOT_RECORDED, shortFact, telemetryFromRecord } from "@/lib/operational-telemetry";
+import { NOT_RECORDED, licenceLabel, shortFact, telemetryFromRecord } from "@/lib/operational-telemetry";
 import { rankingsForRecord } from "@/lib/release-leaderboard";
 import { generateModelSoftwareApplicationJsonLd } from "@/lib/catalogue-seo";
 import { GeoTakeaway } from "@/components/catalogue/GeoTakeaway";
@@ -318,7 +318,7 @@ export function PredictiveEntityDetail({ detail }: { detail: RecordDetail }) {
               ["Inference Latency", telemetry.inference_latency_ms !== null ? `${telemetry.inference_latency_ms} ms` : NOT_RECORDED],
               ["Context Window", telemetry.context_window ?? NOT_RECORDED],
               ["Access", telemetry.access ?? NOT_RECORDED],
-              ["License", telemetry.license ?? NOT_RECORDED],
+              [licenceLabel(telemetry), telemetry.license ?? NOT_RECORDED],
             ];
 
             return (

@@ -163,18 +163,8 @@ export function uncertaintyText(attributes: Record<string, unknown>): string {
   const missing = (attributes.missing_metadata as Record<string, unknown> | undefined)?.uncertainty;
   return missingText(missing) ?? "Not reported";
 }
-export function originLabel(origin: unknown): string {
-  return (
-    (
-      {
-        author_reported: "Author-reported evaluation",
-        independent_paper: "Independent external evaluation",
-        paper_compilation: "Result quoted from another source",
-        rewire_run: "Rewire evaluation",
-      } as Record<string, string>
-    )[String(origin)] || "Evaluation origin not reported"
-  );
-}
+/** The record-page origin label; the wording lives in lib/result-origin.ts with every other origin label. */
+export { originEvaluationLabel as originLabel } from "./result-origin";
 const comparisonFields = [
   "protocol_id",
   "dataset_version",

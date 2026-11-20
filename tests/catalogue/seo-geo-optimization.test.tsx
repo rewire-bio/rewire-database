@@ -131,6 +131,24 @@ describe("Feature 10: Schema.org JSON-LD Structured Data", () => {
     expect(emptyJson.itemListElement).toEqual([]);
   });
 
+  it("TC-SEO-02b: a licence that covers only the code is not published as the model's licence", () => {
+    const row = (model_id: string, license_scope: string | null) => ({ model_id, model_name: model_id, rank: 1, telemetry: { license: "MIT", license_scope } });
+    const list = generateLeaderboardItemListJsonLd({
+      name: "Fixture", description: "Rankings",
+      rows: [row("code", "code"), row("weights", "weights"), row("record", "record"), row("tool", "tool"), row("unscoped", null)],
+    });
+    expect(list.itemListElement.map((entry: { item: { license?: string } }) => entry.item.license)).toEqual([undefined, "MIT", "MIT", "MIT", "MIT"]);
+    const model = (license_scope: string | null) =>
+      generateModelSoftwareApplicationJsonLd({ id: "m", name: "M", telemetry: { license: "MIT", license_scope } }).license;
+    expect(["code", "weights", "record", "tool", null].map(model)).toEqual([undefined, "MIT", "MIT", "MIT", "MIT"]);
+    // The board that the leaderboard component publishes: Gamma's licence is code only.
+    const html = renderToStaticMarkup(<UnifiedLeaderboard boards={[VARIANT_BOARD]} emitJsonLd />);
+    const published = JSON.parse(html.match(/<script type="application\/ld\+json">(.*?)<\/script>/)![1]);
+    const licences = Object.fromEntries(published.itemListElement.map((entry: { item: { name: string; license?: string } }) => [entry.item.name, entry.item.license]));
+    expect(licences).toMatchObject({ Alpha: "MIT", Beta: "Proprietary" });
+    expect(licences.Gamma).toBeUndefined();
+  });
+
   it("TC-SEO-04: generateModelSoftwareApplicationJsonLd emits full SoftwareApplication schema", () => {
     const schema = generateModelSoftwareApplicationJsonLd({
       id: "boltz-1",
@@ -412,6 +430,13 @@ describe("Feature 11: Generative Engine Optimization (GEO) Lead Summaries", () =
     expect(ranked.primaryStatement).toContain("position 1 of 4 on this protocol");
     expect(ranked.primaryStatement).toContain("1 other use case: Fixture runtime");
     expect(ranked.secondaryStatement).toBe("Recorded parameters: 650M. Licence: Not recorded.");
+    // A code-only licence is named as one in both forms of the sentence.
+    const codeOnly = telemetryFromRecord({ attributes: { profile: { facts: [
+      { label: "Weights licence", value: "Not stated", status: "unreported" }, { label: "Code licence", value: "MIT", status: "source_checked" },
+    ] } } });
+    expect(generateModelTakeaway({ id: "alpha", name: "Alpha" }, [{ board: VARIANT_BOARD, row: VARIANT_BOARD.rows[0] }], codeOnly).secondaryStatement)
+      .toBe("Recorded parameters: Not recorded. Code licence: MIT.");
+    expect(generateModelTakeaway({ id: "x", name: "X" }, [], codeOnly).secondaryStatement).toBe("Recorded parameters: Not recorded. Code licence: MIT.");
 
     const unranked = generateModelTakeaway({ id: "x", name: "CustomBioModel" }, [], telemetryFromRecord(null));
     expect(unranked.title).toBe("Model Deployment Profile");
@@ -482,6 +507,26 @@ describe("Feature 12: LLM Discoverability Enhancement", () => {
     expect(text).toContain(`https://benchmarks.rewirebio.io/database/result/${encodeURIComponent(ranked.rows[0].source_record_id)}/`);
     expect(text).not.toContain("Capability Index");
     expect(text).not.toContain("Noise Floor");
+  });
+
+  it("TC-LLM-04b: /llms-full.txt gives each row's run receipt and origin, and defines every origin", () => {
+    const text = generateLlmsFullText("fixture", [VARIANT_BOARD]);
+    const line = (name: string) => text.split("\n").find((l) => l.startsWith("|") && l.includes(`| ${name} |`))!.split("|").map((c) => c.trim());
+    const header = text.split("\n").find((l) => l.startsWith("| Rank |"))!.split("|").map((c) => c.trim());
+    const column = (name: string, title: string) => line(name)[header.indexOf(title)];
+    expect(column("Alpha", "Review")).toBe("Reproduced");
+    expect(column("Alpha", "Run receipt")).toBe("https://benchmarks.rewirebio.io/database/source/fixture-receipt/");
+    expect(column("Alpha", "Origin")).toBe("rewire_run");
+    expect(column("Beta", "Run receipt")).toBe("none");
+    expect(column("Gamma", "Run receipt")).toBe("none");
+    expect(column("Gamma", "Origin")).toBe("unreported");
+    for (const origin of ["author_reported", "independent_paper", "rewire_run", "paper_compilation", "unreported", "not recorded"])
+      expect(text, origin).toMatch(new RegExp(`^   - \\\`${origin}\\\`: \\S`, "m"));
+    expect(text).toContain("- \`unreported\`: The source prints the value but does not say who ran the tool, so it is not counted as independent.");
+    expect(text).toContain("for a Rewire run the run's own execution report");
+    const agents = generateAgentsMd("fixture", [VARIANT_BOARD]);
+    expect(agents).toContain("True only for independent_paper.");
+    expect(agents).not.toContain("or from a Rewire run");
   });
 
   it("TC-LLM-05: GET /agents.md returns HTTP 200 with schemas, queries, and constraints", async () => {

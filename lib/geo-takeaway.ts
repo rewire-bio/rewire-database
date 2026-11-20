@@ -5,7 +5,7 @@
  * the value was reported in. No sentence says a model "ranks #1" overall.
  */
 
-import { NOT_RECORDED, shortFact, type OperationalTelemetry } from "./operational-telemetry";
+import { NOT_RECORDED, licenceLabel, shortFact, type OperationalTelemetry } from "./operational-telemetry";
 import {
   protocolLabel,
   type BiologicalModelRankingRow,
@@ -77,7 +77,7 @@ export function generateUseCaseTakeaway({ leaderboard }: { leaderboard: Leaderbo
   return {
     title: "Executive Takeaway",
     primaryStatement: `For "${board.use_case_title}", ${leadStatement(board)}.`,
-    secondaryStatement: `${board.rows.length} ${board.rows.length === 1 ? "tool has" : "tools have"} a value on this protocol; ${independent} of them come from studies other than the tool's developers.${baseline}${proxy}`,
+    secondaryStatement: `${board.rows.length} ${board.rows.length === 1 ? "tool has" : "tools have"} a value on this protocol; ${independent} of them come from studies whose authors did not develop the tool.${baseline}${proxy}`,
     highlights: [
       { label: "Best reported value", value: top.model_name, subtext: shortFact(sourceName(top), 60) },
       { label: board.protocol.metric_label, value: top.display_value, subtext: protocolLabel(board.protocol) },
@@ -135,12 +135,12 @@ export function generateModelTakeaway(
     return {
       title: "Model Benchmark Takeaway",
       primaryStatement: `${capitalise(rowStatement(first.board, first.row))} (${ordinalOf(first.row, first.board)} for "${first.board.use_case_title}").${others}`,
-      secondaryStatement: `Recorded parameters: ${telemetry.parameters ?? NOT_RECORDED}. Licence: ${telemetry.license ?? NOT_RECORDED}.`,
+      secondaryStatement: `Recorded parameters: ${telemetry.parameters ?? NOT_RECORDED}. ${licenceLabel(telemetry, "Licence")}: ${telemetry.license ?? NOT_RECORDED}.`,
     };
   }
   return {
     title: "Model Deployment Profile",
     primaryStatement: `${record.name} has no ranked result on a use-case protocol in this release.`,
-    secondaryStatement: `Recorded parameters: ${telemetry.parameters ?? NOT_RECORDED}. Licence: ${telemetry.license ?? NOT_RECORDED}.`,
+    secondaryStatement: `Recorded parameters: ${telemetry.parameters ?? NOT_RECORDED}. ${licenceLabel(telemetry, "Licence")}: ${telemetry.license ?? NOT_RECORDED}.`,
   };
 }

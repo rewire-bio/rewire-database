@@ -87,6 +87,11 @@ describe("public omics catalogue", () => {
       "Independent external evaluation",
     );
     expect(originLabel("paper_compilation")).toContain("quoted");
+    expect(originLabel("rewire_run")).toBe("Rewire evaluation");
+    // "The source does not say" is a different statement from a value the site does not know or a missing one.
+    expect(originLabel("unreported")).toBe("Source does not say who ran the evaluation");
+    expect(originLabel("benchmark_reported")).toBe("Evaluation origin: benchmark reported");
+    expect(originLabel(undefined)).toBe("Evaluation origin not recorded");
   });
   it("rejects dangerous source URLs", () => {
     expect(safeSourceUrl("javascript:alert(1)")).toBeUndefined();

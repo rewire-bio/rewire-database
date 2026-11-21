@@ -31,6 +31,17 @@ export const ORIGIN_COUNT_LABELS: Record<string, string> = {
   unreported: "Evaluations whose source does not say who ran them",
 };
 
+/** How a board's summary line says it: "14 of 16 results come from an independent study; 2 are reported by the tool's developers". */
+export const ORIGIN_RESULT_PHRASES: Record<string, string> = {
+  author_reported: "reported by the tool's developers",
+  independent_paper: "from an independent study",
+  rewire_run: "run by Rewire",
+  paper_compilation: "quoted from another paper",
+  unreported: "from a source that does not say who ran the tool",
+};
+/** The same, for an evaluation record with no origin at all. */
+export const ORIGIN_NOT_RECORDED_PHRASE = "without a recorded origin";
+
 /** What each origin means, for tooltips, row details and the LLM files. */
 export const ORIGIN_DESCRIPTIONS: Record<string, string> = {
   author_reported: "Reported by the developers of the evaluated tool.",
@@ -67,6 +78,12 @@ export const originLabel = (origin: string | null | undefined) => {
 export const originEvaluationLabel = (origin: unknown) => {
   const value = given(origin);
   return value ? ORIGIN_EVALUATION_LABELS[value] ?? `Evaluation origin: ${readable(value)}` : "Evaluation origin not recorded";
+};
+
+/** "reported by the tool's developers"; an origin value newer than the site stays readable. */
+export const originResultPhrase = (origin: string | null | undefined) => {
+  const value = given(origin);
+  return value ? ORIGIN_RESULT_PHRASES[value] ?? `of origin ${readable(value)}` : ORIGIN_NOT_RECORDED_PHRASE;
 };
 
 export const originCountLabel = (origin: string) => ORIGIN_COUNT_LABELS[origin] ?? `Evaluations with origin ${readable(origin)}`;

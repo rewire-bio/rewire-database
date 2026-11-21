@@ -1,7 +1,11 @@
 import { describe, expect, it } from "vitest";
 import { buildCatalogue } from "../../lib/catalogue-build";
-import { HOME_LEADERBOARD_SLUGS, MIN_HOME_TOOLS, allUseCaseLeaderboards, homeLeaderboards, rankingsForRecord, runReceiptSources } from "../../lib/release-leaderboard";
-import { boardStats } from "../../lib/use-case-leaderboard";
+import {
+  HOME_LEADERBOARD_SLUGS, HOME_LEFT_OUT, MIN_HOME_PROXY_MODEL_ROWS, MIN_HOME_TOOLS,
+  allUseCaseLeaderboards, homeLeaderboards, meetsHomeRule, rankingsForRecord, runReceiptSources, selectHomeBoards,
+} from "../../lib/release-leaderboard";
+import { boardStats, type LeaderboardResult } from "../../lib/use-case-leaderboard";
+import { RUNTIME_BOARD, VARIANT_BOARD, fixtureRow } from "./fixtures/leaderboards";
 import { generateAgentsMd, generateLlmsFullText, generateLlmsTxt } from "../../lib/llm-discoverability";
 import { generateHomepageTakeaway, generateUseCaseTakeaway } from "../../lib/geo-takeaway";
 import { shortFact, telemetryFromRecord } from "../../lib/operational-telemetry";
@@ -18,21 +22,27 @@ describe("use-case leaderboards from the release", () => {
     expect(homeLeaderboards().length).toBeGreaterThan(0);
   });
 
-  it("shows on the homepage only listed use cases that rank enough tools, direct protocols first, proxies unchanged", () => {
+  it("shows every listed use case on the homepage, direct protocols first, each the same board as its use-case page", () => {
     const home = homeLeaderboards();
     const listed: readonly string[] = HOME_LEADERBOARD_SLUGS;
     expect(new Set(listed).size).toBe(listed.length);
-    for (const slug of listed) expect(boards.some((b) => b.use_case_slug === slug), slug).toBe(true);
-    for (const board of home) {
-      expect(listed, board.use_case_slug).toContain(board.use_case_slug);
-      expect(boardStats(board).tools, board.use_case_slug).toBeGreaterThanOrEqual(MIN_HOME_TOOLS);
-      // The homepage shows the same board as the use-case page, with the relevance its reviewers gave it.
-      expect(board).toBe(boards.find((b) => b.use_case_slug === board.use_case_slug));
-    }
+    // A misspelt or retired slug, or a board that stops meeting the rule, must fail here, not vanish from the page.
+    expect(home.map((b) => b.use_case_slug).sort()).toEqual([...listed].sort());
+    // The homepage shows the same board as the use-case page, with the relevance its reviewers gave it.
+    for (const board of home) expect(board).toBe(boards.find((b) => b.use_case_slug === board.use_case_slug));
     const relevance = home.map((b) => b.protocol!.relevance);
     expect(relevance).toEqual([...relevance].sort((a, b) => Number(b === "direct") - Number(a === "direct")));
-    for (const board of boards.filter((b) => listed.includes(b.use_case_slug) && boardStats(b).tools < MIN_HOME_TOOLS))
-      expect(home).not.toContain(board);
+    for (const r of ["direct", "proxy"])
+      expect(home.filter((b) => b.protocol!.relevance === r).map((b) => b.use_case_slug)).toEqual(listed.filter((slug) => home.find((b) => b.use_case_slug === slug)!.protocol!.relevance === r));
+  });
+
+  it("lists for the homepage exactly the boards that meet the rule in this release, apart from the named exceptions", () => {
+    const meeting = boards.filter(meetsHomeRule).map((b) => b.use_case_slug);
+    for (const slug of Object.keys(HOME_LEFT_OUT)) {
+      expect(meeting, slug).toContain(slug);
+      expect(HOME_LEADERBOARD_SLUGS as readonly string[], slug).not.toContain(slug);
+    }
+    expect(meeting.filter((slug) => !(slug in HOME_LEFT_OUT)).sort()).toEqual([...HOME_LEADERBOARD_SLUGS].sort());
   });
 
   it("counts a board's sources from every source its ranked results cite", () => {
@@ -191,5 +201,44 @@ describe("use-case leaderboards from the release", () => {
     for (const invented of ["ranks #1", "of assay ceiling", "Capability Index", "42 ms/seq", "re-checked against new publications every month"])
       expect(texts).not.toContain(invented);
     for (const { row } of rows.slice(0, 5)) expect(generateLlmsFullText("r", boards)).toContain(`/database/result/${encodeURIComponent(row.source_record_id)}/`);
+  });
+});
+
+describe("the homepage rule", () => {
+  const board = (slug: string, relevance: "direct" | "proxy", rows: number, row: Partial<Parameters<typeof fixtureRow>[0]> = {}): LeaderboardResult => ({
+    ...VARIANT_BOARD, use_case_slug: slug, baseline: null, protocol: { ...VARIANT_BOARD.protocol!, relevance },
+    rows: Array.from({ length: rows }, (_, i) => fixtureRow({ model_id: `${slug}-${i}`, rank: i + 1, ...row })),
+  });
+
+  it("needs ten distinct tools on a direct board", () => {
+    expect(MIN_HOME_TOOLS).toBe(10);
+    expect(meetsHomeRule(board("d10", "direct", 10, { method_types: [], independent: false, origin: "author_reported" }))).toBe(true);
+    expect(meetsHomeRule(board("d9", "direct", 9))).toBe(false);
+    // Ten configurations of one tool are one tool.
+    expect(meetsHomeRule(board("one", "direct", 10, { parent_id: "one-model" }))).toBe(false);
+    expect(meetsHomeRule({ ...VARIANT_BOARD, protocol: null, rows: [] })).toBe(false);
+  });
+
+  it("also needs foundation-model rows and a majority of independent rows on a proxy board", () => {
+    expect(MIN_HOME_PROXY_MODEL_ROWS).toBe(5);
+    const proxy = (models: number, independent: number) => {
+      const b = board("p", "proxy", 10);
+      b.rows.forEach((r, i) => {
+        r.method_types = i < models ? ["foundation_model"] : ["conventional_pipeline"];
+        r.independent = i < independent;
+        r.origin = i < independent ? "independent_paper" : "author_reported";
+      });
+      return b;
+    };
+    expect(meetsHomeRule(proxy(5, 6))).toBe(true);
+    expect(meetsHomeRule(proxy(4, 10))).toBe(false);
+    expect(meetsHomeRule(proxy(10, 5))).toBe(false);
+    expect(meetsHomeRule({ ...proxy(5, 6), rows: proxy(5, 6).rows.slice(0, 9) })).toBe(false);
+  });
+
+  it("drops listed boards that are missing or fail the rule, and puts direct boards first in the listed order", () => {
+    const [p1, d1, thin, d2] = [board("p1", "proxy", 10), board("d1", "direct", 10), board("thin", "direct", 4), board("d2", "direct", 12)];
+    expect(selectHomeBoards([p1, d1, null, thin, d2]).map((b) => b.use_case_slug)).toEqual(["d1", "d2", "p1"]);
+    expect(selectHomeBoards([RUNTIME_BOARD, null])).toEqual([]);
   });
 });

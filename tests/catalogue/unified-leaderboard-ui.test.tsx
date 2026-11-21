@@ -142,8 +142,8 @@ describe("UnifiedLeaderboard", () => {
 
   it("says what each board rests on, and names the release when given one", () => {
     const html = renderToStaticMarkup(<UnifiedLeaderboard boards={[VARIANT_BOARD]} release={{ id: "2026-01-02-abcdefabcdef", released_at: "2026-01-02T03:04:05.000Z" }} />);
-    const stats = html.match(/<p[^>]*data-testid="leaderboard-stats"[^>]*>([\s\S]*?)<\/p>/)![1].replace(/<!-- -->/g, "");
-    expect(stats).toBe("4 tools, from 1 source. 1 of 4 results (25%) comes from an independent study; the release does not say who ran 1 of them. Data release 2026-01-02-abcdefabcdef, published 2026-01-02.");
+    const stats = html.match(/<p[^>]*data-testid="leaderboard-stats"[^>]*>([\s\S]*?)<\/p>/)![1].replace(/<!-- -->/g, "").replace(/&#x27;/g, "'");
+    expect(stats).toBe("4 tools, from 1 source. 1 of 4 results (25%) comes from an independent study; 1 is reported by the tool's developers; 1 is run by Rewire; 1 is from a source that does not say who ran the tool. The top-ranked result is run by Rewire. Data release 2026-01-02-abcdefabcdef, published 2026-01-02.");
     const plain = renderToStaticMarkup(<UnifiedLeaderboard boards={[RUNTIME_BOARD]} />);
     expect(plain).toContain("2 tools, from 1 source. 2 of 2 results (100%) come from an independent study.");
     expect(plain).not.toContain("Data release");

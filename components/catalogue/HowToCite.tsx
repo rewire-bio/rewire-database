@@ -16,10 +16,10 @@ export default function HowToCite({ title, path, releaseId, className, compact =
   compact?: boolean;
 }) {
   const citation = <cite>{pageCitation(title, path, releaseId, SITE)}</cite>;
-  if (compact) return <p id="cite" className={className} data-testid="how-to-cite">
+  if (compact) return <p id="cite" className={className}>
     How to cite: {citation} Keep the release id, <code>{releaseId}</code>, in the citation. <a href={LICENCE_PATH}>Data licence</a>
   </p>;
-  return <section id="cite" className={className} data-testid="how-to-cite">
+  return <section id="cite" className={className}>
     <h2>How to cite</h2>
     <p>{citation}</p>
     <p>

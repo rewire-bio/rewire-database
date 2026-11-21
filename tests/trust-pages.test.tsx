@@ -52,14 +52,14 @@ describe("citations", () => {
 
     const board = allUseCaseLeaderboards().find((b) => b.rows.length > 0)!;
     const useCase = renderToStaticMarkup(<UseCasePage params={{ slug: board.use_case_slug }} />);
-    expect(useCase).toContain('data-testid="how-to-cite"');
+    expect(useCase).toContain('<section id="cite"');
     expect(useCase).toContain(`release ${release}. ${SITE}/use-cases/${board.use_case_slug}/</cite>`);
     expect(useCase).toContain('href="#cite"');
 
     const { query } = buildCatalogue();
     const model = query.recordsOfKind("model")[0];
     const page = renderToStaticMarkup(<PredictiveEntityDetail detail={query.get({ id: model.id })!} />);
-    expect(page).toContain('data-testid="how-to-cite"');
+    expect(page).toContain('<section id="cite"');
     expect(page).toContain(`release ${release}. ${SITE}${recordHref(model)}</cite>`);
   });
 });

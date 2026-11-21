@@ -1,6 +1,6 @@
 "use client";
 import { catalogueText } from "@/lib/catalogue-text";
-import { PLUGIN, reproducePrompt } from "@/lib/agent-connect";
+import { PLUGIN, rerunPrompt } from "@/lib/agent-connect";
 import { Fragment, useState, useMemo, useEffect } from "react";
 
 const runtimeLabel = (runtime: string) =>
@@ -295,12 +295,12 @@ export default function RunRecipes({
             {message}
           </p>
           <details>
-            <summary>Reproduce with your agent</summary>
+            <summary>Rerun with your agent</summary>
             <p>
               With the <a href="/agents/">{PLUGIN} plugin</a> installed, ask your coding agent:
             </p>
             <pre className={styles.runCode} tabIndex={0}>
-              <code>{reproducePrompt(recipe.id, recipe.protocol_id)}</code>
+              <code>{rerunPrompt(recipe.id, recipe.protocol_id)}</code>
             </pre>
           </details>
           <details>

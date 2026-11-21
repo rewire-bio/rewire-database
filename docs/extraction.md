@@ -9,6 +9,7 @@ Source: `https://github.com/timini/rewire.it` at `5f7b8ce477cc7afabc36e02bd00222
 - Copied small header/footer branding independently. Blog links use document navigation; project branding targets `rewire-bio`.
 - Retained scientific data and source URLs verbatim. GitHub transfers preserve historical repository URL redirects.
 - Excluded blog pages, stale exported article HTML, article assets, editorial tooling, Terraform and Google deployment workflows.
+- The two Geist font files the manifest lists (`app/fonts/GeistVF.woff`, `app/fonts/GeistMonoVF.woff`) were deleted on 2026-11-21. No page loaded them, and they are another project's work under its own licence. The manifest still lists them because it records the extraction as it was.
 - Removed analytics from this baseline; contribution routes must stay analytics-free when reviewed later.
 - Independent package manifest, lockfile, checks and gated Cloudflare workflow prevent dependency on another checkout or public PR previews.
 

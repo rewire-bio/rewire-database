@@ -136,4 +136,4 @@ Keep private contributor data out of every public artifact.
 
 ## Licence
 
-The code in this repository is under the MIT licence: see [LICENSE](LICENSE). That covers the software only. The benchmark data the site serves is built in [rewire-benchmark-data](https://github.com/rewire-bio/rewire-benchmark-data) and is under that repository's terms, not this licence. Values and text taken from cited sources stay under the terms of those sources.
+The code in this repository is under the MIT licence: see [LICENSE](LICENSE). That covers the software only. The benchmark data the site serves is built in [rewire-benchmark-data](https://github.com/rewire-bio/rewire-benchmark-data) and is under that repository's terms, not this licence. Values and text taken from cited sources stay under the terms of those sources. The same goes for the copies of release data and source tables kept here for tests, audits and research notes (under `tests/fixtures/` and `docs/`): they are data, not software, and this licence does not cover them.

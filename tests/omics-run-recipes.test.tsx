@@ -88,6 +88,9 @@ describe("reviewed local execution recipes", () => {
     expect(html).toContain("not been executed");
     expect(html).toContain("submit an exported evaluation for private review");
     expect(html).toContain("sdk.py: evaluate");
+    // Running a recipe again is a rerun; the site says "reproduced" only for a cited run receipt.
+    expect(html).toContain("<summary>Rerun with your agent</summary>");
+    expect(html).not.toContain("Reproduce with your agent");
   });
   it("offers every step of a recipe, including repeats of one runtime", () => {
     // A project's instructions are usually several command line steps in order.

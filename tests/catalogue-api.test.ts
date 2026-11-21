@@ -39,7 +39,11 @@ describe("public catalogue API", () => {
     const [list, one] = discrepancyApi(lock.release_id);
     const finding = query.discrepancies({ limit: 1 }).items[0]?.id ?? "discrepancy-0000000000000000";
     documented.push({ procedure: "discrepancies", input: list.example }, { procedure: "discrepancy", input: { ...one.example, id: finding } });
-    expect(generateLlmsTxt(lock.release_id)).toContain(`/api/trpc/${list.name}?input=${JSON.stringify(list.example)}`);
+    // /llms.txt prints one call as it is sent, encoded, so it can be fetched as printed.
+    const printed = generateLlmsTxt(lock.release_id).match(/Example: GET (https:\/\/\S+)/)?.[1] ?? "";
+    expect(printed).not.toMatch(/[{}"]/);
+    expect(JSON.parse(new URL(printed).searchParams.get("input") ?? "")).toEqual(list.example);
+    expect((await GET(new Request(printed))).status).toBe(200);
     for (const { procedure, input } of documented) {
       expect((await call(procedure, input)).status, procedure).toBe(200);
       if (procedure === "release") continue;

@@ -47,6 +47,9 @@ describe("connect your agent", () => {
     expect(guide).toContain("Your model and data are not sent to Rewire.");
     expect(guide).not.toContain("not sent anywhere");
     expect(page).toContain("The one full-protocol recipe that ships today");
+    // Running a user's own model is not something the run tools do: the page says what it takes.
+    expect(page).toContain("Running your own model through another protocol goes through the rewirebench command line, with an adapter for the model and the benchmark&#x27;s data");
+    expect(examplePrompts[2]).toBe("Run my model through the ProteinGym protocol next to the registered baseline and report the difference.");
   });
 
   it("says which skills need the servers the single MCP entry does not add", () => {

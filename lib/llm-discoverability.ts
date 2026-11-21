@@ -81,7 +81,7 @@ Each release flags studies that disagree with what other studies report for the 
 - Pages: ${SITE}/contested/ and ${SITE}/contested/<id>/
 - API (GET ${SITE}/api/trpc/<procedure>?input=<URL-encoded JSON>):
 ${discrepancyApi(releaseId).map((p) => `  - ${p.name}: ${p.input}. Returns ${p.returns}.`).join("\n")}
-  - Example: GET ${SITE}${trpcPath(discrepancyApi(releaseId)[0].name, discrepancyApi(releaseId)[0].example)}
+  - Example: GET ${SITE}${trpcPath(discrepancyApi(releaseId)[0].name, discrepancyApi(releaseId)[0].example, true)}
 - Knowledge graph: the derived graph holds the same findings. The MCP server's list_queries and run_query tools offer:
 ${discrepancyQueries.map((q) => `  - ${q.name}: ${q.params}. Returns ${q.returns}.`).join("\n")}
 

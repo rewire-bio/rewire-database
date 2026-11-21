@@ -59,9 +59,12 @@ export const discrepancyApi = (releaseId: string) => [
   },
 ] as const;
 
-/** A public API call as a path: GET /api/trpc/<procedure>?input=<JSON>. Encode the JSON when sending it. */
-export const trpcPath = (procedure: string, input?: Record<string, unknown>) =>
-  `/api/trpc/${procedure}${input ? `?input=${JSON.stringify(input)}` : ""}`;
+/**
+ * A public API call as a path: GET /api/trpc/<procedure>?input=<JSON>. The JSON is readable by
+ * default and must be URL-encoded when sent; `encoded` gives the path as it is sent.
+ */
+export const trpcPath = (procedure: string, input?: Record<string, unknown>, encoded = false) =>
+  `/api/trpc/${procedure}${input ? `?input=${encoded ? encodeURIComponent(JSON.stringify(input)) : JSON.stringify(input)}` : ""}`;
 
 import { generateLlmsTxt } from "./llm-discoverability";
 import type { LeaderboardResult } from "./use-case-leaderboard";

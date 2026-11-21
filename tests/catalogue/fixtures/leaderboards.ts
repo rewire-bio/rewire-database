@@ -112,32 +112,3 @@ export const EMPTY_BOARD: LeaderboardResult = {
   unranked: [],
   empty_reason: "No comparable results yet: no comparison has been collected for this use case.",
 };
-
-/** A benchmark board: a benchmark's own protocol, with no use case, baseline or relevance judgement. */
-export const BENCHMARK_BOARD: LeaderboardResult = {
-  use_case_slug: "fixture-benchmark",
-  use_case_title: "Fixture benchmark",
-  use_case_href: "/database/benchmark/fixture-benchmark/",
-  protocol: {
-    comparison_id: "fixture-benchmark-protocol",
-    title: "Fixture benchmark host classification",
-    column_label: "Macro F1",
-    metric: "macro-f1",
-    metric_label: "Macro F1",
-    direction: "higher",
-    endpoint: "",
-    relevance: "benchmark",
-  },
-  baseline: null,
-  rows: [
-    fixtureRow({ model_id: "probe-a", model_name: "Probe A", use_case_slug: "fixture-benchmark", primary_metric_name: "Macro F1", raw_metric_value: 71, display_value: "71.0", rank: 1, coverage: { evaluated: 2, relevant: 3 } }),
-    fixtureRow({ model_id: "probe-b", model_name: "Probe B", use_case_slug: "fixture-benchmark", primary_metric_name: "Macro F1", raw_metric_value: 64, display_value: "64.0", rank: 2, origin: "author_reported", independent: false, coverage: { evaluated: 3, relevant: 3 } }),
-  ],
-  unranked: [{ model_id: "probe-c", model_name: "Probe C", model_href: "/database/model/probe-c/", coverage: { evaluated: 1, relevant: 3 } }],
-  empty_reason: null,
-  benchmark: {
-    id: "fixture-benchmark", name: "Fixture benchmark", href: "/database/benchmark/fixture-benchmark/",
-    protocol_id: "fixture-benchmark-protocol", protocol_href: "/database/protocol/fixture-benchmark-protocol/",
-    protocols: 5, rankable: 3, adaptations: ["Frozen embeddings with a linear probe", "Trained from scratch"], withheld: 1,
-  },
-};

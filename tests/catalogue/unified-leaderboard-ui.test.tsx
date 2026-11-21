@@ -3,7 +3,7 @@ import { describe, it, expect, vi } from "vitest";
 import { act, create, type ReactTestRenderer } from "react-test-renderer";
 import { renderToStaticMarkup } from "react-dom/server";
 import { UnifiedLeaderboard } from "../../components/catalogue/UnifiedLeaderboard";
-import { BENCHMARK_BOARD, EMPTY_BOARD, RUNTIME_BOARD, VARIANT_BOARD, fixtureRow } from "./fixtures/leaderboards";
+import { EMPTY_BOARD, RUNTIME_BOARD, VARIANT_BOARD, fixtureRow } from "./fixtures/leaderboards";
 
 vi.mock("next/link", () => ({
   default: ({ children, href, prefetch: _prefetch, ...props }: { children: React.ReactNode; href: string; prefetch?: boolean; [key: string]: unknown }) => (
@@ -155,36 +155,6 @@ describe("UnifiedLeaderboard", () => {
     const tabs = renderer.root.findAllByType("button").filter((b) => b.props.role === "tab");
     expect(textOf(tabs[0].children)).toBe("Fixture variant effect");
     expect(tabs[1].findAllByType("span").map((span) => textOf(span.children))).toEqual(["Proxy"]);
-  });
-
-  it("labels a benchmark board, says what it does not show, and never calls it a use case", () => {
-    const html = renderToStaticMarkup(<UnifiedLeaderboard boards={[BENCHMARK_BOARD, { ...BENCHMARK_BOARD, use_case_slug: "other" }]} expandedRowId="probe-a" />);
-    const note = html.match(/<p[^>]*data-testid="leaderboard-protocol"[^>]*>([\s\S]*?)<\/p>/)![1].replace(/<!-- -->/g, "").replace(/<[^>]+>/g, "").replace(/&#x27;/g, "'");
-    expect(note).toContain("Benchmark board This board has no use-case judgement behind it.");
-    expect(note).toContain("not which tool suits a task");
-    expect(note).toContain("3 of the benchmark's 5 protocols can be ranked without a judgement");
-    expect(note).toContain("How the tools were fitted, as recorded: Frozen embeddings with a linear probe; Trained from scratch.");
-    expect(note).toContain("1 evaluation is left out because of an evidence concern.");
-    expect(note).not.toContain("Proxy protocol");
-    expect(html).toContain('href="/database/protocol/fixture-benchmark-protocol/"');
-    expect(html).toContain('aria-label="Benchmark rankings"');
-    expect(html).toContain('title="Rankable protocols of this benchmark that score the tool"');
-    expect(html).toContain("2 of 3 rankable protocols in this benchmark");
-    expect(html).toContain("evaluated elsewhere in this benchmark but not on this protocol");
-    expect(html).toContain("(1 of 3 rankable protocols)");
-    expect(html).toContain("No baseline or margin on a benchmark board.");
-    expect(html).toContain('<a href="/database/benchmark/fixture-benchmark/">All results for Fixture benchmark</a>');
-    expect(html.replace(/use-case judgement|named by a\s+use case, and no use case/g, "")).not.toMatch(/use case/i);
-  });
-
-  it("counts the protocols and withheld evaluations of a benchmark board in the singular", () => {
-    const one = { ...BENCHMARK_BOARD, benchmark: { ...BENCHMARK_BOARD.benchmark!, protocols: 1, rankable: 1, adaptations: [], withheld: 0 } };
-    const html = renderToStaticMarkup(<UnifiedLeaderboard boards={[one]} />).replace(/<!-- -->/g, "");
-    expect(html).toContain("1 of the benchmark&#x27;s 1 protocol can be ranked");
-    expect(html).not.toContain("How the tools were fitted");
-    expect(html).not.toContain("left out because of an evidence concern");
-    const two = { ...BENCHMARK_BOARD, benchmark: { ...BENCHMARK_BOARD.benchmark!, withheld: 2 } };
-    expect(renderToStaticMarkup(<UnifiedLeaderboard boards={[two]} />).replace(/<!-- -->/g, "")).toContain("2 evaluations are left out because of an evidence concern.");
   });
 
   it("switches use cases with accessible tabs", () => {

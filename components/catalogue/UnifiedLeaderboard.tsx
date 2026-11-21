@@ -105,9 +105,6 @@ export function UnifiedLeaderboard({
   );
   const board = boards.find((b) => b.use_case_slug === activeSlug) ?? boards[0];
   const protocol = board?.protocol ?? null;
-  // A benchmark board ranks a benchmark's own protocol; the wording says so wherever a use case is named.
-  const benchmark = board?.benchmark ?? null;
-  const scopeName = benchmark ? "benchmark" : "use case";
   const availableRows = useMemo(() => board?.rows ?? [], [board]);
 
   const [sortColumn, setSortColumn] = useState<SortColumn>("rank");
@@ -216,7 +213,7 @@ export function UnifiedLeaderboard({
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJsonLd(itemListJsonLd) }} />
       )}
       {showCategorySwitcher && boards.length > 1 && (
-        <nav className={styles.tabs} aria-label={benchmark ? "Benchmark rankings" : "Use-case rankings"} role="tablist">
+        <nav className={styles.tabs} aria-label="Use-case rankings" role="tablist">
           {boards.map((b) => (
             <button
               key={b.use_case_slug}
@@ -242,14 +239,6 @@ export function UnifiedLeaderboard({
           Ranked on <strong>{protocolLabel(protocol)}</strong> ({protocol.metric_label}, {protocol.direction} is better).
           {protocol.relevance === "proxy" && (
             <> <span className={styles.proxyBadge}>Proxy protocol</span> Reviewers judged this protocol a proxy for the use case, not a direct test of it.</>
-          )}
-          {benchmark && (
-            <> <span className={styles.proxyBadge}>Benchmark board</span> This board has no use-case judgement behind it. It shows how tools score on{" "}
-              <Link href={benchmark.protocol_href} prefetch={false}>one protocol</Link> of the benchmark, not which tool suits a task.{" "}
-              {benchmark.rankable} of the benchmark&apos;s {benchmark.protocols} {benchmark.protocols === 1 ? "protocol" : "protocols"} can be ranked without a judgement. The one shown has the most ranked rows, or is the first by record id when several tie.
-              {benchmark.adaptations.length > 0 && <> How the tools were fitted, as recorded: {benchmark.adaptations.join("; ")}.</>}
-              {benchmark.withheld > 0 && <> {benchmark.withheld} {benchmark.withheld === 1 ? "evaluation is" : "evaluations are"} left out because of an evidence concern.</>}
-            </>
           )}{" "}
           Only results on this protocol are ranked; other tools are listed below the table.
         </p>
@@ -458,7 +447,7 @@ export function UnifiedLeaderboard({
                           {originLabel(row.origin)}
                         </span>
                       </td>
-                      <td className={styles.monoValue} title={benchmark ? "Rankable protocols of this benchmark that score the tool" : "Comparisons in this use case that score the tool"}>
+                      <td className={styles.monoValue} title="Comparisons in this use case that score the tool">
                         {`${row.coverage.evaluated}/${row.coverage.relevant}`}
                       </td>
                       <td>
@@ -525,7 +514,7 @@ export function UnifiedLeaderboard({
                                   </>
                                 )}
                                 <dt>Coverage:</dt>
-                                <dd>{`${row.coverage.evaluated} of ${row.coverage.relevant} ${benchmark ? "rankable protocols" : "comparisons"} in this ${scopeName}`}</dd>
+                                <dd>{`${row.coverage.evaluated} of ${row.coverage.relevant} comparisons in this use case`}</dd>
                               </dl>
                             </div>
 
@@ -588,13 +577,13 @@ export function UnifiedLeaderboard({
       {board && board.unranked.length > 0 && (
         <details className={styles.unrankedList} data-testid="leaderboard-unranked">
           <summary>
-            {board.unranked.length} {board.unranked.length === 1 ? "tool is" : "tools are"} evaluated elsewhere in this {scopeName} but not on this protocol, so not ranked
+            {board.unranked.length} {board.unranked.length === 1 ? "tool is" : "tools are"} evaluated elsewhere in this use case but not on this protocol, so not ranked
           </summary>
           <ul>
             {board.unranked.map((m) => (
               <li key={m.model_id}>
                 <Link href={m.model_href} prefetch={false}>{m.model_name}</Link>{" "}
-                <span className={styles.monoValue}>{`(${m.coverage.evaluated} of ${m.coverage.relevant} ${benchmark ? "rankable protocols" : "comparisons"})`}</span>
+                <span className={styles.monoValue}>{`(${m.coverage.evaluated} of ${m.coverage.relevant} comparisons)`}</span>
               </li>
             ))}
           </ul>
@@ -609,18 +598,13 @@ export function UnifiedLeaderboard({
             </span>
             . Margins are percent differences from this value, positive when better.
           </div>
-        ) : benchmark ? (
-          <div>
-            <span className={styles.ceilingHighlight}>No baseline or margin on a benchmark board.</span> A baseline method is named by a
-            use case, and no use case is behind this board.
-          </div>
         ) : (
           <div>
             <span className={styles.ceilingHighlight}>No baseline scored on this protocol.</span> Margins are shown only where the
             same study scores the use case&apos;s baseline method.
           </div>
         )}
-        {board && <> <Link href={board.use_case_href} prefetch={false}>{benchmark ? "All results for" : "All comparisons for"} {board.use_case_title}</Link></>}
+        {board && <> <Link href={board.use_case_href} prefetch={false}>All comparisons for {board.use_case_title}</Link></>}
       </footer>
     </div>
   );

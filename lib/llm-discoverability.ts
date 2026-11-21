@@ -254,7 +254,7 @@ All procedures are accessible via HTTP GET:
 - \`GET /api/trpc/catalogue.list?input={"kind":"model"}\`: Lists biological models in catalogue.
 - \`GET /api/trpc/catalogue.discrepancies\`: Retrieves open discrepancies between studies.
 - \`GET /api/v1/\`: Keyless read-only JSON API. Lists its endpoints: models, benchmarks, use cases, the leaderboard for a use case, results for a model and contested findings. Every answer names its release, the data licence and a citation, and links each result's sources.
-- \`GET /api/v1/use-cases/<slug>/board/\`: A use case's leaderboard as JSON, with the rows of the schema above.
+- \`GET /api/v1/use-cases/<slug>/board/\`: A use case's leaderboard as JSON. Its field names are the API's own, described in the OpenAPI description; each row gives the value as the result record holds it (numeric_value, unit) beside the text the site prints.
 - \`GET /api/v1/openapi.json\`: OpenAPI 3.1 description of the JSON API. Docs: ${SITE}/agents/api/
 - \`GET /llms.txt\`: Concise index conforming to llmstxt.org.
 - \`GET /llms-full.txt\`: Complete markdown ranking tables for all use cases.

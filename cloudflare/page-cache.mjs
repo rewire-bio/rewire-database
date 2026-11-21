@@ -53,6 +53,8 @@ export function responseIdentity(response) {
 /** Frontend version + pinned data release + the exact public URL. */
 export function cacheKey(request, identity) {
   const url = new URL(request.url);
+  // The API takes each parameter once and ignores their order, so one answer has one entry.
+  if (publicApiPath(url.pathname)) url.searchParams.sort();
   url.searchParams.append("__rewire_cache", `${identity.frontend}.${identity.release}`);
   return new Request(url.href, { method: "GET" });
 }
@@ -91,11 +93,18 @@ export function edgeCopy(response) {
   return new Response(response.body, { status: response.status, statusText: response.statusText, headers });
 }
 
-/** Content-addressed chunks are immutable; every other cached response revalidates. */
+/** What clients may do with an API answer: reuse it briefly. The same value as API_CACHE_CONTROL in lib/public-api.ts. */
+export const API_BROWSER_CACHE = "public, max-age=300";
+
+/**
+ * Content-addressed chunks are immutable and pages revalidate. An API answer names its release in
+ * its body and has no validator to revalidate with, so clients get the origin's short lifetime.
+ */
 export function browserResponse(response, pathname, status) {
   const headers = new Headers(response.headers);
   headers.set("Cache-Control", pathname.startsWith("/_next/static/")
-    ? "public, max-age=31536000, immutable" : "public, max-age=0, must-revalidate");
+    ? "public, max-age=31536000, immutable"
+    : publicApiPath(pathname) ? API_BROWSER_CACHE : "public, max-age=0, must-revalidate");
   headers.set("X-Rewire-Cache", status);
   return new Response(response.body, { status: response.status, statusText: response.statusText, headers });
 }

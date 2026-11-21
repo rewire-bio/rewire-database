@@ -152,7 +152,7 @@ export function calculateConventionalMargin(
   if (Math.abs(sConv) <= epsilon) {
     return direction * (sModel - sConv) * 100;
   }
-  return direction * ((sModel - sConv) / (Math.abs(sConv) + epsilon)) * 100;
+  return direction * ((sModel - sConv) / Math.abs(sConv)) * 100;
 }
 
 export const directionSign = (direction: MetricDirection): 1 | -1 => (direction === "lower" ? -1 : 1);

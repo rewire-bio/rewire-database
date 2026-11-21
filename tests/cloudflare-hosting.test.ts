@@ -3,7 +3,7 @@ import fs from "node:fs";
 import ts from "typescript";
 import worker, { UPSTREAM_FETCH, resetObservedIdentity } from "../cloudflare/worker.mjs";
 import { isCatalogueApi, isProxied, isPublicApi } from "../cloudflare/routing.mjs";
-import { cacheableRequest, storableResponse } from "../cloudflare/page-cache.mjs";
+import { API_BROWSER_CACHE, cacheKey, cacheableRequest, storableResponse } from "../cloudflare/page-cache.mjs";
 
 const ORIGIN = "https://rewire-database-web-abc123-nw.a.run.app";
 const env = { FRONTEND_ORIGIN: `${ORIGIN}/` };
@@ -222,11 +222,14 @@ describe("independent Cloudflare frontend", () => {
     const first = await worker.fetch(new Request(url), env);
     expect((fetcher.mock.calls[0] as any)[0].url).toBe(`${ORIGIN}/api/v1/models/?limit=5`);
     expect(first.headers.get("x-rewire-cache")).toBe("MISS");
-    expect(first.headers.get("cache-control")).toBe("public, max-age=0, must-revalidate");
+    // An API answer has no validator, so clients are given the origin's short lifetime, not the page policy.
+    expect(first.headers.get("cache-control")).toBe(API_BROWSER_CACHE);
+    expect(API_BROWSER_CACHE).toBe("public, max-age=300");
     expect(first.headers.get("access-control-allow-origin")).toBe("*");
     expect([...store.keys()]).toEqual([`${url}&__rewire_cache=${FRONTEND}.${RELEASE}`]);
     const second = await worker.fetch(new Request(url), env);
     expect(second.headers.get("x-rewire-cache")).toBe("HIT");
+    expect(second.headers.get("cache-control")).toBe(API_BROWSER_CACHE);
     expect(second.headers.get("access-control-allow-origin")).toBe("*");
     expect(await second.text()).toBe('{"data":[]}');
     expect(fetcher).toHaveBeenCalledTimes(1);
@@ -237,6 +240,20 @@ describe("independent Cloudflare frontend", () => {
     expect(upstream.headers.get("authorization")).toBeNull();
     expect(personal.headers.get("x-rewire-cache")).toBe("BYPASS");
     expect(store.size).toBe(1);
+  });
+  it("keeps one cache entry for an API answer whatever order its parameters come in", async () => {
+    const fetcher = vi.fn(async () => page("{}", { "content-type": "application/json; charset=utf-8" }));
+    vi.stubGlobal("fetch", fetcher);
+    const base = "https://benchmarks.rewirebio.io/api/v1/contested/";
+    expect((await worker.fetch(new Request(`${base}?status=open&limit=5`), env)).headers.get("x-rewire-cache")).toBe("MISS");
+    expect((await worker.fetch(new Request(`${base}?limit=5&status=open`), env)).headers.get("x-rewire-cache")).toBe("HIT");
+    expect([...store.keys()]).toEqual([`${base}?limit=5&status=open&__rewire_cache=${FRONTEND}.${RELEASE}`]);
+    expect(fetcher).toHaveBeenCalledTimes(1);
+    // The origin is asked for the address as the client wrote it.
+    expect((fetcher.mock.calls[0] as any)[0].url).toBe(`${ORIGIN}/api/v1/contested/?status=open&limit=5`);
+    // Pages keep the exact address as their key.
+    expect(cacheKey(new Request("https://benchmarks.rewirebio.io/contested/?status=open&severity=low"), identity).url)
+      .toBe(`https://benchmarks.rewirebio.io/contested/?status=open&severity=low&__rewire_cache=${FRONTEND}.${RELEASE}`);
   });
   it("stores JSON only for the read-only API's own paths, and never its errors", async () => {
     const json = (status = 200, headers: Record<string, string> = {}) => page("{}", { "content-type": "application/json; charset=utf-8", ...headers }, status);

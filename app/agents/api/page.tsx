@@ -5,7 +5,7 @@ import { SITE } from "@/lib/agent-connect";
 import { socialMetadata } from "@/lib/catalogue-sharing";
 import { DATA_LICENCE, releaseCitation } from "@/lib/data-licence";
 import { dataPin } from "@/lib/data-pin";
-import { API_BASE, API_DOCS_PATH, ENDPOINTS } from "@/lib/public-api";
+import { API_BASE, API_CACHE_CONTROL, API_DOCS_PATH, ENDPOINTS } from "@/lib/public-api";
 import styles from "../agents.module.css";
 
 export const dynamic = "force-dynamic";
@@ -35,11 +35,15 @@ const fields = [
 
 const rules = [
   "A leaderboard ranks one use case on one protocol and one metric. Ranks are never combined across protocols and there is no composite score.",
+  "Boards, a model's rankings and its results name things the same way. numeric_value is the value as the result record holds it, in the unit given beside it. display_value is the text the site prints, which may show a fraction as a percentage. Every url is absolute.",
   "protocol.relevance is direct when the use case's reviewers judged the protocol directly relevant, and proxy when a related protocol is used because no direct one ranks two tools.",
-  "review_status is reproduced only when the result cites a run receipt in the release; the receipt field then links it. source_checked means the value was checked against the source it cites. It does not mean the result was rerun.",
+  "review_status is reproduced only when the result or its evaluation cites a run receipt in the release; the receipt field then links it. source_checked means the value was checked against the source it cites. It does not mean the result was rerun. superseded means the release has replaced the result and keeps it for reference.",
+  "record_status is the record's own review state in the release, with one exception: a record the release marks reproduced is given as source_checked, because this API says reproduced only in review_status, and only with a cited run receipt.",
   "origin says who produced a result. independent is true only for a study whose authors did not develop the tool. A Rewire run has origin rewire_run and is not counted as independent.",
   "Every result links each source it cites: the source's page here, and its own address when the record gives one.",
   "A contested finding is an automatic lead that studies disagree. It is not a finding of error and never withholds a result.",
+  "Each finding, and each link to one, carries listing: public for a finding the release lists as a lead for readers, review for one it lists for curation only. The contested list holds both unless you filter by listing.",
+  "A filter value the release cannot match is answered with 400, not with an empty list: an unknown parameter, a metric the model has no result for, or a system that is not a record.",
 ];
 
 export default function ApiDocsPage() {
@@ -88,7 +92,7 @@ export default function ApiDocsPage() {
 
       <section aria-labelledby="releases-heading" className={styles.section}>
         <h2 id="releases-heading">Releases and caching</h2>
-        <p>Every value in an answer is read from the release named in <code>release.id</code>, and a new release replaces the old one at the same addresses. Ranks, labels and counts are worked out by this site from the release, so they can also change when the site&apos;s code changes; the <code>X-Rewire-Frontend</code> response header names the site version. To cache answers, key them by both. Cursors are valid only for the release and filters they came from. The API holds no keys, accounts or quotas of its own.</p>
+        <p>Every value in an answer is read from the release named in <code>release.id</code>, and a new release replaces the old one at the same addresses. Ranks, labels and counts are worked out by this site from the release, so they can also change when the site&apos;s code changes; the <code>X-Rewire-Frontend</code> response header names the site version. Answers are sent with <code>Cache-Control: {API_CACHE_CONTROL}</code>, so a client may reuse one for five minutes; the release it came from is always in its body. To keep answers longer, key them by both the release and the site version. Cursors are valid only for the release and filters they came from. The API holds no keys, accounts or quotas of its own.</p>
         <p>The whole release is also available as files, with checksums, from the <a href="/#downloads">downloads</a> and the <a href="/release-manifest.json">release manifest</a>.</p>
       </section>
 

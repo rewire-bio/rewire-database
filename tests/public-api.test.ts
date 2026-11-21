@@ -58,6 +58,16 @@ const evaluationOf = (resultId: string) => {
   return id ? query.record(id) : null;
 };
 const rawOrigin = (resultId: string) => rawText(evaluationOf(resultId)?.attributes.origin);
+const receiptIds = runReceiptSources(query);
+/** What a result's status and receipt must be, from the raw records alone: the receipt it or its evaluation cites, else its own status. */
+const expectReview = (item: { review_status: string; receipt: { id: string; url: string } | null }, resultId: string) => {
+  const result = raw(resultId);
+  const cited = [...result.source_ids, ...(evaluationOf(resultId)?.source_ids ?? [])].find((id) => receiptIds.has(id) && query.record(id)) ?? null;
+  expect(item.receipt?.id ?? null, resultId).toBe(cited);
+  if (cited) expect(item.receipt!.url).toBe(`${SITE}/database/source/${cited}/`);
+  expect(item.review_status, resultId).toBe(cited ? "reproduced"
+    : result.status === "superseded" ? "superseded" : ["source_checked", "reproduced"].includes(result.status) ? "source_checked" : "author_reported");
+};
 const expectSources = (given: any[], ids: readonly string[]) => {
   const present = [...new Set(ids)].filter((id) => query.record(id));
   expect(given.map((s) => s.id)).toEqual(present);
@@ -183,8 +193,7 @@ describe("JSON API: models and benchmarks", () => {
       expect(ranking.unit).toBe(rawText(result.attributes.unit));
       expect(ranking.origin).toBe(rawOrigin(ranking.result_id));
       expect(ranking.independent).toBe(rawOrigin(ranking.result_id) === "independent_paper");
-      expect(ranking.review_status).toBe(result.status === "superseded" ? "superseded" : ["source_checked", "reproduced"].includes(result.status) ? "source_checked" : "author_reported");
-      expect(ranking.receipt).toBeNull();
+      expectReview(ranking, ranking.result_id);
       expect(ranking.result_url).toBe(`${SITE}/database/result/${ranking.result_id}/`);
       expect(ranking.board_url).toBe(`${SITE}${API_BASE}/use-cases/${ranking.use_case_slug}/board/`);
       expect(ranking).not.toHaveProperty("reviewed_status");
@@ -272,6 +281,7 @@ describe("JSON API: models and benchmarks", () => {
       expect(item.origin).toBe(rawOrigin(item.id));
       expect(item.independent).toBe(rawOrigin(item.id) === "independent_paper");
       expect(item.record_status).toBe(result.status === "reproduced" ? "source_checked" : result.status);
+      expectReview(item, item.id);
       expect(item.evaluation?.id ?? null).toBe(evaluationOf(item.id)?.id ?? null);
       if (item.evaluation) expect(item.evaluation.url).toBe(`${SITE}/database/evaluation/${item.evaluation.id}/`);
       expectFindingLinks(item.open_findings, openByResult.get(item.id) ?? []);
@@ -324,6 +334,11 @@ describe("JSON API: a result's findings and filters", () => {
     for (const item of body.data.results) expect(raw(item.id).attributes.metric).toBe(EXAMPLE_METRIC);
     const parameter = (openApiDocument() as any).paths["/models/{id}/results/"].get.parameters.find((p: any) => p.name === "metric");
     expect(parameter.description).toContain(`for example ${EXAMPLE_METRIC})`);
+    // Every metric id in the release is one the parameter's pattern takes, so no listed metric is refused.
+    const pattern = new RegExp(parameter.schema.pattern);
+    const ids = new Set(query.recordIds().filter((r) => r.kind === "result").map((r) => raw(r.id).attributes.metric));
+    expect(ids.size).toBeGreaterThan(0);
+    for (const id of ids) expect(typeof id === "string" && pattern.test(id), String(id)).toBe(true);
     // "spearman" is not a metric id in the release: it must not read as "this model has no such results".
     for (const metric of ["spearman", "zz"]) {
       const response = await get(`/models/${withExample.id}/results/?metric=${metric}`);
@@ -462,8 +477,7 @@ describe("JSON API: use cases and boards", () => {
         expect(item.unit).toBe(rawText(result.attributes.unit));
         expect(item.origin).toBe(rawOrigin(item.result_id));
         expect(item.independent).toBe(rawOrigin(item.result_id) === "independent_paper");
-        expect(item.review_status).toBe(result.status === "superseded" ? "superseded" : ["source_checked", "reproduced"].includes(result.status) ? "source_checked" : "author_reported");
-        expect(item.receipt).toBeNull();
+        expectReview(item, item.result_id);
         expect(item.evaluation_id).toBe(evaluationOf(item.result_id)?.id ?? null);
         expect(item.evaluation_url).toBe(item.evaluation_id ? `${SITE}/database/evaluation/${item.evaluation_id}/` : null);
         expect(item.result_url).toBe(`${SITE}/database/result/${item.result_id}/`);

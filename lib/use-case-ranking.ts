@@ -102,7 +102,8 @@ export function buildLeaderboard(inputs: RankingInputs): LeaderboardResult {
   });
 
   const ranked = chosen.rows.filter(valued);
-  const contests = inputs.findings(ranked.flatMap((r) => r.resultIds));
+  // Only the ranked value's findings: a row's other results (another metric of the same evaluation) are not what the rank rests on.
+  const contests = inputs.findings(ranked.map((r) => r.cells[0].resultId!));
   const baselines = new Set(inputs.baselineIds);
   const sign = directionSign(direction);
 
@@ -129,9 +130,8 @@ export function buildLeaderboard(inputs: RankingInputs): LeaderboardResult {
     const sourceRecord = result?.source_ids[0] ? record(result.source_ids[0]) : null;
     const parent = row.parentId ? record(row.parentId) : null;
     const findings = new Map<string, OpenFinding>();
-    for (const id of row.resultIds)
-      for (const { discrepancy } of contests[id] ?? [])
-        if (!discrepancy.settled) findings.set(discrepancy.id, { id: discrepancy.id, href: discrepancyHref(discrepancy.id), label: discrepancy.label });
+    for (const { discrepancy } of contests[cell.resultId!] ?? [])
+      if (!discrepancy.settled) findings.set(discrepancy.id, { id: discrepancy.id, href: discrepancyHref(discrepancy.id), label: discrepancy.label });
     rows.push({
       model_id: row.id,
       model_name: row.name,
@@ -152,6 +152,7 @@ export function buildLeaderboard(inputs: RankingInputs): LeaderboardResult {
       independent: isIndependentOrigin(origin),
       source_record_id: cell.resultId!,
       evaluation_id: cell.evaluationId ?? null,
+      source_ids: [...(result?.source_ids ?? [])],
       source: sourceRecord
         ? {
           id: sourceRecord.id,

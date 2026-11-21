@@ -177,7 +177,7 @@ ${leaderboards.length ? leaderboards.map((b) => `- \`${b.use_case_slug}\`: ${pro
 When choosing a model for a use case:
 1. Read the ranking for the use case and the protocol it is ranked on. A rank holds only for that protocol.
 2. Prefer rows where \`independent === true\`: the result comes from a study whose authors did not develop the tool. A Rewire run has \`origin === "rewire_run"\` and \`independent === false\`, because Rewire wrote some of the baselines it runs.
-3. Check \`open_findings\`: a non-empty list means another study disagrees with a result behind the row. Follow the link before relying on it.
+3. Check \`open_findings\`: a non-empty list means another study disagrees with the ranked result. Follow the link before relying on it.
 4. Check \`coverage\`: a tool scored on one of many comparisons has less evidence behind its rank.
 5. Hardware fields are filled only when the model record carries them; null means not recorded, not zero.
 

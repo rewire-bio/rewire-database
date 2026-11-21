@@ -3,7 +3,9 @@ import { describe, expect, it, vi } from "vitest";
 
 import { renderToStaticMarkup } from "react-dom/server";
 import BenchmarksPage from "@/app/page";
-import { homeLeaderboards } from "@/lib/release-leaderboard";
+import { HOME_LEADERBOARD_SLUGS, homeLeaderboards } from "@/lib/release-leaderboard";
+import { boardStats, boardStatsText } from "@/lib/use-case-leaderboard";
+import { buildCatalogue } from "@/lib/catalogue-build";
 
 vi.mock("next/link", () => ({
   default: ({
@@ -58,6 +60,21 @@ describe("Homepage Redesign (TC-HP-01 to TC-HP-08)", () => {
     expect(html).toContain(first.rows[0].model_name.replace(/&/g, "&amp;"));
     expect(html).toContain(`/database/result/${encodeURIComponent(first.rows[0].source_record_id)}/`);
     expect(html).not.toContain("Capability Index");
+  });
+
+  it("TC-HP-03b: Shows a tab for every homepage board, marks the proxy ones, and names what each rests on and the pinned release", () => {
+    const html = renderToStaticMarkup(<BenchmarksPage />).replace(/<!-- -->/g, "").replace(/&#x27;/g, "'");
+    const boards = homeLeaderboards();
+    const tabs = [...html.matchAll(/<button[^>]*role="tab"[^>]*>([\s\S]*?)<\/button>/g)].map((m) => m[1].replace(/<[^>]+>/g, "").replace(/&amp;/g, "&"));
+    expect(tabs).toEqual(boards.map((b) => `${b.use_case_title}${b.protocol!.relevance === "proxy" ? " Proxy" : ""}`));
+    expect(tabs).toHaveLength(HOME_LEADERBOARD_SLUGS.length);
+    expect(tabs.some((t) => t.endsWith(" Proxy"))).toBe(boards.some((b) => b.protocol!.relevance === "proxy"));
+
+    const { catalogue } = buildCatalogue();
+    const stats = html.match(/<p[^>]*data-testid="leaderboard-stats"[^>]*>([\s\S]*?)<\/p>/)![1];
+    expect(stats).toBe(`${boardStatsText(boardStats(boards[0]))} Data release ${catalogue.release_id}, published ${catalogue.released_at.slice(0, 10)}.`);
+    expect(catalogue.release_id).toMatch(/^\d{4}-\d{2}-\d{2}-[a-f0-9]{12}$/);
+    expect(html).not.toContain("Benchmark board");
   });
 
   it("TC-HP-04: Retains backward-compatible 'Ways to start' navigation", () => {

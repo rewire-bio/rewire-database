@@ -3,7 +3,7 @@ import type { CatalogueRecord, ResultRow } from "../../shared/omics/catalogue-qu
 import type { ResolvedMapping } from "../../shared/omics/use-cases";
 import { buildComparisons } from "../../lib/use-case-comparisons";
 import { buildLeaderboard, selectRankingComparison, type RankingInputs } from "../../lib/use-case-ranking";
-import { calculateConventionalMargin, computeParetoOptimal, protocolLabel } from "../../lib/use-case-leaderboard";
+import { boardStats, boardStatsText, calculateConventionalMargin, computeParetoOptimal, protocolLabel, type BiologicalModelRankingRow } from "../../lib/use-case-leaderboard";
 import { licenceLabel, licenceText, shortFact, telemetryFromRecord } from "../../lib/operational-telemetry";
 import {
   ORIGIN_COUNT_LABELS, ORIGIN_DESCRIPTIONS, ORIGIN_EVALUATION_LABELS, ORIGIN_LABELS,
@@ -215,11 +215,15 @@ describe("ranked rows", () => {
     expect(two.baseline).toBeNull();
   });
 
-  it("flags unsettled findings on the row's results and ignores settled ones", () => {
-    const m = mapping("f", [evaluation("alpha", [result("f-a", "auroc", "0.9")]), evaluation("beta", [result("f-b", "auroc", "0.8")])]);
+  it("flags unsettled findings on the ranked result only, and ignores settled ones", () => {
+    // beta's AUROC result is contested, but beta is ranked on its AUPRC result, which is not.
+    const m = mapping("f", [evaluation("alpha", [result("f-a", "auprc", "0.9"), result("f-a2", "auroc", "0.7")]), evaluation("beta", [result("f-b", "auprc", "0.8"), result("f-b2", "auroc", "0.6")])]);
     const contest = (id: string, settled: boolean): ResultContest => ({ role: "outlier", discrepancy: { id, label: `Finding ${id}`, settled } as ResultContest["discrepancy"] });
-    const findings = () => ({ "f-a": [contest("open-1", false), contest("closed-1", true)] });
+    const asked: string[][] = [];
+    const findings = (ids: string[]) => (asked.push(ids), { "f-a": [contest("open-1", false), contest("closed-1", true)], "f-b2": [contest("open-2", false)] });
     const [alpha, beta] = buildLeaderboard(inputs([m], { findings })).rows;
+    expect([alpha.source_record_id, beta.source_record_id]).toEqual(["f-a", "f-b"]);
+    expect(asked).toEqual([["f-a", "f-b"]]);
     expect(alpha.open_findings).toEqual([{ id: "open-1", href: "/contested/open-1/", label: "Finding open-1" }]);
     expect(beta.open_findings).toEqual([]);
   });
@@ -365,5 +369,47 @@ describe("access and licence labels (#230)", () => {
     const shown = cases.filter(([name]) => ["Ladon", "PerturbPFN", "Novae"].includes(name)).map(([, access, licence]) => card(model(access, licence)));
     expect(shown.map(([access]) => access.split(" ")[0])).toEqual(["No", "Not", "Not"]);
     expect(shown.every(([, licence]) => licence === "Not recorded")).toBe(true);
+  });
+});
+
+describe("board statistics", () => {
+  const row = (model_id: string, extra: Partial<BiologicalModelRankingRow> = {}) =>
+    ({ model_id, parent_id: null, rank: 2, source_ids: ["s1"], independent: true, origin: "independent_paper", method_types: [], ...extra }) as BiologicalModelRankingRow;
+  const other = (origin: string | null, extra: Partial<BiologicalModelRankingRow> = {}) => ({ independent: false, origin, ...extra });
+
+  it("counts tools by parent, sources over every cited source, foundation-model rows, and origins per row", () => {
+    const stats = boardStats({ rows: [
+      row("a-small", { parent_id: "a", rank: 1, method_types: ["foundation_model"] }),
+      row("a-large", { parent_id: "a", source_ids: ["s1", "s2"], method_types: ["foundation_model", "supervised_machine_learning"] }),
+      row("b", other("author_reported", { source_ids: ["s3"] })),
+      row("c", other("unreported")),
+      row("d", other(null, { source_ids: [] })),
+      row("e", other("unreported")),
+    ] });
+    expect(stats).toEqual({
+      rows: 6, tools: 5, sources: 3, independent: 2, foundation_models: 2,
+      other_origins: [{ origin: "unreported", rows: 2 }, { origin: "author_reported", rows: 1 }, { origin: null, rows: 1 }],
+    });
+    expect(boardStatsText(stats)).toBe("5 tools in 6 rows, from 3 sources. 2 of 6 results (33%) come from an independent study; 2 are from a source that does not say who ran the tool; 1 is reported by the tool's developers; 1 is without a recorded origin.");
+  });
+
+  it("says when the top-ranked result is not from an independent study, so the share is not read as support for the ranking", () => {
+    // One source whose authors developed the top tool: 2 of 3 rows are independent, the first is not.
+    const stats = boardStats({ rows: [row("own", other("author_reported", { rank: 1 })), row("x"), row("y", { rank: 3 })] });
+    expect(stats.top_origin).toBe("author_reported");
+    expect(boardStatsText(stats)).toBe("3 tools, from 1 source. 2 of 3 results (67%) come from an independent study; 1 is reported by the tool's developers. The top-ranked result is reported by the tool's developers.");
+    // A tie at the top with one independent row still says so, and a lower-ranked developer row does not.
+    expect(boardStats({ rows: [row("x", { rank: 1 }), row("own", other("rewire_run", { rank: 1 }))] }).top_origin).toBe("rewire_run");
+    expect(boardStats({ rows: [row("x", { rank: 1 }), row("own", other("author_reported"))] }).top_origin).toBeUndefined();
+    expect(boardStatsText(boardStats({ rows: [row("x", { rank: 1 }), row("none", other(null, { rank: 1 }))] }))).toContain("The top-ranked result is without a recorded origin.");
+  });
+
+  it("keeps a source that does not say who ran the tool apart from a record with no origin, and neither is a bare 0%", () => {
+    const unreported = boardStats({ rows: [row("a", other("unreported", { rank: 1 })), row("b", other("unreported"))] });
+    expect(unreported.top_origin).toBeUndefined();
+    expect(boardStatsText(unreported)).toBe("2 tools, from 1 source. 0 of 2 results (0%) come from an independent study; 2 are from a source that does not say who ran the tool.");
+    expect(boardStatsText(boardStats({ rows: [row("a", other(null))] }))).toBe("1 tool, from 1 source. 0 of 1 result (0%) come from an independent study; 1 is without a recorded origin.");
+    expect(boardStatsText(boardStats({ rows: [row("a", other("paper_compilation")), row("b", other("some_new_origin"))] }))).toContain("; 1 is quoted from another paper; 1 is of origin some new origin.");
+    expect(boardStatsText(boardStats({ rows: [] }))).toBe("0 tools, from 0 sources. 0 of 0 results come from an independent study.");
   });
 });

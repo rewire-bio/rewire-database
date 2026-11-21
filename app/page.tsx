@@ -146,7 +146,7 @@ export default function BenchmarksPage() {
             <span className={styles.sectionKicker}>Use-case Leaderboards</span>
             <h2 id="leaderboard-heading">Biological Model Rankings</h2>
             <p className={styles.sectionIntro}>
-              Each tab ranks models on one protocol of a use case, from the published results in this release. Open a row for its source, review status and baseline.
+              Each tab ranks models on one protocol of a use case, from the published results in this release. A tab marked Proxy ranks on a protocol that reviewers judged a proxy for the use case, not a direct test of it. Open a row for its source, review status and baseline.
             </p>
           </div>
           <GeoTakeaway
@@ -155,6 +155,7 @@ export default function BenchmarksPage() {
           />
           <UnifiedLeaderboard
             boards={boards}
+            release={{ id: catalogue.release_id, released_at: catalogue.released_at }}
             showCategorySwitcher={true}
             showParetoHighlight={true}
           />

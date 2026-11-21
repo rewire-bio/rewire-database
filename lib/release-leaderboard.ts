@@ -6,10 +6,9 @@
 import type { CatalogueRecord } from "@/shared/omics/catalogue-query";
 import type { UseCaseDetail } from "@/shared/omics/use-cases";
 import { buildCatalogue } from "./catalogue-build";
-import { CATEGORY_SLUG_MAP } from "./catalogue-seo";
 import { contestedResults } from "./discrepancies";
 import { buildComparisons, type Comparison } from "./use-case-comparisons";
-import type { BiologicalModelRankingRow, LeaderboardResult } from "./use-case-leaderboard";
+import { boardStats, type BiologicalModelRankingRow, type LeaderboardResult } from "./use-case-leaderboard";
 import { buildLeaderboard } from "./use-case-ranking";
 import { buildUseCases, fullUseCaseDetail } from "./use-cases-build";
 
@@ -87,14 +86,63 @@ export function allUseCaseLeaderboards(): LeaderboardResult[] {
   return entries.map((e) => state.value.get(e.slug)).filter((b): b is LeaderboardResult => !!b);
 }
 
-/** The use cases the homepage leads with (the /use-cases/<category>/ aliases), in that order. */
-export const HOME_LEADERBOARD_SLUGS = Object.values(CATEGORY_SLUG_MAP);
+/** A homepage board ranks at least this many distinct tools; a thinner one stays on its use-case page. */
+export const MIN_HOME_TOOLS = 10;
+/** A proxy board on the homepage has at least this many foundation-model rows. */
+export const MIN_HOME_PROXY_MODEL_ROWS = 5;
 
-/** Homepage leaderboards: the lead use cases that have a ranking, directly relevant protocols first. */
-export function homeLeaderboards(): LeaderboardResult[] {
-  return HOME_LEADERBOARD_SLUGS.map(leaderboardForUseCase)
-    .filter((b): b is LeaderboardResult => !!b && b.rows.length > 0)
+/**
+ * Whether a board is strong enough for the homepage. A directly relevant board needs
+ * MIN_HOME_TOOLS distinct tools. A proxy board needs that, MIN_HOME_PROXY_MODEL_ROWS
+ * foundation-model rows and more than half its rows from independent studies.
+ */
+export function meetsHomeRule(board: LeaderboardResult): boolean {
+  const stats = boardStats(board);
+  if (!board.protocol || stats.tools < MIN_HOME_TOOLS) return false;
+  return board.protocol.relevance === "direct"
+    || (stats.foundation_models >= MIN_HOME_PROXY_MODEL_ROWS && stats.independent * 2 > stats.rows);
+}
+
+/**
+ * Use cases whose board meets the rule and is still left off the homepage, each for a reason the
+ * rule cannot see.
+ */
+export const HOME_LEFT_OUT: Readonly<Record<string, string>> = {
+  "hit-discovery-virtual-screening": "The metric is a hit count with differing denominators.",
+  "phenotype-perturbation-selection": "Anonymous challenge entries, all reported by their authors.",
+  "brca1-brca2-germline-interpretation": "Ranks on the same protocol as the missense PP3/BP4 board.",
+};
+
+/**
+ * The use cases the homepage shows a board for, in this order within each relevance: every use
+ * case whose board meets the rule (meetsHomeRule) in the pinned release, apart from HOME_LEFT_OUT.
+ * The list is written out so that the order is chosen, and tests/catalogue/release-leaderboard.test.ts
+ * fails when the list and the rule disagree for the pinned release.
+ * The /use-cases/<category>/ aliases (CATEGORY_SLUG_MAP) are separate and unchanged.
+ */
+export const HOME_LEADERBOARD_SLUGS = [
+  "protein-variant-effect-prediction",
+  "tumour-dna-somatic-variant-detection",
+  "protein-variant-stability",
+  "tumour-rna-fusion-detection",
+  "regulatory-variant-gene-follow-up",
+  "missense-pp3-bp4-calibrated-evidence",
+] as const;
+
+/**
+ * The boards the homepage shows, from the listed use cases' boards: those that meet the rule,
+ * directly relevant protocols first, otherwise in the listed order. A proxy board is never
+ * promoted: it keeps its relevance and its label.
+ */
+export function selectHomeBoards(listed: (LeaderboardResult | null)[]): LeaderboardResult[] {
+  return listed
+    .filter((b): b is LeaderboardResult => !!b && meetsHomeRule(b))
     .sort((a, b) => Number(b.protocol?.relevance === "direct") - Number(a.protocol?.relevance === "direct"));
+}
+
+/** Homepage leaderboards read from the pinned release. */
+export function homeLeaderboards(): LeaderboardResult[] {
+  return selectHomeBoards(HOME_LEADERBOARD_SLUGS.map(leaderboardForUseCase));
 }
 
 /** A model's, method's or configuration's best-ranked row on each leaderboard it appears on. */

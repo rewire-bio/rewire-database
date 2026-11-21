@@ -24,6 +24,7 @@ export function fixtureRow(overrides: Partial<BiologicalModelRankingRow> & { mod
     source_record_id: `fixture-result-${overrides.model_id}`,
     evaluation_id: `fixture-evaluation-${overrides.model_id}`,
     source: { id: "fixture-source", name: "Fixture study of variant effect predictors", href: "/database/source/fixture-source/", doi: "10.0000/fixture" },
+    source_ids: ["fixture-source"],
     coverage: { evaluated: 1, relevant: 2 },
     open_findings: [],
     is_baseline: false,

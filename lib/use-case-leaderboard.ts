@@ -15,6 +15,7 @@
  */
 
 import type { OperationalTelemetry } from "./operational-telemetry";
+import { originResultPhrase } from "./result-origin";
 
 export const EPSILON = 1e-6;
 
@@ -96,7 +97,10 @@ export interface BiologicalModelRankingRow {
   /** The result record the value is read from. */
   source_record_id: string;
   evaluation_id: string | null;
+  /** The first source the result cites, shown in the row. */
   source: RankingSource | null;
+  /** Every source the result cites. */
+  source_ids: string[];
   /** Comparisons in this use case that score the tool, out of all the use case's comparisons. */
   coverage: { evaluated: number; relevant: number };
   open_findings: OpenFinding[];
@@ -190,6 +194,64 @@ export function markParetoOptimal(rows: BiologicalModelRankingRow[], direction: 
     cost: r.telemetry.inference_latency_ms,
   })));
   for (const row of rows) row.pareto_optimal = optimal.has(row.model_id);
+}
+
+export interface BoardStats {
+  /** Ranked rows: one per configuration. */
+  rows: number;
+  /** Distinct models, methods or pipelines behind the rows (a configuration with no parent counts as itself). */
+  tools: number;
+  /** Distinct sources the ranked results cite. */
+  sources: number;
+  /** Rows whose evaluation was run by an independent study. */
+  independent: number;
+  /** Rows typed as a foundation model. */
+  foundation_models: number;
+  /**
+   * Rows that are not independent, counted by the origin their evaluation records, most rows first.
+   * A null origin is an evaluation record with no origin; "unreported" is a source that does not
+   * say who ran the tool. They are different facts and are counted apart.
+   */
+  other_origins: { origin: string | null; rows: number }[];
+  /**
+   * The origin of a top-ranked row that is not independent, when the board's rows do not all share
+   * one origin. Undefined otherwise: every top-ranked row is independent, or the counts already say it.
+   */
+  top_origin?: string | null;
+}
+
+/** What a board rests on, counted from its ranked rows. */
+export function boardStats(board: Pick<LeaderboardResult, "rows">): BoardStats {
+  const { rows } = board;
+  const others = new Map<string | null, number>();
+  for (const r of rows) if (!r.independent) others.set(r.origin, (others.get(r.origin) ?? 0) + 1);
+  const best = Math.min(...rows.map((r) => r.rank ?? Infinity));
+  const top = rows.find((r) => r.rank === best && !r.independent);
+  const mixed = new Set(rows.map((r) => r.origin)).size > 1;
+  return {
+    rows: rows.length,
+    tools: new Set(rows.map((r) => r.parent_id ?? r.model_id)).size,
+    sources: new Set(rows.flatMap((r) => r.source_ids)).size,
+    independent: rows.filter((r) => r.independent).length,
+    foundation_models: rows.filter((r) => r.method_types.includes("foundation_model")).length,
+    other_origins: [...others].map(([origin, n]) => ({ origin, rows: n })).sort((a, b) => b.rows - a.rows || String(a.origin).localeCompare(String(b.origin))),
+    ...(top && mixed ? { top_origin: top.origin } : {}),
+  };
+}
+
+/**
+ * "15 tools in 16 rows, from 2 sources. 14 of 16 results (88%) come from an independent study; 2
+ * are reported by the tool's developers. The top-ranked result is reported by the tool's developers."
+ * The share alone would read as third-party support for the ranking, so the line also says who
+ * reported the other rows, and the top one when it is not independent.
+ */
+export function boardStatsText(stats: BoardStats): string {
+  const plural = (n: number, one: string, many = `${one}s`) => `${n} ${n === 1 ? one : many}`;
+  const tools = stats.tools === stats.rows ? plural(stats.tools, "tool") : `${plural(stats.tools, "tool")} in ${plural(stats.rows, "row")}`;
+  const share = stats.rows ? ` (${Math.round((stats.independent / stats.rows) * 100)}%)` : "";
+  const others = stats.other_origins.map((o) => `; ${o.rows} ${o.rows === 1 ? "is" : "are"} ${originResultPhrase(o.origin)}`).join("");
+  const top = stats.top_origin === undefined ? "" : ` The top-ranked result is ${originResultPhrase(stats.top_origin)}.`;
+  return `${tools}, from ${plural(stats.sources, "source")}. ${stats.independent} of ${plural(stats.rows, "result")}${share} ${stats.independent === 1 ? "comes" : "come"} from an independent study${others}.${top}`;
 }
 
 /** "AUROC on Feng Donor sequence classification", or with the stratum when it is not the metric. */

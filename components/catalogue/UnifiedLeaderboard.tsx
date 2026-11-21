@@ -5,6 +5,8 @@ import Link from "next/link";
 import styles from "./UnifiedLeaderboard.module.css";
 import {
   REVIEW_STATUS_LABELS,
+  boardStats,
+  boardStatsText,
   protocolLabel,
   type BiologicalModelRankingRow,
   type LeaderboardResult,
@@ -22,6 +24,8 @@ export interface UnifiedLeaderboardProps {
   boards: LeaderboardResult[];
   /** The use case shown first; defaults to the first board. */
   initialSlug?: string;
+  /** The pinned release the boards were built from, named under each board. */
+  release?: { id: string; released_at: string };
   expandedRowId?: string;
   showCategorySwitcher?: boolean;
   showParetoHighlight?: boolean;
@@ -87,6 +91,7 @@ function SortHeader({ column, label, sortColumn, sortDirection, onSort, classNam
 export function UnifiedLeaderboard({
   boards,
   initialSlug,
+  release,
   expandedRowId,
   showCategorySwitcher = true,
   showParetoHighlight = false,
@@ -223,6 +228,7 @@ export function UnifiedLeaderboard({
               }}
             >
               {b.use_case_title}
+              {b.protocol?.relevance === "proxy" && <> <span className={styles.proxyBadge}>Proxy</span></>}
             </button>
           ))}
         </nav>
@@ -235,6 +241,13 @@ export function UnifiedLeaderboard({
             <> <span className={styles.proxyBadge}>Proxy protocol</span> Reviewers judged this protocol a proxy for the use case, not a direct test of it.</>
           )}{" "}
           Only results on this protocol are ranked; other tools are listed below the table.
+        </p>
+      )}
+
+      {board && availableRows.length > 0 && (
+        <p className={styles.protocolNote} data-testid="leaderboard-stats">
+          {boardStatsText(boardStats(board))}
+          {release && <> Data release {release.id}, published {release.released_at.slice(0, 10)}.</>}
         </p>
       )}
 

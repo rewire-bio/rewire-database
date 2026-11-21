@@ -32,6 +32,7 @@ export function sitemapEntries(): SitemapEntry[] {
     "/runs/mfass-v2/",
     "/evidence/",
     "/agents/",
+    "/agents/api/",
     "/coverage/",
     "/updates/",
     "/use-cases/",

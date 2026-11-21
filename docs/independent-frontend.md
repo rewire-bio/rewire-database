@@ -14,6 +14,8 @@ The README describes the architecture. This page covers operation: configuration
 
 `lib/catalogue-api.ts` serves the `catalogue.*` tRPC procedures (the same inputs and answers the Firebase function used to serve) over the prepared reader. A request whose `release_id` is not the embedded release gets a 404 naming the current release. The Worker sends `/api/trpc/catalogue.*` here, without cookies or `Authorization`, and every other `/api` path to the Firebase function, which now serves only submissions and curation. When a curator marks a submission published, the function checks the records through `catalogue.get` on the public site (`services/omics/src/published-catalogue.ts`).
 
+`lib/public-api.ts` serves the keyless read-only JSON API under `/api/v1` (`app/api/v1/[[...path]]/route.ts`), also from the embedded release. One table of endpoints drives the handler, the OpenAPI description at `/api/v1/openapi.json` and the docs page at `/agents/api/`. Each answer returns what a page already shows, read through the same functions, and carries the release id, the data licence (`lib/data-licence.ts`, the one place to state a licence) and a citation. The Worker sends `/api/v1` to the frontend without cookies or `Authorization`. Unlike every other `/api` path, successful answers are stored in the Worker's cache like pages, under the frontend version and data release, so a new release or image never serves an old answer; errors are `no-store`. The API keeps no state. Rate limiting, if wanted, is a Cloudflare rule on the zone, not code here.
+
 ## Configuration
 
 Repository variables (no new infrastructure is created by this code):

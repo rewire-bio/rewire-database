@@ -24,6 +24,17 @@ const pages: Omit<PageMetadataContract, "canonical">[] = [
     ],
   },
   {
+    path: "/agents/api/",
+    indexable: true,
+    inSitemap: true,
+    social: true,
+    breadcrumbs: [
+      { name: "Database", path: "/" },
+      { name: "Connect your agent", path: "/agents/" },
+      { name: "JSON API", path: "/agents/api/" },
+    ],
+  },
+  {
     path: "/coverage/",
     indexable: true,
     inSitemap: true,

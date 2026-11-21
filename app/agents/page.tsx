@@ -112,7 +112,7 @@ export default function AgentsPage() {
         </ul>
       </section>
 
-      <p className={styles.footnote}>For agents reading this site: plain-text versions at <a href="/llms.txt">/llms.txt</a> and <a href="/agents.md">/agents.md</a>.</p>
+      <p className={styles.footnote}>For agents reading this site: plain-text versions at <a href="/llms.txt">/llms.txt</a> and <a href="/agents.md">/agents.md</a>. The release is also served as JSON, with no key: see the <a href="/agents/api/">JSON API</a>.</p>
     </div>
   </>;
 }

@@ -3,6 +3,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it, vi } from "vitest";
 import EvidencePage from "../app/evidence/page";
 import AgentsPage from "../app/agents/page";
+import ApiDocsPage from "../app/agents/api/page";
 import CoveragePage from "../app/coverage/page";
 import UpdatesPage from "../app/updates/page";
 import InvestigationsPage from "../app/investigations/page";
@@ -60,6 +61,14 @@ const cases = [
     hierarchy: [
       ["Database", "/"],
       ["Connect your agent", "/agents/"],
+    ],
+  },
+  {
+    path: "/agents/api/", Page: ApiDocsPage, indexable: true,
+    hierarchy: [
+      ["Database", "/"],
+      ["Connect your agent", "/agents/"],
+      ["JSON API", "/agents/api/"],
     ],
   },
   {

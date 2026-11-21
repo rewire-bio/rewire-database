@@ -8,7 +8,9 @@ vi.mock("@/lib/release-leaderboard", () => ({ allUseCaseLeaderboards: () => [] }
 const nav = vi.hoisted(() => ({ path: "/" }));
 vi.mock("next/navigation", () => ({ usePathname: () => nav.path }));
 
-import { agentGuide, claudeMcpAdd, kgArchiveUrl, mcpJson, pluginCommands, reproducePrompt, KG_ALIAS } from "../lib/agent-connect";
+import { agentGuide, claudeMcpAdd, examplePrompts, kgArchiveUrl, mcpJson, pluginCommands, reproducePrompt, KG_ALIAS, RDF_KG_MCP_VERSION } from "../lib/agent-connect";
+import { generateAgentsMd } from "../lib/llm-discoverability";
+import AgentsPage from "../app/agents/page";
 import AgentConnect from "../components/AgentConnect";
 import { GET as kgRedirect } from "../app/agents/kg.tar.gz/route";
 import { GET as llms } from "../app/llms.txt/route";
@@ -16,10 +18,31 @@ import { GET as llms } from "../app/llms.txt/route";
 describe("connect your agent", () => {
   it("installs the plugin and the knowledge-graph server from one set of commands", () => {
     expect(pluginCommands).toEqual(["/plugin marketplace add rewire-bio/rewire-benchmarks", "/plugin install bio-model-benchmarks@rewire-benchmarks"]);
-    expect(claudeMcpAdd()).toBe(`claude mcp add rewire-benchmark-graph -- uvx --from git+https://github.com/rewire-bio/rdf-kg-mcp@v0.2.0 rdf-kg-mcp serve ${KG_ALIAS}`);
+    expect(claudeMcpAdd()).toBe(`claude mcp add rewire-benchmark-graph -- uvx --from git+https://github.com/rewire-bio/rdf-kg-mcp@${RDF_KG_MCP_VERSION} rdf-kg-mcp serve ${KG_ALIAS}`);
     expect(JSON.parse(mcpJson()).mcpServers["rewire-benchmark-graph"].args.at(-1)).toBe(KG_ALIAS);
     expect(kgArchiveUrl(releaseId)).toBe(`https://github.com/rewire-bio/rewire-benchmark-data/releases/download/kg/${releaseId}/kg-${releaseId}.tar.gz`);
     expect(reproducePrompt("mfass-v2-baseline", "mfass-v2")).toContain("run recipe mfass-v2-baseline (protocol mfass-v2)");
+  });
+
+  it("takes the rdf-kg-mcp version from one constant on the page and in both text guides", () => {
+    expect(RDF_KG_MCP_VERSION).toMatch(/^v\d+\.\d+\.\d+$/);
+    const texts = [renderToStaticMarkup(<AgentsPage />), agentGuide(releaseId), generateAgentsMd(releaseId)];
+    for (const text of texts) {
+      const pins = [...text.matchAll(/rdf-kg-mcp@([^\s"&<]+)/g)].map((match) => match[1]);
+      expect(pins.length).toBeGreaterThan(0);
+      expect(new Set(pins)).toEqual(new Set([RDF_KG_MCP_VERSION]));
+    }
+  });
+
+  it("describes the plugin as it is: a local CPU rerun, and no tool that submits a result", () => {
+    const page = renderToStaticMarkup(<AgentsPage />);
+    expect(page).toContain("three MCP servers (the knowledge graph, genomic data and the rewirebench runner), five skills, six commands and a benchmarking agent");
+    expect(page).toContain("No tool in the plugin submits a result to the database.");
+    expect(page).not.toMatch(/reproduce/i);
+    expect(examplePrompts.join(" ")).not.toMatch(/reproduce/i);
+    const guide = agentGuide(releaseId);
+    expect(guide).toContain("No tool in the plugin submits a result to the database.");
+    expect(guide).not.toContain("explicit consent");
   });
 
   it("redirects the stable bundle address to the release this revision serves", () => {

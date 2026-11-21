@@ -1,6 +1,6 @@
 import crypto from "node:crypto";
 import { describe, expect, it } from "vitest";
-import { chooseRelease, lockFor, servingReleases, withheldMappings } from "../scripts/adopt-data-release.mjs";
+import { FIRST_RELEASE_COMMIT_CHECKED, checkReleaseCommit, chooseRelease, lockFor, releaseCommitChecked, servingReleases, withheldMappings } from "../scripts/adopt-data-release.mjs";
 import lock from "../benchmark-data.lock.json";
 
 const release = (id: string, createdAt: string, extra = {}) => ({ tagName: `serving/${id}`, createdAt, isDraft: false, ...extra });
@@ -37,6 +37,36 @@ describe("data release adoption", () => {
     });
     expect(() => lockFor(lock, { releaseId, revision, manifest: Buffer.from('{"release_id":"2026-10-07-aaaaaaaaaaaa"}'), receipt })).toThrow("manifest");
     expect(() => lockFor(lock, { releaseId, revision, manifest, receipt: { ...receipt, release_id: "2026-10-07-aaaaaaaaaaaa" } })).toThrow("receipt");
+  });
+  it("refuses a serving tag whose commit is not made directly on the commit the release was built from", () => {
+    const tag = "serving/2026-11-22-ffffffffffff";
+    const revision = "c".repeat(40);
+    const built = "b".repeat(40);
+    const config = Buffer.from(JSON.stringify({ schema_version: "1.0", source_revision: built }));
+    expect(checkReleaseCommit({ tag, revision, parents: [built], config })).toBe(built);
+    // A commit on another parent: main moved, and the tag was put on a rebased commit.
+    expect(() => checkReleaseCommit({ tag, revision, parents: ["d".repeat(40)], config })).toThrow(`Refusing ${tag}`);
+    // A merge commit, even one whose first parent is the built commit.
+    expect(() => checkReleaseCommit({ tag, revision, parents: [built, "d".repeat(40)], config })).toThrow("only parent");
+    expect(() => checkReleaseCommit({ tag, revision, parents: [], config })).toThrow("(none)");
+    expect(() => checkReleaseCommit({ tag, revision, parents: [built], config: Buffer.from("{}") })).toThrow("no source_revision");
+    expect(() => checkReleaseCommit({ tag, revision, parents: [built], config: Buffer.from("not json") })).toThrow("not valid JSON");
+  });
+  it("checks the release commit from the first guaranteed release on, and never an older one", () => {
+    const releases = servingReleases([
+      release("2026-11-20-ffffffffffff", "2026-11-20T10:25:31Z"),
+      release(FIRST_RELEASE_COMMIT_CHECKED, "2026-11-21T03:59:20Z"),
+      // Published later the same day, with an ID that sorts before the first checked one.
+      release("2026-11-21-000000000000", "2026-11-21T09:00:00Z"),
+      release("2026-11-22-aaaaaaaaaaaa", "2026-11-22T09:00:00Z"),
+    ]);
+    expect(releaseCommitChecked(releases, "2026-11-20-ffffffffffff")).toBe(false);
+    expect(releaseCommitChecked(releases, FIRST_RELEASE_COMMIT_CHECKED)).toBe(true);
+    expect(releaseCommitChecked(releases, "2026-11-21-000000000000")).toBe(true);
+    expect(releaseCommitChecked(releases, "2026-11-22-aaaaaaaaaaaa")).toBe(true);
+    // Once the first checked release is no longer in the listing, everything listed is newer.
+    expect(releaseCommitChecked(releases.slice(2), "2026-11-22-aaaaaaaaaaaa")).toBe(true);
+    expect(releaseCommitChecked(releases, "2026-11-23-bbbbbbbbbbbb")).toBe(true);
   });
   it("names live mappings the new release withholds, but not deliberate review changes", () => {
     const previous = { mappings: [{ id: "a", lifecycle: "active" }, { id: "b", lifecycle: "active" }, { id: "c", lifecycle: "needs_review" }] };

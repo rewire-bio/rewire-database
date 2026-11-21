@@ -4,7 +4,9 @@ export const SITE = "https://benchmarks.rewirebio.io";
 export const MARKETPLACE = "rewire-bio/rewire-benchmarks";
 export const PLUGIN = "bio-model-benchmarks";
 export const GRAPH_SERVER = "rewire-benchmark-graph";
-export const RDF_KG_MCP = "git+https://github.com/rewire-bio/rdf-kg-mcp@v0.2.0";
+/** The rdf-kg-mcp release tag every setup command installs. Keep it at the tag the plugin's .mcp.json in rewire-benchmarks uses. */
+export const RDF_KG_MCP_VERSION = "v0.4.0";
+export const RDF_KG_MCP = `git+https://github.com/rewire-bio/rdf-kg-mcp@${RDF_KG_MCP_VERSION}`;
 /** Redirects to the knowledge-graph bundle of the release this site serves. */
 export const KG_ALIAS = `${SITE}/agents/kg.tar.gz`;
 
@@ -21,15 +23,16 @@ export const mcpJson = (bundle = KG_ALIAS) => JSON.stringify({
   mcpServers: { [GRAPH_SERVER]: { command: "uvx", args: ["--from", RDF_KG_MCP, "rdf-kg-mcp", "serve", bundle] } },
 }, null, 2);
 
-export const SKILL_URL = "https://github.com/rewire-bio/rewire-benchmarks/tree/main/skills/bio-model-benchmarks";
+/** The plugin's five skills as text, for clients that cannot install the plugin. */
+export const SKILL_URL = "https://github.com/rewire-bio/rewire-benchmarks/tree/main/plugins/bio-model-benchmarks/skills";
 
 export const examplePrompts = [
   "Which models have published results on the MFASS splicing benchmark, and how do they compare with the baseline?",
-  "Reproduce the published MFASS-v2 k-mer baseline locally and compare it with the published values.",
+  "Rerun Rewire's MFASS v2 k-mer baseline on this machine's CPU and compare it with the published values.",
   "Run my model through the ProteinGym protocol next to the registered baselines and report the difference.",
 ];
 
-/** Named SPARQL queries the knowledge-graph bundle ships for discrepancies between studies (rdf-kg-mcp 0.2, pinned in RDF_KG_MCP). */
+/** Named SPARQL queries the knowledge-graph bundle ships for discrepancies between studies (rdf-kg-mcp, pinned in RDF_KG_MCP_VERSION). */
 export const discrepancyQueries = [
   { name: "open_discrepancies", params: "severity (optional)", returns: "unsettled findings, most severe first" },
   { name: "discrepancies_for_system", params: "system (IRI)", returns: "findings that compare a model, method or configuration" },

@@ -4,6 +4,10 @@ name: Adopt the newest data release
 # shared code, run every website check including the production build, commit
 # to main and start the deployment workflow. The deployment verifies a
 # candidate revision before traffic and rolls back on failure, as for any change.
+# The first step fails, and nothing is committed or deployed, when the release's
+# serving tag does not name a commit made directly on the commit the release was
+# built from (source_revision in its release config). Releases before
+# 2026-11-21-4940d4f45aee were tagged differently and are not checked.
 on:
   repository_dispatch:
     types: [data-release]

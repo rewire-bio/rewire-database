@@ -57,7 +57,7 @@ ${leaderboards.map((b) => `- ${b.use_case_title}: ${leadStatement(b)} (${resultU
 
 ` : ""}## Connect your agent
 
-Claude Code, one plugin with the benchmark skill and the knowledge-graph MCP:
+Claude Code, one plugin with three MCP servers (the knowledge graph, genomic data and the rewirebench runner), five skills, six commands and a benchmarking agent:
 
     ${pluginCommands.join("\n    ")}
 
@@ -71,7 +71,7 @@ ${mcpJson().split("\n").map((line) => `    ${line}`).join("\n")}
 
 The bundle for this exact release: ${kgArchiveUrl(releaseId)}
 
-The skill (how to find, run and compare benchmarks with the rewirebench CLI): ${SKILL_URL}
+The skills (how to find evidence, prepare data, and run and verify benchmarks with rewirebench): ${SKILL_URL}
 
 ## Contested results
 
@@ -96,8 +96,8 @@ ${discrepancyQueries.map((q) => `  - ${q.name}: ${q.params}. Returns ${q.returns
 
 ## Rules
 
-- Runs happen on your machine. Your model and data are not sent anywhere.
-- Nothing is submitted to the database without your explicit consent.
+- Runs happen on your machine, on CPU. Your model and data are not sent anywhere. The plugin starts no GPU or paid run.
+- No tool in the plugin submits a result to the database.
 - A source-checked result is a value checked against the source it cites, in most cases a transcription of a published number. It is not an independent reproduction.`;
 }
 

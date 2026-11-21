@@ -17,9 +17,19 @@ import { fetchVerifiedAsset, releaseHasAssets, usesReleaseAssets, verifyCompress
 // serves, unless told otherwise. A release whose website files are assets of
 // its serving/<id> GitHub release is pinned with serving.website_assets; older
 // releases keep their files in Git and are read from there.
+// It refuses a release whose serving tag names a commit that was not made
+// directly on the commit the release was built from, because shared/omics is
+// copied from the tagged commit and must be the code the release was built with.
 //   node scripts/adopt-data-release.mjs [--release <release-id>] [--allow-withheld-mappings]
 const REPOSITORY = 'rewire-bio/rewire-benchmark-data';
 const RELEASE_ID = /^\d{4}-\d{2}-\d{2}-[a-f0-9]{12}$/;
+const RELEASE_CONFIG = 'data/omics/release-config.json';
+/**
+ * The first release whose serving tag rewire-benchmark-data guarantees to name the release
+ * commit (scripts/release/commit.mjs there). Earlier releases were tagged differently and
+ * are not checked.
+ */
+export const FIRST_RELEASE_COMMIT_CHECKED = '2026-11-21-4940d4f45aee';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const sha256 = bytes => crypto.createHash('sha256').update(bytes).digest('hex');
 const run = (command, args, options = {}) => execFileSync(command, args, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], ...options });
@@ -41,6 +51,34 @@ export function chooseRelease(releases, current, requested) {
   }
   const newest = ids.at(-1);
   return !newest || newest === current ? null : newest;
+}
+
+/**
+ * Whether a release's tagged commit must pass checkReleaseCommit: every release from
+ * FIRST_RELEASE_COMMIT_CHECKED on, by the publication order of `releases` (servingReleases).
+ * Release IDs do not sort by time within a day, so they are never compared as text. A
+ * release that cannot be placed against the first checked one is checked.
+ */
+export function releaseCommitChecked(releases, releaseId) {
+  const ids = releases.map(release => release.tagName.slice(8));
+  const first = ids.indexOf(FIRST_RELEASE_COMMIT_CHECKED);
+  const position = ids.indexOf(releaseId);
+  return first < 0 || position < 0 || position >= first;
+}
+
+/**
+ * Throws unless the commit a serving tag names has exactly one parent, and that parent is
+ * the `source_revision` in the commit's own release config. `config` is the text of
+ * data/omics/release-config.json at the commit, `parents` the commit's parent SHAs.
+ * Returns the commit the release was built from.
+ */
+export function checkReleaseCommit({ tag, revision, parents, config }) {
+  let built;
+  try { built = JSON.parse(String(config)).source_revision; } catch { throw new Error(`Refusing ${tag}: ${RELEASE_CONFIG} at ${revision} is not valid JSON`); }
+  if (!/^[a-f0-9]{40}$/.test(built || '')) throw new Error(`Refusing ${tag}: ${RELEASE_CONFIG} at ${revision} records no source_revision`);
+  if (parents.length !== 1 || parents[0] !== built)
+    throw new Error(`Refusing ${tag}: it names commit ${revision} with parent ${parents.join(' and ') || '(none)'}, but the release was built from ${built}. The tagged commit must have the built commit as its only parent, or shared/omics would be copied from code the release was not built with.`);
+  return built;
 }
 
 /** The lock for a release, from its tag commit, the producer manifest there, the published receipt and whether its files are assets. */
@@ -134,6 +172,13 @@ export async function adopt({ requested, allowWithheld = false } = {}) {
     run('git', ['clone', '--quiet', '--filter=blob:none', '--no-checkout', `https://github.com/${REPOSITORY}.git`, producer]);
     run('git', ['-C', producer, 'sparse-checkout', 'set', '--no-cone', '/website/manifest.json', '/shared/omics/', '/services/omics/src/']);
     run('git', ['-C', producer, 'checkout', '--quiet', revision]);
+    // Before anything is written: the tag must name the release commit.
+    if (releaseCommitChecked(releases, releaseId)) {
+      let config;
+      try { config = gitShow(producer, `${revision}:${RELEASE_CONFIG}`); } catch { throw new Error(`Refusing ${tag}: commit ${revision} has no ${RELEASE_CONFIG}`); }
+      const parents = run('git', ['-C', producer, 'rev-list', '--parents', '-n', '1', revision]).trim().split(' ').slice(1);
+      checkReleaseCommit({ tag, revision, parents, config });
+    }
     const manifest = fs.readFileSync(path.join(producer, 'website/manifest.json'));
     const assetNames = JSON.parse(gh('release', 'view', tag, '--repo', REPOSITORY, '--json', 'assets')).assets.map(asset => asset.name);
     const lock = lockFor(previous, { releaseId, revision, manifest, receipt, assets: publishedAsAssets(manifest, assetNames, trackedSources(producer, revision, manifest)) });
@@ -149,7 +194,14 @@ export async function adopt({ requested, allowWithheld = false } = {}) {
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const index = process.argv.indexOf('--release');
-  const result = await adopt({ requested: index > 0 ? process.argv[index + 1] : undefined, allowWithheld: process.argv.includes('--allow-withheld-mappings') });
+  let result;
+  try {
+    result = await adopt({ requested: index > 0 ? process.argv[index + 1] : undefined, allowWithheld: process.argv.includes('--allow-withheld-mappings') });
+  } catch (error) {
+    // An annotation on the workflow run, then a failed step: nothing is committed or deployed.
+    console.error(`::error title=Data release not adopted::${String(error.message).replace(/\r?\n/g, ' ')}`);
+    throw error;
+  }
   console.log(JSON.stringify(result));
   if (process.env.GITHUB_OUTPUT)
     fs.appendFileSync(process.env.GITHUB_OUTPUT, `adopted=${result.adopted}\nrelease_id=${result.release_id}\n`);

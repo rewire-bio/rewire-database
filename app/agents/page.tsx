@@ -14,7 +14,7 @@ export const dynamic = "force-dynamic";
 
 const pageMetadata = {
   title: "Connect your agent | Benchmark database",
-  description: "Set up Claude Code or another MCP client to query the benchmark database and reproduce benchmarks locally.",
+  description: "Set up Claude Code or another MCP client to query the benchmark database and run benchmarks locally on CPU.",
   alternates: { canonical: "https://benchmarks.rewirebio.io/agents/" },
 };
 export const metadata: Metadata = {
@@ -27,16 +27,16 @@ export const metadata: Metadata = {
 };
 
 const steps = [
-  { title: "Install the plugin", text: "Two commands in Claude Code add a benchmark skill and a read-only server for the database's knowledge graph." },
+  { title: "Install the plugin", text: "Two commands in Claude Code add three MCP servers (the knowledge graph, genomic data and the rewirebench runner), five skills, six commands and a benchmarking agent." },
   { title: "Ask about the evidence", text: "The agent finds models, benchmarks, published results and their sources, with review status and caveats." },
-  { title: "Reproduce and compare", text: "It runs a benchmark with the rewirebench tool on your machine and sets your result beside the published one." },
+  { title: "Rerun and compare", text: "It plans and runs a benchmark recipe on your machine, on CPU, and sets the run beside the published value. The recipe that ships today reruns Rewire's own MFASS v2 baseline." },
 ];
 
 const rules = [
-  { title: "Runs on your machine", text: "Your model, weights and data are not sent to Rewire." },
-  { title: "Nothing submitted for you", text: "Submitting a result to the database is a separate step that needs your explicit consent." },
+  { title: "Runs on your machine", text: "Runs use your CPU. Your model, weights and data are not sent to Rewire, and the plugin starts no GPU or paid run." },
+  { title: "Nothing is submitted", text: "No tool in the plugin submits a result to the database. A run ends with a receipt folder and a comparison on your machine." },
   { title: "Checked monthly", text: "Each use case's evidence is re-checked against new publications every month." },
-  { title: "Reproduce, don't assume", text: "A source-checked result is a reviewed transcription of a paper's number. Running it yourself is how you find out." },
+  { title: "A rerun is not a reproduction", text: "A source-checked result is a reviewed transcription of a published number. Rerunning it with the publisher's code and data shows the number can be regenerated. It is not an independent reproduction." },
 ];
 
 export default function AgentsPage() {
@@ -53,7 +53,7 @@ export default function AgentsPage() {
         <Illustration className={styles.heroArt} />
         <div className={styles.heroText}>
           <h2 id="install-heading">Install in Claude Code</h2>
-          <p>The <code>{PLUGIN}</code> plugin. The server needs <a href="https://docs.astral.sh/uv/">uv</a>.</p>
+          <p>The <code>{PLUGIN}</code> plugin. Its servers need <a href="https://docs.astral.sh/uv/">uv</a>.</p>
         </div>
         <div className={styles.heroCode}><CodeBlock code={pluginCommands.join("\n")} /></div>
       </div>
@@ -76,15 +76,15 @@ export default function AgentsPage() {
         <h2 id="setup-heading">Other ways to connect</h2>
         <SetupTabs tabs={[
           { id: "graph", label: "Knowledge graph only", body: <>
-            <p>Adds just the <code>{GRAPH_SERVER}</code> MCP server to Claude Code, without the skill.</p>
+            <p>Adds just the <code>{GRAPH_SERVER}</code> MCP server to Claude Code, without the skills, the commands or the other two servers.</p>
             <CodeBlock code={claudeMcpAdd()} />
           </> },
           { id: "other", label: "Other MCP clients", body: <>
-            <p>Add this entry to the client&apos;s MCP configuration, then give the agent the <a href={SKILL_URL}>skill text</a> as instructions.</p>
+            <p>Add this entry to the client&apos;s MCP configuration, then give the agent the <a href={SKILL_URL}>skill texts</a> as instructions.</p>
             <CodeBlock code={mcpJson()} />
           </> },
           { id: "pin", label: "Pin a release", body: <>
-            <p><code>{KG_ALIAS}</code> follows the release this site serves, so the server picks up new releases when it restarts. For an exact reproduction, pin release {releaseId}:</p>
+            <p><code>{KG_ALIAS}</code> follows the release this site serves, so the server picks up new releases when it restarts. To keep to one release, pin release {releaseId}:</p>
             <CodeBlock code={claudeMcpAdd(kgArchiveUrl(releaseId))} />
             <p className={styles.muted}>The server checks every file against the bundle&apos;s manifest before loading it, and it is read-only.</p>
           </> },

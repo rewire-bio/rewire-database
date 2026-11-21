@@ -2,6 +2,7 @@
   "name": "rewire-database",
   "version": "0.1.0",
   "private": true,
+  "license": "MIT",
   "scripts": {
     "dev": "npm run data:prepare -- --current-only && next dev",
     "build": "npm run data:prepare -- --current-only && node scripts/build-web.mjs",

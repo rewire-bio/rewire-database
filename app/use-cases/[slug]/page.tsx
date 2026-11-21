@@ -87,8 +87,8 @@ export default function UseCasePage({ params }: { params: Params }) {
     { id: "gaps", label: "Not covered yet" },
     // With no comparison yet, the collection plan is the main content, so it gets its own section.
     ...(entry.collection_plan && !comparisons.length ? [{ id: "collection-plan", label: "Evidence collection plan" }] : []),
-    { id: "details", label: "Question, sources and review" },
     { id: "cite", label: "How to cite" },
+    { id: "details", label: "Question, sources and review" },
   ];
   // After the summary, so the answer comes first on a phone; the index shows the same inputs as a list.
   const cards = <dl className={styles.cardsRow}>
@@ -229,6 +229,8 @@ export default function UseCasePage({ params }: { params: Params }) {
           <p><a href="/contribute/">Contribute evidence or propose a correction</a></p>
         </section>
         {entry.collection_plan && !comparisons.length && <UseCaseCollectionPlan plan={entry.collection_plan} summary={summary} />}
+        {/* Before the details section: its nested sections carry no h2, and the page's section navigation is checked against h2 order. */}
+        <HowToCite title={entry.title} path={path} releaseId={detail.release_id} className={styles.section} />
         <section id="details" className={styles.section}>
           <h2>{heading("details")}</h2>
           <details>
@@ -252,7 +254,6 @@ export default function UseCasePage({ params }: { params: Params }) {
             <p><a href={downloadHref(`/omics/releases/${detail.release_id}/use-cases.json`)}>Download questions and review metadata (JSON) (gzip)</a> · <a href={downloadHref(`/omics/releases/${detail.release_id}/manifest.json`)}>Verify release checksums (gzip)</a></p>
           </details>
         </section>
-        <HowToCite title={entry.title} path={path} releaseId={detail.release_id} className={styles.section} />
       </div>
     </div>
   </>;

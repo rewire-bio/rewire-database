@@ -94,7 +94,7 @@ export default function IndependencePage() {
         <section className={styles.section} id="rewire-runs" aria-labelledby="runs-heading">
           <h2 id="runs-heading">How Rewire&apos;s own results are produced and receipted</h2>
           <p>
-            A result that Rewire ran itself is labelled Rewire run. It is not counted as independent, because Rewire wrote some of the baselines and controls it runs. The code for Rewire&apos;s runs is published in the <a href={RUNNER_REPOSITORY}>benchmark runner repository</a>.
+            A result that Rewire ran itself is labelled Rewire run. It is not counted as independent, because Rewire wrote some of the baselines and controls it runs. The runner is published in the <a href={RUNNER_REPOSITORY}>benchmark runner repository</a>.
           </p>
           <p>
             Checking a value against its source is not the same as rerunning it. Source-checked means the recorded value was compared with the source it cites. On a leaderboard and in the JSON API, a result reads Reproduced only when the result or its evaluation cites a run receipt: the record of an executed run of the full protocol, held in the release.
@@ -124,7 +124,7 @@ export default function IndependencePage() {
             When studies disagree, the site does not pick a side by hand. Each release checks whether one study ranks models against the order other studies agree on, and lists each case under <Link href="/contested/">contested results</Link> with the studies on each side. A listing is a lead to check, not a finding of error, and it never hides a result. The follow-up on each one is recorded with it and shown: what was investigated, what was reported to the authors and what was corrected. The rules are in the <a href={DISCREPANCIES_DOC}>discrepancy documentation</a>.
           </p>
           <p>
-            If you developed a tool and think a result misrepresents it, the routes above are open to you. A reply from a tool&apos;s developers is recorded against the finding it answers. It does not remove the other studies&apos; results.
+            If you developed a tool and think a result misrepresents it, the routes above are open to you. Rewire&apos;s practice is to record a reply from a tool&apos;s developers against the finding it answers. A reply does not remove the other studies&apos; results.
           </p>
         </section>
 

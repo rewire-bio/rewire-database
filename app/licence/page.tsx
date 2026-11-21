@@ -38,7 +38,7 @@ const notCovered = [
   "Values reported by a publication: scores, sample counts and facts about a model or dataset. Rewire records each one with a citation and the place in the source it was read from. The value is the source's, and the source is what you credit for it.",
   "Text quoted from a source, and titles, names and trade marks.",
   "The terms shown on a model's page. They are the licence of that model's weights or code as its developers state it. They are not terms for this data.",
-  "The cited papers, supplements and repositories themselves. This site links to them and serves no copy of them.",
+  "The cited papers, supplements and repositories themselves. This site links to them and serves no copy of a third-party source document.",
 ];
 
 export default function LicencePage() {
@@ -89,6 +89,9 @@ export default function LicencePage() {
             <li>A source under a restrictive licence, or with no licence determined, is kept privately and is not redistributed. Its record still carries the citation and the address of the source.</li>
             <li>A source under a non-commercial licence may be published only on the premise that this data is never sold: Rewire does not sell the benchmark data or the graph, license them to a partner or put them behind a paywall, in whole or in part. If that ever changed, those sources would be assessed again from their licence text.</li>
           </ul>
+          <p>
+            One exception is on record. Seven sources under restrictive licences were committed to the public data repository before this rule existed. They remain in its git history, and the policy lists them.
+          </p>
           <p>
             The rules, the licence each source was read as carrying and the counts are in the data repository&apos;s <a href={SOURCE_POLICY}>source preservation policy</a>.
           </p>

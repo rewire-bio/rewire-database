@@ -24,8 +24,8 @@ import {
 } from "../lib/data-licence";
 import { RESOLVED_RULE_LABEL, RULE_DESCRIPTIONS, discrepancyReader, ruleLabel } from "../lib/discrepancies";
 import {
-  NOT_STATED, OTHER_INTERESTS_NOT_STATED, OTHER_INTERESTS_STATED, OWNER_STATEMENTS, POLICY_INCOMPLETE,
-  countOf, ownerStatementsComplete, policyFacts, receiptSentence,
+  OTHER_INTERESTS_STATED, OWNER_STATEMENTS, WHO_AND_FUNDING_HEADING, WHO_HEADING,
+  countOf, policyFacts, receiptSentence, statedOwnerStatements,
 } from "../lib/independence";
 import { generateLlmsTxt } from "../lib/llm-discoverability";
 import { recordHref } from "../lib/omics";
@@ -310,12 +310,18 @@ describe("independence policy for the pinned release", () => {
     expect(page).toContain(`mailto:${TAKEDOWN_CONTACT}`);
   });
 
-  it("prints the owner's statements as they stand, and says the policy is incomplete while either is missing", () => {
+  it("prints the owner's statements that have been made and nothing for one that has not", () => {
     const page = html();
-    for (const [label, value] of [["Funding", OWNER_STATEMENTS.funding], ["Affiliations", OWNER_STATEMENTS.affiliations]] as const)
-      expect(page).toContain(`<dt>${label}</dt><dd>${value === null ? NOT_STATED : escaped(value)}</dd>`);
-    expect(page.includes(escaped(POLICY_INCOMPLETE))).toBe(!ownerStatementsComplete(OWNER_STATEMENTS));
-    expect(page.includes(escaped(OTHER_INTERESTS_NOT_STATED))).toBe(OWNER_STATEMENTS.affiliations === null);
+    for (const [label, value] of [["Funding", OWNER_STATEMENTS.funding], ["Affiliations", OWNER_STATEMENTS.affiliations]] as const) {
+      if (value === null) expect(page).not.toContain(`<dt>${label}</dt>`);
+      else expect(page).toContain(`<dt>${label}</dt><dd>${escaped(value)}</dd>`);
+    }
+    expect(page).toContain(`<h2 id="who-heading">${OWNER_STATEMENTS.funding === null ? WHO_HEADING : WHO_AND_FUNDING_HEADING}</h2>`);
+    expect(page.includes(escaped(OTHER_INTERESTS_STATED))).toBe(OWNER_STATEMENTS.affiliations !== null);
+    expect(page).not.toMatch(/not stated|incomplete/i);
+    // What the page states without the owner: who runs it, and that the data is not sold.
+    expect(section(page, "who")).toContain("written and maintained by Tim Richardson");
+    expect(section(page, "who")).toContain("The data is not sold.");
     // The page does not call the project independent in its own words; the labels and the rules carry that.
     expect(page).not.toContain("an independent publication");
   });
@@ -386,30 +392,49 @@ describe("independence policy in states the pinned release is not in", () => {
     expect(section(page, "corrections")).toContain("lists 9 findings, by the rule that raised each:");
   });
 
-  it("prints the owner's statements when both are made, and no notice that the policy is incomplete", () => {
-    const page = render({ funding: "Paid for by its maintainer.", affiliations: "Employed by an organisation that builds no model listed here." });
-    expect(page).toContain("<dt>Funding</dt><dd>Paid for by its maintainer.</dd>");
-    expect(page).toContain("<dt>Affiliations</dt><dd>Employed by an organisation that builds no model listed here.</dd>");
-    expect(page).not.toContain(NOT_STATED);
-    expect(page).not.toContain('data-testid="policy-incomplete"');
+  const funding = "Paid for by its maintainer.";
+  const affiliations = "Employed by an organisation that builds no model listed here.";
+
+  it("prints both of the owner's statements when both are made", () => {
+    const page = render({ funding, affiliations });
+    expect(statedOwnerStatements({ funding, affiliations })).toEqual([{ label: "Funding", text: funding }, { label: "Affiliations", text: affiliations }]);
+    expect(part(page, "owner-statements")).toBe(`<dt>Funding</dt><dd>${funding}</dd><dt>Affiliations</dt><dd>${affiliations}</dd>`);
+    expect(page).toContain(`<h2 id="who-heading">${WHO_AND_FUNDING_HEADING}</h2>`);
     expect(part(page, "other-interests")).toBe(escaped(OTHER_INTERESTS_STATED));
+    expect(page).not.toMatch(/not stated|incomplete/i);
   });
 
-  it("says the policy is incomplete, and points at no Affiliations statement, while either is missing", () => {
-    const none = render({ funding: null, affiliations: null });
-    expect(none).toContain(`<dt>Funding</dt><dd>${NOT_STATED}</dd>`);
-    expect(none).toContain(`<dt>Affiliations</dt><dd>${NOT_STATED}</dd>`);
-    expect(part(none, "policy-incomplete")).toBe(escaped(POLICY_INCOMPLETE));
-    expect(part(none, "other-interests")).toBe(escaped(OTHER_INTERESTS_NOT_STATED));
-    expect(none).not.toContain(escaped(OTHER_INTERESTS_STATED));
+  it("leaves out both rows, the list and every reference to them when neither statement is made", () => {
+    const page = render({ funding: null, affiliations: null });
+    expect(statedOwnerStatements({ funding: null, affiliations: null })).toEqual([]);
+    expect(page).not.toContain('data-testid="owner-statements"');
+    expect(page).not.toContain("<dt>Funding</dt>");
+    expect(page).not.toContain("<dt>Affiliations</dt>");
+    expect(page).not.toContain('data-testid="other-interests"');
+    expect(page).not.toContain(escaped(OTHER_INTERESTS_STATED));
+    expect(page).not.toMatch(/not stated|incomplete|who pays/i);
+    expect(page).toContain(`<h2 id="who-heading">${WHO_HEADING}</h2>`);
+    // The section still says what is known without the owner, and the other sections are all there.
+    const who = section(page, "who");
+    expect(who).toContain("written and maintained by Tim Richardson");
+    expect(who).toContain("The data is not sold.");
+    expect(who).not.toContain("<dl");
+    for (const id of ["placement", "labels", "rewire-runs", "corrections", "takedown", "conflicts"]) expect(page).toContain(`id="${id}"`);
+    expect(section(page, "conflicts")).toContain("Rewire scores some methods that it wrote");
+  });
 
-    const fundingOnly = render({ funding: "Paid for by its maintainer.", affiliations: null });
-    expect(part(fundingOnly, "policy-incomplete")).toBe(escaped(POLICY_INCOMPLETE));
-    expect(part(fundingOnly, "other-interests")).toBe(escaped(OTHER_INTERESTS_NOT_STATED));
+  it("prints only the statement that is made when the other is missing", () => {
+    const fundingOnly = render({ funding, affiliations: null });
+    expect(part(fundingOnly, "owner-statements")).toBe(`<dt>Funding</dt><dd>${funding}</dd>`);
+    expect(fundingOnly).toContain(`<h2 id="who-heading">${WHO_AND_FUNDING_HEADING}</h2>`);
+    expect(fundingOnly).not.toContain('data-testid="other-interests"');
+    expect(fundingOnly).not.toMatch(/not stated|incomplete/i);
 
     const affiliationsOnly = render({ funding: null, affiliations: "None that bear on the models listed." });
-    expect(part(affiliationsOnly, "policy-incomplete")).toBe(escaped(POLICY_INCOMPLETE));
+    expect(part(affiliationsOnly, "owner-statements")).toBe("<dt>Affiliations</dt><dd>None that bear on the models listed.</dd>");
+    expect(affiliationsOnly).toContain(`<h2 id="who-heading">${WHO_HEADING}</h2>`);
     expect(part(affiliationsOnly, "other-interests")).toBe(escaped(OTHER_INTERESTS_STATED));
+    expect(affiliationsOnly).not.toMatch(/not stated|incomplete|who pays/i);
   });
 
   it("says so when the release has no findings from the disagreement check", () => {

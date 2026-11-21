@@ -7,8 +7,8 @@ import {
   DISCREPANCIES_DOC, RESOLVED_RULE_DESCRIPTION, RESOLVED_RULE_LABEL, RULE_DESCRIPTIONS, discrepancyReader, ruleLabel,
 } from "@/lib/discrepancies";
 import {
-  NOT_STATED, OTHER_INTERESTS_NOT_STATED, OTHER_INTERESTS_STATED, POLICY_INCOMPLETE,
-  countOf, ownerStatementsComplete, policyFacts, receiptSentence, type OwnerStatements, type PolicyFacts,
+  OTHER_INTERESTS_STATED, WHO_AND_FUNDING_HEADING, WHO_HEADING,
+  countOf, policyFacts, receiptSentence, statedOwnerStatements, type OwnerStatements, type PolicyFacts,
 } from "@/lib/independence";
 import {
   HOME_LEFT_OUT, MIN_HOME_PROXY_MODEL_ROWS, MIN_HOME_TOOLS, allUseCaseLeaderboards, homeLeaderboards, runReceiptSources,
@@ -38,14 +38,15 @@ export function releasePolicyFacts(): { releaseId: string; facts: PolicyFacts } 
 
 /**
  * The policy's text. The owner's statements and the release figures are arguments, so the tests
- * render the states the live page is not in: statements made, rows that cite a receipt.
+ * render the states the live page is not in: statements made, rows that cite a receipt. A statement
+ * the owner has not made prints nothing: no row, no placeholder, and no sentence that refers to it.
  */
 export default function IndependencePolicy({ releaseId, statements, facts }: {
   releaseId: string;
   statements: OwnerStatements;
   facts: PolicyFacts;
 }) {
-  const complete = ownerStatementsComplete(statements);
+  const stated = statedOwnerStatements(statements);
   return <>
     <PageHeader
       breadcrumbs={[{ name: "Database", path: "/" }, { name: "Independence policy", path: INDEPENDENCE_PATH }]}
@@ -56,17 +57,16 @@ export default function IndependencePolicy({ releaseId, statements, facts }: {
     <section className="block first">
       <div className="wrap">
         <section className={styles.section} id="who" aria-labelledby="who-heading">
-          <h2 id="who-heading">Who runs it and who pays for it</h2>
+          <h2 id="who-heading">{statements.funding === null ? WHO_HEADING : WHO_AND_FUNDING_HEADING}</h2>
           <p>
             The database is part of Rewire, a publication and computational project written and maintained by Tim Richardson. The project is described on <a href="https://rewirebio.io/about/">rewirebio.io</a>.
           </p>
-          <dl className={styles.details}>
-            <dt>Funding</dt>
-            <dd>{statements.funding ?? NOT_STATED}</dd>
-            <dt>Affiliations</dt>
-            <dd>{statements.affiliations ?? NOT_STATED}</dd>
-          </dl>
-          {!complete && <p data-testid="policy-incomplete">{POLICY_INCOMPLETE}</p>}
+          {stated.length > 0 && <dl className={styles.details} data-testid="owner-statements">
+            {stated.map(({ label, text }) => <Fragment key={label}>
+              <dt>{label}</dt>
+              <dd>{text}</dd>
+            </Fragment>)}
+          </dl>}
           <p>
             The data is not sold. Rewire does not sell the benchmark data or the graph, license them to a partner or put them behind a paywall, in whole or in part. The JSON API needs no key and the release files are free to download. Terms of reuse are on the <Link href={LICENCE_PATH}>data licence</Link> page.
           </p>
@@ -175,9 +175,7 @@ export default function IndependencePolicy({ releaseId, statements, facts }: {
           <p>
             Rewire scores some methods that it wrote: baselines and controls in its own runs. Those results carry the Rewire run label and are never counted as independent.
           </p>
-          <p data-testid="other-interests">
-            {statements.affiliations === null ? OTHER_INTERESTS_NOT_STATED : OTHER_INTERESTS_STATED}
-          </p>
+          {statements.affiliations !== null && <p data-testid="other-interests">{OTHER_INTERESTS_STATED}</p>}
         </section>
       </div>
     </section>

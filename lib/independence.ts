@@ -8,10 +8,10 @@
 import type { LeaderboardResult } from "./use-case-leaderboard";
 
 /**
- * Statements on the independence page that only the owner can make. A null field is printed as
- * "not stated yet": the page must not describe funding or affiliations that nobody has stated.
- * While either is null the page says the policy is incomplete and does not call the project
- * independent in its own words.
+ * Statements on the independence page that only the owner can make. A null field is left off the
+ * page: no row, no placeholder and no sentence that points at it. The page must not describe
+ * funding or affiliations that nobody has stated, so until the owner writes one it says only what
+ * the repositories show. It does not call the project independent in its own words either way.
  */
 export interface OwnerStatements {
   /** Who pays for the project, in the owner's words. */
@@ -25,14 +25,20 @@ export const OWNER_STATEMENTS: OwnerStatements = {
   affiliations: null,
 };
 
-export const NOT_STATED = "Not stated yet.";
-/** Printed under the two statements while either is missing. */
-export const POLICY_INCOMPLETE = "This policy is incomplete until both are stated. Until then it makes no claim about who funds the project or what other interests its maintainer has.";
-/** The conflicts section, when the owner has stated affiliations and when not. */
+/** The heading of the first section. It names funding only when the owner has stated it. */
+export const WHO_HEADING = "Who runs it";
+export const WHO_AND_FUNDING_HEADING = "Who runs it and who pays for it";
+/** The conflicts section's pointer to the Affiliations row. Printed only when that row is. */
 export const OTHER_INTERESTS_STATED = "Other interests that bear on the models listed here are given under Affiliations above.";
-export const OTHER_INTERESTS_NOT_STATED = "The maintainer's affiliations and any other interests that bear on the models listed here are not stated yet, so this section is incomplete.";
 
-export const ownerStatementsComplete = (statements: OwnerStatements) => statements.funding !== null && statements.affiliations !== null;
+/** The owner's statements that have been made, in the order the page prints them. Null ones are left out. */
+export function statedOwnerStatements(statements: OwnerStatements): { label: string; text: string }[] {
+  const rows: { label: string; text: string | null }[] = [
+    { label: "Funding", text: statements.funding },
+    { label: "Affiliations", text: statements.affiliations },
+  ];
+  return rows.flatMap(({ label, text }) => text === null ? [] : [{ label, text }]);
+}
 
 export const countOf = (n: number, one: string, many: string) => `${n.toLocaleString("en-GB")} ${n === 1 ? one : many}`;
 

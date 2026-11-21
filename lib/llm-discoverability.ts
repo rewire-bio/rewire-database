@@ -88,6 +88,7 @@ ${discrepancyQueries.map((q) => `  - ${q.name}: ${q.params}. Returns ${q.returns
 - [Use cases](${SITE}/use-cases/): questions with the evidence that bears on them
 - [Benchmarks](${SITE}/benchmarks/) and [models](${SITE}/models/)
 - [Evidence and review methods](${SITE}/evidence/)
+- [Data licence](${SITE}/licence/) and [independence policy](${SITE}/independence/)
 - [Collection coverage](${SITE}/coverage/) and [discrepancy investigations](${SITE}/investigations/)
 - [Contested results](${SITE}/contested/): disagreements between studies and their follow-up
 - [Database updates](${SITE}/updates/) and [Atom feed](${SITE}/updates/feed.xml)

@@ -141,9 +141,15 @@ describe("JSON API: every endpoint", () => {
     expect("page" in body).toBe(!!endpoint.query?.cursor);
   });
 
-  it("states no licence it has not been given", () => {
-    // Until the owner states a data licence, the API must not name one. Stating one is an edit to lib/data-licence.ts and to this test.
-    expect(DATA_LICENCE).toEqual({ spdx_id: null, name: null, url: null, statement: "No data licence has been stated for this release." });
+  it("states the data licence with its limit, and no licence for the API description", () => {
+    // The owner's licence for Rewire's compilation and annotations. Changing it is an edit to lib/data-licence.ts and to this test.
+    expect(DATA_LICENCE).toEqual({
+      spdx_id: "CC-BY-4.0",
+      name: "Creative Commons Attribution 4.0 International",
+      url: "https://creativecommons.org/licenses/by/4.0/",
+      statement: "The compilation and annotations made by Rewire in this release are offered under CC BY 4.0; values and text taken from cited sources stay under the terms of those sources and are not covered by this licence.",
+    });
+    // info.license would state terms for the whole API without the limit, so it stays unset; the licence field and the description carry both.
     expect((openApiDocument() as { info: Record<string, unknown> }).info.license).toBeUndefined();
   });
 

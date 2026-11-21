@@ -26,6 +26,7 @@ import {
   resolveUseCaseTargetSlug,
 } from "@/lib/catalogue-seo";
 import { GeoTakeaway } from "@/components/catalogue/GeoTakeaway";
+import HowToCite from "@/components/catalogue/HowToCite";
 import { generateUseCaseTakeaway } from "@/lib/geo-takeaway";
 import styles from "@/components/catalogue/UseCases.module.css";
 
@@ -87,6 +88,7 @@ export default function UseCasePage({ params }: { params: Params }) {
     // With no comparison yet, the collection plan is the main content, so it gets its own section.
     ...(entry.collection_plan && !comparisons.length ? [{ id: "collection-plan", label: "Evidence collection plan" }] : []),
     { id: "details", label: "Question, sources and review" },
+    { id: "cite", label: "How to cite" },
   ];
   // After the summary, so the answer comes first on a phone; the index shows the same inputs as a list.
   const cards = <dl className={styles.cardsRow}>
@@ -250,6 +252,7 @@ export default function UseCasePage({ params }: { params: Params }) {
             <p><a href={downloadHref(`/omics/releases/${detail.release_id}/use-cases.json`)}>Download questions and review metadata (JSON) (gzip)</a> · <a href={downloadHref(`/omics/releases/${detail.release_id}/manifest.json`)}>Verify release checksums (gzip)</a></p>
           </details>
         </section>
+        <HowToCite title={entry.title} path={path} releaseId={detail.release_id} className={styles.section} />
       </div>
     </div>
   </>;

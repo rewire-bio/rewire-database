@@ -3,7 +3,7 @@ import PageHeader from "@/components/PageHeader";
 import CodeBlock from "@/components/agents/CodeBlock";
 import { SITE } from "@/lib/agent-connect";
 import { socialMetadata } from "@/lib/catalogue-sharing";
-import { DATA_LICENCE, releaseCitation } from "@/lib/data-licence";
+import { DATA_LICENCE, LICENCE_PATH, releaseCitation } from "@/lib/data-licence";
 import { dataPin } from "@/lib/data-pin";
 import { API_BASE, API_CACHE_CONTROL, API_DOCS_PATH, ENDPOINTS } from "@/lib/public-api";
 import styles from "../agents.module.css";
@@ -79,7 +79,7 @@ export default function ApiDocsPage() {
         <ul>
           {fields.map((field) => <li key={field.name}><code>{field.name}</code>: {field.text}</li>)}
         </ul>
-        <p>Data licence: {DATA_LICENCE.statement}</p>
+        <p>Data licence: {DATA_LICENCE.statement} The limits are set out on the <a href={LICENCE_PATH}>data licence</a> page.</p>
         <p>Citation for this release: {releaseCitation(releaseId, SITE)}</p>
       </section>
 

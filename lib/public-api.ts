@@ -60,10 +60,17 @@ const ReleaseShape = z.strictObject({
 });
 
 const LicenceShape = z.strictObject({
-  spdx_id: nullableString.describe("SPDX identifier of the data licence; null while no licence is stated."),
-  name: nullableString,
-  url: nullableString,
+  spdx_id: nullableString.describe("SPDX identifier of a licence that covers everything in the answer. It is null: no single licence does, because values taken from cited sources stay under the terms of those sources. The licence for the part Rewire made is in compilation."),
+  name: nullableString.describe("Name of a licence that covers everything in the answer; null for the same reason."),
+  url: nullableString.describe("Address of a licence that covers everything in the answer; null for the same reason."),
   statement: z.string().describe("The licence position in one sentence."),
+  compilation: z.strictObject({
+    spdx_id: z.string().describe("SPDX identifier of the licence for the compilation and annotations Rewire made. It does not apply to values or text taken from sources."),
+    name: z.string(),
+    url: z.string(),
+    covers: z.string().describe("What the compilation licence applies to."),
+    excludes: z.string().describe("What it does not apply to."),
+  }).describe("The licence for what Rewire made: the compilation and its annotations. Not a licence for the values in data."),
 });
 
 const SourceLink = z.strictObject({
@@ -1053,7 +1060,7 @@ export function openApiDocument() {
         "Every answer is read from one pinned data release and names it in release.id. A new release replaces the old one at the same addresses; pass release_id to refuse an answer from any other release. Ranks, labels and counts are worked out by the site from the release, so they can also change with the site version, which the X-Rewire-Frontend response header names.",
         "Models are ranked per use case, on one protocol and one metric at a time. There is no composite score. A proxy protocol is labelled in protocol.relevance.",
         "A result is reproduced only when it cites a run receipt in the release. source_checked means the value was checked against the source it cites, not that it was rerun.",
-        `Data licence: ${DATA_LICENCE.statement} Each answer repeats the licence position in its licence field.`,
+        `Data licence: ${DATA_LICENCE.statement} Each answer repeats the position in its licence field. licence.spdx_id is null because no single licence covers an answer; licence.compilation names the licence for what Rewire made and says what it covers and excludes. A model's own terms are in its license field and are not terms for this data.`,
         "No key is needed and nothing is written. Use GET. Addresses end in a slash; an address without one is redirected.",
       ].join("\n\n"),
     },

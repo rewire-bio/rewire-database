@@ -230,7 +230,8 @@ export default function UseCasePage({ params }: { params: Params }) {
         </section>
         {entry.collection_plan && !comparisons.length && <UseCaseCollectionPlan plan={entry.collection_plan} summary={summary} />}
         {/* Before the details section: its nested sections carry no h2, and the page's section navigation is checked against h2 order. */}
-        <HowToCite title={entry.title} path={path} releaseId={detail.release_id} className={styles.section} />
+        {/* A category alias cites the use case's own address, so one board has one citation. */}
+        <HowToCite title={entry.title} path={`/use-cases/${entry.slug}/`} releaseId={detail.release_id} className={styles.section} />
         <section id="details" className={styles.section}>
           <h2>{heading("details")}</h2>
           <details>

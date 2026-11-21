@@ -62,7 +62,7 @@ export function CatalogueEvidence({
         <h3>Rewire evaluations</h3>
         <p>
           {compact
-            ? "Read the protocol, held-out splits, and limitations behind our reproduced splice-variant evaluation."
+            ? "Read the protocol, held-out splits and limitations behind our corrected splice-variant evaluation."
             : "Read the protocol, coverage and limitations behind our corrected splice-variant evaluation."}
         </p>
         <Link href="/runs/mfass-v2/">MFASS v2 evaluation →</Link>

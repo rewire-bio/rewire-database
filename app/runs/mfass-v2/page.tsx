@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import fs from "node:fs";
 import { dataPath } from "@/lib/data-pin";
+import { ORIGIN_LABELS } from "@/lib/result-origin";
 import type runShape from "@/data/benchmark-runs/mfass-v2.json";
 import styles from "./run.module.css";
 
@@ -38,7 +39,7 @@ export default function MfassV2Page() {
   return <>
     <header className="page-head"><div className="wrap">
       <Breadcrumbs items={[{ name: "Database", path: "/" }, { name: "Rewire evaluations", path: "/?kind=result&origin=rewire#browse" }, { name: "MFASS v2", path: "/runs/mfass-v2/" }]} />
-      <span className="kick">Independent rewirebio.io run</span>
+      <span className="kick">{ORIGIN_LABELS.rewire_run}</span>
       <h1>{run.label}</h1>
       <p className="intro">A corrected baseline and one zero-cost local DNABERT-2 protocol on MFASS. The held-out ranking result is complete.</p>
     </div></header>

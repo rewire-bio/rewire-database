@@ -37,12 +37,17 @@ export function summaryText(summary: EvaluationSummary): string {
     : "No evaluations linked in this release";
 }
 
-/** Reader-facing names for catalogue review states. */
+/**
+ * Reader-facing names for catalogue review states. The label for `reproduced` is the record's own
+ * status and has to be true with or without a run receipt: the release marks Rewire's own reruns
+ * with it, and a Rewire run is not independent (lib/result-origin.ts). "Reproduced" is said only
+ * where a run receipt is cited (reviewOf in lib/use-case-ranking.ts).
+ */
 const statusLabels: Record<string, string> = {
   discovered: "Not yet reviewed",
   needs_review: "Needs review",
   source_checked: "Source checked",
-  reproduced: "Independently reproduced",
+  reproduced: "Rerun recorded",
   disputed: "Disputed",
   superseded: "Superseded",
   excluded: "Excluded",

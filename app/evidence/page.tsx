@@ -4,6 +4,7 @@ import { socialMetadata } from "@/lib/catalogue-sharing";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { buildCatalogue } from "@/lib/catalogue-build";
+import { statusLabel } from "@/lib/omics-browse";
 import styles from "@/app/database/database.module.css";
 
 const pageMetadata = {
@@ -72,11 +73,17 @@ export default function EvidenceGuide() {
                 The reported claim or value was checked against its cited
                 source. It has not necessarily been reproduced.
               </dd>
-              <dt>Independently reproduced</dt>
+              <dt>{statusLabel("reproduced")}</dt>
               <dd>
-                A separate execution must be documented by its run artifacts and
-                validation scope. A source check or small smoke test does not
-                establish reproduction.
+                The release records that the evaluation was run again. This is
+                the record&apos;s own status. It does not say who ran it, which
+                the origin label does, and it is not a claim of independent
+                reproduction. A leaderboard row or an API answer reads
+                Reproduced only when the result or its evaluation cites a run
+                receipt, the record of an executed run of the full protocol.
+                A source check or small smoke test does not establish
+                reproduction. See the{" "}
+                <Link href="/independence/#rewire-runs">independence policy</Link>.
               </dd>
               <dt>Unreported or unextracted</dt>
               <dd>

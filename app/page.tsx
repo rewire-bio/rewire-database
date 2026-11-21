@@ -160,7 +160,7 @@ export default function BenchmarksPage() {
             showCategorySwitcher={true}
             showParetoHighlight={true}
           />
-          <HowToCite title="Use-case leaderboards" path="/" releaseId={catalogue.release_id} className={styles.muted} compact />
+          <HowToCite title="Use-case leaderboards" path="/" releaseId={catalogue.release_id} className={`${styles.muted} ${styles.inlineLinks}`} compact />
         </section>}
 
         {/* Database Search & Supporting Content Wrapped in Explorer */}

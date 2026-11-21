@@ -86,7 +86,7 @@ export function recordSearchMetadata(
     record.status === "source_checked"
       ? "Source checked; not independently reproduced."
       : record.status === "reproduced"
-        ? "Record status: reproduced."
+        ? "Record status: rerun recorded; independent reproduction is not established by this record."
         : `Record status: ${text(record.status).replaceAll("_", " ")}; independent reproduction is not established by this record.`;
   let title = `${identity} | ${kind}`;
   let description: string;

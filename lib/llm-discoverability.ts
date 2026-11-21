@@ -96,8 +96,8 @@ ${discrepancyQueries.map((q) => `  - ${q.name}: ${q.params}. Returns ${q.returns
 
 ## Rules
 
-- Runs happen on your machine, on CPU. Your model and data are not sent anywhere. The plugin starts no GPU or paid run.
-- No tool in the plugin submits a result to the database.
+- Runs happen on your machine. The plugin's run tools use CPU and start no GPU or paid run. Your model and data are not sent anywhere.
+- No tool in the plugin submits a result to the database. The rewirebench command line can send one to Rewire's review queue; the skills tell the agent to do that only when you ask.
 - A source-checked result is a value checked against the source it cites, in most cases a transcription of a published number. It is not an independent reproduction.`;
 }
 

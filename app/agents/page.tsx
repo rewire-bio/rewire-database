@@ -33,8 +33,8 @@ const steps = [
 ];
 
 const rules = [
-  { title: "Runs on your machine", text: "Runs use your CPU. Your model, weights and data are not sent to Rewire, and the plugin starts no GPU or paid run." },
-  { title: "Nothing is submitted", text: "No tool in the plugin submits a result to the database. A run ends with a receipt folder and a comparison on your machine." },
+  { title: "Runs on your machine", text: "The plugin's run tools use your CPU and start no GPU or paid run. Your model, weights and data are not sent to Rewire." },
+  { title: "Nothing is submitted for you", text: "No tool in the plugin submits a result to the database. A run ends with a receipt folder and a comparison on your machine. The rewirebench command line can send a result to Rewire's review queue, and the skills tell the agent to do that only when you ask." },
   { title: "Checked monthly", text: "Each use case's evidence is re-checked against new publications every month." },
   { title: "A rerun is not a reproduction", text: "A source-checked result is a reviewed transcription of a published number. Rerunning it with the publisher's code and data shows the number can be regenerated. It is not an independent reproduction." },
 ];

@@ -8,34 +8,49 @@
 import type { LeaderboardResult } from "./use-case-leaderboard";
 
 /**
- * Statements on the independence page that only the owner can make. A null field is left off the
- * page: no row, no placeholder and no sentence that points at it. The page must not describe
- * funding or affiliations that nobody has stated, so until the owner writes one it says only what
- * the repositories show. It does not call the project independent in its own words either way.
+ * Statements on the independence page that only the owner can make. A field that is null or blank
+ * is left off the page: no row, no placeholder and no sentence that points at it. The page must not
+ * describe funding or affiliations, or make a promise about payment, that nobody has stated, so
+ * until the owner writes one it says only what the repositories show. It does not call the project
+ * independent in its own words either way.
  */
 export interface OwnerStatements {
   /** Who pays for the project, in the owner's words. */
   funding: string | null;
   /** The maintainer's employment and other affiliations that bear on the models listed here. */
   affiliations: string | null;
+  /**
+   * The owner's promise about payment for placement, in the owner's words. It is not among the
+   * determinations in rewire-benchmark-data issue 276, so the page does not make it for the owner.
+   */
+  placement: string | null;
 }
 
 export const OWNER_STATEMENTS: OwnerStatements = {
   funding: null,
   affiliations: null,
+  placement: null,
 };
+
+/** A statement as the page prints it: trimmed, and null when it is null or blank. */
+export const statedText = (text: string | null): string | null => text?.trim() || null;
 
 /** The heading of the first section. It names funding only when the owner has stated it. */
 export const WHO_HEADING = "Who runs it";
 export const WHO_AND_FUNDING_HEADING = "Who runs it and who pays for it";
+/** The heading of the placement section. It names payment only when the owner has made the promise. */
+export const PLACEMENT_HEADING = "How placement is decided";
+export const PLACEMENT_PLEDGE_HEADING = "No payment for placement";
+/** The heading of the section that holds the Affiliations pointer. Printed only when that row is. */
+export const CONFLICTS_HEADING = "Conflicts of interest";
 /** The conflicts section's pointer to the Affiliations row. Printed only when that row is. */
 export const OTHER_INTERESTS_STATED = "Other interests that bear on the models listed here are given under Affiliations above.";
 
-/** The owner's statements that have been made, in the order the page prints them. Null ones are left out. */
+/** The owner's statements that have been made, in the order the page prints them. Null and blank ones are left out. */
 export function statedOwnerStatements(statements: OwnerStatements): { label: string; text: string }[] {
   const rows: { label: string; text: string | null }[] = [
-    { label: "Funding", text: statements.funding },
-    { label: "Affiliations", text: statements.affiliations },
+    { label: "Funding", text: statedText(statements.funding) },
+    { label: "Affiliations", text: statedText(statements.affiliations) },
   ];
   return rows.flatMap(({ label, text }) => text === null ? [] : [{ label, text }]);
 }

@@ -52,7 +52,7 @@ export function breadcrumbJsonLd(items: BreadcrumbItem[]) {
   };
 }
 
-// Catalogue licensing is unestablished: this describes the website, not a Dataset.
+// No single licence covers the catalogue (lib/data-licence.ts): this describes the website, not a Dataset.
 export const catalogueWebsiteJsonLd = {
   "@context": "https://schema.org",
   "@type": "WebSite",

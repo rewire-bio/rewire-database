@@ -7,8 +7,8 @@ import {
   DISCREPANCIES_DOC, RESOLVED_RULE_DESCRIPTION, RESOLVED_RULE_LABEL, RULE_DESCRIPTIONS, discrepancyReader, ruleLabel,
 } from "@/lib/discrepancies";
 import {
-  OTHER_INTERESTS_STATED, WHO_AND_FUNDING_HEADING, WHO_HEADING,
-  countOf, policyFacts, receiptSentence, statedOwnerStatements, type OwnerStatements, type PolicyFacts,
+  CONFLICTS_HEADING, OTHER_INTERESTS_STATED, PLACEMENT_HEADING, PLACEMENT_PLEDGE_HEADING, WHO_AND_FUNDING_HEADING, WHO_HEADING,
+  countOf, policyFacts, receiptSentence, statedOwnerStatements, statedText, type OwnerStatements, type PolicyFacts,
 } from "@/lib/independence";
 import {
   HOME_LEFT_OUT, MIN_HOME_PROXY_MODEL_ROWS, MIN_HOME_TOOLS, allUseCaseLeaderboards, homeLeaderboards, runReceiptSources,
@@ -40,6 +40,10 @@ export function releasePolicyFacts(): { releaseId: string; facts: PolicyFacts } 
  * The policy's text. The owner's statements and the release figures are arguments, so the tests
  * render the states the live page is not in: statements made, rows that cite a receipt. A statement
  * the owner has not made prints nothing: no row, no placeholder, and no sentence that refers to it.
+ * Without the placement promise the placement section says only how rows and boards are chosen.
+ * Without the affiliations statement there is no "Conflicts of interest" heading, because a section
+ * under that name with one entry would read as the whole declaration; what it would have said about
+ * Rewire's own methods is in the section on Rewire's runs either way.
  */
 export default function IndependencePolicy({ releaseId, statements, facts }: {
   releaseId: string;
@@ -47,17 +51,20 @@ export default function IndependencePolicy({ releaseId, statements, facts }: {
   facts: PolicyFacts;
 }) {
   const stated = statedOwnerStatements(statements);
+  const funding = statedText(statements.funding);
+  const affiliations = statedText(statements.affiliations);
+  const placement = statedText(statements.placement);
   return <>
     <PageHeader
       breadcrumbs={[{ name: "Database", path: "/" }, { name: "Independence policy", path: INDEPENDENCE_PATH }]}
       eyebrow={["Policy", `Release ${releaseId}`]}
       title="Independence policy"
-      intro="Who runs this database, what it will not take payment for, how each result is labelled by who produced it, and what happens when someone says a result is wrong."
+      intro="Who runs this database, how placement on a board is decided, how each result is labelled by who produced it, and what happens when someone says a result is wrong."
     />
     <section className="block first">
       <div className="wrap">
         <section className={styles.section} id="who" aria-labelledby="who-heading">
-          <h2 id="who-heading">{statements.funding === null ? WHO_HEADING : WHO_AND_FUNDING_HEADING}</h2>
+          <h2 id="who-heading">{funding === null ? WHO_HEADING : WHO_AND_FUNDING_HEADING}</h2>
           <p>
             The database is part of Rewire, a publication and computational project written and maintained by Tim Richardson. The project is described on <a href="https://rewirebio.io/about/">rewirebio.io</a>.
           </p>
@@ -73,10 +80,8 @@ export default function IndependencePolicy({ releaseId, statements, facts }: {
         </section>
 
         <section className={styles.section} id="placement" aria-labelledby="placement-heading">
-          <h2 id="placement-heading">No payment for placement</h2>
-          <p>
-            Rewire takes no payment, from anyone, to include a model, to change where it ranks, to add or remove a label, or to remove a result. There are no sponsored rows.
-          </p>
+          <h2 id="placement-heading">{placement === null ? PLACEMENT_HEADING : PLACEMENT_PLEDGE_HEADING}</h2>
+          {placement !== null && <p data-testid="placement-pledge">{placement}</p>}
           <p>
             The order of rows within a board is not chosen by hand. Each board ranks one use case on one protocol and one metric, in the order of the recorded values, and every row comes from a result record in the release. There is no composite score across protocols. The rules that pick the protocol and build the rows are in the <a href={SITE_REPOSITORY}>site&apos;s public code</a>, and the records are in the <a href={DATA_REPOSITORY}>data repository</a>.
           </p>
@@ -121,7 +126,7 @@ export default function IndependencePolicy({ releaseId, statements, facts }: {
         <section className={styles.section} id="rewire-runs" aria-labelledby="runs-heading">
           <h2 id="runs-heading">How Rewire&apos;s own results are produced and receipted</h2>
           <p>
-            A result that Rewire ran itself is labelled Rewire run. It is not counted as independent, because Rewire wrote some of the baselines and controls it runs. The runner is published in the <a href={RUNNER_REPOSITORY}>benchmark runner repository</a>.
+            A result that Rewire ran itself is labelled Rewire run. It is not counted as independent. Rewire scores some methods that it wrote: baselines and controls in its own runs. Those results carry the Rewire run label like the rest. The runner is published in the <a href={RUNNER_REPOSITORY}>benchmark runner repository</a>.
           </p>
           <p>
             Checking a value against its source is not the same as rerunning it. Source-checked means the recorded value was compared with the source it cites. On a leaderboard and in the JSON API, a result reads Reproduced only when the result or its evaluation cites a run receipt: the record of an executed run of the full protocol, held in the release. A record&apos;s own status in the release can say that a rerun was recorded without a receipt being cited. On this site&apos;s pages that status reads Rerun recorded, not Reproduced; the release files keep the status as the data repository wrote it.
@@ -159,7 +164,7 @@ export default function IndependencePolicy({ releaseId, statements, facts }: {
             A finding is a lead to check, not a finding of error. A finding by itself never hides a result: the results it names stay in every table, page and download, marked Contested. A result is withheld only when it is marked disputed. The follow-up on each finding is recorded with it and shown: what was investigated, what was reported to the authors and what was corrected. The rules are in the <a href={DISCREPANCIES_DOC}>discrepancy documentation</a>.
           </p>
           <p>
-            If you developed a tool and think a result misrepresents it, the routes above are open to you. Rewire&apos;s practice is to record a reply from a tool&apos;s developers against the finding it answers. A reply does not remove the other studies&apos; results.
+            If you developed a tool and think a result misrepresents it, the routes above are open to you. A reply from a tool&apos;s developers can be recorded against the finding it answers, and a recorded reply is shown with that finding. Not every reply received so far has been recorded. A reply does not remove the other studies&apos; results.
           </p>
         </section>
 
@@ -170,13 +175,13 @@ export default function IndependencePolicy({ releaseId, statements, facts }: {
           </p>
         </section>
 
-        <section className={styles.section} id="conflicts" aria-labelledby="conflicts-heading">
-          <h2 id="conflicts-heading">Conflicts of interest</h2>
+        {affiliations !== null && <section className={styles.section} id="conflicts" aria-labelledby="conflicts-heading">
+          <h2 id="conflicts-heading">{CONFLICTS_HEADING}</h2>
           <p>
-            Rewire scores some methods that it wrote: baselines and controls in its own runs. Those results carry the Rewire run label and are never counted as independent.
+            Rewire scores some methods that it wrote, as the section on <a href="#rewire-runs">Rewire&apos;s own results</a> says. Those results are never counted as independent.
           </p>
-          {statements.affiliations !== null && <p data-testid="other-interests">{OTHER_INTERESTS_STATED}</p>}
-        </section>
+          <p data-testid="other-interests">{OTHER_INTERESTS_STATED}</p>
+        </section>}
       </div>
     </section>
   </>;

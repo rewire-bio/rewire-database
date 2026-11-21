@@ -9,7 +9,7 @@ export const dynamic = "force-dynamic";
 
 const pageMetadata = {
   title: "Independence policy | Benchmark database",
-  description: "Who runs the Rewire benchmark database, what it will not take payment for, how results are labelled by who produced them, and how corrections, disputes and takedowns are handled.",
+  description: "Who runs the Rewire benchmark database, how placement on a board is decided, how results are labelled by who produced them, and how corrections, disputes and takedowns are handled.",
   alternates: { canonical: `${SITE}${INDEPENDENCE_PATH}` },
 };
 export const metadata: Metadata = {

@@ -121,7 +121,7 @@ export default function LicencePage() {
         <section className={styles.section} aria-labelledby="scope-heading">
           <h2 id="scope-heading">What this page is not</h2>
           <p>
-            This page is about data. It grants nothing in the software of this site or of the tools that build the release. The data is offered as it is, for research, with no warranty; it is not clinical advice.
+            This page is about data. The software of this site and of the tools that build the release is licensed separately: see the <a href="https://github.com/rewire-bio/rewire-database/blob/main/LICENSE">licence file in this site&apos;s repository</a> and the one in each tool&apos;s repository. The data is offered as it is, for research, with no warranty; it is not clinical advice.
           </p>
         </section>
       </div>

@@ -24,8 +24,8 @@ import {
 } from "../lib/data-licence";
 import { RESOLVED_RULE_LABEL, RULE_DESCRIPTIONS, discrepancyReader, ruleLabel } from "../lib/discrepancies";
 import {
-  OTHER_INTERESTS_STATED, OWNER_STATEMENTS, WHO_AND_FUNDING_HEADING, WHO_HEADING,
-  countOf, policyFacts, receiptSentence, statedOwnerStatements,
+  CONFLICTS_HEADING, OTHER_INTERESTS_STATED, OWNER_STATEMENTS, PLACEMENT_HEADING, PLACEMENT_PLEDGE_HEADING, WHO_AND_FUNDING_HEADING, WHO_HEADING,
+  countOf, policyFacts, receiptSentence, statedOwnerStatements, statedText,
 } from "../lib/independence";
 import { generateLlmsTxt } from "../lib/llm-discoverability";
 import { recordHref } from "../lib/omics";
@@ -240,9 +240,14 @@ describe("independence policy for the pinned release", () => {
     expect(page).not.toContain("Independently reproduced");
   });
 
-  it("states the placement pledge in full, and that the order of rows is not chosen by hand", () => {
+  it("states that the order of rows is not chosen by hand, and makes a promise about payment only if the owner has", () => {
     const placement = section(html(), "placement");
-    expect(placement).toContain("Rewire takes no payment, from anyone, to include a model, to change where it ranks, to add or remove a label, or to remove a result. There are no sponsored rows.");
+    const pledge = statedText(OWNER_STATEMENTS.placement);
+    expect(placement).toContain(`<h2 id="placement-heading">${pledge === null ? PLACEMENT_HEADING : PLACEMENT_PLEDGE_HEADING}</h2>`);
+    if (pledge === null) {
+      expect(placement).not.toContain('data-testid="placement-pledge"');
+      expect(html()).not.toMatch(/sponsored|takes no payment|will not take payment/i);
+    } else expect(part(placement, "placement-pledge")).toBe(escaped(pledge));
     expect(placement).toContain("The order of rows within a board is not chosen by hand.");
     expect(placement).toContain("There is no composite score across protocols.");
   });
@@ -313,14 +318,24 @@ describe("independence policy for the pinned release", () => {
   it("prints the owner's statements that have been made and nothing for one that has not", () => {
     const page = html();
     for (const [label, value] of [["Funding", OWNER_STATEMENTS.funding], ["Affiliations", OWNER_STATEMENTS.affiliations]] as const) {
-      if (value === null) expect(page).not.toContain(`<dt>${label}</dt>`);
-      else expect(page).toContain(`<dt>${label}</dt><dd>${escaped(value)}</dd>`);
+      const text = statedText(value);
+      if (text === null) expect(page).not.toContain(`<dt>${label}</dt>`);
+      else expect(page).toContain(`<dt>${label}</dt><dd>${escaped(text)}</dd>`);
     }
-    expect(page).toContain(`<h2 id="who-heading">${OWNER_STATEMENTS.funding === null ? WHO_HEADING : WHO_AND_FUNDING_HEADING}</h2>`);
-    expect(page.includes(escaped(OTHER_INTERESTS_STATED))).toBe(OWNER_STATEMENTS.affiliations !== null);
-    // Only the two sections that could mention a statement are searched: the rest of the live page
+    expect(page).toContain(`<h2 id="who-heading">${statedText(OWNER_STATEMENTS.funding) === null ? WHO_HEADING : WHO_AND_FUNDING_HEADING}</h2>`);
+    const affiliationsStated = statedText(OWNER_STATEMENTS.affiliations) !== null;
+    expect(page.includes(escaped(OTHER_INTERESTS_STATED))).toBe(affiliationsStated);
+    // The conflicts section is printed only with the Affiliations row it points at.
+    expect(page.includes('id="conflicts"')).toBe(affiliationsStated);
+    expect(page.includes(CONFLICTS_HEADING)).toBe(affiliationsStated);
+    // Only the section that could mention a statement is searched: the rest of the live page
     // prints board titles and reasons from the release, which may use these words for other things.
-    for (const id of ["who", "conflicts"]) expect(section(page, id)).not.toMatch(/not stated|incomplete/i);
+    expect(section(page, "who")).not.toMatch(/not stated|incomplete/i);
+    // Rewire scoring its own methods is stated with or without the owner, where its runs are described.
+    expect(section(page, "rewire-runs")).toContain("Rewire scores some methods that it wrote");
+    // A developer's reply: the page claims what the store can do, not a practice with a known gap.
+    expect(section(page, "corrections")).toContain("Not every reply received so far has been recorded.");
+    expect(page).not.toContain("practice is to record");
     // What the page states without the owner: who runs it, and that the data is not sold.
     expect(section(page, "who")).toContain("written and maintained by Tim Richardson");
     expect(section(page, "who")).toContain("The data is not sold.");
@@ -346,8 +361,8 @@ describe("independence policy in states the pinned release is not in", () => {
     receipts: 2,
     ruleCounts: { "ordering-reversal": 2, "two-study-conflict": 5, "": 1, "a-newer-rule": 1 },
   });
-  const render = (statements: { funding: string | null; affiliations: string | null }, given = facts) =>
-    renderToStaticMarkup(<IndependencePolicy releaseId="2099-01-01-000000000000" statements={statements} facts={given} />);
+  const render = (statements: { funding: string | null; affiliations: string | null; placement?: string | null }, given = facts) =>
+    renderToStaticMarkup(<IndependencePolicy releaseId="2099-01-01-000000000000" statements={{ placement: null, ...statements }} facts={given} />);
 
   it("works the figures out from the boards and the rule tallies it is given", () => {
     expect(facts).toEqual({
@@ -399,16 +414,18 @@ describe("independence policy in states the pinned release is not in", () => {
 
   it("prints both of the owner's statements when both are made", () => {
     const page = render({ funding, affiliations });
-    expect(statedOwnerStatements({ funding, affiliations })).toEqual([{ label: "Funding", text: funding }, { label: "Affiliations", text: affiliations }]);
+    expect(statedOwnerStatements({ funding, affiliations, placement: null })).toEqual([{ label: "Funding", text: funding }, { label: "Affiliations", text: affiliations }]);
     expect(part(page, "owner-statements")).toBe(`<dt>Funding</dt><dd>${funding}</dd><dt>Affiliations</dt><dd>${affiliations}</dd>`);
     expect(page).toContain(`<h2 id="who-heading">${WHO_AND_FUNDING_HEADING}</h2>`);
     expect(part(page, "other-interests")).toBe(escaped(OTHER_INTERESTS_STATED));
+    expect(section(page, "conflicts")).toContain(`<h2 id="conflicts-heading">${CONFLICTS_HEADING}</h2>`);
+    expect(section(page, "conflicts")).toContain("Rewire scores some methods that it wrote");
     expect(page).not.toMatch(/not stated|incomplete/i);
   });
 
   it("leaves out both rows, the list and every reference to them when neither statement is made", () => {
     const page = render({ funding: null, affiliations: null });
-    expect(statedOwnerStatements({ funding: null, affiliations: null })).toEqual([]);
+    expect(statedOwnerStatements({ funding: null, affiliations: null, placement: null })).toEqual([]);
     expect(page).not.toContain('data-testid="owner-statements"');
     expect(page).not.toContain("<dt>Funding</dt>");
     expect(page).not.toContain("<dt>Affiliations</dt>");
@@ -421,8 +438,36 @@ describe("independence policy in states the pinned release is not in", () => {
     expect(who).toContain("written and maintained by Tim Richardson");
     expect(who).toContain("The data is not sold.");
     expect(who).not.toContain("<dl");
-    for (const id of ["placement", "labels", "rewire-runs", "corrections", "takedown", "conflicts"]) expect(page).toContain(`id="${id}"`);
-    expect(section(page, "conflicts")).toContain("Rewire scores some methods that it wrote");
+    for (const id of ["placement", "labels", "rewire-runs", "corrections", "takedown"]) expect(page).toContain(`id="${id}"`);
+    // No conflicts section: one entry under that heading would read as the whole declaration.
+    expect(page).not.toContain('id="conflicts"');
+    expect(page).not.toContain(CONFLICTS_HEADING);
+    expect(section(page, "rewire-runs")).toContain("Rewire scores some methods that it wrote");
+    // No promise about payment that the owner has not made.
+    expect(section(page, "placement")).toContain(`<h2 id="placement-heading">${PLACEMENT_HEADING}</h2>`);
+    expect(page).not.toContain('data-testid="placement-pledge"');
+    expect(page).not.toMatch(/sponsored|takes no payment|will not take payment/i);
+    expect(section(page, "placement")).toContain("The order of rows within a board is not chosen by hand.");
+  });
+
+  it("treats a blank statement as one that has not been made", () => {
+    expect(statedText("")).toBeNull();
+    expect(statedText("  \n")).toBeNull();
+    expect(statedText(" Stated. ")).toBe("Stated.");
+    expect(statedOwnerStatements({ funding: "", affiliations: "  ", placement: "" })).toEqual([]);
+    expect(render({ funding: "", affiliations: "  ", placement: " " })).toBe(render({ funding: null, affiliations: null, placement: null }));
+  });
+
+  it("prints the owner's promise about payment for placement when it is made", () => {
+    const pledge = "No payment is taken to include a model or to change where it ranks.";
+    const page = render({ funding: null, affiliations: null, placement: pledge });
+    const placement = section(page, "placement");
+    expect(placement).toContain(`<h2 id="placement-heading">${PLACEMENT_PLEDGE_HEADING}</h2>`);
+    expect(part(placement, "placement-pledge")).toBe(pledge);
+    expect(placement).toContain("The order of rows within a board is not chosen by hand.");
+    // The promise is not a funding or affiliations statement: no row and no conflicts section follow from it.
+    expect(page).not.toContain('data-testid="owner-statements"');
+    expect(page).not.toContain('id="conflicts"');
   });
 
   it("prints only the statement that is made when the other is missing", () => {
@@ -430,12 +475,14 @@ describe("independence policy in states the pinned release is not in", () => {
     expect(part(fundingOnly, "owner-statements")).toBe(`<dt>Funding</dt><dd>${funding}</dd>`);
     expect(fundingOnly).toContain(`<h2 id="who-heading">${WHO_AND_FUNDING_HEADING}</h2>`);
     expect(fundingOnly).not.toContain('data-testid="other-interests"');
+    expect(fundingOnly).not.toContain('id="conflicts"');
     expect(fundingOnly).not.toMatch(/not stated|incomplete/i);
 
     const affiliationsOnly = render({ funding: null, affiliations: "None that bear on the models listed." });
     expect(part(affiliationsOnly, "owner-statements")).toBe("<dt>Affiliations</dt><dd>None that bear on the models listed.</dd>");
     expect(affiliationsOnly).toContain(`<h2 id="who-heading">${WHO_HEADING}</h2>`);
     expect(part(affiliationsOnly, "other-interests")).toBe(escaped(OTHER_INTERESTS_STATED));
+    expect(section(affiliationsOnly, "conflicts")).toContain(CONFLICTS_HEADING);
     expect(affiliationsOnly).not.toMatch(/not stated|incomplete|who pays/i);
   });
 

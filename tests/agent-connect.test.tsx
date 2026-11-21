@@ -8,7 +8,7 @@ vi.mock("@/lib/release-leaderboard", () => ({ allUseCaseLeaderboards: () => [] }
 const nav = vi.hoisted(() => ({ path: "/" }));
 vi.mock("next/navigation", () => ({ usePathname: () => nav.path }));
 
-import { agentGuide, claudeMcpAdd, examplePrompts, kgArchiveUrl, mcpJson, pluginCommands, reproducePrompt, KG_ALIAS, RDF_KG_MCP_VERSION } from "../lib/agent-connect";
+import { agentGuide, claudeMcpAdd, discrepancyApi, examplePrompts, kgArchiveUrl, mcpJson, pluginCommands, rerunPrompt, KG_ALIAS, RDF_KG_MCP_VERSION } from "../lib/agent-connect";
 import { generateAgentsMd } from "../lib/llm-discoverability";
 import AgentsPage from "../app/agents/page";
 import AgentConnect from "../components/AgentConnect";
@@ -21,7 +21,7 @@ describe("connect your agent", () => {
     expect(claudeMcpAdd()).toBe(`claude mcp add rewire-benchmark-graph -- uvx --from git+https://github.com/rewire-bio/rdf-kg-mcp@${RDF_KG_MCP_VERSION} rdf-kg-mcp serve ${KG_ALIAS}`);
     expect(JSON.parse(mcpJson()).mcpServers["rewire-benchmark-graph"].args.at(-1)).toBe(KG_ALIAS);
     expect(kgArchiveUrl(releaseId)).toBe(`https://github.com/rewire-bio/rewire-benchmark-data/releases/download/kg/${releaseId}/kg-${releaseId}.tar.gz`);
-    expect(reproducePrompt("mfass-v2-baseline", "mfass-v2")).toContain("run recipe mfass-v2-baseline (protocol mfass-v2)");
+    expect(rerunPrompt("mfass-v2-baseline", "mfass-v2")).toContain("run recipe mfass-v2-baseline (protocol mfass-v2)");
   });
 
   it("takes the rdf-kg-mcp version from one constant on the page and in both text guides", () => {
@@ -43,6 +43,32 @@ describe("connect your agent", () => {
     const guide = agentGuide(releaseId);
     expect(guide).toContain("No tool in the plugin submits a result to the database.");
     expect(guide).not.toContain("explicit consent");
+    // The page says what it can vouch for: nothing goes to Rewire. It makes no wider claim.
+    expect(guide).toContain("Your model and data are not sent to Rewire.");
+    expect(guide).not.toContain("not sent anywhere");
+    expect(page).toContain("The one full-protocol recipe that ships today");
+  });
+
+  it("says which skills need the servers the single MCP entry does not add", () => {
+    const page = renderToStaticMarkup(<AgentsPage />);
+    expect(Object.keys(JSON.parse(mcpJson()).mcpServers)).toEqual(["rewire-benchmark-graph"]);
+    expect(page).toContain("This entry adds the knowledge graph only.");
+    expect(page).toContain("plugins/bio-model-benchmarks/.mcp.json");
+  });
+
+  it("names release_id wherever it describes a public API call, since the API refuses a call without it", () => {
+    const page = renderToStaticMarkup(<AgentsPage />);
+    const guide = agentGuide(releaseId);
+    for (const procedure of discrepancyApi(releaseId)) {
+      expect(procedure.input).toMatch(/^release_id \(required/);
+      expect(procedure.example.release_id).toBe(releaseId);
+      expect(guide).toContain(`${procedure.name}: ${procedure.input}`);
+    }
+    expect(page).toContain(`release_id (required: ${releaseId}, the release this site serves)`);
+    const calls = [...generateAgentsMd(releaseId).matchAll(/GET (\/api\/trpc\/catalogue\.\w+)(\?input=(\{[^`]*\}))?`/g)];
+    expect(calls.length).toBeGreaterThanOrEqual(5);
+    for (const [, path, , input] of calls)
+      if (!path.endsWith("catalogue.release")) expect(JSON.parse(input).release_id).toBe(releaseId);
   });
 
   it("redirects the stable bundle address to the release this revision serves", () => {

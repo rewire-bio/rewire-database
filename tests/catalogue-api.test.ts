@@ -1,7 +1,9 @@
 import { describe, expect, it } from "vitest";
 import lock from "../benchmark-data.lock.json";
 import { GET } from "../app/api/trpc/[trpc]/route";
-import { preparedCatalogue } from "../lib/prepared";
+import { preparedCatalogue, preparedUseCases } from "../lib/prepared";
+import { discrepancyApi } from "../lib/agent-connect";
+import { generateAgentsMd, generateLlmsTxt } from "../lib/llm-discoverability";
 
 // The public catalogue API answers from the prepared file the pages read.
 const call = (procedure: string, input: unknown, init: RequestInit = {}) =>
@@ -28,6 +30,22 @@ describe("public catalogue API", () => {
     if (!query.hasDiscrepancies()) expect(page.items).toEqual([]);
     expect(await data(await call("discrepancy", { release_id: lock.release_id, id: "discrepancy-0000000000000000" }))).toBeNull();
     expect((await call("discrepancies", { release_id: lock.release_id, severity: "extreme" })).status).toBe(400);
+  });
+  it("answers every call the agent guides document, and refuses the same calls without release_id", async () => {
+    const slug = preparedUseCases(query).list({ limit: 1 }).items[0].slug;
+    const documented = [...generateAgentsMd(lock.release_id).matchAll(/GET \/api\/trpc\/catalogue\.(\w+)(?:\?input=(\{[^`]*\}))?`/g)]
+      .map(([, procedure, input]) => ({ procedure, input: input ? JSON.parse(input.replace("<slug>", slug)) : {} }));
+    expect(documented.map((entry) => entry.procedure)).toEqual(["release", "useCases", "useCase", "list", "discrepancies"]);
+    const [list, one] = discrepancyApi(lock.release_id);
+    const finding = query.discrepancies({ limit: 1 }).items[0]?.id ?? "discrepancy-0000000000000000";
+    documented.push({ procedure: "discrepancies", input: list.example }, { procedure: "discrepancy", input: { ...one.example, id: finding } });
+    expect(generateLlmsTxt(lock.release_id)).toContain(`/api/trpc/${list.name}?input=${JSON.stringify(list.example)}`);
+    for (const { procedure, input } of documented) {
+      expect((await call(procedure, input)).status, procedure).toBe(200);
+      if (procedure === "release") continue;
+      const { release_id: _, ...unpinned } = input;
+      expect((await call(procedure, unpinned)).status, `${procedure} without release_id`).toBe(400);
+    }
   });
   it("refuses another release instead of answering from this one", async () => {
     const response = await call("list", { release_id: "2000-01-01-000000000000" });

@@ -18,6 +18,7 @@ import {
   SKILL_URL,
   discrepancyApi,
   discrepancyQueries,
+  trpcPath,
 } from "./agent-connect";
 
 const ranked = (boards: readonly LeaderboardResult[]) => boards.filter((b) => b.protocol && b.rows.length);
@@ -79,7 +80,8 @@ Each release flags studies that disagree with what other studies report for the 
 
 - Pages: ${SITE}/contested/ and ${SITE}/contested/<id>/
 - API (GET ${SITE}/api/trpc/<procedure>?input=<URL-encoded JSON>):
-${discrepancyApi.map((p) => `  - ${p.name}: ${p.input}. Returns ${p.returns}.`).join("\n")}
+${discrepancyApi(releaseId).map((p) => `  - ${p.name}: ${p.input}. Returns ${p.returns}.`).join("\n")}
+  - Example: GET ${SITE}${trpcPath(discrepancyApi(releaseId)[0].name, discrepancyApi(releaseId)[0].example)}
 - Knowledge graph: the derived graph holds the same findings. The MCP server's list_queries and run_query tools offer:
 ${discrepancyQueries.map((q) => `  - ${q.name}: ${q.params}. Returns ${q.returns}.`).join("\n")}
 
@@ -96,7 +98,7 @@ ${discrepancyQueries.map((q) => `  - ${q.name}: ${q.params}. Returns ${q.returns
 
 ## Rules
 
-- Runs happen on your machine. The plugin's run tools use CPU and start no GPU or paid run. Your model and data are not sent anywhere.
+- Runs happen on your machine. The plugin's run tools use CPU and start no GPU or paid run. Your model and data are not sent to Rewire.
 - No tool in the plugin submits a result to the database. The rewirebench command line can send one to Rewire's review queue; the skills tell the agent to do that only when you ask.
 - A source-checked result is a value checked against the source it cites, in most cases a transcription of a published number. It is not an independent reproduction.`;
 }
@@ -247,12 +249,13 @@ When choosing a model for a use case:
 \`\`\`
 
 ## 5. Programmatic API Endpoints
-All procedures are accessible via HTTP GET:
+All procedures are accessible via HTTP GET. Every procedure except \`catalogue.release\` needs \`release_id\`, the release this site serves (${releaseId}); a request without it is answered with 400, and one for another release with 404. URL-encode the JSON input.
 
-- \`GET /api/trpc/catalogue.useCases\`: Lists all biological use cases and counts.
-- \`GET /api/trpc/catalogue.useCase?input={"slug":"<slug>"}\`: Retrieves detailed question and mappings.
-- \`GET /api/trpc/catalogue.list?input={"kind":"model"}\`: Lists biological models in catalogue.
-- \`GET /api/trpc/catalogue.discrepancies\`: Retrieves open discrepancies between studies.
+- \`GET ${trpcPath("catalogue.release")}\`: Names the release this site serves.
+- \`GET ${trpcPath("catalogue.useCases", { release_id: releaseId })}\`: Lists all biological use cases and counts.
+- \`GET ${trpcPath("catalogue.useCase", { release_id: releaseId, slug: "<slug>" })}\`: Retrieves detailed question and mappings.
+- \`GET ${trpcPath("catalogue.list", { release_id: releaseId, kind: "model" })}\`: Lists biological models in catalogue.
+- \`GET ${trpcPath("catalogue.discrepancies", { release_id: releaseId, settled: "open" })}\`: Retrieves open discrepancies between studies.
 - \`GET /api/v1/\`: Keyless read-only JSON API. Lists its endpoints: models, benchmarks, use cases, the leaderboard for a use case, results for a model and contested findings. Every answer names its release, the data licence and a citation, and links each result's sources.
 - \`GET /api/v1/use-cases/<slug>/board/\`: A use case's leaderboard as JSON. Its field names are the API's own, described in the OpenAPI description; each row gives the value as the result record holds it (numeric_value, unit) beside the text the site prints.
 - \`GET /api/v1/openapi.json\`: OpenAPI 3.1 description of the JSON API. Docs: ${SITE}/agents/api/

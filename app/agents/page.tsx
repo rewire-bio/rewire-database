@@ -6,7 +6,7 @@ import SetupTabs from "@/components/agents/SetupTabs";
 import { socialMetadata } from "@/lib/catalogue-sharing";
 import { dataPin } from "@/lib/data-pin";
 import {
-  claudeMcpAdd, discrepancyApi, discrepancyQueries, examplePrompts, kgArchiveUrl, mcpJson, pluginCommands, GRAPH_SERVER, KG_ALIAS, PLUGIN, SKILL_URL,
+  claudeMcpAdd, discrepancyApi, discrepancyQueries, examplePrompts, kgArchiveUrl, mcpJson, pluginCommands, GRAPH_SERVER, KG_ALIAS, PLUGIN, PLUGIN_MCP_URL, SKILL_URL,
 } from "@/lib/agent-connect";
 import styles from "./agents.module.css";
 
@@ -29,7 +29,7 @@ export const metadata: Metadata = {
 const steps = [
   { title: "Install the plugin", text: "Two commands in Claude Code add three MCP servers (the knowledge graph, genomic data and the rewirebench runner), five skills, six commands and a benchmarking agent." },
   { title: "Ask about the evidence", text: "The agent finds models, benchmarks, published results and their sources, with review status and caveats." },
-  { title: "Rerun and compare", text: "It plans and runs a benchmark recipe on your machine, on CPU, and sets the run beside the published value. The one benchmark recipe that ships today reruns Rewire's own MFASS v2 baseline." },
+  { title: "Rerun and compare", text: "It plans and runs a benchmark recipe on your machine, on CPU, and sets the run beside the published value. The one full-protocol recipe that ships today reruns Rewire's own MFASS v2 baseline. Running your own model through another protocol goes through the rewirebench command line, with an adapter for the model and the benchmark's data, and the skills take the agent through that setup." },
 ];
 
 const rules = [
@@ -80,7 +80,7 @@ export default function AgentsPage() {
             <CodeBlock code={claudeMcpAdd()} />
           </> },
           { id: "other", label: "Other MCP clients", body: <>
-            <p>Add this entry to the client&apos;s MCP configuration, then give the agent the <a href={SKILL_URL}>skill texts</a> as instructions.</p>
+            <p>Add this entry to the client&apos;s MCP configuration, then give the agent the <a href={SKILL_URL}>skill texts</a> as instructions. This entry adds the knowledge graph only. The <code>run-benchmark</code> and <code>prepare-benchmark-data</code> skills also need the rewirebench and genomics-mcp servers, which the <a href={PLUGIN_MCP_URL}>plugin&apos;s MCP configuration</a> defines.</p>
             <CodeBlock code={mcpJson()} />
           </> },
           { id: "pin", label: "Pin a release", body: <>
@@ -96,7 +96,7 @@ export default function AgentsPage() {
         <p>Each release flags studies that disagree with what other studies report for the same models, and records what we are doing to resolve each case. The findings are leads, not findings of error, and never withhold a result. People read them at <a href="/contested/">contested results</a>; agents can read the same findings two ways.</p>
         <h3>Public API</h3>
         <ul>
-          {discrepancyApi.map((p) => <li key={p.name}><code>{p.name}</code>: {p.input}. Returns {p.returns}.</li>)}
+          {discrepancyApi(releaseId).map((p) => <li key={p.name}><code>{p.name}</code>: {p.input}. Returns {p.returns}.</li>)}
         </ul>
         <h3>Knowledge graph</h3>
         <p>The bundle&apos;s derived graph holds the same findings. The MCP server&apos;s <code>list_queries</code> and <code>run_query</code> tools offer these named queries:</p>

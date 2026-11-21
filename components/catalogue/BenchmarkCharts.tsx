@@ -1,4 +1,5 @@
 "use client";
+import { statusText } from "@/lib/record-status";
 import { formatScore } from "@/lib/score-display";
 import { catalogueText } from "@/lib/catalogue-text";
 import { useId, useState, useEffect, useMemo, type ReactNode } from "react";
@@ -586,7 +587,7 @@ export function ComparisonWorkspace({
                           </td>
                           <td>
                             {originLabel(row.origin)} ·{" "}
-                            {row.review_status.replace(/_/g, " ")}
+                            {statusText(row.review_status)}
                             <Evidence
                               ids={row.result.source_ids}
                               locator={String(

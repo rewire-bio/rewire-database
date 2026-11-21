@@ -1,3 +1,4 @@
+import { statusText } from "@/lib/record-status";
 import { downloadHref } from "@/lib/downloads";
 import { openFindingsForSystem } from "@/lib/discrepancies";
 import Breadcrumbs from "@/components/catalogue/Breadcrumbs";
@@ -12,6 +13,7 @@ import { generateModelSoftwareApplicationJsonLd } from "@/lib/catalogue-seo";
 import { GeoTakeaway } from "@/components/catalogue/GeoTakeaway";
 import { generateModelTakeaway } from "@/lib/geo-takeaway";
 import UseCaseBacklinks from "@/components/catalogue/UseCaseBacklinks";
+import HowToCite from "@/components/catalogue/HowToCite";
 import { recordHref, displayValue, safeSourceUrl, type OmicsRecord } from "@/lib/omics";
 import { profileSchema } from "@/lib/omics-profile";
 import Profile, {
@@ -555,7 +557,7 @@ export function PredictiveEntityDetail({ detail }: { detail: RecordDetail }) {
               <h2>Sources and history</h2>
               <p className={styles.muted}>
                 Release {catalogue.release_id} · Record review:{" "}
-                {record.status.replace(/_/g, " ")}
+                {statusText(record.status)}
               </p>
               <details className={styles.profileDisclosure}>
                 <summary>
@@ -634,6 +636,7 @@ export function PredictiveEntityDetail({ detail }: { detail: RecordDetail }) {
               </ul>
             </details>
           </section>
+          <HowToCite title={finding} path={recordHref(record)} releaseId={catalogue.release_id} className={styles.section} />
           <p>
             <a
               href={`/contribute/?type=correction&target_id=${encodeURIComponent(record.id)}`}

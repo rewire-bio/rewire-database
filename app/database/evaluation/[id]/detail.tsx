@@ -1,3 +1,4 @@
+import { statusText } from "@/lib/record-status";
 import { downloadHref } from "@/lib/downloads";
 import Breadcrumbs from "@/components/catalogue/Breadcrumbs";
 import { recordBreadcrumbs } from "@/lib/catalogue-sharing";
@@ -212,7 +213,7 @@ export function EvaluationDetail({ page, contested = [] }: {
               }}
             />
             <p className={styles.notice}>
-              Metadata review: {record.status.replace(/_/g, " ")}. Unreported
+              Metadata review: {statusText(record.status)}. Unreported
               conditions prevent automatic comparisons.
             </p>
           </section>
@@ -260,7 +261,7 @@ export function EvaluationDetail({ page, contested = [] }: {
               <h2>Sources and history</h2>
               <p className={styles.muted}>
                 Release {page.release_id} · Record review:{" "}
-                {record.status.replace(/_/g, " ")}
+                {statusText(record.status)}
               </p>
               <details className={styles.profileDisclosure}>
                 <summary>

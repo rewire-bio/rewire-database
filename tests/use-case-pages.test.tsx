@@ -99,7 +99,7 @@ describe("use-case detail template", () => {
     const links = [...nav.slice(0, nav.indexOf("</nav>")).matchAll(/<a href="#([^"]+)"[^>]*>([^<]+)<\/a>/g)].map(([, id, label]) => [id, label]);
     const headings = [...html.matchAll(/<section id="([^"]+)"[^>]*><h2>([^<]+)<\/h2>/g)].map(([, id, label]) => [id, label]);
     expect(links).toEqual(headings);
-    expect(links.map(([id]) => id)).toEqual(["tools", "evidence", "gaps", "details"]);
+    expect(links.map(([id]) => id)).toEqual(["tools", "evidence", "gaps", "cite", "details"]);
     const levels = [...html.matchAll(/<h([1-6])\b/g)].map(([, level]) => Number(level));
     levels.forEach((level, index) => { if (index) expect(level - levels[index - 1]).toBeLessThanOrEqual(1); });
   });

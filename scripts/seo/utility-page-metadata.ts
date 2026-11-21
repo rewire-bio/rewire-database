@@ -35,6 +35,26 @@ const pages: Omit<PageMetadataContract, "canonical">[] = [
     ],
   },
   {
+    path: "/licence/",
+    indexable: true,
+    inSitemap: true,
+    social: true,
+    breadcrumbs: [
+      { name: "Database", path: "/" },
+      { name: "Data licence", path: "/licence/" },
+    ],
+  },
+  {
+    path: "/independence/",
+    indexable: true,
+    inSitemap: true,
+    social: true,
+    breadcrumbs: [
+      { name: "Database", path: "/" },
+      { name: "Independence policy", path: "/independence/" },
+    ],
+  },
+  {
     path: "/coverage/",
     indexable: true,
     inSitemap: true,

@@ -53,9 +53,20 @@ export const actionLabel = (action: string | null) => (action ? ACTION_LABELS[ac
 
 export const RULE_LABELS: Record<string, string> = {
   "ordering-reversal": "Ordering reversal",
+  "two-study-conflict": "Two-study conflict",
   "gap-outlier": "Gap outlier",
 };
 export const ruleLabel = (rule: string) => RULE_LABELS[rule] ?? rule;
+
+/** What each rule flags, in one sentence, after the table in the data repository's discrepancy documentation. */
+export const RULE_DESCRIPTIONS: Record<string, string> = {
+  "ordering-reversal": "At least two other studies agree on which of two models is better, and one study finds the opposite.",
+  "two-study-conflict": "Exactly two studies compare a pair of models and they disagree. Neither is named as the one that is wrong.",
+  "gap-outlier": "One study's gap between a model and a shared reference model lies well outside the gaps the other studies report.",
+};
+/** A resolved finding no longer fires, and the release does not record the rule that found it. */
+export const RESOLVED_RULE_LABEL = "Resolved, rule not recorded";
+export const RESOLVED_RULE_DESCRIPTION = "A settled finding that the check no longer raises. It stays listed so that its follow-up can be read.";
 
 export const SCOPE_LABELS: Record<string, string> = {
   "same-protocol": "Same protocol in both studies",

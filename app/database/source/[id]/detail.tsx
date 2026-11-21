@@ -1,3 +1,4 @@
+import { statusText } from "@/lib/record-status";
 import { downloadHref } from "@/lib/downloads";
 import Breadcrumbs from "@/components/catalogue/Breadcrumbs";
 import { recordBreadcrumbs } from "@/lib/catalogue-sharing";
@@ -180,7 +181,7 @@ export function SourceDetail({ detail, params = {} }: { detail: RecordDetail; pa
               <h2>Sources and history</h2>
               <p className={styles.muted}>
                 Release {catalogue.release_id} · Record review:{" "}
-                {record.status.replace(/_/g, " ")}
+                {statusText(record.status)}
               </p>
               {record.description && <p>{catalogueText(record.description)}</p>}
               <details className={styles.profileDisclosure}>

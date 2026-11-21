@@ -3,7 +3,7 @@ import PageHeader from "@/components/PageHeader";
 import CodeBlock from "@/components/agents/CodeBlock";
 import { SITE } from "@/lib/agent-connect";
 import { socialMetadata } from "@/lib/catalogue-sharing";
-import { DATA_LICENCE, releaseCitation } from "@/lib/data-licence";
+import { DATA_LICENCE, LICENCE_PATH, releaseCitation } from "@/lib/data-licence";
 import { dataPin } from "@/lib/data-pin";
 import { API_BASE, API_CACHE_CONTROL, API_DOCS_PATH, ENDPOINTS } from "@/lib/public-api";
 import styles from "../agents.module.css";
@@ -26,7 +26,7 @@ export const metadata: Metadata = {
 
 const fields = [
   { name: "release", text: "The data release every value in the answer was read from: its id, date, the repository and commit it was built from, and the release manifest with checksums." },
-  { name: "licence", text: "The data licence. Its statement field gives the position in one sentence." },
+  { name: "licence", text: "The data licence position. statement gives it in one sentence. spdx_id is null because no single licence covers an answer: values taken from sources stay under their sources' terms. compilation names the licence for what Rewire made, with what it covers and excludes." },
   { name: "citation", text: "How to cite the release." },
   { name: "links", text: "The answer's own address, this page, the OpenAPI description and the page of this site that shows the same content." },
   { name: "page", text: "On lists: the total, and the cursor and address of the next page." },
@@ -79,7 +79,7 @@ export default function ApiDocsPage() {
         <ul>
           {fields.map((field) => <li key={field.name}><code>{field.name}</code>: {field.text}</li>)}
         </ul>
-        <p>Data licence: {DATA_LICENCE.statement}</p>
+        <p>Data licence: {DATA_LICENCE.statement} The limits are set out on the <a href={LICENCE_PATH}>data licence</a> page.</p>
         <p>Citation for this release: {releaseCitation(releaseId, SITE)}</p>
       </section>
 

@@ -1,4 +1,5 @@
 import { formatScore } from "./score-display";
+import { REPRODUCED_STATUS_LABEL } from "./record-status";
 import { omicsKinds, type OmicsKind, type OmicsRecord } from "./omics";
 import { recordSearchText } from "../shared/omics/source-identity";
 import type { ResearchReadiness } from "../shared/omics/research";
@@ -37,12 +38,12 @@ export function summaryText(summary: EvaluationSummary): string {
     : "No evaluations linked in this release";
 }
 
-/** Reader-facing names for catalogue review states. */
+/** Reader-facing names for catalogue review states. Why `reproduced` reads as it does: lib/record-status.ts. */
 const statusLabels: Record<string, string> = {
   discovered: "Not yet reviewed",
   needs_review: "Needs review",
   source_checked: "Source checked",
-  reproduced: "Independently reproduced",
+  reproduced: REPRODUCED_STATUS_LABEL,
   disputed: "Disputed",
   superseded: "Superseded",
   excluded: "Excluded",

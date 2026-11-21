@@ -8,6 +8,7 @@ import Image from "next/image";
 import { buildCatalogue } from "@/lib/catalogue-build";
 import { homeLeaderboards } from "@/lib/release-leaderboard";
 import { UnifiedLeaderboard } from "@/components/catalogue/UnifiedLeaderboard";
+import HowToCite from "@/components/catalogue/HowToCite";
 import { GeoTakeaway } from "@/components/catalogue/GeoTakeaway";
 import { generateHomepageTakeaway } from "@/lib/geo-takeaway";
 import Explorer from "./database/Explorer";
@@ -159,6 +160,7 @@ export default function BenchmarksPage() {
             showCategorySwitcher={true}
             showParetoHighlight={true}
           />
+          <HowToCite title="Use-case leaderboards" path="/" releaseId={catalogue.release_id} className={`${styles.muted} ${styles.inlineLinks}`} compact />
         </section>}
 
         {/* Database Search & Supporting Content Wrapped in Explorer */}

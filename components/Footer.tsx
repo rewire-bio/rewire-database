@@ -17,6 +17,8 @@ export default function Footer() {
             <a href="/evidence/">Evidence and sources</a>
             <a href="/?kind=result&amp;origin=literature#browse">Published results</a>
             <a href="/#downloads">Download the database</a>
+            <a href="/licence/">Data licence</a>
+            <a href="/independence/">Independence policy</a>
             <a href="https://rewirebio.io/blog/">Articles</a>
           </div>
           <div className="col">

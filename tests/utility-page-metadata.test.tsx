@@ -4,6 +4,8 @@ import { describe, expect, it, vi } from "vitest";
 import EvidencePage from "../app/evidence/page";
 import AgentsPage from "../app/agents/page";
 import ApiDocsPage from "../app/agents/api/page";
+import LicencePage from "../app/licence/page";
+import IndependencePage from "../app/independence/page";
 import CoveragePage from "../app/coverage/page";
 import UpdatesPage from "../app/updates/page";
 import InvestigationsPage from "../app/investigations/page";
@@ -69,6 +71,20 @@ const cases = [
       ["Database", "/"],
       ["Connect your agent", "/agents/"],
       ["JSON API", "/agents/api/"],
+    ],
+  },
+  {
+    path: "/licence/", Page: LicencePage, indexable: true,
+    hierarchy: [
+      ["Database", "/"],
+      ["Data licence", "/licence/"],
+    ],
+  },
+  {
+    path: "/independence/", Page: IndependencePage, indexable: true,
+    hierarchy: [
+      ["Database", "/"],
+      ["Independence policy", "/independence/"],
     ],
   },
   {

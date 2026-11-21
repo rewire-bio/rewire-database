@@ -35,6 +35,8 @@ export function sitemapEntries(): SitemapEntry[] {
     "/agents/api/",
     "/coverage/",
     "/updates/",
+    "/licence/",
+    "/independence/",
     "/use-cases/",
     ...PRIMARY_USE_CASE_PATHS,
     ...useCases.map((slug) => `/use-cases/${slug}/`),

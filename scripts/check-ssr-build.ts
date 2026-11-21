@@ -113,7 +113,7 @@ async function main() {
     assert.ok(home.includes('id="mfass-v1"') && home.includes('href="/use-cases/"'), "Home navigation");
     const useCase = useCaseSlugs(catalogue)[0];
     for (const pathname of ["/models/", "/models/page/2/", "/benchmarks/", "/evidence/", "/coverage/", "/use-cases/",
-      "/investigations/", "/contested/", "/runs/mfass-v2/", "/updates/", "/agents/", "/agents/api/",
+      "/investigations/", "/contested/", "/runs/mfass-v2/", "/updates/", "/agents/", "/agents/api/", "/licence/", "/independence/",
       ...(useCase ? [`/use-cases/${useCase}/`] : []), ...contestedPaths().slice(0, 1),
       ...getResearch(catalogue).investigations.slice(0, 1).map((report) => `/investigations/${report.id}/`)])
       assert.match(await html(pathname), new RegExp(`<link rel="canonical" href="https://benchmarks\\.rewirebio\\.io${pathname}"`), pathname);
@@ -286,7 +286,7 @@ function useCaseSlugs(catalogue: CatalogueSnapshot): string[] {
 /** The sitemap lists exactly the indexable canonical pages of the pinned release. */
 function checkSitemapInventory(catalogue: CatalogueSnapshot, urls: Set<string>) {
   const expected = new Set([
-    "/", "/runs/mfass-v2/", "/evidence/", "/agents/", "/agents/api/", "/coverage/", "/updates/", "/use-cases/",
+    "/", "/runs/mfass-v2/", "/evidence/", "/agents/", "/agents/api/", "/coverage/", "/updates/", "/licence/", "/independence/", "/use-cases/",
     ...PRIMARY_USE_CASE_PATHS,
     "/investigations/",
     ...getResearch(catalogue).investigations.map((report) => `/investigations/${report.id}/`),

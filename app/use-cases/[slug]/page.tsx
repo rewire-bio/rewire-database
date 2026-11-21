@@ -26,6 +26,7 @@ import {
   resolveUseCaseTargetSlug,
 } from "@/lib/catalogue-seo";
 import { GeoTakeaway } from "@/components/catalogue/GeoTakeaway";
+import HowToCite from "@/components/catalogue/HowToCite";
 import { generateUseCaseTakeaway } from "@/lib/geo-takeaway";
 import styles from "@/components/catalogue/UseCases.module.css";
 
@@ -86,6 +87,7 @@ export default function UseCasePage({ params }: { params: Params }) {
     { id: "gaps", label: "Not covered yet" },
     // With no comparison yet, the collection plan is the main content, so it gets its own section.
     ...(entry.collection_plan && !comparisons.length ? [{ id: "collection-plan", label: "Evidence collection plan" }] : []),
+    { id: "cite", label: "How to cite" },
     { id: "details", label: "Question, sources and review" },
   ];
   // After the summary, so the answer comes first on a phone; the index shows the same inputs as a list.
@@ -227,6 +229,9 @@ export default function UseCasePage({ params }: { params: Params }) {
           <p><a href="/contribute/">Contribute evidence or propose a correction</a></p>
         </section>
         {entry.collection_plan && !comparisons.length && <UseCaseCollectionPlan plan={entry.collection_plan} summary={summary} />}
+        {/* Before the details section: its nested sections carry no h2, and the page's section navigation is checked against h2 order. */}
+        {/* A category alias cites the use case's own address, so one board has one citation. */}
+        <HowToCite title={entry.title} path={`/use-cases/${entry.slug}/`} releaseId={detail.release_id} className={styles.section} />
         <section id="details" className={styles.section}>
           <h2>{heading("details")}</h2>
           <details>

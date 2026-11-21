@@ -17,15 +17,35 @@ import { fetchVerifiedAsset, releaseHasAssets, usesReleaseAssets, verifyCompress
 // serves, unless told otherwise. A release whose website files are assets of
 // its serving/<id> GitHub release is pinned with serving.website_assets; older
 // releases keep their files in Git and are read from there.
+// shared/omics is copied from the commit the serving tag names, so that commit
+// must hold the code the release was built with. A release is refused unless
+// its tagged commit is on main and is either the release commit of an automated
+// release (made directly on the commit the release was built from, changing
+// only data/ and website/) or a commit the producer's checks rebuilt and
+// published the release from, as for a release cut by hand.
 //   node scripts/adopt-data-release.mjs [--release <release-id>] [--allow-withheld-mappings]
 const REPOSITORY = 'rewire-bio/rewire-benchmark-data';
 const RELEASE_ID = /^\d{4}-\d{2}-\d{2}-[a-f0-9]{12}$/;
+const RELEASE_CONFIG = 'data/omics/release-config.json';
+/** The only paths a release commit may change (RELEASE_PATHS in the producer's scripts/release/commit.mjs). */
+const RELEASE_PATHS = ['data/', 'website/'];
+/** The producer workflow that rebuilds a release cut by hand and publishes it ("Benchmark data checks"). */
+const PRODUCER_CHECKS = 'data.yml';
+/**
+ * The first release whose serving tag rewire-benchmark-data guarantees to name a commit that
+ * holds the release's code (scripts/release/commit.mjs and docs/release.md there). Earlier
+ * automated releases were tagged at a rebased commit and are not checked.
+ */
+export const FIRST_RELEASE_COMMIT_CHECKED = '2026-11-21-4940d4f45aee';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const sha256 = bytes => crypto.createHash('sha256').update(bytes).digest('hex');
 const run = (command, args, options = {}) => execFileSync(command, args, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], ...options });
 const gh = (...args) => run('gh', args);
 
-/** Published prepared releases, oldest first. */
+/**
+ * Published prepared releases, oldest first by `createdAt`. For a release GitHub creates
+ * with its tag, that is the date of the tagged commit, not the time of publication.
+ */
 export function servingReleases(listing) {
   return listing.filter(release => /^serving\//.test(release.tagName) && RELEASE_ID.test(release.tagName.slice(8)) && !release.isDraft)
     .sort((a, b) => a.createdAt.localeCompare(b.createdAt));
@@ -41,6 +61,65 @@ export function chooseRelease(releases, current, requested) {
   }
   const newest = ids.at(-1);
   return !newest || newest === current ? null : newest;
+}
+
+/**
+ * Whether a release's tagged commit must pass checkReleaseCommit: every release from
+ * FIRST_RELEASE_COMMIT_CHECKED on, by the order of `releases` (servingReleases).
+ * Release IDs do not sort by time within a day, so they are never compared as text. A
+ * release that cannot be placed against the first checked one is checked.
+ */
+export function releaseCommitChecked(releases, releaseId) {
+  const ids = releases.map(release => release.tagName.slice(8));
+  const first = ids.indexOf(FIRST_RELEASE_COMMIT_CHECKED);
+  const position = ids.indexOf(releaseId);
+  return first < 0 || position < 0 || position >= first;
+}
+
+/**
+ * Throws unless the commit a serving tag names holds the code its release was built with.
+ * `git` runs git in a producer clone that has the commit and origin/main; `rebuilt` answers
+ * whether the producer's checks rebuilt and published the release from a commit
+ * (rebuiltByProducerChecks). The commit must be on origin/main, and be one of:
+ *   - the release commit of an automated release: its only parent is the `source_revision`
+ *     in its own release config, and it changes nothing outside data/ and website/. The
+ *     shared code is then the built commit's, whatever the commit says about itself.
+ *   - a commit the producer's checks rebuilt the release from, which is where a release cut
+ *     by hand is tagged (its pull request's merge or squash commit). Its `source_revision`
+ *     is the branch commit the release was prepared on and is not compared.
+ * Nothing in the commit's shape tells the second kind from a release commit rebased onto a
+ * moved main, so only the producer's own run is accepted as evidence for it.
+ * Returns which of the two it is, and the built commit for a release commit.
+ */
+export async function checkReleaseCommit({ tag, revision, git, rebuilt }) {
+  try { git('merge-base', '--is-ancestor', revision, 'origin/main'); } catch { throw new Error(`Refusing ${tag}: it names commit ${revision}, which is not on main of ${REPOSITORY}.`); }
+  let built = null;
+  try { built = JSON.parse(git('show', `${revision}:${RELEASE_CONFIG}`)).source_revision ?? null; } catch { throw new Error(`Refusing ${tag}: commit ${revision} has no readable ${RELEASE_CONFIG}`); }
+  const parents = git('rev-list', '--parents', '-n', '1', revision).trim().split(' ').slice(1);
+  const onBuilt = parents.length === 1 && parents[0] === built;
+  const outside = onBuilt
+    ? git('diff', '--name-only', built, revision).split('\n').filter(file => file && !RELEASE_PATHS.some(prefix => file.startsWith(prefix)))
+    : [];
+  if (onBuilt && !outside.length) return { kind: 'release commit', built };
+  if (await rebuilt(revision)) return { kind: 'rebuilt by the producer checks', built: null };
+  const found = onBuilt
+    ? `it changes files outside ${RELEASE_PATHS.join(' and ')} (${outside.slice(0, 5).join(', ')})`
+    : `it has parent ${parents.join(' and ') || '(none)'}, but its release config says the release was built from ${built ?? '(nothing)'}`;
+  throw new Error(`Refusing ${tag}: it names commit ${revision}, and ${found}. No "${PRODUCER_CHECKS}" run on main of ${REPOSITORY} rebuilt and published a release from that commit either, so shared/omics would be copied from code the release was not built with.`);
+}
+
+/**
+ * Whether the producer's checks rebuilt and published a release from `revision`: a push run
+ * of data.yml on main at that commit whose `publish` job ran. That job starts only when the
+ * commit changes the release config and every check and the release rebuild passed, so the
+ * commit's code reproduced the release it committed. The website is asked to adopt from
+ * inside that job, so a job still in progress counts; a skipped one does not.
+ * `api` reads a GitHub REST path as JSON.
+ */
+export function rebuiltByProducerChecks(revision, api = route => JSON.parse(gh('api', route))) {
+  const runs = api(`repos/${REPOSITORY}/actions/workflows/${PRODUCER_CHECKS}/runs?head_sha=${revision}&event=push&branch=main&per_page=100`).workflow_runs ?? [];
+  return runs.some(run => (api(`repos/${REPOSITORY}/actions/runs/${run.id}/jobs?per_page=100`).jobs ?? [])
+    .some(job => job.name === 'publish' && (job.status === 'in_progress' || job.conclusion === 'success' || job.conclusion === 'failure')));
 }
 
 /** The lock for a release, from its tag commit, the producer manifest there, the published receipt and whether its files are assets. */
@@ -134,6 +213,11 @@ export async function adopt({ requested, allowWithheld = false } = {}) {
     run('git', ['clone', '--quiet', '--filter=blob:none', '--no-checkout', `https://github.com/${REPOSITORY}.git`, producer]);
     run('git', ['-C', producer, 'sparse-checkout', 'set', '--no-cone', '/website/manifest.json', '/shared/omics/', '/services/omics/src/']);
     run('git', ['-C', producer, 'checkout', '--quiet', revision]);
+    // Before anything is written: the tagged commit must hold the code the release was built with.
+    if (releaseCommitChecked(releases, releaseId)) {
+      const checked = await checkReleaseCommit({ tag, revision, git: (...args) => run('git', ['-C', producer, ...args], { maxBuffer: 64 * 1024 ** 2 }), rebuilt: rebuiltByProducerChecks });
+      console.error(`${tag} names ${revision}: ${checked.kind}${checked.built ? `, made on ${checked.built}` : ''}.`);
+    }
     const manifest = fs.readFileSync(path.join(producer, 'website/manifest.json'));
     const assetNames = JSON.parse(gh('release', 'view', tag, '--repo', REPOSITORY, '--json', 'assets')).assets.map(asset => asset.name);
     const lock = lockFor(previous, { releaseId, revision, manifest, receipt, assets: publishedAsAssets(manifest, assetNames, trackedSources(producer, revision, manifest)) });
@@ -149,7 +233,14 @@ export async function adopt({ requested, allowWithheld = false } = {}) {
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const index = process.argv.indexOf('--release');
-  const result = await adopt({ requested: index > 0 ? process.argv[index + 1] : undefined, allowWithheld: process.argv.includes('--allow-withheld-mappings') });
+  let result;
+  try {
+    result = await adopt({ requested: index > 0 ? process.argv[index + 1] : undefined, allowWithheld: process.argv.includes('--allow-withheld-mappings') });
+  } catch (error) {
+    // An annotation on the workflow run, then a failed step: nothing is committed or deployed.
+    console.error(`::error title=Data release not adopted::${String(error.message).replace(/\r?\n/g, ' ')}`);
+    throw error;
+  }
   console.log(JSON.stringify(result));
   if (process.env.GITHUB_OUTPUT)
     fs.appendFileSync(process.env.GITHUB_OUTPUT, `adopted=${result.adopted}\nrelease_id=${result.release_id}\n`);

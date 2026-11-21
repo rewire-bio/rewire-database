@@ -318,7 +318,9 @@ describe("independence policy for the pinned release", () => {
     }
     expect(page).toContain(`<h2 id="who-heading">${OWNER_STATEMENTS.funding === null ? WHO_HEADING : WHO_AND_FUNDING_HEADING}</h2>`);
     expect(page.includes(escaped(OTHER_INTERESTS_STATED))).toBe(OWNER_STATEMENTS.affiliations !== null);
-    expect(page).not.toMatch(/not stated|incomplete/i);
+    // Only the two sections that could mention a statement are searched: the rest of the live page
+    // prints board titles and reasons from the release, which may use these words for other things.
+    for (const id of ["who", "conflicts"]) expect(section(page, id)).not.toMatch(/not stated|incomplete/i);
     // What the page states without the owner: who runs it, and that the data is not sold.
     expect(section(page, "who")).toContain("written and maintained by Tim Richardson");
     expect(section(page, "who")).toContain("The data is not sold.");

@@ -1,4 +1,5 @@
 "use client";
+import { statusText } from "@/lib/record-status";
 import EvidenceValue from "./EvidenceValue";
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
@@ -214,7 +215,7 @@ export default function EvidenceTable({
                     )}
                   </td>
                   <td>
-                    <strong>{row.review_status.replace(/_/g, " ")}</strong>
+                    <strong>{statusText(row.review_status)}</strong>
                     <p>
                       {row.review_method.replace(/_/g, " ") ||
                         "No individual claim review recorded"}

@@ -1,3 +1,4 @@
+import { statusText } from "@/lib/record-status";
 import { downloadHref } from "@/lib/downloads";
 import { openFindingsForSystem } from "@/lib/discrepancies";
 import Breadcrumbs from "@/components/catalogue/Breadcrumbs";
@@ -556,7 +557,7 @@ export function PredictiveEntityDetail({ detail }: { detail: RecordDetail }) {
               <h2>Sources and history</h2>
               <p className={styles.muted}>
                 Release {catalogue.release_id} · Record review:{" "}
-                {record.status.replace(/_/g, " ")}
+                {statusText(record.status)}
               </p>
               <details className={styles.profileDisclosure}>
                 <summary>

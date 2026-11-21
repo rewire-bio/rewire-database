@@ -30,6 +30,7 @@ import {
 import { generateLlmsTxt } from "../lib/llm-discoverability";
 import { recordHref } from "../lib/omics";
 import { statusLabel } from "../lib/omics-browse";
+import { REPRODUCED_STATUS_LABEL, statusText } from "../lib/record-status";
 import {
   HOME_LEFT_OUT, MIN_HOME_PROXY_MODEL_ROWS, MIN_HOME_TOOLS, allUseCaseLeaderboards, homeLeaderboards, runReceiptSources,
 } from "../lib/release-leaderboard";
@@ -429,7 +430,12 @@ describe("a record's own reproduced status", () => {
   it("is labelled as a recorded rerun, never as reproduced or independent", () => {
     const label = statusLabel("reproduced");
     expect(label).toBe("Rerun recorded");
+    expect(label).toBe(REPRODUCED_STATUS_LABEL);
     expect(label).not.toMatch(/reproduced|independent/i);
+    // In running text, where other statuses print with their underscores replaced.
+    expect(statusText("reproduced")).toBe("rerun recorded");
+    expect(statusText("source_checked")).toBe("source checked");
+    expect(statusText("needs_review")).toBe("needs review");
     // Every result and evaluation the release marks reproduced takes that label on its page and in lists.
     const { query } = buildCatalogue();
     for (const kind of ["result", "evaluation"] as const) {
@@ -447,7 +453,7 @@ describe("a record's own reproduced status", () => {
 
   it("is defined on the evidence page under the label the records carry, with the receipt rule", () => {
     const html = renderToStaticMarkup(<EvidencePage />);
-    expect(html).toContain("<dt>Rerun recorded</dt>");
+    expect(html).toContain(`<dt>${REPRODUCED_STATUS_LABEL}</dt>`);
     expect(html).not.toContain("Independently reproduced");
     expect(html).toContain("Reproduced only when the result or its evaluation cites a run receipt");
     expect(html).toContain('href="/independence/#rewire-runs"');
@@ -466,8 +472,14 @@ describe("a record's own reproduced status", () => {
         .filter((name) => /\.(tsx?|mjs)$/.test(name))
         .map((name) => path.join(dir, name)));
     expect(files.length).toBeGreaterThan(50);
+    const read = (file: string) => fs.readFileSync(path.join(root, file), "utf8");
     const claims = /Independently reproduced|Independent rewirebio\.io run|our reproduced|Record status: reproduced\./;
-    expect(files.filter((file) => claims.test(fs.readFileSync(path.join(root, file), "utf8")))).toEqual([]);
+    expect(files.filter((file) => claims.test(read(file)))).toEqual([]);
+    // A record page or evidence table that printed the raw status would say "reproduced" for an unreceipted rerun.
+    const rawStatus = /(?:record|evaluated\??|row)\.(?:review_)?status\.replace\(/;
+    expect(files.filter((file) => /^(?:app[\\/]database|components[\\/]catalogue)[\\/]/.test(file) && rawStatus.test(read(file)))).toEqual([]);
+    for (const file of ["app/database/result/[id]/detail.tsx", "app/database/evaluation/[id]/detail.tsx", "components/catalogue/EvidenceTable.tsx", "components/catalogue/BenchmarkCharts.tsx"])
+      expect(read(file), file).toContain("statusText(");
   });
 });
 

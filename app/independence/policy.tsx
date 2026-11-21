@@ -124,7 +124,7 @@ export default function IndependencePolicy({ releaseId, statements, facts }: {
             A result that Rewire ran itself is labelled Rewire run. It is not counted as independent, because Rewire wrote some of the baselines and controls it runs. The runner is published in the <a href={RUNNER_REPOSITORY}>benchmark runner repository</a>.
           </p>
           <p>
-            Checking a value against its source is not the same as rerunning it. Source-checked means the recorded value was compared with the source it cites. On a leaderboard and in the JSON API, a result reads Reproduced only when the result or its evaluation cites a run receipt: the record of an executed run of the full protocol, held in the release. A record&apos;s own status in the release can say that a rerun was recorded without a receipt being cited; that status is not shown as Reproduced anywhere on this site.
+            Checking a value against its source is not the same as rerunning it. Source-checked means the recorded value was compared with the source it cites. On a leaderboard and in the JSON API, a result reads Reproduced only when the result or its evaluation cites a run receipt: the record of an executed run of the full protocol, held in the release. A record&apos;s own status in the release can say that a rerun was recorded without a receipt being cited. On this site&apos;s pages that status reads Rerun recorded, not Reproduced; the release files keep the status as the data repository wrote it.
           </p>
           <p data-testid="receipt-counts">
             Release <code>{releaseId}</code> holds {receiptSentence(facts.receipts, facts.receiptedRows)}

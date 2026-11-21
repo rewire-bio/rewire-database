@@ -1,3 +1,4 @@
+import { statusText } from "@/lib/record-status";
 import { DERIVED_LABEL, resultDerivation } from "./derivation";
 import { catalogueText } from "./catalogue-text";
 import { formatScore } from "./score-display";
@@ -86,7 +87,7 @@ export function recordSearchMetadata(
     record.status === "source_checked"
       ? "Source checked; not independently reproduced."
       : record.status === "reproduced"
-        ? "Record status: rerun recorded; independent reproduction is not established by this record."
+        ? `Record status: ${statusText(record.status)}; independent reproduction is not established by this record.`
         : `Record status: ${text(record.status).replaceAll("_", " ")}; independent reproduction is not established by this record.`;
   let title = `${identity} | ${kind}`;
   let description: string;

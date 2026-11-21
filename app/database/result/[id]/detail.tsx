@@ -1,3 +1,4 @@
+import { statusText } from "@/lib/record-status";
 import { downloadHref } from "@/lib/downloads";
 import Breadcrumbs from "@/components/catalogue/Breadcrumbs";
 import { recordBreadcrumbs } from "@/lib/catalogue-sharing";
@@ -275,7 +276,7 @@ export function ResultDetail({ page, contested = [] }: {
               <dt>Evidence</dt>
               <dd>
                 {originLabel(evaluated?.attributes.origin)} ·{" "}
-                {record.status.replace(/_/g, " ")}
+                {statusText(record.status)}
                 <Evidence
                   ids={record.source_ids}
                   locator={String(
@@ -290,7 +291,7 @@ export function ResultDetail({ page, contested = [] }: {
                 ? "Review of a computed result checks its inputs and script against the source's data, not every model or protocol detail."
                 : "A source-checked result verifies the numerical transcription, not every model or protocol detail."}{" "}
               Evaluation metadata:{" "}
-              {evaluated?.status.replace(/_/g, " ") || "not reported"}. Source
+              {evaluated ? statusText(evaluated.status) : "not reported"}. Source
               checked does not mean independently reproduced.
             </p>
           </section>
@@ -338,7 +339,7 @@ export function ResultDetail({ page, contested = [] }: {
               <h2>Sources and history</h2>
               <p className={styles.muted}>
                 Release {page.release_id} · Record review:{" "}
-                {record.status.replace(/_/g, " ")}
+                {statusText(record.status)}
               </p>
               <details className={styles.profileDisclosure}>
                 <summary>

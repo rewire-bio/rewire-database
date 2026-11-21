@@ -9,6 +9,7 @@ function fixture(breakPath?: string) {
     const url = new URL(input instanceof Request ? input.url : input);
     const path = url.pathname;
     if (path === breakPath) return new Response("Unavailable", { status: 503 });
+    if (path.startsWith("/api/v1/")) return Response.json({ release: { id: url.searchParams.get("release_id") }, data: [{ id: "model-example" }] });
     if (path.startsWith("/api/")) {
       const input = JSON.parse(url.searchParams.get("input")!);
       return Response.json({ result: { data: { release_id: release, items: [{ kind: input.kind, name: input.kind === 'model' ? 'AlphaGenome' : 'Example benchmark', id: `${input.kind}-example` }] } } });
@@ -103,6 +104,20 @@ describe('independent frontend smoke', () => {
     expect(urls.some(url => url.pathname === '/release-manifest.json')).toBe(true);
     expect(urls.some(url => url.hostname === 'raw.githubusercontent.com')).toBe(true);
     expect(urls.some(url => url.pathname.endsWith('/manifest.json') && url.pathname.startsWith('/omics/'))).toBe(false);
+  });
+  it('reads the JSON API pinned to the release, and rejects an answer from another release or an empty one', async () => {
+    const f = independentFixture();
+    await smokeDeployment('https://example.test', { ...f, independentFrontend: true, log: vi.fn() });
+    const api = f.request.mock.calls.map(([url]) => new URL(String(url))).filter(url => url.pathname.startsWith('/api/v1/'));
+    expect(api.map(url => url.pathname + url.search)).toEqual([`/api/v1/models/?limit=1&release_id=${release}`]);
+    for (const [body, message] of [
+      [{ release: { id: '2026-01-01-bbbbbbbbbbbb' }, data: [{ id: 'm' }] }, 'JSON API and HTML release must match'],
+      [{ release: { id: release }, data: [] }, 'JSON API must list models'],
+    ] as const) {
+      const request = async (input: Parameters<typeof fetch>[0]) =>
+        new URL(input instanceof Request ? input.url : input).pathname.startsWith('/api/v1/') ? Response.json(body) : f.request(input);
+      await expect(smokeDeployment('https://example.test', { ...f, request, independentFrontend: true, log: vi.fn() })).rejects.toThrow(message);
+    }
   });
   it.each(['release', 'producer', 'redirect', 'download'])('rejects %s drift', async (corrupt) => {
     const f = independentFixture(corrupt);

@@ -15,11 +15,16 @@ const UNCACHED_FILES = new Set(["/deployment.json", "/release-manifest.json"]);
 // intercepted route or a server action rather than a full HTML document.
 const RSC_HEADERS = ["rsc", "next-router-state-tree", "next-router-prefetch", "next-url", "next-action"];
 const PERSONAL_HEADERS = ["authorization", "cookie"];
+// The read-only JSON API is public and answers from the pinned release alone, so it is cached
+// like a page: under the frontend version and data release. No other /api path is.
+const PUBLIC_API_PREFIX = "/api/v1";
+const publicApiPath = pathname => pathname === PUBLIC_API_PREFIX || pathname.startsWith(`${PUBLIC_API_PREFIX}/`);
+const JSON_TYPE = /^application\/json\s*(;|$)/i;
 const CACHEABLE_TYPES = /^(text\/html|text\/css|text\/plain|text\/markdown|text\/javascript|application\/javascript|application\/xml|text\/xml|application\/atom\+xml|image\/[a-z0-9.+-]+|font\/[a-z0-9.+-]+)\s*(;|$)/i;
 
 /** Paths never cached anywhere: private pages, API/auth, downloads and publication metadata. */
 export const privatePath = pathname => UNCACHED_FILES.has(pathname) ||
-  PRIVATE_PREFIXES.some(prefix => pathname === prefix || pathname.startsWith(`${prefix}/`));
+  (!publicApiPath(pathname) && PRIVATE_PREFIXES.some(prefix => pathname === prefix || pathname.startsWith(`${prefix}/`)));
 
 /**
  * Anonymous public GET of a page or asset. Both the origin (to opt a response
@@ -48,6 +53,8 @@ export function responseIdentity(response) {
 /** Frontend version + pinned data release + the exact public URL. */
 export function cacheKey(request, identity) {
   const url = new URL(request.url);
+  // The API takes each parameter once and ignores their order, so one answer has one entry.
+  if (publicApiPath(url.pathname)) url.searchParams.sort();
   url.searchParams.append("__rewire_cache", `${identity.frontend}.${identity.release}`);
   return new Request(url.href, { method: "GET" });
 }
@@ -57,13 +64,16 @@ export function cacheKey(request, identity) {
  * a successful, cookie-free HTML or static asset response of that identity.
  * Next marks dynamic HTML private/no-store by default; the opt-in header is
  * the reviewed contract that overrides it for anonymous public pages.
+ * JSON is stored only for the public API's own paths, so no other JSON response
+ * (manifests, receipts, tRPC answers) changes its caching.
  */
-export function storableResponse(response, identity) {
+export function storableResponse(response, identity, pathname = "") {
   const found = responseIdentity(response);
+  const type = response.headers.get("content-type") || "";
   return response.status === 200 &&
     response.headers.get("x-rewire-edge-cache") === "public" &&
     !response.headers.has("set-cookie") &&
-    CACHEABLE_TYPES.test(response.headers.get("content-type") || "") &&
+    (CACHEABLE_TYPES.test(type) || (publicApiPath(pathname) && JSON_TYPE.test(type))) &&
     knownVariation(response.headers.get("vary")) &&
     !!found && found.frontend === identity.frontend && found.release === identity.release;
 }
@@ -83,11 +93,18 @@ export function edgeCopy(response) {
   return new Response(response.body, { status: response.status, statusText: response.statusText, headers });
 }
 
-/** Content-addressed chunks are immutable; every other cached response revalidates. */
+/** What clients may do with an API answer: reuse it briefly. The same value as API_CACHE_CONTROL in lib/public-api.ts. */
+export const API_BROWSER_CACHE = "public, max-age=300";
+
+/**
+ * Content-addressed chunks are immutable and pages revalidate. An API answer names its release in
+ * its body and has no validator to revalidate with, so clients get the origin's short lifetime.
+ */
 export function browserResponse(response, pathname, status) {
   const headers = new Headers(response.headers);
   headers.set("Cache-Control", pathname.startsWith("/_next/static/")
-    ? "public, max-age=31536000, immutable" : "public, max-age=0, must-revalidate");
+    ? "public, max-age=31536000, immutable"
+    : publicApiPath(pathname) ? API_BROWSER_CACHE : "public, max-age=0, must-revalidate");
   headers.set("X-Rewire-Cache", status);
   return new Response(response.body, { status: response.status, statusText: response.statusText, headers });
 }

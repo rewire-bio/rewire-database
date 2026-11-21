@@ -24,17 +24,23 @@ export function frontendOrigin(url) {
 /**
  * A new Worker version reaches Cloudflare's edge gradually, and for a while some
  * requests still run the previous one. Acceptance starts only after the public
- * origin has answered the catalogue API from the frontend `required` times in a row.
+ * origin has answered both public APIs from the frontend `required` times in a row:
+ * the catalogue procedures, and the JSON API index. The index carries no query, so
+ * the answer may come from the Worker's cache; only a Worker that routes /api/v1
+ * to the frontend can have stored it, and it keeps the frontend's identity header.
  */
 export async function awaitWorkerRouting(origin, { fetchImpl = fetch, required = 10, timeoutMs = 180_000, intervalMs = 1_000, sleep = ms => new Promise(resolve => setTimeout(resolve, ms)) } = {}) {
   const deadline = Date.now() + timeoutMs;
   let consecutive = 0;
   while (consecutive < required) {
-    if (Date.now() > deadline) throw new Error(`The new Worker did not route the catalogue API consistently within ${timeoutMs / 1000} s`);
+    if (Date.now() > deadline) throw new Error(`The new Worker did not route the public APIs consistently within ${timeoutMs / 1000} s`);
     let ok = false;
     try {
-      const response = await fetchImpl(`${origin}/api/trpc/catalogue.release?input=%7B%7D&verify=${Date.now()}`, { redirect: "manual", headers: { "Cache-Control": "no-cache" } });
-      ok = response.status === 200 && !!response.headers.get("x-rewire-frontend");
+      const fromFrontend = async url => {
+        const response = await fetchImpl(url, { redirect: "manual", headers: { "Cache-Control": "no-cache" } });
+        return response.status === 200 && !!response.headers.get("x-rewire-frontend");
+      };
+      ok = await fromFrontend(`${origin}/api/trpc/catalogue.release?input=%7B%7D&verify=${Date.now()}`) && await fromFrontend(`${origin}/api/v1/`);
     } catch { ok = false; }
     consecutive = ok ? consecutive + 1 : 0;
     if (consecutive < required) await sleep(intervalMs);

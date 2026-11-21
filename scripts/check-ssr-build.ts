@@ -113,7 +113,7 @@ async function main() {
     assert.ok(home.includes('id="mfass-v1"') && home.includes('href="/use-cases/"'), "Home navigation");
     const useCase = useCaseSlugs(catalogue)[0];
     for (const pathname of ["/models/", "/models/page/2/", "/benchmarks/", "/evidence/", "/coverage/", "/use-cases/",
-      "/investigations/", "/contested/", "/runs/mfass-v2/", "/updates/", "/agents/",
+      "/investigations/", "/contested/", "/runs/mfass-v2/", "/updates/", "/agents/", "/agents/api/",
       ...(useCase ? [`/use-cases/${useCase}/`] : []), ...contestedPaths().slice(0, 1),
       ...getResearch(catalogue).investigations.slice(0, 1).map((report) => `/investigations/${report.id}/`)])
       assert.match(await html(pathname), new RegExp(`<link rel="canonical" href="https://benchmarks\\.rewirebio\\.io${pathname}"`), pathname);
@@ -176,6 +176,7 @@ async function checkContracts(release: string, firstOf: (kind: string) => OmicsR
     assert.equal(response.status, 200, guide);
     assert.match(await response.text(), /plugin install bio-model-benchmarks/, guide);
   }
+  await checkPublicApi(release);
   const kg = await get("/agents/kg.tar.gz");
   assert.equal(kg.status, 302, "Knowledge-graph alias redirects");
   assert.match(kg.headers.get("location") || "", /\/releases\/download\/kg\/\d{4}-\d{2}-\d{2}-[a-f0-9]{12}\/kg-\d{4}-\d{2}-\d{2}-[a-f0-9]{12}\.tar\.gz$/);
@@ -187,6 +188,57 @@ async function checkContracts(release: string, firstOf: (kind: string) => OmicsR
   assert.equal(analytics.status, 200);
   assert.match(analytics.headers.get("content-security-policy") || "", /frame-ancestors/);
   assert.match(await analytics.text(), /noindex,nofollow/);
+}
+
+/**
+ * The read-only JSON API over HTTP, as the Worker reaches it: the routing Next does itself (the
+ * slash redirect), the headers the edge cache depends on, and one answer of each endpoint.
+ */
+async function checkPublicApi(release: string) {
+  const identity = { frontend: FRONTEND, release };
+  const read = async (pathname: string) => {
+    const response = await get(pathname);
+    assert.equal(response.status, 200, pathname);
+    assert.match(response.headers.get("content-type") || "", /^application\/json/, pathname);
+    assert.equal(response.headers.get("access-control-allow-origin"), "*", pathname);
+    assert.equal(response.headers.get("cache-control"), "public, max-age=300", pathname);
+    assert.equal(response.headers.get("x-rewire-data-release"), release, pathname);
+    assert.equal(storableResponse(response, identity, pathname.split("?")[0]), true, `${pathname}: stored at the edge under the release`);
+    return await response.json() as unknown;
+  };
+  const answer = async <T>(pathname: string) => {
+    const body = await read(pathname) as { release: { id: string }; licence: { statement: string }; citation: string; data: T };
+    assert.equal(body.release.id, release, pathname);
+    assert.ok(body.licence.statement && body.citation.includes(release), `${pathname}: licence and citation`);
+    return body.data;
+  };
+  const slashless = await get("/api/v1/models");
+  assert.equal(slashless.status, 308, "An address without the slash is redirected");
+  assert.equal(new URL(slashless.headers.get("location")!, origin).pathname, "/api/v1/models/");
+  const index = await answer<{ endpoints: { path: string }[] }>("/api/v1/");
+  const spec = await read("/api/v1/openapi.json") as { openapi: string; paths: Record<string, unknown> };
+  assert.equal(spec.openapi, "3.1.0");
+  assert.deepEqual(index.endpoints.map((e) => e.path).sort(), Object.keys(spec.paths).filter((p) => p !== "/openapi.json").map((p) => `/api/v1${p}`).sort());
+  const models = await answer<{ id: string }[]>("/api/v1/models/?limit=2");
+  assert.equal(models.length, 2);
+  assert.equal((await answer<{ id: string }>(`/api/v1/models/${models[0].id}/`)).id, models[0].id);
+  assert.ok(Array.isArray((await answer<{ results: unknown[] }>(`/api/v1/models/${models[0].id}/results/?limit=2`)).results));
+  assert.ok((await answer<unknown[]>("/api/v1/benchmarks/?limit=2")).length > 0);
+  const useCases = await answer<{ slug: string }[]>("/api/v1/use-cases/");
+  assert.ok(useCases.length > 0);
+  const board = await answer<{ use_case_slug: string }>(`/api/v1/use-cases/${useCases[0].slug}/board/`);
+  assert.equal(board.use_case_slug, useCases[0].slug);
+  const contested = await answer<{ findings: { id: string }[] }>("/api/v1/contested/?limit=1");
+  for (const finding of contested.findings)
+    assert.equal((await answer<{ finding: { id: string } }>(`/api/v1/contested/${finding.id}/`)).finding.id, finding.id);
+  for (const [pathname, status] of [["/api/v1/models/?unknown=1", 400], ["/api/v1/models/no-such-model/", 404], ["/api/v1/nothing/", 404],
+    ["/api/v1/models/?release_id=2000-01-01-000000000000", 404]] as const) {
+    const response = await get(pathname);
+    assert.equal(response.status, status, pathname);
+    assert.equal(response.headers.get("cache-control"), "no-store", pathname);
+    assert.equal(storableResponse(response, identity, pathname.split("?")[0]), false, `${pathname}: errors are never stored`);
+  }
+  assert.equal((await fetch(new URL("/api/v1/models/", origin), { method: "POST", redirect: "manual" })).status, 405, "The API is read-only");
 }
 
 /** /use-cases/ summarises every use case. A cold server builds that once; every later
@@ -234,7 +286,7 @@ function useCaseSlugs(catalogue: CatalogueSnapshot): string[] {
 /** The sitemap lists exactly the indexable canonical pages of the pinned release. */
 function checkSitemapInventory(catalogue: CatalogueSnapshot, urls: Set<string>) {
   const expected = new Set([
-    "/", "/runs/mfass-v2/", "/evidence/", "/agents/", "/coverage/", "/updates/", "/use-cases/",
+    "/", "/runs/mfass-v2/", "/evidence/", "/agents/", "/agents/api/", "/coverage/", "/updates/", "/use-cases/",
     ...PRIMARY_USE_CASE_PATHS,
     "/investigations/",
     ...getResearch(catalogue).investigations.map((report) => `/investigations/${report.id}/`),

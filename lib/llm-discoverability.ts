@@ -47,6 +47,7 @@ ${leaderboards.map((b) => `- [${b.use_case_title}](${SITE}${b.use_case_href}): $
 
 ## Developer & Autonomous Agent Hub
 - [Autonomous Agent Hub](${SITE}/agents.md): Machine-readable query schemas, operational constraint filters, and tRPC/MCP protocols for scientific agents.
+- [JSON API](${SITE}/agents/api/): keyless read-only JSON for models, benchmarks, use-case leaderboards, a model's results and contested findings. OpenAPI description: ${SITE}/api/v1/openapi.json
 - [Release Manifest](${SITE}/release-manifest.json): Pinned SQLite release verification, SHA-256 checksums, and dataset hashes.
 - [Knowledge Graph Manifest](${SITE}/agents/kg-manifest.json): RDF knowledge graph bundle with discrepancy verification queries.
 
@@ -252,6 +253,9 @@ All procedures are accessible via HTTP GET:
 - \`GET /api/trpc/catalogue.useCase?input={"slug":"<slug>"}\`: Retrieves detailed question and mappings.
 - \`GET /api/trpc/catalogue.list?input={"kind":"model"}\`: Lists biological models in catalogue.
 - \`GET /api/trpc/catalogue.discrepancies\`: Retrieves open discrepancies between studies.
+- \`GET /api/v1/\`: Keyless read-only JSON API. Lists its endpoints: models, benchmarks, use cases, the leaderboard for a use case, results for a model and contested findings. Every answer names its release, the data licence and a citation, and links each result's sources.
+- \`GET /api/v1/use-cases/<slug>/board/\`: A use case's leaderboard as JSON. Its field names are the API's own, described in the OpenAPI description; each row gives the value as the result record holds it (numeric_value, unit) beside the text the site prints.
+- \`GET /api/v1/openapi.json\`: OpenAPI 3.1 description of the JSON API. Docs: ${SITE}/agents/api/
 - \`GET /llms.txt\`: Concise index conforming to llmstxt.org.
 - \`GET /llms-full.txt\`: Complete markdown ranking tables for all use cases.
 - \`GET /release-manifest.json\`: Release integrity and dataset SHA-256 hashes.

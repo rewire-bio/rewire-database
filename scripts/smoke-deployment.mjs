@@ -93,6 +93,13 @@ export async function smokeDeployment(origin, { request = fetch, log = console.l
   for (const record of [models.items[0], benchmarks.items[0]]) {
     assert.match(await html(`/database/${record.kind}/${encodeURIComponent(record.id)}/`), /<h1[ >]/, 'Detail page missing heading');
   }
+  if (independentFrontend) {
+    // The keyless JSON API, through the Worker's /api/v1 route. The request is pinned to the
+    // release, so an answer cached for another release cannot pass.
+    const api = await (await get(`/api/v1/models/?limit=1&release_id=${release}`, 'json')).json();
+    assert.equal(api.release?.id, release, 'JSON API and HTML release must match');
+    assert.ok(Array.isArray(api.data) && api.data.length === 1, 'JSON API must list models');
+  }
   // Result and evaluation pages render on request from prepared page documents.
   for (const kind of ['result', 'evaluation']) {
     const [record] = (await list({ kind, limit: 1 })).items;

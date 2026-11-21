@@ -2,8 +2,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import fs from "node:fs";
 import ts from "typescript";
 import worker, { UPSTREAM_FETCH, resetObservedIdentity } from "../cloudflare/worker.mjs";
-import { isCatalogueApi, isProxied } from "../cloudflare/routing.mjs";
-import { cacheableRequest, storableResponse } from "../cloudflare/page-cache.mjs";
+import { isCatalogueApi, isProxied, isPublicApi } from "../cloudflare/routing.mjs";
+import { API_BROWSER_CACHE, cacheKey, cacheableRequest, storableResponse } from "../cloudflare/page-cache.mjs";
 
 const ORIGIN = "https://rewire-database-web-abc123-nw.a.run.app";
 const env = { FRONTEND_ORIGIN: `${ORIGIN}/` };
@@ -213,6 +213,75 @@ describe("independent Cloudflare frontend", () => {
     for (const route of ["/api/trpc/submission.create", "/api/trpc/catalogue.list,submission.list", "/api/trpc/curator.list", "/api/trpc/catalogue.", "/api/catalogue.list"])
       expect(isCatalogueApi(route)).toBe(false);
     expect(isProxied("/api/trpc/catalogue.list,submission.list")).toBe(true);
+  });
+  it("serves the read-only JSON API from the frontend, anonymously, cached under the frontend and release", async () => {
+    const json = () => page('{"data":[]}', { "content-type": "application/json; charset=utf-8", "cache-control": "public, max-age=300", "access-control-allow-origin": "*" });
+    const fetcher = vi.fn(async () => json());
+    vi.stubGlobal("fetch", fetcher);
+    const url = "https://benchmarks.rewirebio.io/api/v1/models/?limit=5";
+    const first = await worker.fetch(new Request(url), env);
+    expect((fetcher.mock.calls[0] as any)[0].url).toBe(`${ORIGIN}/api/v1/models/?limit=5`);
+    expect(first.headers.get("x-rewire-cache")).toBe("MISS");
+    // An API answer has no validator, so clients are given the origin's short lifetime, not the page policy.
+    expect(first.headers.get("cache-control")).toBe(API_BROWSER_CACHE);
+    expect(API_BROWSER_CACHE).toBe("public, max-age=300");
+    expect(first.headers.get("access-control-allow-origin")).toBe("*");
+    expect([...store.keys()]).toEqual([`${url}&__rewire_cache=${FRONTEND}.${RELEASE}`]);
+    const second = await worker.fetch(new Request(url), env);
+    expect(second.headers.get("x-rewire-cache")).toBe("HIT");
+    expect(second.headers.get("cache-control")).toBe(API_BROWSER_CACHE);
+    expect(second.headers.get("access-control-allow-origin")).toBe("*");
+    expect(await second.text()).toBe('{"data":[]}');
+    expect(fetcher).toHaveBeenCalledTimes(1);
+    // Credentials are never passed on, and a request carrying them is answered from the origin, not the cache.
+    const personal = await worker.fetch(new Request(url, { headers: { cookie: "a=1", authorization: "Bearer x" } }), env);
+    const [upstream] = fetcher.mock.calls[1] as any;
+    expect(upstream.headers.get("cookie")).toBeNull();
+    expect(upstream.headers.get("authorization")).toBeNull();
+    expect(personal.headers.get("x-rewire-cache")).toBe("BYPASS");
+    expect(store.size).toBe(1);
+  });
+  it("keeps one cache entry for an API answer whatever order its parameters come in", async () => {
+    const fetcher = vi.fn(async () => page("{}", { "content-type": "application/json; charset=utf-8" }));
+    vi.stubGlobal("fetch", fetcher);
+    const base = "https://benchmarks.rewirebio.io/api/v1/contested/";
+    expect((await worker.fetch(new Request(`${base}?status=open&limit=5`), env)).headers.get("x-rewire-cache")).toBe("MISS");
+    expect((await worker.fetch(new Request(`${base}?limit=5&status=open`), env)).headers.get("x-rewire-cache")).toBe("HIT");
+    expect([...store.keys()]).toEqual([`${base}?limit=5&status=open&__rewire_cache=${FRONTEND}.${RELEASE}`]);
+    expect(fetcher).toHaveBeenCalledTimes(1);
+    // The origin is asked for the address as the client wrote it.
+    expect((fetcher.mock.calls[0] as any)[0].url).toBe(`${ORIGIN}/api/v1/contested/?status=open&limit=5`);
+    // Pages keep the exact address as their key.
+    expect(cacheKey(new Request("https://benchmarks.rewirebio.io/contested/?status=open&severity=low"), identity).url)
+      .toBe(`https://benchmarks.rewirebio.io/contested/?status=open&severity=low&__rewire_cache=${FRONTEND}.${RELEASE}`);
+  });
+  it("stores JSON only for the read-only API's own paths, and never its errors", async () => {
+    const json = (status = 200, headers: Record<string, string> = {}) => page("{}", { "content-type": "application/json; charset=utf-8", ...headers }, status);
+    expect(storableResponse(json(), identity, "/api/v1/models/")).toBe(true);
+    expect(storableResponse(json(), identity, "/api/v1/openapi.json")).toBe(true);
+    for (const pathname of ["", "/release-manifest.json", "/agents/kg-manifest.json", "/api/trpc/catalogue.list", "/api/v10/models/", "/api/v1-private/"])
+      expect(storableResponse(json(), identity, pathname)).toBe(false);
+    for (const status of [400, 404, 500]) expect(storableResponse(json(status), identity, "/api/v1/models/")).toBe(false);
+    expect(storableResponse(json(200, { vary: "Origin" }), identity, "/api/v1/models/")).toBe(false);
+    expect(storableResponse(page("x", { "content-type": "text/x-component" }), identity, "/api/v1/models/")).toBe(false);
+    vi.stubGlobal("fetch", vi.fn(async () => json(404, { "cache-control": "no-store" })));
+    const missing = await worker.fetch(new Request("https://benchmarks.rewirebio.io/api/v1/models/none/"), env);
+    expect(missing.headers.get("cache-control")).toBe("no-store");
+    expect(missing.headers.get("x-rewire-cache")).toBe("BYPASS");
+    expect(store.size).toBe(0);
+  });
+  it("routes only /api/v1 to the frontend; every other API path still goes to Firebase", () => {
+    for (const route of ["/api/v1", "/api/v1/", "/api/v1/models/", "/api/v1/openapi.json"]) {
+      expect(isPublicApi(route)).toBe(true);
+      expect(isProxied(route)).toBe(false);
+      expect(cacheableRequest(new Request(`https://example.test${route}`))).toBe(true);
+    }
+    for (const route of ["/api", "/api/", "/api/v10/models/", "/api/v1-private/", "/api/v2/models/", "/api/trpc/submission.create", "/api/trpc/v1/"]) {
+      expect(isPublicApi(route)).toBe(false);
+      expect(isProxied(route)).toBe(true);
+      expect(cacheableRequest(new Request(`https://example.test${route}`))).toBe(false);
+    }
+    expect(cacheableRequest(new Request("https://example.test/api/v1/models/", { method: "POST" }))).toBe(false);
   });
   it("preserves authenticated POST and query bytes through direct Functions requests", async () => {
     const fetcher = vi.fn(async () => new Response("{}", { headers: { "cache-control": "public,max-age=600", "cdn-cache-control": "max-age=600" } }));

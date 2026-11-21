@@ -73,6 +73,26 @@ function emptyReason(comparisons: Comparison[], allowProxy: boolean): string {
   return "No comparison for this use case scores two or more tools on one metric with a stated direction, so nothing is ranked.";
 }
 
+/**
+ * How far the release has checked a result, and the run receipt behind "reproduced". Every place
+ * that states a review status (leaderboards, the JSON API) reads it from here.
+ */
+export function reviewOf(
+  result: CatalogueRecord | null,
+  evaluation: CatalogueRecord | null,
+  receiptSources: ReadonlySet<string>,
+  record: (id: string) => CatalogueRecord | null,
+): { status: ReviewStatus; receipt: CatalogueRecord | null } {
+  const cited = [...(result?.source_ids ?? []), ...(evaluation?.source_ids ?? [])];
+  // A receipt counts only when its source record is in the release, so the link always resolves.
+  const receipt = cited.filter((id) => receiptSources.has(id)).map(record).find((r) => !!r) ?? null;
+  // The record's own "reproduced" status is not enough: only a cited run receipt is.
+  const status: ReviewStatus = receipt
+    ? "reproduced"
+    : result?.status === "source_checked" || result?.status === "reproduced" ? "source_checked" : "author_reported";
+  return { status, receipt };
+}
+
 const hrefOf = (record: CatalogueRecord | null, fallbackId: string) =>
   record ? recordHref(record) : recordHref({ kind: "configuration", id: fallbackId });
 
@@ -116,13 +136,7 @@ export function buildLeaderboard(inputs: RankingInputs): LeaderboardResult {
     const rank = previous && previous.raw_metric_value === value ? previous.rank : index + 1;
     const result = record(cell.resultId!);
     const evaluation = cell.evaluationId ? record(cell.evaluationId) : null;
-    const cited = [...(result?.source_ids ?? []), ...(evaluation?.source_ids ?? [])];
-    // A receipt counts only when its source record is in the release, so the link always resolves.
-    const receiptRecord = cited.filter((id) => inputs.receiptSources.has(id)).map(record).find((r) => !!r) ?? null;
-    // The record's own "reproduced" status is not enough: only a cited run receipt is.
-    const status: ReviewStatus = receiptRecord
-      ? "reproduced"
-      : result?.status === "source_checked" || result?.status === "reproduced" ? "source_checked" : "author_reported";
+    const { status, receipt: receiptRecord } = reviewOf(result, evaluation, inputs.receiptSources, record);
     // A row can hold several evaluations of one configuration; the origin is the ranked value's.
     // If that evaluation has none, the row has none: another evaluation's origin is not borrowed.
     const evaluationOrigin = evaluation?.attributes.origin;

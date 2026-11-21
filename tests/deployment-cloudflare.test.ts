@@ -39,14 +39,20 @@ describe("Cloudflare publication acceptance", () => {
     expect(() => frontendOrigin("http://x.a.run.app")).toThrow();
     expect(frontendOrigin("https://x.a.run.app/")).toBe("https://x.a.run.app");
   });
-  it("waits for consecutive catalogue answers from the frontend before acceptance", async () => {
-    const answers = [200, 200, 404, 200, 200, 200];
-    const fetchImpl = vi.fn(async () => {
-      const status = answers.shift() ?? 200;
-      return new Response("{}", { status, headers: status === 200 ? { "x-rewire-frontend": "a".repeat(40) } : {} });
-    });
+  it("waits for consecutive answers of both public APIs from the frontend before acceptance", async () => {
+    const frontend = (status: number) => new Response("{}", { status, headers: status === 200 ? { "x-rewire-frontend": "a".repeat(40) } : {} });
+    // Rounds: both routed twice, then the catalogue API fails once, then all routed.
+    const catalogue = [200, 200, 404];
+    const fetchImpl = vi.fn(async (url: string) => frontend(url.includes("/api/trpc/") ? catalogue.shift() ?? 200 : 200));
     await awaitWorkerRouting("https://example.test", { fetchImpl: fetchImpl as never, required: 3, sleep: async () => {} });
-    expect(fetchImpl).toHaveBeenCalledTimes(6);
+    const paths = fetchImpl.mock.calls.map(([url]) => new URL(url).pathname);
+    expect(paths.filter((path) => path === "/api/trpc/catalogue.release").length).toBe(6);
+    // The JSON API index is asked without a query, and only when the catalogue answer was routed.
+    expect(fetchImpl.mock.calls.map(([url]) => url).filter((url) => new URL(url).pathname === "/api/v1/")).toEqual(Array(5).fill("https://example.test/api/v1/"));
+    // A Worker from before /api/v1 sends it to Firebase: catalogue answers alone never pass.
+    const previous = vi.fn(async (url: string) => (url.includes("/api/v1/") ? new Response("Not found", { status: 404 }) : frontend(200)));
+    await expect(awaitWorkerRouting("https://example.test", { fetchImpl: previous as never, required: 3, timeoutMs: 0, sleep: async () => {} }))
+      .rejects.toThrow("did not route");
     const firebase = vi.fn(async () => new Response("{}", { status: 200 }));
     await expect(awaitWorkerRouting("https://example.test", { fetchImpl: firebase as never, required: 3, timeoutMs: 0, sleep: async () => {} }))
       .rejects.toThrow("did not route");

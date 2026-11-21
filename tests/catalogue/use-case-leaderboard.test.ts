@@ -248,6 +248,9 @@ describe("arithmetic", () => {
     expect(calculateConventionalMargin(0.6, 0.4, 1)).toBeCloseTo(50, 3);
     expect(calculateConventionalMargin(1.0, 2.0, -1)).toBeCloseTo(50, 3);
     expect(calculateConventionalMargin(0.1, 0, 1)).toBeCloseTo(10, 6);
+    // A value twice the baseline is 100 percent over it: nothing is added to the divisor.
+    expect(calculateConventionalMargin(0.42, 0.21, 1)).toBeCloseTo(100, 9);
+    expect(calculateConventionalMargin(0.39, 0.21, 1)).toBeCloseTo((0.18 / 0.21) * 100, 9);
   });
 
   it("finds the non-dominated set among candidates with a recorded cost", () => {

@@ -1,5 +1,5 @@
 import firebase from "../firebase.json" with { type: "json" };
-import { FUNCTIONS_ORIGIN, FUNCTIONS_PATH, AUTH_ORIGIN, backendUrl, isCatalogueApi, isDownload, isProxied } from "./routing.mjs";
+import { FUNCTIONS_ORIGIN, FUNCTIONS_PATH, AUTH_ORIGIN, backendUrl, isCatalogueApi, isDownload, isProxied, isPublicApi } from "./routing.mjs";
 import { IDENTITY_TTL_MS, browserResponse, cacheableRequest, cacheKey, edgeCopy, privatePath, responseIdentity, storableResponse } from "./page-cache.mjs";
 
 // The Worker carries no data release. Pages, assets, download redirects and
@@ -38,8 +38,8 @@ async function frontend(request, env, ctx, url) {
   const upstream = new URL(url.pathname + url.search, origin);
   const forwarded = new Request(upstream, request);
   forwarded.headers.delete("host");
-  // Download redirects and the public catalogue API need no credentials; never pass them along.
-  if (isDownload(url.pathname) || isCatalogueApi(url.pathname)) for (const name of ["cookie", "authorization"]) forwarded.headers.delete(name);
+  // Download redirects and the public APIs need no credentials; never pass them along.
+  if (isDownload(url.pathname) || isCatalogueApi(url.pathname) || isPublicApi(url.pathname)) for (const name of ["cookie", "authorization"]) forwarded.headers.delete(name);
   const response = await fetch(forwarded, UPSTREAM_FETCH);
   const headers = new Headers(response.headers);
   if (privatePath(url.pathname)) noStore(headers);
@@ -55,7 +55,7 @@ async function frontend(request, env, ctx, url) {
   const result = new Response(response.body, { status: response.status, statusText: response.statusText, headers });
   const identity = responseIdentity(result);
   if (identity) observed = { identity, expires: Date.now() + IDENTITY_TTL_MS };
-  if (!cacheable || !identity || !storableResponse(result, identity)) {
+  if (!cacheable || !identity || !storableResponse(result, identity, url.pathname)) {
     result.headers.set("X-Rewire-Cache", "BYPASS");
     return result;
   }

@@ -29,7 +29,7 @@ export const SKILL_URL = "https://github.com/rewire-bio/rewire-benchmarks/tree/m
 export const examplePrompts = [
   "Which models have published results on the MFASS splicing benchmark, and how do they compare with the baseline?",
   "Rerun Rewire's MFASS v2 k-mer baseline on this machine's CPU and compare it with the published values.",
-  "Run my model through the ProteinGym protocol next to the registered baselines and report the difference.",
+  "Show what the MFASS v2 baseline recipe downloads and how long it takes on this machine, without starting it.",
 ];
 
 /** Named SPARQL queries the knowledge-graph bundle ships for discrepancies between studies (rdf-kg-mcp, pinned in RDF_KG_MCP_VERSION). */

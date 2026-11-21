@@ -574,7 +574,7 @@ export const ENDPOINTS: Endpoint[] = [
     query: {
       limit: limit(100, 25), cursor: CURSOR,
       metric: text("Only results of this metric, by its id in the release (for example spearman).", 200),
-      origin: text("Only results whose evaluation has this origin (for example independent_paper).", 100),
+      origin: text("Only results whose evaluation has this origin (for example independent_paper). unreported also matches results whose evaluation records no origin, which this API gives as origin null.", 100),
     },
     data: ModelResults,
     run: ({ id }, input) => {
@@ -731,7 +731,12 @@ export const ENDPOINTS: Endpoint[] = [
 // Handler
 // ---------------------------------------------------------------------------------------------
 
-const BASE_HEADERS = { "Content-Type": "application/json; charset=utf-8", "Access-Control-Allow-Origin": "*" };
+const BASE_HEADERS = {
+  "Content-Type": "application/json; charset=utf-8",
+  "Access-Control-Allow-Origin": "*",
+  // The middleware names the release and the site version on every response; let browser clients read them.
+  "Access-Control-Expose-Headers": "X-Rewire-Data-Release, X-Rewire-Frontend",
+};
 const json = (body: unknown, status: number, cache: string) =>
   new Response(JSON.stringify(body), { status, headers: { ...BASE_HEADERS, "Cache-Control": cache } });
 
@@ -855,7 +860,10 @@ export function openApiDocument() {
         responses: {
           200: {
             description: "The answer, with the release it was read from, the data licence and a citation.",
-            headers: { "X-Rewire-Data-Release": { description: "The release the answer was read from.", schema: { type: "string" } } },
+            headers: {
+              "X-Rewire-Data-Release": { description: "The release the answer was read from.", schema: { type: "string" } },
+              "X-Rewire-Frontend": { description: "The version (commit) of the site that worked out the answer.", schema: { type: "string" } },
+            },
             content: { "application/json": { schema: schema(responseSchema(endpoint)) } },
           },
           400: errorResponse("A query parameter is unknown or not valid, or a cursor does not match the release and filters."),
@@ -878,7 +886,7 @@ export function openApiDocument() {
       version: API_VERSION,
       summary: "Keyless, read-only JSON over the release the site serves.",
       description: [
-        "Every answer is read from one pinned data release and names it in release.id. A new release replaces the old one at the same addresses; pass release_id to refuse an answer from any other release.",
+        "Every answer is read from one pinned data release and names it in release.id. A new release replaces the old one at the same addresses; pass release_id to refuse an answer from any other release. Ranks, labels and counts are worked out by the site from the release, so they can also change with the site version, which the X-Rewire-Frontend response header names.",
         "Models are ranked per use case, on one protocol and one metric at a time. There is no composite score. A proxy protocol is labelled in protocol.relevance.",
         "A result is reproduced only when it cites a run receipt in the release. source_checked means the value was checked against the source it cites, not that it was rerun.",
         `Data licence: ${DATA_LICENCE.statement} Each answer repeats the licence position in its licence field.`,

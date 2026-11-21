@@ -116,7 +116,7 @@ describe('independent frontend smoke', () => {
     ] as const) {
       const request = async (input: Parameters<typeof fetch>[0]) =>
         new URL(input instanceof Request ? input.url : input).pathname.startsWith('/api/v1/') ? Response.json(body) : f.request(input);
-      await expect(smokeDeployment('https://example.test', { downloads: f.downloads, request, independentFrontend: true, log: vi.fn() })).rejects.toThrow(message);
+      await expect(smokeDeployment('https://example.test', { ...f, request, independentFrontend: true, log: vi.fn() })).rejects.toThrow(message);
     }
   });
   it.each(['release', 'producer', 'redirect', 'download'])('rejects %s drift', async (corrupt) => {

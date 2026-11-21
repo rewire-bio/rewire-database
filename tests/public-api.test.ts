@@ -64,6 +64,7 @@ describe("JSON API: every endpoint", () => {
     expect(response.headers.get("content-type")).toBe("application/json; charset=utf-8");
     expect(response.headers.get("cache-control")).toBe(API_CACHE_CONTROL);
     expect(response.headers.get("access-control-allow-origin")).toBe("*");
+    expect(response.headers.get("access-control-expose-headers")).toBe("X-Rewire-Data-Release, X-Rewire-Frontend");
     // The edge cache refuses any Vary it does not key on; the handler sets none.
     expect(response.headers.get("vary")).toBeNull();
     expect(response.headers.has("set-cookie")).toBe(false);
@@ -160,6 +161,12 @@ describe("JSON API: models and benchmarks", () => {
     const filtered = await read(`/models/${rankedModel.id}/results/?metric=${encodeURIComponent(metric)}&limit=5`);
     expect(filtered.page.total).toBe(query.results({ id: rankedModel.id, metric, limit: 5 }).total);
     for (const item of filtered.data.results) expect(item.metric).toBe(metric);
+    // The origin filter is the reader's too: "unreported" also matches an evaluation with no origin, given here as null.
+    for (const origin of ["independent_paper", "author_reported", "unreported"]) {
+      const byOrigin = await read(`/models/${rankedModel.id}/results/?origin=${origin}&limit=100`);
+      expect(byOrigin.page.total, origin).toBe(query.results({ id: rankedModel.id, origin, limit: 100 }).total);
+      for (const item of byOrigin.data.results) expect(item.origin ?? "unreported", origin).toBe(origin);
+    }
     // A second page continues where the first stopped.
     if (body.page.next_url) {
       const next = await read(body.page.next_url.slice(`${SITE}${API_BASE}`.length));

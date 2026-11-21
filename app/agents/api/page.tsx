@@ -88,7 +88,7 @@ export default function ApiDocsPage() {
 
       <section aria-labelledby="releases-heading" className={styles.section}>
         <h2 id="releases-heading">Releases and caching</h2>
-        <p>Answers do not change within a release, so a client can cache them by <code>release.id</code>. A new release replaces the old one at the same addresses. Cursors are valid only for the release and filters they came from. The API holds no keys, accounts or quotas of its own.</p>
+        <p>Every value in an answer is read from the release named in <code>release.id</code>, and a new release replaces the old one at the same addresses. Ranks, labels and counts are worked out by this site from the release, so they can also change when the site&apos;s code changes; the <code>X-Rewire-Frontend</code> response header names the site version. To cache answers, key them by both. Cursors are valid only for the release and filters they came from. The API holds no keys, accounts or quotas of its own.</p>
         <p>The whole release is also available as files, with checksums, from the <a href="/#downloads">downloads</a> and the <a href="/release-manifest.json">release manifest</a>.</p>
       </section>
 

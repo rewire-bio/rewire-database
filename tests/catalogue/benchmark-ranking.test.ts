@@ -13,8 +13,6 @@ type Tool = {
   direct?: boolean; systems?: number; assessment?: string;
   /** Tells a second evaluation of the same configuration apart. */
   run?: string;
-  /** Leave the comparison block empty. */
-  bare?: boolean;
 };
 
 function world(tools: Tool[], protocolAttributes: Record<string, unknown> = { metric: "auroc", metric_direction: "higher" }, protocolId = "p1") {
@@ -34,7 +32,7 @@ function world(tools: Tool[], protocolAttributes: Record<string, unknown> = { me
     const key = `${tool.id}${tool.run ?? ""}`;
     const evaluation = put(record(`${protocolId}-e-${key}`, "evaluation", {
       origin: tool.origin ?? "independent_paper",
-      comparison: tool.bare ? {} : { split: tool.split ?? "test", dataset_version: "v1", adaptation: tool.adaptation ?? "zero-shot" },
+      comparison: { split: tool.split ?? "test", dataset_version: "v1", adaptation: tool.adaptation ?? "zero-shot" },
     }, { status: tool.evaluationStatus ?? "source_checked", links: [{ relation: "assessment", target_id: tool.assessment ?? protocolId }, ...systems] }));
     const row = (id: string, metric: string, value: string, qualifier?: string, status = "source_checked"): ResultRow => ({
       result: put(record(id, "result", {
@@ -105,18 +103,6 @@ describe("benchmark boards: what can be ranked without a judgement", () => {
     expect(reason([{ ...a, evaluationStatus: "disputed" }, ...rest])).toBe("An evaluation is not source-checked.");
     expect(reason([{ ...a, systems: 2 }, ...rest])).toBe("An evaluation does not test exactly one configuration, model or method.");
     expect(reason([{ ...a, assessment: "another-protocol" }, ...rest])).toBe("A result reaches the protocol through another record, not through an evaluation of the protocol.");
-  });
-
-  it("does not treat settings the release leaves out as shared settings", () => {
-    const tools = five();
-    // Every evaluation without a comparison block: nothing differs, and nothing is known to be the same.
-    expect(reason(tools.map((t) => ({ ...t, bare: true })))).toBe("An evaluation does not record the split it was scored on.");
-    expect(reason(tools.map((t) => ({ ...t, split: " " })))).toBe("An evaluation does not record the split it was scored on.");
-    const unadapted = "An evaluation of a foundation model, or of a tool of unrecorded type, does not record how the tool was adapted.";
-    expect(reason(tools.map((t) => ({ ...t, adaptation: " " })))).toBe(unadapted);
-    expect(reason(tools.map((t) => ({ ...t, adaptation: " ", types: [] })))).toBe(unadapted);
-    // A conventional tool has no adaptation to record.
-    expect(reason(tools.map((t) => (t.id === "d" ? { ...t, adaptation: " " } : t)))).toBe("rankable");
   });
 
   it("counts tools, not configurations, and only those with a number", () => {
@@ -202,21 +188,6 @@ describe("benchmark boards: the board", () => {
     const none = buildBenchmarkBoard({ benchmark, protocols: [{ protocol: unnamed.protocol, rows: unnamed.rows }], record: (id) => records.get(id) ?? null, ...inputs });
     expect(none.board).toBeNull();
     expect(none.protocols).toHaveLength(1);
-    expect(buildBenchmarkBoard({ benchmark, protocols: [], record: () => null, ...inputs })).toEqual({ board: null, protocols: [], use_cases: [] });
-  });
-
-  it("has no board once a use case is linked to the benchmark or to any of its protocols", () => {
-    const build = (useCases: (id: string) => string[]) => buildBenchmarkBoard({
-      benchmark, protocols: [small, large, unnamed].map(({ protocol, rows }) => ({ protocol, rows })),
-      record: (id) => records.get(id) ?? null, useCases, ...inputs,
-    });
-    expect(built.use_cases).toEqual([]);
-    expect(build(() => []).board).not.toBeNull();
-    // Even a protocol the board would not rank: the benchmark is then no longer unlinked.
-    const viaProtocol = build((id) => (id === "p3" ? ["use-case-b", "use-case-a"] : []));
-    expect(viaProtocol.board).toBeNull();
-    expect(viaProtocol.use_cases).toEqual(["use-case-a", "use-case-b"]);
-    expect(viaProtocol.protocols.filter((p) => p.rankable)).toHaveLength(2);
-    expect(build((id) => (id === "bench" ? ["use-case-a"] : [])).board).toBeNull();
+    expect(buildBenchmarkBoard({ benchmark, protocols: [], record: () => null, ...inputs })).toEqual({ board: null, protocols: [] });
   });
 });

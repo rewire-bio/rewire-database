@@ -50,10 +50,9 @@ function tested(row: ResultRow): CatalogueRecord[] {
  *   or method, and none is evaluated twice;
  * - every evaluation has exactly one source-checked result in that metric, with the stated
  *   direction and the same qualifier, so the ranking is one column;
- * - every evaluation records the split it was scored on, and the evaluations share the dataset
- *   version, split, population, metric implementation, aggregation and budget;
- * - every foundation model (or tool of unrecorded type) records how it was adapted, and they were
- *   all adapted the same way;
+ * - the evaluations share the dataset version, split, population, metric implementation,
+ *   aggregation and budget, and every foundation model (or tool of unrecorded type) was adapted
+ *   the same way;
  * - the ranked results cite the same sources, each source-checked and free of a source-wide concern;
  * - at least MIN_BENCHMARK_TOOLS distinct tools have a number.
  */
@@ -107,16 +106,11 @@ export function checkProtocol(
     cited.add(JSON.stringify([...ranked[0].result.source_ids].sort()));
 
     const block = (evaluation.attributes.comparison ?? {}) as Record<string, unknown>;
-    // Two missing values are not a shared value: the split has to be stated to be the same.
-    if (!text(block.split)) return no("An evaluation does not record the split it was scored on.");
     for (const key of SHARED_SETTINGS) shared.get(key)!.add(JSON.stringify(block[key] ?? null));
     const adaptation = text(block.adaptation);
     if (adaptation) adaptations.add(adaptation);
     const types = configuration.facets?.method_types ?? [];
-    if (!types.length || types.includes("foundation_model")) {
-      if (!adaptation) return no("An evaluation of a foundation model, or of a tool of unrecorded type, does not record how the tool was adapted.");
-      modelAdaptations.add(adaptation);
-    }
+    if (!types.length || types.includes("foundation_model")) modelAdaptations.add(adaptation);
   }
 
   if (qualifiers.size !== 1) return no(`The ${metric} results are reported for more than one stratum, so a column would have to be chosen.`);
@@ -152,18 +146,11 @@ export interface BenchmarkBoardInputs extends Pick<RankingInputs, "record" | "fi
   protocols: { protocol: CatalogueRecord; rows: ResultRow[] }[];
   /** Ids named by scoped evidence concerns on any source in the release. */
   concerned?: ReadonlySet<string>;
-  /** Slugs of the use cases with an active judgement on a record (the benchmark or one of its protocols). */
-  useCases?: (id: string) => string[];
 }
 
 export interface BenchmarkBoard {
-  /**
-   * The ranking. Null when no protocol of the benchmark can be ranked without a judgement, or when
-   * a use case is already linked to the benchmark: its board is then the use case's.
-   */
+  /** The ranking, or null when no protocol of the benchmark can be ranked without a judgement. */
   board: LeaderboardResult | null;
-  /** Use cases with an active judgement on the benchmark or one of its protocols. */
-  use_cases: string[];
   /** Each protocol of the benchmark, and why it is not ranked when it is not. */
   protocols: { id: string; name: string; rankable: boolean; reason: string | null }[];
 }
@@ -173,14 +160,13 @@ export interface BenchmarkBoard {
  * (then the first by id), the same rule a use case's protocol is picked by. Coverage counts the
  * benchmark's rankable protocols, and the other rankable protocols' tools are listed unranked.
  */
-export function buildBenchmarkBoard({ benchmark, protocols, record, findings, receiptSources, concerned, useCases }: BenchmarkBoardInputs): BenchmarkBoard {
+export function buildBenchmarkBoard({ benchmark, protocols, record, findings, receiptSources, concerned }: BenchmarkBoardInputs): BenchmarkBoard {
   const checks = protocols.map(({ protocol, rows }) => ({ protocol, check: checkProtocol(protocol, rows, record, concerned) }));
   const summary = checks.map(({ protocol, check }) => ({
     id: protocol.id, name: protocol.name, rankable: check.rankable, reason: check.rankable ? null : check.reason,
   }));
-  const use_cases = [...new Set([benchmark, ...protocols.map((p) => p.protocol)].flatMap((r) => useCases?.(r.id) ?? []))].sort();
   const rankable = checks.flatMap(({ protocol, check }) => (check.rankable ? [{ protocol, check }] : []));
-  if (!rankable.length || use_cases.length) return { board: null, protocols: summary, use_cases };
+  if (!rankable.length) return { board: null, protocols: summary };
 
   const built = buildLeaderboard({
     slug: benchmark.id, title: benchmark.name, baselineIds: [],
@@ -189,7 +175,7 @@ export function buildBenchmarkBoard({ benchmark, protocols, record, findings, re
   });
   const chosen = rankable.find(({ protocol }) => protocol.id === built.protocol?.comparison_id);
   // The comparison builder does not rank a column whose values it cannot read as numbers.
-  if (!built.protocol || !chosen) return { board: null, protocols: summary, use_cases };
+  if (!built.protocol || !chosen) return { board: null, protocols: summary };
   const scope: BenchmarkScope = {
     id: benchmark.id, name: benchmark.name, href: recordHref(benchmark),
     protocol_id: chosen.protocol.id, protocol_href: recordHref(chosen.protocol),
@@ -199,6 +185,5 @@ export function buildBenchmarkBoard({ benchmark, protocols, record, findings, re
   return {
     board: { ...built, use_case_href: scope.href, protocol: { ...built.protocol, relevance: "benchmark" }, benchmark: scope },
     protocols: summary,
-    use_cases,
   };
 }

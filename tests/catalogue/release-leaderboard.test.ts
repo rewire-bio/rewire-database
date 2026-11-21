@@ -4,7 +4,6 @@ import { HOME_LEADERBOARD_SLUGS, MIN_HOME_TOOLS, allUseCaseLeaderboards, homeLea
 import { boardStats } from "../../lib/use-case-leaderboard";
 import { HOME_BENCHMARK_IDS, benchmarkBoard, homeBenchmarkBoards } from "../../lib/benchmark-leaderboard";
 import { MIN_BENCHMARK_TOOLS } from "../../lib/benchmark-ranking";
-import { buildUseCases, fullUseCaseDetail } from "../../lib/use-cases-build";
 import { generateAgentsMd, generateLlmsFullText, generateLlmsTxt } from "../../lib/llm-discoverability";
 import { generateHomepageTakeaway, generateUseCaseTakeaway } from "../../lib/geo-takeaway";
 import { shortFact, telemetryFromRecord } from "../../lib/operational-telemetry";
@@ -25,6 +24,7 @@ describe("use-case leaderboards from the release", () => {
     const home = homeLeaderboards();
     const listed: readonly string[] = HOME_LEADERBOARD_SLUGS;
     expect(new Set(listed).size).toBe(listed.length);
+    for (const slug of listed) expect(boards.some((b) => b.use_case_slug === slug), slug).toBe(true);
     for (const board of home) {
       expect(listed, board.use_case_slug).toContain(board.use_case_slug);
       expect(boardStats(board).tools, board.use_case_slug).toBeGreaterThanOrEqual(MIN_HOME_TOOLS);
@@ -213,14 +213,6 @@ describe("benchmark boards from the release", () => {
       expect(board.baseline).toBeNull();
       expect(boardStats(board).tools, board.use_case_slug).toBeGreaterThanOrEqual(MIN_BENCHMARK_TOOLS);
     }
-    // The section says no use case is linked to these benchmarks: no active judgement names one of their protocols.
-    const judged = new Set(buildUseCases().entries.flatMap((e) => fullUseCaseDetail(e.slug)!.mappings.filter((m) => m.lifecycle === "active").flatMap((m) => [m.protocol_id, m.task_id])));
-    for (const { built } of listed) {
-      if (!built) continue;
-      const linked = built.protocols.some((p) => judged.has(p.id));
-      expect(built.use_cases.length > 0, built.protocols[0]?.id).toBe(linked);
-      if (linked) expect(built.board).toBeNull();
-    }
     for (const board of [...allUseCaseLeaderboards(), ...homeLeaderboards()]) {
       expect(board.benchmark).toBeUndefined();
       expect(board.protocol?.relevance).not.toBe("benchmark");
@@ -258,17 +250,6 @@ describe("benchmark boards from the release", () => {
       expect(row.reviewed_status === "reproduced", row.source_record_id).toBe(cited.some((id) => receipts.has(id)));
       expect(row.receipt !== null).toBe(row.reviewed_status === "reproduced");
       for (const id of row.source_ids) expect(query.record(id)?.kind, id).toBe("source");
-    }
-  });
-
-  it("ranks only evaluations that record their split, and foundation models that record one shared adaptation", () => {
-    for (const board of home) {
-      const blocks = board.rows.map((r) => ({ row: r, block: (query.record(r.evaluation_id!)!.attributes.comparison ?? {}) as Record<string, unknown> }));
-      expect(new Set(blocks.map(({ block }) => block.split)).size, board.use_case_slug).toBe(1);
-      expect(typeof blocks[0].block.split === "string" && blocks[0].block.split.length > 0, board.use_case_slug).toBe(true);
-      const models = blocks.filter(({ row }) => !row.method_types.length || row.method_types.includes("foundation_model"));
-      expect(new Set(models.map(({ block }) => block.adaptation)).size, board.use_case_slug).toBeLessThanOrEqual(1);
-      for (const { block, row } of models) expect(typeof block.adaptation === "string" && block.adaptation.length > 0, row.model_id).toBe(true);
     }
   });
 

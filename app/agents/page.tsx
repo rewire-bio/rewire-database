@@ -29,7 +29,7 @@ export const metadata: Metadata = {
 const steps = [
   { title: "Install the plugin", text: "Two commands in Claude Code add three MCP servers (the knowledge graph, genomic data and the rewirebench runner), five skills, six commands and a benchmarking agent." },
   { title: "Ask about the evidence", text: "The agent finds models, benchmarks, published results and their sources, with review status and caveats." },
-  { title: "Rerun and compare", text: "It plans and runs a benchmark recipe on your machine, on CPU, and sets the run beside the published value. The recipe that ships today reruns Rewire's own MFASS v2 baseline." },
+  { title: "Rerun and compare", text: "It plans and runs a benchmark recipe on your machine, on CPU, and sets the run beside the published value. The one benchmark recipe that ships today reruns Rewire's own MFASS v2 baseline." },
 ];
 
 const rules = [

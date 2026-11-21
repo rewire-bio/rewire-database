@@ -104,6 +104,7 @@ export const recordSchema = z
       if (
         ![
           "author_reported",
+          "benchmark_reported",
           "independent_paper",
           "paper_compilation",
           "rewire_run",

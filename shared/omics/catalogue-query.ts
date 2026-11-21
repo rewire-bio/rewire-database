@@ -531,7 +531,7 @@ export function listPage(
   const q = input.q?.trim().toLowerCase();
   const originMatches = (origin: unknown) =>
     input.origin === "literature"
-      ? ["author_reported", "independent_paper", "paper_compilation"].includes(String(origin))
+      ? ["author_reported", "benchmark_reported", "independent_paper", "paper_compilation"].includes(String(origin))
       : input.origin === "rewire"
         ? origin === "rewire_run"
         : origin === input.origin;

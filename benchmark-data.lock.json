@@ -1,13 +1,13 @@
 {
   "schema_version": 1,
   "repository": "rewire-bio/rewire-benchmark-data",
-  "revision": "e3702437bfc87788953ec80f452d7f968a1f7a43",
-  "manifest_sha256": "cfc11e46fb072903da041ab8622fe0f9bf80e8bf63c5ed6b3ac9a8f8fefe1480",
-  "release_id": "2026-11-23-ce0bfe468ac4",
+  "revision": "e280c79b4ae7e47a390db79d5aa5b7b24eaffc53",
+  "manifest_sha256": "998bb607d51c4f567f2c03ee3552d08018b49b6cdc4e52d9d9ba68e6c1080fec",
+  "release_id": "2026-11-23-2aff71e12317",
   "serving": {
-    "tag": "serving/2026-11-23-ce0bfe468ac4",
-    "file": "catalogue-2026-11-23-ce0bfe468ac4.sqlite",
-    "sha256": "3335d5e8d33f09a0dc0894488abb858db09de650d2f7bfc7bccb9687d969a42d",
+    "tag": "serving/2026-11-23-2aff71e12317",
+    "file": "catalogue-2026-11-23-2aff71e12317.sqlite",
+    "sha256": "9d80319d62cad4a35e7dd25c21cbd7dd74de67ec7feab2a7606e718a8763f147",
     "website_assets": true
   }
 }

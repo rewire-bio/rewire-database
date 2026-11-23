@@ -29,7 +29,9 @@ export interface OwnerStatements {
 export const OWNER_STATEMENTS: OwnerStatements = {
   funding: null,
   affiliations: null,
-  placement: null,
+  // Approved by the owner on 23 Nov 2026.
+  placement:
+    "No model developer, funder or customer can pay for, request or veto a position in any ranking. Rankings follow only from the published results and the published rules.",
 };
 
 /** A statement as the page prints it: trimmed, and null when it is null or blank. */

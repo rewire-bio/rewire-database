@@ -3,7 +3,7 @@ import type { CatalogueRecord, ResultRow } from "../../shared/omics/catalogue-qu
 import type { ResolvedMapping } from "../../shared/omics/use-cases";
 import { buildComparisons } from "../../lib/use-case-comparisons";
 import { buildLeaderboard, selectRankingComparison, type RankingInputs } from "../../lib/use-case-ranking";
-import { boardStats, boardStatsText, calculateConventionalMargin, computeParetoOptimal, protocolLabel, type BiologicalModelRankingRow } from "../../lib/use-case-leaderboard";
+import { boardStats, boardStatsText, calculateConventionalMargin, computeParetoOptimal, marginBarSpec, metricBarWidth, protocolLabel, type BiologicalModelRankingRow } from "../../lib/use-case-leaderboard";
 import { licenceLabel, licenceText, shortFact, telemetryFromRecord } from "../../lib/operational-telemetry";
 import {
   ORIGIN_COUNT_LABELS, ORIGIN_DESCRIPTIONS, ORIGIN_EVALUATION_LABELS, ORIGIN_LABELS,
@@ -414,5 +414,30 @@ describe("board statistics", () => {
     expect(boardStatsText(boardStats({ rows: [row("a", other(null))] }))).toBe("1 tool, from 1 source. 0 of 1 result (0%) come from an independent study; 1 is without a recorded origin.");
     expect(boardStatsText(boardStats({ rows: [row("a", other("paper_compilation")), row("b", other("some_new_origin"))] }))).toContain("; 1 is quoted from another paper; 1 is of origin some new origin.");
     expect(boardStatsText(boardStats({ rows: [] }))).toBe("0 tools, from 0 sources. 0 of 0 results come from an independent study.");
+  });
+});
+
+describe("inline bar scaling", () => {
+  it("scales bounded unit and percentage scores proportionally, and inverts lower-is-better metrics", () => {
+    expect(metricBarWidth(0.6, [0.6, 0.55, 0.4], "higher")).toBe(60);
+    expect(metricBarWidth(0, [0, 0.5, 0.9], "higher")).toBe(0);
+    expect(metricBarWidth(0.01, [0.01, 0.5], "higher")).toBe(4);
+    expect(metricBarWidth(82, [82, 64], "higher")).toBe(82);
+    expect(metricBarWidth(5, [-2, 5, 12], "higher")).toBe(56);
+    expect(metricBarWidth(12, [12, 45], "lower")).toBe(100);
+    expect(metricBarWidth(45, [12, 45], "lower")).toBe(12);
+    expect(metricBarWidth(3, [3, 3], "lower")).toBe(50);
+    expect(metricBarWidth(0.5, [0.5], "higher")).toBeNull();
+    expect(metricBarWidth(null, [0.5, 0.7], "higher")).toBeNull();
+    expect(metricBarWidth(0.5, [0.5, 0.7], "unknown")).toBeNull();
+  });
+
+  it("scales positive and negative baseline delta bars around the center peak", () => {
+    expect(marginBarSpec(50, [50, 25, -10])).toEqual({ side: "positive", widthPct: 50 });
+    expect(marginBarSpec(-10, [50, 25, -10])).toEqual({ side: "negative", widthPct: 10 });
+    expect(marginBarSpec(0.1, [50, 0.1])).toEqual({ side: "positive", widthPct: 4 });
+    expect(marginBarSpec(0, [0, 10])).toBeNull();
+    expect(marginBarSpec(null, [10, 20])).toBeNull();
+    expect(marginBarSpec(5, [0, 0])).toBeNull();
   });
 });

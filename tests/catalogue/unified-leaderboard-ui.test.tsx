@@ -302,4 +302,33 @@ describe("UnifiedLeaderboard", () => {
     expect(html).toContain("GPU build");
     expect(html).toContain("Not recorded");
   });
+
+  it("renders direction-aware score bars and bidirectional baseline margin bars", () => {
+    const higherHtml = renderToStaticMarkup(<UnifiedLeaderboard boards={[VARIANT_BOARD]} />);
+    expect(higherHtml.match(/data-testid="metric-bar-fill"/g)).toHaveLength(4);
+    expect(higherHtml).toContain('data-testid="metric-bar-fill" style="width:60%"');
+    expect(higherHtml.match(/data-testid="delta-bar-fill"/g)).toHaveLength(3);
+    expect(higherHtml).toContain('data-testid="delta-bar-fill" style="left:50%;width:50%"');
+
+    const lowerHtml = renderToStaticMarkup(<UnifiedLeaderboard boards={[RUNTIME_BOARD]} />);
+    expect(lowerHtml).toContain('data-testid="metric-bar-fill" style="width:100%"');
+    expect(lowerHtml).toContain('data-testid="metric-bar-fill" style="width:12%"');
+
+    const mixedMargins: typeof VARIANT_BOARD = {
+      ...VARIANT_BOARD,
+      rows: [
+        fixtureRow({ model_id: "better", raw_metric_value: 0.6, display_value: "0.600", rank: 1, margin_over_conventional: 50 }),
+        fixtureRow({ model_id: "worse", raw_metric_value: 0.3, display_value: "0.300", rank: 3, margin_over_conventional: -25 }),
+        fixtureRow({ model_id: "baseline-a", raw_metric_value: 0.4, display_value: "0.400", rank: 2, is_baseline: true }),
+      ],
+    };
+    const mixedHtml = renderToStaticMarkup(<UnifiedLeaderboard boards={[mixedMargins]} />);
+    expect(mixedHtml).toContain('data-testid="delta-bar-fill" style="right:50%;width:25%"');
+
+    const noProtocolSingle = {
+      ...EMPTY_BOARD,
+      rows: [fixtureRow({ model_id: "solo", raw_metric_value: 0.5, display_value: "0.500", rank: 1 })],
+    };
+    expect(renderToStaticMarkup(<UnifiedLeaderboard boards={[noProtocolSingle]} />)).not.toContain('data-testid="metric-bar-fill"');
+  });
 });

@@ -266,6 +266,66 @@
   color: var(--ink-3, #64748b);
 }
 
+.metricCell,
+.deltaCell {
+  white-space: nowrap;
+}
+
+.metricBarTrack {
+  display: block;
+  width: 92px;
+  height: 6px;
+  margin-top: 4px;
+  border-radius: 999px;
+  background: var(--bg-subtle, #f1f5f9);
+  border: 1px solid var(--line, #e2e8f0);
+  overflow: hidden;
+}
+
+.metricBarFill {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--accent, #0d9488), #14b8a6);
+}
+
+.deltaBarTrack {
+  position: relative;
+  display: block;
+  width: 76px;
+  height: 5px;
+  margin-top: 4px;
+  border-radius: 999px;
+  background: var(--bg-subtle, #f1f5f9);
+  border: 1px solid var(--line, #e2e8f0);
+  overflow: hidden;
+}
+
+.deltaBarCenter {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--line-2, #94a3b8);
+}
+
+.deltaBarPositive {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  background: var(--accent, #0d9488);
+  border-radius: 0 999px 999px 0;
+}
+
+.deltaBarNegative {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  background: #e11d48;
+  border-radius: 999px 0 0 999px;
+}
+
 /* Badges */
 .paretoBadge {
   display: inline-flex;

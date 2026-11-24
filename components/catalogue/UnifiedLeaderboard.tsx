@@ -7,6 +7,8 @@ import {
   REVIEW_STATUS_LABELS,
   boardStats,
   boardStatsText,
+  marginBarSpec,
+  metricBarWidth,
   protocolLabel,
   type BiologicalModelRankingRow,
   type LeaderboardResult,
@@ -121,6 +123,14 @@ export function UnifiedLeaderboard({
   const hasMargin = !!board?.baseline;
   const hasPareto = availableRows.some((r) => r.pareto_optimal);
   const columnCount = 8 + Number(hasMargin) + Number(hasLatency) + Number(hasVram);
+  const metricValues = useMemo(
+    () => availableRows.map((r) => r.raw_metric_value).filter((v): v is number => v !== null),
+    [availableRows],
+  );
+  const marginValues = useMemo(
+    () => availableRows.filter((r) => !r.is_baseline).map((r) => r.margin_over_conventional).filter((v): v is number => v !== null),
+    [availableRows],
+  );
 
   const toggleRowExpanded = (id: string) =>
     setExpandedRowIds((prev) => {
@@ -360,6 +370,8 @@ export function UnifiedLeaderboard({
               sortedRows.map((row) => {
                 const isExpanded = expandedRowIds.has(row.model_id);
                 const margin = row.margin_over_conventional;
+                const barWidth = protocol ? metricBarWidth(row.raw_metric_value, metricValues, protocol.direction) : null;
+                const marginSpec = row.is_baseline ? null : marginBarSpec(margin, marginValues);
                 const rowClassName = `${styles.tableRow} ${row.is_baseline ? styles.baselineRow : ""} ${isExpanded ? styles.expandedRow : ""} ${row.pareto_optimal ? "pareto-row" : ""}`;
                 return (
                   <React.Fragment key={row.model_id}>
@@ -404,7 +416,7 @@ export function UnifiedLeaderboard({
                           )}
                         </div>
                       </td>
-                      <td>
+                      <td className={styles.metricCell}>
                         <Link
                           href={`/database/result/${encodeURIComponent(row.source_record_id)}/`}
                           prefetch={false}
@@ -414,11 +426,30 @@ export function UnifiedLeaderboard({
                         >
                           {row.display_value}
                         </Link>
+                        {barWidth !== null && (
+                          <span className={styles.metricBarTrack} aria-hidden="true">
+                            <span className={styles.metricBarFill} data-testid="metric-bar-fill" style={{ width: `${barWidth}%` }} />
+                          </span>
+                        )}
                       </td>
                       {hasMargin && (
-                        <td>
+                        <td className={styles.deltaCell}>
                           {row.is_baseline ? "" : (
-                            <span className={margin !== null && margin > 0 ? styles.deltaPositive : styles.deltaNegative}>{formatMargin(margin)}</span>
+                            <>
+                              <span className={margin !== null && margin > 0 ? styles.deltaPositive : styles.deltaNegative}>{formatMargin(margin)}</span>
+                              {marginSpec && (
+                                <span className={styles.deltaBarTrack} aria-hidden="true">
+                                  <span className={styles.deltaBarCenter} />
+                                  <span
+                                    className={marginSpec.side === "positive" ? styles.deltaBarPositive : styles.deltaBarNegative}
+                                    data-testid="delta-bar-fill"
+                                    style={marginSpec.side === "positive"
+                                      ? { left: "50%", width: `${marginSpec.widthPct}%` }
+                                      : { right: "50%", width: `${marginSpec.widthPct}%` }}
+                                  />
+                                </span>
+                              )}
+                            </>
                           )}
                         </td>
                       )}

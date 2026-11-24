@@ -259,3 +259,46 @@ export function protocolLabel(protocol: RankingProtocol): string {
   const column = protocol.column_label && protocol.column_label !== protocol.metric_label ? `, ${protocol.column_label}` : "";
   return `${protocol.title}${column}`;
 }
+
+/**
+ * Width percentage (0..100) for an inline metric bar scaled safely in the protocol's direction.
+ * Returns null without a finite direction or at least two finite comparison values.
+ */
+export function metricBarWidth(
+  value: number | null,
+  values: readonly number[],
+  direction: MetricDirection | "unknown",
+): number | null {
+  if (value === null || !Number.isFinite(value) || (direction !== "higher" && direction !== "lower")) return null;
+  const finite = values.filter(Number.isFinite);
+  if (finite.length < 2) return null;
+  const min = Math.min(...finite);
+  const max = Math.max(...finite);
+  if (direction === "higher" && min >= 0 && max <= 100) {
+    if (value <= 0) return 0;
+    const scale = max <= 1 ? 1000 : 10;
+    return Math.max(4, Math.min(100, Math.round(value * scale) / 10));
+  }
+  if (max === min) return 50;
+  const t = direction === "higher" ? (value - min) / (max - min) : (max - value) / (max - min);
+  return Math.max(12, Math.min(100, Math.round((12 + t * 88) * 10) / 10));
+}
+
+export interface MarginBarSpec {
+  side: "positive" | "negative";
+  widthPct: number;
+}
+
+/** Half-width bar specification (4..50%) around the centered baseline tick, or null when zero/unrecorded. */
+export function marginBarSpec(
+  margin: number | null | undefined,
+  margins: readonly number[],
+): MarginBarSpec | null {
+  if (margin === null || margin === undefined || !Number.isFinite(margin) || margin === 0) return null;
+  const peak = Math.max(...margins.filter(Number.isFinite).map((m) => Math.abs(m)), 0);
+  if (peak <= 0) return null;
+  return {
+    side: margin > 0 ? "positive" : "negative",
+    widthPct: Math.max(4, Math.min(50, Math.round((Math.abs(margin) / peak) * 500) / 10)),
+  };
+}

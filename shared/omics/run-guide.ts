@@ -1,6 +1,9 @@
 import { z } from "zod";
 import type { CatalogueRecord } from "./catalogue-query.js";
 import { isBenchmarkSubject } from "./entity-kinds.js";
+/** Kinds that may carry a run guide: what a benchmark needs to be run, and how to run a model or method. */
+const runGuideKinds = (kind: string): boolean =>
+  isBenchmarkSubject(kind) || kind === "model" || kind === "method";
 const citation = {
   source_ids: z.array(z.string().min(1)).min(1),
   source_locator: z.string().min(1),
@@ -66,9 +69,9 @@ export function validateRunGuide(
     }
   }
   if (record.attributes.run_guide === undefined) return;
-  if (!isBenchmarkSubject(record.kind))
+  if (!runGuideKinds(record.kind))
     throw new Error(
-      "Run instructions require a benchmark, task, protocol or evaluator",
+      "Run instructions require a benchmark, task, protocol, evaluator, model or method",
     );
   const guide = runGuideSchema.parse(record.attributes.run_guide);
   if (guide.record_id !== record.id)

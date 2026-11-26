@@ -434,6 +434,8 @@ jobs:
       # Only this job writes production. Never cancel a transaction in progress.
       group: database-publication
       cancel-in-progress: false
+    outputs:
+      published: ${{ steps.final-preflight.outputs.publish }}
     permissions:
       contents: read
       id-token: write
@@ -549,6 +551,7 @@ jobs:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_PUBLIC_ORIGIN: ${{ vars.CLOUDFLARE_PUBLIC_ORIGIN }}
+          LIVE_ACCEPTANCE: ${{ inputs.adopted && 'core' || '' }}
       - name: Browser smoke test of the public website
         if: steps.final-preflight.outputs.publish == 'true'
         run: |
@@ -556,9 +559,45 @@ jobs:
           npm run smoke:browser
         env:
           SMOKE_ORIGIN: ${{ vars.CLOUDFLARE_PUBLIC_ORIGIN || 'https://benchmarks.rewirebio.io' }}
+      - name: Keep the release files the full live check reads
+        if: inputs.adopted && steps.final-preflight.outputs.publish == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: live-check-release-${{ github.sha }}-${{ github.run_attempt }}
+          path: |
+            public/omics/manifest.json
+            public/omics/releases/*/use-cases.json
+          retention-days: 1
       - name: Remove generated service environment
         if: always()
         run: rm -f services/omics/.env
       - name: Summarize publication timings
         if: always()
         run: node scripts/deployment-metrics.mjs summary
+
+  # The full read-only check of the live site after a data adoption. It follows every use case's
+  # mappings through the public API and takes about 25 minutes, so it runs here, outside the
+  # publication queue. The publication itself has already passed the short check and the browser
+  # smoke test. A failure here does not move traffic back: it fails this run, which raises the
+  # pipeline alert.
+  full-live-check:
+    needs: publish
+    if: inputs.adopted && needs.publish.outputs.published == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - uses: actions/download-artifact@v4
+        with:
+          name: live-check-release-${{ github.sha }}-${{ github.run_attempt }}
+          path: public/omics
+      - run: node scripts/check-live-catalogue.mjs "$ORIGIN" --website --independent-frontend --acceptance=full
+        env:
+          ORIGIN: ${{ vars.CLOUDFLARE_PUBLIC_ORIGIN || 'https://benchmarks.rewirebio.io' }}
+          OMICS_CONTRIBUTIONS_ENABLED: ${{ vars.OMICS_CONTRIBUTIONS_ENABLED || 'false' }}
+          OMICS_MAIL_ENABLED: ${{ vars.OMICS_MAIL_ENABLED || 'false' }}

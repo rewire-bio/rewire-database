@@ -104,8 +104,8 @@ export function meetsHomeRule(board: LeaderboardResult): boolean {
 }
 
 /**
- * Use cases whose board meets the rule and is still left off the homepage, each for a reason the
- * rule cannot see.
+ * Use cases left off the homepage for a reason the rule cannot see. A board listed here stays off
+ * whether or not it meets the rule in the pinned release.
  */
 export const HOME_LEFT_OUT: Readonly<Record<string, string>> = {
   "hit-discovery-virtual-screening": "The metric is a hit count with differing denominators.",

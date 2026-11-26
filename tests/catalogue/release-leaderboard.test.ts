@@ -38,8 +38,11 @@ describe("use-case leaderboards from the release", () => {
 
   it("lists for the homepage exactly the boards that meet the rule in this release, apart from the named exceptions", () => {
     const meeting = boards.filter(meetsHomeRule).map((b) => b.use_case_slug);
+    // A left-out board may also fall below the rule when the data changes, for example after
+    // duplicate sources are merged. It must still name a real use case and stay off the list.
+    const known = boards.map((b) => b.use_case_slug);
     for (const slug of Object.keys(HOME_LEFT_OUT)) {
-      expect(meeting, slug).toContain(slug);
+      expect(known, slug).toContain(slug);
       expect(HOME_LEADERBOARD_SLUGS as readonly string[], slug).not.toContain(slug);
     }
     expect(meeting.filter((slug) => !(slug in HOME_LEFT_OUT)).sort()).toEqual([...HOME_LEADERBOARD_SLUGS].sort());

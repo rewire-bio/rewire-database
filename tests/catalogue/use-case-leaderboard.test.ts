@@ -313,6 +313,9 @@ describe("telemetry from a record", () => {
     // A cut never ends on punctuation or a split word, and a long unbroken string is still cut.
     expect(shortFact("Open weights, gated access for commercial use", 14)).toBe("Open weights…");
     expect(shortFact("https://example.org/a-very-long-path/to/the/licence", 20)).toBe("https://example.org…");
+    // A word boundary just past half the limit, followed by a colon: dropping the split word and then
+    // the colon would show less than half the cell, so the cut falls at the limit instead.
+    expect(shortFact("Code and data: https://github.com/Sanofi-Public/CodonBERT. Weights: elsewhere", 28)).toBe("Code and data: https://gith…");
     for (const max of [10, 28, 48, 60]) expect(shortFact("Public code; model weights have separate terms that must be checked.", max).length).toBeLessThanOrEqual(max);
   });
 });

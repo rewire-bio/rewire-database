@@ -133,6 +133,9 @@ export function shortFact(text: string | null | undefined, max = 40): string {
   const cut = full.slice(0, max - 1);
   // Drop a word the limit splits, unless that would lose most of the cell (a long URL or id).
   const words = /\s/.test(full[max - 1]) ? cut : cut.replace(/\s+\S*$/, "");
-  const kept = words.length >= max / 2 ? words : cut;
-  return `${kept.replace(/[\s,;:.]+$/, "")}…`;
+  // Decide on what will be shown: trailing punctuation is stripped below, so a word boundary
+  // that sits just past half the limit can fall under it once its colon or comma is removed.
+  const strip = (s: string) => s.replace(/[\s,;:.]+$/, "");
+  const kept = strip(words).length + 1 > max / 2 ? words : cut;
+  return `${strip(kept)}…`;
 }

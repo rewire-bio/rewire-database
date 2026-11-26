@@ -99,6 +99,18 @@ export function telemetryFromRecord(record: MinimalRecord | null | undefined): O
   };
 }
 
+/**
+ * True when the record was checked for a licence and its developers state none: a licence fact
+ * with status "unreported" and no licence recorded anywhere. That is a finding, not a gap in the
+ * record, so the page says so instead of "Not recorded".
+ */
+export function licenceUnstated(record: MinimalRecord | null | undefined): boolean {
+  if (telemetryFromRecord(record).license) return false;
+  const profile = record?.attributes?.profile as { facts?: MinimalRecordFact[] } | undefined;
+  return (profile?.facts ?? []).some((f) => /licence/i.test(f.label) && f.status === "unreported");
+}
+export const LICENCE_UNSTATED = "Not stated by the developers";
+
 /** "License", or "Code licence" when only the code licence is recorded. */
 export const licenceLabel = (telemetry: Pick<OperationalTelemetry, "license_scope">, label = "License") =>
   telemetry.license_scope === "code" ? "Code licence" : label;

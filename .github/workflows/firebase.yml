@@ -567,6 +567,7 @@ jobs:
           path: |
             public/omics/manifest.json
             public/omics/releases/*/use-cases.json
+            lib/generated-download-locations.json
           retention-days: 1
       - name: Remove generated service environment
         if: always()
@@ -595,7 +596,7 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: live-check-release-${{ github.sha }}-${{ github.run_attempt }}
-          path: public/omics
+          path: .
       - run: node scripts/check-live-catalogue.mjs "$ORIGIN" --website --independent-frontend --acceptance=full
         env:
           ORIGIN: ${{ vars.CLOUDFLARE_PUBLIC_ORIGIN || 'https://benchmarks.rewirebio.io' }}

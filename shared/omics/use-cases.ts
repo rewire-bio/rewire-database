@@ -58,6 +58,25 @@ const useCaseSchema = z.object({
     status: z.enum(["planned", "blocked"]), reason: text,
   }).strict()).max(100),
 }).strict();
+export const ANCHOR_FIELDS = ["null_baseline", "conventional_baseline", "experimental_ceiling"] as const;
+export type AnchorField = (typeof ANCHOR_FIELDS)[number];
+const anchorSchema = z.object({
+  claim_id: id,
+  name: text,
+  metric: z.string().min(1).max(120),
+  metric_direction: z.enum(["higher", "lower", "target", "unknown"]),
+  unit: z.string().min(1).max(120),
+  printed_value: text,
+  numeric_value: z.string().regex(/^-?\d+(?:\.\d+)?$/),
+  rationale: text,
+  source_ids: z.array(id).min(1).max(20),
+  source_locator: text,
+  method_ids: z.array(id).min(1).max(20).optional(),
+  evaluation_ids: z.array(id).min(1).max(20).optional(),
+  result_ids: z.array(id).min(1).max(20).optional(),
+}).strict();
+export type ProtocolAnchor = z.infer<typeof anchorSchema>;
+
 const mappingSchema = z.object({
   id, use_case_id: id,
   lifecycle: z.enum(["draft", "active", "needs_review", "withdrawn", "superseded"]),
@@ -75,6 +94,10 @@ const mappingSchema = z.object({
     group: id, title: text, stratum_label: text.optional(),
     stratum_order: z.number().int().optional(), headline_metric: z.string().min(1).max(120).optional(),
   }).strict().optional(),
+  // Sourced protocol controls and assay ceiling (issue #379), derived from reviewed protocol claims.
+  null_baseline: anchorSchema.optional(),
+  conventional_baseline: anchorSchema.optional(),
+  experimental_ceiling: anchorSchema.optional(),
 }).strict();
 const inputsSchema = z.object({
   schema_version: z.literal("1.0"),
@@ -254,12 +277,14 @@ export function parseUseCaseInputs(value: unknown): UseCaseInputs {
     }
     if (tombstone(m)) {
       if (!m.prior_release_id || m.protocol_id || m.task_id || m.evaluation_ids.length || m.citations.length ||
-          m.endpoint || m.relevance || m.rationale || m.constraints.length || m.limitations.length || m.evidence_sha256 || m.review)
+          m.endpoint || m.relevance || m.rationale || m.constraints.length || m.limitations.length || m.evidence_sha256 || m.review ||
+          m.null_baseline || m.conventional_baseline || m.experimental_ceiling)
         throw Error("Withdrawal tombstones retain identity, reason and prior release only");
     } else {
       if (!m.protocol_id || !m.endpoint || !m.relevance || !m.rationale || !m.citations.length)
         throw Error(`Mapping ${m.id} requires scoped protocol evidence`);
-      if (!positive(m) && m.evaluation_ids.length) throw Error("Unassessed/outside-scope mappings cannot supply measured evidence");
+      if (!positive(m) && (m.evaluation_ids.length || m.null_baseline || m.conventional_baseline || m.experimental_ceiling))
+        throw Error("Unassessed/outside-scope mappings cannot supply measured evidence");
       if (m.lifecycle === "active" && (!m.review || !m.evidence_sha256)) throw Error("Active mapping requires its own recorded review and fingerprint");
     }
   }
@@ -352,6 +377,14 @@ function dependencies(ix: Index, entry: UseCase, mapping: Mapping) {
       }
     }
   }
+  for (const anchor of [mapping.null_baseline, mapping.conventional_baseline, mapping.experimental_ceiling]) {
+    if (!anchor) continue;
+    add(anchor.claim_id);
+    for (const id of [
+      ...anchor.source_ids, ...(anchor.method_ids || []),
+      ...(anchor.evaluation_ids || []), ...(anchor.result_ids || []),
+    ]) add(id);
+  }
   return [...ids].sort().map((id) => ({ id, record: ix.records.get(id) || null }));
 }
 function evidenceHash(ix: Index, entry: UseCase, mapping: Mapping) {
@@ -411,6 +444,38 @@ function validateMapping(ix: Index, entry: UseCase, m: Mapping, activeChecks: bo
           throw Error("Result evidence is disputed or unchecked");
       }
       if (rows.some((r) => ix.pathConcerned(r, e))) throw Error("An evidence concern applies to the result evidence");
+    }
+  }
+  for (const anchor of [m.null_baseline, m.conventional_baseline, m.experimental_ceiling]) {
+    if (!anchor) continue;
+    const claim = requireRecord(ix, anchor.claim_id, "claim");
+    if (!claim.links.some((l) => l.relation === "subject" && l.target_id === p.id))
+      throw Error(`Protocol anchor ${anchor.claim_id} belongs to another protocol`);
+    if (activeChecks && (!checked(claim) || ix.concerned.has(claim.id)))
+      throw Error(`Protocol anchor is not clean reviewed evidence: ${anchor.claim_id}`);
+    for (const sourceId of anchor.source_ids) {
+      const source = requireRecord(ix, sourceId, "source");
+      if (activeChecks && !cleanSource(source))
+        throw Error(`Protocol anchor source is disputed or unchecked: ${sourceId}`);
+    }
+    for (const methodId of anchor.method_ids || []) {
+      const method = ix.records.get(methodId);
+      if (!method || !["method", "baseline", "configuration", "model", "pipeline"].includes(method.kind) || method.status === "excluded")
+        throw Error(`Missing/wrong-kind public method record: ${methodId}`);
+      if (activeChecks && (inactive(method) || !checked(method) || method.source_ids.some((s) => !cleanSource(ix.records.get(s)))))
+        throw Error(`Protocol anchor method is disputed or unchecked: ${methodId}`);
+    }
+    for (const evalId of anchor.evaluation_ids || []) {
+      const evaluation = requireRecord(ix, evalId, "evaluation");
+      if (!evaluationLinks(ix, evaluation, "protocol").some((l) => l.target_id === p.id))
+        throw Error(`Protocol anchor evaluation belongs to another protocol: ${evalId}`);
+      if (activeChecks && (!checked(evaluation) || evaluation.source_ids.some((s) => !cleanSource(ix.records.get(s)))))
+        throw Error(`Protocol anchor evaluation is disputed or unchecked: ${evalId}`);
+    }
+    for (const resultId of anchor.result_ids || []) {
+      const result = requireRecord(ix, resultId, "result");
+      if (activeChecks && (!checked(result) || ix.concerned.has(result.id) || result.source_ids.some((s) => !cleanSource(ix.records.get(s)))))
+        throw Error(`Protocol anchor result is disputed or unchecked: ${resultId}`);
     }
   }
 }
@@ -493,22 +558,46 @@ export function changedPins(stored: JudgementPin[] | undefined, current: Judgeme
   return [...new Set([...before.keys(), ...after.keys()])].filter((id) => before.get(id) !== after.get(id)).sort();
 }
 
-/** The pins a reviewed judgement or summary claim should carry against the store as it is now.
- * Summaries rest on the reviewed evaluations of the use case's reviewed judgements. */
+/** Pins for a protocol anchor claim: the protocol, its sources, the claim's sources, and any
+ * referenced anchor evaluations and results. */
+export function protocolAnchorPins(
+  records: Map<string, CatalogueRecord>,
+  input: { protocolId: string; sourceIds?: string[]; evaluationIds?: string[]; resultIds?: string[] },
+): JudgementPin[] {
+  const protocol = records.get(input.protocolId);
+  const ids = [
+    input.protocolId, ...(protocol?.source_ids || []),
+    ...(input.sourceIds || []), ...(input.evaluationIds || []), ...(input.resultIds || []),
+  ];
+  return [...new Set(ids)].sort().map((id) => {
+    const r = records.get(id);
+    return r ? pinFor(r) : { record_id: id, fields: [], sha256: "missing" };
+  });
+}
+
+/** The pins a reviewed judgement, summary, baseline or protocol anchor claim should carry against
+ * the store as it is now. Summaries rest on the reviewed evaluations of the use case's reviewed judgements. */
 export function claimPins(records: Map<string, CatalogueRecord>, claim: CatalogueRecord): JudgementPin[] | undefined {
   const field = claim.attributes.field;
-  const useCaseId = claim.links.find((l) => l.relation === "subject")?.target_id;
-  if (!useCaseId || typeof field !== "string") return undefined;
+  const subjectId = claim.links.find((l) => l.relation === "subject")?.target_id;
+  if (!subjectId || typeof field !== "string") return undefined;
   if (field.startsWith("links:assessed_by:"))
-    return judgementPins(records, { useCaseId, protocolId: field.slice("links:assessed_by:".length), sourceIds: claim.source_ids, evaluationIds: reviewedEvaluations(claim) });
+    return judgementPins(records, { useCaseId: subjectId, protocolId: field.slice("links:assessed_by:".length), sourceIds: claim.source_ids, evaluationIds: reviewedEvaluations(claim) });
   // Descriptive claims on protocols also use the field "baseline"; only a use case's baseline is pinned.
   if (field === "baseline")
-    return records.get(useCaseId)?.kind === "use_case" ? judgementPins(records, { useCaseId, sourceIds: claim.source_ids }) : undefined;
+    return records.get(subjectId)?.kind === "use_case" ? judgementPins(records, { useCaseId: subjectId, sourceIds: claim.source_ids }) : undefined;
+  if ((ANCHOR_FIELDS as readonly string[]).includes(field))
+    return records.get(subjectId)?.kind === "protocol"
+      ? protocolAnchorPins(records, {
+          protocolId: subjectId, sourceIds: claim.source_ids,
+          evaluationIds: asTexts(claim.attributes.evaluation_ids), resultIds: asTexts(claim.attributes.result_ids),
+        })
+      : undefined;
   if (field !== "summary") return undefined;
   const evaluationIds = [...records.values()].filter((c) => c.kind === "claim" && checked(c)
     && typeof c.attributes.field === "string" && c.attributes.field.startsWith("links:assessed_by:")
-    && c.links.some((l) => l.relation === "subject" && l.target_id === useCaseId)).flatMap(reviewedEvaluations);
-  return judgementPins(records, { useCaseId, sourceIds: claim.source_ids, evaluationIds });
+    && c.links.some((l) => l.relation === "subject" && l.target_id === subjectId)).flatMap(reviewedEvaluations);
+  return judgementPins(records, { useCaseId: subjectId, sourceIds: claim.source_ids, evaluationIds });
 }
 
 type RecordReview = { method?: string[]; reviewer?: string[]; reviewer_note?: string; reviewed_at?: string; date?: string; note?: string };
@@ -583,6 +672,55 @@ export function deriveUseCaseInputs(input: { records: CatalogueRecord[]; publish
     const current = judgementPins(ix.records, { useCaseId, sourceIds: claim.source_ids });
     if (changedPins(claim.attributes.pins as JudgementPin[] | undefined, current).length) return undefined;
     return { name: String(claim.attributes.value), method_ids: methodIds, rationale: asText(claim.attributes.rationale), source_ids: claim.source_ids };
+  }
+  function reviewedAnchor(protocolId: string, field: AnchorField): ProtocolAnchor | undefined {
+    const claim = (claimsBySubject.get(protocolId) || []).find(
+      (c) => c.attributes.field === field && c.status !== "excluded" && c.status !== "superseded",
+    );
+    if (!claim || !checked(claim) || ix.concerned.has(claim.id) || !claim.source_ids.length
+        || !claim.source_ids.every((id) => cleanSource(ix.records.get(id)))) return undefined;
+    const protocol = ix.records.get(protocolId);
+    if (!protocol || protocol.kind !== "protocol" || !checked(protocol) || inactive(protocol)
+        || protocol.source_ids.some((id) => !cleanSource(ix.records.get(id)))
+        || [protocolId, ...evidencePath(undefined, undefined, [protocol])].some((id) => ix.concerned.has(id))) return undefined;
+    const a = claim.attributes;
+    const name = asText(a.value).trim(), metric = asText(a.metric).trim(), dir = asText(a.metric_direction).trim();
+    const unit = asText(a.unit).trim(), printed = asText(a.printed_value).trim(), rationale = asText(a.rationale).trim();
+    const locator = asText(a.source_locator).trim();
+    const numeric = typeof a.numeric_value === "number" ? String(a.numeric_value) : asText(a.numeric_value).trim();
+    if (!name || !metric || !unit || !printed || !rationale || !locator) return undefined;
+    if (!["higher", "lower", "target", "unknown"].includes(dir) || !/^-?\d+(?:\.\d+)?$/.test(numeric)) return undefined;
+    const methodIds = asTexts(a.method_ids), evaluationIds = asTexts(a.evaluation_ids), resultIds = asTexts(a.result_ids);
+    for (const id of methodIds) {
+      const m = ix.records.get(id);
+      if (!m || !["method", "baseline", "configuration", "model", "pipeline"].includes(m.kind) || !checked(m) || inactive(m)
+          || ix.concerned.has(id) || m.source_ids.some((s) => !cleanSource(ix.records.get(s)))) return undefined;
+    }
+    const protocolEvals = new Map<string, CatalogueRecord>();
+    for (const e of evaluationsByProtocol.get(protocolId) || []) protocolEvals.set(e.id, e);
+    for (const id of evaluationIds) {
+      const ev = protocolEvals.get(id);
+      if (!ev || !checked(ev) || inactive(ev) || ix.concerned.has(id)
+          || ev.source_ids.some((s) => !cleanSource(ix.records.get(s)))) return undefined;
+    }
+    const allowedEvals = evaluationIds.length ? new Set(evaluationIds) : new Set(protocolEvals.keys());
+    for (const id of resultIds) {
+      const res = ix.records.get(id);
+      if (!res || res.kind !== "result" || !checked(res) || inactive(res) || ix.concerned.has(id)
+          || res.source_ids.some((s) => !cleanSource(ix.records.get(s)))) return undefined;
+      const ev = res.links.filter((l) => l.relation === "evaluation")
+        .map((l) => (allowedEvals.has(l.target_id) ? protocolEvals.get(l.target_id) : undefined)).find(Boolean);
+      if (!ev || ix.pathConcerned(res, ev)) return undefined;
+    }
+    const current = protocolAnchorPins(ix.records, { protocolId, sourceIds: claim.source_ids, evaluationIds, resultIds });
+    if (changedPins(a.pins as JudgementPin[] | undefined, current).length) return undefined;
+    return {
+      claim_id: claim.id, name, metric, metric_direction: dir as ProtocolAnchor["metric_direction"], unit,
+      printed_value: printed, numeric_value: numeric, rationale, source_ids: claim.source_ids, source_locator: locator,
+      ...(methodIds.length ? { method_ids: methodIds } : {}),
+      ...(evaluationIds.length ? { evaluation_ids: evaluationIds } : {}),
+      ...(resultIds.length ? { result_ids: resultIds } : {}),
+    };
   }
   const useCases: UseCase[] = all.filter((r) => r.kind === "use_case" && r.status !== "excluded").map((r) => {
     const a = r.attributes;
@@ -677,7 +815,16 @@ export function deriveUseCaseInputs(input: { records: CatalogueRecord[]; publish
     if (isPositive && !eligible.length) blockers.push("no evaluation on the protocol is eligible evidence");
     if (eligible.length > MAX_JUDGEMENT_EVALUATIONS) blockers.push(`more than ${MAX_JUDGEMENT_EVALUATIONS} eligible evaluations; split the protocol`);
     if (!review) blockers.push("the judgement has no recorded review");
-    const draft: Mapping = { ...base, lifecycle: "active", reason: asText(a.reason), evaluation_ids: eligible.map((e) => e.id).slice(0, MAX_JUDGEMENT_EVALUATIONS), ...(review ? { review } : {}) };
+    const anchors: Pick<Mapping, "null_baseline" | "conventional_baseline" | "experimental_ceiling"> = {};
+    if (isPositive) {
+      const nullBaseline = reviewedAnchor(protocolId, "null_baseline");
+      const conventionalBaseline = reviewedAnchor(protocolId, "conventional_baseline");
+      const experimentalCeiling = reviewedAnchor(protocolId, "experimental_ceiling");
+      if (nullBaseline) anchors.null_baseline = nullBaseline;
+      if (conventionalBaseline) anchors.conventional_baseline = conventionalBaseline;
+      if (experimentalCeiling) anchors.experimental_ceiling = experimentalCeiling;
+    }
+    const draft: Mapping = { ...base, ...anchors, lifecycle: "active", reason: asText(a.reason), evaluation_ids: eligible.map((e) => e.id).slice(0, MAX_JUDGEMENT_EVALUATIONS), ...(review ? { review } : {}) };
     if (blockers.length) {
       mappings.push({ ...draft, lifecycle: "needs_review", reason: `Withheld: ${blockers.join("; ")}.` });
       continue;

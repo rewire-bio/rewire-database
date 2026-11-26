@@ -91,4 +91,4 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         # Pushes made with this token do not start workflows; a dispatch does.
-        run: gh workflow run firebase.yml --ref main
+        run: gh workflow run firebase.yml --ref main -f adopted=true

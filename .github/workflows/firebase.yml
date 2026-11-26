@@ -9,6 +9,10 @@ on:
         description: Recheck current data and redeploy the backend, image and Worker
         type: boolean
         default: false
+      adopted:
+        description: Started by the data adoption, which has just run lint, the type check and every test on this commit
+        type: boolean
+        default: false
 permissions:
   contents: read
 jobs:
@@ -338,7 +342,10 @@ jobs:
         if: steps.data-cache.outputs.cache-hit != 'true'
         run: node scripts/select-current-data.mjs
       - run: npm run data:prepare -- --current-only
-      - run: npm run test:ui:coverage
+      # The adoption workflow runs the whole suite on the commit it then dispatches, so a
+      # deployment it starts does not run it a second time. Pushes and manual runs still do.
+      - if: inputs.adopted != true
+        run: npm run test:ui:coverage
   main-quality:
     # Runs beside checks; publish waits for it.
     concurrency:
@@ -380,8 +387,10 @@ jobs:
         if: steps.data-cache.outputs.cache-hit != 'true'
         run: node scripts/select-current-data.mjs
       - run: npm run data:prepare -- --current-only
-      - run: npm run lint
-      - run: npm run typecheck
+      - if: inputs.adopted != true
+        run: npm run lint
+      - if: inputs.adopted != true
+        run: npm run typecheck
   main-api:
     # Runs beside checks; publish waits for it.
     concurrency:

@@ -123,6 +123,9 @@ describe("Predictive Entity Detail Redesign (TC-PED-01 to TC-PED-08)", () => {
     const bareHtml = renderToStaticMarkup(<PredictiveEntityDetail detail={bare} />);
     expect(bareHtml).not.toContain("24 GB");
     expect(bareHtml).not.toContain("125 ms");
+    // A record with no measured memory or latency gets no tile for either.
+    expect(bareHtml).not.toContain("Minimum VRAM");
+    expect(bareHtml).not.toContain("Inference Latency");
   });
 
   it("TC-PED-04b: the capability card shows access and licence in the record's own words (#230)", () => {

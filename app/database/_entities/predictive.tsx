@@ -315,10 +315,12 @@ export function PredictiveEntityDetail({ detail }: { detail: RecordDetail }) {
               telemetry,
               url: `https://benchmarks.rewirebio.io${recordHref(record)}`,
             });
+            // Memory and latency are measurements. No record in the release carries one yet, so their
+            // tiles appear only on a record that does; the four descriptive facts always show.
             const tiles: [string, string][] = [
               ["Parameters", telemetry.parameters ?? NOT_RECORDED],
-              ["Minimum VRAM", telemetry.min_vram_gb !== null ? `${telemetry.min_vram_gb} GB` : NOT_RECORDED],
-              ["Inference Latency", telemetry.inference_latency_ms !== null ? `${telemetry.inference_latency_ms} ms` : NOT_RECORDED],
+              ...(telemetry.min_vram_gb !== null ? [["Minimum VRAM", `${telemetry.min_vram_gb} GB`] as [string, string]] : []),
+              ...(telemetry.inference_latency_ms !== null ? [["Inference Latency", `${telemetry.inference_latency_ms} ms`] as [string, string]] : []),
               ["Context Window", telemetry.context_window ?? NOT_RECORDED],
               ["Access", telemetry.access ?? NOT_RECORDED],
               [licenceLabel(telemetry), telemetry.license ?? NOT_RECORDED],

@@ -151,6 +151,9 @@ describe("Predictive Entity Detail Redesign (TC-PED-01 to TC-PED-08)", () => {
     const ladon = render({ access: "No model weights, code repository or model licence is published with the report." });
     expect(tile(ladon, "Access")![2]).toBe("No model weights, code repository or model licence is…");
     expect(tile(ladon, "License")![2]).toBe("Not recorded");
+    // The record was checked and its developers state no licence: the tile says that.
+    const unstated = render(facts(["Weights licence", "No licence is stated on the model card.", "unreported"], ["Code licence", "No licence file in the repository.", "unreported"]));
+    expect(tile(unstated, "License")![2]).toBe("Not stated by the developers");
     for (const html of [bacformer, ladon])
       for (const invented of ["Hosted API", "Open Weights", "Academic / Research", "Unspecified", "Proprietary"])
         expect([tile(html, "Access")![2], tile(html, "License")![2]].join(" ")).not.toContain(invented);

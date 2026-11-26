@@ -135,12 +135,12 @@ export function generateModelTakeaway(
     return {
       title: "Model Benchmark Takeaway",
       primaryStatement: `${capitalise(rowStatement(first.board, first.row))} (${ordinalOf(first.row, first.board)} for "${first.board.use_case_title}").${others}`,
-      secondaryStatement: `Recorded parameters: ${telemetry.parameters ?? NOT_RECORDED}. ${licenceLabel(telemetry, "Licence")}: ${telemetry.license ?? NOT_RECORDED}.`,
+      secondaryStatement: `Recorded parameters: ${(telemetry.parameters ?? NOT_RECORDED).replace(/\.$/, "")}. ${licenceLabel(telemetry, "Licence")}: ${telemetry.license ?? NOT_RECORDED}.`,
     };
   }
   return {
     title: "Model Deployment Profile",
     primaryStatement: `${record.name} has no ranked result on a use-case protocol in this release.`,
-    secondaryStatement: `Recorded parameters: ${telemetry.parameters ?? NOT_RECORDED}. ${licenceLabel(telemetry, "Licence")}: ${telemetry.license ?? NOT_RECORDED}.`,
+    secondaryStatement: `Recorded parameters: ${(telemetry.parameters ?? NOT_RECORDED).replace(/\.$/, "")}. ${licenceLabel(telemetry, "Licence")}: ${telemetry.license ?? NOT_RECORDED}.`,
   };
 }

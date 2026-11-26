@@ -119,16 +119,26 @@ describe("reviewed run instructions", () => {
       "Invalid run documentation owner",
     );
   });
-  it("rejects guides assigned to models or another benchmark", () => {
+  it("rejects guides assigned to datasets or another benchmark", () => {
     const { benchmark, byId } = fixture();
     benchmark.attributes = { run_guide: { ...guide(), record_id: "other" } };
     expect(() => validateRunGuide(benchmark, byId)).toThrow(
       "Run guide belongs to another record",
     );
-    benchmark.kind = "model";
+    // A dataset is refused by every version of the shared rule. Models and methods are allowed
+    // from the data release that adds run guides to model records.
+    benchmark.kind = "dataset";
     expect(() => validateRunGuide(benchmark, byId)).toThrow(
       "Run instructions require",
     );
+  });
+  it("renders a model's run guide, and nothing for a model without one", () => {
+    const { source, benchmark } = fixture();
+    const model = { ...benchmark, kind: "model" as const, attributes: { run_guide: guide() } };
+    const html = renderToStaticMarkup(<RunGuide record={model} sources={[source]} embedded />);
+    expect(html).toContain("python score.py --input predictions.csv");
+    expect(html).toContain("These commands have not been executed by rewire");
+    expect(renderToStaticMarkup(<RunGuide record={{ ...model, attributes: {} }} sources={[source]} embedded />)).toBe("");
   });
   it("requires an artifact hash and a record-level source link", () => {
     const { source, benchmark, byId } = fixture();

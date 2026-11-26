@@ -74,7 +74,10 @@ export async function main(args = process.argv.slice(2)) {
   const cloudRun = cloudRunConfig();
   const edge = edgeConfig();
   const samples = candidateSamples(JSON.parse(await readFile('public/omics/catalogue.json', 'utf8')));
-  const acceptance = plan.mode === 'full' || plan.backend ? 'full' : liveAcceptanceProfile(plan);
+  // A data adoption with no backend change takes the short check here and the full one in a
+  // later job, so the full check (about 25 minutes) does not hold the next publication.
+  const deferred = process.env.LIVE_ACCEPTANCE === 'core' && !plan.backend;
+  const acceptance = deferred ? 'core' : plan.mode === 'full' || plan.backend ? 'full' : liveAcceptanceProfile(plan);
   if (validReceipt(plan.previous) && JSON.stringify(await publishedReceipt()) !== JSON.stringify(plan.previous))
     throw new Error('Frontend publication changed during preparation; rebuild before publishing');
   await publishFrontend({

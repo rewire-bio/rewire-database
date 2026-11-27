@@ -597,7 +597,17 @@ jobs:
         with:
           name: live-check-release-${{ github.sha }}-${{ github.run_attempt }}
           path: .
-      - run: node scripts/check-live-catalogue.mjs "$ORIGIN" --website --independent-frontend --acceptance=full
+      # This check reads the release this run published. If a newer release goes live while it
+      # runs, the pages it asks for are gone and it fails for a reason that is not a fault: the
+      # newer release's own run checks the site as it then is. So a run whose release is no
+      # longer the live one stops without failing.
+      - run: |
+          expected=$(node -p "require('./public/omics/manifest.json').release_id")
+          live() { curl -fsS --max-time 30 "$ORIGIN/release-manifest.json" | grep -oE '[0-9]{4}-[0-9]{2}-[0-9]{2}-[0-9a-f]{12}' | head -1; }
+          if [ "$(live)" != "$expected" ]; then echo "::notice::Release $expected is no longer live; a newer release's run checks the site."; exit 0; fi
+          if node scripts/check-live-catalogue.mjs "$ORIGIN" --website --independent-frontend --acceptance=full; then exit 0; fi
+          if [ "$(live)" != "$expected" ]; then echo "::notice::Release $expected was replaced while it was being checked; a newer release's run checks the site."; exit 0; fi
+          exit 1
         env:
           ORIGIN: ${{ vars.CLOUDFLARE_PUBLIC_ORIGIN || 'https://benchmarks.rewirebio.io' }}
           OMICS_CONTRIBUTIONS_ENABLED: ${{ vars.OMICS_CONTRIBUTIONS_ENABLED || 'false' }}

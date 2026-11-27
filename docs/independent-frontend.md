@@ -55,7 +55,7 @@ These steps change cloud resources, so they are not automated here:
 
 On failure in step 4, traffic returns to the previous revision and the Worker restores its previous version. The data release moves with the image, so this also rolls back the data. A failure before traffic moves leaves production unchanged.
 
-A data adoption with no backend change runs the short (`core`) live catalogue check in step 4. The full check, which follows every use case's mappings through the public API and takes about 25 minutes, then runs in the `full-live-check` job, outside the publication queue, so the next release does not wait for it. A failure there does not move traffic back. It fails the run, which raises the pipeline alert, and the fix is a new release or a manual rollback to the previous revision.
+A data adoption with no backend change runs the short (`core`) live catalogue check in step 4. The full check, which follows every use case's mappings through the public API and takes about 25 minutes, then runs in the `full-live-check` job, outside the publication queue, so the next release does not wait for it. If a newer release goes live while the full check runs, the check stops without failing, because the newer release's own run checks the site. A failure there does not move traffic back. It fails the run, which raises the pipeline alert, and the fix is a new release or a manual rollback to the previous revision.
 
 ## Limits
 

@@ -1,0 +1,634 @@
+{
+ "names": {
+  "perturbpfn-20261115-method-grnboost2": "GRNBoost2",
+  "perturbpfn-20261115-method-ppcor": "PPCOR (partial Pearson correlation)",
+  "discovery-model-dnabert-2": "DNABERT-2",
+  "discovery-model-nucleotide-transformer": "Nucleotide Transformer",
+  "discovery-model-esm3": "ESM3",
+  "discovery-model-esm-2": "ESM-2",
+  "somatic-oncogenicity-20261009-method-provean": "PROVEAN",
+  "somatic-oncogenicity-20261009-method-sift": "SIFT",
+  "gfm2-20261011-you2026-model-rnaernie": "RNAErnie",
+  "lit-rna-20261011-rnalm-zeroshot-model-aido-rna": "AIDO.RNA"
+ },
+ "findings": [
+  {
+   "id": "discrepancy-0311356983b743d6",
+   "rule": "ordering-reversal",
+   "systems": [
+    "perturbpfn-20261115-method-grnboost2",
+    "perturbpfn-20261115-method-ppcor"
+   ],
+   "consensus_higher": "perturbpfn-20261115-method-grnboost2",
+   "reference_system": null,
+   "numbers": {
+    "outlier_comparisons": 12,
+    "outlier_reversals": 9,
+    "consensus_comparisons": 55,
+    "consensus_agreements": 47,
+    "consensus_studies": 2,
+    "consensus_study_agreements": 2
+   },
+   "studies": [
+    {
+     "key": "source:acquired-source-0f6c059ffdc338b70a5c",
+     "role": "outlier",
+     "source_ids": [
+      "acquired-source-0f6c059ffdc338b70a5c"
+     ],
+     "higher": {
+      "perturbpfn-20261115-method-grnboost2": 3,
+      "perturbpfn-20261115-method-ppcor": 9
+     },
+     "ties": 0,
+     "gap": null,
+     "comparisons_total": 12,
+     "comparisons": []
+    },
+    {
+     "key": "source:acquired-source-31344fb7e5e8ae6b9666",
+     "role": "consensus",
+     "source_ids": [
+      "acquired-source-31344fb7e5e8ae6b9666"
+     ],
+     "higher": {
+      "perturbpfn-20261115-method-grnboost2": 37,
+      "perturbpfn-20261115-method-ppcor": 6
+     },
+     "ties": 1,
+     "gap": null,
+     "comparisons_total": 44,
+     "comparisons": []
+    },
+    {
+     "key": "source:acquired-source-3156602fda847ae943b4",
+     "role": "consensus",
+     "source_ids": [
+      "acquired-source-3156602fda847ae943b4"
+     ],
+     "higher": {
+      "perturbpfn-20261115-method-grnboost2": 10,
+      "perturbpfn-20261115-method-ppcor": 2
+     },
+     "ties": 3,
+     "gap": null,
+     "comparisons_total": 15,
+     "comparisons": []
+    }
+   ]
+  },
+  {
+   "id": "discrepancy-44e5640b79522964",
+   "rule": "ordering-reversal",
+   "systems": [
+    "somatic-oncogenicity-20261009-method-provean",
+    "somatic-oncogenicity-20261009-method-sift"
+   ],
+   "consensus_higher": "somatic-oncogenicity-20261009-method-provean",
+   "reference_system": null,
+   "numbers": {
+    "outlier_comparisons": 3,
+    "outlier_reversals": 3,
+    "consensus_comparisons": 31,
+    "consensus_agreements": 30,
+    "consensus_studies": 3,
+    "consensus_study_agreements": 3
+   },
+   "studies": [
+    {
+     "key": "doi:10.1038/s41588-023-01465-0",
+     "role": "outlier",
+     "source_ids": [
+      "gfm-guides-20261014-esm1b-source-brandes2023-supplementary-table-2"
+     ],
+     "higher": {
+      "somatic-oncogenicity-20261009-method-provean": 0,
+      "somatic-oncogenicity-20261009-method-sift": 3
+     },
+     "ties": 1,
+     "gap": null,
+     "comparisons_total": 4,
+     "comparisons": []
+    },
+    {
+     "key": "doi:10.1186/s13059-020-01954-z",
+     "role": "consensus",
+     "source_ids": [
+      "somatic-oncogenicity-20261009-source-chen2020",
+      "somatic-oncogenicity-20261009-source-chen2020-additional-file-10",
+      "somatic-oncogenicity-20261009-source-chen2020-additional-file-21",
+      "somatic-oncogenicity-20261009-source-chen2020-additional-file-22",
+      "somatic-oncogenicity-20261009-source-chen2020-additional-file-9"
+     ],
+     "higher": {
+      "somatic-oncogenicity-20261009-method-provean": 17,
+      "somatic-oncogenicity-20261009-method-sift": 1
+     },
+     "ties": 2,
+     "gap": null,
+     "comparisons_total": 20,
+     "comparisons": []
+    },
+    {
+     "key": "doi:10.1186/s13059-025-03575-w",
+     "role": "consensus",
+     "source_ids": [
+      "vep-lit-20261014-source-livesey2025-article",
+      "vep-lit-20261014-source-livesey2025-supplementary-2"
+     ],
+     "higher": {
+      "somatic-oncogenicity-20261009-method-provean": 7,
+      "somatic-oncogenicity-20261009-method-sift": 0
+     },
+     "ties": 0,
+     "gap": null,
+     "comparisons_total": 7,
+     "comparisons": []
+    },
+    {
+     "key": "doi:10.64898/2026.07.16.739080",
+     "role": "consensus",
+     "source_ids": [
+      "somatic-oncogenicity-20261009-source-lee2026",
+      "somatic-oncogenicity-20261009-source-lee2026-oncocal-tool-performance"
+     ],
+     "higher": {
+      "somatic-oncogenicity-20261009-method-provean": 6,
+      "somatic-oncogenicity-20261009-method-sift": 0
+     },
+     "ties": 0,
+     "gap": null,
+     "comparisons_total": 6,
+     "comparisons": []
+    },
+    {
+     "key": "doi:10.1038/s41436-021-01265-z",
+     "role": "consensus",
+     "source_ids": [
+      "brca-20261009-source-cubuk2021",
+      "brca-20261009-source-cubuk2021-supplementary-tables"
+     ],
+     "higher": {
+      "somatic-oncogenicity-20261009-method-provean": 2,
+      "somatic-oncogenicity-20261009-method-sift": 3
+     },
+     "ties": 0,
+     "gap": null,
+     "comparisons_total": 5,
+     "comparisons": []
+    },
+    {
+     "key": "doi:10.1101/2023.12.07.570727",
+     "role": "consensus",
+     "source_ids": [
+      "evidence-expansion-proteingym-a3b08cc4",
+      "proteingym-2023",
+      "uc20260930-source-proteingym-amfr-spearman",
+      "vep-lit-20261014-source-proteingym-clinical-supervised-substitutions-auc-summary-144fe22",
+      "vep-lit-20261014-source-proteingym-clinical-zero-shot-indels-auc-summary-144fe22",
+      "vep-lit-20261014-source-proteingym-clinical-zero-shot-substitutions-auc-summary-144fe22",
+      "vep-lit-20261014-source-proteingym-dms-substitutions-spearman-summary-144fe22"
+     ],
+     "higher": {
+      "somatic-oncogenicity-20261009-method-provean": 0,
+      "somatic-oncogenicity-20261009-method-sift": 0
+     },
+     "ties": 1,
+     "gap": null,
+     "comparisons_total": 1,
+     "comparisons": []
+    }
+   ]
+  },
+  {
+   "id": "discrepancy-31564883eee95750",
+   "rule": "ordering-reversal",
+   "systems": [
+    "discovery-model-dnabert-2",
+    "discovery-model-nucleotide-transformer"
+   ],
+   "consensus_higher": "discovery-model-nucleotide-transformer",
+   "reference_system": null,
+   "numbers": {
+    "outlier_comparisons": 3,
+    "outlier_reversals": 3,
+    "consensus_comparisons": 134,
+    "consensus_agreements": 95,
+    "consensus_studies": 8,
+    "consensus_study_agreements": 7
+   },
+   "studies": [
+    {
+     "key": "doi:10.1101/2025.01.30.635558",
+     "role": "outlier",
+     "source_ids": [
+      "genomeocean-2025",
+      "part2-genomeocean-2025"
+     ],
+     "higher": {
+      "discovery-model-dnabert-2": 3,
+      "discovery-model-nucleotide-transformer": 0
+     },
+     "ties": 0,
+     "gap": null,
+     "comparisons_total": 3,
+     "comparisons": []
+    },
+    {
+     "key": "repository:https://github.com/darlednik/geneb",
+     "role": "consensus",
+     "source_ids": [
+      "lit-genomics-20261011-geneb-source-leaderboard"
+     ],
+     "higher": {
+      "discovery-model-dnabert-2": 8,
+      "discovery-model-nucleotide-transformer": 35
+     },
+     "ties": 2,
+     "gap": null,
+     "comparisons_total": 45,
+     "comparisons": []
+    },
+    {
+     "key": "source:evidence-expansion-gue-49300ace",
+     "role": "consensus",
+     "source_ids": [
+      "evidence-expansion-gue-49300ace"
+     ],
+     "higher": {
+      "discovery-model-dnabert-2": 24,
+      "discovery-model-nucleotide-transformer": 2
+     },
+     "ties": 2,
+     "gap": null,
+     "comparisons_total": 28,
+     "comparisons": []
+    },
+    {
+     "key": "source:evidence-expansion-p2-evidence-discovery-final-dart-4194b137ba55",
+     "role": "consensus",
+     "source_ids": [
+      "evidence-expansion-p2-evidence-discovery-final-dart-4194b137ba55"
+     ],
+     "higher": {
+      "discovery-model-dnabert-2": 3,
+      "discovery-model-nucleotide-transformer": 14
+     },
+     "ties": 5,
+     "gap": null,
+     "comparisons_total": 22,
+     "comparisons": []
+    },
+    {
+     "key": "doi:10.1038/s41592-024-02523-z",
+     "role": "consensus",
+     "source_ids": [
+      "gfm-guide-20261014-source-nt-nature-methods",
+      "lit-genomics-20261011-ntbench-source-dallatorre2025-si"
+     ],
+     "higher": {
+      "discovery-model-dnabert-2": 8,
+      "discovery-model-nucleotide-transformer": 7
+     },
+     "ties": 4,
+     "gap": null,
+     "comparisons_total": 19,
+     "comparisons": []
+    },
+    {
+     "key": "doi:10.1101/2025.09.05.674459",
+     "role": "consensus",
+     "source_ids": [
+      "lu-hetero-20261019-source-preprint-v2"
+     ],
+     "higher": {
+      "discovery-model-dnabert-2": 1,
+      "discovery-model-nucleotide-transformer": 12
+     },
+     "ties": 1,
+     "gap": null,
+     "comparisons_total": 14,
+     "comparisons": []
+    },
+    {
+     "key": "doi:10.1038/s41467-025-66899-y",
+     "role": "consensus",
+     "source_ids": [
+      "gfm2-20261011-you2026-source",
+      "gfm2-20261011-you2026-source-supplement"
+     ],
+     "higher": {
+      "discovery-model-dnabert-2": 0,
+      "discovery-model-nucleotide-transformer": 12
+     },
+     "ties": 0,
+     "gap": null,
+     "comparisons_total": 12,
+     "comparisons": []
+    },
+    {
+     "key": "doi:10.1101/2025.07.05.662870",
+     "role": "consensus",
+     "source_ids": [
+      "expansion-p3-mrnabench-2025",
+      "mrnabench-2025"
+     ],
+     "higher": {
+      "discovery-model-dnabert-2": 1,
+      "discovery-model-nucleotide-transformer": 8
+     },
+     "ties": 1,
+     "gap": null,
+     "comparisons_total": 10,
+     "comparisons": []
+    },
+    {
+     "key": "doi:10.1101/2025.07.20.665723",
+     "role": "consensus",
+     "source_ids": [
+      "bacformer-20261115-source-bacbench-licence",
+      "bacformer-20261115-source-bacbench-readme",
+      "bacformer-20261115-source-bacformer-licence",
+      "bacformer-20261115-source-bacformer-readme",
+      "bacformer-20261115-source-hf-card-bacformer-causal-complete-genomes",
+      "bacformer-20261115-source-hf-card-bacformer-causal-mag",
+      "bacformer-20261115-source-hf-card-bacformer-for-ppi-prediction",
+      "bacformer-20261115-source-hf-card-bacformer-large-masked-complete-genomes",
+      "bacformer-20261115-source-hf-card-bacformer-large-masked-mag",
+      "bacformer-20261115-source-hf-card-bacformer-masked-complete-genomes",
+      "bacformer-20261115-source-hf-card-bacformer-masked-mag",
+      "bacformer-20261115-source-preprint-v2",
+      "bacformer-20261115-source-preprint-v3"
+     ],
+     "higher": {
+      "discovery-model-dnabert-2": 1,
+      "discovery-model-nucleotide-transformer": 9
+     },
+     "ties": 0,
+     "gap": null,
+     "comparisons_total": 10,
+     "comparisons": []
+    },
+    {
+     "key": "source:evidence-expansion-bend-final-f709b6be",
+     "role": "consensus",
+     "source_ids": [
+      "evidence-expansion-bend-final-f709b6be"
+     ],
+     "higher": {
+      "discovery-model-dnabert-2": 5,
+      "discovery-model-nucleotide-transformer": 2
+     },
+     "ties": 0,
+     "gap": null,
+     "comparisons_total": 7,
+     "comparisons": []
+    },
+    {
+     "key": "doi:10.3390/genes16101223",
+     "role": "consensus",
+     "source_ids": [
+      "regulatory-variant-20261009-source-manzo2025"
+     ],
+     "higher": {
+      "discovery-model-dnabert-2": 1,
+      "discovery-model-nucleotide-transformer": 3
+     },
+     "ties": 0,
+     "gap": null,
+     "comparisons_total": 4,
+     "comparisons": []
+    }
+   ]
+  },
+  {
+   "id": "discrepancy-055eb0dd61040574",
+   "rule": "two-study-conflict",
+   "systems": [
+    "gfm2-20261011-you2026-model-rnaernie",
+    "lit-rna-20261011-rnalm-zeroshot-model-aido-rna"
+   ],
+   "consensus_higher": null,
+   "reference_system": null,
+   "numbers": {
+    "studies": 2
+   },
+   "studies": [
+    {
+     "key": "doi:10.1093/bib/bbag098",
+     "role": "party",
+     "source_ids": [
+      "lit-rna-20261011-rnalm-zeroshot-source-wang2026",
+      "lit-rna-20261011-rnalm-zeroshot-source-wang2026-supplement"
+     ],
+     "higher": {
+      "gfm2-20261011-you2026-model-rnaernie": 0,
+      "lit-rna-20261011-rnalm-zeroshot-model-aido-rna": 36
+     },
+     "ties": 0,
+     "gap": null,
+     "comparisons_total": 36,
+     "comparisons": []
+    },
+    {
+     "key": "repository:https://github.com/markslab-daslab/rnagym",
+     "role": "party",
+     "source_ids": [
+      "lit-rna-20261011-rnagym-source-leaderboard-v0-1-1"
+     ],
+     "higher": {
+      "gfm2-20261011-you2026-model-rnaernie": 3,
+      "lit-rna-20261011-rnalm-zeroshot-model-aido-rna": 1
+     },
+     "ties": 0,
+     "gap": null,
+     "comparisons_total": 4,
+     "comparisons": []
+    }
+   ]
+  },
+  {
+   "id": "discrepancy-5079a7277df150f3",
+   "rule": "gap-outlier",
+   "systems": [
+    "discovery-model-esm3",
+    "discovery-model-esm-2"
+   ],
+   "consensus_higher": null,
+   "reference_system": "discovery-model-esm-2",
+   "numbers": {
+    "outlier_gap": 0.2025,
+    "consensus_gap_min": -0.057,
+    "consensus_gap_max": -0.0145
+   },
+   "studies": [
+    {
+     "key": "doi:10.1101/2023.12.07.570727",
+     "role": "outlier",
+     "source_ids": [
+      "evidence-expansion-proteingym-a3b08cc4",
+      "proteingym-2023",
+      "uc20260930-source-proteingym-amfr-spearman",
+      "vep-lit-20261014-source-proteingym-clinical-supervised-substitutions-auc-summary-144fe22",
+      "vep-lit-20261014-source-proteingym-clinical-zero-shot-indels-auc-summary-144fe22",
+      "vep-lit-20261014-source-proteingym-clinical-zero-shot-substitutions-auc-summary-144fe22",
+      "vep-lit-20261014-source-proteingym-dms-substitutions-spearman-summary-144fe22"
+     ],
+     "higher": {
+      "discovery-model-esm3": 18,
+      "discovery-model-esm-2": 0
+     },
+     "ties": 1,
+     "gap": 0.2025,
+     "comparisons_total": 19,
+     "comparisons": []
+    },
+    {
+     "key": "repository:https://github.com/tencent-hunyuan/hyra-results",
+     "role": "consensus",
+     "source_ids": [
+      "hycell-20261106-source-citation",
+      "hycell-20261106-source-model-readme",
+      "hycell-20261106-source-notice",
+      "hycell-20261106-source-pyproject",
+      "hycell-20261106-source-report",
+      "hycell-20261106-source-weights",
+      "hycell-20261106-source-weights-sidecar",
+      "hyinv-20261106-source-licence",
+      "hyinv-20261106-source-model-readme",
+      "hyinv-20261106-source-report",
+      "hyplm-flash-20261106-source-engine-graphs",
+      "hyplm-flash-20261106-source-engine-model",
+      "hyplm-flash-20261106-source-engine-packing",
+      "hyplm-flash-20261106-source-licence",
+      "hyplm-flash-20261106-source-model-readme",
+      "hyplm-flash-20261106-source-report",
+      "hyra-results-20261106-source-repository-licence",
+      "hyra-results-20261106-source-repository-readme"
+     ],
+     "higher": {
+      "discovery-model-esm3": 4,
+      "discovery-model-esm-2": 6
+     },
+     "ties": 1,
+     "gap": -0.0145,
+     "comparisons_total": 11,
+     "comparisons": []
+    },
+    {
+     "key": "doi:10.48550/arxiv.2506.14796",
+     "role": "consensus",
+     "source_ids": [
+      "expansion-p3-pfmbench"
+     ],
+     "higher": {
+      "discovery-model-esm3": 0,
+      "discovery-model-esm-2": 1
+     },
+     "ties": 0,
+     "gap": -0.057,
+     "comparisons_total": 1,
+     "comparisons": []
+    }
+   ]
+  }
+ ],
+ "sources": {
+  "acquired-source-0f6c059ffdc338b70a5c": {
+   "name": "BEELINE: 10.1038/s41592-019-0690-6 source data published 2020",
+   "year": null
+  },
+  "acquired-source-31344fb7e5e8ae6b9666": {
+   "name": "BEELINE: 10.1038/s41592-019-0690-6 source data published 2020",
+   "year": null
+  },
+  "acquired-source-3156602fda847ae943b4": {
+   "name": "BEELINE: 10.1038/s41592-019-0690-6 source data published 2020",
+   "year": null
+  },
+  "bacformer-20261115-source-bacbench-licence": {
+   "name": "BacBench LICENSE file at commit 64b7d45",
+   "year": null
+  },
+  "brca-20261009-source-cubuk2021": {
+   "name": "Clinical likelihood ratios and balanced accuracy for 44 in silico tools against multiple large-scale functional assays of cancer susceptibility genes",
+   "year": null
+  },
+  "evidence-expansion-bend-final-f709b6be": {
+   "name": "BEND: Benchmarking DNA Language Models on Biologically Meaningful Tasks",
+   "year": null
+  },
+  "evidence-expansion-gue-49300ace": {
+   "name": "DNABERT-2: Efficient Foundation Model and Benchmark for Multi-Species Genomes",
+   "year": null
+  },
+  "evidence-expansion-p2-evidence-discovery-final-dart-4194b137ba55": {
+   "name": "DART-Eval: A Comprehensive DNA Language Model Evaluation Benchmark on Regulatory DNA",
+   "year": null
+  },
+  "evidence-expansion-proteingym-a3b08cc4": {
+   "name": "ProteinGym: Large-Scale Benchmarks for Protein Fitness Prediction and Design",
+   "year": null
+  },
+  "expansion-p3-mrnabench-2025": {
+   "name": "mRNABench: A curated benchmark for mature mRNA property and function prediction",
+   "year": null
+  },
+  "expansion-p3-pfmbench": {
+   "name": "pfmbench primary benchmark evidence",
+   "year": null
+  },
+  "genomeocean-2025": {
+   "name": "GenomeOcean: An Efficient Genome Foundation Model Trained on Large-Scale Metagenomic Assemblies",
+   "year": null
+  },
+  "gfm-guide-20261014-source-nt-nature-methods": {
+   "name": "Nucleotide Transformer: building and evaluating robust foundation models for human genomics (Nature Methods)",
+   "year": null
+  },
+  "gfm-guides-20261014-esm1b-source-brandes2023-supplementary-table-2": {
+   "name": "Brandes et al. 2023 Supplementary Table 2: full benchmark evaluations of ESM1b and all other methods",
+   "year": 2023
+  },
+  "gfm2-20261011-you2026-source": {
+   "name": "Benchmarking pre-trained genomic language models for RNA sequence-related predictive applications",
+   "year": null
+  },
+  "hycell-20261106-source-citation": {
+   "name": "HyCell CITATION.cff (commit 0dcc533c)",
+   "year": null
+  },
+  "lit-genomics-20261011-geneb-source-leaderboard": {
+   "name": "GENEB leaderboard (leaderboard.json, 13 task-type aggregates)",
+   "year": null
+  },
+  "lit-rna-20261011-rnagym-source-leaderboard-v0-1-1": {
+   "name": "RNAGym fitness leaderboard (v0.1.1), leaderboard/fitness/README.md",
+   "year": null
+  },
+  "lit-rna-20261011-rnalm-zeroshot-source-wang2026": {
+   "name": "Zero-shot benchmarking of RNA language models in structural, functional, and evolutionary learning",
+   "year": null
+  },
+  "lu-hetero-20261019-source-preprint-v2": {
+   "name": "Genomic heterogeneity inflates the performance of variant pathogenicity predictions (Lu, Liu, Lin and Brandes, bioRxiv 2025, v2)",
+   "year": null
+  },
+  "regulatory-variant-20261009-source-manzo2025": {
+   "name": "Comparative Analysis of Deep Learning Models for Predicting Causative Regulatory Variants",
+   "year": null
+  },
+  "somatic-oncogenicity-20261009-source-chen2020": {
+   "name": "Comprehensive assessment of computational algorithms in predicting cancer driver mutations",
+   "year": null
+  },
+  "somatic-oncogenicity-20261009-source-lee2026": {
+   "name": "An openly licensed benchmark and per-gene calibration map for missense pathogenicity predictors on activating cancer drivers",
+   "year": null
+  },
+  "vep-lit-20261014-source-livesey2025-article": {
+   "name": "Livesey and Marsh 2025, Genome Biology 26:104 (Europe PMC full text XML)",
+   "year": null
+  }
+ }
+}

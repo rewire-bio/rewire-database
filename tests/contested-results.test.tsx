@@ -257,13 +257,11 @@ describe("contested results: pages", () => {
     const { default: FindingPage } = await import("../app/contested/[id]/page");
     const html = renderToStaticMarkup(<FindingPage params={{ id: studied.id }} />);
     expect(html).toContain("Which studies agree");
+    expect(html).not.toContain("Papers grouped by");
     // The disagreeing study comes first, in the chart and the table, and is marked in words.
     expect(html).toContain("2 papers rank ALPHAGENOME above SPLICEAI in all 6 comparisons that are not ties (1 is a tie). ALAVI-2026 ranks SPLICEAI above ALPHAGENOME in all 2 of its comparisons.");
-    expect(html).toContain("Papers grouped by which system they rank higher: ALPHAGENOME or SPLICEAI");
-    expect(html).toContain("Rank ALPHAGENOME higher: 10.1234/third, STUDY-B. Rank SPLICEAI higher: ALAVI-2026 (disagrees). Mixed: none.");
-    expect(html).toContain("ALAVI-2026 (disagrees): ALPHAGENOME higher in 0, SPLICEAI higher in 2, 0 ties.");
-    expect(html).toContain("STUDY-B: ALPHAGENOME higher in 2, SPLICEAI higher in 0, 1 tie.");
-    expect(html).toMatch(/Disagrees: <\/tspan>ALAVI-2026/);
+    expect(html).toMatch(/ALAVI-2026<\/span><span class="[^"]*leanRole[^"]*">Disagrees<\/span><span class="[^"]*srOnly[^"]*">: <\/span><span>SPLICEAI ahead in 2 of 2 comparisons<\/span>/);
+    expect(html).toMatch(/STUDY-B<\/span><span class="[^"]*srOnly[^"]*">: <\/span><span>ALPHAGENOME ahead in 2 of 3 comparisons; 1 tie<\/span>/);
     const rows = [...html.matchAll(/<tr class="([^"]*)"><th scope="row">(.*?)<\/tr>/g)].map((m) => m[2]);
     expect(rows[0]).toMatch(/ALAVI-2026.*<strong>Disagrees<\/strong><\/td><td>0<\/td><td>2<\/td><td>0<\/td>/);
     expect(html).toMatch(/STUDY-B<\/a>.*?<\/th><td>Agrees<\/td><td>2<\/td><td>0<\/td><td>1<\/td>/);
@@ -317,7 +315,7 @@ describe("contested results: pages", () => {
     const { default: ContestedPage } = await import("../app/contested/page");
     const html = renderToStaticMarkup(<ContestedPage />);
     expect(html.match(/\(1 is a tie\)\. ALAVI-2026 ranks SPLICEAI above ALPHAGENOME/g)?.length).toBe(1);
-    expect(html).toContain("2 other papers: ALPHAGENOME higher in 6, SPLICEAI higher in 0, 1 tie.");
+    expect(html).toContain("<span>ALPHAGENOME ahead in 4 of 4 comparisons</span>");
     expect(html).not.toContain("Papers grouped by");
   });
   it("marks a passed next check in the browser, not in the server HTML", () => {

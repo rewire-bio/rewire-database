@@ -52,3 +52,41 @@ export function evidencePropertyLabel(property: string): string {
     ? claimFieldLabel(property)
     : property;
 }
+
+const RELATION_LABELS: Record<string, { direct: string; reverse: string }> = {
+  alias_of: { direct: "Other name for", reverse: "Other name" },
+  applicable_to: { direct: "Applicable to", reverse: "Applies to" },
+  assessed_by: { direct: "Assessed by", reverse: "Assesses" },
+  assessment: { direct: "Assessed on", reverse: "Assesses" },
+  benchmark: { direct: "Benchmark", reverse: "Evaluated in" },
+  companion_of: { direct: "Companion to", reverse: "Companion to" },
+  configuration: { direct: "Configuration", reverse: "Evaluated in" },
+  configuration_of: { direct: "Configuration of", reverse: "Configuration" },
+  data: { direct: "Data", reverse: "Used as data in" },
+  dataset: { direct: "Dataset", reverse: "Evaluated in" },
+  evaluates_task: { direct: "Evaluates task", reverse: "Evaluated by" },
+  evaluation: { direct: "From evaluation", reverse: "Result" },
+  family: { direct: "In family", reverse: "Family member" },
+  implemented_by: { direct: "Implemented by", reverse: "Implements" },
+  measured_in: { direct: "Measured in", reverse: "Measures" },
+  model: { direct: "Model", reverse: "Evaluated in" },
+  parent: { direct: "Part of", reverse: "Includes" },
+  part_of: { direct: "Part of", reverse: "Includes" },
+  pipeline: { direct: "Pipeline", reverse: "Evaluated in" },
+  protocol: { direct: "Protocol", reverse: "Evaluated in" },
+  same_data_as: { direct: "Uses same data as", reverse: "Uses same data as" },
+  subject: { direct: "About", reverse: "Claim" },
+  supersedes: { direct: "Supersedes", reverse: "Superseded by" },
+  system: { direct: "Evaluated system", reverse: "Evaluated in" },
+  used_in: { direct: "Used in", reverse: "Uses" },
+  uses_data: { direct: "Uses data", reverse: "Used as data by" },
+  uses_model: { direct: "Uses model", reverse: "Used by" },
+  variant_of: { direct: "Version of", reverse: "Version" },
+};
+
+/** Plain-English label for a direct or reverse entry relationship. */
+export function relationLabel(relation: string, direction: "direct" | "reverse"): string {
+  const known = RELATION_LABELS[relation];
+  if (known) return known[direction];
+  return words(relation);
+}

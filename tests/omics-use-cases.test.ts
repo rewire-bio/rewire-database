@@ -8,6 +8,14 @@ import {
 import { accumulateUseCaseDetail } from "../lib/use-cases-build";
 import { summariseUseCaseEvidence } from "../lib/use-case-summary";
 
+type DetailWithRecords = NonNullable<ReturnType<ReturnType<typeof createUseCaseQuery>["get"]>> & { records?: Record<string, CatalogueRecord> };
+const mappingTask = (d: DetailWithRecords, m: DetailWithRecords["mappings"][number]) =>
+  m.task !== undefined ? m.task : (m.task_id ? d.records?.[m.task_id] ?? null : null);
+const mappingProtocol = (d: DetailWithRecords, m: DetailWithRecords["mappings"][number]) =>
+  m.protocol !== undefined ? m.protocol : (m.protocol_id ? d.records?.[m.protocol_id] ?? null : null);
+const mappingSources = (d: DetailWithRecords, m: DetailWithRecords["mappings"][number]) =>
+  m.sources !== undefined ? m.sources : [...new Set(m.citations.map((c) => c.source_id))].flatMap((id) => (d.records?.[id] ? [d.records[id]] : []));
+
 const review = { method: "automated_source_review" as const, actor: "Automated test fixture", reviewed_at: "2026-09-25T12:00:00Z", note: "Synthetic fixture, not scientific review" };
 function fixture() {
   const record = (id: string, kind: CatalogueRecord["kind"], extra: Partial<CatalogueRecord> = {}): CatalogueRecord => ({
@@ -92,7 +100,7 @@ describe("scoped use-case evidence", () => {
     expect(detail.mappings[0].evaluations[0].results[0].result.attributes.numeric_value).toBe("0.75");
     // Declared attributes (#54): an unreported uncertainty is absent, with a reason in missing_metadata.
     expect(detail.mappings[0].evaluations[0].results[0].result.attributes.uncertainty ?? null).toBeNull();
-    expect(detail.mappings[0].task?.status).toBe("discovered");
+    expect(mappingTask(detail, detail.mappings[0])?.status).toBe("discovered");
     expect(detail.sources[0].id).toBe("source");
     expect(detail.use_case.review.method).toBe("automated_source_review");
     expect(JSON.stringify(artifact)).not.toContain("numeric_value");
@@ -238,7 +246,8 @@ describe("scoped use-case evidence", () => {
     const f = fixture(); delete f.mapping.task_id;
     f.snapshot.records.find((r) => r.id === "task-link")!.status = "discovered";
     freeze(f);
-    expect(build(f).query.get({ slug: f.entry.slug })!.mappings[0].task).toBeNull();
+    const d = build(f).query.get({ slug: f.entry.slug })!;
+    expect(mappingTask(d, d.mappings[0])).toBeNull();
   });
   it("keeps direct relevance scoped to the endpoint and retains clinical limitations", () => {
     const f = fixture(); f.mapping.relevance = "direct"; freeze(f);
@@ -303,9 +312,10 @@ describe("scoped use-case evidence", () => {
     const replacement = { ...f.mapping, id: "mapping-two", revision: 2, supersedes_id: "mapping" };
     f.inputs.mappings = [replacement, { id: "mapping", use_case_id: "case", revision: 1, lifecycle: "superseded", reason: "Replaced by a newly reviewed mapping", prior_release_id: "2026-09-24-111111111111", evaluation_ids: [], constraints: [], limitations: [], citations: [] }];
     const { query } = build(f);
-    const historical = query.get({ slug: f.entry.slug })!.mappings.find((m) => m.id === "mapping")!;
+    const detail = query.get({ slug: f.entry.slug })!;
+    const historical = detail.mappings.find((m) => m.id === "mapping")!;
     expect(historical.evaluations).toEqual([]);
-    expect(historical.protocol).toBeNull();
+    expect(mappingProtocol(detail, historical)).toBeNull();
     expect(query.links({ id: "config" }).items.map((m) => m.mapping_id)).toEqual(["mapping-two"]);
     replacement.revision = 1;
     expect(() => build(f)).toThrow(/Supersession/);
@@ -318,7 +328,8 @@ describe("scoped use-case evidence", () => {
     const f = fixture(); f.mapping.relevance = "outside_scope"; f.mapping.evaluation_ids = [];
     delete f.mapping.task_id;
     f.snapshot.records.find((r) => r.id === "source")!.status = "disputed"; freeze(f);
-    expect(build(f).query.get({ slug: f.entry.slug })!.mappings[0].sources[0].status).toBe("disputed");
+    const d = build(f).query.get({ slug: f.entry.slug })!;
+    expect(mappingSources(d, d.mappings[0])[0].status).toBe("disputed");
   });
   it.each(["protocol", "config", "dataset"])("rejects %s evidence supported by a concerning source even with clean mapping citations", (id) => {
     const f = fixture();

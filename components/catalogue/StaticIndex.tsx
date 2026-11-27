@@ -30,7 +30,7 @@ export default function StaticIndex({ records: kindRecords, releaseId, kind, pag
       ]} />
       <h1>{benchmarks ? "Biological benchmarks" : "Biological models"}</h1>
       <p className="intro">{benchmarks ? "Explore evaluation suites and challenges, what they measure, and the models tested against them." : "Understand model architectures, biological inputs, access requirements and the evidence from their evaluations."}</p>
-      <nav className={styles.shortcuts} aria-label="Catalogue indexes"><a href="/benchmarks/" aria-current={benchmarks ? "page" : undefined}>Benchmarks</a><a href="/models/" aria-current={!benchmarks ? (page === 1 ? "page" : "location") : undefined}>Models</a><a href={`/?kind=${kind}#browse`}>Search and filter {benchmarks ? "benchmarks" : "models"}</a></nav>
+      <nav className={styles.shortcuts} aria-label="Catalogue indexes"><a href="/benchmarks/" aria-current={benchmarks ? "page" : undefined}>Benchmarks</a><a href="/models/" aria-current={!benchmarks ? (page === 1 ? "page" : "location") : undefined}>Models</a>{!benchmarks && <a href="/models/reach/">Models across use cases</a>}<a href={`/?kind=${kind}#browse`}>Search and filter {benchmarks ? "benchmarks" : "models"}</a></nav>
     </div></header>
     <section className={`block first ${styles.index}`} aria-label={benchmarks ? "Benchmark profiles" : "Model profiles"}><div className="wrap">
       <p>{all.length} {benchmarks ? "benchmark" : "model"} records in release {releaseId} (<a href={downloadHref(`/omics/releases/${releaseId}/manifest.json`)}>release manifest, gzip</a>).{!benchmarks && ` Showing ${all.length ? start + 1 : 0}–${Math.min(start + records.length, all.length)}; page ${page} of ${pages}.`}</p>

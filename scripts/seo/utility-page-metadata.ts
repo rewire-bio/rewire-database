@@ -85,6 +85,17 @@ const pages: Omit<PageMetadataContract, "canonical">[] = [
     ],
   },
   {
+    path: "/models/reach/",
+    indexable: true,
+    inSitemap: true,
+    social: true,
+    breadcrumbs: [
+      { name: "Database", path: "/" },
+      { name: "Models", path: "/models/" },
+      { name: "Across use cases", path: "/models/reach/" },
+    ],
+  },
+  {
     path: "/runs/mfass-v1/",
     indexable: false,
     inSitemap: false,

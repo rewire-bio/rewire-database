@@ -1,5 +1,6 @@
 import { buildCatalogue } from "./catalogue-build";
 import { preparedUseCases } from "./prepared";
+import type { CatalogueRecord } from "../shared/omics/catalogue-query";
 import type { UseCaseDetail, UseCaseQuery, ResolvedMapping } from "../shared/omics/use-cases";
 import { summariseUseCaseEvidence, type EvidenceSummary } from "./use-case-summary";
 
@@ -33,10 +34,20 @@ export function buildUseCases() {
  * repeated calls to this function for the same slug. */
 export function accumulateUseCaseDetail(query: UseCaseQuery, slug: string, { results = true } = {}): UseCaseDetail | null {
   const clone = (e: ResolvedMapping["evaluations"][number]) => ({ ...e, results: [...e.results] });
-  const first = query.get({ slug, limit: 100 });
+  const first = query.get({ slug, limit: 100 }) as (UseCaseDetail & { records?: Record<string, CatalogueRecord> }) | null;
   if (!first) return null;
+  const records = first.records;
+  const hydrate = (m: ResolvedMapping): ResolvedMapping => {
+    if (!records) return { ...m, evaluations: m.evaluations.map(clone) };
+    const protocol = m.protocol !== undefined ? m.protocol : (m.protocol_id ? records[m.protocol_id] ?? null : null);
+    const task = m.task !== undefined ? m.task : (m.task_id ? records[m.task_id] ?? null : null);
+    const sources = m.sources !== undefined
+      ? m.sources
+      : [...new Set(m.citations.map((c) => c.source_id))].flatMap((id) => (records[id] ? [records[id]] : []));
+    return { ...m, protocol, task, sources, evaluations: m.evaluations.map(clone) };
+  };
   const mappings = new Map<string, ResolvedMapping>(
-    first.mappings.map((m) => [m.id, { ...m, evaluations: m.evaluations.map(clone) }]),
+    first.mappings.map((m) => [m.id, hydrate(m)]),
   );
   let cursor = first.evaluations_next_cursor;
   while (cursor) {

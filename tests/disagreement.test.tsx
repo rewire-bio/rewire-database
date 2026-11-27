@@ -161,14 +161,14 @@ describe("disagreement views", () => {
     const html = renderToStaticMarkup(<DisagreementView view={v} />);
     expect(html).toContain("How far AlphaGenome scores from SpliceAI in each paper");
     expect(html).toContain("The other papers range from +5% to +10%. Alavi 2026 (disagrees): −30%.");
-    expect(html).toMatch(/class="[^"]*gapBand/);
+    expect(html).toMatch(/class="[^"]*gapBandBox/);
     expect(html).toContain("Gap to SpliceAI");
     expect(html).not.toContain("Papers grouped by");
     const compact = renderToStaticMarkup(<DisagreementView view={v} compact />);
     expect(compact).toContain(v.summary);
-    expect(compact).toContain("Disagrees: Alavi 2026 −30%");
+    expect(text(compact)).toContain("Disagrees Alavi 2026 : −30%");
     expect(html).toContain("Same as SpliceAI");
-    expect(html).toMatch(/Disagrees: <\/tspan>Alavi 2026/);
+    expect(text(html)).toContain("Disagrees Alavi 2026 : −30%");
     expect(compact).not.toContain("Papers compared");
     // A gap range that spans the reference.
     expect(view({ ...f, studies: [study("source:Kim 2025", "consensus", {}, { gap: -0.02 }), study("source:Lee 2024", "consensus", {}, { gap: 0.04 })] }).summary)

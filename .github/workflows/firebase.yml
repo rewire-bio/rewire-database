@@ -302,13 +302,18 @@ jobs:
         run: node scripts/deployment-metrics.mjs summary
 
   main-tests:
-    # Runs beside checks; publish waits for it.
+    # Runs beside checks in three shards; main-tests-coverage merges them and enforces thresholds.
+    name: main-tests (${{ matrix.shard }}/3)
     concurrency:
-      group: database-main-tests-${{ github.ref }}
+      group: database-main-tests-${{ github.ref }}-${{ matrix.shard }}
       cancel-in-progress: true
-    if: github.event_name != 'pull_request'
+    if: github.event_name != 'pull_request' && inputs.adopted != true
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3]
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 15
     env:
       NODE_OPTIONS: --max-old-space-size=8192
     steps:
@@ -342,10 +347,31 @@ jobs:
         if: steps.data-cache.outputs.cache-hit != 'true'
         run: node scripts/select-current-data.mjs
       - run: npm run data:prepare -- --current-only
-      # The adoption workflow runs the whole suite on the commit it then dispatches, so a
-      # deployment it starts does not run it a second time. Pushes and manual runs still do.
-      - if: inputs.adopted != true
-        run: npm run test:ui:coverage
+      - run: npx vitest run --config vitest.ui.config.ts --shard=${{ matrix.shard }}/3 --coverage --coverage.reporter=json --coverage.reportsDirectory=coverage/shard-${{ matrix.shard }} --coverage.thresholds.lines=0 --coverage.thresholds.statements=0 --coverage.thresholds.functions=0 --coverage.thresholds.branches=0
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ui-coverage-${{ github.sha }}-${{ github.run_attempt }}-${{ matrix.shard }}
+          path: coverage/shard-${{ matrix.shard }}/coverage-final.json
+          retention-days: 1
+          if-no-files-found: error
+
+  main-tests-coverage:
+    needs: main-tests
+    if: github.event_name != 'pull_request' && inputs.adopted != true
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: ui-coverage-${{ github.sha }}-${{ github.run_attempt }}-*
+          path: coverage
+      - run: node scripts/merge-ui-coverage.mjs coverage/*/coverage-final.json
   main-quality:
     # Runs beside checks; publish waits for it.
     concurrency:
@@ -427,8 +453,8 @@ jobs:
 
   publish:
     # Publishes only after the build and every parallel check have passed.
-    needs: [checks, main-tests, main-quality, main-api]
-    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && vars.CLOUDFLARE_DEPLOY_ENABLED == 'true' && vars.FIREBASE_BACKEND_DEPLOY_ENABLED == 'true'
+    needs: [checks, main-tests, main-tests-coverage, main-quality, main-api]
+    if: always() && github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && vars.CLOUDFLARE_DEPLOY_ENABLED == 'true' && vars.FIREBASE_BACKEND_DEPLOY_ENABLED == 'true' && needs.checks.result == 'success' && needs.main-quality.result == 'success' && needs.main-api.result == 'success' && ((inputs.adopted == true && needs.main-tests.result == 'skipped' && needs.main-tests-coverage.result == 'skipped') || (inputs.adopted != true && needs.main-tests.result == 'success' && needs.main-tests-coverage.result == 'success'))
     runs-on: ubuntu-latest
     concurrency:
       # Only this job writes production. Never cancel a transaction in progress.

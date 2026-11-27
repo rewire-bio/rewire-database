@@ -112,7 +112,7 @@ async function main() {
     failures.push(...checkPageMetadata(home, { path: "/", canonical: `${ORIGIN}/`, indexable: true, inSitemap: true, social: true, website: true }, sitemap.urls));
     assert.ok(home.includes('id="mfass-v1"') && home.includes('href="/use-cases/"'), "Home navigation");
     const useCase = useCaseSlugs(catalogue)[0];
-    for (const pathname of ["/models/", "/models/page/2/", "/benchmarks/", "/evidence/", "/coverage/", "/use-cases/",
+    for (const pathname of ["/models/", "/models/page/2/", "/models/reach/", "/benchmarks/", "/evidence/", "/coverage/", "/use-cases/",
       "/investigations/", "/contested/", "/runs/mfass-v2/", "/updates/", "/agents/", "/agents/api/", "/licence/", "/independence/",
       ...(useCase ? [`/use-cases/${useCase}/`] : []), ...contestedPaths().slice(0, 1),
       ...getResearch(catalogue).investigations.slice(0, 1).map((report) => `/investigations/${report.id}/`)])

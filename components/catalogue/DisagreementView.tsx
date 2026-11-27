@@ -113,42 +113,54 @@ function GapPlot({ view, id, compact = false }: { view: Disagreement; id: string
   const pad = Math.max((Math.max(...values) - Math.min(...values)) * 0.08, 0.02);
   const lo = Math.min(...values) - pad;
   const hi = Math.max(...values) + pad;
-  // The full plot keeps the left quarter for paper names, on the same line as their dots.
-  const [from, span] = compact ? [5, 90] : [27, 68];
-  const x = (gap: number) => pct(from + ((gap - lo) / (hi - lo)) * span);
-  // A label right of centre goes before its dot, so it stays inside the plot.
-  const rightHalf = (gap: number) => (gap - lo) / (hi - lo) > 0.5;
-  const rowHeight = compact ? 0 : 30;
-  const top = 8;
-  const plotHeight = compact ? 24 : papers.length * rowHeight;
-  const height = top + plotHeight + 30;
+  const pos = (gap: number) => pct(4 + ((gap - lo) / (hi - lo)) * 92);
   const band = view.consensusGap;
+  const bandStyle = band
+    ? { left: pos(band[0]), width: `max(4px, ${pct(((band[1] - band[0]) / (hi - lo)) * 92)})` }
+    : null;
+  const title = `How far ${view.a.name} scores from ${view.b.name} in each paper`;
   const description = [
     band && `The other papers range from ${gapPercent(band[0])} to ${gapPercent(band[1])}.`,
     ...papers.map((p) => `${p.short}${p.role === "outlier" ? " (disagrees)" : ""}: ${gapPercent(p.gap!)}.`),
   ].filter(Boolean).join(" ");
-  return <figure className={compact ? styles.compactChart : styles.chart}>
-    <svg width="100%" height={height} role="img" aria-labelledby={`${id}-gap-title ${id}-gap-desc`}>
-      <title id={`${id}-gap-title`}>{`How far ${view.a.name} scores from ${view.b.name} in each paper`}</title>
-      <desc id={`${id}-gap-desc`}>{description}</desc>
-      {band && <rect x={x(band[0])} y={top} width={pct(((band[1] - band[0]) / (hi - lo)) * span || 0.4)} height={plotHeight} className={styles.gapBand} />}
-      <line x1={x(0)} x2={x(0)} y1={top} y2={top + plotHeight} className={styles.gapZero} />
-      {papers.map((p, i) => {
-        const y = compact ? top + plotHeight / 2 : top + i * rowHeight + rowHeight / 2;
-        const outlier = p.role === "outlier";
-        return <g key={p.key} className={outlier ? styles.chartOutlier : undefined}>
-          {!compact && <text x="0" y={y + 4} className={styles.chartLabel}>{outlier && <tspan className={styles.chartRole}>Disagrees: </tspan>}{p.short}<title>{p.name}</title></text>}
-          <circle cx={x(p.gap!)} cy={y} r={outlier ? 7 : 5} className={outlier ? styles.dotOutlier : styles.dot}><title>{`${p.short}: ${gapPercent(p.gap!)}`}</title></circle>
-          {(!compact || outlier) && <text x={x(p.gap!)} dx={rightHalf(p.gap!) ? "-11" : "11"} textAnchor={rightHalf(p.gap!) ? "end" : undefined} y={y + 4} className={styles.chartLabel}>{compact ? `Disagrees: ${p.short} ` : ""}{gapPercent(p.gap!)}</text>}
-        </g>;
+  const outlier = papers.find((p) => p.role === "outlier");
+  const shown = compact && outlier ? [outlier] : papers;
+  return <figure className={compact ? styles.compactChart : styles.chart} aria-labelledby={`${id}-gap-title`}>
+    <p id={`${id}-gap-title`} className={styles.srOnly}>{title}. {description}</p>
+    {!compact && <div className={styles.gapAxis} aria-hidden="true">
+      <span>{gapPercent(lo + pad)}</span>
+      <span>Same as {clip(view.b.name, 20)}</span>
+      <span>{gapPercent(hi - pad)}</span>
+    </div>}
+    <ul className={styles.lean} aria-label={title}>
+      {shown.map((p) => {
+        const isOutlier = p.role === "outlier";
+        return <li key={p.key} className={[styles.leanItem, isOutlier && styles.leanOutlier].filter(Boolean).join(" ")}>
+          <p className={styles.leanText}>
+            {isOutlier && <span className={styles.leanRole}>Disagrees</span>}
+            <span className={styles.leanName} title={p.name || undefined}>{p.short}</span>
+            <span className={styles.srOnly}>: </span>
+            <span className={styles.gapValue}>{gapPercent(p.gap!)}</span>
+          </p>
+          <div className={styles.gapTrack} aria-hidden="true">
+            {bandStyle && <span className={styles.gapBandBox} style={bandStyle} />}
+            <span className={styles.gapZeroLine} style={{ left: pos(0) }} />
+            {compact && papers.filter((other) => other.key !== p.key).map((other) => (
+              <span key={other.key} className={styles.gapDot} style={{ left: pos(other.gap!) }} />
+            ))}
+            <span className={isOutlier ? styles.gapDotOutlier : styles.gapDot} style={{ left: pos(p.gap!) }} />
+          </div>
+        </li>;
       })}
-      <text x={x(lo + pad)} y={height - 8} textAnchor="middle" className={styles.chartAxis}>{gapPercent(lo + pad)}</text>
-      <text x={x(0)} y={height - 8} textAnchor="middle" className={styles.chartAxis}>{`Same as ${clip(view.b.name, 24)}`}</text>
-      <text x={x(hi - pad)} y={height - 8} textAnchor="middle" className={styles.chartAxis}>{gapPercent(hi - pad)}</text>
-    </svg>
+    </ul>
+    {compact && <div className={styles.gapAxis} aria-hidden="true">
+      <span>{gapPercent(lo + pad)}</span>
+      <span>Same as {clip(view.b.name, 20)}</span>
+      <span>{gapPercent(hi - pad)}</span>
+    </div>}
     <figcaption className={styles.legend}>
       <span><i className={styles.swatchBand} aria-hidden="true" />Range of the other papers</span>
-      {!compact && <span>Relative difference of {view.a.name} from {view.b.name}, (system − reference) / reference; the larger, outlined dot is the paper that disagrees.</span>}
+      {!compact && <span>Relative difference of {view.a.name} from {view.b.name}, (system − reference) / reference; the outlined dot is the paper that disagrees.</span>}
     </figcaption>
   </figure>;
 }

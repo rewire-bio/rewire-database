@@ -38,6 +38,7 @@ export function sitemapEntries(): SitemapEntry[] {
     "/licence/",
     "/independence/",
     "/use-cases/",
+    "/models/reach/",
     ...PRIMARY_USE_CASE_PATHS,
     ...useCases.map((slug) => `/use-cases/${slug}/`),
     ...catalogueIndexPaths(indexSource(query, "model")),

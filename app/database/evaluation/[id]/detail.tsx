@@ -17,6 +17,7 @@ import { resultsPayload } from "@/lib/results-payload";
 import ResultMatrix from "@/components/catalogue/ResultMatrix";
 import { resultMatrix } from "@/lib/result-matrix";
 import { procedureReference } from "@/lib/result-labels";
+import { relationLabel } from "@/lib/evidence-labels";
 import SourceIdentityNotice from "@/components/catalogue/SourceIdentity";
 import SectionNavigation, {
   BrowseReturn,
@@ -337,9 +338,12 @@ export function EvaluationDetail({ page, contested = [] }: {
             <details className={styles.section}>
               <summary>Related entries</summary>
               <ul className={styles.list}>
-                {[...detail.direct, ...detail.reverse].map((item, i) => (
+                {[
+                  ...detail.direct.map((item) => ({ ...item, direction: "direct" as const })),
+                  ...detail.reverse.map((item) => ({ ...item, direction: "reverse" as const })),
+                ].map((item, i) => (
                   <li key={i}>
-                    {item.relation.replace(/_/g, " ")}:{" "}
+                    {relationLabel(item.relation, item.direction)}:{" "}
                     <Link href={recordHref(item.record)}>
                       {catalogueText(item.record.name)}
                     </Link>

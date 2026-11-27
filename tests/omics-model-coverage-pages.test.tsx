@@ -64,10 +64,11 @@ describe("model coverage profile rendering", () => {
     expect(pipelineLink).toBeLessThan(methods);
     expect(closedDisclosuresAt(html, pipelineLink)).toBe(0);
     const visibleConfigurations = html.slice(configurations, methods);
-    expect(visibleConfigurations).toContain(`Pipeline · uses this model · `);
+    expect(visibleConfigurations).toContain("Results for 1 tool that uses ");
+    expect(visibleConfigurations).toContain("<span>Pipeline · ");
     expect(visibleConfigurations).toContain(` · ${rows} results`);
     expect(visibleConfigurations).toContain(
-      "not assigned to the underlying model",
+      "This model has no results of its own. The tool below does.",
     );
     const methodsDisclosure = html.slice(methods).match(/<details\b[^>]*>/)?.[0];
     expect(methodsDisclosure).toBeDefined();

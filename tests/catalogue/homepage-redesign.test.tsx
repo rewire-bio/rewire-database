@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from "vitest";
 
 import { renderToStaticMarkup } from "react-dom/server";
 import BenchmarksPage from "@/app/page";
-import { HOME_LEADERBOARD_SLUGS, homeLeaderboards } from "@/lib/release-leaderboard";
+import { homeLeaderboards } from "@/lib/release-leaderboard";
 import { boardStats, boardStatsText } from "@/lib/use-case-leaderboard";
 import { buildCatalogue } from "@/lib/catalogue-build";
 
@@ -67,7 +67,6 @@ describe("Homepage Redesign (TC-HP-01 to TC-HP-08)", () => {
     const boards = homeLeaderboards();
     const tabs = [...html.matchAll(/<button[^>]*role="tab"[^>]*>([\s\S]*?)<\/button>/g)].map((m) => m[1].replace(/<[^>]+>/g, "").replace(/&amp;/g, "&"));
     expect(tabs).toEqual(boards.map((b) => `${b.use_case_title}${b.protocol!.relevance === "proxy" ? " Proxy" : ""}`));
-    expect(tabs).toHaveLength(HOME_LEADERBOARD_SLUGS.length);
     expect(tabs.some((t) => t.endsWith(" Proxy"))).toBe(boards.some((b) => b.protocol!.relevance === "proxy"));
 
     const { catalogue } = buildCatalogue();

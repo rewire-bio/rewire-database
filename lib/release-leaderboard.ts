@@ -111,6 +111,9 @@ export const HOME_LEFT_OUT: Readonly<Record<string, string>> = {
   "hit-discovery-virtual-screening": "The metric is a hit count with differing denominators.",
   "phenotype-perturbation-selection": "Anonymous challenge entries, all reported by their authors.",
   "brca1-brca2-germline-interpretation": "Ranks on the same protocol as the missense PP3/BP4 board.",
+  "protein-design-quality": "Rests on one study and orders no models yet.",
+  "protein-function-annotation": "Rests on one study and orders no models yet.",
+  "protein-representation-property-prediction": "Rests on one study and orders no models yet.",
 };
 
 /**
@@ -127,6 +130,9 @@ export const HOME_LEADERBOARD_SLUGS = [
   "tumour-rna-fusion-detection",
   "regulatory-variant-gene-follow-up",
   "missense-pp3-bp4-calibrated-evidence",
+  "genomic-sequence-element-annotation",
+  "rna-structure-prediction",
+  "single-cell-data-integration",
 ] as const;
 
 /**

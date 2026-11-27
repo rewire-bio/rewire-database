@@ -262,8 +262,10 @@ describe("independence policy for the pinned release", () => {
     expect(hrefs(shown)).toEqual(home.map((board) => board.use_case_href));
     for (const board of home) expect(shown, board.use_case_slug).toContain(`>${escaped(board.use_case_title)}</a>${board.protocol!.relevance === "proxy" ? " (Proxy)" : ""}</li>`);
     const leftOut = part(placement, "home-left-out");
-    expect(hrefs(leftOut)).toEqual(Object.keys(HOME_LEFT_OUT).map((slug) => `/use-cases/${slug}/`));
-    for (const reason of Object.values(HOME_LEFT_OUT)) expect(leftOut).toContain(`: ${escaped(reason)}</li>`);
+    // A left-out use case the pinned release does not have yet has no board to name.
+    const withBoards = Object.entries(HOME_LEFT_OUT).filter(([slug]) => allUseCaseLeaderboards().some((board) => board.use_case_slug === slug));
+    expect(hrefs(leftOut)).toEqual(withBoards.map(([slug]) => `/use-cases/${slug}/`));
+    for (const [, reason] of withBoards) expect(leftOut).toContain(`: ${escaped(reason)}</li>`);
   });
 
   it("says what a proxy board is and how many boards are proxy", () => {

@@ -18,6 +18,8 @@ import { contestedResults, contestingFindings } from "@/lib/discrepancies";
 import { baselineComparisons, buildComparisons, heldJudgements, methodTypeLabel, toolsCompared } from "@/lib/use-case-comparisons";
 import { leaderboardForDetail } from "@/lib/release-leaderboard";
 import { UnifiedLeaderboard } from "@/components/catalogue/UnifiedLeaderboard";
+import { UseCaseBoard } from "@/components/catalogue/UseCaseBoard";
+import { useCaseBoard } from "@/lib/use-case-boards";
 import { safeJsonLd } from "@/lib/catalogue-sharing";
 import {
   generateLeaderboardItemListJsonLd,
@@ -66,6 +68,8 @@ export default function UseCasePage({ params }: { params: Params }) {
     Number(b.id === rankedId) - Number(a.id === rankedId) || Number(b.rows.length > 1) - Number(a.rows.length > 1));
   const held = heldJudgements(detail.mappings);
   const { query } = buildCatalogue();
+  // Verdicts within studies, combined across every test of the use case (null before boards were released).
+  const board = useCaseBoard(detail.release_id, entry.slug);
   const contested = contestedResults(comparisons.flatMap((c) => c.rows.flatMap((r) => r.resultIds)));
   const anyContested = comparisons.some((c) => c.rows.some((r) => contestingFindings(r.resultIds, contested).length > 0));
   const tools = toolsCompared(comparisons, (id) => query.record?.(id) ?? null);
@@ -80,6 +84,7 @@ export default function UseCasePage({ params }: { params: Params }) {
   const sections = [
     ...(evidenceSummary ? [{ id: "summary", label: "What the evidence shows" }] : []),
     ...(leaderboard.rows.length ? [{ id: "ranking", label: "Ranking" }] : []),
+    ...(board ? [{ id: "order", label: "Order across studies" }] : []),
     ...(baseline ? [{ id: "baseline", label: "Baseline" }] : []),
     ...(tools.length ? [{ id: "tools", label: "Tools compared" }] : []),
     { id: "evidence", label: "Comparisons" },
@@ -162,6 +167,10 @@ export default function UseCasePage({ params }: { params: Params }) {
             emitJsonLd={false}
             testId="use-case-leaderboard"
           />
+        </section>}
+        {board && <section id="order" className={styles.section}>
+          <h2>{heading("order")}</h2>
+          <UseCaseBoard board={board} record={(id) => query.record?.(id) ?? null} returnTo={path} />
         </section>}
         {baseline && <section id="baseline" className={styles.section}>
           <h2>{heading("baseline")}</h2>

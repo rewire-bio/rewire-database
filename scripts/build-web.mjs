@@ -27,6 +27,8 @@ export function renderFiles(lock, root) {
     'public/omics/manifest.json', 'public/omics/refresh.json', `public/omics/coverage/${lock.release_id}.json`,
     'data/benchmark-literature/papers.json', 'data/benchmark-literature/results.csv', 'data/omics/scope-audit.jsonl',
     'data/benchmark-runs/mfass-v2.json',
+    // Releases made before use-case boards existed have no boards file.
+    ...(fs.existsSync(path.join(root, `public/omics/boards/${lock.release_id}.json`)) ? [`public/omics/boards/${lock.release_id}.json`] : []),
     // Release receipts listed by the updates page and feed.
     ...(fs.existsSync(releases) ? fs.readdirSync(releases).filter(name => /^[^/]+\.json$/.test(name)).map(name => `data/omics/releases/${name}`) : []),
   ];

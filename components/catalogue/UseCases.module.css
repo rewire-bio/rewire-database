@@ -345,3 +345,11 @@
 /* A row whose results are the disagreeing study's in an unsettled discrepancy between studies. */
 .contestedBadge { display: inline-flex; margin-left: 6px; padding: 0 8px; border-radius: 999px; font-size: 11px; line-height: 1.6; font-weight: 500; background: var(--ink); color: var(--bg); vertical-align: 1px; text-decoration: none; }
 a.contestedBadge, a.contestedBadge:hover { color: var(--bg); text-decoration: none; }
+
+/* Order across studies */
+.boardStrength { display: grid; grid-template-columns: 3.2rem minmax(6rem, 1fr); align-items: center; column-gap: 8px; min-width: 12rem; }
+.boardStrength > .muted { grid-column: 2; font-size: 12px; }
+.boardTrack { width: 100%; }
+.boardStudies > summary { color: var(--accent-ink); white-space: nowrap; }
+.boardStudies ul { margin: 6px 0 0; padding-left: 18px; list-style: disc; min-width: 16rem; overflow-wrap: anywhere; }
+.boardStudies li + li { margin-top: 4px; }

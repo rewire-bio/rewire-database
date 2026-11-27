@@ -1,0 +1,2527 @@
+{
+ "schema_version": 1,
+ "release_id": "unreleased",
+ "released_at": null,
+ "method": "Models are ordered by a Bradley-Terry fit to which model did better inside each study's comparisons, with every study weighted equally.",
+ "boards": [
+  {
+   "use_case": "rare-disease-candidate-ranking",
+   "use_case_id": "use-case-rare-disease-candidate-ranking",
+   "title": "Rank rare-disease variants for review",
+   "release_id": "unreleased",
+   "released_at": null,
+   "method": "Models are ordered by a Bradley-Terry fit to which model did better inside each study's comparisons, with every study weighted equally.",
+   "summary": "Orders 35 models compared in two or more studies, from 100 comparison groups in 10 studies. Not ranked: 86 compared in one study only, 33 not model records, 4 not compared with the main group.",
+   "counts": {
+    "studies": 10,
+    "groups": 100,
+    "models": 158,
+    "ranked": 35,
+    "one_study": 86,
+    "not_a_model": 33,
+    "not_connected": 4,
+    "too_few": 0
+   },
+   "rows": [
+    {
+     "model_id": "uc20260930-method-gemme",
+     "record_ids": [
+      "uc20260930-method-gemme"
+     ],
+     "name": "GEMME",
+     "positions": [
+      1,
+      22
+     ],
+     "strength": 0.992,
+     "interval": [
+      0.961,
+      0.997
+     ],
+     "studies": {
+      "doi:10.1101/2023.12.07.570727": 11,
+      "doi:10.1186/s13059-025-03575-w": 619
+     },
+     "opponents": 92,
+     "comparisons": 630,
+     "basis": "mostly one study"
+    },
+    {
+     "model_id": "uc20260930-model-trancepteve",
+     "record_ids": [
+      "uc20260930-model-trancepteve"
+     ],
+     "name": "TranceptEVE",
+     "positions": [
+      1,
+      22
+     ],
+     "strength": 0.991,
+     "interval": [
+      0.99,
+      0.996
+     ],
+     "studies": {
+      "doi:10.1101/2023.12.07.570727": 11,
+      "doi:10.1186/s13059-025-03575-w": 540
+     },
+     "opponents": 91,
+     "comparisons": 551,
+     "basis": "mostly one study"
+    },
+    {
+     "model_id": "somatic-oncogenicity-20261009-method-varity",
+     "record_ids": [
+      "somatic-oncogenicity-20261009-method-varity"
+     ],
+     "name": "VARITY",
+     "positions": [
+      1,
+      23
+     ],
+     "strength": 0.978,
+     "interval": [
+      0.555,
+      0.99
+     ],
+     "studies": {
+      "doi:10.1101/2023.12.07.570727": 13,
+      "doi:10.1186/s13059-025-03575-w": 619
+     },
+     "opponents": 92,
+     "comparisons": 632,
+     "basis": "mostly one study"
+    },
+    {
+     "model_id": "ag-atlas-20261019-pipeline-avi",
+     "record_ids": [
+      "ag-atlas-20261019-pipeline-avi"
+     ],
+     "name": "AlphaGenome Variant Impact (AVI)",
+     "positions": [
+      1,
+      28
+     ],
+     "strength": 0.976,
+     "interval": [
+      0.372,
+      0.988
+     ],
+     "studies": {
+      "doi:10.64898/2026.09.16.26363192": 3,
+      "rewire-local-20261121-rdv2-receipt-evo2-run + rewire-local-20261121-rdv2-receipt-evo2-run-extra + rewire-local-20261121-rdv2-receipt-evo2-run2 + rewire-local-20261121-rdv2-receipt-evo2-run3 + rewire-local-20261121-rdv2-source-results-indel-120 + rewire-local-20261121-rdv2-source-results-replication-500 + rewire-local-20261121-rdv2-source-results-snv-200": 108
+     },
+     "opponents": 27,
+     "comparisons": 111,
+     "basis": "mostly one study"
+    },
+    {
+     "model_id": "somatic-oncogenicity-20261009-method-metarnn",
+     "record_ids": [
+      "somatic-oncogenicity-20261009-method-metarnn"
+     ],
+     "name": "MetaRNN",
+     "positions": [
+      1,
+      20
+     ],
+     "strength": 0.973,
+     "interval": [
+      0.95,
+      0.986
+     ],
+     "studies": {
+      "doi:10.1101/2023.12.07.570727": 13,
+      "doi:10.1186/s13059-025-03575-w": 619
+     },
+     "opponents": 92,
+     "comparisons": 632,
+     "basis": "mostly one study"
+    },
+    {
+     "model_id": "uc20260930-model-eve",
+     "record_ids": [
+      "uc20260930-model-eve"
+     ],
+     "name": "EVE",
+     "positions": [
+      3,
+      23
+     ],
+     "strength": 0.972,
+     "interval": [
+      0.922,
+      0.985
+     ],
+     "studies": {
+      "doi:10.1101/2023.12.07.570727": 11,
+      "doi:10.1186/s13059-025-03575-w": 619
+     },
+     "opponents": 92,
+     "comparisons": 630,
+     "basis": "mostly one study"
+    },
+    {
+     "model_id": "somatic-oncogenicity-20261009-method-alphamissense",
+     "record_ids": [
+      "somatic-oncogenicity-20261009-method-alphamissense"
+     ],
+     "name": "AlphaMissense",
+     "positions": [
+      1,
+      33
+     ],
+     "strength": 0.971,
+     "interval": [
+      0.027,
+      1.0
+     ],
+     "studies": {
+      "doi:10.1186/s13059-025-03575-w": 619,
+      "rewire-local-20261121-rdv2-receipt-evo2-run + rewire-local-20261121-rdv2-receipt-evo2-run-extra + rewire-local-20261121-rdv2-receipt-evo2-run2 + rewire-local-20261121-rdv2-receipt-evo2-run3 + rewire-local-20261121-rdv2-source-results-indel-120 + rewire-local-20261121-rdv2-source-results-replication-500 + rewire-local-20261121-rdv2-source-results-snv-200": 108
+     },
+     "opponents": 116,
+     "comparisons": 727,
+     "basis": "mostly one study"
+    },
+    {
+     "model_id": "somatic-oncogenicity-20261009-method-gmvp",
+     "record_ids": [
+      "somatic-oncogenicity-20261009-method-gmvp"
+     ],
+     "name": "gMVP",
+     "positions": [
+      3,
+      25
+     ],
+     "strength": 0.917,
+     "interval": [
+      0.424,
+      0.948
+     ],
+     "studies": {
+      "doi:10.1101/2023.12.07.570727": 13,
+      "doi:10.1186/s13059-025-03575-w": 619
+     },
+     "opponents": 92,
+     "comparisons": 632,
+     "basis": "mostly one study"
+    },
+    {
+     "model_id": "uc20260930-model-esm-1b",
+     "record_ids": [
+      "uc20260930-model-esm-1b"
+     ],
+     "name": "ESM-1b",
+     "positions": [
+      4,
+      24
+     ],
+     "strength": 0.868,
+     "interval": [
+      0.859,
+      0.909
+     ],
+     "studies": {
+      "doi:10.1101/2023.12.07.570727": 11,
+      "doi:10.1186/s13059-025-03575-w": 619
+     },
+     "opponents": 92,
+     "comparisons": 630,
+     "basis": "mostly one study"
+    },
+    {
+     "model_id": "somatic-oncogenicity-20261009-method-clinpred",
+     "record_ids": [
+      "somatic-oncogenicity-20261009-method-clinpred"
+     ],
+     "name": "ClinPred",
+     "positions": [
+      1,
+      25
+     ],
+     "strength": 0.854,
+     "interval": [
+      0.783,
+      0.984
+     ],
+     "studies": {
+      "doi:10.1101/2023.12.07.570727": 13,
+      "doi:10.1186/s13059-025-03575-w": 619
+     },
+     "opponents": 92,
+     "comparisons": 632,
+     "basis": "mostly one study"
+    },
+    {
+     "model_id": "somatic-oncogenicity-20261009-method-revel",
+     "record_ids": [
+      "somatic-oncogenicity-20261009-method-revel"
+     ],
+     "name": "REVEL",
+     "positions": [
+      4,
+      28
+     ],
+     "strength": 0.853,
+     "interval": [
+      0.271,
+      0.943
+     ],
+     "studies": {
+      "doi:10.1101/2023.12.07.570727": 13,
+      "doi:10.1186/s13059-025-03575-w": 619,
+      "rewire-local-20261121-rdv2-receipt-evo2-run + rewire-local-20261121-rdv2-receipt-evo2-run-extra + rewire-local-20261121-rdv2-receipt-evo2-run2 + rewire-local-20261121-rdv2-receipt-evo2-run3 + rewire-local-20261121-rdv2-source-results-indel-120 + rewire-local-20261121-rdv2-source-results-replication-500 + rewire-local-20261121-rdv2-source-results-snv-200": 108
+     },
+     "opponents": 117,
+     "comparisons": 740,
+     "basis": "mostly one study"
+    },
+    {
+     "model_id": "somatic-oncogenicity-20261009-method-vest4",
+     "record_ids": [
+      "somatic-oncogenicity-20261009-method-vest4"
+     ],
+     "name": "VEST4",
+     "positions": [
+      3,
+      27
+     ],
+     "strength": 0.801,
+     "interval": [
+      0.763,
+      0.852
+     ],
+     "studies": {
+      "doi:10.1101/2023.12.07.570727": 13,
+      "doi:10.1186/s13059-025-03575-w": 619
+     },
+     "opponents": 92,
+     "comparisons": 632,
+     "basis": "mostly one study"
+    },
+    {
+     "model_id": "uc-clinical-20260930-method-bayesdel",
+     "record_ids": [
+      "uc-clinical-20260930-method-bayesdel"
+     ],
+     "name": "BayesDel",
+     "positions": [
+      3,
+      27
+     ],
+     "strength": 0.794,
+     "interval": [
+      0.732,
+      0.89
+     ],
+     "studies": {
+      "doi:10.1101/2023.12.07.570727": 13,
+      "doi:10.1186/s13059-025-03575-w": 619
+     },
+     "opponents": 92,
+     "comparisons": 632,
+     "basis": "mostly one study"
+    },
+    {
+     "model_id": "vep-uc-20261014-model-gpn-star",
+     "record_ids": [
+      "vep-uc-20261014-model-gpn-star"
+     ],
+     "name": "GPN-Star",
+     "positions": [
+      4,
+      28
+     ],
+     "strength": 0.781,
+     "interval": [
+      0.399,
+      0.89
+     ],
+     "studies": {
+      "doi:10.64898/2026.09.16.26363192": 1,
+      "rewire-local-20261121-rdv2-receipt-evo2-run + rewire-local-20261121-rdv2-receipt-evo2-run-extra + rewire-local-20261121-rdv2-receipt-evo2-run2 + rewire-local-20261121-rdv2-receipt-evo2-run3 + rewire-local-20261121-rdv2-source-results-indel-120 + rewire-local-20261121-rdv2-source-results-replication-500 + rewire-local-20261121-rdv2-source-results-snv-200": 108
+     },
+     "opponents": 27,
+     "comparisons": 109,
+     "basis": "mostly one study"
+    },
+    {
+     "model_id": "somatic-oncogenicity-20261009-method-deogen2",
+     "record_ids": [
+      "somatic-oncogenicity-20261009-method-deogen2"
+     ],
+     "name": "DEOGEN2",
+     "positions": [
+      5,
+      32
+     ],
+     "strength": 0.76,
+     "interval": [
+      0.126,
+      0.823
+     ],
+     "studies": {
+      "doi:10.1101/2023.12.07.570727": 13,
+      "doi:10.1186/s13059-025-03575-w": 619
+     },
+     "opponents": 92,
+     "comparisons": 632,
+     "basis": "mostly one study"
+    },
+    {
+     "model_id": "somatic-oncogenicity-20261009-method-mutationassessor",
+     "record_ids": [
+      "somatic-oncogenicity-20261009-method-mutationassessor"
+     ],
+     "name": "MutationAssessor",
+     "positions": [
+      5,
+      29
+     ],
+     "strength": 0.682,
+     "interval": [
+      0.487,
+      0.736
+     ],
+     "studies": {
+      "doi:10.1101/2023.12.07.570727": 11,
+      "doi:10.1186/s13059-025-03575-w": 619
+     },
+     "opponents": 92,
+     "comparisons": 630,
+     "basis": "mostly one study"
+    },
+    {
+     "model_id": "uc20260930-model-progen2",
+     "record_ids": [
+      "uc20260930-model-progen2"
+     ],
+     "name": "ProGen2",
+     "positions": [
+      6,
+      30
+     ],
+     "strength": 0.648,
+     "interval": [
+      0.46,
+      0.703
+     ],
+     "studies": {
+      "doi:10.1101/2023.12.07.570727": 7,
+      "doi:10.1186/s13059-025-03575-w": 540
+     },
+     "opponents": 93,
+     "comparisons": 547,
+     "basis": "mostly one study"
+    },
+    {
+     "model_id": "somatic-oncogenicity-20261009-method-mpc",
+     "record_ids": [
+      "somatic-oncogenicity-20261009-method-mpc"
+     ],
+     "name": "MPC",
+     "positions": [
+      10,
+      33
+     ],
+     "strength": 0.497,
+     "interval": [
+      0.072,
+      0.551
+     ],
+     "studies": {
+      "doi:10.1101/2023.12.07.570727": 13,
+      "doi:10.1186/s13059-025-03575-w": 619
+     },
+     "opponents": 92,
+     "comparisons": 632,
+     "basis": "mostly one study"
+    },
+    {
+     "model_id": "somatic-oncogenicity-20261009-method-mutpred",
+     "record_ids": [
+      "somatic-oncogenicity-20261009-method-mutpred"
+     ],
+     "name": "MutPred",
+     "positions": [
+      7,
+      31
+     ],
+     "strength": 0.461,
+     "interval": [
+      0.331,
+      0.505
+     ],
+     "studies": {
+      "doi:10.1101/2023.12.07.570727": 11,
+      "doi:10.1186/s13059-025-03575-w": 619
+     },
+     "opponents": 92,
+     "comparisons": 630,
+     "basis": "mostly one study"
+    },
+    {
+     "model_id": "somatic-oncogenicity-20261009-method-sift",
+     "record_ids": [
+      "somatic-oncogenicity-20261009-method-sift"
+     ],
+     "name": "SIFT",
+     "positions": [
+      5,
+      30
+     ],
+     "strength": 0.453,
+     "interval": [
+      0.432,
+      0.638
+     ],
+     "studies": {
+      "doi:10.1101/2023.12.07.570727": 11,
+      "doi:10.1186/s13059-025-03575-w": 619
+     },
+     "opponents": 92,
+     "comparisons": 630,
+     "basis": "mostly one study"
+    },
+    {
+     "model_id": "somatic-oncogenicity-20261009-method-provean",
+     "record_ids": [
+      "somatic-oncogenicity-20261009-method-provean"
+     ],
+     "name": "PROVEAN",
+     "positions": [
+      5,
+      29
+     ],
+     "strength": 0.398,
+     "interval": [
+      0.311,
+      0.849
+     ],
+     "studies": {
+      "doi:10.1101/2023.12.07.570727": 18,
+      "doi:10.1186/s13059-025-03575-w": 619
+     },
+     "opponents": 94,
+     "comparisons": 637,
+     "basis": "mostly one study"
+    },
+    {
+     "model_id": "somatic-oncogenicity-20261009-method-polyphen2",
+     "record_ids": [
+      "somatic-oncogenicity-20261009-method-polyphen2"
+     ],
+     "name": "PolyPhen-2",
+     "positions": [
+      9,
+      33
+     ],
+     "strength": 0.394,
+     "interval": [
+      0.203,
+      0.433
+     ],
+     "studies": {
+      "doi:10.1101/2023.12.07.570727": 13,
+      "doi:10.1186/s13059-025-03575-w": 540
+     },
+     "opponents": 91,
+     "comparisons": 553,
+     "basis": "mostly one study"
+    },
+    {
+     "model_id": "discovery-model-evo-2",
+     "record_ids": [
+      "discovery-model-evo-2"
+     ],
+     "name": "Evo 2",
+     "positions": [
+      6,
+      32
+     ],
+     "strength": 0.352,
+     "interval": [
+      0.009,
+      0.883
+     ],
+     "studies": {
+      "doi:10.1101/2025.02.11.637758": 28,
+      "rewire-local-20261121-rdv2-receipt-evo2-run + rewire-local-20261121-rdv2-receipt-evo2-run-extra + rewire-local-20261121-rdv2-receipt-evo2-run2 + rewire-local-20261121-rdv2-receipt-evo2-run3 + rewire-local-20261121-rdv2-source-results-indel-120 + rewire-local-20261121-rdv2-source-results-replication-500 + rewire-local-20261121-rdv2-source-results-snv-200": 120
+     },
+     "opponents": 44,
+     "comparisons": 148,
+     "basis": "mostly one study"
+    },
+    {
+     "model_id": "somatic-oncogenicity-20261009-method-cadd",
+     "record_ids": [
+      "somatic-oncogenicity-20261009-method-cadd"
+     ],
+     "name": "CADD",
+     "positions": [
+      7,
+      32
+     ],
+     "strength": 0.289,
+     "interval": [
+      0.207,
+      0.51
+     ],
+     "studies": {
+      "doi:10.1101/2023.12.07.570727": 13,
+      "doi:10.1101/2025.02.11.637758": 28,
+      "doi:10.1186/s13059-025-03575-w": 619,
+      "doi:10.64898/2026.09.16.26363192": 2,
+      "rewire-local-20261121-rdv2-receipt-evo2-run + rewire-local-20261121-rdv2-receipt-evo2-run-extra + rewire-local-20261121-rdv2-receipt-evo2-run2 + rewire-local-20261121-rdv2-receipt-evo2-run3 + rewire-local-20261121-rdv2-source-results-indel-120 + rewire-local-20261121-rdv2-source-results-replication-500 + rewire-local-20261121-rdv2-source-results-snv-200": 108
+     },
+     "opponents": 130,
+     "comparisons": 770,
+     "basis": "mostly one study"
+    },
+    {
+     "model_id": "uc20260930-model-rita",
+     "record_ids": [
+      "uc20260930-model-rita"
+     ],
+     "name": "RITA",
+     "positions": [
+      6,
+      30
+     ],
+     "strength": 0.253,
+     "interval": [
+      0.223,
+      0.787
+     ],
+     "studies": {
+      "doi:10.1101/2023.12.07.570727": 7,
+      "doi:10.1186/s13059-025-03575-w": 540
+     },
+     "opponents": 93,
+     "comparisons": 547,
+     "basis": "mostly one study"
+    },
+    {
+     "model_id": "gfm-guides-20261014-gpnmsa-model-gpn-msa",
+     "record_ids": [
+      "gfm-guides-20261014-gpnmsa-model-gpn-msa"
+     ],
+     "name": "GPN-MSA",
+     "positions": [
+      10,
+      33
+     ],
+     "strength": 0.234,
+     "interval": [
+      0.021,
+      0.695
+     ],
+     "studies": {
+      "doi:10.1101/2025.02.11.637758": 28,
+      "rewire-local-20261121-rdv2-receipt-evo2-run + rewire-local-20261121-rdv2-receipt-evo2-run-extra + rewire-local-20261121-rdv2-receipt-evo2-run2 + rewire-local-20261121-rdv2-receipt-evo2-run3 + rewire-local-20261121-rdv2-source-results-indel-120 + rewire-local-20261121-rdv2-source-results-replication-500 + rewire-local-20261121-rdv2-source-results-snv-200": 108
+     },
+     "opponents": 42,
+     "comparisons": 136,
+     "basis": "several studies"
+    },
+    {
+     "model_id": "uc20260930-model-tranception",
+     "record_ids": [
+      "uc20260930-model-tranception"
+     ],
+     "name": "Tranception",
+     "positions": [
+      8,
+      31
+     ],
+     "strength": 0.199,
+     "interval": [
+      0.184,
+      0.635
+     ],
+     "studies": {
+      "doi:10.1101/2023.12.07.570727": 7,
+      "doi:10.1186/s13059-025-03575-w": 619
+     },
+     "opponents": 94,
+     "comparisons": 626,
+     "basis": "mostly one study"
+    },
+    {
+     "model_id": "somatic-oncogenicity-20261009-method-list-s2",
+     "record_ids": [
+      "somatic-oncogenicity-20261009-method-list-s2"
+     ],
+     "name": "LIST-S2",
+     "positions": [
+      12,
+      34
+     ],
+     "strength": 0.028,
+     "interval": [
+      0.02,
+      0.092
+     ],
+     "studies": {
+      "doi:10.1101/2023.12.07.570727": 11,
+      "doi:10.1186/s13059-025-03575-w": 619
+     },
+     "opponents": 92,
+     "comparisons": 630,
+     "basis": "mostly one study"
+    },
+    {
+     "model_id": "somatic-oncogenicity-20261009-method-primateai",
+     "record_ids": [
+      "somatic-oncogenicity-20261009-method-primateai"
+     ],
+     "name": "PrimateAI",
+     "positions": [
+      12,
+      33
+     ],
+     "strength": 0.019,
+     "interval": [
+      0.013,
+      0.194
+     ],
+     "studies": {
+      "doi:10.1101/2023.12.07.570727": 11,
+      "doi:10.1186/s13059-025-03575-w": 619
+     },
+     "opponents": 92,
+     "comparisons": 630,
+     "basis": "mostly one study"
+    },
+    {
+     "model_id": "somatic-oncogenicity-20261009-method-phylop",
+     "record_ids": [
+      "somatic-oncogenicity-20261009-method-phylop"
+     ],
+     "name": "phyloP",
+     "positions": [
+      6,
+      32
+     ],
+     "strength": 0.015,
+     "interval": [
+      0.005,
+      0.654
+     ],
+     "studies": {
+      "doi:10.1101/2025.02.11.637758": 13,
+      "doi:10.1186/s13059-025-03575-w": 619
+     },
+     "opponents": 102,
+     "comparisons": 632,
+     "basis": "mostly one study"
+    },
+    {
+     "model_id": "somatic-oncogenicity-20261009-method-fathmm",
+     "record_ids": [
+      "somatic-oncogenicity-20261009-method-fathmm"
+     ],
+     "name": "FATHMM",
+     "positions": [
+      18,
+      35
+     ],
+     "strength": 0.008,
+     "interval": [
+      0.005,
+      0.008
+     ],
+     "studies": {
+      "doi:10.1101/2023.12.07.570727": 13,
+      "doi:10.1186/s13059-025-03575-w": 619
+     },
+     "opponents": 92,
+     "comparisons": 632,
+     "basis": "mostly one study"
+    },
+    {
+     "model_id": "somatic-oncogenicity-20261009-method-dann",
+     "record_ids": [
+      "somatic-oncogenicity-20261009-method-dann"
+     ],
+     "name": "DANN",
+     "positions": [
+      18,
+      35
+     ],
+     "strength": 0.006,
+     "interval": [
+      0.003,
+      0.016
+     ],
+     "studies": {
+      "doi:10.1101/2023.12.07.570727": 13,
+      "doi:10.1186/s13059-025-03575-w": 619
+     },
+     "opponents": 92,
+     "comparisons": 632,
+     "basis": "mostly one study"
+    },
+    {
+     "model_id": "somatic-oncogenicity-20261009-method-lrt",
+     "record_ids": [
+      "somatic-oncogenicity-20261009-method-lrt"
+     ],
+     "name": "LRT",
+     "positions": [
+      14,
+      35
+     ],
+     "strength": 0.004,
+     "interval": [
+      0.002,
+      0.03
+     ],
+     "studies": {
+      "doi:10.1101/2023.12.07.570727": 11,
+      "doi:10.1186/s13059-025-03575-w": 619
+     },
+     "opponents": 92,
+     "comparisons": 630,
+     "basis": "mostly one study"
+    },
+    {
+     "model_id": "uc20260930-model-protgpt2",
+     "record_ids": [
+      "uc20260930-model-protgpt2"
+     ],
+     "name": "ProtGPT2",
+     "positions": [
+      13,
+      35
+     ],
+     "strength": 0.002,
+     "interval": [
+      0.001,
+      0.145
+     ],
+     "studies": {
+      "doi:10.1101/2023.12.07.570727": 7,
+      "doi:10.1186/s13059-025-03575-w": 619
+     },
+     "opponents": 94,
+     "comparisons": 626,
+     "basis": "mostly one study"
+    },
+    {
+     "model_id": "lit-genomics-20261011-traitgym-method-phastcons",
+     "record_ids": [
+      "lit-genomics-20261011-traitgym-method-phastcons",
+      "somatic-oncogenicity-20261009-method-phastcons"
+     ],
+     "name": "phastCons",
+     "positions": [
+      13,
+      35
+     ],
+     "strength": 0.002,
+     "interval": [
+      0.0,
+      0.253
+     ],
+     "studies": {
+      "doi:10.1101/2025.02.11.637758": 13,
+      "doi:10.1186/s13059-025-03575-w": 619
+     },
+     "opponents": 102,
+     "comparisons": 632,
+     "basis": "mostly one study"
+    }
+   ],
+   "not_ranked": [
+    {
+     "model_id": "amp-feng-20261007-config-variant-caduceus-ph",
+     "name": "Caduceus-Ph (pathogenic/common SNP classification)",
+     "reason": "not a model record",
+     "study_ids": [
+      "doi:10.1038/s41467-025-65823-8",
+      "evidence-expansion-dna-foundation-models-2025-5d8ca9bc"
+     ]
+    },
+    {
+     "model_id": "amp-feng-20261007-config-variant-caduceus-ph-long-sequence",
+     "name": "Caduceus-Ph, long sequence (pathogenic/common SNP classification)",
+     "reason": "not a model record",
+     "study_ids": [
+      "doi:10.1038/s41467-025-65823-8",
+      "evidence-expansion-dna-foundation-models-2025-5d8ca9bc"
+     ]
+    },
+    {
+     "model_id": "amp-feng-20261007-config-variant-dnabert-2",
+     "name": "DNABERT-2 (pathogenic/common SNP classification)",
+     "reason": "not a model record",
+     "study_ids": [
+      "doi:10.1038/s41467-025-65823-8",
+      "evidence-expansion-dna-foundation-models-2025-5d8ca9bc"
+     ]
+    },
+    {
+     "model_id": "amp-feng-20261007-config-variant-enformer-hidden-states",
+     "name": "Enformer, hidden states* (pathogenic/common SNP classification)",
+     "reason": "not a model record",
+     "study_ids": [
+      "doi:10.1038/s41467-025-65823-8",
+      "evidence-expansion-dna-foundation-models-2025-5d8ca9bc"
+     ]
+    },
+    {
+     "model_id": "amp-feng-20261007-config-variant-enformer-output-tracks",
+     "name": "Enformer, output tracks* (pathogenic/common SNP classification)",
+     "reason": "not a model record",
+     "study_ids": [
+      "doi:10.1038/s41467-025-65823-8",
+      "evidence-expansion-dna-foundation-models-2025-5d8ca9bc"
+     ]
+    },
+    {
+     "model_id": "amp-feng-20261007-config-variant-grover",
+     "name": "GROVER (pathogenic/common SNP classification)",
+     "reason": "not a model record",
+     "study_ids": [
+      "doi:10.1038/s41467-025-65823-8",
+      "evidence-expansion-dna-foundation-models-2025-5d8ca9bc"
+     ]
+    },
+    {
+     "model_id": "amp-feng-20261007-config-variant-hyenadna",
+     "name": "HyenaDNA (pathogenic/common SNP classification)",
+     "reason": "not a model record",
+     "study_ids": [
+      "doi:10.1038/s41467-025-65823-8",
+      "evidence-expansion-dna-foundation-models-2025-5d8ca9bc"
+     ]
+    },
+    {
+     "model_id": "amp-feng-20261007-config-variant-hyenadna-450k-long-sequence",
+     "name": "HyenaDNA-450K, long sequence (pathogenic/common SNP classification)",
+     "reason": "not a model record",
+     "study_ids": [
+      "doi:10.1038/s41467-025-65823-8",
+      "evidence-expansion-dna-foundation-models-2025-5d8ca9bc"
+     ]
+    },
+    {
+     "model_id": "amp-feng-20261007-config-variant-nt-v2",
+     "name": "NT-v2 (pathogenic/common SNP classification)",
+     "reason": "not a model record",
+     "study_ids": [
+      "doi:10.1038/s41467-025-65823-8",
+      "evidence-expansion-dna-foundation-models-2025-5d8ca9bc"
+     ]
+    },
+    {
+     "model_id": "amp-feng-20261007-config-variant-sei-hidden-states",
+     "name": "Sei, hidden states* (pathogenic/common SNP classification)",
+     "reason": "not a model record",
+     "study_ids": [
+      "doi:10.1038/s41467-025-65823-8",
+      "evidence-expansion-dna-foundation-models-2025-5d8ca9bc"
+     ]
+    },
+    {
+     "model_id": "amp-feng-20261007-config-variant-sei-output-tracks",
+     "name": "Sei, output tracks* (pathogenic/common SNP classification)",
+     "reason": "not a model record",
+     "study_ids": [
+      "doi:10.1038/s41467-025-65823-8",
+      "evidence-expansion-dna-foundation-models-2025-5d8ca9bc"
+     ]
+    },
+    {
+     "model_id": "brca-20261009-method-condel",
+     "name": "Condel",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1186/s13059-025-03575-w"
+     ]
+    },
+    {
+     "model_id": "brca-20261009-method-grantham",
+     "name": "Grantham score",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1186/s13059-025-03575-w"
+     ]
+    },
+    {
+     "model_id": "brca-20261009-method-panther-psep",
+     "name": "PANTHER",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1186/s13059-025-03575-w"
+     ]
+    },
+    {
+     "model_id": "brca-20261009-method-phd-snpg",
+     "name": "PhD-SNPg",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1186/s13059-025-03575-w"
+     ]
+    },
+    {
+     "model_id": "brca-20261009-method-pon-p2",
+     "name": "PON-P2",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1186/s13059-025-03575-w"
+     ]
+    },
+    {
+     "model_id": "brca-20261009-method-siphy",
+     "name": "SiPhy",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1186/s13059-025-03575-w"
+     ]
+    },
+    {
+     "model_id": "brca-20261009-method-snap2",
+     "name": "SNAP2",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1186/s13059-025-03575-w"
+     ]
+    },
+    {
+     "model_id": "brca-20261009-method-suspect",
+     "name": "SuSPect",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1186/s13059-025-03575-w"
+     ]
+    },
+    {
+     "model_id": "discovery-model-esm-1v",
+     "name": "ESM-1v",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1186/s13059-025-03575-w"
+     ]
+    },
+    {
+     "model_id": "discovery-model-esm-2",
+     "name": "ESM-2",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1186/s13059-025-03575-w"
+     ]
+    },
+    {
+     "model_id": "discovery-model-nucleotide-transformer",
+     "name": "Nucleotide Transformer",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1101/2025.02.11.637758"
+     ]
+    },
+    {
+     "model_id": "discovery-model-spliceai",
+     "name": "SpliceAI",
+     "reason": "one study",
+     "study_ids": [
+      "rewire-local-20261121-rdv2-receipt-evo2-run + rewire-local-20261121-rdv2-receipt-evo2-run-extra + rewire-local-20261121-rdv2-receipt-evo2-run2 + rewire-local-20261121-rdv2-receipt-evo2-run3 + rewire-local-20261121-rdv2-source-results-indel-120 + rewire-local-20261121-rdv2-source-results-replication-500 + rewire-local-20261121-rdv2-source-results-snv-200"
+     ]
+    },
+    {
+     "model_id": "flip-method-blosum62",
+     "name": "BLOSUM62",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1186/s13059-025-03575-w"
+     ]
+    },
+    {
+     "model_id": "lit-genomics-20261011-guanine-model-aido-dna",
+     "name": "AIDO.DNA",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1101/2025.02.11.637758"
+     ]
+    },
+    {
+     "model_id": "lit-genomics-20261011-traitgym-method-cadd-plus-borzoi-logistic-regression",
+     "name": "CADD+Borzoi logistic regression ensemble",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1101/2025.02.11.637758"
+     ]
+    },
+    {
+     "model_id": "lit-genomics-20261011-traitgym-method-cadd-plus-gpn-msa-logistic-regression",
+     "name": "CADD+GPN-MSA logistic regression ensemble",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1101/2025.02.11.637758"
+     ]
+    },
+    {
+     "model_id": "lit-genomics-20261011-traitgym-method-cadd-plus-gpn-msa-plus-borzoi-logistic-regression",
+     "name": "CADD+GPN-MSA+Borzoi logistic regression ensemble",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1101/2025.02.11.637758"
+     ]
+    },
+    {
+     "model_id": "lit-genomics-20261011-traitgym-method-gpn-msa-plus-borzoi-logistic-regression",
+     "name": "GPN-MSA+Borzoi logistic regression ensemble",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1101/2025.02.11.637758"
+     ]
+    },
+    {
+     "model_id": "lit-genomics-20261011-traitgym-model-specieslm",
+     "name": "SpeciesLM",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1101/2025.02.11.637758"
+     ]
+    },
+    {
+     "model_id": "rare-ranking-20261009-method-amelie",
+     "name": "AMELIE",
+     "reason": "not compared with the main group",
+     "study_ids": [
+      "doi:10.1038/s41598-024-53461-x",
+      "doi:10.1093/bib/bbac019"
+     ]
+    },
+    {
+     "model_id": "rare-ranking-20261009-method-deeppvp",
+     "name": "DeepPVP",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1093/bib/bbac019"
+     ]
+    },
+    {
+     "model_id": "rare-ranking-20261009-method-gado",
+     "name": "GADO",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1093/bib/bbac019"
+     ]
+    },
+    {
+     "model_id": "rare-ranking-20261009-method-hanrd",
+     "name": "HANRD",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1093/bib/bbac019"
+     ]
+    },
+    {
+     "model_id": "rare-ranking-20261009-method-lirical",
+     "name": "LIRICAL",
+     "reason": "not compared with the main group",
+     "study_ids": [
+      "doi:10.1038/s41598-024-53461-x",
+      "doi:10.1093/bib/bbac019"
+     ]
+    },
+    {
+     "model_id": "rare-ranking-20261009-method-phen2gene",
+     "name": "Phen2Gene",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1093/bib/bbac019"
+     ]
+    },
+    {
+     "model_id": "rare-ranking-20261009-method-phenix",
+     "name": "PhenIX",
+     "reason": "not compared with the main group",
+     "study_ids": [
+      "doi:10.1038/s41598-024-53461-x",
+      "doi:10.1093/bib/bbac019"
+     ]
+    },
+    {
+     "model_id": "rare-ranking-20261009-method-phenolyzer",
+     "name": "Phenolyzer",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1093/bib/bbac019"
+     ]
+    },
+    {
+     "model_id": "rare-ranking-20261009-method-xrare",
+     "name": "Xrare",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1093/bib/bbac019"
+     ]
+    },
+    {
+     "model_id": "rare-ranking-20261009-model-gpt-4",
+     "name": "GPT-4",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1038/s41598-025-99539-y"
+     ]
+    },
+    {
+     "model_id": "regulatory-variant-20261009-model-borzoi",
+     "name": "Borzoi",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1101/2025.02.11.637758"
+     ]
+    },
+    {
+     "model_id": "regulatory-variant-20261009-model-caduceus",
+     "name": "Caduceus",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1101/2025.02.11.637758"
+     ]
+    },
+    {
+     "model_id": "regulatory-variant-20261009-model-enformer",
+     "name": "Enformer",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1101/2025.02.11.637758"
+     ]
+    },
+    {
+     "model_id": "regulatory-variant-20261009-model-hyenadna",
+     "name": "HyenaDNA",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1101/2025.02.11.637758"
+     ]
+    },
+    {
+     "model_id": "regulatory-variant-20261009-model-sei",
+     "name": "Sei",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1101/2025.02.11.637758"
+     ]
+    },
+    {
+     "model_id": "rewire-local-20261121-rdv2-configuration-lookups-avi-cv-replication-500",
+     "name": "Lookups + AVI, cross-validated on the 500 replication SNV cases, 50 new people",
+     "reason": "not a model record",
+     "study_ids": [
+      "rewire-local-20261121-rdv2-receipt-evo2-run + rewire-local-20261121-rdv2-receipt-evo2-run-extra + rewire-local-20261121-rdv2-receipt-evo2-run2 + rewire-local-20261121-rdv2-receipt-evo2-run3 + rewire-local-20261121-rdv2-source-results-indel-120 + rewire-local-20261121-rdv2-source-results-replication-500 + rewire-local-20261121-rdv2-source-results-snv-200"
+     ]
+    },
+    {
+     "model_id": "rewire-local-20261121-rdv2-configuration-lookups-avi-cv-snv-200",
+     "name": "Lookups + AVI, cross-validated on the 200 SNV cases, the first run's 50 people",
+     "reason": "not a model record",
+     "study_ids": [
+      "rewire-local-20261121-rdv2-receipt-evo2-run + rewire-local-20261121-rdv2-receipt-evo2-run-extra + rewire-local-20261121-rdv2-receipt-evo2-run2 + rewire-local-20261121-rdv2-receipt-evo2-run3 + rewire-local-20261121-rdv2-source-results-indel-120 + rewire-local-20261121-rdv2-source-results-replication-500 + rewire-local-20261121-rdv2-source-results-snv-200"
+     ]
+    },
+    {
+     "model_id": "rewire-local-20261121-rdv2-configuration-lookups-avi-locked",
+     "name": "Lookups + AVI, locked",
+     "reason": "not a model record",
+     "study_ids": [
+      "rewire-local-20261121-rdv2-receipt-evo2-run + rewire-local-20261121-rdv2-receipt-evo2-run-extra + rewire-local-20261121-rdv2-receipt-evo2-run2 + rewire-local-20261121-rdv2-receipt-evo2-run3 + rewire-local-20261121-rdv2-source-results-indel-120 + rewire-local-20261121-rdv2-source-results-replication-500 + rewire-local-20261121-rdv2-source-results-snv-200"
+     ]
+    },
+    {
+     "model_id": "rewire-local-20261121-rdv2-configuration-lookups-combined-cv-indel-120",
+     "name": "Lookups combined, cross-validated on the 120 indel cases, the first run's 50 people",
+     "reason": "not a model record",
+     "study_ids": [
+      "rewire-local-20261121-rdv2-receipt-evo2-run + rewire-local-20261121-rdv2-receipt-evo2-run-extra + rewire-local-20261121-rdv2-receipt-evo2-run2 + rewire-local-20261121-rdv2-receipt-evo2-run3 + rewire-local-20261121-rdv2-source-results-indel-120 + rewire-local-20261121-rdv2-source-results-replication-500 + rewire-local-20261121-rdv2-source-results-snv-200"
+     ]
+    },
+    {
+     "model_id": "rewire-local-20261121-rdv2-configuration-lookups-combined-cv-replication-500",
+     "name": "Lookups combined, cross-validated on the 500 replication SNV cases, 50 new people",
+     "reason": "not a model record",
+     "study_ids": [
+      "rewire-local-20261121-rdv2-receipt-evo2-run + rewire-local-20261121-rdv2-receipt-evo2-run-extra + rewire-local-20261121-rdv2-receipt-evo2-run2 + rewire-local-20261121-rdv2-receipt-evo2-run3 + rewire-local-20261121-rdv2-source-results-indel-120 + rewire-local-20261121-rdv2-source-results-replication-500 + rewire-local-20261121-rdv2-source-results-snv-200"
+     ]
+    },
+    {
+     "model_id": "rewire-local-20261121-rdv2-configuration-lookups-combined-cv-snv-200",
+     "name": "Lookups combined, cross-validated on the 200 SNV cases, the first run's 50 people",
+     "reason": "not a model record",
+     "study_ids": [
+      "rewire-local-20261121-rdv2-receipt-evo2-run + rewire-local-20261121-rdv2-receipt-evo2-run-extra + rewire-local-20261121-rdv2-receipt-evo2-run2 + rewire-local-20261121-rdv2-receipt-evo2-run3 + rewire-local-20261121-rdv2-source-results-indel-120 + rewire-local-20261121-rdv2-source-results-replication-500 + rewire-local-20261121-rdv2-source-results-snv-200"
+     ]
+    },
+    {
+     "model_id": "rewire-local-20261121-rdv2-configuration-lookups-combined-locked",
+     "name": "Lookups combined, locked",
+     "reason": "not a model record",
+     "study_ids": [
+      "rewire-local-20261121-rdv2-receipt-evo2-run + rewire-local-20261121-rdv2-receipt-evo2-run-extra + rewire-local-20261121-rdv2-receipt-evo2-run2 + rewire-local-20261121-rdv2-receipt-evo2-run3 + rewire-local-20261121-rdv2-source-results-indel-120 + rewire-local-20261121-rdv2-source-results-replication-500 + rewire-local-20261121-rdv2-source-results-snv-200"
+     ]
+    },
+    {
+     "model_id": "rewire-local-20261121-rdv2-configuration-lookups-evo-2-cv-indel-120",
+     "name": "Lookups + Evo 2, cross-validated on the 120 indel cases, the first run's 50 people",
+     "reason": "not a model record",
+     "study_ids": [
+      "rewire-local-20261121-rdv2-receipt-evo2-run + rewire-local-20261121-rdv2-receipt-evo2-run-extra + rewire-local-20261121-rdv2-receipt-evo2-run2 + rewire-local-20261121-rdv2-receipt-evo2-run3 + rewire-local-20261121-rdv2-source-results-indel-120 + rewire-local-20261121-rdv2-source-results-replication-500 + rewire-local-20261121-rdv2-source-results-snv-200"
+     ]
+    },
+    {
+     "model_id": "rewire-local-20261121-rdv2-configuration-lookups-evo-2-cv-replication-500",
+     "name": "Lookups + Evo 2, cross-validated on the 500 replication SNV cases, 50 new people",
+     "reason": "not a model record",
+     "study_ids": [
+      "rewire-local-20261121-rdv2-receipt-evo2-run + rewire-local-20261121-rdv2-receipt-evo2-run-extra + rewire-local-20261121-rdv2-receipt-evo2-run2 + rewire-local-20261121-rdv2-receipt-evo2-run3 + rewire-local-20261121-rdv2-source-results-indel-120 + rewire-local-20261121-rdv2-source-results-replication-500 + rewire-local-20261121-rdv2-source-results-snv-200"
+     ]
+    },
+    {
+     "model_id": "rewire-local-20261121-rdv2-configuration-lookups-evo-2-cv-snv-200",
+     "name": "Lookups + Evo 2, cross-validated on the 200 SNV cases, the first run's 50 people",
+     "reason": "not a model record",
+     "study_ids": [
+      "rewire-local-20261121-rdv2-receipt-evo2-run + rewire-local-20261121-rdv2-receipt-evo2-run-extra + rewire-local-20261121-rdv2-receipt-evo2-run2 + rewire-local-20261121-rdv2-receipt-evo2-run3 + rewire-local-20261121-rdv2-source-results-indel-120 + rewire-local-20261121-rdv2-source-results-replication-500 + rewire-local-20261121-rdv2-source-results-snv-200"
+     ]
+    },
+    {
+     "model_id": "rewire-local-20261121-rdv2-configuration-lookups-evo-2-locked",
+     "name": "Lookups + Evo 2, locked",
+     "reason": "not a model record",
+     "study_ids": [
+      "rewire-local-20261121-rdv2-receipt-evo2-run + rewire-local-20261121-rdv2-receipt-evo2-run-extra + rewire-local-20261121-rdv2-receipt-evo2-run2 + rewire-local-20261121-rdv2-receipt-evo2-run3 + rewire-local-20261121-rdv2-source-results-indel-120 + rewire-local-20261121-rdv2-source-results-replication-500 + rewire-local-20261121-rdv2-source-results-snv-200"
+     ]
+    },
+    {
+     "model_id": "rewire-local-20261121-rdv2-configuration-lookups-gpn-msa-cv-replication-500",
+     "name": "Lookups + GPN-MSA, cross-validated on the 500 replication SNV cases, 50 new people",
+     "reason": "not a model record",
+     "study_ids": [
+      "rewire-local-20261121-rdv2-receipt-evo2-run + rewire-local-20261121-rdv2-receipt-evo2-run-extra + rewire-local-20261121-rdv2-receipt-evo2-run2 + rewire-local-20261121-rdv2-receipt-evo2-run3 + rewire-local-20261121-rdv2-source-results-indel-120 + rewire-local-20261121-rdv2-source-results-replication-500 + rewire-local-20261121-rdv2-source-results-snv-200"
+     ]
+    },
+    {
+     "model_id": "rewire-local-20261121-rdv2-configuration-lookups-gpn-msa-cv-snv-200",
+     "name": "Lookups + GPN-MSA, cross-validated on the 200 SNV cases, the first run's 50 people",
+     "reason": "not a model record",
+     "study_ids": [
+      "rewire-local-20261121-rdv2-receipt-evo2-run + rewire-local-20261121-rdv2-receipt-evo2-run-extra + rewire-local-20261121-rdv2-receipt-evo2-run2 + rewire-local-20261121-rdv2-receipt-evo2-run3 + rewire-local-20261121-rdv2-source-results-indel-120 + rewire-local-20261121-rdv2-source-results-replication-500 + rewire-local-20261121-rdv2-source-results-snv-200"
+     ]
+    },
+    {
+     "model_id": "rewire-local-20261121-rdv2-configuration-lookups-gpn-msa-locked",
+     "name": "Lookups + GPN-MSA, locked",
+     "reason": "not a model record",
+     "study_ids": [
+      "rewire-local-20261121-rdv2-receipt-evo2-run + rewire-local-20261121-rdv2-receipt-evo2-run-extra + rewire-local-20261121-rdv2-receipt-evo2-run2 + rewire-local-20261121-rdv2-receipt-evo2-run3 + rewire-local-20261121-rdv2-source-results-indel-120 + rewire-local-20261121-rdv2-source-results-replication-500 + rewire-local-20261121-rdv2-source-results-snv-200"
+     ]
+    },
+    {
+     "model_id": "rewire-local-20261121-rdv2-configuration-lookups-gpn-star-m-cv-replication-500",
+     "name": "Lookups + GPN-Star-M, cross-validated on the 500 replication SNV cases, 50 new people",
+     "reason": "not a model record",
+     "study_ids": [
+      "rewire-local-20261121-rdv2-receipt-evo2-run + rewire-local-20261121-rdv2-receipt-evo2-run-extra + rewire-local-20261121-rdv2-receipt-evo2-run2 + rewire-local-20261121-rdv2-receipt-evo2-run3 + rewire-local-20261121-rdv2-source-results-indel-120 + rewire-local-20261121-rdv2-source-results-replication-500 + rewire-local-20261121-rdv2-source-results-snv-200"
+     ]
+    },
+    {
+     "model_id": "rewire-local-20261121-rdv2-configuration-lookups-gpn-star-m-cv-snv-200",
+     "name": "Lookups + GPN-Star-M, cross-validated on the 200 SNV cases, the first run's 50 people",
+     "reason": "not a model record",
+     "study_ids": [
+      "rewire-local-20261121-rdv2-receipt-evo2-run + rewire-local-20261121-rdv2-receipt-evo2-run-extra + rewire-local-20261121-rdv2-receipt-evo2-run2 + rewire-local-20261121-rdv2-receipt-evo2-run3 + rewire-local-20261121-rdv2-source-results-indel-120 + rewire-local-20261121-rdv2-source-results-replication-500 + rewire-local-20261121-rdv2-source-results-snv-200"
+     ]
+    },
+    {
+     "model_id": "rewire-local-20261121-rdv2-configuration-lookups-gpn-star-m-locked",
+     "name": "Lookups + GPN-Star-M, locked",
+     "reason": "not a model record",
+     "study_ids": [
+      "rewire-local-20261121-rdv2-receipt-evo2-run + rewire-local-20261121-rdv2-receipt-evo2-run-extra + rewire-local-20261121-rdv2-receipt-evo2-run2 + rewire-local-20261121-rdv2-receipt-evo2-run3 + rewire-local-20261121-rdv2-source-results-indel-120 + rewire-local-20261121-rdv2-source-results-replication-500 + rewire-local-20261121-rdv2-source-results-snv-200"
+     ]
+    },
+    {
+     "model_id": "rewire-local-20261121-rdv2-configuration-lookups-gpn-star-v-cv-replication-500",
+     "name": "Lookups + GPN-Star-V, cross-validated on the 500 replication SNV cases, 50 new people",
+     "reason": "not a model record",
+     "study_ids": [
+      "rewire-local-20261121-rdv2-receipt-evo2-run + rewire-local-20261121-rdv2-receipt-evo2-run-extra + rewire-local-20261121-rdv2-receipt-evo2-run2 + rewire-local-20261121-rdv2-receipt-evo2-run3 + rewire-local-20261121-rdv2-source-results-indel-120 + rewire-local-20261121-rdv2-source-results-replication-500 + rewire-local-20261121-rdv2-source-results-snv-200"
+     ]
+    },
+    {
+     "model_id": "rewire-local-20261121-rdv2-configuration-lookups-gpn-star-v-cv-snv-200",
+     "name": "Lookups + GPN-Star-V, cross-validated on the 200 SNV cases, the first run's 50 people",
+     "reason": "not a model record",
+     "study_ids": [
+      "rewire-local-20261121-rdv2-receipt-evo2-run + rewire-local-20261121-rdv2-receipt-evo2-run-extra + rewire-local-20261121-rdv2-receipt-evo2-run2 + rewire-local-20261121-rdv2-receipt-evo2-run3 + rewire-local-20261121-rdv2-source-results-indel-120 + rewire-local-20261121-rdv2-source-results-replication-500 + rewire-local-20261121-rdv2-source-results-snv-200"
+     ]
+    },
+    {
+     "model_id": "rewire-local-20261121-rdv2-configuration-lookups-gpn-star-v-locked",
+     "name": "Lookups + GPN-Star-V, locked",
+     "reason": "not a model record",
+     "study_ids": [
+      "rewire-local-20261121-rdv2-receipt-evo2-run + rewire-local-20261121-rdv2-receipt-evo2-run-extra + rewire-local-20261121-rdv2-receipt-evo2-run2 + rewire-local-20261121-rdv2-receipt-evo2-run3 + rewire-local-20261121-rdv2-source-results-indel-120 + rewire-local-20261121-rdv2-source-results-replication-500 + rewire-local-20261121-rdv2-source-results-snv-200"
+     ]
+    },
+    {
+     "model_id": "rewire-local-20261121-rdv2-configuration-rule-avi",
+     "name": "Rule-based ranking with AVI as tie-breaker",
+     "reason": "not a model record",
+     "study_ids": [
+      "rewire-local-20261121-rdv2-receipt-evo2-run + rewire-local-20261121-rdv2-receipt-evo2-run-extra + rewire-local-20261121-rdv2-receipt-evo2-run2 + rewire-local-20261121-rdv2-receipt-evo2-run3 + rewire-local-20261121-rdv2-source-results-indel-120 + rewire-local-20261121-rdv2-source-results-replication-500 + rewire-local-20261121-rdv2-source-results-snv-200"
+     ]
+    },
+    {
+     "model_id": "rewire-local-20261121-rdv2-configuration-rule-based",
+     "name": "Rule-based ranking from ClinGen-calibrated thresholds",
+     "reason": "not a model record",
+     "study_ids": [
+      "rewire-local-20261121-rdv2-receipt-evo2-run + rewire-local-20261121-rdv2-receipt-evo2-run-extra + rewire-local-20261121-rdv2-receipt-evo2-run2 + rewire-local-20261121-rdv2-receipt-evo2-run3 + rewire-local-20261121-rdv2-source-results-indel-120 + rewire-local-20261121-rdv2-source-results-replication-500 + rewire-local-20261121-rdv2-source-results-snv-200"
+     ]
+    },
+    {
+     "model_id": "somatic-oncogenicity-20261009-method-eigen",
+     "name": "Eigen",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1186/s13059-025-03575-w"
+     ]
+    },
+    {
+     "model_id": "somatic-oncogenicity-20261009-method-fathmm-mkl",
+     "name": "FATHMM-MKL",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1186/s13059-025-03575-w"
+     ]
+    },
+    {
+     "model_id": "somatic-oncogenicity-20261009-method-fathmm-xf",
+     "name": "FATHMM-XF",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1186/s13059-025-03575-w"
+     ]
+    },
+    {
+     "model_id": "somatic-oncogenicity-20261009-method-genocanyon",
+     "name": "GenoCanyon",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1186/s13059-025-03575-w"
+     ]
+    },
+    {
+     "model_id": "somatic-oncogenicity-20261009-method-gerp",
+     "name": "GERP",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1186/s13059-025-03575-w"
+     ]
+    },
+    {
+     "model_id": "somatic-oncogenicity-20261009-method-m-cap",
+     "name": "M-CAP",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1186/s13059-025-03575-w"
+     ]
+    },
+    {
+     "model_id": "somatic-oncogenicity-20261009-method-metalr",
+     "name": "MetaLR",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1186/s13059-025-03575-w"
+     ]
+    },
+    {
+     "model_id": "somatic-oncogenicity-20261009-method-metasvm",
+     "name": "MetaSVM",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1186/s13059-025-03575-w"
+     ]
+    },
+    {
+     "model_id": "somatic-oncogenicity-20261009-method-mutationtaster",
+     "name": "MutationTaster",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1101/2023.12.07.570727"
+     ]
+    },
+    {
+     "model_id": "somatic-oncogenicity-20261009-method-mutformer",
+     "name": "MutFormer",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1186/s13059-025-03575-w"
+     ]
+    },
+    {
+     "model_id": "somatic-oncogenicity-20261009-method-mutscore",
+     "name": "MutScore",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1186/s13059-025-03575-w"
+     ]
+    },
+    {
+     "model_id": "somatic-oncogenicity-20261009-method-mvp",
+     "name": "MVP",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1186/s13059-025-03575-w"
+     ]
+    },
+    {
+     "model_id": "somatic-oncogenicity-20261009-method-phactboost",
+     "name": "PHACTboost",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1186/s13059-025-03575-w"
+     ]
+    },
+    {
+     "model_id": "somatic-oncogenicity-20261009-method-popeve",
+     "name": "popEVE",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1186/s13059-025-03575-w"
+     ]
+    },
+    {
+     "model_id": "traitgym-20261116-model-gpn-promoter",
+     "name": "GPN-Promoter",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1101/2025.02.11.637758"
+     ]
+    },
+    {
+     "model_id": "uc-clinical-20260930-method-exomiser",
+     "name": "Exomiser",
+     "reason": "not compared with the main group",
+     "study_ids": [
+      "doi:10.1038/s41598-024-53461-x",
+      "doi:10.1038/s41598-025-99539-y",
+      "doi:10.1093/bib/bbac019"
+     ]
+    },
+    {
+     "model_id": "uc20260930-method-evmutation",
+     "name": "EVmutation",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1186/s13059-025-03575-w"
+     ]
+    },
+    {
+     "model_id": "uc20260930-model-carp",
+     "name": "CARP",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1186/s13059-025-03575-w"
+     ]
+    },
+    {
+     "model_id": "uc20260930-model-deepsequence",
+     "name": "DeepSequence",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1186/s13059-025-03575-w"
+     ]
+    },
+    {
+     "model_id": "uc20260930-model-escott",
+     "name": "ESCOTT",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1186/s13059-025-03575-w"
+     ]
+    },
+    {
+     "model_id": "uc20260930-model-msa-transformer",
+     "name": "MSA Transformer",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1186/s13059-025-03575-w"
+     ]
+    },
+    {
+     "model_id": "uc20260930-model-poet",
+     "name": "PoET",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1101/2023.12.07.570727"
+     ]
+    },
+    {
+     "model_id": "uc20260930-model-saprot",
+     "name": "SaProt",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1186/s13059-025-03575-w"
+     ]
+    },
+    {
+     "model_id": "uc20260930-model-unirep",
+     "name": "Unirep",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1101/2023.12.07.570727"
+     ]
+    },
+    {
+     "model_id": "uc20260930-model-unirep-evotuned",
+     "name": "Unirep evotuned",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1186/s13059-025-03575-w"
+     ]
+    },
+    {
+     "model_id": "uc20260930-model-vespa",
+     "name": "VESPA",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1186/s13059-025-03575-w"
+     ]
+    },
+    {
+     "model_id": "uc20260930-model-vespal",
+     "name": "VESPAl",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1186/s13059-025-03575-w"
+     ]
+    },
+    {
+     "model_id": "uc20260930-model-wavenet",
+     "name": "Wavenet",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1186/s13059-025-03575-w"
+     ]
+    },
+    {
+     "model_id": "vep-lit-20261014-method-3cnet",
+     "name": "3Cnet",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1186/s13059-025-03575-w"
+     ]
+    },
+    {
+     "model_id": "vep-lit-20261014-method-alphscore",
+     "name": "AlphScore",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1186/s13059-025-03575-w"
+     ]
+    },
+    {
+     "model_id": "vep-lit-20261014-method-capice",
+     "name": "CAPICE",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1186/s13059-025-03575-w"
+     ]
+    },
+    {
+     "model_id": "vep-lit-20261014-method-cosmis",
+     "name": "COSMIS",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1186/s13059-025-03575-w"
+     ]
+    },
+    {
+     "model_id": "vep-lit-20261014-method-cpt",
+     "name": "CPT",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1186/s13059-025-03575-w"
+     ]
+    },
+    {
+     "model_id": "vep-lit-20261014-method-deepsav",
+     "name": "DeepSAV",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1186/s13059-025-03575-w"
+     ]
+    },
+    {
+     "model_id": "vep-lit-20261014-method-demask",
+     "name": "DeMaSk",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1186/s13059-025-03575-w"
+     ]
+    },
+    {
+     "model_id": "vep-lit-20261014-method-envision",
+     "name": "Envision",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1186/s13059-025-03575-w"
+     ]
+    },
+    {
+     "model_id": "vep-lit-20261014-method-fitcons",
+     "name": "fitCons (score unspecified)",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1186/s13059-025-03575-w"
+     ]
+    },
+    {
+     "model_id": "vep-lit-20261014-method-igemme",
+     "name": "iGEMME",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1186/s13059-025-03575-w"
+     ]
+    },
+    {
+     "model_id": "vep-lit-20261014-method-inmerf",
+     "name": "InMeRF",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1186/s13059-025-03575-w"
+     ]
+    },
+    {
+     "model_id": "vep-lit-20261014-method-lassie",
+     "name": "LASSIE",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1186/s13059-025-03575-w"
+     ]
+    },
+    {
+     "model_id": "vep-lit-20261014-method-maverick",
+     "name": "Maverick",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1186/s13059-025-03575-w"
+     ]
+    },
+    {
+     "model_id": "vep-lit-20261014-method-mistic",
+     "name": "MISTIC",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1186/s13059-025-03575-w"
+     ]
+    },
+    {
+     "model_id": "vep-lit-20261014-method-moi-pred",
+     "name": "MOI-Pred",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1186/s13059-025-03575-w"
+     ]
+    },
+    {
+     "model_id": "vep-lit-20261014-method-mutationtcn",
+     "name": "mutationTCN",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1186/s13059-025-03575-w"
+     ]
+    },
+    {
+     "model_id": "vep-lit-20261014-method-mvppt",
+     "name": "mvPPT",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1186/s13059-025-03575-w"
+     ]
+    },
+    {
+     "model_id": "vep-lit-20261014-method-phact",
+     "name": "PHACT",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1186/s13059-025-03575-w"
+     ]
+    },
+    {
+     "model_id": "vep-lit-20261014-method-phd-snp",
+     "name": "PhD-SNP",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1186/s13059-025-03575-w"
+     ]
+    },
+    {
+     "model_id": "vep-lit-20261014-method-proteingym-hmm",
+     "name": "Profile hidden Markov model (ProteinGym baseline)",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1101/2023.12.07.570727"
+     ]
+    },
+    {
+     "model_id": "vep-lit-20261014-method-rhapsody",
+     "name": "Rhapsody",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1186/s13059-025-03575-w"
+     ]
+    },
+    {
+     "model_id": "vep-lit-20261014-method-sequence-unet",
+     "name": "Sequence UNET",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1186/s13059-025-03575-w"
+     ]
+    },
+    {
+     "model_id": "vep-lit-20261014-method-sigma",
+     "name": "SIGMA",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1186/s13059-025-03575-w"
+     ]
+    },
+    {
+     "model_id": "vep-lit-20261014-method-snpred",
+     "name": "SNPred",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1186/s13059-025-03575-w"
+     ]
+    },
+    {
+     "model_id": "vep-lit-20261014-method-snps-and-go",
+     "name": "SNPs&GO",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1186/s13059-025-03575-w"
+     ]
+    },
+    {
+     "model_id": "vep-lit-20261014-method-snps-and-go3d",
+     "name": "SNPs&GO3D",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1186/s13059-025-03575-w"
+     ]
+    },
+    {
+     "model_id": "vep-lit-20261014-method-spri",
+     "name": "SPRI",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1186/s13059-025-03575-w"
+     ]
+    },
+    {
+     "model_id": "vep-lit-20261014-method-uneecon",
+     "name": "UNEECON",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1186/s13059-025-03575-w"
+     ]
+    }
+   ],
+   "studies": {
+    "doi:10.1038/s41467-025-65823-8": {
+     "source_ids": [
+      "dna-foundation-models-2025",
+      "feng-dna-fm-20261013-source-supplementary-data",
+      "feng-dna-fm-20261013-source-supplementary-information"
+     ],
+     "dois": [
+      "10.1038/s41467-025-65823-8"
+     ]
+    },
+    "doi:10.1038/s41598-024-53461-x": {
+     "source_ids": [
+      "rare-ranking-20261009-source-yuan2024"
+     ],
+     "dois": [
+      "10.1038/s41598-024-53461-x"
+     ]
+    },
+    "doi:10.1038/s41598-025-99539-y": {
+     "source_ids": [
+      "rare-ranking-20261009-source-kafkas2025"
+     ],
+     "dois": [
+      "10.1038/s41598-025-99539-y"
+     ]
+    },
+    "doi:10.1093/bib/bbac019": {
+     "source_ids": [
+      "rare-ranking-20261009-source-yuan2022",
+      "rare-ranking-20261009-source-yuan2022-sm-table-3"
+     ],
+     "dois": [
+      "10.1093/bib/bbac019"
+     ]
+    },
+    "doi:10.1101/2023.12.07.570727": {
+     "source_ids": [
+      "evidence-expansion-proteingym-a3b08cc4",
+      "expansion-p3-proteingym-2023",
+      "proteingym-2023",
+      "uc20260930-source-proteingym-amfr-spearman",
+      "vep-lit-20261014-source-proteingym-clinical-supervised-substitutions-auc-summary-144fe22",
+      "vep-lit-20261014-source-proteingym-clinical-zero-shot-indels-auc-summary-144fe22",
+      "vep-lit-20261014-source-proteingym-clinical-zero-shot-substitutions-auc-summary-144fe22",
+      "vep-lit-20261014-source-proteingym-dms-substitutions-spearman-summary-144fe22"
+     ],
+     "dois": [
+      "10.1101/2023.12.07.570727"
+     ]
+    },
+    "doi:10.1101/2025.02.11.637758": {
+     "source_ids": [
+      "lit-genomics-20261011-traitgym-source-hf-metrics",
+      "paper-full-texts-20261127-source-gpn-promoter-paper",
+      "traitgym-20261116-source-biorxiv-v2"
+     ],
+     "dois": [
+      "10.1101/2025.02.11.637758"
+     ]
+    },
+    "doi:10.1186/s13059-025-03575-w": {
+     "source_ids": [
+      "vep-lit-20261014-source-livesey2025-article",
+      "vep-lit-20261014-source-livesey2025-supplementary-2"
+     ],
+     "dois": [
+      "10.1186/s13059-025-03575-w"
+     ]
+    },
+    "doi:10.64898/2026.09.16.26363192": {
+     "source_ids": [
+      "ag-atlas-20261019-source-preprint"
+     ],
+     "dois": [
+      "10.64898/2026.09.16.26363192"
+     ]
+    },
+    "evidence-expansion-dna-foundation-models-2025-5d8ca9bc": {
+     "source_ids": [
+      "evidence-expansion-dna-foundation-models-2025-5d8ca9bc"
+     ],
+     "dois": []
+    },
+    "rewire-local-20261121-rdv2-receipt-evo2-run + rewire-local-20261121-rdv2-receipt-evo2-run-extra + rewire-local-20261121-rdv2-receipt-evo2-run2 + rewire-local-20261121-rdv2-receipt-evo2-run3 + rewire-local-20261121-rdv2-source-results-indel-120 + rewire-local-20261121-rdv2-source-results-replication-500 + rewire-local-20261121-rdv2-source-results-snv-200": {
+     "source_ids": [
+      "rewire-local-20261121-rdv2-receipt-evo2-run",
+      "rewire-local-20261121-rdv2-receipt-evo2-run-extra",
+      "rewire-local-20261121-rdv2-receipt-evo2-run2",
+      "rewire-local-20261121-rdv2-receipt-evo2-run3",
+      "rewire-local-20261121-rdv2-source-results-indel-120",
+      "rewire-local-20261121-rdv2-source-results-replication-500",
+      "rewire-local-20261121-rdv2-source-results-snv-200"
+     ],
+     "dois": []
+    }
+   }
+  },
+  {
+   "use_case": "splicing-follow-up",
+   "use_case_id": "use-case-splicing-follow-up",
+   "title": "Prioritise variants for splicing experiments",
+   "release_id": "unreleased",
+   "released_at": null,
+   "method": "Models are ordered by a Bradley-Terry fit to which model did better inside each study's comparisons, with every study weighted equally.",
+   "summary": "Orders 6 models compared in two or more studies, from 74 comparison groups in 9 studies. Not ranked: 23 compared in one study only, 11 not model records.",
+   "counts": {
+    "studies": 9,
+    "groups": 74,
+    "models": 40,
+    "ranked": 6,
+    "one_study": 23,
+    "not_a_model": 11,
+    "not_connected": 0,
+    "too_few": 0
+   },
+   "rows": [
+    {
+     "model_id": "discovery-model-pangolin",
+     "record_ids": [
+      "discovery-model-pangolin"
+     ],
+     "name": "Pangolin",
+     "positions": [
+      1,
+      3
+     ],
+     "strength": 0.869,
+     "interval": [
+      0.833,
+      0.919
+     ],
+     "studies": {
+      "doi:10.1038/s41586-026-10176-5": 34,
+      "doi:10.1186/s13059-023-03144-z": 144,
+      "doi:10.64898/2026.07.21.739871": 8,
+      "doi:10.64898/2026.09.16.26363192": 5,
+      "doi:10.64898/2026.10.08.757673": 9,
+      "rewire-mfass-matched-v1-source-exclusion-verification + rewire-mfass-matched-v1-source-manifest-v1 + rewire-mfass-matched-v1-source-provenance + rewire-mfass-matched-v1-source-report + rewire-mfass-matched-v1-source-verification": 4,
+      "rewire-mfass-v2-source": 8
+     },
+     "opponents": 22,
+     "comparisons": 212,
+     "basis": "several studies"
+    },
+    {
+     "model_id": "catalog-model-alphagenome",
+     "record_ids": [
+      "catalog-model-alphagenome"
+     ],
+     "name": "AlphaGenome",
+     "positions": [
+      1,
+      6
+     ],
+     "strength": 0.853,
+     "interval": [
+      0.402,
+      0.952
+     ],
+     "studies": {
+      "doi:10.64898/2026.09.16.26363192": 5,
+      "doi:10.64898/2026.10.08.757673": 9
+     },
+     "opponents": 6,
+     "comparisons": 14,
+     "basis": "several studies"
+    },
+    {
+     "model_id": "discovery-model-spliceai",
+     "record_ids": [
+      "discovery-model-spliceai"
+     ],
+     "name": "SpliceAI",
+     "positions": [
+      1,
+      3
+     ],
+     "strength": 0.847,
+     "interval": [
+      0.801,
+      0.884
+     ],
+     "studies": {
+      "doi:10.1002/humu.24212": 308,
+      "doi:10.1038/s41586-026-10176-5": 34,
+      "doi:10.1186/s13059-023-03144-z": 144,
+      "doi:10.64898/2026.07.21.739871": 8,
+      "doi:10.64898/2026.09.16.26363192": 5,
+      "doi:10.64898/2026.10.08.757673": 9,
+      "rewire-mfass-matched-v1-source-exclusion-verification + rewire-mfass-matched-v1-source-manifest-v1 + rewire-mfass-matched-v1-source-provenance + rewire-mfass-matched-v1-source-report + rewire-mfass-matched-v1-source-verification": 4,
+      "rewire-mfass-v2-source": 8
+     },
+     "opponents": 29,
+     "comparisons": 520,
+     "basis": "several studies"
+    },
+    {
+     "model_id": "splicing-follow-up-20261009-method-mmsplice",
+     "record_ids": [
+      "splicing-follow-up-20261009-method-mmsplice"
+     ],
+     "name": "MMSplice",
+     "positions": [
+      3,
+      5
+     ],
+     "strength": 0.642,
+     "interval": [
+      0.481,
+      0.721
+     ],
+     "studies": {
+      "doi:10.1002/humu.24212": 220,
+      "doi:10.1186/s13059-023-03144-z": 144,
+      "doi:10.64898/2026.07.21.739871": 8
+     },
+     "opponents": 16,
+     "comparisons": 372,
+     "basis": "several studies"
+    },
+    {
+     "model_id": "somatic-oncogenicity-20261009-method-cadd",
+     "record_ids": [
+      "somatic-oncogenicity-20261009-method-cadd"
+     ],
+     "name": "CADD",
+     "positions": [
+      3,
+      6
+     ],
+     "strength": 0.39,
+     "interval": [
+      0.286,
+      0.531
+     ],
+     "studies": {
+      "doi:10.1002/humu.24212": 308,
+      "doi:10.1038/s41586-026-10176-5": 34,
+      "doi:10.64898/2026.09.16.26363192": 5
+     },
+     "opponents": 21,
+     "comparisons": 347,
+     "basis": "mostly one study"
+    },
+    {
+     "model_id": "splicing-follow-up-20261009-method-spanr",
+     "record_ids": [
+      "splicing-follow-up-20261009-method-spanr"
+     ],
+     "name": "SPANR (SPIDEX)",
+     "positions": [
+      4,
+      6
+     ],
+     "strength": 0.376,
+     "interval": [
+      0.313,
+      0.464
+     ],
+     "studies": {
+      "doi:10.1002/humu.24212": 220,
+      "doi:10.1186/s13059-023-03144-z": 144,
+      "doi:10.64898/2026.07.21.739871": 8
+     },
+     "opponents": 16,
+     "comparisons": 372,
+     "basis": "several studies"
+    }
+   ],
+   "not_ranked": [
+    {
+     "model_id": "ag-atlas-20261019-pipeline-avi",
+     "name": "AlphaGenome Variant Impact (AVI)",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.64898/2026.09.16.26363192"
+     ]
+    },
+    {
+     "model_id": "amp-feng-20261007-config-splice-acceptor-caduceus-ph",
+     "name": "Caduceus-Ph (Acceptor classification)",
+     "reason": "not a model record",
+     "study_ids": [
+      "evidence-expansion-dna-foundation-models-2025-5d8ca9bc"
+     ]
+    },
+    {
+     "model_id": "amp-feng-20261007-config-splice-acceptor-dnabert-2",
+     "name": "DNABERT-2 (Acceptor classification)",
+     "reason": "not a model record",
+     "study_ids": [
+      "evidence-expansion-dna-foundation-models-2025-5d8ca9bc"
+     ]
+    },
+    {
+     "model_id": "amp-feng-20261007-config-splice-acceptor-grover",
+     "name": "GROVER (Acceptor classification)",
+     "reason": "not a model record",
+     "study_ids": [
+      "evidence-expansion-dna-foundation-models-2025-5d8ca9bc"
+     ]
+    },
+    {
+     "model_id": "amp-feng-20261007-config-splice-acceptor-hyenadna",
+     "name": "HyenaDNA (Acceptor classification)",
+     "reason": "not a model record",
+     "study_ids": [
+      "evidence-expansion-dna-foundation-models-2025-5d8ca9bc"
+     ]
+    },
+    {
+     "model_id": "amp-feng-20261007-config-splice-acceptor-nt-v2",
+     "name": "NT-v2 (Acceptor classification)",
+     "reason": "not a model record",
+     "study_ids": [
+      "evidence-expansion-dna-foundation-models-2025-5d8ca9bc"
+     ]
+    },
+    {
+     "model_id": "amp-feng-20261007-config-splice-donor-caduceus-ph",
+     "name": "Caduceus-Ph (Donor classification)",
+     "reason": "not a model record",
+     "study_ids": [
+      "evidence-expansion-dna-foundation-models-2025-5d8ca9bc"
+     ]
+    },
+    {
+     "model_id": "amp-feng-20261007-config-splice-donor-dnabert-2",
+     "name": "DNABERT-2 (Donor classification)",
+     "reason": "not a model record",
+     "study_ids": [
+      "evidence-expansion-dna-foundation-models-2025-5d8ca9bc"
+     ]
+    },
+    {
+     "model_id": "amp-feng-20261007-config-splice-donor-grover",
+     "name": "GROVER (Donor classification)",
+     "reason": "not a model record",
+     "study_ids": [
+      "evidence-expansion-dna-foundation-models-2025-5d8ca9bc"
+     ]
+    },
+    {
+     "model_id": "amp-feng-20261007-config-splice-donor-hyenadna",
+     "name": "HyenaDNA (Donor classification)",
+     "reason": "not a model record",
+     "study_ids": [
+      "evidence-expansion-dna-foundation-models-2025-5d8ca9bc"
+     ]
+    },
+    {
+     "model_id": "amp-feng-20261007-config-splice-donor-nt-v2",
+     "name": "NT-v2 (Donor classification)",
+     "reason": "not a model record",
+     "study_ids": [
+      "evidence-expansion-dna-foundation-models-2025-5d8ca9bc"
+     ]
+    },
+    {
+     "model_id": "discovery-model-evo-2",
+     "name": "Evo 2",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1038/s41586-026-10176-5"
+     ]
+    },
+    {
+     "model_id": "discovery-model-nucleotide-transformer",
+     "name": "Nucleotide Transformer",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1038/s41586-026-10176-5"
+     ]
+    },
+    {
+     "model_id": "discovery-model-rna-fm",
+     "name": "RNA-FM",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1038/s41586-026-10176-5"
+     ]
+    },
+    {
+     "model_id": "gfm-guides-20261014-gpnmsa-model-gpn-msa",
+     "name": "GPN-MSA",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1038/s41586-026-10176-5"
+     ]
+    },
+    {
+     "model_id": "lit-genomics-20261011-geneb-model-evo",
+     "name": "Evo",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1038/s41586-026-10176-5"
+     ]
+    },
+    {
+     "model_id": "rewire-model-baseline-kmer-position-v2",
+     "name": "Corrected k-mer / position baseline",
+     "reason": "not a model record",
+     "study_ids": [
+      "rewire-mfass-v2-source"
+     ]
+    },
+    {
+     "model_id": "rewire-model-dnabert2-117m-frozen-pair-logreg",
+     "name": "DNABERT-2 117M \u00b7 frozen pair embeddings",
+     "reason": "one study",
+     "study_ids": [
+      "rewire-mfass-v2-source"
+     ]
+    },
+    {
+     "model_id": "rna-splicing-20261009-method-squirls",
+     "name": "SQUIRLS",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1186/s13059-023-03144-z"
+     ]
+    },
+    {
+     "model_id": "rna-splicing-20261013-spliceai2-model-spliceai2",
+     "name": "SpliceAI2",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.64898/2026.10.08.757673"
+     ]
+    },
+    {
+     "model_id": "somatic-oncogenicity-20261009-method-alphamissense",
+     "name": "AlphaMissense",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1038/s41586-026-10176-5"
+     ]
+    },
+    {
+     "model_id": "somatic-oncogenicity-20261009-method-phylop",
+     "name": "phyloP",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1038/s41586-026-10176-5"
+     ]
+    },
+    {
+     "model_id": "splicing-follow-up-20261009-method-alamut-consensus",
+     "name": "Alamut consensus 3/4",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1002/humu.24212"
+     ]
+    },
+    {
+     "model_id": "splicing-follow-up-20261009-method-conspliceml",
+     "name": "ConSpliceML",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1186/s13059-023-03144-z"
+     ]
+    },
+    {
+     "model_id": "splicing-follow-up-20261009-method-dssp",
+     "name": "DSSP",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1002/humu.24212"
+     ]
+    },
+    {
+     "model_id": "splicing-follow-up-20261009-method-genesplicer",
+     "name": "GeneSplicer",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1002/humu.24212"
+     ]
+    },
+    {
+     "model_id": "splicing-follow-up-20261009-method-hal",
+     "name": "HAL",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1186/s13059-023-03144-z"
+     ]
+    },
+    {
+     "model_id": "splicing-follow-up-20261009-method-maxentscan",
+     "name": "MaxEntScan",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1002/humu.24212"
+     ]
+    },
+    {
+     "model_id": "splicing-follow-up-20261009-method-nnsplice",
+     "name": "NNSPLICE",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1002/humu.24212"
+     ]
+    },
+    {
+     "model_id": "splicing-follow-up-20261009-method-s-cap",
+     "name": "S-Cap",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1186/s13059-023-03144-z"
+     ]
+    },
+    {
+     "model_id": "splicing-follow-up-20261009-method-splicerover",
+     "name": "SpliceRover",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1002/humu.24212"
+     ]
+    },
+    {
+     "model_id": "splicing-follow-up-20261009-method-splicesitefinder-like",
+     "name": "SpliceSiteFinder-like",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1002/humu.24212"
+     ]
+    },
+    {
+     "model_id": "splicing-follow-up-20261009-method-splicetransformer",
+     "name": "SpliceTransformer",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.64898/2026.07.21.739871"
+     ]
+    },
+    {
+     "model_id": "vep-uc-20261014-model-gpn-star",
+     "name": "GPN-Star",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.64898/2026.09.16.26363192"
+     ]
+    }
+   ],
+   "studies": {
+    "doi:10.1002/humu.24212": {
+     "source_ids": [
+      "splicing-follow-up-20261009-source-riepe2021"
+     ],
+     "dois": [
+      "10.1002/humu.24212"
+     ]
+    },
+    "doi:10.1038/s41586-026-10176-5": {
+     "source_ids": [
+      "gfm-guides-20261014-evo2-brixi2026-source-supplementary-data-1",
+      "gfm-guides-20261014-evo2-brixi2026-source-supplementary-information"
+     ],
+     "dois": [
+      "10.1038/s41586-026-10176-5"
+     ]
+    },
+    "doi:10.1186/s13059-023-03144-z": {
+     "source_ids": [
+      "splicing-follow-up-20261009-source-smith2023",
+      "splicing-follow-up-20261009-source-smith2023-table-s2"
+     ],
+     "dois": [
+      "10.1186/s13059-023-03144-z"
+     ]
+    },
+    "doi:10.64898/2026.07.21.739871": {
+     "source_ids": [
+      "splicing-follow-up-20261009-source-znabu2026"
+     ],
+     "dois": [
+      "10.64898/2026.07.21.739871"
+     ]
+    },
+    "doi:10.64898/2026.09.16.26363192": {
+     "source_ids": [
+      "ag-atlas-20261019-source-preprint"
+     ],
+     "dois": [
+      "10.64898/2026.09.16.26363192"
+     ]
+    },
+    "doi:10.64898/2026.10.08.757673": {
+     "source_ids": [
+      "paper-full-texts-20261126-source-spliceai2-paper",
+      "rna-splicing-20261013-spliceai2-source-article",
+      "rna-splicing-20261013-spliceai2-source-supplementary-table-1"
+     ],
+     "dois": [
+      "10.64898/2026.10.08.757673"
+     ]
+    },
+    "evidence-expansion-dna-foundation-models-2025-5d8ca9bc": {
+     "source_ids": [
+      "evidence-expansion-dna-foundation-models-2025-5d8ca9bc"
+     ],
+     "dois": []
+    },
+    "rewire-mfass-matched-v1-source-exclusion-verification + rewire-mfass-matched-v1-source-manifest-v1 + rewire-mfass-matched-v1-source-provenance + rewire-mfass-matched-v1-source-report + rewire-mfass-matched-v1-source-verification": {
+     "source_ids": [
+      "rewire-mfass-matched-v1-source-exclusion-verification",
+      "rewire-mfass-matched-v1-source-manifest-v1",
+      "rewire-mfass-matched-v1-source-provenance",
+      "rewire-mfass-matched-v1-source-report",
+      "rewire-mfass-matched-v1-source-verification"
+     ],
+     "dois": []
+    },
+    "rewire-mfass-v2-source": {
+     "source_ids": [
+      "rewire-mfass-v2-source"
+     ],
+     "dois": []
+    }
+   }
+  },
+  {
+   "use_case": "utr-translation-baselines",
+   "use_case_id": "use-case-utr-translation-baselines",
+   "title": "Set baselines for UTR translation experiments",
+   "release_id": "unreleased",
+   "released_at": null,
+   "method": "Models are ordered by a Bradley-Terry fit to which model did better inside each study's comparisons, with every study weighted equally.",
+   "summary": "No ranking: fewer than two models were compared in two or more studies (4 comparison groups in 1 study). Not ranked: 4 compared in one study only.",
+   "counts": {
+    "studies": 1,
+    "groups": 4,
+    "models": 4,
+    "ranked": 0,
+    "one_study": 4,
+    "not_a_model": 0,
+    "not_connected": 0,
+    "too_few": 0
+   },
+   "rows": [],
+   "not_ranked": [
+    {
+     "model_id": "uc20260930-method-frame-aware-k-mer-random-forest",
+     "name": "Frame-aware k-mer random forest",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1371/journal.pcbi.1008982 + uc20260930-source-framepool-s1 + uc20260930-source-framepool-s4"
+     ]
+    },
+    {
+     "model_id": "uc20260930-method-k-mer-count-random-forest",
+     "name": "k-mer count random forest",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1371/journal.pcbi.1008982 + uc20260930-source-framepool-s1 + uc20260930-source-framepool-s4"
+     ]
+    },
+    {
+     "model_id": "uc20260930-model-framepool",
+     "name": "FramePool",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1371/journal.pcbi.1008982 + uc20260930-source-framepool-s1 + uc20260930-source-framepool-s4"
+     ]
+    },
+    {
+     "model_id": "uc20260930-model-optimus-5-prime",
+     "name": "Optimus 5-Prime",
+     "reason": "one study",
+     "study_ids": [
+      "doi:10.1371/journal.pcbi.1008982 + uc20260930-source-framepool-s1 + uc20260930-source-framepool-s4"
+     ]
+    }
+   ],
+   "studies": {
+    "doi:10.1371/journal.pcbi.1008982 + uc20260930-source-framepool-s1 + uc20260930-source-framepool-s4": {
+     "source_ids": [
+      "uc20260930-source-framepool-2021",
+      "uc20260930-source-framepool-s1",
+      "uc20260930-source-framepool-s4"
+     ],
+     "dois": [
+      "10.1371/journal.pcbi.1008982"
+     ]
+    }
+   }
+  }
+ ]
+}

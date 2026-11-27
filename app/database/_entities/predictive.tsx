@@ -274,7 +274,7 @@ export function PredictiveEntityDetail({ detail }: { detail: RecordDetail }) {
               ...(hasLinked ? [{ id: "results", label: "Results" }] : []),
               { id: "overview", label: "Overview" },
               ...(hasResults && !hasLinked ? [{ id: "results", label: "Results" }] : []),
-              ...(hasUnattributed ? [{ id: "linked-results", label: "Linked results" }] : []),
+              ...(hasUnattributed ? [{ id: "linked-results", label: "More results" }] : []),
               { id: "use-model", label: `Use this ${kindLabel}` },
               { id: "evidence", label: "Evidence" },
             ]}

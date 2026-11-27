@@ -272,7 +272,7 @@ export function EvaluationDesignEntityDetail({ detail }: { detail: RecordDetail 
             sections={[
               { id: "overview", label: "Overview" },
               ...(showWorkspace || hasLinked ? [{ id: "results", label: "Results" }] : []),
-              ...(hasUnattributed ? [{ id: "linked-results", label: "Linked results" }] : []),
+              ...(hasUnattributed ? [{ id: "linked-results", label: "More results" }] : []),
               ...(recordBenchmarkTasks(record) ? [{ id: "tasks", label: "Tasks" }] : []),
               { id: "execution", label: "How to run" },
               { id: "evidence", label: "Evidence" },

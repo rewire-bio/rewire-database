@@ -41,6 +41,15 @@ function LinkList({ links, row }: { links: [string, string | null][]; row: strin
   );
 }
 
+function SourceList({ ids, locator, sources }: { ids: string[]; locator: string; sources: OmicsRecord[] }) {
+  return (
+    <details className={styles.factSources}>
+      <summary>Sources ({ids.length})</summary>
+      <Evidence ids={ids} locator={locator} sources={sources} />
+    </details>
+  );
+}
+
 function FactTable({ label, caption, columns, children }: { label: string; caption: string; columns: string[]; children: ReactNode }) {
   return (
     <div className={styles.tableScroll} tabIndex={0} role="region" aria-label={label}>
@@ -83,7 +92,7 @@ function CheckpointRow({ item, sources }: { item: Checkpoint; sources: OmicsReco
         />
       </td>
       <td>
-        <Evidence ids={item.source_ids} locator={item.source_locator} sources={sources} />
+        <SourceList ids={item.source_ids} locator={item.source_locator} sources={sources} />
       </td>
     </tr>
   );
@@ -94,7 +103,7 @@ export function ReleasedCheckpoints({ record, sources }: { record: OmicsRecord; 
   const checkpoints = recordCheckpoints(record);
   if (!checkpoints) return null;
   return (
-    <section id="checkpoints" className={styles.section} aria-labelledby="checkpoints-title">
+    <section id="checkpoints" className={`${styles.section} ${styles.factTable}`} aria-labelledby="checkpoints-title">
       <h3 id="checkpoints-title">Released checkpoints</h3>
       <p>Each row is one released checkpoint, as stated in the cited sources.</p>
       <FactTable
@@ -137,7 +146,7 @@ function TaskRow({ item, sources }: { item: BenchmarkTask; sources: OmicsRecord[
         />
       </td>
       <td>
-        <Evidence ids={item.source_ids} locator={item.source_locator} sources={sources} />
+        <SourceList ids={item.source_ids} locator={item.source_locator} sources={sources} />
       </td>
     </tr>
   );

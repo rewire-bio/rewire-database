@@ -143,8 +143,8 @@ export function DatasetDetail({ detail }: { detail: RecordDetail }) {
           />
           {record.status === "superseded" && (
             <aside className={styles.notice}>
-              This record is superseded and retained for its history. Consult
-              its correction links before using these results.
+              This entry has been superseded and is kept for its history. Check
+              the corrections listed under Related entries before using these results.
             </aside>
           )}
           {results.total > 0 ? (
@@ -155,7 +155,7 @@ export function DatasetDetail({ detail }: { detail: RecordDetail }) {
               title="Evaluation results"
             />
           ) : (
-            <p className={styles.muted}>No reviewed evaluations of this {singularKindLabels[record.kind].toLowerCase()} are linked in this release.</p>
+            <p className={styles.muted}>No evaluations of this {singularKindLabels[record.kind].toLowerCase()} are in the database yet.</p>
           )}
           {readiness && (
             <ResearchReadiness
@@ -285,7 +285,7 @@ export function DatasetDetail({ detail }: { detail: RecordDetail }) {
                     ))}
                   </ul>
                 ) : (
-                  <p>No supporting source is linked yet.</p>
+                  <p>No supporting source has been added yet.</p>
                 )}
                 {detail.direct
                   .filter((item) => item.relation === "supersedes")
@@ -322,7 +322,7 @@ export function DatasetDetail({ detail }: { detail: RecordDetail }) {
               )}
             </details>
             <details className={styles.section}>
-              <summary>Related records</summary>
+              <summary>Related entries</summary>
               <ul className={styles.list}>
                 {[...detail.direct, ...detail.reverse].map((item, i) => (
                   <li key={i}>

@@ -47,7 +47,7 @@ describe("scientific profile rendering", () => {
         title="Tested models and results"
       />,
     );
-    expect(results).toContain("No evaluations linked in this release");
+    expect(results).toContain("No evaluations in the database yet");
     expect(results).not.toContain("never been evaluated");
   });
   it("labels limited explanatory claims without implying numerical or human verification", () => {

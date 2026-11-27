@@ -29,7 +29,7 @@ export default function StaticIndex({ records: kindRecords, releaseId, kind, pag
         ...(!benchmarks && page > 1 ? [{ name: `Page ${page}`, path: modelIndexHref(page) }] : []),
       ]} />
       <h1>{benchmarks ? "Biological benchmarks" : "Biological models"}</h1>
-      <p className="intro">{benchmarks ? "Explore evaluation suites and challenges, what they measure, and the models tested against them." : "Understand model architectures, biological inputs, access requirements and the evidence from linked evaluations."}</p>
+      <p className="intro">{benchmarks ? "Explore evaluation suites and challenges, what they measure, and the models tested against them." : "Understand model architectures, biological inputs, access requirements and the evidence from their evaluations."}</p>
       <nav className={styles.shortcuts} aria-label="Catalogue indexes"><a href="/benchmarks/" aria-current={benchmarks ? "page" : undefined}>Benchmarks</a><a href="/models/" aria-current={!benchmarks ? (page === 1 ? "page" : "location") : undefined}>Models</a><a href={`/?kind=${kind}#browse`}>Search and filter {benchmarks ? "benchmarks" : "models"}</a></nav>
     </div></header>
     <section className={`block first ${styles.index}`} aria-label={benchmarks ? "Benchmark profiles" : "Model profiles"}><div className="wrap">

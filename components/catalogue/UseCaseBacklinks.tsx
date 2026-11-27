@@ -27,7 +27,7 @@ export default function UseCaseBacklinks({ links, configurations }: { links: Use
       <a href={group.mapping_ids.length === 1 ? `/use-cases/${group.slug}/#mapping-${group.mapping_ids[0]}` : `/use-cases/${group.slug}/`}>{group.title}</a>
       <small>
         {group.mapping_ids.length > 1 && <>Used in {group.mapping_ids.length} comparisons. </>}
-        {group.configuration_ids.length ? <>Evidence from {group.configuration_ids.slice(0, SHOWN).map((id, index) => <span key={id}>{index > 0 && "; "}{configurations[id] ? <a href={recordHref(configurations[id])}>{catalogueText(configurations[id].name)}</a> : id}</span>)}{group.configuration_ids.length > SHOWN && ` and ${group.configuration_ids.length - SHOWN} more`}. </> : "No evaluated configuration is linked. "}
+        {group.configuration_ids.length ? <>Evidence from {group.configuration_ids.slice(0, SHOWN).map((id, index) => <span key={id}>{index > 0 && "; "}{configurations[id] ? <a href={recordHref(configurations[id])}>{catalogueText(configurations[id].name)}</a> : id}</span>)}{group.configuration_ids.length > SHOWN && ` and ${group.configuration_ids.length - SHOWN} more`}. </> : "No evaluated configuration yet. "}
         See the use case for scope and transfer limitations.
       </small>
     </li>)}</ul>

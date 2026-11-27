@@ -286,10 +286,10 @@ describe("additive catalogue browsing contract", () => {
       />,
     );
     expect(html).toContain(
-      "Results are available, but no reviewed comparison panel",
+      "Results are available, but no comparison chart for them has been",
     );
     expect(html).toContain("All evaluations");
-    expect(html).not.toContain("No evaluations linked");
+    expect(html).not.toContain("No evaluations in the database yet");
   });
 });
 

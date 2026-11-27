@@ -64,7 +64,7 @@ describe("detail pages with incomplete and historical evidence", () => {
   it.each(renderers)("keeps %s pages usable without linked evidence", (kind, Component) => {
     const html = render(kind, Component);
     expect(html.match(/<h1\b/g)).toHaveLength(1);
-    expect(html).toContain("No supporting source is linked yet");
+    expect(html).toContain("No supporting source has been added yet");
     expect(html).toContain("Technical metadata");
     expect(html).toContain("Suggest a correction");
     expect(html).toContain('href="/omics/releases/fixture/records.jsonl"');
@@ -79,7 +79,7 @@ describe("detail pages with incomplete and historical evidence", () => {
 
   it.each(renderers)("preserves %s correction history, safe sources and proposed applicability", (kind, Component) => {
     const html = render(kind, Component, true);
-    expect(html).toContain("This record is superseded");
+    expect(html).toContain("This entry has been superseded");
     expect(html).toContain("Supersedes");
     expect(html).toContain("Superseded by");
     expect(html).toContain("Fixture previous");
@@ -165,9 +165,9 @@ describe("verified entity relationships and profile ownership", () => {
 
   it("keeps evaluated downstream configuration results distinct from the underlying model", () => {
     const html = renderToStaticMarkup(<PredictiveEntityDetail detail={familyFixture("model", true, "downstream")} />);
-    expect(html).toContain("Results are recorded on linked configurations and versions of this model");
+    expect(html).toContain("Results are recorded for configurations and versions of this model, listed below with their own settings.");
     expect(html).toContain("Fixture downstream");
-    expect(html).toContain("They are not assigned to the underlying model");
+    expect(html).toContain("This model has no results of its own.");
     expect(html).toContain('id="results"');
     expect(html).not.toContain("0.75");
   });

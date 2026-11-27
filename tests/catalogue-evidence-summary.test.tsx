@@ -49,8 +49,8 @@ describe("catalogue evidence summary", () => {
     const old = renderToStaticMarkup(<CatalogueEvidence query={before} />);
     const changed = renderToStaticMarkup(<CatalogueEvidence query={after} />);
     expect(coverage.calls).toBe(2);
-    expect(old).toContain("5 records across");
-    expect(changed).toContain("7 records across");
+    expect(old).toContain("5 entries of");
+    expect(changed).toContain("7 entries of");
     expect(changed).toContain("2 source-checked published results");
     expect(catalogueEvidenceSummary(after).benchmarks).toBe(3);
   });

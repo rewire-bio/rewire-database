@@ -114,7 +114,7 @@ describe("Homepage Redesign (TC-HP-01 to TC-HP-08)", () => {
 
     expect(html).not.toContain("Benchmark evidence coverage");
     expect(html).not.toContain("Collection coverage and remaining gaps");
-    expect(html).not.toContain("Coverage: records and linked evaluations");
+    expect(html).not.toContain("Coverage: entries and evaluations");
     expect(html).not.toContain("What this platform is for");
     expect(html).not.toContain("Database freshness");
     expect(html).not.toContain("Original literature downloads");

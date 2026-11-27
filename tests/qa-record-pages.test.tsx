@@ -36,13 +36,14 @@ describe("parent records list the linked records that hold their results (#138)"
     expect(html).toMatch(/\b[3-9] configurations with results/);
     expect(html).toContain('href="/database/configuration/somatic-oncogenicity-20261009-config-chen2020-metalr#results"');
     expect(html).toContain("20 results");
-    expect(html.indexOf("Results on linked records")).toBeLessThan(html.indexOf('id="overview"'));
-    expect(html).toContain("not assigned to the underlying method");
+    expect(html.search(/Results for [3-9] configurations of /)).toBeGreaterThan(-1);
+    expect(html.search(/Results for [3-9] configurations of /)).toBeLessThan(html.indexOf('id="overview"'));
+    expect(html).toContain("This method has no results of its own.");
   });
   it("lists a benchmark's protocols instead of reporting results still to collect", () => {
     const html = page(BenchmarkPage, "dna-pathogen-20261009-benchmark-portik2022-mock-communities");
     expect(html).toContain("6 protocols with results");
-    expect(html).toContain("part of this benchmark");
+    expect(html).toMatch(/Results for 6 protocols in /);
     expect(html).not.toContain("Published results still to collect");
     expect(html).not.toMatch(emptyPager);
   });
@@ -50,7 +51,7 @@ describe("parent records list the linked records that hold their results (#138)"
     const html = page(BaselinePage, "uc20260930-jores-baseline-tobacco-leaves");
     expect(html).toContain("1 configuration with results");
     expect(html).toContain("uc20260930-jores-config-tobacco-leaves-gc-motif-linear");
-    expect(html).not.toContain("No evaluations linked in this release");
+    expect(html).not.toContain("No evaluations in the database yet");
   });
 });
 

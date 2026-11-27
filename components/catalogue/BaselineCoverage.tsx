@@ -75,7 +75,7 @@ export default function BaselineCoverage({
               </Fragment>
             ))}
           </dl>
-          {Object.keys(rows[0].published_evaluations_by_origin).length === 0 && <p>No reviewed evaluations with results linked in this release.</p>}
+          {Object.keys(rows[0].published_evaluations_by_origin).length === 0 && <p>No evaluations with results are in the database yet.</p>}
           <p className={styles.muted}>Literature evidence is not a Rewire measurement. Executed but unpublished runs and private review status are not included.</p>
         </>
       )}

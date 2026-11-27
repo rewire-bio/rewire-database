@@ -176,7 +176,7 @@ export default function Results({
             ]
           : [],
       )
-      .join(" · ") || "All linked evaluations";
+      .join(" · ") || "All evaluations";
   const rows = (
     <>
       {initial.total > 0 && (
@@ -231,7 +231,7 @@ export default function Results({
         <p>
           {initial.total
             ? "No results match the selected filters."
-            : "No evaluations linked in this release."}
+            : "No evaluations in the database yet."}
           {initial.total > 0 && (
             <>
               {" "}

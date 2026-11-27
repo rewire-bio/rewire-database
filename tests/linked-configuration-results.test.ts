@@ -59,15 +59,15 @@ describe("results held on linked configurations", () => {
 describe("list summaries", () => {
   it("adds evaluations held on linked records to the row", () => {
     expect(summaryText({ evaluation_count: 14, result_count: 50, linked_evaluation_count: 32, linked_result_count: 86 })).toBe(
-      "14 evaluations · 50 results · 18 further evaluations on linked records",
+      "14 evaluations · 50 results · 18 further evaluations on related entries",
     );
     expect(summaryText({ evaluation_count: 0, result_count: 0, linked_evaluation_count: 240, linked_result_count: 349 })).toBe(
-      "240 evaluations · 349 results on linked records",
+      "240 evaluations · 349 results on related entries",
     );
   });
 
   it("reads files without linked counts as before", () => {
     expect(summaryText({ evaluation_count: 3, result_count: 4 })).toBe("3 evaluations · 4 results");
-    expect(summaryText({ evaluation_count: 0, result_count: 0 })).toBe("No evaluations linked in this release");
+    expect(summaryText({ evaluation_count: 0, result_count: 0 })).toBe("No evaluations in the database yet");
   });
 });

@@ -107,7 +107,7 @@ describe("explorer initial hierarchy", () => {
     expect(markup).toContain('aria-describedby="catalogue-search-scope"');
     expect(markup).toMatch(/id="catalogue-search-scope"[^>]*>Search in/);
     expect(markup).toContain('aria-labelledby="refine-label"');
-    expect(markup).toMatch(/<details[^>]*><summary>More record types/);
+    expect(markup).toMatch(/<details[^>]*><summary>More entry types/);
     expect(markup).not.toMatch(/<details[^>]* open/);
     expect(markup).toContain("Reset filters");
     expect(markup).toContain('aria-label="Catalogue pages"');
@@ -182,6 +182,6 @@ it("omits unsupported evaluation counts on citation rows even when the API suppl
     />,
   );
   expect(markup).toContain("Example paper");
-  expect(markup).not.toContain("No evaluations linked");
+  expect(markup).not.toContain("No evaluations in the database yet");
   expect(markup).not.toMatch(/\d+ evaluations? · \d+ results?/);
 });

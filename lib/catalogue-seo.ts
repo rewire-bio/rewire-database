@@ -168,7 +168,7 @@ export function recordSearchMetadata(
       ),
       sentence(
         summary ||
-          "Linked evidence and source metadata in the biological benchmark database",
+          "Evidence and source details in the biological benchmark database",
       ),
     ]
       .filter(Boolean)

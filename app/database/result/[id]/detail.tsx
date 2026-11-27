@@ -212,8 +212,8 @@ export function ResultDetail({ page, contested = [] }: {
           />
           {record.status === "superseded" && (
             <aside className={styles.notice}>
-              This record is superseded and retained for its history. Consult
-              its correction links before using these results.
+              This entry has been superseded and is kept for its history. Check
+              the corrections listed under Related entries before using these results.
             </aside>
           )}
           {derivation && <DerivationSection derivation={derivation} recordById={(id) => context.get(id) as OmicsRecord | undefined} />}
@@ -368,7 +368,7 @@ export function ResultDetail({ page, contested = [] }: {
                     ))}
                   </ul>
                 ) : (
-                  <p>No supporting source is linked yet.</p>
+                  <p>No supporting source has been added yet.</p>
                 )}
                 {detail.direct
                   .filter((item) => item.relation === "supersedes")
@@ -413,7 +413,7 @@ export function ResultDetail({ page, contested = [] }: {
               />
             </details>
             <details className={styles.section}>
-              <summary>Related records</summary>
+              <summary>Related entries</summary>
               <ul className={styles.list}>
                 {[...detail.direct, ...detail.reverse].map((item, i) => (
                   <li key={i}>

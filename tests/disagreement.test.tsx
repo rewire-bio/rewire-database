@@ -1,8 +1,9 @@
 import { describe, expect, it } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
-import { DisagreementView } from "../components/catalogue/DisagreementView";
+import { DisagreementView, leanText, POOL_ABOVE } from "../components/catalogue/DisagreementView";
 import { disagreement, gapPercent, paperGroup, shortCitation, type SourceResolver } from "../lib/disagreement";
 import type { Discrepancy, DiscrepancyStudy } from "../shared/omics/discrepancies";
+import real from "./fixtures/disagreements.json";
 
 const study = (key: string, role: DiscrepancyStudy["role"], higher: Record<string, number>, extra: Partial<DiscrepancyStudy> = {}): DiscrepancyStudy => {
   const ties = extra.ties ?? 0;
@@ -22,6 +23,7 @@ const ordering = (studies: DiscrepancyStudy[]): Finding => ({
   id: "discrepancy-test", rule: "ordering-reversal", systems: ["bz", "ag"], consensus_higher: "ag", reference_system: null, numbers: {}, studies,
 });
 const view = (f: Finding) => disagreement(f, source, names)!;
+const text = (html: string) => html.replace(/<[^>]+>/g, " ").replace(/&#x27;/g, "'").replace(/\s+/g, " ").trim();
 const render = (f: Finding, compact = false) => renderToStaticMarkup(<DisagreementView view={view(f)} compact={compact} />);
 
 describe("disagreement summary and grouping", () => {
@@ -120,8 +122,8 @@ describe("disagreement views", () => {
     expect(html).toMatch(/<tspan[^>]*>Jaganathan et al\.<\/tspan><tspan[^>]*>2026<\/tspan>/);
     expect(html.match(/<circle cx="[\d.]+" cy="[\d.]+" r="(4|6)"/g)?.length).toBe(4);
     expect(html).toContain(">Mixed<");
-    expect(html).toContain("Alavi 2026 (disagrees): AlphaGenome higher in 3, Borzoi higher in 9, 0 ties.");
-    expect(html).toMatch(/Disagrees: <\/tspan>Alavi 2026/);
+    expect(text(html)).toContain("Alavi 2026 Disagrees : Borzoi ahead in 9 of 12 comparisons");
+    expect(text(html)).toContain("Jaganathan et al. 2026 : Split: AlphaGenome ahead in 3, Borzoi in 2, of 5 comparisons");
     expect(html).toContain("Papers compared (4)");
   });
 
@@ -135,7 +137,8 @@ describe("disagreement views", () => {
     expect(html).toContain("Rank AlphaGenome higher (19): Paper 1, Paper 2,");
     expect(html).not.toMatch(/r="4"/);
     // The bars show the first 12, the one that disagrees first, and say how many more.
-    expect(html.match(/<g( class="[^"]*")?><text x="0" y="\d+" class="[^"]*chartLabel/g)?.length).toBe(12);
+    expect(html.match(/class="[^"]*leanItem/g)?.length).toBe(13);
+    expect(text(html)).toContain("The other 19 papers together : AlphaGenome ahead in 399 of 399 comparisons");
     expect(html).toContain("The charts show the 12 papers with the most comparisons, the one that disagrees first; 8 more are in the table.");
     expect(html).toContain("Papers compared (20)");
   });
@@ -164,18 +167,90 @@ describe("disagreement views", () => {
     expect(html).not.toContain("Papers grouped by");
     const compact = renderToStaticMarkup(<DisagreementView view={v} compact />);
     expect(compact).toContain(v.summary);
-    expect(compact).toContain("Alavi 2026 −30%");
+    expect(compact).toContain("Disagrees: Alavi 2026 −30%");
+    expect(html).toContain("Same as SpliceAI");
+    expect(html).toMatch(/Disagrees: <\/tspan>Alavi 2026/);
     expect(compact).not.toContain("Papers compared");
     // A gap range that spans the reference.
     expect(view({ ...f, studies: [study("source:Kim 2025", "consensus", {}, { gap: -0.02 }), study("source:Lee 2024", "consensus", {}, { gap: 0.04 })] }).summary)
       .toBe("In 2 papers, AlphaGenome scores between 2% below and 4% above SpliceAI.");
   });
 
-  it("keeps the compact view to the summary and one bar for the others and one for the outlier", () => {
+  it("keeps the compact view to the summary and one row per paper", () => {
     const html = render(ordering([study("source:Kim 2025", "consensus", { ag: 6 }), study("source:Lee 2024", "consensus", { ag: 2 }, { ties: 1 }), study("source:Alavi 2026", "outlier", { bz: 2 })]), true);
-    expect(html).toContain("2 other papers: AlphaGenome higher in 8, Borzoi higher in 0, 1 tie.");
-    expect(html).toContain("Alavi 2026 (disagrees): AlphaGenome higher in 0, Borzoi higher in 2, 0 ties.");
+    expect(text(html)).toContain("Alavi 2026 Disagrees : Borzoi ahead in 2 of 2 comparisons");
+    expect(text(html)).toContain("Kim 2025 : AlphaGenome ahead in 6 of 6 comparisons");
+    expect(text(html)).toContain("Lee 2024 : AlphaGenome ahead in 2 of 3 comparisons; 1 tie");
+    expect(html).not.toContain("together");
     expect(html).not.toContain("Papers grouped by");
     expect(html).not.toContain("<table");
+  });
+});
+
+// Findings from the data repository's discrepancy report, with each study's first source name.
+describe("lean chart on real findings", () => {
+  const sources = real.sources as Record<string, { name: string; year: unknown }>;
+  const realView = (id: string) => disagreement(real.findings.find((f) => f.id === id) as unknown as Finding, (s) => {
+    const first = sources[s.source_ids[0]];
+    return { name: first.name, short: shortCitation(first.name, first.year), href: null, url: null, more: [] };
+  }, (id) => ({ name: (real.names as Record<string, string>)[id], href: null }))!;
+  const draw = (id: string, compact = false) => text(renderToStaticMarkup(<DisagreementView view={realView(id)} compact={compact} />));
+
+  it("draws each paper, the one that disagrees first, and numbers studies that share a source name", () => {
+    const v = realView("discrepancy-0311356983b743d6");
+    expect(v.papers.map((p) => p.short)).toEqual(["BEELINE", "BEELINE (study 2)", "BEELINE (study 3)"]);
+    const words = draw(v.id, true);
+    expect(words).toContain("GRNBoost2 ahead Even PPCOR (partial Pearson correlation) ahead");
+    expect(words).toContain("BEELINE Disagrees : PPCOR (partial Pearson correlation) ahead in 9 of 12 comparisons");
+    expect(words).toContain("BEELINE (study 2) : GRNBoost2 ahead in 37 of 44 comparisons; 1 tie");
+    expect(words).toContain("BEELINE (study 3) : GRNBoost2 ahead in 10 of 15 comparisons; 3 ties");
+  });
+
+  it("leans each bar from the even line toward the paper's model, thicker for more comparisons", () => {
+    const html = renderToStaticMarkup(<DisagreementView view={realView("discrepancy-0311356983b743d6")} compact />);
+    const bars = [...html.matchAll(/class="[^"]*leanTrack[^"]*" style="height:(\d+)px"[^>]*><span class="[^"]*(leanA|leanB)[^"]*" style="left:([\d.]+)%;width:([\d.]+)%"/g)]
+      .map(([, height, side, left, width]) => ({ height: Number(height), side, left: Number(left), width: Number(width) }));
+    // BEELINE: 9 of 12 for PPCOR, so 75 percent: the bar runs right from 50 to 75.
+    expect(bars[0]).toMatchObject({ side: "leanB", left: 50, width: 25 });
+    // Study 2: 6 of 43 for PPCOR, so the bar runs left from about 14 to 50, and it is the thickest.
+    expect(bars[1].side).toBe("leanA");
+    expect(bars[1].left + bars[1].width).toBeCloseTo(50);
+    expect(bars[1].height).toBe(18);
+    expect(bars[0].height).toBeLessThan(bars[1].height);
+  });
+
+  it("says split and tied in words, as the grouping does", () => {
+    const words = draw("discrepancy-44e5640b79522964");
+    expect(words).toContain("Brandes et al. 2023 Disagrees : SIFT ahead in 3 of 4 comparisons; 1 tie");
+    expect(words).toMatch(/: Split: PROVEAN ahead in 2, SIFT in 3, of 5 comparisons/);
+    expect(words).toContain("ProteinGym : Tied in its one comparison");
+  });
+
+  it("adds a row for the other papers together above five, and in the compact view shows it with the outlier only", () => {
+    const v = realView("discrepancy-31564883eee95750");
+    expect(v.papers.filter((p) => p.role === "consensus").length).toBeGreaterThan(POOL_ABOVE);
+    const full = draw(v.id);
+    expect(full).toContain("The other 10 papers together : Nucleotide Transformer ahead in 104 of 171 comparisons; 15 ties");
+    expect(full).toContain("By paper: 7 put Nucleotide Transformer ahead, 2 put DNABERT-2 ahead, 1 split or tied.");
+    expect(full).toContain("GENEB leaderboard : Nucleotide Transformer ahead in 35 of 45 comparisons; 2 ties");
+    const compact = renderToStaticMarkup(<DisagreementView view={v} compact />);
+    expect(compact.match(/class="[^"]*leanItem/g)?.length).toBe(2);
+    // The outlier rests on 3 comparisons: its bar is thin beside the 18px of the most compared paper.
+    expect(compact).toMatch(/leanTrack[^"]*" style="height:8px"/);
+  });
+
+  it("marks both studies of a two-study conflict and pools neither", () => {
+    const words = draw("discrepancy-055eb0dd61040574", true);
+    expect(words).toMatch(/In conflict : AIDO\.RNA ahead in 36 of 36 comparisons/);
+    expect(words).toMatch(/In conflict : RNAErnie ahead in 3 of 4 comparisons/);
+    expect(words).not.toContain("Disagrees");
+    expect(words).not.toContain("together");
+  });
+
+  it("states a row's counts", () => {
+    const v = realView("discrepancy-0311356983b743d6");
+    expect(leanText(v, { a: 0, b: 0, ties: 3 })).toBe("Tied in all 3 comparisons");
+    expect(leanText(v, { a: 2, b: 2, ties: 0 })).toBe("Split: GRNBoost2 ahead in 2, PPCOR (partial Pearson correlation) in 2, of 4 comparisons");
+    expect(leanText(v, { a: 1, b: 0, ties: 0 })).toBe("GRNBoost2 ahead in 1 of 1 comparison");
   });
 });

@@ -191,6 +191,13 @@ export function disagreement(
         })),
       };
     });
+  // Distinct studies can share a source name; number the repeats so every view can tell them apart.
+  const seen = new Map<string, number>();
+  for (const p of papers) {
+    const n = (seen.get(p.short) ?? 0) + 1;
+    seen.set(p.short, n);
+    if (n > 1) p.short = `${p.short} (study ${n})`;
+  }
   const a = { id: aId, ...name(aId) };
   const b = { id: bId, ...name(bId) };
   const gaps = papers.filter((p) => p.role !== "outlier" && p.gap !== null).map((p) => p.gap!);

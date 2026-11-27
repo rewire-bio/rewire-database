@@ -5,6 +5,7 @@ import BenchmarkCoverage from "@/components/catalogue/BenchmarkCoverage";
 import { recordBreadcrumbs, safeJsonLd } from "@/lib/catalogue-sharing";
 import { generateBenchmarkDatasetJsonLd } from "@/lib/catalogue-seo";
 import { catalogueText } from "@/lib/catalogue-text";
+import { relationLabel } from "@/lib/evidence-labels";
 import Link from "next/link";
 import { Fragment } from "react";
 import { buildCatalogue } from "@/lib/catalogue-build";
@@ -389,7 +390,7 @@ export function EvaluationDesignEntityDetail({ detail }: { detail: RecordDetail 
                         <Link href={`${recordHref(item.record)}#results`}>
                           {catalogueText(item.record.name)}
                         </Link>{" "}
-                        · {item.relation.replace(/_/g, " ")}
+                        · {relationLabel(item.relation, "reverse")}
                       </li>
                     ))}
                   </ul>
@@ -603,9 +604,12 @@ export function EvaluationDesignEntityDetail({ detail }: { detail: RecordDetail 
             <details className={styles.section}>
               <summary>Related entries</summary>
               <ul className={styles.list}>
-                {[...detail.direct, ...detail.reverse].map((item, i) => (
+                {[
+                  ...detail.direct.map((item) => ({ ...item, direction: "direct" as const })),
+                  ...detail.reverse.map((item) => ({ ...item, direction: "reverse" as const })),
+                ].map((item, i) => (
                   <li key={i}>
-                    {item.relation.replace(/_/g, " ")}:{" "}
+                    {relationLabel(item.relation, item.direction)}:{" "}
                     <Link href={recordHref(item.record)}>
                       {catalogueText(item.record.name)}
                     </Link>

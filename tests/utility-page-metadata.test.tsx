@@ -9,6 +9,7 @@ import IndependencePage from "../app/independence/page";
 import CoveragePage from "../app/coverage/page";
 import UpdatesPage from "../app/updates/page";
 import InvestigationsPage from "../app/investigations/page";
+import ModelsReachPage from "../app/models/reach/page";
 import MfassV1Page from "../app/runs/mfass-v1/page";
 import MfassV2Page from "../app/runs/mfass-v2/page";
 import ContributePage from "../app/contribute/page";
@@ -106,6 +107,14 @@ const cases = [
     hierarchy: [
       ["Database", "/"],
       ["Investigations", "/investigations/"],
+    ],
+  },
+  {
+    path: "/models/reach/", Page: ModelsReachPage, indexable: true,
+    hierarchy: [
+      ["Database", "/"],
+      ["Models", "/models/"],
+      ["Across use cases", "/models/reach/"],
     ],
   },
   {

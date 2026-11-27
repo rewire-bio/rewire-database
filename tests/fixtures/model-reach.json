@@ -1,0 +1,2079 @@
+{
+"release_id": "2026-11-27-599b5b1af1cc",
+"boards": [
+{
+"use_case": "brca1-brca2-germline-interpretation",
+"title": "Interpret BRCA1/BRCA2 germline variants",
+"rows": [
+{
+"model_id": "uc20260930-model-eve",
+"name": "EVE",
+"positions": [
+4,
+7
+]
+},
+{
+"model_id": "discovery-model-evo-2",
+"name": "Evo 2",
+"positions": [
+8,
+17
+]
+},
+{
+"model_id": "uc20260930-model-esm-1b",
+"name": "ESM-1b",
+"positions": [
+7,
+15
+]
+},
+{
+"model_id": "discovery-model-spliceai",
+"name": "SpliceAI",
+"positions": [
+15,
+25
+]
+}
+],
+"not_ranked": [
+{
+"model_id": "discovery-model-dnabert-2",
+"name": "DNABERT-2",
+"reason": "one study"
+},
+{
+"model_id": "discovery-model-esm-1v",
+"name": "ESM-1v",
+"reason": "one study"
+},
+{
+"model_id": "discovery-model-esm-2",
+"name": "ESM-2",
+"reason": "one study"
+},
+{
+"model_id": "discovery-model-nucleotide-transformer",
+"name": "Nucleotide Transformer",
+"reason": "one study"
+},
+{
+"model_id": "discovery-model-pangolin",
+"name": "Pangolin",
+"reason": "one study"
+},
+{
+"model_id": "discovery-model-rna-fm",
+"name": "RNA-FM",
+"reason": "one study"
+},
+{
+"model_id": "gfm-guides-20261014-gpnmsa-model-gpn-msa",
+"name": "GPN-MSA",
+"reason": "one study"
+},
+{
+"model_id": "lit-genomics-20261011-geneb-model-evo",
+"name": "Evo",
+"reason": "one study"
+},
+{
+"model_id": "lit-genomics-20261011-gfmbench-model-dnabert",
+"name": "DNABERT",
+"reason": "one study"
+},
+{
+"model_id": "lit-genomics-20261011-guanine-model-nucleotide-transformer-v3",
+"name": "Nucleotide Transformer v3",
+"reason": "one study"
+},
+{
+"model_id": "regulatory-variant-20261009-model-caduceus",
+"name": "Caduceus",
+"reason": "one study"
+},
+{
+"model_id": "uc20260930-model-deepsequence",
+"name": "DeepSequence",
+"reason": "one study"
+},
+{
+"model_id": "uc20260930-model-escott",
+"name": "ESCOTT",
+"reason": "one study"
+},
+{
+"model_id": "uc20260930-model-poet",
+"name": "PoET",
+"reason": "one study"
+},
+{
+"model_id": "uc20260930-model-protgpt2",
+"name": "ProtGPT2",
+"reason": "one study"
+},
+{
+"model_id": "uc20260930-model-saprot",
+"name": "SaProt",
+"reason": "one study"
+},
+{
+"model_id": "uc20260930-model-trancepteve",
+"name": "TranceptEVE",
+"reason": "one study"
+},
+{
+"model_id": "uc20260930-model-tranception",
+"name": "Tranception",
+"reason": "one study"
+},
+{
+"model_id": "uc20260930-model-vespa",
+"name": "VESPA",
+"reason": "one study"
+},
+{
+"model_id": "uc20260930-model-vespal",
+"name": "VESPAl",
+"reason": "one study"
+}
+],
+"ranked": 44
+},
+{
+"use_case": "cell-type-annotation-transfer",
+"title": "Transfer cell-type annotations to a new dataset",
+"rows": [],
+"not_ranked": [
+{
+"model_id": "catalog-model-geneformer",
+"name": "Geneformer",
+"reason": "one study"
+},
+{
+"model_id": "catalog-model-scfoundation",
+"name": "scFoundation",
+"reason": "one study"
+},
+{
+"model_id": "cell-type-20261009-model-langcell",
+"name": "LangCell",
+"reason": "one study"
+},
+{
+"model_id": "cell-type-20261009-model-sccello",
+"name": "scCello",
+"reason": "one study"
+},
+{
+"model_id": "cell-type-20261009-model-uce",
+"name": "UCE (Universal Cell Embeddings)",
+"reason": "one study"
+},
+{
+"model_id": "lit-cells-networks-20261011-chen2026-model-cellplm",
+"name": "CellPLM",
+"reason": "one study"
+},
+{
+"model_id": "lit-cells-networks-20261011-chen2026-model-genept",
+"name": "GenePT",
+"reason": "one study"
+},
+{
+"model_id": "lit-cells-networks-20261011-chen2026-model-nicheformer",
+"name": "Nicheformer",
+"reason": "one study"
+},
+{
+"model_id": "lit-cells-networks-20261011-chen2026-model-novae",
+"name": "Novae",
+"reason": "one study"
+},
+{
+"model_id": "lit-cells-networks-20261011-chen2026-model-scelmo",
+"name": "scELMo",
+"reason": "one study"
+},
+{
+"model_id": "lit-cells-networks-20261011-chen2026-model-scgpt-spatial",
+"name": "scGPT-spatial",
+"reason": "one study"
+},
+{
+"model_id": "catalog-model-scgpt",
+"name": "scGPT",
+"reason": "no second model to rank"
+}
+],
+"ranked": 0
+},
+{
+"use_case": "cnv-detection-characterisation",
+"title": "Select a copy-number variant detection and characterisation workflow",
+"rows": [],
+"not_ranked": [],
+"ranked": 3
+},
+{
+"use_case": "de-novo-binder-design",
+"title": "Design a new binder to a chosen target",
+"rows": [],
+"not_ranked": [
+{
+"model_id": "discovery-model-rfdiffusion",
+"name": "RFdiffusion",
+"reason": "one study"
+}
+],
+"ranked": 0
+},
+{
+"use_case": "diagnostic-dna-pathogen-identification",
+"title": "Select a DNA pathogen-identification workflow for diagnostic testing",
+"rows": [],
+"not_ranked": [
+{
+"model_id": "dna-pathogen-20261012-bertax-model-bertax",
+"name": "BERTax",
+"reason": "one study"
+},
+{
+"model_id": "dna-pathogen-20261012-bertax-model-deepmicrobes",
+"name": "DeepMicrobes",
+"reason": "one study"
+}
+],
+"ranked": 4
+},
+{
+"use_case": "diagnostic-genomics-model-execution",
+"title": "Select an execution workflow for large-scale diagnostic genomics",
+"rows": [],
+"not_ranked": [
+{
+"model_id": "discovery-model-dnabert-2",
+"name": "DNABERT-2",
+"reason": "one study"
+},
+{
+"model_id": "discovery-model-nucleotide-transformer",
+"name": "Nucleotide Transformer",
+"reason": "one study"
+},
+{
+"model_id": "model-execution-20261011-model-deepvariant",
+"name": "DeepVariant",
+"reason": "one study"
+},
+{
+"model_id": "model-execution-20261011-model-moderngena",
+"name": "ModernGENA",
+"reason": "one study"
+},
+{
+"model_id": "regulatory-variant-20261009-model-gena-lm",
+"name": "GENA-LM",
+"reason": "one study"
+}
+],
+"ranked": 2
+},
+{
+"use_case": "diagnostic-rna-pathogen-detection",
+"title": "Select an RNA pathogen-detection workflow for diagnostic testing",
+"rows": [],
+"not_ranked": [],
+"ranked": 3
+},
+{
+"use_case": "egfr-nsclc-actionability-resistance-evidence",
+"title": "Review EGFR lung-cancer actionability evidence",
+"rows": [],
+"not_ranked": [
+{
+"model_id": "egfrnsclc-20261009-model-gpt-4o",
+"name": "GPT-4o",
+"reason": "one study"
+},
+{
+"model_id": "egfrnsclc-20261009-model-llama-3-1-70b",
+"name": "Llama 3.1 70B",
+"reason": "one study"
+},
+{
+"model_id": "egfrnsclc-20261009-model-qwen-2-5-72b",
+"name": "Qwen 2.5 72B",
+"reason": "one study"
+}
+],
+"ranked": 0
+},
+{
+"use_case": "genetic-perturbation-response",
+"title": "Assess models for genetic perturbation experiments",
+"rows": [
+{
+"model_id": "catalog-model-gears",
+"name": "GEARS",
+"positions": [
+1,
+5
+]
+},
+{
+"model_id": "catalog-model-scgpt",
+"name": "scGPT",
+"positions": [
+1,
+5
+]
+},
+{
+"model_id": "perturbation-ahlmann-20261011-model-cpa",
+"name": "CPA",
+"positions": [
+1,
+5
+]
+},
+{
+"model_id": "catalog-model-scfoundation",
+"name": "scFoundation",
+"positions": [
+2,
+5
+]
+}
+],
+"not_ranked": [
+{
+"model_id": "catalog-model-geneformer",
+"name": "Geneformer",
+"reason": "one study"
+},
+{
+"model_id": "catalog-model-scvi",
+"name": "scVI",
+"reason": "one study"
+},
+{
+"model_id": "cell-type-20261009-model-uce",
+"name": "UCE (Universal Cell Embeddings)",
+"reason": "one study"
+},
+{
+"model_id": "discovery-model-state",
+"name": "STATE",
+"reason": "one study"
+},
+{
+"model_id": "lit-cells-networks-20261011-chen2026-model-cellplm",
+"name": "CellPLM",
+"reason": "one study"
+},
+{
+"model_id": "lit-cells-networks-20261011-chen2026-model-genept",
+"name": "GenePT",
+"reason": "one study"
+},
+{
+"model_id": "lit-cells-networks-20261011-chen2026-model-scelmo",
+"name": "scELMo",
+"reason": "one study"
+},
+{
+"model_id": "lit-cells-networks-20261011-chen2026-model-scgpt-spatial",
+"name": "scGPT-spatial",
+"reason": "one study"
+},
+{
+"model_id": "perturbation-ahlmann-20261011-model-scbert",
+"name": "scBERT",
+"reason": "one study"
+}
+],
+"ranked": 5
+},
+{
+"use_case": "hit-discovery-virtual-screening",
+"title": "Find hits for a target by virtual screening",
+"rows": [],
+"not_ranked": [
+{
+"model_id": "discovery-model-alphafold-3",
+"name": "AlphaFold 3",
+"reason": "not compared with the main group"
+},
+{
+"model_id": "discovery-model-boltz",
+"name": "Boltz",
+"reason": "not compared with the main group"
+},
+{
+"model_id": "ucc-research-model-protenix",
+"name": "Protenix",
+"reason": "one study"
+}
+],
+"ranked": 0
+},
+{
+"use_case": "lead-optimisation-affinity-ranking",
+"title": "Rank close analogues of a hit by binding affinity",
+"rows": [],
+"not_ranked": [
+{
+"model_id": "discovery-model-boltz",
+"name": "Boltz",
+"reason": "one study"
+},
+{
+"model_id": "uc-leadopt-20261022-model-bacpi",
+"name": "BACPI",
+"reason": "one study"
+}
+],
+"ranked": 0
+},
+{
+"use_case": "mass-spectrum-molecule-shortlisting",
+"title": "Shortlist molecular identities from tandem mass spectra",
+"rows": [
+{
+"model_id": "discovery-model-msalign",
+"name": "MSAlign",
+"positions": [
+1,
+1
+]
+},
+{
+"model_id": "uc20260930-model-emb-cos",
+"name": "Emb-Cos",
+"positions": [
+2,
+2
+]
+},
+{
+"model_id": "uc20260930-model-jestr",
+"name": "JESTR",
+"positions": [
+3,
+3
+]
+}
+],
+"not_ranked": [
+{
+"model_id": "uc20260930-model-massspecgym-deepsets-fingerprint-predictor",
+"name": "MassSpecGym DeepSets fingerprint predictor",
+"reason": "one study"
+},
+{
+"model_id": "uc20260930-model-mist",
+"name": "MIST",
+"reason": "one study"
+}
+],
+"ranked": 3
+},
+{
+"use_case": "missense-pp3-bp4-calibrated-evidence",
+"title": "Use calibrated computational evidence for missense variants (PP3/BP4)",
+"rows": [
+{
+"model_id": "uc20260930-model-trancepteve",
+"name": "TranceptEVE",
+"positions": [
+1,
+5
+]
+},
+{
+"model_id": "uc20260930-model-eve",
+"name": "EVE",
+"positions": [
+4,
+10
+]
+},
+{
+"model_id": "discovery-model-esm-2",
+"name": "ESM-2",
+"positions": [
+7,
+25
+]
+},
+{
+"model_id": "uc20260930-model-esm-1b",
+"name": "ESM-1b",
+"positions": [
+8,
+14
+]
+},
+{
+"model_id": "vep-uc-20261014-model-gpn-star",
+"name": "GPN-Star",
+"positions": [
+14,
+23
+]
+},
+{
+"model_id": "gfm-guides-20261014-gpnmsa-model-gpn-msa",
+"name": "GPN-MSA",
+"positions": [
+16,
+25
+]
+}
+],
+"not_ranked": [
+{
+"model_id": "catalog-model-alphagenome",
+"name": "AlphaGenome",
+"reason": "one study"
+},
+{
+"model_id": "discovery-model-esm-1v",
+"name": "ESM-1v",
+"reason": "one study"
+},
+{
+"model_id": "discovery-model-evo-2",
+"name": "Evo 2",
+"reason": "one study"
+},
+{
+"model_id": "discovery-model-nucleotide-transformer",
+"name": "Nucleotide Transformer",
+"reason": "one study"
+},
+{
+"model_id": "discovery-model-pangolin",
+"name": "Pangolin",
+"reason": "one study"
+},
+{
+"model_id": "gfm-guides-20261014-evo2-brixi2026-model-codonbert",
+"name": "CodonBERT",
+"reason": "one study"
+},
+{
+"model_id": "gfm-guides-20261014-evo2-brixi2026-model-decodon",
+"name": "DeCodon",
+"reason": "one study"
+},
+{
+"model_id": "gfm-guides-20261014-evo2-brixi2026-model-encodon",
+"name": "EnCodon",
+"reason": "one study"
+},
+{
+"model_id": "lit-genomics-20261011-geneb-model-evo",
+"name": "Evo",
+"reason": "one study"
+},
+{
+"model_id": "lit-genomics-20261011-guanine-model-phylogpn",
+"name": "PhyloGPN",
+"reason": "one study"
+},
+{
+"model_id": "uc20260930-model-carp",
+"name": "CARP",
+"reason": "one study"
+},
+{
+"model_id": "uc20260930-model-deepsequence",
+"name": "DeepSequence",
+"reason": "one study"
+},
+{
+"model_id": "uc20260930-model-escott",
+"name": "ESCOTT",
+"reason": "one study"
+},
+{
+"model_id": "uc20260930-model-msa-transformer",
+"name": "MSA Transformer",
+"reason": "one study"
+},
+{
+"model_id": "uc20260930-model-poet",
+"name": "PoET",
+"reason": "one study"
+},
+{
+"model_id": "uc20260930-model-progen2",
+"name": "ProGen2",
+"reason": "one study"
+},
+{
+"model_id": "uc20260930-model-protgpt2",
+"name": "ProtGPT2",
+"reason": "one study"
+},
+{
+"model_id": "uc20260930-model-rita",
+"name": "RITA",
+"reason": "one study"
+},
+{
+"model_id": "uc20260930-model-saprot",
+"name": "SaProt",
+"reason": "one study"
+},
+{
+"model_id": "uc20260930-model-tranception",
+"name": "Tranception",
+"reason": "one study"
+},
+{
+"model_id": "uc20260930-model-unirep-evotuned",
+"name": "Unirep evotuned",
+"reason": "one study"
+},
+{
+"model_id": "uc20260930-model-vespa",
+"name": "VESPA",
+"reason": "one study"
+},
+{
+"model_id": "uc20260930-model-vespal",
+"name": "VESPAl",
+"reason": "one study"
+},
+{
+"model_id": "uc20260930-model-wavenet",
+"name": "Wavenet",
+"reason": "one study"
+}
+],
+"ranked": 30
+},
+{
+"use_case": "patient-rna-splicing-validation",
+"title": "Select a patient-RNA splicing-variant validation workflow",
+"rows": [
+{
+"model_id": "catalog-model-alphagenome",
+"name": "AlphaGenome",
+"positions": [
+1,
+2
+]
+},
+{
+"model_id": "discovery-model-spliceai",
+"name": "SpliceAI",
+"positions": [
+1,
+2
+]
+},
+{
+"model_id": "discovery-model-pangolin",
+"name": "Pangolin",
+"positions": [
+3,
+3
+]
+}
+],
+"not_ranked": [
+{
+"model_id": "discovery-model-evo-2",
+"name": "Evo 2",
+"reason": "one study"
+},
+{
+"model_id": "lit-genomics-20261011-guanine-model-nucleotide-transformer-v3",
+"name": "Nucleotide Transformer v3",
+"reason": "one study"
+},
+{
+"model_id": "lit-microbial-20261011-virobench-model-genos",
+"name": "Genos",
+"reason": "one study"
+},
+{
+"model_id": "regulatory-variant-20261009-model-borzoi",
+"name": "Borzoi",
+"reason": "one study"
+},
+{
+"model_id": "rna-splicing-20261011-fortier2026-model-ci-spliceai",
+"name": "CI-SpliceAI",
+"reason": "one study"
+},
+{
+"model_id": "rna-splicing-20261011-fortier2026-model-openspliceai",
+"name": "OpenSpliceAI",
+"reason": "one study"
+},
+{
+"model_id": "rna-splicing-20261013-spliceai2-model-spliceai2",
+"name": "SpliceAI2",
+"reason": "one study"
+}
+],
+"ranked": 3
+},
+{
+"use_case": "phenotype-perturbation-selection",
+"title": "Select perturbations for a defined cellular response",
+"rows": [],
+"not_ranked": [
+{
+"model_id": "catalog-model-gears",
+"name": "GEARS",
+"reason": "one study"
+},
+{
+"model_id": "ucpheno-20261022-model-claude-haiku-4-5",
+"name": "Claude Haiku 4.5",
+"reason": "one study"
+},
+{
+"model_id": "ucpheno-20261022-model-claude-opus-4-8",
+"name": "Claude Opus 4.8",
+"reason": "one study"
+},
+{
+"model_id": "ucpheno-20261022-model-claude-sonnet-4-6",
+"name": "Claude Sonnet 4.6",
+"reason": "one study"
+},
+{
+"model_id": "ucpheno-20261022-model-gemini-3-1-pro",
+"name": "Gemini 3.1 Pro",
+"reason": "one study"
+},
+{
+"model_id": "ucpheno-20261022-model-glm-5-1",
+"name": "GLM-5.1",
+"reason": "one study"
+},
+{
+"model_id": "ucpheno-20261022-model-glm-5-2",
+"name": "GLM-5.2",
+"reason": "one study"
+},
+{
+"model_id": "ucpheno-20261022-model-gpt-5-5",
+"name": "GPT-5.5",
+"reason": "one study"
+},
+{
+"model_id": "ucpheno-20261022-model-gpt-5-6-sol",
+"name": "GPT-5.6 Sol",
+"reason": "one study"
+},
+{
+"model_id": "ucpheno-20261022-model-kimi-k2-6",
+"name": "Kimi-K2.6",
+"reason": "one study"
+},
+{
+"model_id": "ucpheno-20261022-model-qwen3-6-27b",
+"name": "Qwen3.6-27B",
+"reason": "one study"
+}
+],
+"ranked": 0
+},
+{
+"use_case": "plant-promoter-reporters",
+"title": "Compare methods for plant promoter experiments",
+"rows": [],
+"not_ranked": [
+{
+"model_id": "discovery-model-agro-nucleotide-transformer",
+"name": "Agro Nucleotide Transformer",
+"reason": "one study"
+},
+{
+"model_id": "uc20260930-model-jores-plant-promoter-cnn",
+"name": "Jores plant promoter CNN",
+"reason": "one study"
+}
+],
+"ranked": 0
+},
+{
+"use_case": "plasma-ctdna-fragmentomics",
+"title": "Select a plasma ctDNA fragmentomics detection workflow",
+"rows": [],
+"not_ranked": [],
+"ranked": 2
+},
+{
+"use_case": "plasma-ctdna-methylation",
+"title": "Select a plasma ctDNA methylation detection workflow",
+"rows": [],
+"not_ranked": [],
+"ranked": 3
+},
+{
+"use_case": "protein-variant-effect-prediction",
+"title": "Predict missense variant effects in a protein of interest",
+"rows": [
+{
+"model_id": "uc20260930-model-escott",
+"name": "ESCOTT",
+"positions": [
+1,
+1
+]
+},
+{
+"model_id": "uc20260930-model-trancepteve",
+"name": "TranceptEVE",
+"positions": [
+2,
+5
+]
+},
+{
+"model_id": "uc20260930-model-saprot",
+"name": "SaProt",
+"positions": [
+3,
+4
+]
+},
+{
+"model_id": "uc20260930-model-msa-transformer",
+"name": "MSA Transformer",
+"positions": [
+5,
+6
+]
+},
+{
+"model_id": "uc20260930-model-eve",
+"name": "EVE",
+"positions": [
+6,
+9
+]
+},
+{
+"model_id": "uc20260930-model-deepsequence",
+"name": "DeepSequence",
+"positions": [
+6,
+10
+]
+},
+{
+"model_id": "discovery-model-esm-1v",
+"name": "ESM-1v",
+"positions": [
+4,
+13
+]
+},
+{
+"model_id": "uc20260930-model-vespa",
+"name": "VESPA",
+"positions": [
+7,
+12
+]
+},
+{
+"model_id": "discovery-model-esm-2",
+"name": "ESM-2",
+"positions": [
+8,
+12
+]
+},
+{
+"model_id": "uc20260930-model-carp",
+"name": "CARP",
+"positions": [
+9,
+18
+]
+},
+{
+"model_id": "uc20260930-model-esm-1b",
+"name": "ESM-1b",
+"positions": [
+12,
+16
+]
+},
+{
+"model_id": "uc20260930-model-progen2",
+"name": "ProGen2",
+"positions": [
+12,
+16
+]
+},
+{
+"model_id": "uc20260930-model-vespal",
+"name": "VESPAl",
+"positions": [
+11,
+16
+]
+},
+{
+"model_id": "uc20260930-model-tranception",
+"name": "Tranception",
+"positions": [
+6,
+18
+]
+},
+{
+"model_id": "uc20260930-model-wavenet",
+"name": "Wavenet",
+"positions": [
+15,
+17
+]
+},
+{
+"model_id": "uc20260930-model-rita",
+"name": "RITA",
+"positions": [
+16,
+18
+]
+},
+{
+"model_id": "uc20260930-model-unirep-evotuned",
+"name": "Unirep evotuned",
+"positions": [
+19,
+19
+]
+},
+{
+"model_id": "uc20260930-model-protgpt2",
+"name": "ProtGPT2",
+"positions": [
+20,
+20
+]
+}
+],
+"not_ranked": [
+{
+"model_id": "discovery-model-esm-if1",
+"name": "ESM-IF1",
+"reason": "one study"
+},
+{
+"model_id": "discovery-model-esm3",
+"name": "ESM3",
+"reason": "one study"
+},
+{
+"model_id": "discovery-model-esmc",
+"name": "ESMC",
+"reason": "one study"
+},
+{
+"model_id": "discovery-model-proteinmpnn",
+"name": "ProteinMPNN",
+"reason": "one study"
+},
+{
+"model_id": "uc20260930-model-aido-protein-rag",
+"name": "AIDO Protein-RAG",
+"reason": "one study"
+},
+{
+"model_id": "uc20260930-model-mif",
+"name": "MIF",
+"reason": "one study"
+},
+{
+"model_id": "uc20260930-model-mif-st",
+"name": "MIF-ST",
+"reason": "one study"
+},
+{
+"model_id": "uc20260930-model-mulan",
+"name": "MULAN",
+"reason": "one study"
+},
+{
+"model_id": "uc20260930-model-poet",
+"name": "PoET",
+"reason": "one study"
+},
+{
+"model_id": "uc20260930-model-progen3",
+"name": "ProGen3",
+"reason": "one study"
+},
+{
+"model_id": "uc20260930-model-prosst",
+"name": "ProSST",
+"reason": "one study"
+},
+{
+"model_id": "uc20260930-model-protriever",
+"name": "Protriever",
+"reason": "one study"
+},
+{
+"model_id": "uc20260930-model-protssn",
+"name": "ProtSSN",
+"reason": "one study"
+},
+{
+"model_id": "uc20260930-model-s2f",
+"name": "S2F",
+"reason": "one study"
+},
+{
+"model_id": "uc20260930-model-s2f-msa",
+"name": "S2F-MSA",
+"reason": "one study"
+},
+{
+"model_id": "uc20260930-model-s3f",
+"name": "S3F",
+"reason": "one study"
+},
+{
+"model_id": "uc20260930-model-s3f-msa",
+"name": "S3F-MSA",
+"reason": "one study"
+},
+{
+"model_id": "uc20260930-model-siterm",
+"name": "SiteRM",
+"reason": "one study"
+},
+{
+"model_id": "uc20260930-model-unirep",
+"name": "Unirep",
+"reason": "one study"
+},
+{
+"model_id": "uc20260930-model-venusrem",
+"name": "VenusREM",
+"reason": "one study"
+},
+{
+"model_id": "uc20260930-model-vespag",
+"name": "VespaG",
+"reason": "one study"
+},
+{
+"model_id": "uc20260930-model-xtrimopglm",
+"name": "xTrimoPGLM",
+"reason": "one study"
+}
+],
+"ranked": 20
+},
+{
+"use_case": "protein-variant-stability",
+"title": "Assess methods for protein stability experiments",
+"rows": [
+{
+"model_id": "discovery-model-esm-2",
+"name": "ESM-2",
+"positions": [
+2,
+7
+]
+},
+{
+"model_id": "uc20260930-model-esm-1b",
+"name": "ESM-1b",
+"positions": [
+2,
+8
+]
+},
+{
+"model_id": "discovery-model-proteinmpnn",
+"name": "ProteinMPNN",
+"positions": [
+9,
+11
+]
+}
+],
+"not_ranked": [
+{
+"model_id": "discovery-model-esm-1v",
+"name": "ESM-1v",
+"reason": "one study"
+},
+{
+"model_id": "discovery-model-esm-if1",
+"name": "ESM-IF1",
+"reason": "one study"
+},
+{
+"model_id": "discovery-model-esm3",
+"name": "ESM3",
+"reason": "one study"
+},
+{
+"model_id": "discovery-model-esmc",
+"name": "ESMC",
+"reason": "one study"
+},
+{
+"model_id": "lit-protein-20261011-deepprotein-model-attentivefp",
+"name": "AttentiveFP",
+"reason": "one study"
+},
+{
+"model_id": "lit-protein-20261011-deepprotein-model-chemllm-7b",
+"name": "ChemLLM-7B",
+"reason": "one study"
+},
+{
+"model_id": "lit-protein-20261011-deepprotein-model-cnn",
+"name": "CNN",
+"reason": "one study"
+},
+{
+"model_id": "lit-protein-20261011-deepprotein-model-cnn-rnn",
+"name": "CNN-RNN",
+"reason": "one study"
+},
+{
+"model_id": "lit-protein-20261011-deepprotein-model-deep-prot-t5",
+"name": "Deep Prot-T5",
+"reason": "one study"
+},
+{
+"model_id": "lit-protein-20261011-deepprotein-model-gat",
+"name": "GAT",
+"reason": "one study"
+},
+{
+"model_id": "lit-protein-20261011-deepprotein-model-gcn",
+"name": "GCN",
+"reason": "one study"
+},
+{
+"model_id": "lit-protein-20261011-deepprotein-model-llasmol-mistral-7b",
+"name": "LlaSMol-Mistral-7B",
+"reason": "one study"
+},
+{
+"model_id": "lit-protein-20261011-deepprotein-model-mpnn",
+"name": "MPNN",
+"reason": "one study"
+},
+{
+"model_id": "lit-protein-20261011-deepprotein-model-neuralfp",
+"name": "NeuralFP",
+"reason": "one study"
+},
+{
+"model_id": "lit-protein-20261011-deepprotein-model-pagtn",
+"name": "PAGTN",
+"reason": "one study"
+},
+{
+"model_id": "lit-protein-20261011-deepprotein-model-prot-t5-xl",
+"name": "Prot-T5-XL",
+"reason": "one study"
+},
+{
+"model_id": "lit-protein-20261011-deepprotein-model-protbert",
+"name": "ProtBert",
+"reason": "one study"
+},
+{
+"model_id": "lit-protein-20261011-deepprotein-model-transformer",
+"name": "Transformer",
+"reason": "one study"
+},
+{
+"model_id": "uc20260930-model-aido-protein-rag",
+"name": "AIDO Protein-RAG",
+"reason": "one study"
+},
+{
+"model_id": "uc20260930-model-carp",
+"name": "CARP",
+"reason": "one study"
+},
+{
+"model_id": "uc20260930-model-deepsequence",
+"name": "DeepSequence",
+"reason": "one study"
+},
+{
+"model_id": "uc20260930-model-escott",
+"name": "ESCOTT",
+"reason": "one study"
+},
+{
+"model_id": "uc20260930-model-eve",
+"name": "EVE",
+"reason": "one study"
+},
+{
+"model_id": "uc20260930-model-mif",
+"name": "MIF",
+"reason": "one study"
+},
+{
+"model_id": "uc20260930-model-mif-st",
+"name": "MIF-ST",
+"reason": "one study"
+},
+{
+"model_id": "uc20260930-model-msa-transformer",
+"name": "MSA Transformer",
+"reason": "one study"
+},
+{
+"model_id": "uc20260930-model-mulan",
+"name": "MULAN",
+"reason": "one study"
+},
+{
+"model_id": "uc20260930-model-poet",
+"name": "PoET",
+"reason": "one study"
+},
+{
+"model_id": "uc20260930-model-progen2",
+"name": "ProGen2",
+"reason": "one study"
+},
+{
+"model_id": "uc20260930-model-progen3",
+"name": "ProGen3",
+"reason": "one study"
+},
+{
+"model_id": "uc20260930-model-prosst",
+"name": "ProSST",
+"reason": "one study"
+},
+{
+"model_id": "uc20260930-model-protgpt2",
+"name": "ProtGPT2",
+"reason": "one study"
+},
+{
+"model_id": "uc20260930-model-protriever",
+"name": "Protriever",
+"reason": "one study"
+},
+{
+"model_id": "uc20260930-model-protssn",
+"name": "ProtSSN",
+"reason": "one study"
+},
+{
+"model_id": "uc20260930-model-rita",
+"name": "RITA",
+"reason": "one study"
+},
+{
+"model_id": "uc20260930-model-s2f",
+"name": "S2F",
+"reason": "one study"
+},
+{
+"model_id": "uc20260930-model-s2f-msa",
+"name": "S2F-MSA",
+"reason": "one study"
+},
+{
+"model_id": "uc20260930-model-s3f",
+"name": "S3F",
+"reason": "one study"
+},
+{
+"model_id": "uc20260930-model-s3f-msa",
+"name": "S3F-MSA",
+"reason": "one study"
+},
+{
+"model_id": "uc20260930-model-saprot",
+"name": "SaProt",
+"reason": "one study"
+},
+{
+"model_id": "uc20260930-model-siterm",
+"name": "SiteRM",
+"reason": "one study"
+},
+{
+"model_id": "uc20260930-model-trancepteve",
+"name": "TranceptEVE",
+"reason": "one study"
+},
+{
+"model_id": "uc20260930-model-tranception",
+"name": "Tranception",
+"reason": "one study"
+},
+{
+"model_id": "uc20260930-model-unirep",
+"name": "Unirep",
+"reason": "one study"
+},
+{
+"model_id": "uc20260930-model-unirep-evotuned",
+"name": "Unirep evotuned",
+"reason": "one study"
+},
+{
+"model_id": "uc20260930-model-venusrem",
+"name": "VenusREM",
+"reason": "one study"
+},
+{
+"model_id": "uc20260930-model-vespa",
+"name": "VESPA",
+"reason": "one study"
+},
+{
+"model_id": "uc20260930-model-vespag",
+"name": "VespaG",
+"reason": "one study"
+},
+{
+"model_id": "uc20260930-model-vespal",
+"name": "VESPAl",
+"reason": "one study"
+},
+{
+"model_id": "uc20260930-model-wavenet",
+"name": "Wavenet",
+"reason": "one study"
+},
+{
+"model_id": "uc20260930-model-xtrimopglm",
+"name": "xTrimoPGLM",
+"reason": "one study"
+}
+],
+"ranked": 11
+},
+{
+"use_case": "rare-disease-candidate-ranking",
+"title": "Rank rare-disease variants for review",
+"rows": [
+{
+"model_id": "uc20260930-model-trancepteve",
+"name": "TranceptEVE",
+"positions": [
+1,
+22
+]
+},
+{
+"model_id": "uc20260930-model-eve",
+"name": "EVE",
+"positions": [
+3,
+23
+]
+},
+{
+"model_id": "uc20260930-model-esm-1b",
+"name": "ESM-1b",
+"positions": [
+4,
+24
+]
+},
+{
+"model_id": "vep-uc-20261014-model-gpn-star",
+"name": "GPN-Star",
+"positions": [
+4,
+28
+]
+},
+{
+"model_id": "uc20260930-model-progen2",
+"name": "ProGen2",
+"positions": [
+6,
+30
+]
+},
+{
+"model_id": "discovery-model-evo-2",
+"name": "Evo 2",
+"positions": [
+6,
+32
+]
+},
+{
+"model_id": "uc20260930-model-rita",
+"name": "RITA",
+"positions": [
+6,
+30
+]
+},
+{
+"model_id": "gfm-guides-20261014-gpnmsa-model-gpn-msa",
+"name": "GPN-MSA",
+"positions": [
+10,
+33
+]
+},
+{
+"model_id": "uc20260930-model-tranception",
+"name": "Tranception",
+"positions": [
+8,
+31
+]
+},
+{
+"model_id": "uc20260930-model-protgpt2",
+"name": "ProtGPT2",
+"positions": [
+13,
+35
+]
+}
+],
+"not_ranked": [
+{
+"model_id": "discovery-model-esm-1v",
+"name": "ESM-1v",
+"reason": "one study"
+},
+{
+"model_id": "discovery-model-esm-2",
+"name": "ESM-2",
+"reason": "one study"
+},
+{
+"model_id": "discovery-model-nucleotide-transformer",
+"name": "Nucleotide Transformer",
+"reason": "one study"
+},
+{
+"model_id": "discovery-model-spliceai",
+"name": "SpliceAI",
+"reason": "one study"
+},
+{
+"model_id": "lit-genomics-20261011-guanine-model-aido-dna",
+"name": "AIDO.DNA",
+"reason": "one study"
+},
+{
+"model_id": "lit-genomics-20261011-traitgym-model-specieslm",
+"name": "SpeciesLM",
+"reason": "one study"
+},
+{
+"model_id": "rare-ranking-20261009-model-gpt-4",
+"name": "GPT-4",
+"reason": "one study"
+},
+{
+"model_id": "regulatory-variant-20261009-model-borzoi",
+"name": "Borzoi",
+"reason": "one study"
+},
+{
+"model_id": "regulatory-variant-20261009-model-caduceus",
+"name": "Caduceus",
+"reason": "one study"
+},
+{
+"model_id": "regulatory-variant-20261009-model-enformer",
+"name": "Enformer",
+"reason": "one study"
+},
+{
+"model_id": "regulatory-variant-20261009-model-hyenadna",
+"name": "HyenaDNA",
+"reason": "one study"
+},
+{
+"model_id": "regulatory-variant-20261009-model-sei",
+"name": "Sei",
+"reason": "one study"
+},
+{
+"model_id": "traitgym-20261116-model-gpn-promoter",
+"name": "GPN-Promoter",
+"reason": "one study"
+},
+{
+"model_id": "uc20260930-model-carp",
+"name": "CARP",
+"reason": "one study"
+},
+{
+"model_id": "uc20260930-model-deepsequence",
+"name": "DeepSequence",
+"reason": "one study"
+},
+{
+"model_id": "uc20260930-model-escott",
+"name": "ESCOTT",
+"reason": "one study"
+},
+{
+"model_id": "uc20260930-model-msa-transformer",
+"name": "MSA Transformer",
+"reason": "one study"
+},
+{
+"model_id": "uc20260930-model-poet",
+"name": "PoET",
+"reason": "one study"
+},
+{
+"model_id": "uc20260930-model-saprot",
+"name": "SaProt",
+"reason": "one study"
+},
+{
+"model_id": "uc20260930-model-unirep",
+"name": "Unirep",
+"reason": "one study"
+},
+{
+"model_id": "uc20260930-model-unirep-evotuned",
+"name": "Unirep evotuned",
+"reason": "one study"
+},
+{
+"model_id": "uc20260930-model-vespa",
+"name": "VESPA",
+"reason": "one study"
+},
+{
+"model_id": "uc20260930-model-vespal",
+"name": "VESPAl",
+"reason": "one study"
+},
+{
+"model_id": "uc20260930-model-wavenet",
+"name": "Wavenet",
+"reason": "one study"
+}
+],
+"ranked": 35
+},
+{
+"use_case": "regulatory-variant-gene-follow-up",
+"title": "Select regulatory variants and genes for functional follow-up",
+"rows": [
+{
+"model_id": "regulatory-variant-20261009-model-enformer",
+"name": "Enformer",
+"positions": [
+1,
+2
+]
+},
+{
+"model_id": "regulatory-variant-20261009-model-sei",
+"name": "Sei",
+"positions": [
+1,
+4
+]
+},
+{
+"model_id": "discovery-model-evo-2",
+"name": "Evo 2",
+"positions": [
+2,
+4
+]
+},
+{
+"model_id": "regulatory-variant-20261009-model-borzoi",
+"name": "Borzoi",
+"positions": [
+2,
+8
+]
+},
+{
+"model_id": "discovery-model-nucleotide-transformer",
+"name": "Nucleotide Transformer",
+"positions": [
+4,
+6
+]
+},
+{
+"model_id": "discovery-model-dnabert-2",
+"name": "DNABERT-2",
+"positions": [
+4,
+6
+]
+},
+{
+"model_id": "regulatory-variant-20261009-model-caduceus",
+"name": "Caduceus",
+"positions": [
+6,
+8
+]
+},
+{
+"model_id": "regulatory-variant-20261009-model-hyenadna",
+"name": "HyenaDNA",
+"positions": [
+6,
+8
+]
+}
+],
+"not_ranked": [
+{
+"model_id": "catalog-model-geneformer",
+"name": "Geneformer",
+"reason": "one study"
+},
+{
+"model_id": "discovery-model-chrombpnet",
+"name": "ChromBPNet",
+"reason": "one study"
+},
+{
+"model_id": "gfm-guides-20261014-gpnmsa-model-gpn-msa",
+"name": "GPN-MSA",
+"reason": "one study"
+},
+{
+"model_id": "lit-genomics-20261011-gfmbench-model-dnabert",
+"name": "DNABERT",
+"reason": "one study"
+},
+{
+"model_id": "lit-genomics-20261011-guanine-model-aido-dna",
+"name": "AIDO.DNA",
+"reason": "one study"
+},
+{
+"model_id": "lit-genomics-20261011-guanine-model-nucleotide-transformer-v3",
+"name": "Nucleotide Transformer v3",
+"reason": "one study"
+},
+{
+"model_id": "lit-genomics-20261011-traitgym-model-specieslm",
+"name": "SpeciesLM",
+"reason": "one study"
+},
+{
+"model_id": "regulatory-variant-20261009-model-gena-lm",
+"name": "GENA-LM",
+"reason": "one study"
+},
+{
+"model_id": "regulatory-variant-20261009-model-gpn",
+"name": "GPN",
+"reason": "one study"
+},
+{
+"model_id": "regulatory-variant-20261009-model-trednet",
+"name": "TREDNet",
+"reason": "one study"
+},
+{
+"model_id": "traitgym-20261116-model-gpn-promoter",
+"name": "GPN-Promoter",
+"reason": "one study"
+}
+],
+"ranked": 8
+},
+{
+"use_case": "rhodopsin-wavelength-transfer",
+"title": "Assess rhodopsin wavelength prediction across sequence backgrounds",
+"rows": [],
+"not_ranked": [
+{
+"model_id": "uc20260930-model-rhomax",
+"name": "RhoMax",
+"reason": "one study"
+}
+],
+"ranked": 0
+},
+{
+"use_case": "somatic-small-variant-oncogenicity",
+"title": "Assess somatic small-variant oncogenicity",
+"rows": [],
+"not_ranked": [
+{
+"model_id": "uc20260930-model-esm-1b",
+"name": "ESM-1b",
+"reason": "one study"
+}
+],
+"ranked": 19
+},
+{
+"use_case": "splicing-follow-up",
+"title": "Prioritise variants for splicing experiments",
+"rows": [
+{
+"model_id": "discovery-model-pangolin",
+"name": "Pangolin",
+"positions": [
+1,
+3
+]
+},
+{
+"model_id": "catalog-model-alphagenome",
+"name": "AlphaGenome",
+"positions": [
+1,
+6
+]
+},
+{
+"model_id": "discovery-model-spliceai",
+"name": "SpliceAI",
+"positions": [
+1,
+3
+]
+}
+],
+"not_ranked": [
+{
+"model_id": "discovery-model-evo-2",
+"name": "Evo 2",
+"reason": "one study"
+},
+{
+"model_id": "discovery-model-nucleotide-transformer",
+"name": "Nucleotide Transformer",
+"reason": "one study"
+},
+{
+"model_id": "discovery-model-rna-fm",
+"name": "RNA-FM",
+"reason": "one study"
+},
+{
+"model_id": "gfm-guides-20261014-gpnmsa-model-gpn-msa",
+"name": "GPN-MSA",
+"reason": "one study"
+},
+{
+"model_id": "lit-genomics-20261011-geneb-model-evo",
+"name": "Evo",
+"reason": "one study"
+},
+{
+"model_id": "rna-splicing-20261013-spliceai2-model-spliceai2",
+"name": "SpliceAI2",
+"reason": "one study"
+},
+{
+"model_id": "vep-uc-20261014-model-gpn-star",
+"name": "GPN-Star",
+"reason": "one study"
+}
+],
+"ranked": 6
+},
+{
+"use_case": "structural-hypotheses-experiments",
+"title": "Choose structural hypotheses to guide experiments",
+"rows": [
+{
+"model_id": "discovery-model-alphafold-3",
+"name": "AlphaFold 3",
+"positions": [
+1,
+1
+]
+},
+{
+"model_id": "discovery-model-boltz",
+"name": "Boltz",
+"positions": [
+2,
+2
+]
+},
+{
+"model_id": "catalog-model-chai-1",
+"name": "Chai-1",
+"positions": [
+3,
+3
+]
+}
+],
+"not_ranked": [
+{
+"model_id": "catalog-model-diffdock-l",
+"name": "DiffDock-L",
+"reason": "one study"
+},
+{
+"model_id": "lit-structure-20261011-lipp-model-rosettafold-aa",
+"name": "RoseTTAFold All-Atom",
+"reason": "one study"
+},
+{
+"model_id": "ucc-research-model-helixfold3",
+"name": "HelixFold 3",
+"reason": "one study"
+},
+{
+"model_id": "ucc-research-model-protenix",
+"name": "Protenix",
+"reason": "one study"
+}
+],
+"ranked": 3
+},
+{
+"use_case": "therapeutic-target-validation",
+"title": "Select therapeutic targets for validation",
+"rows": [],
+"not_ranked": [
+{
+"model_id": "tgtval-20261009-model-gemini-3-flash",
+"name": "Gemini 3 Flash",
+"reason": "one study"
+},
+{
+"model_id": "tgtval-20261009-model-gemini-3-pro",
+"name": "Gemini 3 Pro",
+"reason": "one study"
+},
+{
+"model_id": "tgtval-20261009-model-gpt-5-4",
+"name": "GPT-5.4",
+"reason": "one study"
+},
+{
+"model_id": "tgtval-20261009-model-gpt-oss-120b",
+"name": "GPT-OSS-120B",
+"reason": "one study"
+},
+{
+"model_id": "tgtval-20261009-model-qwen3-5-2b",
+"name": "Qwen3.5-2B",
+"reason": "one study"
+}
+],
+"ranked": 0
+},
+{
+"use_case": "tumour-dna-somatic-variant-detection",
+"title": "Select a tumour DNA somatic variant-calling workflow",
+"rows": [],
+"not_ranked": [],
+"ranked": 15
+},
+{
+"use_case": "tumour-rna-fusion-detection",
+"title": "Select a tumour RNA fusion-detection workflow",
+"rows": [],
+"not_ranked": [],
+"ranked": 5
+},
+{
+"use_case": "unresolved-rare-disease-reanalysis",
+"title": "Reanalyse unresolved rare-disease cases",
+"rows": [],
+"not_ranked": [],
+"ranked": 0
+},
+{
+"use_case": "utr-translation-baselines",
+"title": "Set baselines for UTR translation experiments",
+"rows": [],
+"not_ranked": [
+{
+"model_id": "uc20260930-model-framepool",
+"name": "FramePool",
+"reason": "one study"
+},
+{
+"model_id": "uc20260930-model-optimus-5-prime",
+"name": "Optimus 5-Prime",
+"reason": "one study"
+}
+],
+"ranked": 0
+}
+],
+"kinds": {
+"catalog-model-alphagenome": "model",
+"catalog-model-chai-1": "model",
+"catalog-model-diffdock-l": "model",
+"catalog-model-gears": "model",
+"catalog-model-geneformer": "model",
+"catalog-model-scfoundation": "model",
+"catalog-model-scgpt": "model",
+"catalog-model-scvi": "model",
+"cell-type-20261009-model-langcell": "model",
+"cell-type-20261009-model-sccello": "model",
+"cell-type-20261009-model-uce": "model",
+"discovery-model-agro-nucleotide-transformer": "model",
+"discovery-model-alphafold-3": "model",
+"discovery-model-boltz": "model",
+"discovery-model-chrombpnet": "model",
+"discovery-model-dnabert-2": "model",
+"discovery-model-esm-1v": "model",
+"discovery-model-esm-2": "model",
+"discovery-model-esm-if1": "model",
+"discovery-model-esm3": "model",
+"discovery-model-esmc": "model",
+"discovery-model-evo-2": "model",
+"discovery-model-msalign": "model",
+"discovery-model-nucleotide-transformer": "model",
+"discovery-model-pangolin": "model",
+"discovery-model-proteinmpnn": "model",
+"discovery-model-rfdiffusion": "model",
+"discovery-model-rna-fm": "model",
+"discovery-model-spliceai": "model",
+"discovery-model-state": "model",
+"dna-pathogen-20261012-bertax-model-bertax": "model",
+"dna-pathogen-20261012-bertax-model-deepmicrobes": "model",
+"egfrnsclc-20261009-model-gpt-4o": "model",
+"egfrnsclc-20261009-model-llama-3-1-70b": "model",
+"egfrnsclc-20261009-model-qwen-2-5-72b": "model",
+"gfm-guides-20261014-evo2-brixi2026-model-codonbert": "model",
+"gfm-guides-20261014-evo2-brixi2026-model-decodon": "model",
+"gfm-guides-20261014-evo2-brixi2026-model-encodon": "model",
+"gfm-guides-20261014-gpnmsa-model-gpn-msa": "model",
+"lit-cells-networks-20261011-chen2026-model-cellplm": "model",
+"lit-cells-networks-20261011-chen2026-model-genept": "model",
+"lit-cells-networks-20261011-chen2026-model-nicheformer": "model",
+"lit-cells-networks-20261011-chen2026-model-novae": "model",
+"lit-cells-networks-20261011-chen2026-model-scelmo": "model",
+"lit-cells-networks-20261011-chen2026-model-scgpt-spatial": "model",
+"lit-genomics-20261011-geneb-model-evo": "model",
+"lit-genomics-20261011-gfmbench-model-dnabert": "model",
+"lit-genomics-20261011-guanine-model-aido-dna": "model",
+"lit-genomics-20261011-guanine-model-nucleotide-transformer-v3": "model",
+"lit-genomics-20261011-guanine-model-phylogpn": "model",
+"lit-genomics-20261011-traitgym-model-specieslm": "model",
+"lit-microbial-20261011-virobench-model-genos": "model",
+"lit-protein-20261011-deepprotein-model-attentivefp": "model",
+"lit-protein-20261011-deepprotein-model-chemllm-7b": "model",
+"lit-protein-20261011-deepprotein-model-cnn": "model",
+"lit-protein-20261011-deepprotein-model-cnn-rnn": "model",
+"lit-protein-20261011-deepprotein-model-deep-prot-t5": "model",
+"lit-protein-20261011-deepprotein-model-gat": "model",
+"lit-protein-20261011-deepprotein-model-gcn": "model",
+"lit-protein-20261011-deepprotein-model-llasmol-mistral-7b": "model",
+"lit-protein-20261011-deepprotein-model-mpnn": "model",
+"lit-protein-20261011-deepprotein-model-neuralfp": "model",
+"lit-protein-20261011-deepprotein-model-pagtn": "model",
+"lit-protein-20261011-deepprotein-model-prot-t5-xl": "model",
+"lit-protein-20261011-deepprotein-model-protbert": "model",
+"lit-protein-20261011-deepprotein-model-transformer": "model",
+"lit-structure-20261011-lipp-model-rosettafold-aa": "model",
+"model-execution-20261011-model-deepvariant": "model",
+"model-execution-20261011-model-moderngena": "model",
+"perturbation-ahlmann-20261011-model-cpa": "model",
+"perturbation-ahlmann-20261011-model-scbert": "model",
+"rare-ranking-20261009-model-gpt-4": "model",
+"regulatory-variant-20261009-model-borzoi": "model",
+"regulatory-variant-20261009-model-caduceus": "model",
+"regulatory-variant-20261009-model-enformer": "model",
+"regulatory-variant-20261009-model-gena-lm": "model",
+"regulatory-variant-20261009-model-gpn": "model",
+"regulatory-variant-20261009-model-hyenadna": "model",
+"regulatory-variant-20261009-model-sei": "model",
+"regulatory-variant-20261009-model-trednet": "model",
+"rna-splicing-20261011-fortier2026-model-ci-spliceai": "model",
+"rna-splicing-20261011-fortier2026-model-openspliceai": "model",
+"rna-splicing-20261013-spliceai2-model-spliceai2": "model",
+"tgtval-20261009-model-gemini-3-flash": "model",
+"tgtval-20261009-model-gemini-3-pro": "model",
+"tgtval-20261009-model-gpt-5-4": "model",
+"tgtval-20261009-model-gpt-oss-120b": "model",
+"tgtval-20261009-model-qwen3-5-2b": "model",
+"traitgym-20261116-model-gpn-promoter": "model",
+"uc-leadopt-20261022-model-bacpi": "model",
+"uc20260930-model-aido-protein-rag": "model",
+"uc20260930-model-carp": "model",
+"uc20260930-model-deepsequence": "model",
+"uc20260930-model-emb-cos": "model",
+"uc20260930-model-escott": "model",
+"uc20260930-model-esm-1b": "model",
+"uc20260930-model-eve": "model",
+"uc20260930-model-framepool": "model",
+"uc20260930-model-jestr": "model",
+"uc20260930-model-jores-plant-promoter-cnn": "model",
+"uc20260930-model-massspecgym-deepsets-fingerprint-predictor": "model",
+"uc20260930-model-mif": "model",
+"uc20260930-model-mif-st": "model",
+"uc20260930-model-mist": "model",
+"uc20260930-model-msa-transformer": "model",
+"uc20260930-model-mulan": "model",
+"uc20260930-model-optimus-5-prime": "model",
+"uc20260930-model-poet": "model",
+"uc20260930-model-progen2": "model",
+"uc20260930-model-progen3": "model",
+"uc20260930-model-prosst": "model",
+"uc20260930-model-protgpt2": "model",
+"uc20260930-model-protriever": "model",
+"uc20260930-model-protssn": "model",
+"uc20260930-model-rhomax": "model",
+"uc20260930-model-rita": "model",
+"uc20260930-model-s2f": "model",
+"uc20260930-model-s2f-msa": "model",
+"uc20260930-model-s3f": "model",
+"uc20260930-model-s3f-msa": "model",
+"uc20260930-model-saprot": "model",
+"uc20260930-model-siterm": "model",
+"uc20260930-model-trancepteve": "model",
+"uc20260930-model-tranception": "model",
+"uc20260930-model-unirep": "model",
+"uc20260930-model-unirep-evotuned": "model",
+"uc20260930-model-venusrem": "model",
+"uc20260930-model-vespa": "model",
+"uc20260930-model-vespag": "model",
+"uc20260930-model-vespal": "model",
+"uc20260930-model-wavenet": "model",
+"uc20260930-model-xtrimopglm": "model",
+"ucc-research-model-helixfold3": "model",
+"ucc-research-model-protenix": "model",
+"ucpheno-20261022-model-claude-haiku-4-5": "model",
+"ucpheno-20261022-model-claude-opus-4-8": "model",
+"ucpheno-20261022-model-claude-sonnet-4-6": "model",
+"ucpheno-20261022-model-gemini-3-1-pro": "model",
+"ucpheno-20261022-model-glm-5-1": "model",
+"ucpheno-20261022-model-glm-5-2": "model",
+"ucpheno-20261022-model-gpt-5-5": "model",
+"ucpheno-20261022-model-gpt-5-6-sol": "model",
+"ucpheno-20261022-model-kimi-k2-6": "model",
+"ucpheno-20261022-model-qwen3-6-27b": "model",
+"vep-uc-20261014-model-gpn-star": "model"
+}
+}

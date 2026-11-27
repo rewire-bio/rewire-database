@@ -3,6 +3,7 @@ import { catalogueText } from "@/lib/catalogue-text";
 import { recordHref, type OmicsRecord } from "@/lib/omics";
 import { countLabel, kindLabels, singularKindLabels } from "@/lib/omics-browse";
 import type { linkedResultRecords } from "@/lib/entity-detail";
+import { relationLabel } from "@/lib/evidence-labels";
 import styles from "@/app/database/database.module.css";
 
 type Linked = ReturnType<typeof linkedResultRecords>;
@@ -119,7 +120,7 @@ export default function LinkedResults({
       ) : (
         groups.map((group) => (
           <div key={group.relation}>
-            <h3>{relations[group.relation]?.label(kind) ?? group.relation.replace(/_/g, " ")}</h3>
+            <h3>{relations[group.relation]?.label(kind) ?? relationLabel(group.relation, "reverse")}</h3>
             <Entries items={group.items} showKind={needsKind(group.items, groupNoun(group.relation, group.items))} />
           </div>
         ))

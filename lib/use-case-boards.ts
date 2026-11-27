@@ -11,9 +11,9 @@ export type { Board, BoardRow, NotRanked };
 
 export const boardsPath = (releaseId: string) => dataPath("public", "omics", "boards", `${releaseId}.json`);
 
-const files = new Map<string, Map<string, Board> | null>();
+const files = new Map<string, { file: BoardsFile; bySlug: Map<string, Board> } | null>();
 
-function readBoards(file: string, releaseId: string): Map<string, Board> | null {
+function readBoards(file: string, releaseId: string): { file: BoardsFile; bySlug: Map<string, Board> } | null {
   let raw: unknown;
   try {
     raw = JSON.parse(fs.readFileSync(file, "utf8"));
@@ -26,14 +26,22 @@ function readBoards(file: string, releaseId: string): Map<string, Board> | null 
     console.warn(`Ignoring invalid boards file ${file}:\n${problems.slice(0, 5).join("\n")}`);
     return null;
   }
-  return new Map((raw as BoardsFile).boards.map((board) => [board.use_case, board]));
+  const parsed = raw as BoardsFile;
+  return { file: parsed, bySlug: new Map(parsed.boards.map((board) => [board.use_case, board])) };
+}
+
+/** The validated boards file for the release, or null when the release has no valid boards file. */
+export function releaseBoardsFile(releaseId: string): BoardsFile | null {
+  const file = boardsPath(releaseId);
+  if (!files.has(file)) files.set(file, readBoards(file, releaseId));
+  return files.get(file)?.file ?? null;
 }
 
 /** Every board in the release by use-case slug, or null when the release has no valid boards file. */
 export function releaseBoards(releaseId: string): Map<string, Board> | null {
   const file = boardsPath(releaseId);
   if (!files.has(file)) files.set(file, readBoards(file, releaseId));
-  return files.get(file)!;
+  return files.get(file)?.bySlug ?? null;
 }
 
 /** The use case's board when it ranks at least two models; null otherwise. */

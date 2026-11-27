@@ -21,6 +21,9 @@ import AgentConnect from "@/components/AgentConnect";
 import { contestedList } from "@/lib/discrepancies";
 import { HOME_NOTICE } from "@/lib/home-notice";
 import contested from "@/components/catalogue/Contested.module.css";
+import { releaseBoardsFile } from "@/lib/use-case-boards";
+import { homeReach, reachFromBoardsFile } from "@/lib/model-reach";
+import { ModelReachMatrix } from "@/components/catalogue/ModelReach";
 
 const pageMetadata = {
   title: "Independent Benchmarks for Biological Models | rewirebio.io",
@@ -67,6 +70,8 @@ export default function BenchmarksPage() {
 
   // The lead use cases that have a ranking in this release, built from the release at render time.
   const boards = homeLeaderboards();
+  const fullReach = reachFromBoardsFile(releaseBoardsFile(catalogue.release_id), (id) => query.record(id)?.kind ?? null);
+  const topReach = homeReach(fullReach.rows, fullReach.columns, 8);
 
   return (
     <>
@@ -161,6 +166,20 @@ export default function BenchmarksPage() {
             showParetoHighlight={true}
           />
           <HowToCite title="Use-case leaderboards" path="/" releaseId={catalogue.release_id} className={`${styles.muted} ${styles.inlineLinks}`} compact />
+        </section>}
+
+        {topReach.rows.length > 0 && <section className={styles.leaderboardSection} aria-labelledby="reach-heading">
+          <div className={styles.sectionHeader}>
+            <span className={styles.sectionKicker}>Cross-task coverage</span>
+            <h2 id="reach-heading">Models across use cases</h2>
+            <p className={styles.sectionIntro}>
+              How the most widely ranked models place across use-case boards. Each bar shows the range of positions from studies in this release, with first on the left.
+            </p>
+          </div>
+          <ModelReachMatrix rows={topReach.rows} columns={topReach.columns} groups={fullReach.groups} />
+          <p className={styles.inlineLinks}>
+            <a href="/models/reach/">See all {fullReach.rows.length} models across use cases</a>
+          </p>
         </section>}
 
         {/* Database Search & Supporting Content Wrapped in Explorer */}

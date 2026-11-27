@@ -49,7 +49,9 @@ export type Board = {
   studies: Record<string, { source_ids: string[]; dois: string[] }>;
 };
 
-export type BoardsFile = { schema_version: number; release_id: string; released_at: string | null; method: string; boards: Board[] };
+export type BoardGroup = { id: string; label: string; use_cases: [string, string][] };
+
+export type BoardsFile = { schema_version: number; release_id: string; released_at: string | null; method: string; groups?: BoardGroup[]; boards: Board[] };
 
 const COUNT_KEYS = ["studies", "groups", "models", "ranked", "one_study", "not_a_model", "not_connected", "too_few"] as const;
 

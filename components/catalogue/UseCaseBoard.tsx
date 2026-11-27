@@ -48,7 +48,9 @@ function Studies({ row, board, record }: { row: BoardRow; board: Board; record: 
   const studies = Object.entries(row.studies).sort(([, a], [, b]) => b - a);
   return (
     <details className={styles.boardStudies}>
-      <summary>{plural(studies.length, "study", "studies")}</summary>
+      <summary>
+        {plural(studies.length, "study", "studies")}, {plural(row.opponents, "opponent")}, {plural(row.comparisons, "comparison")}
+      </summary>
       <ul>
         {studies.map(([id, comparisons]) => {
           const study = board.studies[id];
@@ -91,8 +93,6 @@ function Row({ row, board, record, returnTo }: { row: BoardRow; board: Board; re
       <td>
         <Studies row={row} board={board} record={record} />
       </td>
-      <td className={styles.score}>{row.opponents}</td>
-      <td className={styles.score}>{row.comparisons}</td>
       <td>{row.basis === "mostly one study" ? <strong>{BASIS_TEXT[row.basis]}</strong> : BASIS_TEXT[row.basis]}</td>
     </tr>
   );
@@ -105,8 +105,8 @@ export function UseCaseBoard({ board, record, returnTo }: { board: Board; record
     <div className={styles.board} data-testid="use-case-board">
       <p>
         This order combines what each study shows about the models it tested side by side: which did better on the
-        same data and metric. It gives no score, and it does not say what would happen if every model were run on one
-        test. Each row pools a model&apos;s versions and sizes.
+        same data and metric. It gives no score on any benchmark metric, and it does not say what would happen if every
+        model were run on one test. Each row pools a model&apos;s versions and sizes.
       </p>
       <p className={styles.muted}>
         {board.summary} Based on {plural(counts.models, "model")} in {plural(counts.groups, "comparison group")} from{" "}
@@ -119,10 +119,8 @@ export function UseCaseBoard({ board, record, returnTo }: { board: Board; record
             <tr>
               <th scope="col">Position</th>
               <th scope="col">Model</th>
-              <th scope="col">Chance of beating an average model, and its range with any one study left out</th>
+              <th scope="col">Strength</th>
               <th scope="col">Studies</th>
-              <th scope="col">Opponents</th>
-              <th scope="col">Comparisons</th>
               <th scope="col">Basis</th>
             </tr>
           </thead>
@@ -134,7 +132,8 @@ export function UseCaseBoard({ board, record, returnTo }: { board: Board; record
         </table>
       </div>
       <p className={styles.legend}>
-        A position such as 1 to 3 means the studies do not settle the order between the models that share it. Opponents are the other models a model was compared with directly. Comparisons count each time a study
+        Strength is the chance of beating an average model on this page, with its range when any one study is left
+        out. A position such as 1 to 3 means the studies do not settle the order between the models that share it. Opponents are the other models a model was compared with directly. Comparisons count each time a study
         scored it and another model on the same test. Basis says Mostly one study when one study gives 80 percent or
         more of its comparisons.
       </p>

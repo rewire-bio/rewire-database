@@ -109,7 +109,7 @@ describe("order across studies", () => {
     const rows = html.split("<tr>").slice(2);
     expect(rows).toHaveLength(6);
     const first = text(rows[0]);
-    expect(first).toMatch(/^1 to 3 Pangolin 87% 83% to 92% 7 studies .* 22 212 Several studies$/);
+    expect(first).toMatch(/^1 to 3 Pangolin 87% 83% to 92% 7 studies, 22 opponents, 212 comparisons .* Several studies$/);
     expect(rows[0]).toContain('href="/database/model/discovery-model-pangolin/?return_to=%2Fuse-cases%2Fx%2F"');
     expect(rows[0]).toContain('aria-label="Pangolin: 87% chance of beating an average model; 83% to 92% with any one study left out"');
     expect(rows[0]).toMatch(/class="[^"]*dot[^"]*" style="left:84\.68/);
@@ -136,7 +136,9 @@ describe("order across studies", () => {
   });
   it("states the board's summary and what the order is not", () => {
     const words = text(render(boardOf("splicing-follow-up")));
-    expect(words).toContain("It gives no score, and it does not say what would happen if every model were run on one test.");
+    expect(words).toContain("It gives no score on any benchmark metric, and it does not say what would happen if every model were run on one test.");
+    expect(words).toContain("Strength is the chance of beating an average model on this page, with its range when any one study is left out.");
+    expect(words).toContain("Position Model Strength Studies Basis");
     expect(words).toContain("Each row pools a model's versions and sizes.");
     expect(words).toContain(`${boardOf("splicing-follow-up").summary} Based on 40 models in 74 comparison groups from 9 studies.`);
   });

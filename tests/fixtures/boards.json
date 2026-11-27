@@ -11,7 +11,7 @@
    "release_id": "unreleased",
    "released_at": null,
    "method": "Models are ordered by a Bradley-Terry fit to which model did better inside each study's comparisons, with every study weighted equally.",
-   "summary": "Ranks 35 models compared in two or more studies, from 100 comparison groups in 10 studies. Not ranked: 86 compared in one study only, 33 not model records, 4 not compared with the main group.",
+   "summary": "Orders 35 models compared in two or more studies, from 100 comparison groups in 10 studies. Not ranked: 86 compared in one study only, 33 not model records, 4 not compared with the main group.",
    "counts": {
     "studies": 10,
     "groups": 100,
@@ -1941,7 +1941,7 @@
    "release_id": "unreleased",
    "released_at": null,
    "method": "Models are ordered by a Bradley-Terry fit to which model did better inside each study's comparisons, with every study weighted equally.",
-   "summary": "Ranks 6 models compared in two or more studies, from 74 comparison groups in 9 studies. Not ranked: 23 compared in one study only, 11 not model records.",
+   "summary": "Orders 6 models compared in two or more studies, from 74 comparison groups in 9 studies. Not ranked: 23 compared in one study only, 11 not model records.",
    "counts": {
     "studies": 9,
     "groups": 74,

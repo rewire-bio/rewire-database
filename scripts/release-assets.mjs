@@ -74,10 +74,22 @@ export function verifyCompressed(compressed, entry) {
   return bytes;
 }
 
-async function download(url, fetchImpl) {
-  const response = await fetchImpl(url, { redirect: 'follow', signal: AbortSignal.timeout(600_000) });
-  if (response.status !== 200 || !response.body) throw new Error(`Release asset unavailable (${response.status}): ${url}`);
-  return response;
+/** GitHub's asset host answers 5xx now and then. A missing asset (404) is not retried. */
+async function download(url, fetchImpl, { attempts = 4, sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms)) } = {}) {
+  for (let attempt = 1; ; attempt++) {
+    let failure;
+    try {
+      const response = await fetchImpl(url, { redirect: 'follow', signal: AbortSignal.timeout(600_000) });
+      if (response.status === 200 && response.body) return response;
+      failure = new Error(`Release asset unavailable (${response.status}): ${url}`);
+      if (response.status < 500 && response.status !== 429) throw failure;
+    } catch (error) {
+      if (error === failure) throw error;
+      failure = failure ?? error;
+    }
+    if (attempt >= attempts) throw failure;
+    await sleep(attempt * 5000);
+  }
 }
 
 /** Download one asset into memory and return its verified expanded bytes. */

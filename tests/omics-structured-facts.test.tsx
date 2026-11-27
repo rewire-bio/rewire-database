@@ -52,6 +52,8 @@ describe("released checkpoints", () => {
     expect(html).toContain('aria-label="Weights: openfold3-p2-155k (of3-p2-155k.pt)"');
     expect(html).toContain("Source model-pages-20261127-batch8-openfold3-source-hf-api");
     expect(html).toContain("hf-api.json: code licence, weights licence");
+    expect(html).toMatch(/<details class="[^"]*factSources[^"]*"><summary>Sources \(2\)<\/summary>/);
+    expect(html).toMatch(/<section [^>]*class="[^"]*factTable/);
     expect(html).toContain('role="region"');
     expect(html).not.toMatch(/[–—→]/);
   });
@@ -110,6 +112,7 @@ describe("benchmark tasks", () => {
     expect(html).toContain('href="https://github.com/instadeepai/nucleotide-transformer"');
     expect(html).toContain("Not recorded");
     expect(html).toContain("Source benchmark-pages-20261127-batch1-segmentnt-human-genome-annotation-source-si");
+    expect((html.match(/<summary>Sources \(3\)<\/summary>/g) || []).length).toBe(tasks.length);
     expect(html).not.toMatch(/[–—→]/);
   });
   it("shows every row of a short list without the expand control", () => {

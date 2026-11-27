@@ -449,6 +449,23 @@
 .factTable .tableScroll {
   margin-bottom: 8px;
 }
+.factTable .resultTable th,
+.factTable .resultTable td {
+  min-width: 0;
+  overflow-wrap: break-word;
+}
+.factTable .resultTable tbody th {
+  min-width: 12rem;
+}
+.factSources > summary {
+  color: var(--accent-ink);
+  font-weight: 400;
+  white-space: nowrap;
+}
+.factSources .citation {
+  min-width: 16rem;
+  margin-bottom: 0;
+}
 .extraRows {
   display: none;
 }

@@ -70,9 +70,17 @@ jobs:
         run: |
           node scripts/select-current-data.mjs
           npm run data:prepare -- --current-only
-          npm run lint
-          npm run typecheck
-          npm test
+          # The tests took nearly six of this step's nine minutes in one process. Two halves run
+          # side by side with lint and the type check; each half keeps the two workers the
+          # config allows, so four test workers share the runner's four cores.
+          pids=""
+          npm test -- --shard=1/2 > "$RUNNER_TEMP/tests-1.log" 2>&1 & pids="$pids $!"
+          npm test -- --shard=2/2 > "$RUNNER_TEMP/tests-2.log" 2>&1 & pids="$pids $!"
+          (npm run lint && npm run typecheck) > "$RUNNER_TEMP/static.log" 2>&1 & pids="$pids $!"
+          failed=0
+          for pid in $pids; do wait "$pid" || failed=1; done
+          for log in static tests-1 tests-2; do echo "::group::$log"; tail -60 "$RUNNER_TEMP/$log.log"; echo "::endgroup::"; done
+          if [ "$failed" != 0 ]; then echo "::error::Lint, the type check or a test half failed; see the groups above."; exit 1; fi
           npm run check:data
           npm run build
           npm run check:build

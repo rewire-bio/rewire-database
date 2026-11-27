@@ -61,10 +61,10 @@ export function CoverageChart({
         <strong>
           {covered} of {total} benchmarks
         </strong>{" "}
-        have linked evaluations in this release. Zero means no evaluation is
-        linked here, not that the benchmark has never been used.
+        have evaluations in the database. Zero means none has been added yet,
+        not that the benchmark has never been used.
       </p>
-      <CountRows rows={rows} title="Linked evaluations per benchmark" />
+      <CountRows rows={rows} title="Evaluations per benchmark" />
     </section>
   );
 }

@@ -229,7 +229,7 @@ export function PredictiveEntityDetail({ detail }: { detail: RecordDetail }) {
                     ? `Results are recorded for configurations and versions of this ${kindLabel}, listed below with their own settings.`
                     : broaderFamilyOnly
                       ? "The broader model family has published results, but their attribution to this exact checkpoint has not been verified."
-                      : "No reviewed evaluations are linked here in this release. See the sources below."}
+                      : `No evaluations of this ${kindLabel} are in the database yet. See the sources below.`}
                 </p>
               )}
               <p className={styles.heroActions}>
@@ -359,8 +359,8 @@ export function PredictiveEntityDetail({ detail }: { detail: RecordDetail }) {
           })()}
           {record.status === "superseded" && (
             <aside className={styles.notice}>
-              This record is superseded and retained for its history. Consult
-              its correction links before using these results.
+              This entry has been superseded and is kept for its history. Check
+              the corrections listed under Related entries before using these results.
             </aside>
           )}
           {results.total > 0 && (
@@ -593,7 +593,7 @@ export function PredictiveEntityDetail({ detail }: { detail: RecordDetail }) {
                     ))}
                   </ul>
                 ) : (
-                  <p>No supporting source is linked yet.</p>
+                  <p>No supporting source has been added yet.</p>
                 )}
                 {detail.direct
                   .filter((item) => item.relation === "supersedes")
@@ -630,7 +630,7 @@ export function PredictiveEntityDetail({ detail }: { detail: RecordDetail }) {
               )}
             </details>
             <details className={styles.section}>
-              <summary>Related records</summary>
+              <summary>Related entries</summary>
               <ul className={styles.list}>
                 {[...detail.direct, ...detail.reverse].map((item, i) => (
                   <li key={i}>

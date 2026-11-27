@@ -138,8 +138,8 @@ export function SourceDetail({ detail, params = {} }: { detail: RecordDetail; pa
           />
           {record.status === "superseded" && (
             <aside className={styles.notice}>
-              This record is superseded and retained for its history. Consult
-              its correction links before using these results.
+              This entry has been superseded and is kept for its history. Check
+              the corrections listed under Related entries before using these results.
             </aside>
           )}
           {proposals.length > 0 && (
@@ -211,7 +211,7 @@ export function SourceDetail({ detail, params = {} }: { detail: RecordDetail; pa
                     ))}
                   </ul>
                 ) : (
-                  <p>No supporting source is linked yet.</p>
+                  <p>No supporting source has been added yet.</p>
                 )}
                 {detail.direct
                   .filter((item) => item.relation === "supersedes")
@@ -263,7 +263,7 @@ export function SourceDetail({ detail, params = {} }: { detail: RecordDetail; pa
               />
             </details>
             <details className={styles.section}>
-              <summary>Related records</summary>
+              <summary>Related entries</summary>
               <ul className={styles.list}>
                 {[...detail.direct, ...detail.reverse].map((item, i) => (
                   <li key={i}>

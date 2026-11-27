@@ -296,8 +296,8 @@ export function ComparisonWorkspace({
         <>
           {!choices.length && summary.total > 0 && (
             <p>
-              Results are available, but no reviewed comparison panel is linked
-              in this release.
+              Results are available, but no comparison chart for them has been
+              checked and published yet.
             </p>
           )}
           {allResults ? (
@@ -705,7 +705,7 @@ export function ComparisonWorkspace({
             </div>
           ) : (
             !loading && (
-              <p>No reviewed comparison panel is linked in this release.</p>
+              <p>No comparison chart for this benchmark has been checked and published yet.</p>
             )
           )}
         </>

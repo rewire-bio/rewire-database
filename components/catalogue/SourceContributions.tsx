@@ -121,7 +121,7 @@ export default function SourceContributions({ query, id, params }: { query: Prep
       })()}
       {described.length > 0 && (
         <section id="source-records" className={styles.section}>
-          <h2>Models, benchmarks and other records</h2>
+          <h2>Models, benchmarks and other entries</h2>
           {described.map((kind) => {
             const page = pageOf(kind);
             return (

@@ -51,7 +51,7 @@ describe("parent records list the linked records that hold their results (#138)"
     const html = page(BaselinePage, "uc20260930-jores-baseline-tobacco-leaves");
     expect(html).toContain("1 configuration with results");
     expect(html).toContain("uc20260930-jores-config-tobacco-leaves-gc-motif-linear");
-    expect(html).not.toContain("No evaluations linked in this release");
+    expect(html).not.toContain("No evaluations in the database yet");
   });
 });
 

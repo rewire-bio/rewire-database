@@ -122,10 +122,10 @@ export function CatalogueEvidence({
       {!compact && (
         <div className={styles.coveragePanels}>
           <div className={styles.coveragePanel}>
-            <h3>Coverage: records and linked evaluations</h3>
+            <h3>Coverage: entries and evaluations</h3>
             <p>
-              {records.toLocaleString()} records across{" "}
-              {kindRows.length} record types. These counts describe catalogue
+              {records.toLocaleString()} entries of{" "}
+              {kindRows.length} kinds. These counts describe catalogue
               coverage, not model performance.
             </p>
             <CompositionCharts kinds={kindRows} areas={areaRows} />

@@ -32,7 +32,7 @@ describe("catalogue controls", () => {
     tree.root.findByType("details").props.onToggle({ currentTarget: { open: true } });
     expect(setMoreOpen).toHaveBeenCalledWith(true);
     tree.update(<ExplorerSearch filters={{ ...defaultFilters, kind: "protocol" }} moreOpen setMoreOpen={setMoreOpen} change={change} release={release} />);
-    expect(JSON.stringify(tree.toJSON())).toContain("More record types"); tree.unmount();
+    expect(JSON.stringify(tree.toJSON())).toContain("More entry types"); tree.unmount();
   });
   it("dispatches all filters, preserves missing options and clears within the active type", () => {
     const change = vi.fn(), navigate = vi.fn();
@@ -96,7 +96,7 @@ describe("catalogue controls", () => {
     expect(tree.root.findByType("input").props.disabled).toBe(true); tree.unmount();
     for (const evaluation_count of [0, 2]) {
       const html = renderToStaticMarkup(<ExplorerRows data={{ ...data, items: [{ ...record, kind: "model", attributes: { profile: { summary: "Profile" } }, facets: { areas: ["dna-genomes"] }, source_ids: ["source"] }], evaluation_summaries: { "result-a": { evaluation_count, result_count: 3, linked_evaluation_count: evaluation_count, linked_result_count: 3 } } } as CataloguePage} loading={false} selected={[]} setSelected={setSelected} returnTo="/" />);
-      expect(html).toContain(evaluation_count ? "2 evaluations" : "No evaluations linked");
+      expect(html).toContain(evaluation_count ? "2 evaluations" : "No evaluations in the database yet");
     }
   });
 });

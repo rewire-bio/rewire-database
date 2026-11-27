@@ -273,8 +273,8 @@ export default function Profile({
           )}
           {keyFacts.length === 0 && (
             <p>
-              Key specifications have not been extracted for this record. See
-              the linked evaluation and sources for the reported setup.
+              Key specifications have not been extracted for this entry. See
+              its evaluations and sources for the reported setup.
             </p>
           )}
           {!predictive && diagram && (

@@ -64,7 +64,7 @@ describe("detail pages with incomplete and historical evidence", () => {
   it.each(renderers)("keeps %s pages usable without linked evidence", (kind, Component) => {
     const html = render(kind, Component);
     expect(html.match(/<h1\b/g)).toHaveLength(1);
-    expect(html).toContain("No supporting source is linked yet");
+    expect(html).toContain("No supporting source has been added yet");
     expect(html).toContain("Technical metadata");
     expect(html).toContain("Suggest a correction");
     expect(html).toContain('href="/omics/releases/fixture/records.jsonl"');
@@ -79,7 +79,7 @@ describe("detail pages with incomplete and historical evidence", () => {
 
   it.each(renderers)("preserves %s correction history, safe sources and proposed applicability", (kind, Component) => {
     const html = render(kind, Component, true);
-    expect(html).toContain("This record is superseded");
+    expect(html).toContain("This entry has been superseded");
     expect(html).toContain("Supersedes");
     expect(html).toContain("Superseded by");
     expect(html).toContain("Fixture previous");

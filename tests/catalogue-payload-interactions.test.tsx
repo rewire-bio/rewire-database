@@ -151,7 +151,7 @@ describe("release-pinned payload and request behaviour", () => {
       button(`All evaluations (${results.evaluation_count})`).props.onClick(),
     );
     expect(text()).toContain("All evaluations could not be loaded");
-    expect(text()).not.toContain("No evaluations linked");
+    expect(text()).not.toContain("No evaluations in the database yet");
     await act(async () => button("Retry evaluations").props.onClick());
     expect(api.results).toHaveBeenCalledTimes(2);
     expect(text()).not.toContain("All evaluations could not be loaded");

@@ -181,7 +181,7 @@ describe("use-case evidence rendering", () => {
     expect(renderToStaticMarkup(<UseCaseBacklinks links={links} configurations={{}} />)).toBe("");
     const entries = [[], ["missing", "configuration"]].map((configuration_ids, index) => ({ use_case_id: `question-${index}`, slug: `splicing-follow-up-${index}`, title: "Splicing follow-up", mapping_id: `mapping-${index}`, configuration_ids }));
     const markup = renderToStaticMarkup(<UseCaseBacklinks links={{ ...links, items: entries }} configurations={{ configuration: record("configuration", "configuration") }} />);
-    expect(markup).toContain("No evaluated configuration is linked");
+    expect(markup).toContain("No evaluated configuration yet");
     expect(markup).toContain("missing");
     expect(markup).toContain("Fixture configuration");
   });

@@ -43,7 +43,7 @@ describe("results held on related entries", () => {
     expect(html).toContain("<h2>Results for other entries related to ESM-1b</h2>");
     expect(html.indexOf("<h3>Configurations</h3>")).toBeLessThan(html.indexOf("<h3>Tools that use this model</h3>"));
     expect(html).toContain("<span>Pipeline · 1 evaluation · 1 result</span>");
-    expect(html).toContain("2 more related entries are listed without result counts under Related records at the end of this page.");
+    expect(html).toContain("2 more related entries are listed without result counts under Related entries at the end of this page.");
     expect(linkedCount({ items: [item("pipe", "pipeline", "uses_model", 1), ...configurations], unchecked: 0 })).toBe("3 related entries");
   });
 });

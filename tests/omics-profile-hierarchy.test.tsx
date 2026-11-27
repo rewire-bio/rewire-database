@@ -41,7 +41,7 @@ describe("model profile information hierarchy", () => {
     expect([...positions].sort((a, b) => a - b)).toEqual(positions);
     expect(html.indexOf('role="img"')).toBeLessThan(positions[0]);
     expect(html).not.toContain("Read the diagram as text");
-    expect(html).toContain("No reviewed evaluations are linked here in this release");
+    expect(html).toContain("are in the database yet. See the sources below.");
     expect(html).not.toContain('id="results"');
     expect(html).not.toContain('href="#results"');
     expect(html).not.toContain('aria-label="Evaluation setup"');

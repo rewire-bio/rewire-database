@@ -26,16 +26,16 @@ export type EvaluationSummary = {
   linked_result_count?: number;
 };
 
-/** "3 evaluations · 4 results", plus what sits on linked records and is not counted in it. */
+/** "3 evaluations · 4 results", plus what sits on related entries and is not counted in it. */
 export function summaryText(summary: EvaluationSummary): string {
   const own = `${countLabel(summary.evaluation_count, "evaluation")} · ${countLabel(summary.result_count, "result")}`;
   const linked = summary.linked_evaluation_count ?? summary.evaluation_count;
   const further = linked - summary.evaluation_count;
   if (summary.evaluation_count > 0)
-    return further > 0 ? `${own} · ${countLabel(further, "further evaluation")} on linked records` : own;
+    return further > 0 ? `${own} · ${countLabel(further, "further evaluation")} on related entries` : own;
   return linked > 0
-    ? `${countLabel(linked, "evaluation")} · ${countLabel(summary.linked_result_count ?? 0, "result")} on linked records`
-    : "No evaluations linked in this release";
+    ? `${countLabel(linked, "evaluation")} · ${countLabel(summary.linked_result_count ?? 0, "result")} on related entries`
+    : "No evaluations in the database yet";
 }
 
 /** Reader-facing names for catalogue review states. Why `reproduced` reads as it does: lib/record-status.ts. */
@@ -83,7 +83,7 @@ export const kindLabels: Record<OmicsKind, string> = {
 };
 export const kindDescriptions: Record<OmicsKind, string> = {
   model:
-    "Biological models and model families. Evaluated versions, configurations and pipelines are linked separately.",
+    "Biological models and model families. Evaluated versions, configurations and pipelines are listed separately.",
   benchmark:
     "Benchmark suites and challenges. Explore their tasks, protocols, datasets and published results.",
   method:
@@ -104,11 +104,11 @@ export const kindDescriptions: Record<OmicsKind, string> = {
   dataset_subset:
     "Defined cohorts, splits and subsets of a dataset used in particular evaluations.",
   baseline:
-    "Reference methods and controls. Proposed baselines have no measured performance unless a result is linked.",
+    "Reference methods and controls. Proposed baselines have no measured performance until a result for them is added.",
   result:
-    "Measurements linked to a model, evaluation protocol and source. Different protocols do not form a single leaderboard; pooled views state what differs between the rows they gather.",
+    "Measurements, each tied to a model, an evaluation protocol and a source. Different protocols do not form a single leaderboard; pooled views state what differs between the rows they gather.",
   source:
-    "Papers, repositories and artifacts supporting the records in this database.",
+    "Papers, repositories and artifacts supporting the entries in this database.",
   evaluation:
     "The model configuration, data and conditions used to produce a result.",
   claim: "Individual assertions linked to the evidence that supports them.",

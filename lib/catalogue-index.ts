@@ -48,7 +48,7 @@ export function indexMetadata(kind: IndexKind, page = 1): Metadata {
     title: benchmark ? "Biological benchmarks: procedures, results and sources" : `Biological models: architectures and benchmark results${page > 1 ? ` | Page ${page}` : ""}`,
     description: benchmark
       ? "Browse biological benchmark suites and challenges, with procedures, linked model evaluations and source evidence. Tasks and protocols remain distinct."
-      : `Browse specialist biological model profiles, architectures, access requirements and linked evaluations.${page > 1 ? ` Page ${page} of the alphabetical model index.` : ""}`,
+      : `Browse specialist biological model profiles, architectures, access requirements and their evaluations.${page > 1 ? ` Page ${page} of the alphabetical model index.` : ""}`,
     alternates: { canonical: CATALOGUE_ORIGIN + (benchmark ? "/benchmarks/" : modelIndexHref(page)) },
   };
   return { ...metadata, ...socialMetadata({ title: metadata.title, description: metadata.description, path: metadata.alternates.canonical }) };

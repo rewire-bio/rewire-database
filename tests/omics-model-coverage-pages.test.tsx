@@ -72,8 +72,8 @@ describe("model coverage profile rendering", () => {
     const methodsDisclosure = html.slice(methods).match(/<details\b[^>]*>/)?.[0];
     expect(methodsDisclosure).toBeDefined();
     expect(methodsDisclosure).not.toMatch(/\sopen(?:\s|=|>)/);
-    expect(html).not.toContain("No evaluations linked in this release");
-    expect(html).not.toContain("No reviewed evaluations are linked here");
+    expect(html).not.toContain("No evaluations in the database yet");
+    expect(html).not.toMatch(/No evaluations of this \w+ are in the database yet/);
     expect(html).not.toContain("0 evaluations · 0 results");
   });
 
@@ -98,7 +98,7 @@ describe("model coverage profile rendering", () => {
       "The cited sources do not establish that this exact checkpoint was used",
     );
     expect(html).not.toContain("Evaluations and results</h2>");
-    expect(html).not.toContain("No evaluations linked in this release");
+    expect(html).not.toContain("No evaluations in the database yet");
     expect(html).not.toContain("0 evaluations · 0 results");
   });
 
@@ -120,7 +120,7 @@ describe("model coverage profile rendering", () => {
     expect(html.indexOf('id="results"')).toBeLessThan(
       html.indexOf('id="use-model"'),
     );
-    expect(html).not.toContain("No evaluations linked in this release");
+    expect(html).not.toContain("No evaluations in the database yet");
     expect(html).not.toContain("Results for the broader model family</h2>");
   });
 });

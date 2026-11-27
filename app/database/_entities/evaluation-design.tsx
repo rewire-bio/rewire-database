@@ -213,10 +213,10 @@ export function EvaluationDesignEntityDetail({ detail }: { detail: RecordDetail 
               {results.total === 0 && (
                 <p className={styles.muted}>
                   {hasLinked
-                    ? "Results are recorded on the linked protocols, tasks or configurations listed below. Their settings and evaluations are kept separate."
+                    ? `Results are recorded for protocols, tasks and configurations of this ${singularKindLabels[record.kind].toLowerCase()}, listed below with their own settings.`
                     : broaderFamilyOnly
                       ? "The broader model family has published results, but their attribution to this exact checkpoint has not been verified."
-                      : "No reviewed evaluations are linked here in this release. See the sources below."}
+                      : `No evaluations of this ${singularKindLabels[record.kind].toLowerCase()} are in the database yet. See the sources below.`}
                 </p>
               )}
               <p className={styles.heroActions}>
@@ -281,8 +281,8 @@ export function EvaluationDesignEntityDetail({ detail }: { detail: RecordDetail 
           <Profile record={profileOwner.record} sources={profileOwner.sources} part="overview" />
           {record.status === "superseded" && (
             <aside className={styles.notice}>
-              This record is superseded and retained for its history. Consult
-              its correction links before using these results.
+              This entry has been superseded and is kept for its history. Check
+              the corrections listed under Related entries before using these results.
             </aside>
           )}
           {hasLinked ? (
@@ -444,7 +444,7 @@ export function EvaluationDesignEntityDetail({ detail }: { detail: RecordDetail 
                   </ul>
                   {linkedEvaluations.length > 12 && (
                     <p>
-                      <a href="#results">Explore all linked results</a>
+                      <a href="#results">See all results</a>
                     </p>
                   )}
                 </section>
@@ -564,7 +564,7 @@ export function EvaluationDesignEntityDetail({ detail }: { detail: RecordDetail 
                     ))}
                   </ul>
                 ) : (
-                  <p>No supporting source is linked yet.</p>
+                  <p>No supporting source has been added yet.</p>
                 )}
                 {detail.direct
                   .filter((item) => item.relation === "supersedes")
@@ -601,7 +601,7 @@ export function EvaluationDesignEntityDetail({ detail }: { detail: RecordDetail 
               )}
             </details>
             <details className={styles.section}>
-              <summary>Related records</summary>
+              <summary>Related entries</summary>
               <ul className={styles.list}>
                 {[...detail.direct, ...detail.reverse].map((item, i) => (
                   <li key={i}>

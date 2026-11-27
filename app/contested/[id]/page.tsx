@@ -186,7 +186,7 @@ export default function ContestedFindingPage({ params }: { params: Params }) {
             ? <details><summary>{d.consensus_sources.length} studies</summary><RecordLinks ids={d.consensus_sources} lookup={lookup} /></details>
             : <RecordLinks ids={d.consensus_sources} lookup={lookup} />}</dd>
           {d.rule && <><dt>Rule</dt><dd>{ruleLabel(d.rule)}{d.scope && <>; {scopeLabel(d.scope).toLowerCase()}</>}</dd></>}
-          {d.identity_basis && <><dt>Model identity</dt><dd>{d.identity_basis === "reviewed" ? "Matched across studies through reviewed links" : "Matched across studies partly through links not yet reviewed"}</dd></>}
+          {d.identity_basis && <><dt>Model identity</dt><dd>{d.identity_basis === "reviewed" ? "Checked to be the same model in every study" : "Matched across studies, but not every match has been checked yet"}</dd></>}
           {d.previous_ids.length > 0 && <><dt>Earlier IDs</dt><dd>{d.previous_ids.join(", ")}</dd></>}
         </dl>
       </section>

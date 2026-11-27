@@ -127,7 +127,7 @@ export default function LinkedResults({
       {linked.unchecked > 0 && (
         <p className={styles.muted}>
           {countLabel(linked.unchecked, "more related entry", "more related entries")} {linked.unchecked === 1 ? "is" : "are"}{" "}
-          listed without result counts under Related records at the end of this page.
+          listed without result counts under Related entries at the end of this page.
         </p>
       )}
     </section>

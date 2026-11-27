@@ -69,7 +69,7 @@ export function ExplorerSearch({
         onToggle={(event) => setMoreOpen(event.currentTarget.open)}
       >
         <summary>
-          More record types
+          More entry types
           {!primaryKinds.some((kind) => kind === filters.kind)
             ? `: ${kindLabels[filters.kind]}`
             : ""}

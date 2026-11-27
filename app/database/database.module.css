@@ -446,6 +446,30 @@
   color: var(--ink-3);
   overflow-wrap: anywhere;
 }
+.factTable .tableScroll {
+  margin-bottom: 8px;
+}
+.extraRows {
+  display: none;
+}
+.factTable:has(.showAll[open]) .extraRows {
+  display: table-row-group;
+}
+.showAll {
+  margin: 0 0 16px;
+  font-size: 14px;
+}
+.showAll > summary {
+  padding: 8px 0;
+  color: var(--accent-ink);
+}
+.showAll .showFewer,
+.showAll[open] .showMore {
+  display: none;
+}
+.showAll[open] .showFewer {
+  display: inline;
+}
 .diagram {
   background: var(--card);
   border: 1px solid var(--line);

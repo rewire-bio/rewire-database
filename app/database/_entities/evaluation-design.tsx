@@ -20,6 +20,8 @@ import EvidenceTable from "@/components/catalogue/EvidenceTable";
 import RunRecipes from "@/components/catalogue/RunRecipes";
 import BaselineCoverage from "@/components/catalogue/BaselineCoverage";
 import RunGuide from "@/components/catalogue/RunGuide";
+import { BenchmarkTasks } from "@/components/catalogue/StructuredFacts";
+import { recordBenchmarkTasks } from "@/lib/structured-facts";
 import SourceIdentityNotice from "@/components/catalogue/SourceIdentity";
 import { ComparisonWorkspace } from "@/components/catalogue/BenchmarkCharts";
 import { resultsPayload } from "@/lib/results-payload";
@@ -271,6 +273,7 @@ export function EvaluationDesignEntityDetail({ detail }: { detail: RecordDetail 
               { id: "overview", label: "Overview" },
               ...(showWorkspace || hasLinked ? [{ id: "results", label: "Results" }] : []),
               ...(hasUnattributed ? [{ id: "linked-results", label: "Linked results" }] : []),
+              ...(recordBenchmarkTasks(record) ? [{ id: "tasks", label: "Tasks" }] : []),
               { id: "execution", label: "How to run" },
               { id: "evidence", label: "Evidence" },
             ]}
@@ -462,6 +465,7 @@ export function EvaluationDesignEntityDetail({ detail }: { detail: RecordDetail 
                 )}
             </details>
           </section>
+          <BenchmarkTasks record={record} sources={detail.sources} />
           <div id="execution" />
           <BaselineCoverage record={record} query={query} />
           <RunRecipes

@@ -1,0 +1,675 @@
+{
+  "model": {
+    "id": "poisk-20261115-model-openfold3",
+    "kind": "model",
+    "name": "OpenFold3",
+    "source_ids": [
+      "poisk-20261115-source-manuscript-v1",
+      "model-pages-20261127-batch8-openfold3-source-readme",
+      "model-pages-20261127-batch8-openfold3-source-license",
+      "model-pages-20261127-batch8-openfold3-source-pyproject",
+      "model-pages-20261127-batch8-openfold3-source-params-doc",
+      "model-pages-20261127-batch8-openfold3-source-tech-report",
+      "model-pages-20261127-batch8-openfold3-source-hf-api"
+    ],
+    "attributes": {
+      "checkpoints": [
+        {
+          "checkpoint": "openbind-2025-06-30-174k (of3-ob-2025-06-30-174k.pt)",
+          "parameters": null,
+          "context_length": null,
+          "context_unit": "tokens",
+          "code_licence": "Apache-2.0",
+          "weights_licence": null,
+          "code_url": "https://github.com/aqlaboratory/openfold-3",
+          "weights_url": null,
+          "gated": null,
+          "released": null,
+          "source_ids": [
+            "model-pages-20261127-batch8-openfold3-source-params-doc"
+          ],
+          "source_locator": "params-ref.txt: checkpoint name"
+        },
+        {
+          "checkpoint": "openfold3-p2-155k (of3-p2-155k.pt)",
+          "parameters": null,
+          "context_length": null,
+          "context_unit": "tokens",
+          "code_licence": "Apache-2.0",
+          "weights_licence": "Apache-2.0",
+          "code_url": "https://github.com/aqlaboratory/openfold-3",
+          "weights_url": "https://huggingface.co/OpenFold/OpenFold3",
+          "gated": true,
+          "released": null,
+          "source_ids": [
+            "model-pages-20261127-batch8-openfold3-source-params-doc",
+            "model-pages-20261127-batch8-openfold3-source-hf-api"
+          ],
+          "source_locator": "params-ref.txt: checkpoint name; hf-api.json: code licence, weights licence"
+        },
+        {
+          "checkpoint": "openfold3-p1 (of3_ft3_v1.pt)",
+          "parameters": null,
+          "context_length": null,
+          "context_unit": "tokens",
+          "code_licence": "Apache-2.0",
+          "weights_licence": "Apache-2.0",
+          "code_url": "https://github.com/aqlaboratory/openfold-3",
+          "weights_url": "https://huggingface.co/OpenFold/OpenFold3",
+          "gated": true,
+          "released": null,
+          "source_ids": [
+            "model-pages-20261127-batch8-openfold3-source-params-doc",
+            "model-pages-20261127-batch8-openfold3-source-hf-api"
+          ],
+          "source_locator": "params-ref.txt: supporting passage; hf-api.json: code licence, weights licence"
+        }
+      ]
+    }
+  },
+  "benchmark": {
+    "id": "segmentnt-human-genome-annotation-2025",
+    "kind": "benchmark",
+    "name": "SegmentNT human genome annotation",
+    "source_ids": [
+      "coverage-segmentnt-2025-supplement",
+      "evidence-official-da4566a88ed9fa42fdcb",
+      "benchmark-pages-20261127-batch1-segmentnt-human-genome-annotation-source-paper",
+      "benchmark-pages-20261127-batch1-segmentnt-human-genome-annotation-source-si",
+      "benchmark-pages-20261127-batch1-segmentnt-human-genome-annotation-source-nt-readme",
+      "benchmark-pages-20261127-batch1-segmentnt-human-genome-annotation-source-segment-doc"
+    ],
+    "attributes": {
+      "benchmark_tasks": [
+        {
+          "task": "3UTR: per-nucleotide annotation (MCC)",
+          "dataset": "SegmentNT human genomic elements, chromosomes 20 and 21",
+          "size": null,
+          "size_unit": "nucleotides; no per-entry count stated (see notes)",
+          "split": "chromosomes 20 and 21, homologous test chunks removed",
+          "primary_metric": "MCC",
+          "metric_direction": "higher",
+          "results_url": null,
+          "code_url": "https://github.com/instadeepai/nucleotide-transformer",
+          "data_url": null,
+          "data_licence": null,
+          "code_licence": "CC BY-NC-SA 4.0",
+          "released": null,
+          "source_ids": [
+            "benchmark-pages-20261127-batch1-segmentnt-human-genome-annotation-source-paper",
+            "benchmark-pages-20261127-batch1-segmentnt-human-genome-annotation-source-nt-readme",
+            "benchmark-pages-20261127-batch1-segmentnt-human-genome-annotation-source-si"
+          ],
+          "source_locator": "paper-pmc.xml: supporting passage; nt-readme.md: code licence; supplementary-information.txt: metric"
+        },
+        {
+          "task": "3UTR: per-nucleotide annotation (auPRC)",
+          "dataset": "SegmentNT human genomic elements, chromosomes 20 and 21",
+          "size": null,
+          "size_unit": "nucleotides; no per-entry count stated (see notes)",
+          "split": "chromosomes 20 and 21, homologous test chunks removed",
+          "primary_metric": "auPRC",
+          "metric_direction": "higher",
+          "results_url": null,
+          "code_url": "https://github.com/instadeepai/nucleotide-transformer",
+          "data_url": null,
+          "data_licence": null,
+          "code_licence": "CC BY-NC-SA 4.0",
+          "released": null,
+          "source_ids": [
+            "benchmark-pages-20261127-batch1-segmentnt-human-genome-annotation-source-paper",
+            "benchmark-pages-20261127-batch1-segmentnt-human-genome-annotation-source-nt-readme",
+            "benchmark-pages-20261127-batch1-segmentnt-human-genome-annotation-source-si"
+          ],
+          "source_locator": "paper-pmc.xml: supporting passage; nt-readme.md: code licence; supplementary-information.txt: metric"
+        },
+        {
+          "task": "5UTR: per-nucleotide annotation (MCC)",
+          "dataset": "SegmentNT human genomic elements, chromosomes 20 and 21",
+          "size": null,
+          "size_unit": "nucleotides; no per-entry count stated (see notes)",
+          "split": "chromosomes 20 and 21, homologous test chunks removed",
+          "primary_metric": "MCC",
+          "metric_direction": "higher",
+          "results_url": null,
+          "code_url": "https://github.com/instadeepai/nucleotide-transformer",
+          "data_url": null,
+          "data_licence": null,
+          "code_licence": "CC BY-NC-SA 4.0",
+          "released": null,
+          "source_ids": [
+            "benchmark-pages-20261127-batch1-segmentnt-human-genome-annotation-source-paper",
+            "benchmark-pages-20261127-batch1-segmentnt-human-genome-annotation-source-nt-readme",
+            "benchmark-pages-20261127-batch1-segmentnt-human-genome-annotation-source-si"
+          ],
+          "source_locator": "paper-pmc.xml: supporting passage; nt-readme.md: code licence; supplementary-information.txt: metric"
+        },
+        {
+          "task": "5UTR: per-nucleotide annotation (auPRC)",
+          "dataset": "SegmentNT human genomic elements, chromosomes 20 and 21",
+          "size": null,
+          "size_unit": "nucleotides; no per-entry count stated (see notes)",
+          "split": "chromosomes 20 and 21, homologous test chunks removed",
+          "primary_metric": "auPRC",
+          "metric_direction": "higher",
+          "results_url": null,
+          "code_url": "https://github.com/instadeepai/nucleotide-transformer",
+          "data_url": null,
+          "data_licence": null,
+          "code_licence": "CC BY-NC-SA 4.0",
+          "released": null,
+          "source_ids": [
+            "benchmark-pages-20261127-batch1-segmentnt-human-genome-annotation-source-paper",
+            "benchmark-pages-20261127-batch1-segmentnt-human-genome-annotation-source-nt-readme",
+            "benchmark-pages-20261127-batch1-segmentnt-human-genome-annotation-source-si"
+          ],
+          "source_locator": "paper-pmc.xml: supporting passage; nt-readme.md: code licence; supplementary-information.txt: metric"
+        },
+        {
+          "task": "CTCF-bound: per-nucleotide annotation (MCC)",
+          "dataset": "SegmentNT human genomic elements, chromosomes 20 and 21",
+          "size": null,
+          "size_unit": "nucleotides; no per-entry count stated (see notes)",
+          "split": "chromosomes 20 and 21, homologous test chunks removed",
+          "primary_metric": "MCC",
+          "metric_direction": "higher",
+          "results_url": null,
+          "code_url": "https://github.com/instadeepai/nucleotide-transformer",
+          "data_url": null,
+          "data_licence": null,
+          "code_licence": "CC BY-NC-SA 4.0",
+          "released": null,
+          "source_ids": [
+            "benchmark-pages-20261127-batch1-segmentnt-human-genome-annotation-source-paper",
+            "benchmark-pages-20261127-batch1-segmentnt-human-genome-annotation-source-nt-readme",
+            "benchmark-pages-20261127-batch1-segmentnt-human-genome-annotation-source-si"
+          ],
+          "source_locator": "paper-pmc.xml: supporting passage; nt-readme.md: code licence; supplementary-information.txt: metric"
+        },
+        {
+          "task": "CTCF-bound: per-nucleotide annotation (auPRC)",
+          "dataset": "SegmentNT human genomic elements, chromosomes 20 and 21",
+          "size": null,
+          "size_unit": "nucleotides; no per-entry count stated (see notes)",
+          "split": "chromosomes 20 and 21, homologous test chunks removed",
+          "primary_metric": "auPRC",
+          "metric_direction": "higher",
+          "results_url": null,
+          "code_url": "https://github.com/instadeepai/nucleotide-transformer",
+          "data_url": null,
+          "data_licence": null,
+          "code_licence": "CC BY-NC-SA 4.0",
+          "released": null,
+          "source_ids": [
+            "benchmark-pages-20261127-batch1-segmentnt-human-genome-annotation-source-paper",
+            "benchmark-pages-20261127-batch1-segmentnt-human-genome-annotation-source-nt-readme",
+            "benchmark-pages-20261127-batch1-segmentnt-human-genome-annotation-source-si"
+          ],
+          "source_locator": "paper-pmc.xml: supporting passage; nt-readme.md: code licence; supplementary-information.txt: metric"
+        },
+        {
+          "task": "enhancer tissue-invariant: per-nucleotide annotation (MCC)",
+          "dataset": "SegmentNT human genomic elements, chromosomes 20 and 21",
+          "size": null,
+          "size_unit": "nucleotides; no per-entry count stated (see notes)",
+          "split": "chromosomes 20 and 21, homologous test chunks removed",
+          "primary_metric": "MCC",
+          "metric_direction": "higher",
+          "results_url": null,
+          "code_url": "https://github.com/instadeepai/nucleotide-transformer",
+          "data_url": null,
+          "data_licence": null,
+          "code_licence": "CC BY-NC-SA 4.0",
+          "released": null,
+          "source_ids": [
+            "benchmark-pages-20261127-batch1-segmentnt-human-genome-annotation-source-paper",
+            "benchmark-pages-20261127-batch1-segmentnt-human-genome-annotation-source-nt-readme",
+            "benchmark-pages-20261127-batch1-segmentnt-human-genome-annotation-source-si"
+          ],
+          "source_locator": "paper-pmc.xml: supporting passage; nt-readme.md: code licence; supplementary-information.txt: task, metric"
+        },
+        {
+          "task": "enhancer tissue-invariant: per-nucleotide annotation (auPRC)",
+          "dataset": "SegmentNT human genomic elements, chromosomes 20 and 21",
+          "size": null,
+          "size_unit": "nucleotides; no per-entry count stated (see notes)",
+          "split": "chromosomes 20 and 21, homologous test chunks removed",
+          "primary_metric": "auPRC",
+          "metric_direction": "higher",
+          "results_url": null,
+          "code_url": "https://github.com/instadeepai/nucleotide-transformer",
+          "data_url": null,
+          "data_licence": null,
+          "code_licence": "CC BY-NC-SA 4.0",
+          "released": null,
+          "source_ids": [
+            "benchmark-pages-20261127-batch1-segmentnt-human-genome-annotation-source-paper",
+            "benchmark-pages-20261127-batch1-segmentnt-human-genome-annotation-source-nt-readme",
+            "benchmark-pages-20261127-batch1-segmentnt-human-genome-annotation-source-si"
+          ],
+          "source_locator": "paper-pmc.xml: supporting passage; nt-readme.md: code licence; supplementary-information.txt: metric"
+        },
+        {
+          "task": "enhancer tissue-specific: per-nucleotide annotation (MCC)",
+          "dataset": "SegmentNT human genomic elements, chromosomes 20 and 21",
+          "size": null,
+          "size_unit": "nucleotides; no per-entry count stated (see notes)",
+          "split": "chromosomes 20 and 21, homologous test chunks removed",
+          "primary_metric": "MCC",
+          "metric_direction": "higher",
+          "results_url": null,
+          "code_url": "https://github.com/instadeepai/nucleotide-transformer",
+          "data_url": null,
+          "data_licence": null,
+          "code_licence": "CC BY-NC-SA 4.0",
+          "released": null,
+          "source_ids": [
+            "benchmark-pages-20261127-batch1-segmentnt-human-genome-annotation-source-paper",
+            "benchmark-pages-20261127-batch1-segmentnt-human-genome-annotation-source-nt-readme",
+            "benchmark-pages-20261127-batch1-segmentnt-human-genome-annotation-source-si"
+          ],
+          "source_locator": "paper-pmc.xml: supporting passage; nt-readme.md: code licence; supplementary-information.txt: task, metric"
+        },
+        {
+          "task": "enhancer tissue-specific: per-nucleotide annotation (auPRC)",
+          "dataset": "SegmentNT human genomic elements, chromosomes 20 and 21",
+          "size": null,
+          "size_unit": "nucleotides; no per-entry count stated (see notes)",
+          "split": "chromosomes 20 and 21, homologous test chunks removed",
+          "primary_metric": "auPRC",
+          "metric_direction": "higher",
+          "results_url": null,
+          "code_url": "https://github.com/instadeepai/nucleotide-transformer",
+          "data_url": null,
+          "data_licence": null,
+          "code_licence": "CC BY-NC-SA 4.0",
+          "released": null,
+          "source_ids": [
+            "benchmark-pages-20261127-batch1-segmentnt-human-genome-annotation-source-paper",
+            "benchmark-pages-20261127-batch1-segmentnt-human-genome-annotation-source-nt-readme",
+            "benchmark-pages-20261127-batch1-segmentnt-human-genome-annotation-source-si"
+          ],
+          "source_locator": "paper-pmc.xml: supporting passage; nt-readme.md: code licence; supplementary-information.txt: metric"
+        },
+        {
+          "task": "exon: per-nucleotide annotation (MCC)",
+          "dataset": "SegmentNT human genomic elements, chromosomes 20 and 21",
+          "size": null,
+          "size_unit": "nucleotides; no per-entry count stated (see notes)",
+          "split": "chromosomes 20 and 21, homologous test chunks removed",
+          "primary_metric": "MCC",
+          "metric_direction": "higher",
+          "results_url": null,
+          "code_url": "https://github.com/instadeepai/nucleotide-transformer",
+          "data_url": null,
+          "data_licence": null,
+          "code_licence": "CC BY-NC-SA 4.0",
+          "released": null,
+          "source_ids": [
+            "benchmark-pages-20261127-batch1-segmentnt-human-genome-annotation-source-paper",
+            "benchmark-pages-20261127-batch1-segmentnt-human-genome-annotation-source-nt-readme",
+            "benchmark-pages-20261127-batch1-segmentnt-human-genome-annotation-source-si"
+          ],
+          "source_locator": "paper-pmc.xml: supporting passage; nt-readme.md: code licence; supplementary-information.txt: metric"
+        },
+        {
+          "task": "exon: per-nucleotide annotation (auPRC)",
+          "dataset": "SegmentNT human genomic elements, chromosomes 20 and 21",
+          "size": null,
+          "size_unit": "nucleotides; no per-entry count stated (see notes)",
+          "split": "chromosomes 20 and 21, homologous test chunks removed",
+          "primary_metric": "auPRC",
+          "metric_direction": "higher",
+          "results_url": null,
+          "code_url": "https://github.com/instadeepai/nucleotide-transformer",
+          "data_url": null,
+          "data_licence": null,
+          "code_licence": "CC BY-NC-SA 4.0",
+          "released": null,
+          "source_ids": [
+            "benchmark-pages-20261127-batch1-segmentnt-human-genome-annotation-source-paper",
+            "benchmark-pages-20261127-batch1-segmentnt-human-genome-annotation-source-nt-readme",
+            "benchmark-pages-20261127-batch1-segmentnt-human-genome-annotation-source-si"
+          ],
+          "source_locator": "paper-pmc.xml: supporting passage; nt-readme.md: code licence; supplementary-information.txt: metric"
+        },
+        {
+          "task": "intron: per-nucleotide annotation (MCC)",
+          "dataset": "SegmentNT human genomic elements, chromosomes 20 and 21",
+          "size": null,
+          "size_unit": "nucleotides; no per-entry count stated (see notes)",
+          "split": "chromosomes 20 and 21, homologous test chunks removed",
+          "primary_metric": "MCC",
+          "metric_direction": "higher",
+          "results_url": null,
+          "code_url": "https://github.com/instadeepai/nucleotide-transformer",
+          "data_url": null,
+          "data_licence": null,
+          "code_licence": "CC BY-NC-SA 4.0",
+          "released": null,
+          "source_ids": [
+            "benchmark-pages-20261127-batch1-segmentnt-human-genome-annotation-source-paper",
+            "benchmark-pages-20261127-batch1-segmentnt-human-genome-annotation-source-nt-readme",
+            "benchmark-pages-20261127-batch1-segmentnt-human-genome-annotation-source-si"
+          ],
+          "source_locator": "paper-pmc.xml: supporting passage; nt-readme.md: code licence; supplementary-information.txt: metric"
+        },
+        {
+          "task": "intron: per-nucleotide annotation (auPRC)",
+          "dataset": "SegmentNT human genomic elements, chromosomes 20 and 21",
+          "size": null,
+          "size_unit": "nucleotides; no per-entry count stated (see notes)",
+          "split": "chromosomes 20 and 21, homologous test chunks removed",
+          "primary_metric": "auPRC",
+          "metric_direction": "higher",
+          "results_url": null,
+          "code_url": "https://github.com/instadeepai/nucleotide-transformer",
+          "data_url": null,
+          "data_licence": null,
+          "code_licence": "CC BY-NC-SA 4.0",
+          "released": null,
+          "source_ids": [
+            "benchmark-pages-20261127-batch1-segmentnt-human-genome-annotation-source-paper",
+            "benchmark-pages-20261127-batch1-segmentnt-human-genome-annotation-source-nt-readme",
+            "benchmark-pages-20261127-batch1-segmentnt-human-genome-annotation-source-si"
+          ],
+          "source_locator": "paper-pmc.xml: supporting passage; nt-readme.md: code licence; supplementary-information.txt: metric"
+        },
+        {
+          "task": "lncRNA: per-nucleotide annotation (MCC)",
+          "dataset": "SegmentNT human genomic elements, chromosomes 20 and 21",
+          "size": null,
+          "size_unit": "nucleotides; no per-entry count stated (see notes)",
+          "split": "chromosomes 20 and 21, homologous test chunks removed",
+          "primary_metric": "MCC",
+          "metric_direction": "higher",
+          "results_url": null,
+          "code_url": "https://github.com/instadeepai/nucleotide-transformer",
+          "data_url": null,
+          "data_licence": null,
+          "code_licence": "CC BY-NC-SA 4.0",
+          "released": null,
+          "source_ids": [
+            "benchmark-pages-20261127-batch1-segmentnt-human-genome-annotation-source-paper",
+            "benchmark-pages-20261127-batch1-segmentnt-human-genome-annotation-source-nt-readme",
+            "benchmark-pages-20261127-batch1-segmentnt-human-genome-annotation-source-si"
+          ],
+          "source_locator": "paper-pmc.xml: supporting passage; nt-readme.md: code licence; supplementary-information.txt: metric"
+        },
+        {
+          "task": "lncRNA: per-nucleotide annotation (auPRC)",
+          "dataset": "SegmentNT human genomic elements, chromosomes 20 and 21",
+          "size": null,
+          "size_unit": "nucleotides; no per-entry count stated (see notes)",
+          "split": "chromosomes 20 and 21, homologous test chunks removed",
+          "primary_metric": "auPRC",
+          "metric_direction": "higher",
+          "results_url": null,
+          "code_url": "https://github.com/instadeepai/nucleotide-transformer",
+          "data_url": null,
+          "data_licence": null,
+          "code_licence": "CC BY-NC-SA 4.0",
+          "released": null,
+          "source_ids": [
+            "benchmark-pages-20261127-batch1-segmentnt-human-genome-annotation-source-paper",
+            "benchmark-pages-20261127-batch1-segmentnt-human-genome-annotation-source-nt-readme",
+            "benchmark-pages-20261127-batch1-segmentnt-human-genome-annotation-source-si"
+          ],
+          "source_locator": "paper-pmc.xml: supporting passage; nt-readme.md: code licence; supplementary-information.txt: metric"
+        },
+        {
+          "task": "polyA signal: per-nucleotide annotation (MCC)",
+          "dataset": "SegmentNT human genomic elements, chromosomes 20 and 21",
+          "size": null,
+          "size_unit": "nucleotides; no per-entry count stated (see notes)",
+          "split": "chromosomes 20 and 21, homologous test chunks removed",
+          "primary_metric": "MCC",
+          "metric_direction": "higher",
+          "results_url": null,
+          "code_url": "https://github.com/instadeepai/nucleotide-transformer",
+          "data_url": null,
+          "data_licence": null,
+          "code_licence": "CC BY-NC-SA 4.0",
+          "released": null,
+          "source_ids": [
+            "benchmark-pages-20261127-batch1-segmentnt-human-genome-annotation-source-paper",
+            "benchmark-pages-20261127-batch1-segmentnt-human-genome-annotation-source-nt-readme",
+            "benchmark-pages-20261127-batch1-segmentnt-human-genome-annotation-source-si"
+          ],
+          "source_locator": "paper-pmc.xml: supporting passage; nt-readme.md: code licence; supplementary-information.txt: metric"
+        },
+        {
+          "task": "polyA signal: per-nucleotide annotation (auPRC)",
+          "dataset": "SegmentNT human genomic elements, chromosomes 20 and 21",
+          "size": null,
+          "size_unit": "nucleotides; no per-entry count stated (see notes)",
+          "split": "chromosomes 20 and 21, homologous test chunks removed",
+          "primary_metric": "auPRC",
+          "metric_direction": "higher",
+          "results_url": null,
+          "code_url": "https://github.com/instadeepai/nucleotide-transformer",
+          "data_url": null,
+          "data_licence": null,
+          "code_licence": "CC BY-NC-SA 4.0",
+          "released": null,
+          "source_ids": [
+            "benchmark-pages-20261127-batch1-segmentnt-human-genome-annotation-source-paper",
+            "benchmark-pages-20261127-batch1-segmentnt-human-genome-annotation-source-nt-readme",
+            "benchmark-pages-20261127-batch1-segmentnt-human-genome-annotation-source-si"
+          ],
+          "source_locator": "paper-pmc.xml: supporting passage; nt-readme.md: code licence; supplementary-information.txt: metric"
+        },
+        {
+          "task": "promoter tissue-invariant: per-nucleotide annotation (MCC)",
+          "dataset": "SegmentNT human genomic elements, chromosomes 20 and 21",
+          "size": null,
+          "size_unit": "nucleotides; no per-entry count stated (see notes)",
+          "split": "chromosomes 20 and 21, homologous test chunks removed",
+          "primary_metric": "MCC",
+          "metric_direction": "higher",
+          "results_url": null,
+          "code_url": "https://github.com/instadeepai/nucleotide-transformer",
+          "data_url": null,
+          "data_licence": null,
+          "code_licence": "CC BY-NC-SA 4.0",
+          "released": null,
+          "source_ids": [
+            "benchmark-pages-20261127-batch1-segmentnt-human-genome-annotation-source-paper",
+            "benchmark-pages-20261127-batch1-segmentnt-human-genome-annotation-source-nt-readme",
+            "benchmark-pages-20261127-batch1-segmentnt-human-genome-annotation-source-si"
+          ],
+          "source_locator": "paper-pmc.xml: supporting passage; nt-readme.md: code licence; supplementary-information.txt: task, metric"
+        },
+        {
+          "task": "promoter tissue-invariant: per-nucleotide annotation (auPRC)",
+          "dataset": "SegmentNT human genomic elements, chromosomes 20 and 21",
+          "size": null,
+          "size_unit": "nucleotides; no per-entry count stated (see notes)",
+          "split": "chromosomes 20 and 21, homologous test chunks removed",
+          "primary_metric": "auPRC",
+          "metric_direction": "higher",
+          "results_url": null,
+          "code_url": "https://github.com/instadeepai/nucleotide-transformer",
+          "data_url": null,
+          "data_licence": null,
+          "code_licence": "CC BY-NC-SA 4.0",
+          "released": null,
+          "source_ids": [
+            "benchmark-pages-20261127-batch1-segmentnt-human-genome-annotation-source-paper",
+            "benchmark-pages-20261127-batch1-segmentnt-human-genome-annotation-source-nt-readme",
+            "benchmark-pages-20261127-batch1-segmentnt-human-genome-annotation-source-si"
+          ],
+          "source_locator": "paper-pmc.xml: supporting passage; nt-readme.md: code licence; supplementary-information.txt: metric"
+        },
+        {
+          "task": "promoter tissue-specific: per-nucleotide annotation (MCC)",
+          "dataset": "SegmentNT human genomic elements, chromosomes 20 and 21",
+          "size": null,
+          "size_unit": "nucleotides; no per-entry count stated (see notes)",
+          "split": "chromosomes 20 and 21, homologous test chunks removed",
+          "primary_metric": "MCC",
+          "metric_direction": "higher",
+          "results_url": null,
+          "code_url": "https://github.com/instadeepai/nucleotide-transformer",
+          "data_url": null,
+          "data_licence": null,
+          "code_licence": "CC BY-NC-SA 4.0",
+          "released": null,
+          "source_ids": [
+            "benchmark-pages-20261127-batch1-segmentnt-human-genome-annotation-source-paper",
+            "benchmark-pages-20261127-batch1-segmentnt-human-genome-annotation-source-nt-readme",
+            "benchmark-pages-20261127-batch1-segmentnt-human-genome-annotation-source-si"
+          ],
+          "source_locator": "paper-pmc.xml: supporting passage; nt-readme.md: code licence; supplementary-information.txt: task, metric"
+        },
+        {
+          "task": "promoter tissue-specific: per-nucleotide annotation (auPRC)",
+          "dataset": "SegmentNT human genomic elements, chromosomes 20 and 21",
+          "size": null,
+          "size_unit": "nucleotides; no per-entry count stated (see notes)",
+          "split": "chromosomes 20 and 21, homologous test chunks removed",
+          "primary_metric": "auPRC",
+          "metric_direction": "higher",
+          "results_url": null,
+          "code_url": "https://github.com/instadeepai/nucleotide-transformer",
+          "data_url": null,
+          "data_licence": null,
+          "code_licence": "CC BY-NC-SA 4.0",
+          "released": null,
+          "source_ids": [
+            "benchmark-pages-20261127-batch1-segmentnt-human-genome-annotation-source-paper",
+            "benchmark-pages-20261127-batch1-segmentnt-human-genome-annotation-source-nt-readme",
+            "benchmark-pages-20261127-batch1-segmentnt-human-genome-annotation-source-si"
+          ],
+          "source_locator": "paper-pmc.xml: supporting passage; nt-readme.md: code licence; supplementary-information.txt: metric"
+        },
+        {
+          "task": "protein coding gene: per-nucleotide annotation (MCC)",
+          "dataset": "SegmentNT human genomic elements, chromosomes 20 and 21",
+          "size": null,
+          "size_unit": "nucleotides; no per-entry count stated (see notes)",
+          "split": "chromosomes 20 and 21, homologous test chunks removed",
+          "primary_metric": "MCC",
+          "metric_direction": "higher",
+          "results_url": null,
+          "code_url": "https://github.com/instadeepai/nucleotide-transformer",
+          "data_url": null,
+          "data_licence": null,
+          "code_licence": "CC BY-NC-SA 4.0",
+          "released": null,
+          "source_ids": [
+            "benchmark-pages-20261127-batch1-segmentnt-human-genome-annotation-source-paper",
+            "benchmark-pages-20261127-batch1-segmentnt-human-genome-annotation-source-nt-readme",
+            "benchmark-pages-20261127-batch1-segmentnt-human-genome-annotation-source-si"
+          ],
+          "source_locator": "paper-pmc.xml: supporting passage; nt-readme.md: code licence; supplementary-information.txt: task, metric"
+        },
+        {
+          "task": "protein coding gene: per-nucleotide annotation (auPRC)",
+          "dataset": "SegmentNT human genomic elements, chromosomes 20 and 21",
+          "size": null,
+          "size_unit": "nucleotides; no per-entry count stated (see notes)",
+          "split": "chromosomes 20 and 21, homologous test chunks removed",
+          "primary_metric": "auPRC",
+          "metric_direction": "higher",
+          "results_url": null,
+          "code_url": "https://github.com/instadeepai/nucleotide-transformer",
+          "data_url": null,
+          "data_licence": null,
+          "code_licence": "CC BY-NC-SA 4.0",
+          "released": null,
+          "source_ids": [
+            "benchmark-pages-20261127-batch1-segmentnt-human-genome-annotation-source-paper",
+            "benchmark-pages-20261127-batch1-segmentnt-human-genome-annotation-source-nt-readme",
+            "benchmark-pages-20261127-batch1-segmentnt-human-genome-annotation-source-si"
+          ],
+          "source_locator": "paper-pmc.xml: supporting passage; nt-readme.md: code licence; supplementary-information.txt: metric"
+        },
+        {
+          "task": "splice acceptor: per-nucleotide annotation (MCC)",
+          "dataset": "SegmentNT human genomic elements, chromosomes 20 and 21",
+          "size": null,
+          "size_unit": "nucleotides; no per-entry count stated (see notes)",
+          "split": "chromosomes 20 and 21, homologous test chunks removed",
+          "primary_metric": "MCC",
+          "metric_direction": "higher",
+          "results_url": null,
+          "code_url": "https://github.com/instadeepai/nucleotide-transformer",
+          "data_url": null,
+          "data_licence": null,
+          "code_licence": "CC BY-NC-SA 4.0",
+          "released": null,
+          "source_ids": [
+            "benchmark-pages-20261127-batch1-segmentnt-human-genome-annotation-source-paper",
+            "benchmark-pages-20261127-batch1-segmentnt-human-genome-annotation-source-nt-readme",
+            "benchmark-pages-20261127-batch1-segmentnt-human-genome-annotation-source-si"
+          ],
+          "source_locator": "paper-pmc.xml: supporting passage; nt-readme.md: code licence; supplementary-information.txt: metric"
+        },
+        {
+          "task": "splice acceptor: per-nucleotide annotation (auPRC)",
+          "dataset": "SegmentNT human genomic elements, chromosomes 20 and 21",
+          "size": null,
+          "size_unit": "nucleotides; no per-entry count stated (see notes)",
+          "split": "chromosomes 20 and 21, homologous test chunks removed",
+          "primary_metric": "auPRC",
+          "metric_direction": "higher",
+          "results_url": null,
+          "code_url": "https://github.com/instadeepai/nucleotide-transformer",
+          "data_url": null,
+          "data_licence": null,
+          "code_licence": "CC BY-NC-SA 4.0",
+          "released": null,
+          "source_ids": [
+            "benchmark-pages-20261127-batch1-segmentnt-human-genome-annotation-source-paper",
+            "benchmark-pages-20261127-batch1-segmentnt-human-genome-annotation-source-nt-readme",
+            "benchmark-pages-20261127-batch1-segmentnt-human-genome-annotation-source-si"
+          ],
+          "source_locator": "paper-pmc.xml: supporting passage; nt-readme.md: code licence; supplementary-information.txt: metric"
+        },
+        {
+          "task": "splice donor: per-nucleotide annotation (MCC)",
+          "dataset": "SegmentNT human genomic elements, chromosomes 20 and 21",
+          "size": null,
+          "size_unit": "nucleotides; no per-entry count stated (see notes)",
+          "split": "chromosomes 20 and 21, homologous test chunks removed",
+          "primary_metric": "MCC",
+          "metric_direction": "higher",
+          "results_url": null,
+          "code_url": "https://github.com/instadeepai/nucleotide-transformer",
+          "data_url": null,
+          "data_licence": null,
+          "code_licence": "CC BY-NC-SA 4.0",
+          "released": null,
+          "source_ids": [
+            "benchmark-pages-20261127-batch1-segmentnt-human-genome-annotation-source-paper",
+            "benchmark-pages-20261127-batch1-segmentnt-human-genome-annotation-source-nt-readme",
+            "benchmark-pages-20261127-batch1-segmentnt-human-genome-annotation-source-si"
+          ],
+          "source_locator": "paper-pmc.xml: supporting passage; nt-readme.md: code licence; supplementary-information.txt: metric"
+        },
+        {
+          "task": "splice donor: per-nucleotide annotation (auPRC)",
+          "dataset": "SegmentNT human genomic elements, chromosomes 20 and 21",
+          "size": null,
+          "size_unit": "nucleotides; no per-entry count stated (see notes)",
+          "split": "chromosomes 20 and 21, homologous test chunks removed",
+          "primary_metric": "auPRC",
+          "metric_direction": "higher",
+          "results_url": null,
+          "code_url": "https://github.com/instadeepai/nucleotide-transformer",
+          "data_url": null,
+          "data_licence": null,
+          "code_licence": "CC BY-NC-SA 4.0",
+          "released": null,
+          "source_ids": [
+            "benchmark-pages-20261127-batch1-segmentnt-human-genome-annotation-source-paper",
+            "benchmark-pages-20261127-batch1-segmentnt-human-genome-annotation-source-nt-readme",
+            "benchmark-pages-20261127-batch1-segmentnt-human-genome-annotation-source-si"
+          ],
+          "source_locator": "paper-pmc.xml: supporting passage; nt-readme.md: code licence; supplementary-information.txt: metric"
+        }
+      ]
+    }
+  }
+}

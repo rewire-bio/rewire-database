@@ -22,6 +22,7 @@ import Profile, {
 } from "@/components/catalogue/Profile";
 import EvidenceTable from "@/components/catalogue/EvidenceTable";
 import RunGuide from "@/components/catalogue/RunGuide";
+import { ReleasedCheckpoints } from "@/components/catalogue/StructuredFacts";
 import Results from "@/components/catalogue/Results";
 import { resultsPayload } from "@/lib/results-payload";
 import ResultMatrix from "@/components/catalogue/ResultMatrix";
@@ -416,6 +417,7 @@ export function PredictiveEntityDetail({ detail }: { detail: RecordDetail }) {
             <h2>Use this {kindLabel}</h2>
             {/* Shown only when the record carries a reviewed run guide; RunGuide renders nothing otherwise for these kinds. */}
             <RunGuide record={record} sources={detail.sources} embedded />
+            <ReleasedCheckpoints record={record} sources={detail.sources} />
             <details className={styles.profileDisclosure}>
               <summary>How it works, versions and access</summary>
               {family && (

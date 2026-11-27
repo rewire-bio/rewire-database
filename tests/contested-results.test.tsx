@@ -257,10 +257,9 @@ describe("contested results: pages", () => {
     const { default: FindingPage } = await import("../app/contested/[id]/page");
     const html = renderToStaticMarkup(<FindingPage params={{ id: studied.id }} />);
     expect(html).toContain("Which studies agree");
+    expect(html).not.toContain("Papers grouped by");
     // The disagreeing study comes first, in the chart and the table, and is marked in words.
     expect(html).toContain("2 papers rank ALPHAGENOME above SPLICEAI in all 6 comparisons that are not ties (1 is a tie). ALAVI-2026 ranks SPLICEAI above ALPHAGENOME in all 2 of its comparisons.");
-    expect(html).toContain("Papers grouped by which system they rank higher: ALPHAGENOME or SPLICEAI");
-    expect(html).toContain("Rank ALPHAGENOME higher: 10.1234/third, STUDY-B. Rank SPLICEAI higher: ALAVI-2026 (disagrees). Mixed: none.");
     expect(html).toMatch(/ALAVI-2026<\/span><span class="[^"]*leanRole[^"]*">Disagrees<\/span><span class="[^"]*srOnly[^"]*">: <\/span><span>SPLICEAI ahead in 2 of 2 comparisons<\/span>/);
     expect(html).toMatch(/STUDY-B<\/span><span class="[^"]*srOnly[^"]*">: <\/span><span>ALPHAGENOME ahead in 2 of 3 comparisons; 1 tie<\/span>/);
     const rows = [...html.matchAll(/<tr class="([^"]*)"><th scope="row">(.*?)<\/tr>/g)].map((m) => m[2]);

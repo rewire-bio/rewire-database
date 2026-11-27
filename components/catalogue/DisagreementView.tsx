@@ -6,8 +6,8 @@ import styles from "./Contested.module.css";
 import tables from "@/app/database/database.module.css";
 
 /** How a finding's studies disagree, drawn from its per-study data for any finding and either rule:
- * a plain summary, then for an ordering reversal the papers grouped by which system they rank higher
- * and a bar per paper, and for a gap outlier each paper's gap to the reference. The full view adds the
+ * a plain summary, then for an ordering reversal a row per paper leaning toward the system it ranks
+ * higher, and for a gap outlier each paper's gap to the reference. The full view adds the
  * table of papers and their comparisons; the compact view, for list entries, is the summary and one small chart. */
 export function DisagreementView({ view, compact = false }: { view: Disagreement; compact?: boolean }) {
   const id = `${compact ? "c" : "f"}-${view.id}`;
@@ -24,8 +24,8 @@ export function DisagreementView({ view, compact = false }: { view: Disagreement
     <p className={styles.summary}>{view.summary}</p>
     {gapRule
       ? <GapPlot view={view} id={id} />
-      : <><Groups view={view} id={id} /><Lean view={view} /></>}
-    {more > 0 && <p className={styles.muted}>The charts show the {shown.length} papers with the most comparisons, the one that disagrees first; {more} more are in the table.</p>}
+      : <Lean view={view} />}
+    {more > 0 && <p className={styles.muted}>The chart shows the {shown.length} papers with the most comparisons, the one that disagrees first; {more} more are in the table.</p>}
     <PaperTable view={view} />
     {view.papers.filter((p) => p.comparisons.length).map((p) => <Comparisons key={p.key} p={p} view={view} />)}
   </>;
@@ -33,98 +33,6 @@ export function DisagreementView({ view, compact = false }: { view: Disagreement
 
 const clip = (text: string, chars: number) => (text.length <= chars ? text : `${text.slice(0, Math.max(chars - 1, 1))}…`);
 const pct = (value: number) => `${value.toFixed(2)}%`;
-
-const GROUP_LABEL = (view: Disagreement): Record<PaperGroup, string> => ({
-  a: `Rank ${view.a.name} higher`,
-  b: `Rank ${view.b.name} higher`,
-  mixed: "Mixed",
-});
-
-const listNames = (papers: Paper[]) =>
-  papers.length ? papers.map((p) => `${p.short}${p.role === "outlier" ? " (disagrees)" : ""}`).join(", ") : "none";
-
-// Two overlapping circles: left ranks A higher, right ranks B higher, the overlap is mixed.
-const VENN = { width: 640, height: 345, cy: 188, r: 150, left: 230, right: 410 };
-
-// Label widths are estimated from character counts: names are short citations, and an estimate that is
-// a little wide only makes a label smaller or wrap sooner.
-const LABEL_SIZE = 13;
-const labelWidth = (text: string, size: number) => text.length * size * 0.56;
-
-/** A label that fits `room` pixels: one line, shrunk to no less than 10px, else two lines split before a
- * citation's year or at the space nearest the middle. */
-function fitLabel(text: string, room: number): { lines: string[]; size: number } {
-  const shrink = (lines: string[], floor: number) =>
-    Math.max(floor, Math.min(LABEL_SIZE, LABEL_SIZE * room / Math.max(...lines.map((l) => labelWidth(l, LABEL_SIZE)))));
-  if (labelWidth(text, shrink([text], 10)) <= room || !text.includes(" ")) return { lines: [text], size: shrink([text], 9) };
-  const spaces = [...text.matchAll(/ /g)].map((m) => m.index!);
-  const at = / (?:19|20)\d{2}$/.test(text) ? text.lastIndexOf(" ")
-    : spaces.reduce((best, i) => (Math.abs(i - text.length / 2) < Math.abs(best - text.length / 2) ? i : best));
-  const lines = [text.slice(0, at), text.slice(at + 1)];
-  return { lines, size: shrink(lines, 9) };
-}
-
-/** Papers grouped by the system at least two thirds of their comparisons that are not ties rank higher. */
-function Groups({ view, id }: { view: Disagreement; id: string }) {
-  const labels = GROUP_LABEL(view);
-  const by = (g: PaperGroup) => view.papers.filter((p) => p.group === g);
-  const groups = { a: by("a"), b: by("b"), mixed: by("mixed") };
-  const dots = view.papers.length <= PAPER_LIMIT;
-  const { cy, r, left, right } = VENN;
-  // A region's horizontal extent at height y: left only, overlap, right only.
-  const extent = (g: "a" | "b" | "mixed", y: number): [number, number] => {
-    const h = Math.sqrt(Math.max(r * r - (y - cy) ** 2, 0));
-    return g === "a" ? [left - h, right - h] : g === "mixed" ? [right - h, left + h] : [left + h, right + h];
-  };
-  const centre = { a: (left - r + right - r) / 2, mixed: (left + right) / 2, b: (left + r + right + r) / 2 };
-  const description = (["a", "b", "mixed"] as const).map((g) => `${labels[g]}: ${listNames(groups[g])}.`).join(" ");
-  // Each paper's dot and label in its region, spaced further apart when a label needs two lines.
-  const place = (g: "a" | "b" | "mixed", papers: Paper[]) => {
-    const layout = (step: number) => papers.map((p, i) => {
-      const y = cy + (i - (papers.length - 1) / 2) * step;
-      const [start, end] = extent(g, y);
-      const x = start + 10;
-      return { p, x, y, label: fitLabel(p.short, end - 6 - (x + 9)) };
-    });
-    const tight = layout(Math.min(22, 230 / Math.max(papers.length, 1)));
-    return tight.some((d) => d.label.lines.length > 1) ? layout(Math.min(32, 230 / Math.max(papers.length, 1))) : tight;
-  };
-  return <figure className={styles.chart}>
-    <div className={styles.chartScroll}>
-      <svg viewBox={`0 0 ${VENN.width} ${VENN.height}`} className={styles.venn} role="img" aria-labelledby={`${id}-groups-title ${id}-groups-desc`}>
-        <title id={`${id}-groups-title`}>{`Papers grouped by which system they rank higher: ${view.a.name} or ${view.b.name}`}</title>
-        <desc id={`${id}-groups-desc`}>{description}</desc>
-        <circle cx={left} cy={cy} r={r} className={styles.vennA} />
-        <circle cx={right} cy={cy} r={r} className={styles.vennB} />
-        <text x={centre.a} y="20" textAnchor="middle" className={styles.vennHeading}>{clip(labels.a, 30)}</text>
-        <text x={centre.mixed} y="20" textAnchor="middle" className={styles.vennHeading}>Mixed</text>
-        <text x={centre.b} y="20" textAnchor="middle" className={styles.vennHeading}>{clip(labels.b, 30)}</text>
-        {(["a", "mixed", "b"] as const).map((g) => {
-          const papers = groups[g];
-          if (!dots) return <text key={g} x={centre[g]} y={cy + 6} textAnchor="middle" className={styles.vennCount}>{papers.length}</text>;
-          return place(g, papers).map(({ p, x, y, label }) => {
-            const outlier = p.role === "outlier";
-            const first = y + 4 - ((label.lines.length - 1) * label.size * 1.1) / 2;
-            return <g key={p.key} className={outlier ? styles.chartOutlier : undefined}>
-              <circle cx={x} cy={y} r={outlier ? 6 : 4} className={outlier ? styles.dotOutlier : styles.dot} />
-              <text x={x + 9} y={first} className={styles.chartLabel} style={{ fontSize: `${label.size.toFixed(1)}px` }}>
-                {label.lines.map((line, i) => <tspan key={i} x={x + 9} dy={i ? `${label.size * 1.1}` : undefined}>{line}</tspan>)}
-                <title>{p.name}</title>
-              </text>
-            </g>;
-          });
-        })}
-      </svg>
-    </div>
-    <figcaption className={dots ? styles.srOnly : styles.legend}>
-      <ul className={styles.groupList}>
-        {(["a", "b", "mixed"] as const).map((g) =>
-          <li key={g}>{labels[g]} ({groups[g].length}): {listNames(groups[g])}</li>)}
-      </ul>
-    </figcaption>
-    <p className={styles.muted}>Each paper sits where at least two thirds of its comparisons point; Mixed means neither model reaches two thirds.{dots && " The larger, outlined dot is the paper that disagrees."}</p>
-  </figure>;
-}
 
 /** Above this many agreeing papers, the lean chart adds a row for all of them together, and the compact
  * view shows that row in place of each paper. */

@@ -99,11 +99,11 @@ export const gapPercent = (gap: number) => `${gap >= 0 ? "+" : "−"}${Math.abs(
 
 const relative = (gap: number, reference: string) => `${Math.abs(Math.round(gap * 100))}% ${gap >= 0 ? "above" : "below"} ${reference}`;
 
-function orderingSummary(papers: Paper[], a: string, b: string): string {
-  const sentence = (group: Paper[], higher: string, lower: string, countHigher: (p: Paper) => number, countLower: (p: Paper) => number) => {
+function orderingSummary(papers: Paper[], a: string, b: string, noun: string): string {
+  const sentence = (group: Paper[], higher: string, lower: string, countHigher: (p: Paper) => number, countLower: (p: Paper) => number, many = `${group.length} ${noun}`) => {
     if (!group.length) return "";
     const one = group.length === 1;
-    const subject = one ? group[0].short : `${group.length} papers`;
+    const subject = one ? group[0].short : many;
     const their = one ? "its" : "their";
     const up = group.reduce((n, p) => n + countHigher(p), 0);
     const down = group.reduce((n, p) => n + countLower(p), 0);
@@ -111,21 +111,34 @@ function orderingSummary(papers: Paper[], a: string, b: string): string {
     const tieNote = ties === 1 ? "1 is a tie" : `${ties} are ties`;
     const verb = one ? "ranks" : "rank";
     if (!up && !down) return `${subject} ${one ? "finds" : "find"} ${a} and ${b} tied in all ${plural(ties, "comparison")}.`;
+    if (up === down) return `${subject} ${one ? "finds" : "find"} ${a} and ${b} level: each is higher in ${up} of ${their} ${up + down + ties} comparisons${ties ? `; ${tieNote}` : ""}.`;
     if (!down) {
       if (ties) return `${subject} ${verb} ${higher} above ${lower} in ${up === 1 ? "the one comparison that is not a tie" : `all ${up} comparisons that are not ties`} (${tieNote}).`;
       return `${subject} ${verb} ${higher} above ${lower} in ${up === 1 ? `${their} one comparison` : `all ${up} of ${their} comparisons`}.`;
     }
     return `${subject} ${verb} ${higher} above ${lower} in ${up} of ${their} ${up + down + ties} comparisons and ${lower} higher in ${down}${ties ? `; ${tieNote}` : ""}.`;
   };
-  const consensus = papers.filter((p) => p.role !== "outlier");
+  // Told from the side the group's comparisons favour; a for a tie.
+  const leaning = (group: Paper[], many?: string) => {
+    const towardB = group.reduce((n, p) => n + p.higherB - p.higherA, 0) > 0;
+    return towardB
+      ? sentence(group, b, a, (p) => p.higherB, (p) => p.higherA, many)
+      : sentence(group, a, b, (p) => p.higherA, (p) => p.higherB, many);
+  };
   const outliers = papers.filter((p) => p.role === "outlier");
+  const parties = papers.filter((p) => p.role === "party");
+  const others = papers.filter((p) => p.role === "consensus");
+  // A two-study conflict has no consensus to report against: each side gets its own sentence.
+  if (parties.length) {
+    return [...parties.map((p) => leaning([p])), others.length ? leaning(others, `the other ${others.length} ${noun}`) : ""].filter(Boolean).map(capitalise).join(" ");
+  }
   // The rule pools the other papers' comparisons, so one of them can lean the outlier's way on its own.
-  const against = consensus.length > 1 ? consensus.filter((p) => p.group === "b") : [];
+  const against = others.length > 1 ? others.filter((p) => p.group === "b") : [];
   const exception = against.length
-    ? `Of those papers, ${against.map((p) => p.short).join(", ")} ${against.length === 1 ? "ranks" : "rank"} ${b} higher on ${against.length === 1 ? "its" : "their"} own (${against.map((p) => `${p.higherB} of ${p.higherA + p.higherB + p.ties}`).join(", ")}).`
+    ? `Of those ${noun}, ${against.map((p) => p.short).join(", ")} ${against.length === 1 ? "ranks" : "rank"} ${b} higher on ${against.length === 1 ? "its" : "their"} own (${against.map((p) => `${p.higherB} of ${p.higherA + p.higherB + p.ties}`).join(", ")}).`
     : "";
   return [
-    sentence(consensus, a, b, (p) => p.higherA, (p) => p.higherB),
+    sentence(others, a, b, (p) => p.higherA, (p) => p.higherB),
     exception,
     sentence(outliers, b, a, (p) => p.higherB, (p) => p.higherA),
   ].filter(Boolean).map(capitalise).join(" ");
@@ -134,12 +147,12 @@ function orderingSummary(papers: Paper[], a: string, b: string): string {
 /** A sentence that starts with a lowercase source name ("proteinbench ...") starts with a capital. */
 const capitalise = (sentence: string) => sentence.charAt(0).toUpperCase() + sentence.slice(1);
 
-function gapSummary(papers: Paper[], a: string, reference: string, range: [number, number] | null): string {
+function gapSummary(papers: Paper[], a: string, reference: string, range: [number, number] | null, noun: string): string {
   const consensus = papers.filter((p) => p.role !== "outlier");
   const outliers = papers.filter((p) => p.role === "outlier" && p.gap !== null);
   const parts: string[] = [];
   if (range) {
-    const subject = consensus.length === 1 ? consensus[0].short : consensus.length ? `${consensus.length} papers` : "the other papers";
+    const subject = consensus.length === 1 ? consensus[0].short : consensus.length ? `${consensus.length} ${noun}` : `the other ${noun}`;
     const [min, max] = range;
     const pct = (g: number) => `${Math.abs(Math.round(g * 100))}%`;
     const where = min === max ? relative(min, reference)
@@ -192,6 +205,8 @@ export function disagreement(
       };
     });
   // Distinct studies can share a source name; number the repeats so every view can tell them apart.
+  // Studies that all share one source name are not shown to be separate papers, so the prose calls them studies.
+  const noun = papers.length > 1 && new Set(papers.map((p) => p.short)).size === 1 ? "studies" : "papers";
   const seen = new Map<string, number>();
   for (const p of papers) {
     const n = (seen.get(p.short) ?? 0) + 1;
@@ -207,6 +222,6 @@ export function disagreement(
       : typeof n.consensus_gap_min === "number" && typeof n.consensus_gap_max === "number" ? [n.consensus_gap_min, n.consensus_gap_max] : null;
   return {
     id: d.id, rule: d.rule, a, b, papers, consensusGap,
-    summary: gapRule ? gapSummary(papers, a.name, b.name, consensusGap) : orderingSummary(papers, a.name, b.name),
+    summary: gapRule ? gapSummary(papers, a.name, b.name, consensusGap, noun) : orderingSummary(papers, a.name, b.name, noun),
   };
 }

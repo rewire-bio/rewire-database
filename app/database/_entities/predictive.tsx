@@ -226,7 +226,7 @@ export function PredictiveEntityDetail({ detail }: { detail: RecordDetail }) {
               {results.total === 0 && (
                 <p className={styles.muted}>
                   {hasLinked
-                    ? `Results are recorded on linked configurations and versions of this ${kindLabel}. Their settings and evaluations are kept separate below.`
+                    ? `Results are recorded for configurations and versions of this ${kindLabel}, listed below with their own settings.`
                     : broaderFamilyOnly
                       ? "The broader model family has published results, but their attribution to this exact checkpoint has not been verified."
                       : "No reviewed evaluations are linked here in this release. See the sources below."}

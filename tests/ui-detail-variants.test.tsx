@@ -165,7 +165,7 @@ describe("verified entity relationships and profile ownership", () => {
 
   it("keeps evaluated downstream configuration results distinct from the underlying model", () => {
     const html = renderToStaticMarkup(<PredictiveEntityDetail detail={familyFixture("model", true, "downstream")} />);
-    expect(html).toContain("Results are recorded on linked configurations and versions of this model");
+    expect(html).toContain("Results are recorded for configurations and versions of this model, listed below with their own settings.");
     expect(html).toContain("Fixture downstream");
     expect(html).toContain("This model has no results of its own.");
     expect(html).toContain('id="results"');

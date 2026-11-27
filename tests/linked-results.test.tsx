@@ -23,7 +23,7 @@ describe("results held on related entries", () => {
   it("names what the entries are when they share a relation, most results first", () => {
     const html = render(configurations, true);
     expect(html).toContain("<h2>Results for 2 configurations of ESM-1b</h2>");
-    expect(html).toContain("These configurations were run with their own settings, so their scores are not in the table above.");
+    expect(html).toContain("These configurations have results too. We have not yet checked that they belong with the scores above, so they are kept out of that table. Each has its scores on its own page.");
     expect(html.indexOf("c-large")).toBeLessThan(html.indexOf("c-small"));
     expect(html).toContain("<span>3 evaluations · 9 results</span>");
     expect(html).not.toContain("<h3>");

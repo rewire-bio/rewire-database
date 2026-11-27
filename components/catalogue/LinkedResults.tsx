@@ -108,8 +108,8 @@ export default function LinkedResults({
       <p>
         {alongside
           ? one
-            ? `This ${things} was run with its own settings, so its scores are not in the table above. They are on its own page.`
-            : `These ${things} were run with their own settings, so their scores are not in the table above. Each has its scores on its own page.`
+            ? `This ${things} has results too. We have not yet checked that they belong with the scores above, so they are kept out of that table. They are on its own page.`
+            : `These ${things} have results too. We have not yet checked that they belong with the scores above, so they are kept out of that table. Each has its scores on its own page.`
           : one
             ? `This ${kind} has no results of its own. The ${things} below does. It was run with its own settings, and its scores are on its own page.`
             : `This ${kind} has no results of its own. The ${things} below do. Each was run with its own settings, and its scores are on its own page.`}

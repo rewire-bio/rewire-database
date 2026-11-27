@@ -1,5 +1,6 @@
 import { validateRunRecipes } from "./run-recipe.js";
 import { validateRunGuide } from "./run-guide.js";
+import { validateStructuredFacts } from "./structured-facts.js";
 import {
   entityKinds,
   validateDatasetReuseLink,
@@ -200,6 +201,7 @@ export function validateSnapshot(input: unknown) {
       throw new Error("Invalid legacy entity route");
     validateBenchmarkResearch(record, records);
     validateRunGuide(record, records);
+    validateStructuredFacts(record, records);
     validateRunRecipes(record, records);
     validateSourceIdentity(record, records);
     const profile = record.attributes.profile;

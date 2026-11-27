@@ -20,6 +20,7 @@ export const attributeRegistry = {
   },
   benchmark: {
     benchmark_research: "json",
+    benchmark_tasks: "json",
     checkpoint_revisions: "text",
     comparison_panels: "json",
     depth_tier: "depth-tier",
@@ -433,6 +434,7 @@ export const attributeRegistry = {
     access: "text",
     candidate_benchmark_ids: "record-ids",
     checkpoint_revision: "text",
+    checkpoints: "json",
     depth_tier: "depth-tier",
     entity_classification: "json",
     entity_level: "concept:entity-level",

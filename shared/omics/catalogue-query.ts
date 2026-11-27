@@ -85,6 +85,8 @@ export function recordReference(record: CatalogueRecord): CatalogueRecord {
     run_guide,
     run_recipes,
     benchmark_research,
+    checkpoints,
+    benchmark_tasks,
     ...attributes
   } = record.attributes;
   return { ...record, attributes };

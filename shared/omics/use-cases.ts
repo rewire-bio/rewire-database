@@ -187,7 +187,10 @@ const RESULT_PREVIEW_BYTE_BUDGET = 60_000;
 // metadata included), left under the probe's 1 MB budget as a margin for the
 // tRPC envelope. Hit if a page's items stay under their own byte budget but
 // fixed metadata (many mappings, long use-case text) pushes the total over.
-const MAX_USE_CASE_RESPONSE_BYTES = 900_000;
+export const MAX_USE_CASE_RESPONSE_BYTES = 900_000;
+// Kept free on every use-case page: the separators and next-page cursor that joining a page
+// adds to the fixed metadata (under 2 KB), and headroom so a page never ends just under the ceiling.
+const RESPONSE_MARGIN_BYTES = 50_000;
 function byteSize(value: unknown): number {
   return Buffer.byteLength(JSON.stringify(value));
 }
@@ -1024,11 +1027,24 @@ export function useCaseQueryFrom(state: UseCaseState) {
       if (!entry) return null;
       const mappings = mappingsByCase.get(entry.id) || [];
       const flattened = mappings.flatMap((m) => m.evaluations.map((evaluation, position) => ({ mapping_id: m.id, position, evaluation })));
+      // Mapping and use-case metadata is sent whole on every page, so the evaluations get
+      // only what the response budget leaves after it, never more than their own budget.
+      const fixed = {
+        release_id, input_sha256, use_case: entry,
+        mappings: mappings.map((m) => ({ ...m, evaluations: [] })),
+        sources: sourcesByCase.get(entry.id) || [],
+        evaluations_total: flattened.length,
+        evaluations_next_cursor: null,
+      };
+      const fixedBytes = byteSize({ result: { data: fixed } });
+      if (fixedBytes + RESPONSE_MARGIN_BYTES > MAX_USE_CASE_RESPONSE_BYTES)
+        throw Error(`Use-case detail metadata for ${slug} is ${fixedBytes} bytes before any evaluation, over the ${MAX_USE_CASE_RESPONSE_BYTES}-byte safety budget less its ${RESPONSE_MARGIN_BYTES}-byte margin; mappings are sent whole on every page, so the use case must send less per mapping`);
       const page = paginateBy(
         flattened, { cursor, limit: limit ?? EVALUATION_PAGE_LIMIT },
         { kind: "use-case-evaluations", release_id, input_sha256, slug },
         EVALUATION_PAGE_MAX, "Use-case evidence page",
-        EVALUATION_PAGE_BYTE_BUDGET, (item) => byteSize(item.evaluation),
+        Math.min(EVALUATION_PAGE_BYTE_BUDGET, MAX_USE_CASE_RESPONSE_BYTES - fixedBytes - RESPONSE_MARGIN_BYTES),
+        (item) => byteSize(item.evaluation),
       );
       const byMapping = new Map<string, ResolvedMapping["evaluations"]>();
       for (const item of page.items) byMapping.set(item.mapping_id, [...(byMapping.get(item.mapping_id) || []), item.evaluation]);

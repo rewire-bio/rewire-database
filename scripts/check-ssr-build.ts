@@ -286,7 +286,7 @@ function useCaseSlugs(catalogue: CatalogueSnapshot): string[] {
 /** The sitemap lists exactly the indexable canonical pages of the pinned release. */
 function checkSitemapInventory(catalogue: CatalogueSnapshot, urls: Set<string>) {
   const expected = new Set([
-    "/", "/runs/mfass-v2/", "/evidence/", "/agents/", "/agents/api/", "/coverage/", "/updates/", "/licence/", "/independence/", "/use-cases/",
+    "/", "/runs/mfass-v2/", "/evidence/", "/agents/", "/agents/api/", "/coverage/", "/updates/", "/licence/", "/independence/", "/use-cases/", "/models/reach/",
     ...PRIMARY_USE_CASE_PATHS,
     "/investigations/",
     ...getResearch(catalogue).investigations.map((report) => `/investigations/${report.id}/`),
